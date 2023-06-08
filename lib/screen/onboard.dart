@@ -405,7 +405,6 @@ class Onboard extends StatelessWidget {
                     }
                   }
 
-
                   // print("tes");
                   try {
                     const NotificationDetails platformChannelSpecifics =
