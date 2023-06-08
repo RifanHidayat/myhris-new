@@ -1,0 +1,39 @@
+buildscript {
+    ext.kotlin_version = '1.7.0'
+    
+    repositories {
+        google()
+        mavenCentral()
+               mavenLocal()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.1.2'
+        //  classpath 'com.google.gms:google-services:4.3.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+         maven {         // add this repo to use snapshots
+          name 'ossrh-snapshot'
+          url 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
+        mavenLocal()
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
