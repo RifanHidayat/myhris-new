@@ -46,40 +46,41 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   LocalStorage.prefs = await SharedPreferences.getInstance();
 
-  // if (Platform.isIOS) {
-  //   await Firebase.initializeApp(options: DefaultFirebaseOptions.ios);
-  // } else {
-  //   await Firebase.initializeApp(
-  //     options: DefaultFirebaseOptions.android,
-  //   );
-  // }
-  // FirebaseMessaging.instance.requestPermission();
+  if (Platform.isIOS) {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.ios);
+  } else {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.android,
+    );
+  }
+  FirebaseMessaging.instance.requestPermission();
 
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-  //   alert: true,
-  //   badge: true,
-  //   sound: true,
-  // );
-  // setupInteractedMessage();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  setupInteractedMessage();
 
-  // FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  // NotificationSettings settings = await messaging.requestPermission(
-  //     alert: true,
-  //     announcement: false,
-  //     badge: true,
-  //     carPlay: true,
-  //     criticalAlert: false,
-  //     provisional: true,
-  //     sound: true);  // if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  //   print('User granted permission');
-  // } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-  //   print('User granted provisional permission');
-  // } else {
-  //   print(
-  //       'User declined or has not accepted permission ${settings.authorizationStatus}');
-  // }
+  NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: true,
+      criticalAlert: false,
+      provisional: true,
+      sound: true);  
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print('User granted permission');
+  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    print('User granted provisional permission');
+  } else {
+    print(
+        'User declined or has not accepted permission ${settings.authorizationStatus}');
+  }
 
 
   runApp(const MyApp());

@@ -84,13 +84,13 @@ class AuthController extends GetxController {
 
   Future<void> loginUser() async {
     final box = GetStorage();
-    // var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+   var fcm_registration_token = await FirebaseMessaging.instance.getToken();
  
     UtilsAlert.showLoadingIndicator(Get.context!);
     Map<String, dynamic> body = {
       'email': email.value.text,
       'password': password.value.text,
-      // 'token_notif': fcm_registration_token.toString(),
+     'token_notif': fcm_registration_token.toString(),
       'database':selectedDb.value
     };
     var connect = Api.connectionApi("post", body, "login");

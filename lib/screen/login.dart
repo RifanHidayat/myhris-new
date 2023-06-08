@@ -105,21 +105,19 @@ class Login extends StatelessWidget {
                         //   ),
                         // ),
                         TextFieldApp.groupColumn(
-                          title: "Email",
-                          icon: Iconsax.sms,
-                          hintText: "Masukan Email",
-                          controller: controller.email.value,
-                          onChange: (value){
-                            controller.perusahaan.clear();
-                             controller.selectedPerusahaan.value="";
-                                    controller.selectedDb.value="";
-                                    controller.databases.forEach((element) {
-                                      element.isSelected=false;
-                                    });
-                                    controller.databases.refresh();
-
-                          }
-                        ),
+                            title: "Email",
+                            icon: Iconsax.sms,
+                            hintText: "Masukan Email",
+                            controller: controller.email.value,
+                            onChange: (value) {
+                              controller.perusahaan.clear();
+                              controller.selectedPerusahaan.value = "";
+                              controller.selectedDb.value = "";
+                              controller.databases.forEach((element) {
+                                element.isSelected = false;
+                              });
+                              controller.databases.refresh();
+                            }),
                         TextFieldApp.groupColumnSelected(
                             title: "Pilih Perusahaan",
                             icon: Iconsax.arrow_down_1,
@@ -145,7 +143,7 @@ class Login extends StatelessWidget {
                                     );
                                   } else {
                                     UtilsAlert.showToast(
-                                        "Database tidak tersedia a");
+                                        "Database tidak tersedia");
                                   }
                                 } else {
                                   controller.dataabse().then((value) {
@@ -163,12 +161,14 @@ class Login extends StatelessWidget {
                                       );
                                     } else {
                                       UtilsAlert.showToast(
-                                          "Database tidak tersedia a");
+                                          "Database tidak tersedia");
                                     }
                                   });
                                 }
-                              } else {UtilsAlert.showToast(
-                                          "isi terlebi dahulu email mu");}
+                              } else {
+                                UtilsAlert.showToast(
+                                    "isi terlebi dahulu email mu");
+                              }
                             }),
                         Obx(
                           () => TextFieldApp.groupColumnPassword(
@@ -253,28 +253,7 @@ class Login extends StatelessWidget {
                         SizedBox(
                           height: 30,
                         ),
-                      Obx(() => 
-                       controller.email.value.text=="" ||  controller.password.value.text=="" || controller.selectedPerusahaan.value==""? TextButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  HexColor('#A9B9CC')),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ))),
-                          onPressed: () => UtilsAlert.showToast("Form belum lengkap"),
-                          child: Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  left: 15, right: 15, top: 6, bottom: 6),
-                              child: Text(
-                                "Login",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ): TextButton(
+                        TextButton(
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   Constanst.colorPrimary),
@@ -283,7 +262,16 @@ class Login extends StatelessWidget {
                                   RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ))),
-                          onPressed: () => controller.loginUser(),
+                          onPressed: () {
+                            if (controller.email.value.text == "" ||
+                                controller.password.value.text == "" ||
+                                controller.selectedPerusahaan.value == "") {
+                              UtilsAlert.showToast(
+                                  "Lengkapi form terlebih dahulu");
+                            } else {
+                              controller.loginUser();
+                            }
+                          },
                           child: Center(
                             child: Padding(
                               padding: EdgeInsets.only(
@@ -294,7 +282,7 @@ class Login extends StatelessWidget {
                               ),
                             ),
                           ),
-                        ),),
+                        ),
                         SizedBox(
                           height: 8,
                         ),
@@ -390,12 +378,12 @@ class Login extends StatelessWidget {
                                     });
                                     data.isSelected = true;
                                     controller.databases.refresh();
-                                     controller.selectedPerusahaan.value=data.name;
-                                    controller.selectedDb.value=data.dbname;
-                                    controller.perusahaan.text=data.name;
-                                 ;
+                                    controller.selectedPerusahaan.value =
+                                        data.name;
+                                    controller.selectedDb.value = data.dbname;
+                                    controller.perusahaan.text = data.name;
+                                    ;
                                     Get.back();
-                                   
                                   },
                                   child: Container(
                                     child: Column(

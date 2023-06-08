@@ -1,4 +1,4 @@
-package com.siscom.hris
+package com.siscom.siscomhris
 
 import io.flutter.embedding.android.FlutterActivity
 

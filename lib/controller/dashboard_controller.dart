@@ -50,12 +50,11 @@ class DashboardController extends GetxController {
   var bpjsController = Get.put(BpjsController());
 
   var controllerAbsensi = Get.put(AbsenController());
-  var menu=<MenuDashboardModel>[].obs;
-  
+  var menu = <MenuDashboardModel>[].obs;
 
   var user = [].obs;
   var menus = <MenuModel>[].obs;
-  var isLoadingMenuDashboard=true;
+  var isLoadingMenuDashboard = true;
   var bannerDashboard = [].obs;
   var finalMenu = [].obs;
   var informasiDashboard = [].obs;
@@ -92,13 +91,14 @@ class DashboardController extends GetxController {
     // if (menus.length<=0){
     //   dashboardMenu();
     // }
-   //  getUserInfo();
-   
+    //  getUserInfo();
+
     super.onInit();
   }
 
-  void initData(){
-     getBannerDashboard();
+  void initData() async {
+    getBannerDashboard();
+    getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     getMenuDashboard();
     loadMenuShowInMain();
     getInformasiDashboard();
@@ -109,7 +109,6 @@ class DashboardController extends GetxController {
     getSizeDevice();
     checkStatusPermission();
     checkHakAkses();
-     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
   }
 
   void kirimNotification({
@@ -223,10 +222,6 @@ class DashboardController extends GetxController {
     });
   }
 
-
-
-
-
   void getMenuDashboard() {
     finalMenu.value.clear();
     var connect = Api.connectionApi("get", {}, "getMenu");
@@ -297,7 +292,8 @@ class DashboardController extends GetxController {
 
   void loadMenuShowInMain() {
     menuShowInMain.value.clear();
-    var connect = Api.connectionApi("get", {}, "menu_dashboard",params: "&em_id=${AppData.informasiUser![0].em_id}");
+    var connect = Api.connectionApi("get", {}, "menu_dashboard",
+        params: "&em_id=${AppData.informasiUser![0].em_id}");
     connect.then((dynamic res) {
       if (res == false) {
         UtilsAlert.koneksiBuruk();
@@ -307,15 +303,15 @@ class DashboardController extends GetxController {
           var temporary = valueBody['data'];
           temporary.firstWhere((element) => element['index'] == 0)['status'] =
               true;
-             
+
           menuShowInMain.value = temporary;
         }
       }
     });
   }
 
-  void getInformasiDashboard() {
-    var connect = Api.connectionApi("get", {}, "notice");
+  void getInformasiDashboard() async {
+    var connect = await Api.connectionApi("get", {}, "notice");
     connect.then((dynamic res) {
       if (res == false) {
         UtilsAlert.koneksiBuruk();
@@ -343,8 +339,10 @@ class DashboardController extends GetxController {
   }
 
   void getEmployeeUltah(dt) {
-    print("ulang tahun");
-    var tanggal = "${DateFormat('yyyy-MM-dd').format(DateTime.parse(dt.toString()))}";
+    employeeUltah.value.clear();
+    print("ulang tahun ${dt}");
+    var tanggal =
+        "${DateFormat('yyyy-MM-dd').format(DateTime.parse(dt.toString()))}";
     Map<String, dynamic> body = {
       'dateNow': tanggal,
     };
@@ -353,7 +351,7 @@ class DashboardController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         employeeUltah.value = valueBody['data'];
-        print(employeeUltah);
+        print("data ualgn tahun ${employeeUltah.length}");
         this.employeeUltah.refresh();
       }
     });
@@ -441,7 +439,7 @@ class DashboardController extends GetxController {
   }
 
   Future<bool> radiusNotOpen() async {
-    UtilsAlert.showLoadingIndicator(Get.context!);                  
+    UtilsAlert.showLoadingIndicator(Get.context!);
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     var latUser = position.latitude;
@@ -1118,33 +1116,33 @@ class DashboardController extends GetxController {
     );
   }
 
-
-
-    Future dashboardMenu()async{
-    try{
-      isLoadingMenuDashboard=true;
+  Future dashboardMenu() async {
+    try {
+      isLoadingMenuDashboard = true;
       UtilsAlert.showLoadingIndicator(Get.context!);
-      var response=await Request(url: "/dashboard/menu",params: '&em_id=${AppData.informasiUser![0].em_id}').get();
-      var resp=jsonDecode(response.body);
-    if (response.statusCode==200){
-       isLoadingMenuDashboard=false;
-      menus.value=MenuModel.fromJsonToList(resp['data']);
-      Get.back();
-      return true;
-    }else{
-       isLoadingMenuDashboard=false;
-      menu.value=[];
-       Get.back();
-      return false;
-    }
-    }catch(e){
-       isLoadingMenuDashboard=false;
-       menu.value=[];
+      var response = await Request(
+              url: "/dashboard/menu",
+              params: '&em_id=${AppData.informasiUser![0].em_id}')
+          .get();
+      var resp = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        isLoadingMenuDashboard = false;
+        menus.value = MenuModel.fromJsonToList(resp['data']);
+        Get.back();
+        return true;
+      } else {
+        isLoadingMenuDashboard = false;
+        menu.value = [];
+        Get.back();
+        return false;
+      }
+    } catch (e) {
+      isLoadingMenuDashboard = false;
+      menu.value = [];
       print(e);
-       Get.back();
+      Get.back();
 
       return false;
     }
-
   }
 }

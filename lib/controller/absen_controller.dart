@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -495,13 +494,10 @@ class AbsenController extends GetxController {
   // }
 
   void facedDetection({required status, absenStatus, type, img}) async {
- 
     if (status == "registration") {
       saveFaceregistration(img);
-   
     } else {
       detection(file: img, status: absenStatus, type: type);
-
     }
   }
 
@@ -511,102 +507,89 @@ class AbsenController extends GetxController {
     final box = GetStorage();
     File image = new File(file); // Or any other way to get a File instance.
     var decodedImage = await decodeImageFromList(image.readAsBytesSync());
-      Map<String, String> headers = {
-        'Authorization': Api.basicAuth,
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-        'token':Api.token
-      };
+    Map<String, String> headers = {
+      'Authorization': Api.basicAuth,
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'token': Api.token
+    };
 
-      var request = http.MultipartRequest(
-        "POST",
-        Uri.parse(Api.luxand),
-      );
-      request.headers.addAll(headers);
-      File file1=await urlToFile("${Api.urlFileRecog}${GetStorage().read('file_face')}");
+    var request = http.MultipartRequest(
+      "POST",
+      Uri.parse(Api.luxand),
+    );
+    request.headers.addAll(headers);
+    File file1 =
+        await urlToFile("${Api.urlFileRecog}${GetStorage().read('file_face')}");
 
-      var picture = await http.MultipartFile.fromPath('face1', file.toString(),
-          contentType: MediaType('image', 'png'));
-      var picture1 = await http.MultipartFile.fromPath('face2', file.toString(),
-          contentType: MediaType('image', 'png'));
-      request.files.add(picture);
-         request.files.add(picture1);
-     
-      var response = await request.send();
-      final respStr = await response.stream.bytesToString();
-      final res = jsonDecode(respStr.toString());
+    var picture = await http.MultipartFile.fromPath('face1', file.toString(),
+        contentType: MediaType('image', 'png'));
+    var picture1 = await http.MultipartFile.fromPath('face2', file.toString(),
+        contentType: MediaType('image', 'png'));
+    request.files.add(picture);
+    request.files.add(picture1);
 
-    if (res['similar']==true){
-         try {
-      var dataUser = AppData.informasiUser;
-      var getEmpId = dataUser![0].em_id;
-      Map<String, String> headers = {
-        'Authorization': Api.basicAuth,
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-      };
-      Map<String, String> body = {
-        'em_id': getEmpId.toString(),
-        'width': decodedImage.width.toString(),
-        'height': decodedImage.height.toString()
-      };
-      var request = http.MultipartRequest(
-        "POST",
-        Uri.parse(Api.basicUrl + "edit_face?database=${AppData.selectedDatabase.toString()}"),
-      );
-      request.fields.addAll(body);
-      request.headers.addAll(headers);
-      // if (fotoUser.value != null) {
-      var picture = await http.MultipartFile.fromPath('file', file.toString(),
-          contentType: MediaType('image', 'png'));
-      request.files.add(picture);
-      // }
-      var response = await request.send();
-      final respStr = await response.stream.bytesToString();
-      final res = jsonDecode(respStr.toString());
+    var response = await request.send();
+    final respStr = await response.stream.bytesToString();
+    final res = jsonDecode(respStr.toString());
 
-
-      if (res['status'] == true) {
-        employeDetail();
-        box.write("face_recog", true);
-        gagalAbsen.value = gagalAbsen.value;
-
-        // Get.back();
-        Navigator.push(
-          Get.context!,
-          MaterialPageRoute(builder: (context) => BerhasilRegistration()),
+    if (res['similar'] == true) {
+      try {
+        var dataUser = AppData.informasiUser;
+        var getEmpId = dataUser![0].em_id;
+        Map<String, String> headers = {
+          'Authorization': Api.basicAuth,
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        };
+        Map<String, String> body = {
+          'em_id': getEmpId.toString(),
+          'width': decodedImage.width.toString(),
+          'height': decodedImage.height.toString()
+        };
+        var request = http.MultipartRequest(
+          "POST",
+          Uri.parse(Api.basicUrl +
+              "edit_face?database=${AppData.selectedDatabase.toString()}"),
         );
-      } else {
-        // Get.back();
-        UtilsAlert.showToast(res['message']);
+        request.fields.addAll(body);
+        request.headers.addAll(headers);
+        // if (fotoUser.value != null) {
+        var picture = await http.MultipartFile.fromPath('file', file.toString(),
+            contentType: MediaType('image', 'png'));
+        request.files.add(picture);
+        // }
+        var response = await request.send();
+        final respStr = await response.stream.bytesToString();
+        final res = jsonDecode(respStr.toString());
+
+        if (res['status'] == true) {
+          employeDetail();
+          box.write("face_recog", true);
+          gagalAbsen.value = gagalAbsen.value;
+
+          // Get.back();
+          Navigator.push(
+            Get.context!,
+            MaterialPageRoute(builder: (context) => BerhasilRegistration()),
+          );
+        } else {
+          // Get.back();
+          UtilsAlert.showToast(res['message']);
+        }
+      } on Exception catch (e) {
+        print(e.toString());
+        Get.back();
+        UtilsAlert.showToast(e.toString());
+        throw e;
       }
-    } on Exception catch (e) {
-      print(e.toString());
+    } else {
       Get.back();
-      UtilsAlert.showToast(e.toString());
-      throw e;
-    }
-
-    
-    
-    
-    }else{
-       Get.back();
       UtilsAlert.showToast(res['message']);
-
-
-
-
     }
-
-   
-
-
- 
   }
 
   void detection({file, type, status}) async {
-
     employeDetail();
     var bytes = File(file).readAsBytesSync();
     base64fotoUser.value = base64Encode(bytes);
@@ -629,16 +612,16 @@ class AbsenController extends GetxController {
         'Authorization': Api.basicAuth,
         'Content-type': 'application/json',
         'Accept': 'application/json',
-        'token':Api.token
+        'token': Api.token
       };
       var request = http.MultipartRequest(
         "POST",
         Uri.parse(Api.luxand),
       );
 
-    
       request.headers.addAll(headers);
-      File file1=await urlToFile("${Api.urlFileRecog}${GetStorage().read('file_face')}");
+      File file1 = await urlToFile(
+          "${Api.urlFileRecog}${GetStorage().read('file_face')}");
 
       // if (fotoUser.value != null) {
       var picture = await http.MultipartFile.fromPath('face1', file,
@@ -646,78 +629,71 @@ class AbsenController extends GetxController {
       var picture1 = await http.MultipartFile.fromPath('face2', file1.path,
           contentType: MediaType('image', 'png'));
       request.files.add(picture);
-         request.files.add(picture1);
+      request.files.add(picture1);
       //  }
       var response = await request.send();
       final respStr = await response.stream.bytesToString();
       final res = jsonDecode(respStr.toString());
-   
-   
 
       if (response.statusCode == 200) {
-        if (res['similar']==true){
-           absenSuccess.value = "1";
+        if (res['similar'] == true) {
+          absenSuccess.value = "1";
 
-        // // absenSelfie();
-        timeString.value = formatDateTime(DateTime.now());
-        dateNow.value = dateNoww(DateTime.now());
-        tanggalUserFoto.value = dateNoww2(DateTime.now());
-        imageStatus.refresh();
-        timeString.refresh();
-        dateNow.refresh();
-        getPosisition();
+          // // absenSelfie();
+          timeString.value = formatDateTime(DateTime.now());
+          dateNow.value = dateNoww(DateTime.now());
+          tanggalUserFoto.value = dateNoww2(DateTime.now());
+          imageStatus.refresh();
+          timeString.refresh();
+          dateNow.refresh();
+          getPosisition();
 
-        // Get.to(AbsenMasukKeluar(
-        //   status: status,
-        //   type: type.toString(),
-        // ));
+          // Get.to(AbsenMasukKeluar(
+          //   status: status,
+          //   type: type.toString(),
+          // ));
 
-        gagalAbsen.value = 0;
+          gagalAbsen.value = 0;
 
-        // Navigator.push(
-        //   Get.context!,
-        //   MaterialPageRoute(
-        //       builder: (context) => AbsenMasukKeluar(
-        //             status: status,
-        //             // type: type.toString(),
-        //           )),
-        // );
+          // Navigator.push(
+          //   Get.context!,
+          //   MaterialPageRoute(
+          //       builder: (context) => AbsenMasukKeluar(
+          //             status: status,
+          //             // type: type.toString(),
+          //           )),
+          // );
 
-        // UtilsAlert.showToast(res['message']);
-      } else {
-        absenSuccess.value = "0";
+          // UtilsAlert.showToast(res['message']);
+        } else {
+          absenSuccess.value = "0";
 
-        gagalAbsen.value = gagalAbsen.value + 1;
+          gagalAbsen.value = gagalAbsen.value + 1;
 
-        // UtilsAlert.showToast(res['message']);
-        // print("status ${titleAbsen.value}");
-        // if (gagalAbsen.value >= 3) {
-        //   Get.back();
-        //   Get.to(AbsenVrifyPassword(
-        //     status: status,
-        //     type: type.toString(),
-        //   ));
-        // } else {
-        //   Get.back();
-        //   Get.back();
-        //   print("titleAbsen.value");
+          // UtilsAlert.showToast(res['message']);
+          // print("status ${titleAbsen.value}");
+          // if (gagalAbsen.value >= 3) {
+          //   Get.back();
+          //   Get.to(AbsenVrifyPassword(
+          //     status: status,
+          //     type: type.toString(),
+          //   ));
+          // } else {
+          //   Get.back();
+          //   Get.back();
+          //   print("titleAbsen.value");
 
-        //   // facedDetection(
-        //   //   absenStatus: status,
-        //   //   status: "detection",
-        //   //   type: type.toString(),
-        //   // );
-        //   // Get.to(FaceDetectorView(
-        //   //   status: status == "masuk" ? "masuk" : "keluar",
-        //   // ));
-        // }
-
+          //   // facedDetection(
+          //   //   absenStatus: status,
+          //   //   status: "detection",
+          //   //   type: type.toString(),
+          //   // );
+          //   // Get.to(FaceDetectorView(
+          //   //   status: status == "masuk" ? "masuk" : "keluar",
+          //   // ));
+          // }
         }
-        
-       
-      }else{
-
-      }
+      } else {}
     } on Exception catch (e) {
       print(e.toString());
       Get.back();
@@ -728,21 +704,21 @@ class AbsenController extends GetxController {
 
   Future<File> urlToFile(String imageUrl) async {
 // generate random number.
-var rng = new Random();
+    var rng = new Random();
 // get temporary directory of device.
-Directory tempDir = await getTemporaryDirectory();
+    Directory tempDir = await getTemporaryDirectory();
 // get temporary path from temporary directory.
-String tempPath = tempDir.path;
+    String tempPath = tempDir.path;
 // create a new file in temporary path with random file name.
-File file = new File('$tempPath'+ (rng.nextInt(100)).toString() +'.png');
+    File file = new File('$tempPath' + (rng.nextInt(100)).toString() + '.png');
 // call http.get method and pass imageUrl into it to get response.
-http.Response response = await http.get(Uri.parse(imageUrl));
+    http.Response response = await http.get(Uri.parse(imageUrl));
 // write bodyBytes received in response to file.
-await file.writeAsBytes(response.bodyBytes);
-// now return the file which is created with random name in 
+    await file.writeAsBytes(response.bodyBytes);
+// now return the file which is created with random name in
 // temporary directory and image bytes from response is written to // that file.
-return file;
-}
+    return file;
+  }
 
   String formatDateTime(DateTime dateTime) {
     return DateFormat('HH:mm:ss').format(dateTime);
@@ -801,8 +777,7 @@ return file;
           var latLangAbsen = "${latUser.value},${langUser.value}";
           var dataUser = AppData.informasiUser;
           var getEmpId = dataUser![0].em_id;
-          var getSettingAppSaveImageAbsen =
-              "1";
+          var getSettingAppSaveImageAbsen = "1";
           var validasiGambar =
               getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
           if (typeAbsen.value == 1) {
@@ -862,8 +837,9 @@ return file;
         var latLangAbsen = "${latUser.value},${langUser.value}";
         var dataUser = AppData.informasiUser;
         var getEmpId = dataUser![0].em_id;
-        var getSettingAppSaveImageAbsen =
-            settingAppInfo.value![0].saveimage_attend;
+        // var getSettingAppSaveImageAbsen =
+        //     settingAppInfo.value![0].saveimage_attend;
+        var getSettingAppSaveImageAbsen = "1";
         var validasiGambar =
             getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
         if (typeAbsen.value == 1) {
@@ -2071,7 +2047,8 @@ return file;
     // });
   }
 
-  void employeDetail() { print("load detail employee");
+  void employeDetail() {
+    print("load detail employee");
     // UtilsAlert.showLoadingIndicator(Get.context!);
     var dataUser = AppData.informasiUser;
     final box = GetStorage();
@@ -2116,7 +2093,7 @@ return file;
   }
 
   void employeDetaiBpjs() {
-     print("load detal bpjs");
+    print("load detal bpjs");
     // UtilsAlert.showLoadingIndicator(Get.context!);
     var dataUser = AppData.informasiUser;
     final box = GetStorage();

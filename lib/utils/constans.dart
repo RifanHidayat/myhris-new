@@ -18,22 +18,20 @@ class Constanst {
   static Color colorText2 = Color(0xff868FA0);
   static Color colorText3 = Color(0xff333B4A);
   static Color colorText4 = HexColor('#333B4A');
-    static Color border = HexColor('#CBD5E0');
+  static Color border = HexColor('#CBD5E0');
   static Color Secondary = HexColor('#68778D');
-  static Color blackSurface= HexColor('#202327');
-
-
+  static Color blackSurface = HexColor('#202327');
 
   static Color colorNonAktif = Color(0xffD5DBE5);
-  // static Color colorButton1 = Color(0xff001767);
-  static Color colorButton1 = HexColor('#14A494');
+ static Color colorButton1 = Color(0xff001767);
+//  static Color colorButton1 = HexColor('#14A494');
 
   static Color colorButton2 = Color(0xffE9F5FE);
-  // static Color colorButton3 = Color(0xffE1E9FA);
-  static Color colorButton3 = HexColor('#DFFFF0');
+   static Color colorButton3 = Color(0xffE1E9FA);
+  //static Color colorButton3 = HexColor('#DFFFF0');
 
-  // static Color colorPrimary = Color(0xff001767);
-  static Color colorPrimary = HexColor('#14A494');
+  static Color colorPrimary = Color(0xff001767);
+  // static Color colorPrimary = HexColor('#14A494');
   static Color colorPrimaryLight = HexColor('#CEFAE5');
 
   // static Color color1 = Color(0xffBCC2CE);
@@ -217,5 +215,4 @@ class Constanst {
   //     offset: Offset(1, 1), // changes position of shadow
   //   ),
   // ],
-
 }

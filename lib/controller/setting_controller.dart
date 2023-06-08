@@ -92,7 +92,7 @@ class SettingController extends GetxController {
             style: 1,
             buttonStatus: 1,
             positiveBtnPressed: () {
-              AppData.isLogin=false;
+              AppData.isLogin = false;
               UtilsAlert.loadingSimpanData(context, "Tunggu Sebentar...");
               aksiEditLastLogin();
             },
@@ -236,6 +236,14 @@ class SettingController extends GetxController {
         this.statusLoadingSubmitLaporan.refresh();
         this.infoEmployee.refresh();
       }
+    }).catchError((e) {
+      statusLoadingSubmitLaporan.value = false;
+      jumlahData.value = 0;
+      this.jumlahData.refresh();
+
+      this.loading.refresh();
+      this.statusLoadingSubmitLaporan.refresh();
+      this.infoEmployee.refresh();
     });
   }
 
@@ -308,9 +316,9 @@ class SettingController extends GetxController {
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
-          listPusatBantuan.value=valueBody['data'];
+          listPusatBantuan.value = valueBody['data'];
           listPusatBantuan.forEach((element) {
-            element['status']=false;
+            element['status'] = false;
           });
           // for (var element in valueBody['data']) {
           //   var data = {
@@ -589,9 +597,6 @@ class SettingController extends GetxController {
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
 
-    
-
-
     Map<String, dynamic> body = {
       'em_id': getEmid,
       'created_by': getEmid,
@@ -599,7 +604,7 @@ class SettingController extends GetxController {
       'menu_name': "Setting Profile",
       'activity_name': "Mengganti foto profile",
     };
-print(body);
+    print(body);
 
     var connect = Api.connectionApi("post", body, "edit_foto_user");
     connect.then((dynamic res) {
@@ -698,6 +703,7 @@ print(body);
                                   listDepartement.value[index]['name'];
                               return InkWell(
                                 onTap: () {
+                                  print("tes");
                                   idDepartemenTerpilih.value = id;
                                   namaDepartemenTerpilih.value = dep_name;
                                   departemen.value.text =
