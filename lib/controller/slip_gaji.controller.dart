@@ -55,13 +55,16 @@ class SlipGajiController extends GetxController {
     Map<String, dynamic> body = {
       'tahun': tahun.value,
       'em_id': id.toString(),
+   
     };
 
     var connect = Api.connectionApi("post", body, "slip_gaji");
     try {
       connect.then((dynamic res) {
+       
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
+          print(valueBody);
           if (valueBody['status'] == true) {
             List pendapatanList = valueBody['data_pendapatan'];
             List pemotongList =
@@ -148,11 +151,14 @@ class SlipGajiController extends GetxController {
     try {
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
+          if (res['status']==true){
+                      var valueBody = jsonDecode(res.body);
           List pendapatanList = valueBody['data_pendapatan'];
           List pemotongList =
               valueBody['data_pemotongan']; // dataPendapatan.value =
           index = 0;
+
+         
           month.forEach((element) {
             var pendapatan =
                 pendapatanList.where((item) => item[element] != "0").toList();
@@ -205,6 +211,13 @@ class SlipGajiController extends GetxController {
               .where((element) => element.amount != 0)
               .toList();
           isLoading.value = false;
+
+          }else{
+               isLoading.value = false;
+
+
+          }
+
         }
       });
     } catch (e) {

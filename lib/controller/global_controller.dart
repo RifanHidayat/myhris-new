@@ -43,6 +43,7 @@ class GlobalController extends GetxController {
         statusPersetujuan = "${element['name']}";
       }
     }
+    print("status persetujuan ${statusPersetujuan}");
     valuePolaPersetujuan.value = statusPersetujuan;
     this.valuePolaPersetujuan.refresh();
     print("di kontroller global ${valuePolaPersetujuan.value}");
@@ -55,6 +56,7 @@ class GlobalController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
+        print("data atasan ${data}");
         var seen = Set<String>();
         List filter =
             data.where((atasan) => seen.add(atasan['full_name'])).toList();

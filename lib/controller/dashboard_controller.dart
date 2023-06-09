@@ -34,6 +34,7 @@ import 'package:siscom_operasional/screen/kandidat/list_kandidat.dart';
 import 'package:siscom_operasional/screen/klaim/form_klaim.dart';
 import 'package:siscom_operasional/screen/klaim/riwayat_klaim.dart';
 import 'package:siscom_operasional/screen/slip_gaji/slip_gaji.dart';
+import 'package:siscom_operasional/screen/verify_password_payroll.dart';
 import 'package:siscom_operasional/services/request.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
@@ -582,14 +583,17 @@ class DashboardController extends GetxController {
         Get.offAll(Kandidat());
       }
     } else if (url == "SlipGaji") {
-      Get.to(SlipGaji());
+      print('e');
+      Get.to(VerifyPasswordPayroll(page:SlipGaji() ,));
+   
     } else if (url == "BpjsKesehatan") {
       if (bpjsController.bpjsKesehatanNumber.value == "" ||
           bpjsController.bpjsKesehatanNumber.value == null) {
         UtilsAlert.showToast(
             "Nomor BPJS anda belum tersedia,harap hubungi HRD");
       } else {
-        Get.to(BpjsKesehatan());
+        Get.to(VerifyPasswordPayroll(page:BpjsKesehatan() ,));
+        
       }
     } else if (url == "BpjsTenagaKerja") {
       if (bpjsController.BpjsKetenagakerjaanNumber.value == "" ||
@@ -597,7 +601,8 @@ class DashboardController extends GetxController {
         UtilsAlert.showToast(
             "Nomor BPJS anda belum tersedia,harap hubungi HRD");
       } else {
-        Get.to(BpjsKetenagakerjaan());
+          Get.to( VerifyPasswordPayroll(page:BpjsKetenagakerjaan() ,));
+       
       }
     } else if (url == "lainnya") {
       widgetButtomSheetMenuLebihDetail();

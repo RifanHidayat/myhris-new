@@ -35,11 +35,12 @@ class SlipGaji extends StatelessWidget {
           children: [
             //heeader
             Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/bg_header_slip_gaji.png"),
-                  fit: BoxFit.cover,
-                ),
+              decoration:  BoxDecoration(
+                color:Constanst.colorPrimary
+                // image: DecorationImage(
+                //   image: AssetImage("assets/bg_header_slip_gaji.png"),
+                //   fit: BoxFit.cover,
+                // ),
               ),
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(24),

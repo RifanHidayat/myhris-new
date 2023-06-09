@@ -115,17 +115,17 @@ class _SettingState extends State<Setting> {
                                         left: 8, right: 5, top: 0),
                                     child: faceRegistration(),
                                   ),
-                                  Text(
-                                    "Lainnya",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: Constanst.colorText1),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 8, right: 5, top: 15),
-                                    child: lineLainnya(),
-                                  ),
+                                  // Text(
+                                  //   "Lainnya",
+                                  //   style: TextStyle(
+                                  //       fontSize: 14,
+                                  //       color: Constanst.colorText1),
+                                  // ),
+                                  // Padding(
+                                  //   padding: EdgeInsets.only(
+                                  //       left: 8, right: 5, top: 15),
+                                  //   child: lineLainnya(),
+                                  // ),
                                   TextButton(
                                     style: ButtonStyle(
                                         backgroundColor:

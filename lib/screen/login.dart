@@ -351,7 +351,7 @@ class Login extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextApp.label(
-                          text: "Pilih Perushaann",
+                          text: "Pilih Perusahaan",
                           weigh: FontWeight.bold,
                           size: 14.0),
                       InkWell(onTap: () => Get.back(), child: Icon(Icons.close))
