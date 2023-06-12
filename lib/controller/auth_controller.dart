@@ -148,7 +148,7 @@ class AuthController extends GetxController {
           getAktif = "${element['status_aktif']}";
           AppData.isLogin=true;
           print(element.toString());
-          checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), element['em_id']);
+        
         }
 
         print("las login user ${lastLoginUser}");
@@ -157,8 +157,10 @@ class AuthController extends GetxController {
               lastLoginUser == "null" ||
               lastLoginUser == null ||
               lastLoginUser == "0000-00-00 00:00:00") {
-            print("sampe sini");
+         
             fillLastLoginUser(getEmId, getData);
+              checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
+          
           } else {
             var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
             var dateNow = DateTime.now();
@@ -166,6 +168,7 @@ class AuthController extends GetxController {
             if (convert != filterLastLogin) {
               print("sampe sini 2");
               fillLastLoginUser(getEmId, getData);
+                checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
             } else {
               
               UtilsAlert.showToast("Anda telah masuk di perangkat lain");

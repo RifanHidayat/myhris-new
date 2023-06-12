@@ -1375,6 +1375,7 @@ class _DashboardState extends State<Dashboard> {
 
     controller.initData();
     controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
+    absenControllre.getTimeNow();
   }
 
   void _checkversion() async {

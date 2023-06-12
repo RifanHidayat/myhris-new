@@ -80,6 +80,30 @@ class OnboardController extends GetxController {
       }
     });
   }
+    void validasiUser1() {
+
+    var dataUser = AppData.informasiUser;
+    print(dataUser);
+    var getEmid = dataUser![0].em_id;
+
+    Map<String, dynamic> body = {'em_id': getEmid};
+    var connect = Api.connectionApi("post", body, "refresh_employee");
+
+    connect.then((dynamic res) {
+      var valueBody = jsonDecode(res.body);
+      print("body ${valueBody}");
+
+      if (valueBody['status'] == true) {
+        var dateNow = DateTime.now();
+        var convert = DateFormat('yyyy-MM-dd').format(dateNow);
+
+        checkAbsenUser(convert, getEmid);
+      } else {
+        // AppData.informasiUser = null;
+        // Get.offAll(Login());
+      }
+    });
+  }
 
   void checkAbsenUser(convert, getEmid) async {
     Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
