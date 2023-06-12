@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -16,8 +18,10 @@ import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
+import 'package:siscom_operasional/screen/absen/camera_view.dart';
 import 'package:siscom_operasional/screen/absen/face_id_registration.dart';
 import 'package:siscom_operasional/screen/absen/facee_id_detection.dart';
+import 'package:siscom_operasional/screen/absen/loading_absen.dart';
 import 'package:siscom_operasional/screen/akun/personal_info.dart';
 import 'package:siscom_operasional/screen/informasi.dart';
 import 'package:siscom_operasional/screen/pesan/pesan.dart';
@@ -57,8 +61,6 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +89,7 @@ class _DashboardState extends State<Dashboard> {
                       height: 40,
                     ),
                     Text(
-                      AppData.selectedPerusahan.toString(),
+                      AppData.informasiUser![0].branchName,
                       style: TextStyle(color: Colors.white),
                     ),
                     SizedBox(
@@ -382,19 +384,18 @@ class _DashboardState extends State<Dashboard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                         Text(
-                            "${AppData.informasiUser![0].full_name ?? ""}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold),
-                          ),
+                        Text(
+                          "${AppData.informasiUser![0].full_name ?? ""}",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
                         SizedBox(
                           height: 5,
                         ),
                         Text(
-                          "${AppData.informasiUser![0].emp_jobTitle
-                           ?? ""} - ${AppData.informasiUser![0].posisi ?? ""}",
+                          "${AppData.informasiUser![0].emp_jobTitle ?? ""} - ${AppData.informasiUser![0].posisi ?? ""}",
                           style: TextStyle(color: Colors.white, fontSize: 12),
                         ),
                       ],
@@ -590,20 +591,21 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       child: TextButtonWidget2(
                           title: "Absen Masuk",
-                          onTap: () {
+                          onTap: () async {
                             if (controllerAbsensi.absenStatus.value == true) {
                               UtilsAlert.showToast(
                                   "Anda harus absen keluar terlebih dahulu");
                             } else {
                               var dataUser = AppData.informasiUser;
                               var faceRecog = dataUser![0].face_recog;
-                              print("facee recog ${GetStorage().read('face_recog')}");
+                              print(
+                                  "facee recog ${GetStorage().read('face_recog')}");
                               if (GetStorage().read('face_recog') == true) {
                                 print("masuk sini");
                                 var statusCamera = Permission.camera.status;
                                 statusCamera.then((value) {
                                   var statusLokasi = Permission.location.status;
-                                  statusLokasi.then((value2) {
+                                  statusLokasi.then((value2) async {
                                     if (value != PermissionStatus.granted ||
                                         value2 != PermissionStatus.granted) {
                                       UtilsAlert.showToast(
@@ -627,9 +629,42 @@ class _DashboardState extends State<Dashboard> {
                                             "Absen masuk";
 
                                         controllerAbsensi.typeAbsen.value = 1;
+
+                                        //begin image picker
+                                        // final getFoto = await ImagePicker()
+                                        //     .pickImage(
+                                        //         source: ImageSource.camera,
+                                        //         preferredCameraDevice:
+                                        //             CameraDevice.front,
+                                        //         imageQuality: 100,
+                                        //         maxHeight: 350,
+                                        //         maxWidth: 350);
+                                        // if (getFoto == null) {
+                                        //   UtilsAlert.showToast(
+                                        //       "Gagal mengambil gambar");
+                                        // } else {
+                                        //   // controllerAbsensi.facedDetection(
+                                        //   //     status: "registration",
+                                        //   //     absenStatus: "Absen Masuk",
+                                        //   //     img: getFoto.path,
+                                        //   //     type: "1");
+                                        //   Get.to(LoadingAbsen(
+                                        //     file: getFoto.path,
+                                        //     status: "detection",
+                                        //     statusAbsen: 'masuk',
+                                        //   ));
+                                        //   // Get.to(FaceidRegistration(
+                                        //   //   status: "registration",
+                                        //   // ));
+                                        // }
+                                        //end image picker
+
+                                        //begin face recognition
                                         Get.to(FaceDetectorView(
                                           status: "masuk",
                                         ));
+                                        //end begin face recogniton
+
                                         // // controllerAbsensi.getPlaceCoordinate();
                                         // ;
                                         // controllerAbsensi.facedDetection(
@@ -695,6 +730,35 @@ class _DashboardState extends State<Dashboard> {
                                 controllerAbsensi.titleAbsen.value =
                                     "Absen Keluar";
                                 controllerAbsensi.typeAbsen.value = 2;
+
+                                  //begin image picker
+                                        // final getFoto = await ImagePicker()
+                                        //     .pickImage(
+                                        //         source: ImageSource.camera,
+                                        //         preferredCameraDevice:
+                                        //             CameraDevice.front,
+                                        //         imageQuality: 100,
+                                        //         maxHeight: 350,
+                                        //         maxWidth: 350);
+                                        // if (getFoto == null) {
+                                        //   UtilsAlert.showToast(
+                                        //       "Gagal mengambil gambar");
+                                        // } else {
+                                        //   // controllerAbsensi.facedDetection(
+                                        //   //     status: "registration",
+                                        //   //     absenStatus: "Absen Masuk",
+                                        //   //     img: getFoto.path,
+                                        //   //     type: "1");
+                                        //   Get.to(LoadingAbsen(
+                                        //     file: getFoto.path,
+                                        //     status: "detection",
+                                        //     statusAbsen: 'keluar',
+                                        //   ));
+                                        //   // Get.to(FaceidRegistration(
+                                        //   //   status: "registration",
+                                        //   // ));
+                                        // }
+                                        //end image picker
 
                                 Get.to(FaceDetectorView(
                                   status: "keluar",
@@ -902,7 +966,9 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget listModul() {
-    var modul=controller.menuShowInMain.value.where((element) => element['menu'].length>0).toList();
+    var modul = controller.menuShowInMain.value
+        .where((element) => element['menu'].length > 0)
+        .toList();
     return SizedBox(
       height: 30,
       child: ListView.builder(
@@ -910,16 +976,14 @@ class _DashboardState extends State<Dashboard> {
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
             return InkWell(
-              onTap: () => controller.changePageModul(
-                  modul[index]['index']),
+              onTap: () => controller.changePageModul(modul[index]['index']),
               child: Container(
                 padding: EdgeInsets.only(left: 8, right: 8),
                 margin: EdgeInsets.only(left: 8, right: 8),
                 decoration: BoxDecoration(
-                  color:
-                      modul[index]['status'] == false
-                          ? Colors.transparent
-                          : Constanst.colorButton3,
+                  color: modul[index]['status'] == false
+                      ? Colors.transparent
+                      : Constanst.colorButton3,
                   borderRadius: Constanst.borderStyle3,
                 ),
                 child: Center(
@@ -929,9 +993,7 @@ class _DashboardState extends State<Dashboard> {
                       modul[index]['nama_modul'],
                       style: TextStyle(
                           fontSize: 12,
-                          color: modul[index]
-                                      ['status'] ==
-                                  false
+                          color: modul[index]['status'] == false
                               ? Constanst.colorText1
                               : Constanst.colorPrimary,
                           fontWeight: FontWeight.bold),
@@ -1312,10 +1374,10 @@ class _DashboardState extends State<Dashboard> {
     controllerAbsensi.employeDetail();
 
     controller.initData();
+    controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
   }
 
   void _checkversion() async {
-
     final newVersion = NewVersionPlus(
       androidId: 'com.siscom.siscomhris',
     );

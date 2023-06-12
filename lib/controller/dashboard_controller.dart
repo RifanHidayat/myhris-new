@@ -112,6 +112,43 @@ class DashboardController extends GetxController {
     checkHakAkses();
   }
 
+  void checkAbsenUser(convert, getEmid) async {
+    Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
+    print(body);
+
+    var connect = Api.connectionApi("post", body, "view_last_absen_user");
+    var value = await connect;
+    var valueBody = jsonDecode(value.body);
+    print("view last absen ${valueBody}");
+
+    List data = valueBody['data'];
+
+    print('data response $valueBody');
+    if (data.isEmpty) {
+      AppData.statusAbsen = false;
+
+      // Future.delayed(Duration.zero, () {});
+    } else {
+      var tanggalTerakhirAbsen = data[0]['atten_date'];
+      if (tanggalTerakhirAbsen == convert) {
+        // print("siggin time ${data[0]['sign_time']}");
+        AppData.statusAbsen =
+            data[0]['signout_time'] == "00:00:00" ? true : false;
+      } else {
+        AppData.statusAbsen = false;
+      }
+    }
+
+    // conne.then((dynamic res) {
+    //   if (res.statusCode == 200) {
+    //     var valueBody = jsonDecode(res.body);
+
+    //     print("value body ${valueBody}");
+
+    //   }
+    // });
+  }
+
   void kirimNotification({
     title,
     body,
@@ -584,16 +621,18 @@ class DashboardController extends GetxController {
       }
     } else if (url == "SlipGaji") {
       print('e');
-      Get.to(VerifyPasswordPayroll(page:SlipGaji() ,));
-   
+      Get.to(VerifyPasswordPayroll(
+        page: SlipGaji(),
+      ));
     } else if (url == "BpjsKesehatan") {
       if (bpjsController.bpjsKesehatanNumber.value == "" ||
           bpjsController.bpjsKesehatanNumber.value == null) {
         UtilsAlert.showToast(
             "Nomor BPJS anda belum tersedia,harap hubungi HRD");
       } else {
-        Get.to(VerifyPasswordPayroll(page:BpjsKesehatan() ,));
-        
+        Get.to(VerifyPasswordPayroll(
+          page: BpjsKesehatan(),
+        ));
       }
     } else if (url == "BpjsTenagaKerja") {
       if (bpjsController.BpjsKetenagakerjaanNumber.value == "" ||
@@ -601,8 +640,9 @@ class DashboardController extends GetxController {
         UtilsAlert.showToast(
             "Nomor BPJS anda belum tersedia,harap hubungi HRD");
       } else {
-          Get.to( VerifyPasswordPayroll(page:BpjsKetenagakerjaan() ,));
-       
+        Get.to(VerifyPasswordPayroll(
+          page: BpjsKetenagakerjaan(),
+        ));
       }
     } else if (url == "lainnya") {
       widgetButtomSheetMenuLebihDetail();

@@ -4,7 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_mlkit_commons/google_mlkit_commons.dart';
+// import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,7 +26,7 @@ class CameraViewRegister extends StatefulWidget {
       required this.title,
       required this.customPaint,
       this.text,
-      required this.onImage,
+      // required this.onImage,
       this.onScreenModeChanged,
       this.status,
       required this.percentIndicator,
@@ -38,7 +38,7 @@ class CameraViewRegister extends StatefulWidget {
   final double percentIndicator;
   final CustomPaint? customPaint;
   final String? text;
-  final Function(InputImage inputImage) onImage;
+  // final Function(InputImage inputImage) onImage;
   final Function(ScreenMode mode)? onScreenModeChanged;
   final CameraLensDirection initialDirection;
   late Future<void> _initializeControllerFuture;
@@ -67,6 +67,7 @@ class _CameraViewState extends State<CameraViewRegister> {
 
   @override
   void initState() {
+  
     super.initState();
 
     _imagePicker = ImagePicker();
@@ -400,8 +401,8 @@ class _CameraViewState extends State<CameraViewRegister> {
     });
 
     _path = path;
-    final inputImage = InputImage.fromFilePath(path);
-    widget.onImage(inputImage);
+    // final inputImage = InputImage.fromFilePath(path);
+    // widget.onImage(inputImage);
   }
 
   // Future _processCameraImage(CameraImage image) async {

@@ -131,6 +131,7 @@ class AuthController extends GetxController {
             em_control_acess: element['em_control_access'] ?? 0,
             emp_att_working: element['emp_att_working'] ?? 0,
             em_hak_akses: element['em_hak_akses'] ?? "",
+            branchName: element['branch_name']??""
           );
 
         
@@ -180,6 +181,8 @@ class AuthController extends GetxController {
 
   void fillLastLoginUser(getEmId, getData) {
     var now = DateTime.now();
+    
+    
     var jam = "${DateFormat('yyyy-MM-dd HH:mm:ss').format(now)}";
     Map<String, dynamic> body = {'last_login': jam, 'em_id': getEmId,'database':AppData.selectedDatabase};
     var connect = Api.connectionApi("post", body, "edit_last_login");
@@ -190,16 +193,18 @@ class AuthController extends GetxController {
         if (valueBody['status'] == true) {
           var dateNow = DateTime.now();
           var convert = DateFormat('yyyy-MM-dd').format(dateNow);
+             checkAbsenUser(convert, getEmId);
           AppData.emailUser = email.value.text;
           AppData.passwordUser = password.value.text;
           AppData.informasiUser = getData;
-          checkAbsenUser(convert, getEmId);
+       
         }
       }
     });
   }
 
   void checkAbsenUser(convert, getEmid) {
+    print("view last absen user");
     Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid,'database':AppData.selectedDatabase};
     var connect = Api.connectionApi("post", body, "view_last_absen_user");
     

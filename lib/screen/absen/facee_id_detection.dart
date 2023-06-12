@@ -71,6 +71,7 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
 
   Future<void> processImage(InputImage inputImage) async {
     try {
+     
       if (!_canProcess) return;
       if (_isBusy) return;
       _isBusy = true;

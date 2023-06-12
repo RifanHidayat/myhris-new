@@ -22,6 +22,7 @@ var  em_status;
   var  emp_att_working;
   var em_hak_akses;
   var face_recog;
+  var branchName;
 
   UserModel(
       {this.em_id,
@@ -44,6 +45,7 @@ var  em_status;
       this.em_control_acess,
       this.emp_att_working,
       this.face_recog,
+      this.branchName,
       this.em_hak_akses});
 
   Map<String, dynamic> toMap() {
@@ -68,7 +70,8 @@ var  em_status;
       'em_control_acess': em_control_acess,
       'emp_att_working': emp_att_working,
       'em_hak_akses': em_hak_akses,
-      'face_recog': face_recog
+      'face_recog': face_recog,
+      'branch_name':branchName
     };
   }
 
@@ -94,6 +97,7 @@ var  em_status;
         em_control_acess: map['em_control_acess'],
         emp_att_working: map['emp_att_working'],
         face_recog: map['face_recog'],
+        branchName: map['branch_name'],
         em_hak_akses: map['em_hak_akses']);
   }
 

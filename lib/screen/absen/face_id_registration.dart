@@ -51,9 +51,9 @@ class _FaceidRegistrationState extends State<FaceidRegistration> {
       customPaint: _customPaint,
       status: widget.status,
       text: _text,
-      onImage: (inputImage) {
-        print('on image');
-      },
+      // onImage: (inputImage) {
+      //   print('on image');
+      // },
       initialDirection: CameraLensDirection.front,
     );
   }

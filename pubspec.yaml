@@ -77,7 +77,8 @@ dependencies:
   
   geolocator: ^9.0.2
 
-  camera: ^0.9.4+21
+  # camera: ^0.9.4+21
+  camera: ^0.10.5+2
   trust_location: ^2.0.13
   modal_bottom_sheet: ^2.0.0
   cached_network_image: ^3.2.1
