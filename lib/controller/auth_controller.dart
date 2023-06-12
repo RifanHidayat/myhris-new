@@ -148,6 +148,7 @@ class AuthController extends GetxController {
           getAktif = "${element['status_aktif']}";
           AppData.isLogin=true;
           print(element.toString());
+          checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), element['em_id']);
         }
 
         print("las login user ${lastLoginUser}");
