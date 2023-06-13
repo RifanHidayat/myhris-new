@@ -6,6 +6,9 @@ class Constanst {
   static double defaultMarginPadding = 16.0;
   static double sizeTitle = 16.0;
   static double sizeText = 14.0;
+    static Color greyLight300 = Color(0xffBCC2CE);
+  static Color greyLight100 = Color(0xffE9EDF5);
+  static Color greyLight50 = Color(0xffF8FAFF);
   // static Color coloBackgroundScreen = Color(0xffF8FAFF);
   static Color coloBackgroundScreen = Colors.white;
   static Color colorWhite = Colors.white;

@@ -89,7 +89,7 @@ class _DashboardState extends State<Dashboard> {
                       height: 40,
                     ),
                     Text(
-                      AppData.informasiUser![0].branchName,
+                      AppData.informasiUser![0].branchName.toString(),
                       style: TextStyle(color: Colors.white),
                     ),
                     SizedBox(

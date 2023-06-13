@@ -63,7 +63,7 @@ class DashboardController extends GetxController {
   var employeeTidakHadir = [].obs;
   var menuShowInMain = [].obs;
 
-  var menuShowInMaindetail = [].obs;
+ 
 
   var timeString = "".obs;
   var dateNow = "".obs;
@@ -104,7 +104,7 @@ class DashboardController extends GetxController {
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     getMenuDashboard();
     loadMenuShowInMain();
-    loadMenuShowInMainDetail();
+   
     getInformasiDashboard();
     getEmployeeBelumAbsen();
     timeString.value = formatDateTime(DateTime.now());
@@ -252,6 +252,7 @@ class DashboardController extends GetxController {
             em_control_acess: element['em_control_access'] ?? 0,
             emp_att_working: element['emp_att_working'] ?? 0,
             em_hak_akses: element['em_hak_akses'] ?? "",
+            branchName: element['branch_name']
           );
           print(element['posisi']);
           getData.add(data);
@@ -350,27 +351,7 @@ class DashboardController extends GetxController {
     });
   }
 
-    void loadMenuShowInMainDetail() {
-    menuShowInMaindetail.value.clear();
-    var connect = Api.connectionApi("get", {}, "menu_dashboard",
-        params: "&em_id=${AppData.informasiUser![0].em_id}");
-    connect.then((dynamic res) {
-      if (res == false) {
-        UtilsAlert.koneksiBuruk();
-      } else {
-      
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          var temporary = valueBody['data'];
-          temporary.firstWhere((element) => element['index'] == 0)['status'] =
-              true;
-                print("data menu ${valueBody['data']}");
 
-          menuShowInMaindetail.value = valueBody['data'];
-        }
-      }
-    });
-  }
 
   void getInformasiDashboard() async {
     var connect = await Api.connectionApi("get", {}, "notice");
@@ -1043,8 +1024,8 @@ class DashboardController extends GetxController {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(menuShowInMaindetail.length, (index) {
-                  var data = menuShowInMaindetail[index];
+                children: List.generate(menuShowInMain.length, (index) {
+                  var data = menuShowInMain[index];
                   return Padding(
                     padding: EdgeInsets.only(top: 5),
                     child: Column(

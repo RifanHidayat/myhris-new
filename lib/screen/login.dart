@@ -130,17 +130,46 @@ class Login extends StatelessWidget {
                                 if (controller.tempEmail.value.text ==
                                     controller.email.value.text) {
                                   if (controller.databases.isNotEmpty) {
-                                    showModalBottomSheet(
-                                      backgroundColor: Colors.transparent,
-                                      isScrollControlled: true,
-                                      context: context,
-                                      builder: (context) {
-                                        return FractionallySizedBox(
-                                            heightFactor: 0.6,
-                                            child: _bottomSheetBpjsDetail(
-                                                context));
-                                      },
-                                    );
+                                     controller.dataabse().then((value) {
+                                    if (value == true) {
+                                      showModalBottomSheet(
+                                        backgroundColor: Colors.transparent,
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (context) {
+                                          return FractionallySizedBox(
+                                              heightFactor: 0.6,
+                                              child: _bottomSheetBpjsDetail(
+                                                  context));
+                                        },
+                                      );
+                                    } else {
+                                      UtilsAlert.showToast(
+                                          "Database tidak tersedia");
+                                    }
+                                  });
+                                      // showModalBottomSheet(
+                                      //   backgroundColor: Colors.transparent,
+                                      //   isScrollControlled: true,
+                                      //   context: context,
+                                      //   builder: (context) {
+                                      //     return FractionallySizedBox(
+                                      //         heightFactor: 0.6,
+                                      //         child: _bottomSheetBpjsDetail(
+                                      //             context));
+                                      //   },
+                                      // );
+                                    // showModalBottomSheet(
+                                    //   backgroundColor: Colors.transparent,
+                                    //   isScrollControlled: true,
+                                    //   context: context,
+                                    //   builder: (context) {
+                                    //     return FractionallySizedBox(
+                                    //         heightFactor: 0.6,
+                                    //         child: _bottomSheetBpjsDetail(
+                                    //             context));
+                                    //   },
+                                    // );
                                   } else {
                                     UtilsAlert.showToast(
                                         "Database tidak tersedia");

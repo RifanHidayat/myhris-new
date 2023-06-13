@@ -22,6 +22,7 @@ import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
+import 'package:move_to_background/move_to_background.dart';
 
 class TabbController extends GetxController {
   var currentPage = 0.obs;
@@ -86,12 +87,15 @@ class TabbController extends GetxController {
             child: CustomDialog(
               // our custom dialog
               title: "Peringatan",
-              content: "Lagi proses tracking ,yaking mau keluar aplikasi?",
+              content: "Lagi proses tracking ,yakin mau keluar aplikasi?",
               positiveBtnText: "Keluar",
               negativeBtnText: "Kembali",
               style: 1,
               buttonStatus: 1,
-              positiveBtnPressed: () {
+              positiveBtnPressed: () async{
+                Get.back();
+                 MoveToBackground.moveTaskToBack();
+
                 //   MinimizeApp .minimizeApp();
                 // SystemNavigator.pop();
 

@@ -32,6 +32,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
   final panelController = PanelController();
   final controller = Get.put(AbsenController());
   final controllerDashboard = Get.put(DashboardController());
+   FocusNode myfocus = FocusNode();
 
   Completer<GoogleMapController> _controller = Completer();
 
@@ -48,6 +49,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    controller.deskripsiAbsen.clear();
     BitmapDescriptor.fromAssetImage(
       ImageConfiguration(size: Size(1, 1)),
       'assets/avatar_default.png',
@@ -630,29 +632,35 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                               ),
                               Expanded(
                                 flex: 90,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: Constanst.borderStyle2,
-                                      border: Border.all(
-                                          width: 1.0,
-                                          color: Color.fromARGB(
-                                              255, 211, 205, 205))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: TextField(
-                                      cursorColor: Colors.black,
-                                      controller: controller.deskripsiAbsen,
-                                      maxLines: null,
-                                      decoration: new InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: "Tambahkan Catatan"),
-                                      keyboardType: TextInputType.multiline,
-                                      textInputAction: TextInputAction.done,
-                                      style: TextStyle(
-                                          fontSize: 10.0,
-                                          height: 2.0,
-                                          color: Colors.black),
+                                child: InkWell(
+                                  onTap: (){
+                                       validasiButtonSheet();
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: Constanst.borderStyle2,
+                                        border: Border.all(
+                                            width: 1.0,
+                                            color: Color.fromARGB(
+                                                255, 211, 205, 205))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 8),
+                                      child: TextField(
+                                        enabled: false,
+                                        cursorColor: Colors.black,
+                                        controller: controller.deskripsiAbsen,
+                                        maxLines: null,
+                                        decoration: new InputDecoration(
+                                            border: InputBorder.none,
+                                            hintText: "Tambahkan Catatan"),
+                                        keyboardType: TextInputType.multiline,
+                                        textInputAction: TextInputAction.done,
+                                        style: TextStyle(
+                                            fontSize: 10.0,
+                                            height: 2.0,
+                                            color: Colors.black),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -698,6 +706,118 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
           ],
         ),
       ),
+    );
+  }
+
+   void validasiButtonSheet() {
+    showModalBottomSheet(
+      context: Get.context!,
+      isDismissible: false,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10.0),
+        ),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return Padding(
+            padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 90,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Tambahkan Catatan",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          )
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                        flex: 10,
+                        child: InkWell(
+                          onTap: () => Navigator.pop(Get.context!),
+                          child: Icon(
+                            Iconsax.close_circle,
+                            color: Colors.red,
+                          ),
+                        ))
+                  ],
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Divider(),
+                SizedBox(
+                  height: 14,
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: InkWell(
+                    onTap: (){
+                                
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                          border: Border.all(
+                              width: 1.0, color: Constanst.greyLight300)),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: InkWell(
+                          onTap: (){
+                            print("tes");
+                               
+                          },
+                          child: TextField(
+                            focusNode: myfocus,
+                            autofocus: true,
+                            controller:    controller.deskripsiAbsen,
+                            cursorColor: Colors.black,
+                            maxLines: null,
+                            onSubmitted: (value) {
+                              Get.back();
+                            },
+                            decoration: new InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Tambahkan Catatan"),
+                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.done,
+                            style: TextStyle(
+                                fontSize: 12.0, height: 2.0, color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                )
+              ],
+            ),
+          );
+        });
+      },
     );
   }
 

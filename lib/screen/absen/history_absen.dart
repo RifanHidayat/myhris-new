@@ -335,17 +335,17 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                     Text("${Constanst.convertDate('${index['atten_date']}')}",
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold)),
-                    index['status_view'] == true
-                        ? Text(
-                            "${index['turunan'][0]['reg_type'] == 0 ? "Face Recognition" : "Photo"}",
-                            style: TextStyle(
-                              fontSize: 9,
-                            ))
-                        : Text(
-                            " ${index['reg_type'] == 0 ? "Face Recognition" : "Photo"}",
-                            style: TextStyle(
-                              fontSize: 9,
-                            )),
+                    // index['status_view'] == true
+                    //     ? Text(
+                    //         "${index['turunan'][0]['reg_type'] == 0 ? "Face Recognition" : "Photo"}",
+                    //         style: TextStyle(
+                    //           fontSize: 9,
+                    //         ))
+                    //     : Text(
+                    //         " ${index['reg_type'] == 0 ? "Face Recognition" : ""}",
+                    //         style: TextStyle(
+                    //           fontSize: 9,
+                    //         )),
                   ],
                 ),
               ),
