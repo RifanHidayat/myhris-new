@@ -14,18 +14,20 @@ import 'package:siscom_operasional/services/request.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:siscom_operasional/utils/custom_dialog.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class AuthController extends GetxController {
   var username = TextEditingController().obs;
   var password = TextEditingController().obs;
   var email = TextEditingController().obs;
-  var tempEmail=TextEditingController().obs;
+  var tempEmail = TextEditingController().obs;
   var showpassword = false.obs;
-  var databases=<DatabaseModel>[].obs;
-  var selectedDb="".obs;
-  var selectedPerusahaan="".obs;
-  var perusahaan=TextEditingController();
+  var databases = <DatabaseModel>[].obs;
+  var selectedDb = "".obs;
+  var selectedPerusahaan = "".obs;
+  var perusahaan = TextEditingController();
 
   var controllerAbsnsi = Get.put(AbsenController());
 
@@ -34,10 +36,10 @@ class AuthController extends GetxController {
     print("on readty");
     email.value.text = AppData.emailUser;
     password.value.text = AppData.passwordUser;
-    selectedPerusahaan.value=AppData.selectedPerusahan;
-    perusahaan.text=AppData.selectedPerusahan;
+    selectedPerusahaan.value = AppData.selectedPerusahan;
+    perusahaan.text = AppData.selectedPerusahan;
     print("perusaan ${AppData.selectedPerusahan}");
-    selectedDb.value=AppData.selectedDatabase;
+    selectedDb.value = AppData.selectedDatabase;
     super.onReady();
   }
 
@@ -83,112 +85,118 @@ class AuthController extends GetxController {
   }
 
   Future<void> loginUser() async {
-    final box = GetStorage();
-   var fcm_registration_token = await FirebaseMessaging.instance.getToken();
  
-    UtilsAlert.showLoadingIndicator(Get.context!);
-    Map<String, dynamic> body = {
-      'email': email.value.text,
-      'password': password.value.text,
-     'token_notif': fcm_registration_token.toString(),
-      'database':selectedDb.value
-    };
-    var connect = Api.connectionApi("post", body, "login");
-    connect.then((dynamic res) {
-      var valueBody = jsonDecode(res.body);
-      print('data login ${valueBody}');
-      if (valueBody['status'] == false) {
-        UtilsAlert.showToast(valueBody['message']);
-        Navigator.pop(Get.context!);
-      } else {
-          AppData.selectedDatabase=selectedDb.value;
-          AppData.selectedPerusahan=selectedPerusahaan.value;
+      final box = GetStorage();
+     var fcm_registration_token = await FirebaseMessaging.instance.getToken();
 
-        List<UserModel> getData =  [];
-        
-        var lastLoginUser = "";
-        var getEmId = "";
-        var getAktif = "";
-        for (var element in valueBody['data']) {
-          var data = UserModel(
-            em_id: element['em_id'] ?? "",
-            des_id: element['des_id'] ?? 0,
-            dep_id: element['dep_id'] ?? 0,
-            dep_group: element['dep_group'] ?? 0,
-            full_name: element['full_name'] ?? "",
-            em_email: element['em_email'] ?? "",
-            em_phone: element['em_phone'] ?? "",
-            em_birthday: element['em_birthday'] ?? "1999-09-09",
-            em_gender: element['em_gender'] ?? "",
-            em_image: element['em_image'] ?? "",
-            em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-            em_status: element['em_status'] ?? "",
-            em_blood_group: element['em_blood_group'] ?? "",
-            posisi: element['posisi'] ?? "",
-            emp_jobTitle: element['emp_jobTitle'] ?? "",
-            emp_departmen: element['emp_departmen'] ?? "",
-            em_control: element['em_control'] ?? 0,
-            em_control_acess: element['em_control_access'] ?? 0,
-            emp_att_working: element['emp_att_working'] ?? 0,
-            em_hak_akses: element['em_hak_akses'] ?? "",
-            branchName: element['branch_name']??""
-          );
-
-        
-
-          if (element['file_face'] == "" || element['file_face'] == null) {
-            box.write("face_recog", false);
-          } else {
-            box.write("face_recog", true);
-          }
-          getData.add(data);
-         
-          lastLoginUser = "${element['last_login']}";
-          getEmId = "${element['em_id']}";
-          getAktif = "${element['status_aktif']}";
-          AppData.isLogin=true;
-          print(element.toString());
-        
-        }
-
-        print("las login user ${lastLoginUser}");
-        if (getAktif == "ACTIVE") { 
-          if (lastLoginUser == "" ||
-              lastLoginUser == "null" ||
-              lastLoginUser == null ||
-              lastLoginUser == "0000-00-00 00:00:00") {
-         
-            fillLastLoginUser(getEmId, getData);
-              checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
-          
-          } else {
-            var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
-            var dateNow = DateTime.now();
-            var convert = DateFormat('dd-MM-yyyy').format(dateNow);
-            if (convert != filterLastLogin) {
-              print("sampe sini 2");
-              fillLastLoginUser(getEmId, getData);
-                checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
-            } else {
-              
-              UtilsAlert.showToast("Anda telah masuk di perangkat lain");
-              Navigator.pop(Get.context!);
-            }
-          }
-        } else {
-          UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
+      UtilsAlert.showLoadingIndicator(Get.context!);
+      Map<String, dynamic> body = {
+        'email': email.value.text,
+        'password': password.value.text,
+       'token_notif': fcm_registration_token.toString(),
+        'database':selectedDb.value
+      };
+      var connect = Api.connectionApi("post", body, "login");
+      connect.then((dynamic res) {
+        var valueBody = jsonDecode(res.body);
+        print('data login ${valueBody}');
+        if (valueBody['status'] == false) {
+          UtilsAlert.showToast(valueBody['message']);
           Navigator.pop(Get.context!);
+        } else {
+            AppData.selectedDatabase=selectedDb.value;
+            AppData.selectedPerusahan=selectedPerusahaan.value;
+
+          List<UserModel> getData =  [];
+
+          var lastLoginUser = "";
+          var getEmId = "";
+          var getAktif = "";
+          var idMobile="";
+          for (var element in valueBody['data']) {
+            var data = UserModel(
+              em_id: element['em_id'] ?? "",
+              des_id: element['des_id'] ?? 0,
+              dep_id: element['dep_id'] ?? 0,
+              dep_group: element['dep_group'] ?? 0,
+              full_name: element['full_name'] ?? "",
+              em_email: element['em_email'] ?? "",
+              em_phone: element['em_phone'] ?? "",
+              em_birthday: element['em_birthday'] ?? "1999-09-09",
+              em_gender: element['em_gender'] ?? "",
+              em_image: element['em_image'] ?? "",
+              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+              em_status: element['em_status'] ?? "",
+              em_blood_group: element['em_blood_group'] ?? "",
+              posisi: element['posisi'] ?? "",
+              emp_jobTitle: element['emp_jobTitle'] ?? "",
+              emp_departmen: element['emp_departmen'] ?? "",
+              em_control: element['em_control'] ?? 0,
+              em_control_acess: element['em_control_access'] ?? 0,
+              emp_att_working: element['emp_att_working'] ?? 0,
+              em_hak_akses: element['em_hak_akses'] ?? "",
+              branchName: element['branch_name']??""
+            );
+
+            if (element['file_face'] == "" || element['file_face'] == null) {
+              box.write("face_recog", false);
+            } else {
+              box.write("face_recog", true);
+            }
+            getData.add(data);
+
+            lastLoginUser = "${element['last_login']}";
+            getEmId = "${element['em_id']}";
+            getAktif = "${element['status_aktif']}";
+
+
+            AppData.isLogin=true;
+            print(element.toString());
+
+          }
+
+        
+          if (getAktif == "ACTIVE") {
+            if (lastLoginUser == "" ||
+                lastLoginUser == "null" ||
+                lastLoginUser == null ||
+                lastLoginUser == "0000-00-00 00:00:00") {
+
+              fillLastLoginUserNew(getEmId, getData);
+                checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
+
+            } else {
+              var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
+              var dateNow = DateTime.now();
+              var convert = DateFormat('dd-MM-yyyy').format(dateNow);
+              if (convert != filterLastLogin) {
+              
+                fillLastLoginUserNew(getEmId, getData);
+                  checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
+              } else {
+
+                UtilsAlert.showToast("Anda telah masuk di perangkat lain");
+                Navigator.pop(Get.context!);
+                  //  validasiLogin();
+              }
+            }
+          } else {
+            UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
+            Navigator.pop(Get.context!);
+          }
         }
-      }
-    });
+      });
   }
 
   void fillLastLoginUser(getEmId, getData) {
     var now = DateTime.now();
-    
-    
+
     var jam = "${DateFormat('yyyy-MM-dd HH:mm:ss').format(now)}";
-    Map<String, dynamic> body = {'last_login': jam, 'em_id': getEmId,'database':AppData.selectedDatabase};
+    Map<String, dynamic> body = {
+      'last_login': jam,
+      'em_id': getEmId,
+      'database': AppData.selectedDatabase
+    };
     var connect = Api.connectionApi("post", body, "edit_last_login");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -197,11 +205,36 @@ class AuthController extends GetxController {
         if (valueBody['status'] == true) {
           var dateNow = DateTime.now();
           var convert = DateFormat('yyyy-MM-dd').format(dateNow);
-             checkAbsenUser(convert, getEmId);
+          checkAbsenUser(convert, getEmId);
           AppData.emailUser = email.value.text;
           AppData.passwordUser = password.value.text;
           AppData.informasiUser = getData;
-       
+        }
+      }
+    });
+  }
+
+    void fillLastLoginUserNew(getEmId, getData) {
+    var now = DateTime.now();
+
+    var jam = "${DateFormat('yyyy-MM-dd HH:mm:ss').format(now)}";
+    Map<String, dynamic> body = {
+      'last_login': jam,
+      'em_id': getEmId,
+      'database': AppData.selectedDatabase
+    };
+    var connect = Api.connectionApi("post", body, "edit_last_login");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print(valueBody['data']);
+        if (valueBody['status'] == true) {
+          var dateNow = DateTime.now();
+          var convert = DateFormat('yyyy-MM-dd').format(dateNow);
+          checkAbsenUser(convert, getEmId);
+          AppData.emailUser = email.value.text;
+          AppData.passwordUser = password.value.text;
+          AppData.informasiUser = getData;
         }
       }
     });
@@ -209,9 +242,13 @@ class AuthController extends GetxController {
 
   void checkAbsenUser(convert, getEmid) {
     print("view last absen user");
-    Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid,'database':AppData.selectedDatabase};
+    Map<String, dynamic> body = {
+      'atten_date': convert,
+      'em_id': getEmid,
+      'database': AppData.selectedDatabase
+    };
     var connect = Api.connectionApi("post", body, "view_last_absen_user");
-    
+
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -233,6 +270,98 @@ class AuthController extends GetxController {
         }
       }
     });
+  }
+
+  void validasiLogin() {
+    showGeneralDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      barrierColor: Colors.black54, // space around dialog
+      transitionDuration: Duration(milliseconds: 200),
+      transitionBuilder: (context, a1, a2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+              parent: a1,
+              curve: Curves.elasticOut,
+              reverseCurve: Curves.easeOutCubic),
+          child: Dialog(
+              elevation: 0,
+      backgroundColor: Colors.transparent,
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: <Widget>[
+                Container(
+                  // Bottom rectangular box
+                  margin: EdgeInsets.only(
+                      top: 25), // to push the box half way below circle
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: EdgeInsets.only(
+                      top: 30, left: 20, right: 20), // spacing inside the box
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      TextLabell(text: "Oops! Anda telah login di perangkat lain.",weight: FontWeight.bold,size: 14,),
+                      // Text(
+                      //   "Oops! Anda telah login di perangkat lain.",
+                      //   style: Theme.of(context).textTheme.headline6,
+                      // ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                       TextLabell(text: "Tetap masuk akan mengakibatkan akun Anda keluar dari perangkat lain.",size: 14,),
+                       SizedBox(height: 8,),
+                       Row(
+                        children: [
+                          Expanded(
+                            flex: 50,
+                            child: Container(
+                              padding: EdgeInsets.only(top: 10,bottom: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(width: 1,color: Constanst.border)
+                              ),
+                              child: Center(child: TextLabell(text: "Batal",)),
+                            ),
+                          ),
+                          SizedBox(width: 5,),
+                             Expanded(
+                            flex: 50,
+                            child: Container(
+                              padding: EdgeInsets.only(top: 10,bottom: 10),
+                              decoration: BoxDecoration(
+                                color: Constanst.colorPrimary,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(width: 1,color: Constanst.border)
+                              ),
+                              child: Center(child: TextLabell(text: "Tetap Masuk",color: Colors.white,)),
+                            ),
+                          ),
+
+                        ],
+                       ),
+                       SizedBox(height: 10,)
+                      // Text(
+                      //   "Tetap masuk akan mengakibatkan akun Anda keluar dari perangkat lain.",
+                      //   style: Theme.of(context).textTheme.bodyText1,
+                      //   textAlign: TextAlign.center,
+                      // ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      pageBuilder: (BuildContext context, Animation animation,
+          Animation secondaryAnimation) {
+        return null!;
+      },
+    );
   }
 
   // Future<bool>? verifyPassword() async {
@@ -257,29 +386,30 @@ class AuthController extends GetxController {
   //   return false;
   // }
 
-  Future<bool> dataabse()async{
-   tempEmail.value.text="";
-    try{
+  Future<bool> dataabse() async {
+    tempEmail.value.text = "";
+    try {
       UtilsAlert.showLoadingIndicator(Get.context!);
-      var response=await Request(url: "/login/check-database?email=${email.value.text}").getCheckDatabase();
-      var resp=jsonDecode(response.body);
-  
-    if (response.statusCode==200){
-      tempEmail.value.text=email.value.text;
-      databases.value=DatabaseModel.fromJsonToList(resp['data']);
-      Get.back();
-      return true;
-    }else{
-       Get.back();
-      databases.value=[];
-      return false;
-    }
-    }catch(e){
-      print(e);
-       Get.back();
-        databases.value=[];
-      return false;
-    }
+      var response =
+          await Request(url: "/login/check-database?email=${email.value.text}")
+              .getCheckDatabase();
+      var resp = jsonDecode(response.body);
 
+      if (response.statusCode == 200) {
+        tempEmail.value.text = email.value.text;
+        databases.value = DatabaseModel.fromJsonToList(resp['data']);
+        Get.back();
+        return true;
+      } else {
+        Get.back();
+        databases.value = [];
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      Get.back();
+      databases.value = [];
+      return false;
+    }
   }
 }

@@ -67,18 +67,52 @@ class GlobalController extends GetxController {
   }
 
   void loadAllSisaCuti() {
+    print("sisa PKWT`");
     var statusReminder = "";
+    var emids = [];
+    var status = false;
     for (var element in sysData.value) {
       if (element['kode'] == "015") {
         statusReminder = "${element['name']}";
       }
+      if (element['kode'] == '016') {
+        emids = element['name'].toString().split(',');
+      }
     }
+
+print("data ${emids.toString()}");
     Map<String, dynamic> body = {'reminder': statusReminder};
     var connect = Api.connectionApi("post", body, "info_sisa_kontrak");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         employeeSisaCuti.value = valueBody['data'];
+        var tempData=[];
+        emids.forEach((element) {
+          if (element.toString() ==
+              AppData.informasiUser![0].em_id.toString()) {
+            status = true;
+            tempData.add(element);
+          }
+       
+          // status
+          // if (element.toString()==AppData.informasiUser![0].em_id.toString())
+          // {
+          //   employeeSisaCuti.where((p0) =>p0['em_id']==)
+
+          // }else{
+
+          // }
+        });
+       
+       
+        print("status ${AppData.informasiUser![0].em_id.toString()} ${status}");
+           if (status==false){
+            
+           
+           employeeSisaCuti.value=tempData;
+
+          }
         this.employeeSisaCuti.refresh();
       }
     });

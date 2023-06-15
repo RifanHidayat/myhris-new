@@ -263,6 +263,7 @@ class TugasLuarController extends GetxController {
   }
 
   void loadDataDinasLuar() {
+    print("Load data dinas luar");
     listDinasLuar.value.clear();
     listDinasLuarAll.value.clear();
     var dataUser = AppData.informasiUser;
@@ -272,14 +273,18 @@ class TugasLuarController extends GetxController {
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
     };
+    print( body);
+   
     var connect = Api.connectionApi("post", body, "emp_leave_load_dinasluar");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+      
         if (valueBody['status'] == false) {
           loadingString.value = "Tidak ada pengajuan";
           this.loadingString.refresh();
         } else {
+            print("data dinas luar ${valueBody} d");
           listDinasLuar.value = valueBody['data'];
           listDinasLuarAll.value = valueBody['data'];
           this.listDinasLuar.refresh();
@@ -329,9 +334,7 @@ class TugasLuarController extends GetxController {
   //   });
   // }
 
-  
-    void loadAllEmployeeDelegasi() {
-
+  void loadAllEmployeeDelegasi() {
     allEmployeeDelegasi.value.clear();
     allEmployee.value.clear();
     var dataUser = AppData.informasiUser;
@@ -358,11 +361,14 @@ class TugasLuarController extends GetxController {
             }
           }
           if (idpengajuanTugasLuar.value == "") {
-            List data=valueBody['data'];
-            var listFirst =data.where((element) => element['full_name']!=full_name).toList().first;
+            List data = valueBody['data'];
+            var listFirst = data
+                .where((element) => element['full_name'] != full_name)
+                .toList()
+                .first;
             var fullName = listFirst['full_name'] ?? "";
             String namaUserPertama = "$fullName";
-             selectedDropdownDelegasi.value = namaUserPertama;
+            selectedDropdownDelegasi.value = namaUserPertama;
           }
 
           this.allEmployee.refresh();
@@ -1185,14 +1191,16 @@ class TugasLuarController extends GetxController {
   }
 
   void batalkanPengajuan(index) {
+    print("data index baru ${index}");
+    print(viewTugasLuar);
     if (viewTugasLuar.value) {
       UtilsAlert.loadingSimpanData(Get.context!, "Batalkan Pengajuan");
       var dataUser = AppData.informasiUser;
       var getEmid = dataUser![0].em_id;
       Map<String, dynamic> body = {
-        'menu_name': 'Lembur',
+        'menu_name': 'Tugas Luar',
         'activity_name':
-            'Membatalkan form pengajuan Lembur. Waktu Lembur = ${index["dari_jam"]} sd ${index["sampai_jam"]} Alasan Pengajuan = ${index["reason"]} Tanggal Pengajuan = ${index["atten_date"]}',
+            'Membatalkan form pengajuan Tugas Luar. Waktu  Tugas Luar = ${index["dari_jam"]} sd ${index["sampai_jam"]} Alasan Pengajuan = ${index["reason"]} Tanggal Pengajuan = ${index["atten_date"]}',
         'created_by': '$getEmid',
         'val': 'id',
         'cari': '${index["id"]}',

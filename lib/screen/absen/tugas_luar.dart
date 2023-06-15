@@ -14,6 +14,7 @@ import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
@@ -129,13 +130,9 @@ class _TugasLuarState extends State<TugasLuar> {
                     child: RefreshIndicator(
                         color: Constanst.colorPrimary,
                         onRefresh: refreshData,
-                        child: controller.listTugasLuar.value.isEmpty
-                            ? Center(
-                                child: Text(controller.loadingString.value),
-                              )
-                            : controller.viewTugasLuar.value
-                                ? riwayatTugasLuar()
-                                : riwayatDinasLuar()))
+                        child: controller.viewTugasLuar.value
+                                ? controller.listTugasLuar.isEmpty?Center(child: TextLabell(text: "Tidak ada pengajuan"),):  riwayatTugasLuar()
+                                : controller.listDinasLuar.isEmpty?Center(child: TextLabell(text: "Tidak ada pengajuan"),):riwayatDinasLuar()))
               ],
             ),
           ),

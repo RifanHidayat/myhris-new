@@ -631,38 +631,38 @@ class _DashboardState extends State<Dashboard> {
                                         controllerAbsensi.typeAbsen.value = 1;
 
                                         //begin image picker
-                                        // final getFoto = await ImagePicker()
-                                        //     .pickImage(
-                                        //         source: ImageSource.camera,
-                                        //         preferredCameraDevice:
-                                        //             CameraDevice.front,
-                                        //         imageQuality: 100,
-                                        //         maxHeight: 350,
-                                        //         maxWidth: 350);
-                                        // if (getFoto == null) {
-                                        //   UtilsAlert.showToast(
-                                        //       "Gagal mengambil gambar");
-                                        // } else {
-                                        //   // controllerAbsensi.facedDetection(
-                                        //   //     status: "registration",
-                                        //   //     absenStatus: "Absen Masuk",
-                                        //   //     img: getFoto.path,
-                                        //   //     type: "1");
-                                        //   Get.to(LoadingAbsen(
-                                        //     file: getFoto.path,
-                                        //     status: "detection",
-                                        //     statusAbsen: 'masuk',
-                                        //   ));
-                                        //   // Get.to(FaceidRegistration(
-                                        //   //   status: "registration",
-                                        //   // ));
-                                        // }
+                                        final getFoto = await ImagePicker()
+                                            .pickImage(
+                                                source: ImageSource.camera,
+                                                preferredCameraDevice:
+                                                    CameraDevice.front,
+                                                imageQuality: 100,
+                                                maxHeight: 350,
+                                                maxWidth: 350);
+                                        if (getFoto == null) {
+                                          UtilsAlert.showToast(
+                                              "Gagal mengambil gambar");
+                                        } else {
+                                          // controllerAbsensi.facedDetection(
+                                          //     status: "registration",
+                                          //     absenStatus: "Absen Masuk",
+                                          //     img: getFoto.path,
+                                          //     type: "1");
+                                          Get.to(LoadingAbsen(
+                                            file: getFoto.path,
+                                            status: "detection",
+                                            statusAbsen: 'masuk',
+                                          ));
+                                          // Get.to(FaceidRegistration(
+                                          //   status: "registration",
+                                          // ));
+                                        }
                                         //end image picker
 
                                         //begin face recognition
-                                        Get.to(FaceDetectorView(
-                                          status: "masuk",
-                                        ));
+                                        // Get.to(FaceDetectorView(
+                                        //   status: "masuk",
+                                        // ));
                                         //end begin face recogniton
 
                                         // // controllerAbsensi.getPlaceCoordinate();
@@ -732,37 +732,37 @@ class _DashboardState extends State<Dashboard> {
                                 controllerAbsensi.typeAbsen.value = 2;
 
                                   //begin image picker
-                                        // final getFoto = await ImagePicker()
-                                        //     .pickImage(
-                                        //         source: ImageSource.camera,
-                                        //         preferredCameraDevice:
-                                        //             CameraDevice.front,
-                                        //         imageQuality: 100,
-                                        //         maxHeight: 350,
-                                        //         maxWidth: 350);
-                                        // if (getFoto == null) {
-                                        //   UtilsAlert.showToast(
-                                        //       "Gagal mengambil gambar");
-                                        // } else {
-                                        //   // controllerAbsensi.facedDetection(
-                                        //   //     status: "registration",
-                                        //   //     absenStatus: "Absen Masuk",
-                                        //   //     img: getFoto.path,
-                                        //   //     type: "1");
-                                        //   Get.to(LoadingAbsen(
-                                        //     file: getFoto.path,
-                                        //     status: "detection",
-                                        //     statusAbsen: 'keluar',
-                                        //   ));
-                                        //   // Get.to(FaceidRegistration(
-                                        //   //   status: "registration",
-                                        //   // ));
-                                        // }
+                                        final getFoto = await ImagePicker()
+                                            .pickImage(
+                                                source: ImageSource.camera,
+                                                preferredCameraDevice:
+                                                    CameraDevice.front,
+                                                imageQuality: 100,
+                                                maxHeight: 350,
+                                                maxWidth: 350);
+                                        if (getFoto == null) {
+                                          UtilsAlert.showToast(
+                                              "Gagal mengambil gambar");
+                                        } else {
+                                          // controllerAbsensi.facedDetection(
+                                          //     status: "registration",
+                                          //     absenStatus: "Absen Masuk",
+                                          //     img: getFoto.path,
+                                          //     type: "1");
+                                          Get.to(LoadingAbsen(
+                                            file: getFoto.path,
+                                            status: "detection",
+                                            statusAbsen: 'keluar',
+                                          ));
+                                          // Get.to(FaceidRegistration(
+                                          //   status: "registration",
+                                          // ));
+                                        }
                                         //end image picker
 
-                                Get.to(FaceDetectorView(
-                                  status: "keluar",
-                                ));
+                                // Get.to(FaceDetectorView(
+                                //   status: "keluar",
+                                // ));
 
                                 // controllerAbsensi.facedDetection(
                                 //     status: "detection",

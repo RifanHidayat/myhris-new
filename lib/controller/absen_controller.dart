@@ -227,12 +227,11 @@ class AbsenController extends GetxController {
   void getPlaceCoordinate() {
     print("place coodinates");
     placeCoordinate.clear();
-    var connect = Api.connectionApi("get", {
-  
-    }, "places_coordinate",params: "&id=${AppData.informasiUser![0].em_id}");
+    var connect = Api.connectionApi("get", {}, "places_coordinate",
+        params: "&id=${AppData.informasiUser![0].em_id}");
     connect.then((dynamic res) {
       if (res == false) {
-        print ("errror");
+        print("errror");
         UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
@@ -568,8 +567,6 @@ class AbsenController extends GetxController {
         final respStr = await response.stream.bytesToString();
         final res = jsonDecode(respStr.toString());
 
-      
-
         if (res['status'] == true) {
           Get.back();
           employeDetail();
@@ -778,7 +775,7 @@ class AbsenController extends GetxController {
     // } else {
     if (Platform.isAndroid) {
       TrustLocation.start(1);
-  getCheckMock();
+      getCheckMock();
       if (!mockLocation.value) {
         var statusPosisi = await validasiRadius();
         if (statusPosisi == true) {
@@ -2253,33 +2250,29 @@ class AbsenController extends GetxController {
                   TextButtonWidget(
                     title: "Mulai",
                     onTap: () async {
-                    
                       //begin image picker
-                      // final getFoto = await ImagePicker().pickImage(
-                      //     source: ImageSource.camera,
-                      //     preferredCameraDevice: CameraDevice.front,
-                      //     imageQuality: 100,
-                      //     maxHeight: 350,
-                      //     maxWidth: 350);
-                      // if (getFoto == null) {
-                      //   UtilsAlert.showToast("Gagal mengambil gambar");
-                      // } else {
-                      //   facedDetection(
-                      //       status: "registration",
-                      //       absenStatus: "Absen Masuk",
-                      //       img: getFoto.path,
-                      //       type: "1");
-                  
-                      // }
-                    //end image picker
+                      final getFoto = await ImagePicker().pickImage(
+                          source: ImageSource.camera,
+                          preferredCameraDevice: CameraDevice.front,
+                          imageQuality: 100,
+                          maxHeight: 350,
+                          maxWidth: 350);
+                      if (getFoto == null) {
+                        UtilsAlert.showToast("Gagal mengambil gambar");
+                      } else {
+                        facedDetection(
+                            status: "registration",
+                            absenStatus: "Absen Masuk",
+                            img: getFoto.path,
+                            type: "1");
+                      }
+                      //end image picker
 
                       //begin face recogniton
-                      Get.to(FaceidRegistration(
-                        status: "registration",
-                      ));
+                      // Get.to(FaceidRegistration(
+                      //   status: "registration",
+                      // ));
                       //end face recognition
-
-
 
                       // facedDetection(status: "registration");
                       // Get.to(FaceRecognitionView());

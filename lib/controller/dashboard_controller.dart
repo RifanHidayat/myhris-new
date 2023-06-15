@@ -1021,123 +1021,127 @@ class DashboardController extends GetxController {
             ),
             Container(
            
+           padding: EdgeInsets.only(bottom: 10),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(menuShowInMain.length, (index) {
                   var data = menuShowInMain[index];
                   return Padding(
-                    padding: EdgeInsets.only(top: 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 16,right: 16),
-                          child: Text(
-                            data['nama_modul'].toString(),
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                    padding: EdgeInsets.only(top: 16),
+                    child: InkWell(
+                      
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 16,right: 16),
+                            child: Text(
+                              data['nama_modul'].toString(),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 8,),
-                        Container(
-                       child: Wrap(
-                        direction: Axis.horizontal,
-                         runSpacing: 16.0, // gap between lines
-                         
-                        
-                        
-          
-                           children: List.generate(data['menu'].length, (idxMenu)  {
-                                  var gambar = data['menu'][idxMenu]['gambar'];
-                                 var namaMenu = data['menu'][idxMenu]['nama'];
-                                 return Container(
-                                  width: MediaQuery.of(context).size.width/4,
-                                 
-                                   child: InkWell(
-                                     onTap: () => data['menu'][idxMenu]['url'],
-                                     highlightColor: Colors.white,
-                                     child: Column(
-                                         crossAxisAlignment:
-                                             CrossAxisAlignment.center,
-                                         children: [
-                                           gambar != ""
-                                               ? Container(
-                                                   decoration: BoxDecoration(
-                                                       color:
-                                                           Constanst.colorButton3,
-                                                       borderRadius: Constanst
-                                                           .styleBoxDecoration1
-                                                           .borderRadius),
-                                                   child: Padding(
-                                                     padding:
-                                                         const EdgeInsets.only(
-                                                             left: 3,
-                                                             right: 3,
-                                                             top: 3,
-                                                             bottom: 3),
-                                                     child: CachedNetworkImage(
-                                                       imageUrl:
-                                                           Api.UrlgambarDashboard +
-                                                               gambar,
-                                                       progressIndicatorBuilder:
-                                                           (context, url,
-                                                                   downloadProgress) =>
-                                                               Container(
-                                                         alignment:
-                                                             Alignment.center,
-                                                         height:
-                                                             MediaQuery.of(context)
-                                                                     .size
-                                                                     .height *
-                                                                 0.5,
-                                                         width:
-                                                             MediaQuery.of(context)
-                                                                 .size
-                                                                 .width,
-                                                         child: CircularProgressIndicator(
-                                                             value:
-                                                                 downloadProgress
-                                                                     .progress),
+                          SizedBox(height: 8,),
+                          Container(
+                         child: Wrap(
+                          direction: Axis.horizontal,
+                           runSpacing: 16.0, // gap between lines
+                           
+                          
+                          
+                              
+                             children: List.generate(data['menu'].length, (idxMenu)  {
+                                    var gambar = data['menu'][idxMenu]['gambar'];
+                                   var namaMenu = data['menu'][idxMenu]['nama'];
+                                   return data['menu'][idxMenu]['id']==8?SizedBox(): Container(
+                                    width: MediaQuery.of(context).size.width/4,
+                                   
+                                     child: InkWell(
+                                       onTap: () => routePageDashboard(data['menu'][idxMenu]['url']),
+                                       highlightColor: Colors.white,
+                                       child: Column(
+                                           crossAxisAlignment:
+                                               CrossAxisAlignment.center,
+                                           children: [
+                                             gambar != ""
+                                                 ? Container(
+                                                     decoration: BoxDecoration(
+                                                         color:
+                                                             Constanst.colorButton3,
+                                                         borderRadius: Constanst
+                                                             .styleBoxDecoration1
+                                                             .borderRadius),
+                                                     child: Padding(
+                                                       padding:
+                                                           const EdgeInsets.only(
+                                                               left: 3,
+                                                               right: 3,
+                                                               top: 3,
+                                                               bottom: 3),
+                                                       child: CachedNetworkImage(
+                                                         imageUrl:
+                                                             Api.UrlgambarDashboard +
+                                                                 gambar,
+                                                         progressIndicatorBuilder:
+                                                             (context, url,
+                                                                     downloadProgress) =>
+                                                                 Container(
+                                                           alignment:
+                                                               Alignment.center,
+                                                           height:
+                                                               MediaQuery.of(context)
+                                                                       .size
+                                                                       .height *
+                                                                   0.5,
+                                                           width:
+                                                               MediaQuery.of(context)
+                                                                   .size
+                                                                   .width,
+                                                           child: CircularProgressIndicator(
+                                                               value:
+                                                                   downloadProgress
+                                                                       .progress),
+                                                         ),
+                                                         errorWidget:
+                                                             (context, url, error) =>
+                                                                 SizedBox(),
+                                                         fit: BoxFit.cover,
+                                                         width: 32,
+                                                         height: 32,
+                                                         color:
+                                                             Constanst.colorButton1,
                                                        ),
-                                                       errorWidget:
-                                                           (context, url, error) =>
-                                                               SizedBox(),
-                                                       fit: BoxFit.cover,
-                                                       width: 32,
-                                                       height: 32,
-                                                       color:
-                                                           Constanst.colorButton1,
                                                      ),
+                                                   )
+                                                 : Container(
+                                                     color: Constanst.colorButton1,
+                                                     height: 32,
+                                                     width: 32,
                                                    ),
-                                                 )
-                                               : Container(
-                                                   color: Constanst.colorButton1,
-                                                   height: 32,
-                                                   width: 32,
-                                                 ),
-                                           SizedBox(
-                                             height: 3,
-                                           ),
-                                           Center(
-                                             child: Text(
-                                               namaMenu.length > 20
-                                                   ? namaMenu.substring(0, 20) +
-                                                       '...'
-                                                   : namaMenu,
-                                               textAlign: TextAlign.center,
-                                               style: TextStyle(
-                                                   fontSize: 10,
-                                                   color: Constanst.colorText1),
+                                             SizedBox(
+                                               height: 3,
                                              ),
-                                           ),
-                                         ]),
-                                   ),
-                                 );
-                           }),
-                          ),
-                        )
-                      ],
+                                             Center(
+                                               child: Text(
+                                                 namaMenu.length > 20
+                                                     ? namaMenu.substring(0, 20) +
+                                                         '...'
+                                                     : namaMenu,
+                                                 textAlign: TextAlign.center,
+                                                 style: TextStyle(
+                                                     fontSize: 10,
+                                                     color: Constanst.colorText1),
+                                               ),
+                                             ),
+                                           ]),
+                                     ),
+                                   );
+                             }),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   );
                   //                 style

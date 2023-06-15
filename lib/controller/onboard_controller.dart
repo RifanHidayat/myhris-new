@@ -43,10 +43,11 @@ class OnboardController extends GetxController {
 
   void validasiToNextRoute() async {
     // loading.value = true;
-    var dataInformasiUser = AppData.informasiUser;
+    
 
 
     if (AppData.isLogin==true){
+      var dataInformasiUser = AppData.informasiUser;
   validasiUser();
     }else{
        loading.value = false;
@@ -57,6 +58,7 @@ class OnboardController extends GetxController {
   }
 
   void validasiUser() {
+    print("data informasi user ${AppData.informasiUser![0]}");
 
     var dataUser = AppData.informasiUser;
     print(dataUser);

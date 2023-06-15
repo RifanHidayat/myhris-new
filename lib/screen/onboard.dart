@@ -375,11 +375,14 @@ class Onboard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0),
                     ))),
                 onPressed: () async {
+                  if (AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" ){
+                    AppData.isLogin=false;
+                  }
 
-                  
+                
                   controller.validasiToNextRoute();
-
-                  String checkUserKontrol =
+                  if (AppData.isLogin==true){
+                        String checkUserKontrol =
                       await controllerBerhasil.checkUserKontrol();
                   print(checkUserKontrol);
 
@@ -404,6 +407,9 @@ class Onboard extends StatelessWidget {
                       // Get.offAll(InitScreen());
                     }
                   }
+                  }
+
+              
 
                   // print("tes");
                   try {
@@ -423,12 +429,12 @@ class Onboard extends StatelessWidget {
                           "ios", //Secondary description  (only from iOS 10 onwards)
                     ));
 
-                    await flutterLocalNotificationsPlugin.show(
-                        12345,
-                        "A Notification From My Application",
-                        "This notification was sent using Flutter Local Notifcations Package",
-                        platformChannelSpecifics,
-                        payload: 'data');
+                    // await flutterLocalNotificationsPlugin.show(
+                    //     12345,
+                    //     "A Notification From My Application",
+                    //     "This notification was sent using Flutter Local Notifcations Package",
+                    //     platformChannelSpecifics,
+                    //     payload: 'data');
                   } catch (e) {
                     print(e);
                   }
