@@ -42,6 +42,8 @@ import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
+  var departementAkses = [].obs;
+
 
 class DashboardController extends GetxController {
   CarouselController corouselDashboard = CarouselController();
@@ -62,8 +64,9 @@ class DashboardController extends GetxController {
   var employeeUltah = [].obs;
   var employeeTidakHadir = [].obs;
   var menuShowInMain = [].obs;
-
- 
+var isPauseCamera=true;
+  var jumlahData = 0.obs;
+   var departementAkses = [].obs;
 
   var timeString = "".obs;
   var dateNow = "".obs;
@@ -100,11 +103,11 @@ class DashboardController extends GetxController {
   }
 
   void initData() async {
+   
     getBannerDashboard();
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     getMenuDashboard();
     loadMenuShowInMain();
-   
     getInformasiDashboard();
     getEmployeeBelumAbsen();
     timeString.value = formatDateTime(DateTime.now());
@@ -113,6 +116,8 @@ class DashboardController extends GetxController {
     getSizeDevice();
     checkStatusPermission();
     checkHakAkses();
+    updateInformasiUser();
+   
   }
 
   void checkAbsenUser(convert, getEmid) async {
@@ -152,6 +157,69 @@ class DashboardController extends GetxController {
     // });
   }
 
+    void getDepartemen() {
+       controllerAbsensi.showButtonlaporan.value = false;
+      print("get departement ${controllerAbsensi.showButtonlaporan.value}");
+      departementAkses.value=[];
+    print("get departement ");
+    jumlahData.value = 0;
+    var connect = Api.connectionApi("get", {}, "all_department");
+    connect.then((dynamic res) {
+      if (res == false) {
+        UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          var dataDepartemen = valueBody['data'];
+
+          var dataUser = AppData.informasiUser;
+          var hakAkses = dataUser![0].em_hak_akses;
+           
+         
+          if (hakAkses != "" || hakAkses != null) {
+            if (hakAkses == '0') {
+              var data = {
+                'id': 0,
+                'name': 'SEMUA DIVISI',
+                'inisial': 'AD',
+                'parent_id': '',
+                'aktif': '',
+                'pakai': '',
+                'ip': '',
+                'created_by': '',
+                'created_on': '',
+                'modified_by': '',
+                'modified_on': ''
+              };
+              departementAkses.add(data);
+            }
+            var convert = hakAkses!.split(',');
+            for (var element in dataDepartemen) {
+              if (hakAkses == '0') {
+                departementAkses.add(element);
+              }
+              for (var element1 in convert) {
+                if ("${element['id']}" == element1) {
+                  print('sampe sini');
+                  departementAkses.add(element);
+                }
+              }
+            }
+          }
+          print("hak akses ${ dataUser![0].em_hak_akses}");
+          this.departementAkses.refresh();
+          if (departementAkses.value.isNotEmpty) {
+              print("get departement ${departementAkses} ");
+            controllerAbsensi.showButtonlaporan.value = true;
+          }else{
+              controllerAbsensi.showButtonlaporan.value = false;
+
+          }
+        }
+      }
+    });
+  }
+
   void kirimNotification({
     title,
     body,
@@ -180,12 +248,14 @@ class DashboardController extends GetxController {
               'emp_departmen': element.emp_departmen,
               'em_control': element.em_control,
               'emp_att_working': element.emp_att_working,
-              'em_hak_akses': element.em_hak_akses
+              'em_hak_akses': element.em_hak_akses,
+              'branch_name':element.branchName
             })
         .toList();
     user.value = userTampung;
     this.user.refresh();
     refreshPagesStatus.value = false;
+      getDepartemen();
   }
 
   void checkHakAkses() {
@@ -218,6 +288,7 @@ class DashboardController extends GetxController {
   }
 
   void updateInformasiUser() {
+    print("informasi hak akses");
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {'em_id': getEmid};

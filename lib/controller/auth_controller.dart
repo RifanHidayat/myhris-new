@@ -175,9 +175,9 @@ class AuthController extends GetxController {
                   checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
               } else {
 
-                UtilsAlert.showToast("Anda telah masuk di perangkat lain");
-                Navigator.pop(Get.context!);
-                  //  validasiLogin();
+              //  UtilsAlert.showToast("Anda telah masuk di perangkat lain");
+                 Navigator.pop(Get.context!);
+                validasiLogin();
               }
             }
           } else {
@@ -187,6 +187,90 @@ class AuthController extends GetxController {
         }
       });
   }
+
+    Future<void> loginUser1() async {
+ 
+      final box = GetStorage();
+     var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+
+      UtilsAlert.showLoadingIndicator(Get.context!);
+      Map<String, dynamic> body = {
+        'email': email.value.text,
+        'password': password.value.text,
+       'token_notif': fcm_registration_token.toString(),
+        'database':selectedDb.value
+      };
+      var connect = Api.connectionApi("post", body, "login");
+      connect.then((dynamic res) {
+        var valueBody = jsonDecode(res.body);
+        print('data login ${valueBody}');
+        if (valueBody['status'] == false) {
+          UtilsAlert.showToast(valueBody['message']);
+          Navigator.pop(Get.context!);
+        } else {
+            AppData.selectedDatabase=selectedDb.value;
+            AppData.selectedPerusahan=selectedPerusahaan.value;
+
+          List<UserModel> getData =  [];
+
+          var lastLoginUser = "";
+          var getEmId = "";
+          var getAktif = "";
+          var idMobile="";
+          for (var element in valueBody['data']) {
+            var data = UserModel(
+              em_id: element['em_id'] ?? "",
+              des_id: element['des_id'] ?? 0,
+              dep_id: element['dep_id'] ?? 0,
+              dep_group: element['dep_group'] ?? 0,
+              full_name: element['full_name'] ?? "",
+              em_email: element['em_email'] ?? "",
+              em_phone: element['em_phone'] ?? "",
+              em_birthday: element['em_birthday'] ?? "1999-09-09",
+              em_gender: element['em_gender'] ?? "",
+              em_image: element['em_image'] ?? "",
+              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+              em_status: element['em_status'] ?? "",
+              em_blood_group: element['em_blood_group'] ?? "",
+              posisi: element['posisi'] ?? "",
+              emp_jobTitle: element['emp_jobTitle'] ?? "",
+              emp_departmen: element['emp_departmen'] ?? "",
+              em_control: element['em_control'] ?? 0,
+              em_control_acess: element['em_control_access'] ?? 0,
+              emp_att_working: element['emp_att_working'] ?? 0,
+              em_hak_akses: element['em_hak_akses'] ?? "",
+              branchName: element['branch_name']??""
+            );
+
+            if (element['file_face'] == "" || element['file_face'] == null) {
+              box.write("face_recog", false);
+            } else {
+              box.write("face_recog", true);
+            }
+            getData.add(data);
+
+            lastLoginUser = "${element['last_login']}";
+            getEmId = "${element['em_id']}";
+            getAktif = "${element['status_aktif']}";
+
+
+            AppData.isLogin=true;
+            print(element.toString());
+
+          }
+
+        
+          if (getAktif == "ACTIVE") {
+            fillLastLoginUserNew(getEmId, getData);
+                checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
+          } else {
+            UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
+            Navigator.pop(Get.context!);
+          }
+        }
+      });
+  }
+
 
   void fillLastLoginUser(getEmId, getData) {
     var now = DateTime.now();
@@ -330,14 +414,19 @@ class AuthController extends GetxController {
                           SizedBox(width: 5,),
                              Expanded(
                             flex: 50,
-                            child: Container(
-                              padding: EdgeInsets.only(top: 10,bottom: 10),
-                              decoration: BoxDecoration(
-                                color: Constanst.colorPrimary,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(width: 1,color: Constanst.border)
+                            child: InkWell(
+                              onTap: (){
+                                loginUser1();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(top: 10,bottom: 10),
+                                decoration: BoxDecoration(
+                                  color: Constanst.colorPrimary,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(width: 1,color: Constanst.border)
+                                ),
+                                child: Center(child: TextLabell(text: "Tetap Masuk",color: Colors.white,)),
                               ),
-                              child: Center(child: TextLabell(text: "Tetap Masuk",color: Colors.white,)),
                             ),
                           ),
 

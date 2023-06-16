@@ -108,7 +108,7 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
               if (isBlink1 == true) {
                 if (rightEye <= 0.3 && leftEye! <= 0.3) {
                   isBlink2 = true;
-                } else {
+                } else {  
                   isBlink1 = false;
                   isBlink2 = false;
                 }

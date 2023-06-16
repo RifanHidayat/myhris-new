@@ -17,6 +17,7 @@ import 'package:siscom_operasional/main.dart';
 import 'package:siscom_operasional/screen/absen/loading_absen.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import "package:get/get.dart";
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'dart:math' as math;
 
@@ -308,21 +309,66 @@ class _CameraViewState extends State<CameraView> {
           alignment: Alignment.center,
           child: Stack(
             children: [
-              Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: FutureBuilder<void>(
-                    future: _initializeControllerFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        // If the Future is complete, display the preview.
-                        return CameraPreview(_controller!);
-                      } else {
-                        // Otherwise, display a loading indicator.
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                    },
-                  )),
+          
+
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: FutureBuilder<void>(
+                      future: _initializeControllerFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.done) {
+                          // If the Future is complete, display the preview.
+                          return CameraPreview(_controller!);
+                        } else {
+                          // Otherwise, display a loading indicator.
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      },
+                    )),
+              ),
+                  Container(
+             
+                padding: EdgeInsets.only(top: 28,left: 16,right: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InkWell(
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: Icon(Iconsax.arrow_left,color: Colors.white,)),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Container(
+                        width: MediaQuery.of(context).size.width,
+                      child:Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                            TextLabell(
+                      text: "Kedipkan mata",
+                      color: Colors.white,
+                      size: 14,
+                    ),
+                    SizedBox(height: 4,),
+                    TextLabell(
+                      text: "Untuk mulai memindai",
+                      color: Colors.white,
+                      size: 14,
+                    )
+                        ],
+                      ) ,
+                    )
+                  
+                  ],
+                ),
+              ),
               // Positioned(
               //   bottom: 20,
               //   child: Container(

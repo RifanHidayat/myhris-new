@@ -52,6 +52,8 @@ class AbsenController extends GetxController {
   Rx<List<String>> placeCoordinateDropdown = Rx<List<String>>([]);
   var selectedType = "".obs;
 
+  var pauseCamera=false.obs;
+
   var historyAbsen = <AbsenModel>[].obs;
   var historyAbsenShow = [].obs;
   var placeCoordinate = [].obs;
@@ -154,6 +156,7 @@ class AbsenController extends GetxController {
   }
 
   void getDepartemen(status, tanggal) {
+   
     jumlahData.value = 0;
     var connect = Api.connectionApi("get", {}, "all_department");
     connect.then((dynamic res) {
@@ -166,7 +169,7 @@ class AbsenController extends GetxController {
 
           var dataUser = AppData.informasiUser;
           var hakAkses = dataUser![0].em_hak_akses;
-          print(hakAkses);
+         
           if (hakAkses != "" || hakAkses != null) {
             if (hakAkses == '0') {
               var data = {
