@@ -166,6 +166,8 @@ class AuthController extends GetxController {
                 checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
 
             } else {
+
+              
               var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
               var dateNow = DateTime.now();
               var convert = DateFormat('dd-MM-yyyy').format(dateNow);
