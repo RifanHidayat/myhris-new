@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 
 import 'package:siscom_operasional/components/text.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 
 class TextFieldApp {
   static Widget groupColumn(
@@ -18,11 +19,11 @@ class TextFieldApp {
       format,
       enabled,
       icon,
-      isPassword}) {
+      isPassword,subtitle}) {
     return Container(
       width: width ?? MediaQuery.of(Get.context!).size.width,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 20),
+        padding: const EdgeInsets.only(bottom: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -109,6 +110,8 @@ class TextFieldApp {
               validator: validator,
               onChanged: onChange,
             ),
+            SizedBox(height: 5,),
+            TextLabell(text: subtitle ?? "",size: 12,color:Constanst.border,)
           ],
         ),
       ),

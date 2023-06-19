@@ -5,8 +5,10 @@ import 'package:siscom_operasional/components/text.dart';
 import 'package:siscom_operasional/components/text_field.dart';
 import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:siscom_operasional/screen/lupa_password/list.dart';
 import 'package:siscom_operasional/screen/register.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class Login extends StatelessWidget {
@@ -210,6 +212,14 @@ class Login extends StatelessWidget {
                                 this.controller.showpassword.value =
                                     !this.controller.showpassword.value;
                               }),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: InkWell(
+                            onTap: (){
+                              Get.to(LupaPassword());
+                            },
+                            child: TextLabell(text: "Lupa password ?",size: 12,color:Constanst.colorPrimary,)),
                         ),
                         // Padding(
                         //   padding: EdgeInsets.only(left: 5),

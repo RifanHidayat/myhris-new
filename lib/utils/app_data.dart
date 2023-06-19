@@ -9,6 +9,8 @@ class AppData {
 
   static set statusAbsen(bool value) =>
       LocalStorage.saveToDisk('statusAbsen', value);
+       static set  kodeVerifikasi(String value) =>
+      LocalStorage.saveToDisk('kodeVerifikasi', value);
 
         static set isLogin(bool value) =>
       LocalStorage.saveToDisk('isLogin', value);
@@ -57,6 +59,12 @@ class AppData {
     return false;
   }
   
+    static String get kodeVerifikasi {
+    if (LocalStorage.getFromDisk('kodeVerifikasi') != null) {
+      return LocalStorage.getFromDisk('kodeVerifikasi');
+    }
+    return "";
+  }
    static bool get isLogin {
     if (LocalStorage.getFromDisk('isLogin') != null) {
       return LocalStorage.getFromDisk('isLogin');

@@ -24,6 +24,7 @@ class AuthController extends GetxController {
   var email = TextEditingController().obs;
   var tempEmail = TextEditingController().obs;
   var showpassword = false.obs;
+  
   var databases = <DatabaseModel>[].obs;
   var selectedDb = "".obs;
   var selectedPerusahaan = "".obs;

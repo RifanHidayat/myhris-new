@@ -29,12 +29,13 @@ class Request {
   Future<http.Response> get() async {
     print("url ${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"+params??""}");
     return await http
-        .get(Uri.parse(baseUrl+url), headers: headers)
+        .get(Uri.parse("${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"+params??""}"), headers: headers)
         .timeout(Duration(minutes: 2));
   }
   Future<http.Response> post() async {
+      print("url ${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"+params??""}");
     return await http
-        .post(Uri.parse(baseUrl+url), body: jsonEncode(body), headers: headers)
+        .post(Uri.parse("${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"+params??""}"), body: jsonEncode(body), headers: headers)
         .timeout(Duration(minutes: 2));
   }
 
