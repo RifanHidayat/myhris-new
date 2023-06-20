@@ -23,7 +23,7 @@ class TextFieldApp {
     return Container(
       width: width ?? MediaQuery.of(Get.context!).size.width,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 15),
+        padding: const EdgeInsets.only(bottom: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

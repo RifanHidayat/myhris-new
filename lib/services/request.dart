@@ -33,9 +33,10 @@ class Request {
         .timeout(Duration(minutes: 2));
   }
   Future<http.Response> post() async {
-      print("url ${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"+params??""}");
+      print("urll${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"}");
+      print(body);
     return await http
-        .post(Uri.parse("${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"+params??""}"), body: jsonEncode(body), headers: headers)
+        .post(Uri.parse("${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"}"), body: jsonEncode(body), headers: headers)
         .timeout(Duration(minutes: 2));
   }
 
@@ -52,7 +53,7 @@ class Request {
   //tampa database
   
     Future<http.Response> getCheckDatabase() async {
-    print("url ${baseUrl+url}");
+    print("ural ${baseUrl+url}");
     return await http
         .get(Uri.parse(baseUrl+url), headers: headers)
         .timeout(Duration(minutes: 2));

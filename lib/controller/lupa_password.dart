@@ -7,9 +7,13 @@ import 'package:get/get.dart';
 import 'package:siscom_operasional/model/database.dart';
 import 'package:siscom_operasional/screen/buat_password_baru.dart';
 import 'package:siscom_operasional/screen/kode_verifikasi.dart';
+import 'package:siscom_operasional/screen/otp_success.dart';
+import 'package:siscom_operasional/screen/succes_change_passwod.dart';
 import 'package:siscom_operasional/services/request.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
+
+import 'package:http/http.dart' as http;
 
 class LupaPasswordController extends GetxController {
   var menus = [
@@ -39,7 +43,7 @@ class LupaPasswordController extends GetxController {
     try {
       UtilsAlert.showLoadingIndicator(Get.context!);
       var response =
-          await Request(url: "/login/check-database?email=rifan@siscom.co.id")
+          await Request(url: "/login/check-database?email='${email.value.text}'")
               .getCheckDatabase();
       var resp = jsonDecode(response.body);
 
@@ -96,23 +100,37 @@ class LupaPasswordController extends GetxController {
   Future<void> changeNewPassword() async {
     print("tesz");
 
+  var basicAuth = 'Basic ' +
+      base64Encode(utf8
+          .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
+
+  
    
+      Map<String, String> headers = {
+    'Authorization': basicAuth,
+    'Content-type': 'application/json',
+    'Accept': 'application/json',
+    
+  };
  
     try {
       UtilsAlert.showLoadingIndicator(Get.context!);
       print("tes ${AppData.selectedDatabase}");
       var body = {"email": email.value.text.toString(), "password": password.value.text.toString()};
     
-      var response =
-          await Request(url: "/new-password-baru", body: jsonEncode(body)).post();
+      // var response =
+      //     await Request(url: "/new-password", body: body).post();
+          var response=await http.post(Uri.parse("http://kantor.membersis.com:2628/new-password?database=${AppData.selectedDatabase}"),body: jsonEncode(body),headers: headers);
       var resp = jsonDecode(response.body);
-      print(resp);
+      print(response.statusCode);
 
       if (response.statusCode == 200) {
-      
-        Get.back();
+           Get.back();
 
-        Get.off(BuatPasswordbaru());
+        print("masuk sinii");
+       Get.off(SuccessCangePasswordPage());
+     
+       
       } else {
         Get.back();
       }

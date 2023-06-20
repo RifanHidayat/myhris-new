@@ -80,21 +80,21 @@ class GlobalController extends GetxController {
       }
     }
 
-print("data ${emids.toString()}");
+    print("data ${emids.toString()}");
     Map<String, dynamic> body = {'reminder': statusReminder};
     var connect = Api.connectionApi("post", body, "info_sisa_kontrak");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         employeeSisaCuti.value = valueBody['data'];
-        var tempData=[];
+        var tempData = [];
         emids.forEach((element) {
           if (element.toString() ==
               AppData.informasiUser![0].em_id.toString()) {
             status = true;
             tempData.add(element);
           }
-       
+
           // status
           // if (element.toString()==AppData.informasiUser![0].em_id.toString())
           // {
@@ -104,15 +104,11 @@ print("data ${emids.toString()}");
 
           // }
         });
-       
-       
-        print("status ${AppData.informasiUser![0].em_id.toString()} ${status}");
-           if (status==false){
-            
-           
-           employeeSisaCuti.value=tempData;
 
-          }
+        print("status ${AppData.informasiUser![0].em_id.toString()} ${status}");
+        if (status == false) {
+          employeeSisaCuti.value = tempData;
+        }
         this.employeeSisaCuti.refresh();
       }
     });
@@ -350,7 +346,7 @@ print("data ${emids.toString()}");
 
   void kirimUcapanWa(message, nomorUltah) async {
     if (nomorUltah == "" || nomorUltah == null || nomorUltah == "null") {
-      UtilsAlert.showToast("Nomor wa atasan tidak valid");
+      UtilsAlert.showToast("Nomor WA tidak tersedia");
     } else {
       var dataUser = AppData.informasiUser;
       var getEmid = dataUser![0].em_id;
@@ -368,18 +364,15 @@ print("data ${emids.toString()}");
 
       if (Platform.isIOS) {
         // for iOS phone only
-        if (await canLaunch(whatappURL_ios)) {
-          await launch(whatappURL_ios, forceSafariVC: false);
-        } else {
-          UtilsAlert.showToast("Whatsapp tidak terinstall");
-        }
+        await launchUrl(Uri.parse(whatappURL_ios));
       } else {
+        await launchUrl(Uri.parse(whatsappURl_android));
         // android , web
-        if (await canLaunch(whatsappURl_android)) {
+        /*  if (await launchUrl(whatsappURl_android)) {
           await launch(whatsappURl_android);
         } else {
           UtilsAlert.showToast("Whatsapp tidak terinstall");
-        }
+        } */
       }
     }
   }

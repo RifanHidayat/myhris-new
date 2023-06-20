@@ -39,6 +39,7 @@ class Api {
       'Authorization': basicAuth,
       'Content-type': 'application/json',
       'Accept': 'application/json',
+      'token':AppData.setFcmToken
     };
     if (typeConnect == "post") {
       try {

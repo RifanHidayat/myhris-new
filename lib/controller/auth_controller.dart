@@ -94,7 +94,7 @@ class AuthController extends GetxController {
       Map<String, dynamic> body = {
         'email': email.value.text,
         'password': password.value.text,
-       'token_notif': fcm_registration_token.toString(),
+        'token_notif': fcm_registration_token.toString(),
         'database':selectedDb.value
       };
       var connect = Api.connectionApi("post", body, "login");
@@ -152,6 +152,7 @@ class AuthController extends GetxController {
 
 
             AppData.isLogin=true;
+            AppData.setFcmToken=fcm_registration_token.toString();
             print(element.toString());
 
           }

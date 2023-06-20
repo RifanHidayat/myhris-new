@@ -69,7 +69,7 @@ class _SuccessCangePasswordPageState extends State<SuccessCangePasswordPage> {
                     color: Constanst.colorPrimary),
                 padding: EdgeInsets.only(top: 10, bottom: 10),
                 child: TextLabell(
-                  text: "Buat Password",
+                  text: "Login",
                   color: Colors.white,
                   align: TextAlign.center,
                   size: 14,

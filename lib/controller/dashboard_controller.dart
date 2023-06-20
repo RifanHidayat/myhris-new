@@ -127,8 +127,7 @@ var isPauseCamera=true;
     var connect = Api.connectionApi("post", body, "view_last_absen_user");
     var value = await connect;
     var valueBody = jsonDecode(value.body);
-    print("view last absen ${valueBody}");
-
+ 
     List data = valueBody['data'];
 
     print('data response $valueBody');

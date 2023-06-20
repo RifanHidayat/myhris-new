@@ -17,8 +17,8 @@ import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class FormTugasLuar extends StatefulWidget {
-  List? dataForm;
-  FormTugasLuar({Key? key, this.dataForm}) : super(key: key);
+  List? dataForm,type;
+  FormTugasLuar({Key? key, this.dataForm,type}) : super(key: key);
   @override
   _FormTugasLuarState createState() => _FormTugasLuarState();
 }
@@ -28,7 +28,9 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
 
   @override
   void initState() {
+    print(controller.viewTugasLuar.value);
     if (widget.dataForm![1] == true) {
+
       print("nomor ajuan ${widget.dataForm![0]['nomor_ajuan']}");
       controller.nomorAjuan.value.text =
           "${widget.dataForm![0]['nomor_ajuan']}";
@@ -39,6 +41,8 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
       controller.tanggalTugasLuar.value.text =
           Constanst.convertDate("${widget.dataForm![0]['atten_date']}");
       if (controller.viewTugasLuar.value) {
+        controller.selectedDropdownFormTugasLuarTipe.value="Tugas Luar";
+
         var convertDariJam = widget.dataForm![0]['dari_jam'].split(":");
         var convertSampaiJam = widget.dataForm![0]['sampai_jam'].split(":");
         var hasilDarijam = "${convertDariJam[0]}:${convertDariJam[1]}";
@@ -47,6 +51,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
         controller.sampaiJam.value.text = hasilSampaijam;
         controller.catatan.value.text = widget.dataForm![0]['uraian'];
       } else {
+        controller.selectedDropdownFormTugasLuarTipe.value="Dinas Luar";
         controller.screenTanggalSelected.value = false;
         controller.dariTanggal.value.text = widget.dataForm![0]['start_date'];
         controller.sampaiTanggal.value.text = widget.dataForm![0]['end_date'];
@@ -275,6 +280,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
                 }).toList(),
                 value: controller.selectedDropdownFormTugasLuarTipe.value,
                 onChanged: (selectedValue) {
+                  print(controller.selectedDropdownFormTugasLuarTipe.value);
                   controller.gantiTypeAjuan(selectedValue);
                 },
                 isExpanded: true,

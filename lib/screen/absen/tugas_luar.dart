@@ -177,9 +177,9 @@ class _TugasLuarState extends State<TugasLuar> {
                       child: Icon(Iconsax.add_square),
                       backgroundColor: Color(0xff14B156),
                       foregroundColor: Colors.white,
-                      label: 'Buat Pengajuan Tugas Luar',
+                      label:controller.viewTugasLuar.value? 'Buat Pengajuan Tugas Luar':"Buat Pengajuan Dinas Luar",
                       onTap: () {
-                        controller.viewTugasLuar.value = true;
+                      
                         Get.to(FormTugasLuar(
                           dataForm: [[], false],
                         ));
@@ -193,9 +193,9 @@ class _TugasLuarState extends State<TugasLuar> {
             child: controller.showButtonlaporan.value == true
                 ? SizedBox()
                 : TextButtonWidget2(
-                    title: "Buat Pengajuan Tugas Luar",
+                    title:  controller.viewTugasLuar.value? "Buat Pengajuan Tugas Luar":"Buat Pengajuan Dinas Luar",
                     onTap: () {
-                      controller.viewTugasLuar.value = true;
+                     
                       Get.to(FormTugasLuar(
                         dataForm: [[], false],
                       ));

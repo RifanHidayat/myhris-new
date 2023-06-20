@@ -12,6 +12,9 @@ class AppData {
        static set  kodeVerifikasi(String value) =>
       LocalStorage.saveToDisk('kodeVerifikasi', value);
 
+      static set  setFcmToken(String value) =>
+      LocalStorage.saveToDisk('setFcmToken', value);
+
         static set isLogin(bool value) =>
       LocalStorage.saveToDisk('isLogin', value);
 
@@ -109,6 +112,12 @@ class AppData {
   static String get passwordUser {
     if (LocalStorage.getFromDisk('passwordUser') != null) {
       return LocalStorage.getFromDisk('passwordUser');
+    }
+    return "";
+  }
+   static String get setFcmToken {
+    if (LocalStorage.getFromDisk('setFcmToken') != null) {
+      return LocalStorage.getFromDisk('setFcmToken');
     }
     return "";
   }

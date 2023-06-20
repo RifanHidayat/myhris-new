@@ -548,6 +548,7 @@ class AbsenController extends GetxController {
           'Authorization': Api.basicAuth,
           'Content-type': 'application/json',
           'Accept': 'application/json',
+          
         };
         Map<String, String> body = {
           'em_id': getEmpId.toString(),
