@@ -517,7 +517,8 @@ class AbsenController extends GetxController {
       'Authorization': Api.basicAuth,
       'Content-type': 'application/json',
       'Accept': 'application/json',
-      'token': Api.token
+      'token': AppData.setFcmToken,
+     'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
     };
 
     var request = http.MultipartRequest(
@@ -548,6 +549,8 @@ class AbsenController extends GetxController {
           'Authorization': Api.basicAuth,
           'Content-type': 'application/json',
           'Accept': 'application/json',
+          'token': AppData.setFcmToken,
+          'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
           
         };
         Map<String, String> body = {
@@ -621,7 +624,8 @@ class AbsenController extends GetxController {
         'Authorization': Api.basicAuth,
         'Content-type': 'application/json',
         'Accept': 'application/json',
-        'token': Api.token
+       'token': AppData.setFcmToken,
+    'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
       };
       var request = http.MultipartRequest(
         "POST",
@@ -2007,6 +2011,8 @@ class AbsenController extends GetxController {
         'Authorization': Api.basicAuth,
         'Content-type': 'application/json',
         'Accept': 'application/json',
+        'token': AppData.setFcmToken,
+     'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
       };
       print("body" + body.toString());
 

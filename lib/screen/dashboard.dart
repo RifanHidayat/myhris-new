@@ -1397,10 +1397,10 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     controllerBpj.employeDetaiBpjs();
     controllerAbsensi.employeDetail();
-
     controller.initData();
     controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
     absenControllre.getTimeNow();
+    Api().checkLogin();
   }
 
   void _checkversion() async {

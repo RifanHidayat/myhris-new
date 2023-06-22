@@ -39,11 +39,12 @@ class LupaPasswordController extends GetxController {
   final time = '00.00.'.obs;
 
   Future<bool> dataabse() async {
+    print("email ${email.value.text}");
     tempEmail.value.text = "";
     try {
       UtilsAlert.showLoadingIndicator(Get.context!);
       var response =
-          await Request(url: "/login/check-database?email='${email.value.text}'")
+          await Request(url: "/login/check-database?email=${email.value.text}")
               .getCheckDatabase();
       var resp = jsonDecode(response.body);
 
@@ -86,6 +87,7 @@ class LupaPasswordController extends GetxController {
       if (response.statusCode == 200) {
         AppData.kodeVerifikasi = kode.toString();
         Get.back();
+        Get.back();
         _startTimer(120);
         Get.to(KodeVerifikasiPage());
       } else {
@@ -110,6 +112,8 @@ class LupaPasswordController extends GetxController {
     'Authorization': basicAuth,
     'Content-type': 'application/json',
     'Accept': 'application/json',
+    'token': AppData.setFcmToken,
+  
     
   };
  
@@ -120,7 +124,7 @@ class LupaPasswordController extends GetxController {
     
       // var response =
       //     await Request(url: "/new-password", body: body).post();
-          var response=await http.post(Uri.parse("http://kantor.membersis.com:2628/new-password?database=${AppData.selectedDatabase}"),body: jsonEncode(body),headers: headers);
+          var response=await http.post(Uri.parse("http://kantor.membersis.com:3001/new-password?database=${AppData.selectedDatabase}"),body: jsonEncode(body),headers: headers);
       var resp = jsonDecode(response.body);
       print(response.statusCode);
 

@@ -375,7 +375,8 @@ class Onboard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0),
                     ))),
                 onPressed: () async {
-                  if (AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" ){
+                
+                  if (AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ){
                     AppData.isLogin=false;
                   }
 

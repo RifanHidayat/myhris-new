@@ -89,6 +89,7 @@ class _BuatPasswordbaruState extends State<BuatPasswordbaru> {
                   alignment: Alignment.bottomCenter,
                   child: InkWell(
                     onTap: (){
+                      print("tes");
                    
                       if (controller.password1.value.text==controller.password.value.text){
                         controller.changeNewPassword();

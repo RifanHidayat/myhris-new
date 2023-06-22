@@ -12,6 +12,7 @@ import 'package:siscom_operasional/controller/lembur_controller.dart';
 import 'package:siscom_operasional/screen/absen/form/form_lembur.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
+import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
@@ -29,6 +30,8 @@ class _LemburState extends State<Lembur> {
   @override
   void initState() {
     super.initState();
+
+    Api().checkLogin();
   }
 
   Future<void> refreshData() async {

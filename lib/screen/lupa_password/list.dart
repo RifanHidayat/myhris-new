@@ -213,10 +213,14 @@ class _LupaPasswordState extends State<LupaPassword> {
                               children: [
                                 Container(
                                   child: TextFieldApp.groupColumn(
+                                    onChange: (value){
+                                      controller.perusahaan.text ="";
+                                    },
                                       title: "Email",
                                       icon: Iconsax.sms,
                                       controller: controller.email.value,
                                       hintText: "Masukan Email"),
+                                    
                                 ),
                                 TextFieldApp.groupColumnSelected(
                                     title: "Pilih Perusahaan",
@@ -337,8 +341,15 @@ class _LupaPasswordState extends State<LupaPassword> {
                                   .isNotEmpty
                               ? InkWell(
                                 onTap: (){
-                                   print("tes");
+                                  print(controller.email.value);
+                                  if (controller.email.value.text=="" || controller.perusahaan.value.text==""){
+                                    UtilsAlert.showToast("Lengkapi formmu terlebih dahulu");
+
+                                  }else{
                                       controller.sendEmail();
+
+                                  }
+                                    
                                 },
                                 child: Container(
                                     decoration: BoxDecoration(

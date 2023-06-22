@@ -122,8 +122,20 @@ class SettingController extends GetxController {
         Navigator.pop(Get.context!);
         _stopForegroundTask();
         Get.offAll(Login());
+         AppData.isLogin = false;
       }
     });
+  }
+    validateAuth(code) {
+    print("kode validate");
+    if (code == 401) {
+          AppData.informasiUser = null;
+        Navigator.pop(Get.context!);
+        _stopForegroundTask();
+        Get.offAll(Login());
+         AppData.isLogin = false;
+    
+    }
   }
 
   Future<bool> _stopForegroundTask() async {

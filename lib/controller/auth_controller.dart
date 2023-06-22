@@ -406,13 +406,17 @@ class AuthController extends GetxController {
                         children: [
                           Expanded(
                             flex: 50,
-                            child: Container(
-                              padding: EdgeInsets.only(top: 10,bottom: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(width: 1,color: Constanst.border)
+                            child: InkWell(
+                              onTap: ()=>Get.back(),
+
+                              child: Container(
+                                padding: EdgeInsets.only(top: 10,bottom: 10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(width: 1,color: Constanst.border)
+                                ),
+                                child: Center(child: TextLabell(text: "Batal",)),
                               ),
-                              child: Center(child: TextLabell(text: "Batal",)),
                             ),
                           ),
                           SizedBox(width: 5,),

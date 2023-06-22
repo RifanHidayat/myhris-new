@@ -11,6 +11,7 @@ import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/screen/absen/izin.dart';
 import 'package:siscom_operasional/screen/absen/lembur.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
+import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
@@ -44,6 +45,7 @@ class _FormizinState extends State<Formizin> {
       controller.nomorAjuan.value.text =
           "${widget.dataForm![0]['nomor_ajuan']}";
     }
+      Api().checkLogin();
     super.initState();
   }
 

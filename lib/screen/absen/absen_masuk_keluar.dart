@@ -12,6 +12,7 @@ import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
+import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
@@ -47,6 +48,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
   int maxExtend = 250;
 
   void initState() {
+      Api().checkLogin();
     // TODO: implement initState
     super.initState();
     controller.deskripsiAbsen.clear();

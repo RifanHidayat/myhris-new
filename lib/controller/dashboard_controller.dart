@@ -293,6 +293,7 @@ var isPauseCamera=true;
     Map<String, dynamic> body = {'em_id': getEmid};
     var connect = Api.connectionApi("post", body, "refresh_employee");
     connect.then((dynamic res) {
+    
       var valueBody = jsonDecode(res.body);
       if (valueBody['status'] == false) {
         UtilsAlert.showToast(valueBody['message']);
@@ -331,6 +332,7 @@ var isPauseCamera=true;
         print("Selesai update data");
         getUserInfo();
       }
+         Api().validateAuth(res.statusCode );
     });
   }
 
@@ -407,6 +409,7 @@ var isPauseCamera=true;
     var connect = Api.connectionApi("get", {}, "menu_dashboard",
         params: "&em_id=${AppData.informasiUser![0].em_id}");
     connect.then((dynamic res) {
+     
       if (res == false) {
         UtilsAlert.koneksiBuruk();
       } else {

@@ -8,6 +8,7 @@ import 'package:siscom_operasional/screen/absen/laporan/laporan_absen.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_absen_telat.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_belum_absen.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
+import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
@@ -27,6 +28,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
   @override
   void initState() {
     super.initState();
+    Api().checkLogin();
     controller.loadHistoryAbsenUser();
   }
 

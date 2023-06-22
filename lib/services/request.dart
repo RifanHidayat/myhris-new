@@ -17,11 +17,13 @@ class Request {
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
   
-  var baseUrl="http://kantor.membersis.com:2628";   
+  var baseUrl="http://kantor.membersis.com:3001";   
       Map<String, String> headers = {
     'Authorization': basicAuth,
     'Content-type': 'application/json',
     'Accept': 'application/json',
+    'token': AppData.setFcmToken,
+  'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
     
   }; 
 

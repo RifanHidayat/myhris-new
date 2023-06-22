@@ -14,6 +14,7 @@ import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan.
 import 'package:siscom_operasional/screen/absen/form/form_pengajuan_cuti.dart';
 import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
+import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
@@ -30,6 +31,7 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
 
   @override
   void initState() {
+    Api().checkLogin();
     super.initState();
   }
 

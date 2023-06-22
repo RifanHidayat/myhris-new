@@ -534,6 +534,8 @@ class TidakMasukKerjaController extends GetxController {
   }
 
   void validasiKirimPengajuan(status) {
+    print("tanggal selecetd ${tanggalSelected.value.isEmpty}");
+    print(viewFormWaktu.value );
     if (viewFormWaktu.value == true) {
       if (jamAjuan.value.text == "" ||
           sampaiJamAjuan.value.text == "" ||
@@ -557,15 +559,40 @@ class TidakMasukKerjaController extends GetxController {
     } else {
       if (alasan.value.text == "") {
         UtilsAlert.showToast("Form * harus di isi");
-      } else if (tanggalSelected.value.isEmpty) {
-        UtilsAlert.showToast("Pilih tanggal terlebih dahulu");
+      } else if (tanggalSelectedEdit.value.isNotEmpty) {
+         nextKirimPengajuan(status);
+
+        
+
+        // if (tanggalSelectedEdit.value.isNotEmpty){
+        
+
+        // }else {
+        //   if (tanggalSelected.value.isEmpty){
+        //      UtilsAlert.showToast("Pilih tanggal terlebih dahulu");
+
+        //   }else{
+        //       nextKirimPengajuan(status);
+
+        //   }
+        // }
+       
       } else {
-        nextKirimPengajuan(status);
+              if (tanggalSelected.value.isEmpty){
+             UtilsAlert.showToast("Pilih tanggal terlebih dahulu");
+
+          }else{
+              nextKirimPengajuan(status);
+
+          }
+        
       }
     }
   }
 
-  void nextKirimPengajuan(status) async {
+  void 
+  
+  nextKirimPengajuan(status) async {
     if (uploadFile.value == true) {
       UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan File");
       var connectUpload = await Api.connectionApiUploadFile(
@@ -595,11 +622,10 @@ class TidakMasukKerjaController extends GetxController {
     var convertTanggalBikinPengajuan = status == false
         ? Constanst.convertDateSimpan(tanggalBikinPengajuan.value)
         : tanggalBikinPengajuan.value;
+        print("new type  ${allTipe.value} ${selectedDropdownFormTidakMasukKerjaTipe.value}");
 
-    var pola = selectedDropdownFormTidakMasukKerjaTipe.value ==
-            allTipe.value[0]['name']
-        ? "SD"
-        : "ST";
+    var pola = selectedDropdownFormTidakMasukKerjaTipe.value.toString().contains("SAKIT DENGAN") 
+        ? "SD" :selectedDropdownFormTidakMasukKerjaTipe.value.toString().contains("SAKIT TANPA")?"ST":"IZ";
 
     Map<String, dynamic> body = {
       'atten_date': convertTanggalBikinPengajuan,
@@ -1003,7 +1029,7 @@ class TidakMasukKerjaController extends GetxController {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Batalkan Pengajuan",
+                                      "Batalkan Pengajuann",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16),
@@ -1112,6 +1138,7 @@ class TidakMasukKerjaController extends GetxController {
     var connect = Api.connectionApi("post", body, "edit-emp_leave");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
+        loadDataAjuanIzin() ;
         Navigator.pop(Get.context!);
         Navigator.pop(Get.context!);
         UtilsAlert.showToast("Berhasil batalkan pengajuan");
