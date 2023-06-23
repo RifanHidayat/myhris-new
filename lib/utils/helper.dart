@@ -23,3 +23,12 @@ String toCurrency(dynamic value) {
 
   return noSimbolInUSFormat.format(toInt(value));
 }
+
+String formatPhoneNumberTo62(dynamic value) {
+  if (value.toString().length >= 2) {
+    var phone = "";
+    phone = "628${value.toString().substring(2, value.toString().length)}";
+    return phone.toString();
+  }
+  return "";
+}

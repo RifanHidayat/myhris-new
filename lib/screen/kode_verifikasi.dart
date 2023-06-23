@@ -13,7 +13,8 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class KodeVerifikasiPage extends StatefulWidget {
-  const KodeVerifikasiPage({super.key});
+  var type;
+  KodeVerifikasiPage({super.key,required this.type});
 
   @override
   State<KodeVerifikasiPage> createState() => _KodeVerifikasiPageState();
@@ -58,7 +59,7 @@ class _KodeVerifikasiPageState extends State<KodeVerifikasiPage> {
               ),
               TextLabell(
                 text:
-                    "masukan kode OTP yang berhasil dikirim ke email ${controller.email.value.text}.",
+                    widget.type=="wa"? "masukan kode OTP yang berhasil dikirim ke whatsapp dengan nomor ${controller.mobileCtr.value.text}.":"masukan kode OTP yang berhasil dikirim ke email ${controller.email.value.text}.",
                 size: 13,
                 weight: FontWeight.w500,
               ),
@@ -114,7 +115,15 @@ class _KodeVerifikasiPageState extends State<KodeVerifikasiPage> {
                         child: Obx(() => controller.time.value == "00:01"
                             ? InkWell(
                               onTap: (){
-                              controller.sendEmailRepeat();
+                                if (widget.type=="wa"){
+                                  controller.sendWaRepear();
+
+                                }else{
+                                  print("tesew");
+                                     controller.sendEmailRepeat();
+
+                                }
+                           
                               },
                               child: TextLabell(
                                   text: "Kirim Ulang",

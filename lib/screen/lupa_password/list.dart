@@ -80,121 +80,121 @@ class _LupaPasswordState extends State<LupaPassword> {
                 SizedBox(
                   height: 16,
                 ),
-                // Obx(() => Row(
-                //       children: List.generate(controller.menus.length, (index) {
-                //         var data = controller.menus[index];
-                //         return Expanded(
-                //           flex: 50,
-                //           child: data['is_active'] == 0
-                //               ? InkWell(
-                //                   onTap: () {
-                //                     controller.menus.forEach((element) {
-                //                       element['is_active'] = 0;
-                //                     });
-                //                     data['is_active'] = 1;
-                //                     controller.menus.refresh();
-                //                   },
-                //                   child: Container(
-                //                     child: Column(
-                //                       children: [
-                //                         TextLabell(
-                //                           text: "${data['name']}",
-                //                           size: 14,
-                //                         ),
-                //                         SizedBox(
-                //                           height: 5,
-                //                         ),
-                //                         Container(
-                //                           height: 5,
-                //                           child: Stack(
-                //                             children: [
-                //                               data['is_active'] == 1
-                //                                   ? Align(
-                //                                       alignment: Alignment.center,
-                //                                       child: Container(
-                //                                         width: 50,
-                //                                         height: 4,
-                //                                         decoration: BoxDecoration(
-                //                                             color: Constanst
-                //                                                 .colorPrimary,
-                //                                             borderRadius:
-                //                                                 BorderRadius.only(
-                //                                                     topLeft: Radius
-                //                                                         .circular(
-                //                                                             8),
-                //                                                     topRight: Radius
-                //                                                         .circular(
-                //                                                             8))),
-                //                                       ),
-                //                                     )
-                //                                   : Container(),
-                //                               Divider(
-                //                                 thickness: 2,
-                //                                 color: Constanst.border,
-                //                               )
-                //                             ],
-                //                           ),
-                //                         )
-                //                       ],
-                //                     ),
-                //                   ),
-                //                 )
-                //               : InkWell(
-                //                   onTap: () {
-                //                     controller.menus.forEach((element) {
-                //                       element['is_active'] = 0;
-                //                     });
-                //                     data['is_active'] = 1;
-                //                     controller.menus.refresh();
-                //                   },
-                //                   child: Container(
-                //                     child: Column(
-                //                       children: [
-                //                         TextLabell(
-                //                           text: "${data['name']}",
-                //                           size: 14,
-                //                         ),
-                //                         SizedBox(
-                //                           height: 5,
-                //                         ),
-                //                         Container(
-                //                           height: 5,
-                //                           child: Stack(
-                //                             children: [
-                //                               data['is_active'] == 1
-                //                                   ? Align(
-                //                                       alignment: Alignment.center,
-                //                                       child: Container(
-                //                                         width: 50,
-                //                                         height: 4,
-                //                                         decoration: BoxDecoration(
-                //                                             color: Constanst
-                //                                                 .colorPrimary,
-                //                                             borderRadius:
-                //                                                 BorderRadius.only(
-                //                                                     topLeft: Radius
-                //                                                         .circular(
-                //                                                             8),
-                //                                                     topRight: Radius
-                //                                                         .circular(
-                //                                                             8))),
-                //                                       ),
-                //                                     )
-                //                                   : Container(),
-                //                               Divider(
-                //                                 thickness: 2,
-                //                                 color: Constanst.border,
-                //                               )
-                //                             ],
-                //                           ),
-                //                         )
-                //                       ],
-                //                     ),
-                //                   ),
-                //                 ),
-                //         );
-                //       }),
-                //     )),
+                Obx(() => Row(
+                      children: List.generate(controller.menus.length, (index) {
+                        var data = controller.menus[index];
+                        return Expanded(
+                          flex: 50,
+                          child: data['is_active'] == 0
+                              ? InkWell(
+                                  onTap: () {
+                                    controller.menus.forEach((element) {
+                                      element['is_active'] = 0;
+                                    });
+                                    data['is_active'] = 1;
+                                    controller.menus.refresh();
+                                  },
+                                  child: Container(
+                                    child: Column(
+                                      children: [
+                                        TextLabell(
+                                          text: "${data['name']}",
+                                          size: 14,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Container(
+                                          height: 5,
+                                          child: Stack(
+                                            children: [
+                                              data['is_active'] == 1
+                                                  ? Align(
+                                                      alignment: Alignment.center,
+                                                      child: Container(
+                                                        width: 50,
+                                                        height: 4,
+                                                        decoration: BoxDecoration(
+                                                            color: Constanst
+                                                                .colorPrimary,
+                                                            borderRadius:
+                                                                BorderRadius.only(
+                                                                    topLeft: Radius
+                                                                        .circular(
+                                                                            8),
+                                                                    topRight: Radius
+                                                                        .circular(
+                                                                            8))),
+                                                      ),
+                                                    )
+                                                  : Container(),
+                                              Divider(
+                                                thickness: 2,
+                                                color: Constanst.border,
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : InkWell(
+                                  onTap: () {
+                                    controller.menus.forEach((element) {
+                                      element['is_active'] = 0;
+                                    });
+                                    data['is_active'] = 1;
+                                    controller.menus.refresh();
+                                  },
+                                  child: Container(
+                                    child: Column(
+                                      children: [
+                                        TextLabell(
+                                          text: "${data['name']}",
+                                          size: 14,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Container(
+                                          height: 5,
+                                          child: Stack(
+                                            children: [
+                                              data['is_active'] == 1
+                                                  ? Align(
+                                                      alignment: Alignment.center,
+                                                      child: Container(
+                                                        width: 50,
+                                                        height: 4,
+                                                        decoration: BoxDecoration(
+                                                            color: Constanst
+                                                                .colorPrimary,
+                                                            borderRadius:
+                                                                BorderRadius.only(
+                                                                    topLeft: Radius
+                                                                        .circular(
+                                                                            8),
+                                                                    topRight: Radius
+                                                                        .circular(
+                                                                            8))),
+                                                      ),
+                                                    )
+                                                  : Container(),
+                                              Divider(
+                                                thickness: 2,
+                                                color: Constanst.border,
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                        );
+                      }),
+                    )),
                 SizedBox(
                   height: 10,
                 ),
@@ -229,7 +229,7 @@ class _LupaPasswordState extends State<LupaPassword> {
                                     enabled: false,
                                     controller: controller.perusahaan,
                                     onTap: () {
-                                      print("tes");
+                                     
                                       if (controller.email.value.text != "") {
                                         if (controller.tempEmail.value.text ==
                                             controller.email.value.text) {
@@ -313,9 +313,108 @@ class _LupaPasswordState extends State<LupaPassword> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                                              Container(
+                                  child: TextFieldApp.groupColumn(
+                                    onChange: (value){
+                                      controller.perusahaan.text ="";
+                                    },
+                                      title: "Email",
+                                      icon: Iconsax.sms,
+                                      controller: controller.email.value,
+                                      hintText: "Masukan Email"),
+                                    
+                                ),
+                                TextFieldApp.groupColumnSelected(
+                                    title: "Pilih Perusahaan",
+                                    icon: Iconsax.arrow_down_1,
+                                    hintText: "PT. Shan Informasi Sistem",
+                                    enabled: false,
+                                    controller: controller.perusahaan,
+                                    onTap: () {
+                                     
+                                      if (controller.email.value.text != "") {
+                                        if (controller.tempEmail.value.text ==
+                                            controller.email.value.text) {
+                                          if (controller.databases.isNotEmpty) {
+                                            controller.dataabse().then((value) {
+                                              if (value == true) {
+                                                showModalBottomSheet(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  isScrollControlled: true,
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return FractionallySizedBox(
+                                                        heightFactor: 0.6,
+                                                        child:
+                                                            _bottomSheetBpjsDetail(
+                                                                context));
+                                                  },
+                                                );
+                                              } else {
+                                                UtilsAlert.showToast(
+                                                    "Database tidak tersedia");
+                                              }
+                                            });
+                                            // showModalBottomSheet(
+                                            //   backgroundColor: Colors.transparent,
+                                            //   isScrollControlled: true,
+                                            //   context: context,
+                                            //   builder: (context) {
+                                            //     return FractionallySizedBox(
+                                            //         heightFactor: 0.6,
+                                            //         child: _bottomSheetBpjsDetail(
+                                            //             context));
+                                            //   },
+                                            // );
+                                            // showModalBottomSheet(
+                                            //   backgroundColor: Colors.transparent,
+                                            //   isScrollControlled: true,
+                                            //   context: context,
+                                            //   builder: (context) {
+                                            //     return FractionallySizedBox(
+                                            //         heightFactor: 0.6,
+                                            //         child: _bottomSheetBpjsDetail(
+                                            //             context));
+                                            //   },
+                                            // );
+                                          } else {
+                                            UtilsAlert.showToast(
+                                                "Database tidak tersedia");
+                                          }
+                                        } else {
+                                          controller.dataabse().then((value) {
+                                            if (value == true) {
+                                              showModalBottomSheet(
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                isScrollControlled: true,
+                                                context: context,
+                                                builder: (context) {
+                                                  return FractionallySizedBox(
+                                                      heightFactor: 0.6,
+                                                      child:
+                                                          _bottomSheetBpjsDetail(
+                                                              context));
+                                                },
+                                              );
+                                            } else {
+                                              UtilsAlert.showToast(
+                                                  "Database tidak tersedia");
+                                            }
+                                          });
+                                        }
+                                      } else {
+                                        UtilsAlert.showToast(
+                                            "isi terlebi dahulu email mu");
+                                      }
+                                    }),
+
                                   TextFieldApp.groupColumn(
                                       title: "Nomor HP",
                                       icon: Iconsax.mobile,
+                                      controller: controller.mobileCtr.value,
+                                      keyBoardType: TextInputType.number,
                                       hintText: "Masukan Nomor Hp",
                                       subtitle:
                                           "* Kode akan dikirim via whatsapp"),
@@ -334,7 +433,7 @@ class _LupaPasswordState extends State<LupaPassword> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          controller.menus
+                         Obx(() =>  controller.menus
                                   .where((p0) =>
                                       p0['is_active'] == 1 && p0['name'] == "Email")
                                   .toList()
@@ -349,7 +448,7 @@ class _LupaPasswordState extends State<LupaPassword> {
                                       controller.sendEmail();
 
                                   }
-                                    
+                                     
                                 },
                                 child: Container(
                                     decoration: BoxDecoration(
@@ -360,7 +459,7 @@ class _LupaPasswordState extends State<LupaPassword> {
                                     child: Center(
                                         child: InkWell(
                                       onTap: () {
-                                       
+      
                                       },
                                       child: TextLabell(
                                         text: "Kirim Kode",
@@ -370,19 +469,32 @@ class _LupaPasswordState extends State<LupaPassword> {
                                     )),
                                   ),
                               )
-                              : Container(
-                                  decoration: BoxDecoration(
-                                    color: Constanst.colorPrimary,
-                                    borderRadius: BorderRadius.circular(5),
+                              : InkWell(
+                                onTap: (){
+                                    print(controller.email.value);
+                                  if (controller.email.value.text=="" || controller.perusahaan.value.text=="" || controller.mobileCtr.value.text==""){
+                                    UtilsAlert.showToast("Lengkapi formmu terlebih dahulu");
+
+                                  }else{
+                                      controller.checkNoHp();
+
+                                  }
+                                    print("Lupa password via wa");
+                                },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Constanst.colorPrimary,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                                    child: Center(
+                                        child: TextLabell(
+                                      text: "Kirim Kode",
+                                      color: Colors.white,
+                                      size: 16,
+                                    )),
                                   ),
-                                  padding: EdgeInsets.only(top: 10, bottom: 10),
-                                  child: Center(
-                                      child: TextLabell(
-                                    text: "Kirim Tautan",
-                                    color: Colors.white,
-                                    size: 16,
-                                  )),
-                                ),
+                              ),),
                           SizedBox(
                             height: 10,
                           ),

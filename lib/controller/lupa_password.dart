@@ -4,6 +4,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:siscom_operasional/model/database.dart';
 import 'package:siscom_operasional/screen/buat_password_baru.dart';
 import 'package:siscom_operasional/screen/kode_verifikasi.dart';
@@ -11,6 +13,7 @@ import 'package:siscom_operasional/screen/otp_success.dart';
 import 'package:siscom_operasional/screen/succes_change_passwod.dart';
 import 'package:siscom_operasional/services/request.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
+import 'package:siscom_operasional/utils/helper.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 import 'package:http/http.dart' as http;
@@ -32,6 +35,11 @@ class LupaPasswordController extends GetxController {
   var selectedPerusahaan = "".obs;
   var perusahaan = TextEditingController();
   var tempVerifikasiKode = "".obs;
+  var mobileCtr=TextEditingController().obs;
+
+  var nameTemp="".obs;
+  
+  var emailTemp="".obs;
 
   RxInt levelClock = 0.obs;
   Timer? _timer;
@@ -77,7 +85,7 @@ class LupaPasswordController extends GetxController {
 
     try {
       UtilsAlert.showLoadingIndicator(Get.context!);
-      print("tes");
+   
       var response = await Request(
               url: "/login/send-email",
               params: "&email=${email.value.text}&kode=${kode}")
@@ -85,11 +93,12 @@ class LupaPasswordController extends GetxController {
       var resp = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
+        emailTemp.value=email.value.text;
         AppData.kodeVerifikasi = kode.toString();
         Get.back();
         Get.back();
         _startTimer(120);
-        Get.to(KodeVerifikasiPage());
+        Get.to(KodeVerifikasiPage(type: 'email',));
       } else {
         Get.back();
       }
@@ -99,28 +108,143 @@ class LupaPasswordController extends GetxController {
     }
   }
 
+    Future<void> checkNoHp() async {
+    print("tes");
+    UtilsAlert.showLoadingIndicator(Get.context!);
+    tempEmail.value.text = "";
+
+    final Random random = Random();
+
+    var kode = random.nextInt(9000) + 1000;
+
+    try {
+      UtilsAlert.showLoadingIndicator(Get.context!);
+ 
+      var response = await Request(
+              url: "/login/cek-no-hp",
+              params: "&email=${email.value.text}&kode=${kode}&mobile_phone=${mobileCtr.value.text}")
+          .get();
+      var resp = jsonDecode(response.body);
+      print("data ${resp}");
+
+      if (response.statusCode == 200) {
+        List data=resp['data'];
+      
+        print(data);
+        AppData.kodeVerifikasi = kode.toString();
+
+        if (data.isNotEmpty){
+          nameTemp.value=data[0]['full_name'];
+          emailTemp.value=data[0]['em_email'];
+         
+            if (data[0]['em_mobile']==mobileCtr.value.text.toString()){
+                 sendWa(email: data[0]['em_email'],code: kode,nama: data[0]['full_name'],numbderPhone:mobileCtr.value.text );
+         
+
+        }else{
+           UtilsAlert.showToast("Nomor belum terdaftar");
+                 Get.back();   
+                  Get.back();     
+
+       
+
+        }
+       
+
+        }else{
+            UtilsAlert.showToast("user tidak ditemukan");
+                 Get.back();  
+                  Get.back();      
+        
+
+        }
+ 
+      
+   
+      } else {
+         UtilsAlert.showToast(resp['message']);
+          Get.back();     
+        Get.back();
+      }
+    } catch (e) {
+      print(e);
+        Get.back();     
+        Get.back();
+    }
+  }
+  Future<void> sendWa({email,code,nama,numbderPhone}) async {
+    print("tesz");
+
+  var basicAuth = 'Basic ' +
+      base64Encode(utf8
+          .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
+      Map<String, String> headers = {
+    'Authorization': basicAuth,
+    'Content-type': 'application/json',
+    'Accept': 'application/json',
+   'Authorization': 'Bearer 7301198affec32e754e2c978226c4f1ea957570ce03f0ea0cdd6dbc5dda6218d',
+  };
+    try {
+    
+      print("tes ${AppData.selectedDatabase}");
+      var body = {
+    "client_id" : "0552",
+    "project_id" : "4389",
+    "type": "otp_desktop2",
+    "recipient_number": formatPhoneNumberTo62(numbderPhone.toString()),
+    "language_code": "id",
+    "params": {
+        "1": email,
+        "2": code.toString(),
+        "3": nama.toString(),
+        "4": numbderPhone.toString(),
+        "5": selectedPerusahaan.value,
+        "6": DateFormat().format(DateTime.now())
+    }
+};
+    
+          var response=await http.post(Uri.parse("https://api.wappin.id/v1/message/do-send-hsm/"),body: jsonEncode(body),headers: headers);
+      var resp = jsonDecode(response.body);
+      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+           Get.back();
+
+   Get.back();
+
+  
+
+          _startTimer(120);
+        Get.to(KodeVerifikasiPage(type: "wa",));
+     
+       
+      } else {
+        Get.back();
+      }
+    } catch (e) {
+      print(e);
+      Get.back();
+    }
+  }
+
+
   Future<void> changeNewPassword() async {
     print("tesz");
 
   var basicAuth = 'Basic ' +
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
-
-  
-   
       Map<String, String> headers = {
     'Authorization': basicAuth,
     'Content-type': 'application/json',
     'Accept': 'application/json',
-    'token': AppData.setFcmToken,
-  
-    
+    'token': AppData.setFcmToken, 
   };
- 
     try {
       UtilsAlert.showLoadingIndicator(Get.context!);
       print("tes ${AppData.selectedDatabase}");
-      var body = {"email": email.value.text.toString(), "password": password.value.text.toString()};
+      var body = {"email": email.value.text, "password": password.value.text.toString()};
+      print(body);
     
       // var response =
       //     await Request(url: "/new-password", body: body).post();
@@ -132,7 +256,7 @@ class LupaPasswordController extends GetxController {
            Get.back();
 
         print("masuk sinii");
-       Get.off(SuccessCangePasswordPage());
+        Get.off(SuccessCangePasswordPage());
      
        
       } else {
@@ -176,6 +300,60 @@ class LupaPasswordController extends GetxController {
       Get.back();
     }
   }
+
+    Future<void> sendWaRepear() async {
+    UtilsAlert.showLoadingIndicator(Get.context!);
+  final Random random = Random();
+
+    var kode = random.nextInt(9000) + 1000;
+  var basicAuth = 'Basic ' +
+      base64Encode(utf8
+          .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
+      Map<String, String> headers = {
+    'Authorization': basicAuth,
+    'Content-type': 'application/json',
+    'Accept': 'application/json',
+   'Authorization': 'Bearer 7301198affec32e754e2c978226c4f1ea957570ce03f0ea0cdd6dbc5dda6218d',
+  };
+    try {
+    
+      print("tes ${AppData.selectedDatabase}");
+      var body = {
+    "client_id" : "0552",
+    "project_id" : "4389",
+    "type": "otp_desktop2",
+    "recipient_number": formatPhoneNumberTo62(mobileCtr.value.text ),
+    "language_code": "id",
+    "params": {
+        "1": emailTemp.value.toString(),
+        "2": kode.toString(),
+        "3": nameTemp.value.toLowerCase(),
+        "4": mobileCtr.value.text ,
+        "5": selectedPerusahaan.value,
+        "6": DateFormat().format(DateTime.now())
+    }
+};
+    
+          var response=await http.post(Uri.parse("https://api.wappin.id/v1/message/do-send-hsm/"),body: jsonEncode(body),headers: headers);
+      var resp = jsonDecode(response.body);
+      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+         Get.back();
+        UtilsAlert.showToast("OTP berhasil dikirim");
+        AppData.kodeVerifikasi = kode.toString();
+        // Get.back();
+        _startTimer(120);
+       
+      } else {
+        Get.back();
+      }
+    } catch (e) {
+      print(e);
+      Get.back();
+    }
+  }
+
 
   _startTimer(int seconds) {
     const duration = Duration(seconds: 1);
