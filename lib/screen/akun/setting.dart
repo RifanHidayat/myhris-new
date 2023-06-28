@@ -497,7 +497,7 @@ class _SettingState extends State<Setting> {
                               SizedBox(
                                 height: 3,
                               ),
-                              faceRecog == false
+                              GetStorage().read("face_recog")==false
                                   ? Text(
                                       "Belum Registrasi",
                                       style: TextStyle(

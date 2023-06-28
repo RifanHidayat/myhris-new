@@ -97,6 +97,8 @@ class BpjsController extends GetxController {
         UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
+          print();
+
           var valueBody = jsonDecode(res.body);
           var data = valueBody['data'];
           bpjsKesehatanNumber.value = data[0]['em_bpjs_kesehatan'];

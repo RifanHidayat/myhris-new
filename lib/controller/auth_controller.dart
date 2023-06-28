@@ -30,6 +30,9 @@ class AuthController extends GetxController {
   var selectedPerusahaan = "".obs;
   var perusahaan = TextEditingController();
 
+  var isautoLogout=false.obs;
+  var messageLogout="".obs;
+
   var controllerAbsnsi = Get.put(AbsenController());
 
   @override
@@ -216,6 +219,7 @@ class AuthController extends GetxController {
             AppData.selectedPerusahan=selectedPerusahaan.value;
 
           List<UserModel> getData =  [];
+          
 
           var lastLoginUser = "";
           var getEmId = "";
@@ -323,6 +327,7 @@ class AuthController extends GetxController {
           AppData.emailUser = email.value.text;
           AppData.passwordUser = password.value.text;
           AppData.informasiUser = getData;
+          isautoLogout.value=false;
         }
       }
     });
@@ -343,15 +348,18 @@ class AuthController extends GetxController {
         print("data login ${valueBody}");
         var data = valueBody['data'];
         if (data.isEmpty) {
+          isautoLogout.value=false;
           AppData.statusAbsen = false;
           Get.offAll(InitScreen());
         } else {
           var tanggalTerakhirAbsen = data[0]['atten_date'];
           if (tanggalTerakhirAbsen == convert) {
+            isautoLogout.value=false;
             AppData.statusAbsen =
                 data[0]['signout_time'] == "00:00:00" ? true : false;
             Get.offAll(InitScreen());
           } else {
+            isautoLogout.value=false;
             AppData.statusAbsen = false;
             Get.offAll(InitScreen());
           }

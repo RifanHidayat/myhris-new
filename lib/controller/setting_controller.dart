@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:siscom_operasional/controller/api_controller.dart';
+import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/model/user_model.dart';
 import 'package:siscom_operasional/screen/akun/edit_personal_data.dart';
@@ -60,6 +61,7 @@ class SettingController extends GetxController {
   var dataGolonganDarah = ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'OB+'];
 
   var apiController = Get.put(ApiController());
+  var authController=Get.put(AuthController());
 
   @override
   void onReady() async {
@@ -109,11 +111,12 @@ class SettingController extends GetxController {
   void aksiEditLastLogin() {
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
+  authController.  isautoLogout.value=true;
     Map<String, dynamic> body = {
       'last_login': '0000-00-00 00:00:00',
       'em_id': getEmid
     };
-    var connect = Api.connectionApi("post", body, "edit_last_login");
+    var connect = Api.connectionApi("post", body, "edit_last_login_clear");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);

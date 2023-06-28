@@ -6,20 +6,26 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/screen/login.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
+import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class Api {
   static var basicAuth = 'Basic ' +
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
-  static var basicUrl = "http://kantor.membersis.com:3001/";
+  
+  
+  static var basicUrl = "http://kantor.membersis.com:3001r/";
   static var urlImage = 'https://imagehris.siscom.id:4431';
   static var token = '9d590c04119a4433971a1dd622266d38';
   static var luxand = 'https://api.luxand.cloud/photo/similarity';
+  static var wappin = 'https://api.wappin.id/v1';
+
 
   static var UrlfotoAbsen =
       urlImage + "/${AppData.selectedDatabase}/foto_absen/";
@@ -64,6 +70,20 @@ class Api {
         final url = Uri.parse(getUrl);
         final response =
             await post(url, body: jsonEncode(valFormData), headers: headers);
+        if (response.statusCode == 402) {
+          var authController = Get.put(AuthController());
+          var res = jsonDecode(response.body);
+          var resp = res['message'];
+          authController.messageLogout.value = resp;
+          authController.isautoLogout = true.obs;
+          Api().validateAuth(response.statusCode, resp);
+          return;
+        } else {
+          var authController = Get.put(AuthController());
+          authController.messageLogout.value = "";
+          authController.isautoLogout.value = false;
+        }
+
         return response;
       } on SocketException catch (e) {
         return false;
@@ -119,14 +139,14 @@ class Api {
     // }
   }
 
-  validateAuth(code) {
-   
-    if (code == 401 || code == "" || code == null) {
+  validateAuth(code, message) {
+    if (code == 402 || code == "" || code == null) {
+      
+      AppData.isLogin = false;
       Get.offAll(Login());
 
       _stopForegroundTask();
 
-      AppData.isLogin = false;
       return;
     }
   }
@@ -135,4 +155,3 @@ class Api {
     return await FlutterForegroundTask.stopService();
   }
 }
-

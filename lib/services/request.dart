@@ -26,6 +26,7 @@ class Request {
   'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
     
   }; 
+  
 
   
   Future<http.Response> get() async {

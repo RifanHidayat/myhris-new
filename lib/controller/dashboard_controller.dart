@@ -103,6 +103,7 @@ var isPauseCamera=true;
   }
 
   void initData() async {
+
    
     getBannerDashboard();
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
@@ -332,7 +333,7 @@ var isPauseCamera=true;
         print("Selesai update data");
         getUserInfo();
       }
-         Api().validateAuth(res.statusCode );
+      //   Api().validateAuth(res.statusCode );
     });
   }
 

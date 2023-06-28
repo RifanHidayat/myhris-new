@@ -67,8 +67,35 @@ class Login extends StatelessWidget {
                           "Ketik alamat email dan password untuk masuk",
                         ),
                         SizedBox(
-                          height: 30,
+                          height: 20,
                         ),
+                     Obx(() =>         controller.isautoLogout.value==false?SizedBox():   Padding(
+                          padding: EdgeInsets.only(bottom: 16),
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                             
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(width: 1,color: Constanst.colorPrimary)
+                            ),
+                            child: Row(
+                              children: [
+                              Expanded(
+                                flex: 10,
+                                child: Icon(Iconsax.info_circle,color: Constanst.colorPrimary,)),
+                              Expanded(
+                                flex: 90,
+                                child: TextLabell(text: controller.messageLogout.value.toString(),color: Constanst.colorPrimary,))
+                        
+                      //  Seseorang masuk menggunakan akun anda menyebabkan akun anda keluar secara otomatis
+                              ],
+                            ),
+                          ),
+                        ),),
+                          SizedBox(
+                          height: 10,
+                        ),
+                           
                         // Padding(
                         //   padding: EdgeInsets.only(left: 5),
                         //   child: Text(
@@ -106,6 +133,7 @@ class Login extends StatelessWidget {
                         //     ),
                         //   ),
                         // ),
+                
                         TextFieldApp.groupColumn(
                             title: "Email",
                             icon: Iconsax.sms,

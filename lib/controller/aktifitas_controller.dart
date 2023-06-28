@@ -131,7 +131,9 @@ class AktifitasController extends GetxController {
         listAktifitas.value.add(data);
       }
       this.listAktifitas.refresh();
+      
     });
+    
   }
 
   void getInformasiAktivitas() {
