@@ -355,6 +355,7 @@ class _DashboardState extends State<Dashboard> {
                           child: ClipOval(
                             child: ClipOval(
                               child: CachedNetworkImage(
+                                
                                 imageUrl: Api.UrlfotoProfile +
                                     "${AppData.informasiUser![0].em_image}",
                                 progressIndicatorBuilder:

@@ -219,7 +219,7 @@ class _SettingState extends State<Setting> {
                           child: ClipOval(
                             child: CachedNetworkImage(
                               imageUrl: Api.UrlfotoProfile +
-                                  "${ AppData.informasiUser![0].em_image}",
+                                  "${AppData.informasiUser![0].em_image}",
                               progressIndicatorBuilder:
                                   (context, url, downloadProgress) => Container(
                                 alignment: Alignment.center,
@@ -229,6 +229,12 @@ class _SettingState extends State<Setting> {
                                 child: CircularProgressIndicator(
                                     value: downloadProgress.progress),
                               ),
+                              errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                  'assets/avatar_default.png',
+                                  width: 40,
+                                  height: 40,
+                                ),
                               fit: BoxFit.cover,
                               width: 70,
                               height: 70,

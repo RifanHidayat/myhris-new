@@ -20,7 +20,7 @@ class Api {
 
   
   
-  static var basicUrl = "http://kantor.membersis.com:3001r/";
+  static var basicUrl = "http://kantor.membersis.com:3001/";
   static var urlImage = 'https://imagehris.siscom.id:4431';
   static var token = '9d590c04119a4433971a1dd622266d38';
   static var luxand = 'https://api.luxand.cloud/photo/similarity';

@@ -368,6 +368,37 @@ class AuthController extends GetxController {
     });
   }
 
+    void hapusFoto() {
+      UtilsAlert.showLoadingIndicator(Get.context!);
+    print("view last absen user");
+    Map<String, dynamic> body = {
+      
+      'em_id': AppData.informasiUser![0].em_id,
+      'database': AppData.selectedDatabase
+    };
+    var connect = Api.connectionApi("post", body, "hapus_foto_user");
+
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print(valueBody);
+
+  
+       
+        if (valueBody['status']==true) {
+          Get.back();
+          Get.offAll(InitScreen());
+          UtilsAlert.showToast("Foto berhasil dihapus");
+        } else {
+               Get.back();
+            UtilsAlert.showToast(valueBody['status']);
+      
+        }
+      }
+    });
+  }
+
+
   void validasiLogin() {
     showGeneralDialog(
       barrierDismissible: false,

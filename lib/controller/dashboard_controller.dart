@@ -489,8 +489,15 @@ var isPauseCamera=true;
         data.sort((a, b) => a['full_name']
             .toUpperCase()
             .compareTo(b['full_name'].toUpperCase()));
+            
         employeeTidakHadir.value = data;
+          print("data tidak hadir ${employeeTidakHadir}");
+         final ids =employeeTidakHadir.map((e) => e['em_id']).toSet();
+  employeeTidakHadir.retainWhere((x) => ids.remove(x['em_id']));
+      
         this.employeeTidakHadir.refresh();
+
+      
       }
     });
   }
@@ -717,7 +724,7 @@ var isPauseCamera=true;
       if (bpjsController.BpjsKetenagakerjaanNumber.value == "" ||
           bpjsController.BpjsKetenagakerjaanNumber.value == null) {
         UtilsAlert.showToast(
-            "Nomor BPJS anda belum tersedia,harap hubungi HRD");
+            "\ anda belum tersedia,harap hubungi HRD");
       } else {
         Get.to(VerifyPasswordPayroll(
           page: BpjsKetenagakerjaan(),
