@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:siscom_operasional/utils/api.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'dart:math' as math;
 
@@ -30,50 +31,56 @@ class FaceRecognitionPhotoPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: Transform(
-          alignment: Alignment.center,
-          transform: Matrix4.rotationY(mirror),
-          child: CachedNetworkImage(
-            imageUrl: "${Api.urlFileRecog}${GetStorage().read('file_face')}",
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                Container(
-              alignment: Alignment.center,
-              height: MediaQuery.of(context).size.height * 0.5,
-              width: MediaQuery.of(context).size.width,
-              child:
-                  CircularProgressIndicator(value: downloadProgress.progress),
+      body: InkWell(
+        onTap: (){
+          print(AppData.selectedDatabase);
+          print("${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}");
+        },
+        child: Center(
+          child: Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.rotationY(mirror),
+            child: CachedNetworkImage(
+              imageUrl: "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}",
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height * 0.5,
+                width: MediaQuery.of(context).size.width,
+                child:
+                    CircularProgressIndicator(value: downloadProgress.progress),
+              ),
+              errorWidget: (context, url, error) => Image.asset(
+                'assets/avatar_default.png',
+                width: 40,
+                height: 40,
+              ),
+              fit: BoxFit.cover,
             ),
-            errorWidget: (context, url, error) => Image.asset(
-              'assets/avatar_default.png',
-              width: 40,
-              height: 40,
-            ),
-            fit: BoxFit.cover,
           ),
+          // child: Image.network(
+          //   "${Api.urlFileRecog}${GetStorage().read('file_face')}",
+          //   loadingBuilder: (BuildContext context, Widget child,
+          //       ImageChunkEvent? loadingProgress) {
+          //     print("load data");
+          //     if (loadingProgress == null) return child;
+          //     return Center(
+          //       child: CircularProgressIndicator(
+          //         value: loadingProgress.expectedTotalBytes != null
+          //             ? loadingProgress.cumulativeBytesLoaded /
+          //                 loadingProgress.expectedTotalBytes!
+          //             : null,
+          //       ),
+          //     );
+          //   },
+          // ),
         ),
-        // child: Image.network(
-        //   "${Api.urlFileRecog}${GetStorage().read('file_face')}",
-        //   loadingBuilder: (BuildContext context, Widget child,
-        //       ImageChunkEvent? loadingProgress) {
-        //     print("load data");
-        //     if (loadingProgress == null) return child;
-        //     return Center(
-        //       child: CircularProgressIndicator(
-        //         value: loadingProgress.expectedTotalBytes != null
-        //             ? loadingProgress.cumulativeBytesLoaded /
-        //                 loadingProgress.expectedTotalBytes!
-        //             : null,
-        //       ),
-        //     );
-        //   },
-        // ),
       ),
     );
   }
 
   Future _deleteImageFromCache() async {
-    String url = "${Api.urlFileRecog}${GetStorage().read('file_face')}";
+    String url =  "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}";
     await CachedNetworkImage.evictFromCache(url);
   }
 }

@@ -25,7 +25,8 @@ class SlipGajiModel {
 
   var id;
   var name;
-  var amount;
+  var 
+  amount;
   var month;
   var date;
   var index;
@@ -47,7 +48,7 @@ class SlipGajiModel {
       pendapatan:
           ComponentSlipGajiModel.fromJsonToList(json['pendapatan'] ?? []),
       pemotong: ComponentSlipGajiModel.fromJsonToList(json['pemotong'] ?? []),
-      date: json['date']);
+      date: json['date']); 
 
   Map<String, dynamic> toJson() => {
         "id": id,

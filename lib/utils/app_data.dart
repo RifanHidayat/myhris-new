@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:siscom_operasional/model/setting_app_model.dart';
 import 'package:siscom_operasional/model/user_model.dart';
@@ -6,6 +7,8 @@ import 'package:siscom_operasional/utils/local_storage.dart';
 
 class AppData {
   // SET
+   static set  isOnboarding(bool value) =>
+      LocalStorage.saveToDisk('isOnboarding', value);
 
   static set statusAbsen(bool value) =>
       LocalStorage.saveToDisk('statusAbsen', value);
@@ -58,6 +61,12 @@ class AppData {
   static bool get statusAbsen {
     if (LocalStorage.getFromDisk('statusAbsen') != null) {
       return LocalStorage.getFromDisk('statusAbsen');
+    }
+    return false;
+  }
+   static bool get isOnboarding {
+    if (LocalStorage.getFromDisk('isOnboarding') != null) {
+      return LocalStorage.getFromDisk('isOnboarding');
     }
     return false;
   }

@@ -1,34 +1,30 @@
-import 'dart:convert';
+
+import 'package:flutter/material.dart';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:hexcolor/hexcolor.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/init_controller.dart';
-import 'package:siscom_operasional/controller/kontrol_controller.dart';
+
 import 'package:siscom_operasional/fireabase_option.dart';
-import 'package:siscom_operasional/model/notification_model.dart';
-import 'package:siscom_operasional/screen/absen/izin.dart';
+
+
 import 'package:siscom_operasional/screen/init_screen.dart';
-import 'package:siscom_operasional/screen/pesan/pesan.dart';
-import 'package:siscom_operasional/screen/slip_gaji/slip_gaji.dart';
-import 'package:siscom_operasional/utils/api.dart';
+
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/local_storage.dart';
-import 'package:siscom_operasional/utils/widget_textButton.dart';
+
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'dart:io';
-import 'package:get/get.dart';
 
 import 'utils/app_data.dart';
 
@@ -41,8 +37,12 @@ late List<CameraDescription> cameras;
 void main() async {
   await GetStorage.init();
   AppData.clearAllData();
-  cameras = await availableCameras();
 
+// Define a top-level callback function
+
+// await FlutterDownloader.initialize();
+
+  cameras = await availableCameras();
   WidgetsFlutterBinding.ensureInitialized();
   LocalStorage.prefs = await SharedPreferences.getInstance();
 
@@ -216,7 +216,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            color: Constanst.colorPrimary,
+            color: Constanst.colorWhite,
             // decoration: BoxDecoration(
             //   borderRadius: BorderRadius.circular(19)
             // ),
@@ -237,8 +237,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     child: Container(
                       alignment: Alignment.bottomCenter,
                       child: Image.asset(
-                        'assets/logo_splash.png',
-                        width: 160,
+                        'assets/logo_login.png',
+                        width: MediaQuery.of(context).size.width/2,
                       ),
                     ),
                   ),
@@ -253,7 +253,7 @@ class _SplashScreenState extends State<SplashScreen> {
                               "© Copyright 2022 PT. Shan Informasi Sistem\nBuilld Version 2022.10.17",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: Constanst.colorPrimaryLight,
+                                  color: HexColor('#68778D'),
                                   fontSize: 10)),
                         ),
                       ),
@@ -381,6 +381,203 @@ class _SplashScreenState extends State<SplashScreen> {
 //       title: 'Photo Scanner',
 //       home: ScannerScreen(),
 //       theme: CupertinoThemeData(brightness: Brightness.dark),
+//     );
+//   }
+// }
+
+
+// import 'package:example/screens/login_page.dart';
+// import 'package:example/screens/register_page.dart';
+// import 'package:flutter/cupertino.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
+
+// void main() {
+//   runApp(const MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return const CupertinoApp(
+//       debugShowCheckedModeBanner: false,
+//       home: MyHome(),
+//     );
+//   }
+// }
+
+// class MyHome extends StatelessWidget {
+//   final Color kDarkBlueColor = const Color(0xFF053149);
+
+//   const MyHome({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return OnBoardingSlider(
+//       finishButtonText: 'Register',
+//       onFinish: () {
+//         // Navigator.push(
+//         //   context,
+//         //   CupertinoPageRoute(
+//         //     builder: (context) => const RegisterPage(),
+//         //   ),
+//         // );
+//       },
+//       finishButtonStyle: FinishButtonStyle(
+//         backgroundColor: kDarkBlueColor,
+//       ),
+//       skipTextButton: Text(
+//         'Skip',
+//         style: TextStyle(
+//           fontSize: 16,
+//           color: kDarkBlueColor,
+//           fontWeight: FontWeight.w600,
+//         ),
+//       ),
+//       trailing: Text(
+//         'Login',
+//         style: TextStyle(
+//           fontSize: 16,
+//           color: kDarkBlueColor,
+//           fontWeight: FontWeight.w600,
+//         ),
+//       ),
+//       trailingFunction: () {
+//         // Navigator.push(
+//         //   context,
+//         //   CupertinoPageRoute(
+//         //     builder: (context) => const LoginPage(),
+//         //   ),
+//         // );
+//       },
+//       controllerColor: kDarkBlueColor,
+//       totalPage: 3,
+//       headerBackgroundColor: Colors.white,
+//       pageBackgroundColor: Colors.white,
+//       background: [
+//         Image.asset(
+//           'assets/slide_1.png',
+//           height: 400,
+//         ),
+//         Image.asset(
+//           'assets/slide_2.png',
+//           height: 400,
+//         ),
+//         Image.asset(
+//           'assets/slide_3.png',
+//           height: 400,
+//         ),
+//       ],
+//       speed: 1.8,
+//       pageBodies: [
+//         Container(
+//           alignment: Alignment.center,
+//           width: MediaQuery.of(context).size.width,
+//           padding: const EdgeInsets.symmetric(horizontal: 40),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.start,
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: <Widget>[
+//               const SizedBox(
+//                 height: 480,
+//               ),
+//               Text(
+//                 'On your way...',
+//                 textAlign: TextAlign.center,
+//                 style: TextStyle(
+//                   color: kDarkBlueColor,
+//                   fontSize: 24.0,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//               const SizedBox(
+//                 height: 20,
+//               ),
+//               const Text(
+//                 'to find the perfect looking Onboarding for your app?',
+//                 textAlign: TextAlign.center,
+//                 style: TextStyle(
+//                   color: Colors.black26,
+//                   fontSize: 18.0,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//         Container(
+//           alignment: Alignment.center,
+//           width: MediaQuery.of(context).size.width,
+//           padding: const EdgeInsets.symmetric(horizontal: 40),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.start,
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: <Widget>[
+//               const SizedBox(
+//                 height: 480,
+//               ),
+//               Text(
+//                 'You’ve reached your destination.',
+//                 textAlign: TextAlign.center,
+//                 style: TextStyle(
+//                   color: kDarkBlueColor,
+//                   fontSize: 24.0,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//               const SizedBox(
+//                 height: 20,
+//               ),
+//               const Text(
+//                 'Sliding with animation',
+//                 textAlign: TextAlign.center,
+//                 style: TextStyle(
+//                   color: Colors.black26,
+//                   fontSize: 18.0,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//         Container(
+//           alignment: Alignment.center,
+//           width: MediaQuery.of(context).size.width,
+//           padding: const EdgeInsets.symmetric(horizontal: 40),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.start,
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: <Widget>[
+//               const SizedBox(
+//                 height: 480,
+//               ),
+//               Text(
+//                 'Start now!',
+//                 textAlign: TextAlign.center,
+//                 style: TextStyle(
+//                   color: kDarkBlueColor,
+//                   fontSize: 24.0,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//               const SizedBox(
+//                 height: 20,
+//               ),
+//               const Text(
+//                 'Where everything is possible and customize your onboarding.',
+//                 textAlign: TextAlign.center,
+//                 style: TextStyle(
+//                   color: Colors.black26,
+//                   fontSize: 18.0,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ],
 //     );
 //   }
 // }

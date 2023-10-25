@@ -7,6 +7,7 @@ import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/login.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/screen/onboard.dart';
+import 'package:siscom_operasional/screen/onboarding.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
@@ -14,12 +15,12 @@ import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class InitController extends GetxController {
   void loadDashboard() async {
-    //getSettingApp();
+    getSettingApp();
     validasiLastAbsensi();
   }
 
   void getSettingApp() {
-     print("get setting app");
+    print("get setting app");
     AppData.infoSettingApp = [];
     Map<String, dynamic> body = {'val': 'id', 'cari': '1'};
     var connect = Api.connectionApi("post", body, "whereOnce-settings");
@@ -58,7 +59,26 @@ class InitController extends GetxController {
   }
 
   void validasiLastAbsensi() async {
+    // await Future.delayed(const Duration(seconds: 3));
+    // Get.offAll(Onboard());
     await Future.delayed(const Duration(seconds: 3));
-    Get.offAll(Onboard());
+
+    if (AppData.isOnboarding == true) {
+      // Get.offAll(Login());
+      if (AppData.informasiUser == null ||
+          AppData.informasiUser == "null" ||
+          AppData.informasiUser == "" ||
+          AppData.informasiUser!.isEmpty) {
+        AppData.isLogin = false;
+      }
+
+      if (AppData.isLogin == true) {
+        Get.offAll(InitScreen());
+      } else {
+        Get.offAll(Login());
+      }
+    } else {
+      Get.offAll(OnBoardingPage());
+    }
   }
 }

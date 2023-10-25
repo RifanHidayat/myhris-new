@@ -339,6 +339,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                       borderRadius: BorderRadius.circular(8.0),
                       side: BorderSide(color: Colors.white)))),
           onPressed: () async {
+             AbsenController().removeAll();
             String checkUserKontrol =
                 await controllerBerhasil.checkUserKontrol();
             print("datta absen " + checkUserKontrol);

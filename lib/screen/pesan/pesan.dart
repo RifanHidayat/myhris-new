@@ -663,6 +663,19 @@ class _PesanState extends State<Pesan> {
                                                                       .receipt,
                                                                   color: Constanst
                                                                       .colorPrimary,
+                                                                ):title == 'Payroll'
+                                                              ? Icon(
+                                                                  Iconsax
+                                                                      .receipt,
+                                                                  color: Constanst
+                                                                      .colorPrimary,
+                                                                )
+                                                              : title == 'Absensi'
+                                                              ? Icon(
+                                                                  Iconsax
+                                                                      .receipt,
+                                                                  color: Constanst
+                                                                      .colorPrimary,
                                                                 )
                                                               : SizedBox(),
                                     ),

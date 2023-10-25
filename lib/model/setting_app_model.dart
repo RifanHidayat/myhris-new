@@ -54,7 +54,11 @@ class SettingAppModel {
     };
   }
 
-  factory SettingAppModel.fromMap(Map<String, dynamic> map) {
+
+
+  String toJson() => json.encode(toMap());
+
+    factory SettingAppModel.fromMap(Map<String, dynamic> map) {
     return SettingAppModel(
       id: map['id'],
       sitelogo: map['sitelogo'],
@@ -72,6 +76,4 @@ class SettingAppModel {
       saveimage_attend: map['saveimage_attend']
     );
   }
-
-  String toJson() => json.encode(toMap());
 }

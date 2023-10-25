@@ -273,18 +273,17 @@ class TugasLuarController extends GetxController {
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
     };
-    print( body);
-   
+
     var connect = Api.connectionApi("post", body, "emp_leave_load_dinasluar");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-      
+
         if (valueBody['status'] == false) {
           loadingString.value = "Tidak ada pengajuan";
           this.loadingString.refresh();
         } else {
-            print("data dinas luar ${valueBody} d");
+          print("data dinas luar ${valueBody} d");
           listDinasLuar.value = valueBody['data'];
           listDinasLuarAll.value = valueBody['data'];
           this.listDinasLuar.refresh();
@@ -340,8 +339,11 @@ class TugasLuarController extends GetxController {
     var dataUser = AppData.informasiUser;
     var getDepGroup = dataUser![0].dep_group;
     var full_name = dataUser[0].full_name;
-    Map<String, dynamic> body = {'val': 'dep_group_id', 'cari': getDepGroup};
-    var connect = Api.connectionApi("post", body, "whereOnce-employee");
+    var emid = dataUser[0].em_id;
+    Map<String, dynamic> body = {'em_id': emid, 'dep_group_id': getDepGroup};
+    var connect = Api.connectionApi("post", body, "employee-delegasi");
+    // Map<String, dynamic> body = {'val': 'dep_group_id', 'cari': getDepGroup};
+    // var connect = Api.connectionApi("post", body, "whereOnce-employee");
     connect.then((dynamic res) {
       if (res == false) {
         UtilsAlert.koneksiBuruk();
@@ -461,11 +463,12 @@ class TugasLuarController extends GetxController {
   }
 
   void validasiKirimPengajuan() {
+    
     if (viewTugasLuar.value) {
       if (tanggalTugasLuar.value.text == "" ||
           dariJam.value.text == "" ||
           sampaiJam.value.text == "" ||
-          catatan.value.text == "") {
+          catatan.value.text == "" || selectedDropdownDelegasi.value=="") {
         print(initialDate.value);
         UtilsAlert.showToast("Lengkapi form *");
       } else {
@@ -482,6 +485,9 @@ class TugasLuarController extends GetxController {
         UtilsAlert.showToast("Pilih tanggal terlebih dahulu");
       } else if (catatan.value.text == "") {
         UtilsAlert.showToast("Isi catatan terlebih dahulu");
+      } else if (selectedDropdownDelegasi.value==""){
+         UtilsAlert.showToast("Pilih pemberi tugas terlebih dahulu");
+
       } else {
         if (statusForm.value == false) {
           UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan");
@@ -716,6 +722,7 @@ class TugasLuarController extends GetxController {
         ? tanggalPengajuanInsert
         : tanggalTugasLuarEditData;
     var hasilDurasi = hitungDurasi();
+
     Map<String, dynamic> body = {
       'em_id': getEmid,
       'nomor_ajuan': getNomorAjuanTerakhir,
@@ -787,6 +794,9 @@ class TugasLuarController extends GetxController {
               var nomorAjuanTerakhirDalamAntrian =
                   valueBody['data'][0]['nomor_ajuan'];
               checkNomorAjuanDalamAntrian1(nomorAjuanTerakhirDalamAntrian);
+            } else if (valueBody['message'] == "date") {
+              Navigator.pop(Get.context!);
+              UtilsAlert.showToast(valueBody['error']);
             } else {
               Navigator.pop(Get.context!);
               UtilsAlert.showToast(
@@ -917,6 +927,9 @@ class TugasLuarController extends GetxController {
                   valueBody['data'][0]['nomor_ajuan'];
               checkNomorAjuanDalamAntrian2(
                   status, nomorAjuanTerakhirDalamAntrian);
+            } else if (valueBody['message'] == "date") {
+              Navigator.pop(Get.context!);
+              UtilsAlert.showToast(valueBody['error']);
             } else {
               Navigator.pop(Get.context!);
               UtilsAlert.showToast(
@@ -1230,6 +1243,7 @@ class TugasLuarController extends GetxController {
         'cari': '${index["id"]}',
         'status_transaksi': 0,
         'start_date': '${index["start_date"]}',
+        'leave_status': "Cancel"
       };
       var connect = Api.connectionApi("post", body, "edit-emp_leave");
       connect.then((dynamic res) {

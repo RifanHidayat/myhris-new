@@ -21,7 +21,7 @@ String toCurrency(dynamic value) {
   var noSimbolInUSFormat =
       NumberFormat.currency(locale: "ID", symbol: "Rp", decimalDigits: 0);
 
-  return noSimbolInUSFormat.format(toInt(value));
+  return noSimbolInUSFormat.format(double.parse(value.toString()));
 }
 
 String formatPhoneNumberTo62(dynamic value) {

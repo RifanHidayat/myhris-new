@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 
 class Request {
   late final String url;
   late final dynamic body;
   var  params;
+
   
 
   Request({required this.url, this.body,this.params});
@@ -17,14 +19,13 @@ class Request {
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
   
-  var baseUrl="http://kantor.membersis.com:3001";   
+  var baseUrl=Api.basicUrl;   
       Map<String, String> headers = {
     'Authorization': basicAuth,
     'Content-type': 'application/json',
     'Accept': 'application/json',
     'token': AppData.setFcmToken,
-  'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
-    
+    'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
   }; 
   
 

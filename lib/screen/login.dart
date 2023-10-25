@@ -7,6 +7,7 @@ import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/screen/lupa_password/list.dart';
 import 'package:siscom_operasional/screen/register.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
@@ -69,7 +70,7 @@ class Login extends StatelessWidget {
                         SizedBox(
                           height: 20,
                         ),
-                     Obx(() =>         controller.isautoLogout.value==false?SizedBox():   Padding(
+                     Obx(() =>  controller.isautoLogout.value==false?SizedBox():   Padding(
                           padding: EdgeInsets.only(bottom: 16),
                           child: Container(
                             padding: EdgeInsets.all(8),
@@ -86,6 +87,29 @@ class Login extends StatelessWidget {
                               Expanded(
                                 flex: 90,
                                 child: TextLabell(text: controller.messageLogout.value.toString(),color: Constanst.colorPrimary,))
+                        
+                      //  Seseorang masuk menggunakan akun anda menyebabkan akun anda keluar secara otomatis
+                              ],
+                            ),
+                          ),
+                        ),),
+                         Obx(() =>  controller.messageNewPassword.value==""?SizedBox():   Padding(
+                          padding: EdgeInsets.only(bottom: 16,top: 5),
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                             
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(width: 1,color: Constanst.colorPrimary)
+                            ),
+                            child: Row(
+                              children: [
+                              Expanded(
+                                flex: 10,
+                                child: Icon(Iconsax.info_circle,color: Constanst.colorPrimary,)),
+                              Expanded(
+                                flex: 90,
+                                child: TextLabell(text: controller.messageNewPassword.value.toString(),color: Constanst.colorPrimary,))
                         
                       //  Seseorang masuk menggunakan akun anda menyebabkan akun anda keluar secara otomatis
                               ],
@@ -439,7 +463,7 @@ class Login extends StatelessWidget {
                                 var data = controller.databases[index];
                                 return InkWell(
                                   onTap: () {
-                                    print("tes");
+                                    
                                     controller.databases.forEach((element) {
                                       element.isSelected = false;
                                     });
@@ -449,7 +473,12 @@ class Login extends StatelessWidget {
                                         data.name;
                                     controller.selectedDb.value = data.dbname;
                                     controller.perusahaan.text = data.name;
-                                    ;
+
+                                    AppData.selectedDatabase=data.dbname;
+                                  
+
+
+                                
                                     Get.back();
                                   },
                                   child: Container(

@@ -7,6 +7,7 @@ import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
 
 class TextFieldApp {
+  
   static Widget groupColumn(
       {hintText,
       controller,

@@ -38,6 +38,8 @@ class LupaPasswordController extends GetxController {
   var tempVerifikasiKode = "".obs;
   var mobileCtr = TextEditingController().obs;
 
+  
+
   var waToken = "".obs;
 
   var nameTemp = "".obs;
@@ -290,9 +292,12 @@ class LupaPasswordController extends GetxController {
 
       // var response =
       //     await Request(url: "/new-password", body: body).post();
+      
       var response = await http.post(
-          Uri.parse(
-              "http://kantor.membersis.com:3001/new-password?database=${AppData.selectedDatabase}"),
+         Uri.parse(
+              "${Api.basicAuth}/new-password?database=${AppData.selectedDatabase}"),
+          // Uri.parse(
+          //     "http://kantor.membersis.com:3001/new-password?database=${AppData.selectedDatabase}"),
           body: jsonEncode(body),
           headers: headers);
       var resp = jsonDecode(response.body);

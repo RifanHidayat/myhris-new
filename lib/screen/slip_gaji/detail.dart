@@ -1,10 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/slip_gaji.controller.dart';
 import 'package:siscom_operasional/model/slip_gaji.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/helper.dart';
 import 'package:siscom_operasional/utils/month_picker.dart';
@@ -12,45 +19,49 @@ import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:siscom_operasional/utils/widget/appbar.dart';
 import 'package:siscom_operasional/utils/widget/text_group_row.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
+
 import 'dart:math' as math;
 
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
+
 class SlipGajiDetail extends StatelessWidget {
-  SlipGajiDetail({
-    super.key,
-  });
+  var month, year;
+  SlipGajiModel args;
+  SlipGajiDetail({super.key, this.month, this.year,required this.args});
   var controller = Get.put(SlipGajiController());
+  var authController = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constanst.colorWhite,
       appBar: AppBarApp(
-        text: "Sllip gaji",
+        text: "Slip gaji",
         elevation: 0.0,
         textSize: 16.0,
         color: Constanst.colorWhite,
         action: [
           IconButton(
             icon: Icon(
-              Icons.download,
+              Iconsax.document_download,
+              color: Constanst.Secondary,
             ),
-            onPressed: () {
-              // do something
+            onPressed: () async {
+              AppData.selectedDatabase.toString();
+              print("tes");
+              final directory = await getApplicationDocumentsDirectory();
+              final localPath = directory.path;
+              controller.downloadFile(
+           'https://myhris.siscom.id/custom/${AppData.selectedDatabase.toString()}/slipApi?uid=${base64.encode(utf8.encode(AppData.emailUser))}=&pid=${base64.encode(utf8.encode(AppData.passwordUser))}&eid=${base64.encode(utf8.encode(AppData.informasiUser![0].em_id))}&mid=${base64.encode(utf8.encode(month.toString().padLeft(2, '0')))}&yid=${base64.encode(utf8.encode(year.toString()))}',
+                "${localPath}/slip_gaji_${month.toString().padLeft(2, '0')}_${year.toString()}.pdf",
+              );
+        
             },
           )
         ],
       ),
-      body: Obx(() {
-        return controller.args.value.amount == null
-            ? Container(
-                child: Center(
-                    child: TextLabell(
-                  text: "Data tidak ditemukan",
-                )),
-              )
-            : Container(
+      body: Container(
                 height: MediaQuery.of(context).size.height,
                 padding: EdgeInsets.only(left: 10, right: 10),
                 child: Column(
@@ -121,7 +132,7 @@ class SlipGajiDetail extends StatelessWidget {
                                                   "Desember";
                                             }
 
-                                            controller.args.value = controller
+                                            args = controller
                                                 .slipGaji
                                                 .where((p0) =>
                                                     p0.monthNumber ==
@@ -228,7 +239,7 @@ class SlipGajiDetail extends StatelessWidget {
                                             ),
                                           )),
                                       Obx(() {
-                                        return controller.args.value.pendapatan!
+                                        return args.pendapatan!
                                                 .isNotEmpty
                                             ? controller.isPendapatan.value ==
                                                     true
@@ -236,55 +247,47 @@ class SlipGajiDetail extends StatelessWidget {
                                                     padding: EdgeInsets.all(20),
                                                     child: Column(
                                                       children: List.generate(
-                                                          controller
-                                                              .args
-                                                              .value
+                                                          args
                                                               .pendapatan!
                                                               .length, (index) {
-                                                        var data = controller
-                                                            .args
-                                                            .value
+                                                        var data = args
                                                             .pendapatan![index];
 
                                                         return TextGroupRow(
                                                             title: data.name,
-                                                            subtitle: controller
-                                                                        .args
-                                                                        .value
+                                                            subtitle: args
                                                                         .index ==
                                                                     "value01"
                                                                 ? toCurrency(data
                                                                     .value01)
-                                                                : controller
-                                                                            .args
-                                                                            .value
+                                                                :args
                                                                             .index
                                                                             .toString() ==
                                                                         "value02"
                                                                     ? toCurrency(data
                                                                         .value02)
-                                                                    : controller.args.value.index ==
+                                                                    : args.index ==
                                                                             "value03"
                                                                         ? toCurrency(data
                                                                             .value03)
-                                                                        : controller.args.value.index ==
+                                                                        : args.index ==
                                                                                 "value04"
                                                                             ? toCurrency(data.value04)
-                                                                            : controller.args.value.index == "value05"
+                                                                            : args.index == "value05"
                                                                                 ? toCurrency(data.value05)
-                                                                                : controller.args.value.index == "value06"
+                                                                                : args.index == "value06"
                                                                                     ? toCurrency(data.value06)
-                                                                                    : controller.args.value.index == "value07"
+                                                                                    : args.index == "value07"
                                                                                         ? toCurrency(data.value07)
-                                                                                        : controller.args.value.index == "value08"
+                                                                                        : args.index == "value08"
                                                                                             ? toCurrency(data.value08)
-                                                                                            : controller.args.value.index == "value09"
+                                                                                            : args.index == "value09"
                                                                                                 ? toCurrency(data.value09)
-                                                                                                : controller.args.value.index == "value10"
+                                                                                                : args.index == "value10"
                                                                                                     ? toCurrency(data.value10)
-                                                                                                    : controller.args.value.index == "value11"
+                                                                                                    : args.index == "value11"
                                                                                                         ? toCurrency(data.value11)
-                                                                                                        : controller.args.value.index == "value12"
+                                                                                                        : args.index == "value12"
                                                                                                             ? toCurrency(data.value12)
                                                                                                             : toCurrency(data.value12));
                                                       }),
@@ -323,9 +326,7 @@ class SlipGajiDetail extends StatelessWidget {
                                                           weight:
                                                               FontWeight.w600,
                                                           text: toCurrency(
-                                                              controller
-                                                                  .args
-                                                                  .value
+                                                              args
                                                                   .jumllahPendapatan))))
                                             ],
                                           ))
@@ -407,7 +408,7 @@ class SlipGajiDetail extends StatelessWidget {
                                               ],
                                             ),
                                           )),
-                                      controller.args.value.pemotong!.isNotEmpty
+                                      args.pemotong!.isNotEmpty
                                           ? Obx(() {
                                               return controller
                                                           .isPemotong.value ==
@@ -417,54 +418,46 @@ class SlipGajiDetail extends StatelessWidget {
                                                           EdgeInsets.all(20),
                                                       child: Column(
                                                         children: List.generate(
-                                                            controller
-                                                                .args
-                                                                .value
+                                                          args
                                                                 .pemotong!
                                                                 .length,
                                                             (index) {
-                                                          var data = controller
-                                                              .args
-                                                              .value
+                                                          var data = args
                                                               .pemotong![index];
                                                           return TextGroupRow(
                                                               title: data.name,
-                                                              subtitle: controller
-                                                                          .args
-                                                                          .value
+                                                              subtitle: args
                                                                           .index ==
                                                                       "value01"
                                                                   ? toCurrency(data
                                                                       .value01)
-                                                                  : controller
-                                                                              .args
-                                                                              .value
+                                                                  : args
                                                                               .index
                                                                               .toString() ==
                                                                           "value02"
                                                                       ? toCurrency(data
                                                                           .value02)
-                                                                      : controller.args.value.index ==
+                                                                      : args.index ==
                                                                               "value03"
                                                                           ? toCurrency(
                                                                               data.value03)
-                                                                          : controller.args.value.index == "value04"
+                                                                          : args.index == "value04"
                                                                               ? toCurrency(data.value04)
-                                                                              : controller.args.value.index == "value05"
+                                                                              : args.index == "value05"
                                                                                   ? toCurrency(data.value05)
-                                                                                  : controller.args.value.index == "value06"
+                                                                                  : args.index == "value06"
                                                                                       ? toCurrency(data.value06)
-                                                                                      : controller.args.value.index == "value07"
+                                                                                      : args.index == "value07"
                                                                                           ? toCurrency(data.value07)
-                                                                                          : controller.args.value.index == "value08"
+                                                                                          : args.index == "value08"
                                                                                               ? toCurrency(data.value08)
-                                                                                              : controller.args.value.index == "value09"
+                                                                                              : args.index == "value09"
                                                                                                   ? toCurrency(data.value09)
-                                                                                                  : controller.args.value.index == "value10"
+                                                                                                  : args.index == "value10"
                                                                                                       ? toCurrency(data.value10)
-                                                                                                      : controller.args.value.index == "value11"
+                                                                                                      : args.index == "value11"
                                                                                                           ? toCurrency(data.value11)
-                                                                                                          : controller.args.value.index == "value12"
+                                                                                                          : args.index == "value12"
                                                                                                               ? toCurrency(data.value12)
                                                                                                               : toCurrency(data.value12));
                                                         }),
@@ -503,9 +496,7 @@ class SlipGajiDetail extends StatelessWidget {
                                                           weight:
                                                               FontWeight.w600,
                                                           text: toCurrency(
-                                                              controller
-                                                                  .args
-                                                                  .value
+                                                              args
                                                                   .jumlahPemotong))))
                                             ],
                                           ))
@@ -541,7 +532,7 @@ class SlipGajiDetail extends StatelessWidget {
                               height: 5,
                             ),
                             TextLabell(
-                              text: toCurrency(controller.args.value.amount),
+                              text: toCurrency(args.amount),
                               size: 14,
                               weight: FontWeight.bold,
                               color: Constanst.colorWhite,
@@ -552,8 +543,8 @@ class SlipGajiDetail extends StatelessWidget {
                     )
                   ],
                 ),
-              );
-      }),
+              
+      ),
     );
   }
 }

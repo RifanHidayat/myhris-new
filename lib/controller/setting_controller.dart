@@ -311,11 +311,14 @@ class SettingController extends GetxController {
             Navigator.pop(Get.context!);
             UtilsAlert.showToast(valueBody['message']);
           } else {
+            AppData.passwordUser= passwordBaru.value.text;
+           authController.password.value.text = passwordBaru.value.text;
             Navigator.pop(Get.context!);
             UtilsAlert.berhasilSimpanData(Get.context!, "Data Berhasil diubah");
             await Future.delayed(const Duration(seconds: 2));
             Navigator.pop(Get.context!);
-            Get.offAll(InitScreen());
+           aksiEditLastLogin();
+           authController.messageNewPassword.value="Silahkan login menggunakan password baru";
           }
         }
       });

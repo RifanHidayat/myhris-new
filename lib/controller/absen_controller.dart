@@ -1,3 +1,5 @@
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -15,6 +17,7 @@ import 'dart:io' show Platform;
 import 'dart:math';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:ntp/ntp.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
 import 'package:siscom_operasional/model/shift_model.dart';
@@ -40,6 +43,16 @@ import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 class AbsenController extends GetxController {
   PageController? pageViewFilterAbsen;
 
+  var tglAjunan = "".obs;
+  var checkinAjuan = "".obs;
+  var checkoutAjuan = "".obs;
+  var checkinAjuan2 = "".obs;
+  var checkoutAjuan2 = "".obs;
+  var catataanAjuan = TextEditingController();
+  var imageAjuan = "".obs;
+
+  var pengajuanAbsensi=[].obs;
+
   TextEditingController deskripsiAbsen = TextEditingController();
   var tanggalLaporan = TextEditingController().obs;
   var departemen = TextEditingController().obs;
@@ -52,7 +65,7 @@ class AbsenController extends GetxController {
   Rx<List<String>> placeCoordinateDropdown = Rx<List<String>>([]);
   var selectedType = "".obs;
 
-  var pauseCamera=false.obs;
+  var pauseCamera = false.obs;
 
   var historyAbsen = <AbsenModel>[].obs;
   var historyAbsenShow = [].obs;
@@ -68,19 +81,30 @@ class AbsenController extends GetxController {
   var isCollapse = true.obs;
   var shift = OfficeShiftModel().obs;
 
+  var isLoadingPengajuan=false.obs;
+
   var absenSelected;
 
   var loading = "Memuat data...".obs;
+    var loadingPengajuan = "Memuat data...".obs;
   var base64fotoUser = "".obs;
   var timeString = "".obs;
   var dateNow = "".obs;
   var alamatUserFoto = "".obs;
   var titleAbsen = "".obs;
   var tanggalUserFoto = "".obs;
+
   var stringImageSelected = "".obs;
+  
   var bulanSelectedSearchHistory = "".obs;
   var tahunSelectedSearchHistory = "".obs;
   var bulanDanTahunNow = "".obs;
+
+    var bulanSelectedSearchHistoryPengajuan = "".obs;
+  var tahunSelectedSearchHistoryPengajuan = "".obs;
+  var bulanDanTahunNowPengajuan = "".obs;
+  
+  
   var namaDepartemenTerpilih = "".obs;
   var idDepartemenTerpilih = "".obs;
   var testingg = "".obs;
@@ -91,6 +115,9 @@ class AbsenController extends GetxController {
   var activeTracking = 0.obs;
   var selectedViewFilterAbsen = 0.obs;
   var regType = 0.obs;
+  var namaFileUpload = "".obs;
+  var filePengajuan = File("").obs;
+  var uploadFile = false.obs;
 
   Rx<DateTime> pilihTanggalTelatAbsen = DateTime.now().obs;
 
@@ -148,7 +175,11 @@ class AbsenController extends GetxController {
     var dt = DateTime.now();
     bulanSelectedSearchHistory.value = "${dt.month}";
     tahunSelectedSearchHistory.value = "${dt.year}";
+
+     bulanSelectedSearchHistoryPengajuan.value = "${dt.month}";
+    tahunSelectedSearchHistoryPengajuan.value = "${dt.year}";
     bulanDanTahunNow.value = "${dt.month}-${dt.year}";
+      bulanDanTahunNowPengajuan.value = "${dt.month}-${dt.year}";
     var convert = Constanst.convertDate1("${dt.year}-${dt.month}-${dt.day}");
     tanggalLaporan.value.text = convert;
     absenStatus.value = AppData.statusAbsen;
@@ -156,7 +187,6 @@ class AbsenController extends GetxController {
   }
 
   void getDepartemen(status, tanggal) {
-   
     jumlahData.value = 0;
     var connect = Api.connectionApi("get", {}, "all_department");
     connect.then((dynamic res) {
@@ -169,7 +199,7 @@ class AbsenController extends GetxController {
 
           var dataUser = AppData.informasiUser;
           var hakAkses = dataUser![0].em_hak_akses;
-         
+
           if (hakAkses != "" || hakAkses != null) {
             if (hakAkses == '0') {
               var data = {
@@ -274,13 +304,14 @@ class AbsenController extends GetxController {
 
   void aksiEmployeeTerlambatAbsen(tanggal) {
     statusLoadingSubmitLaporan.value = true;
+    print(idDepartemenTerpilih.value);
     listLaporanFilter.value.clear();
     Map<String, dynamic> body = {
       'atten_date': tanggal,
       'status': idDepartemenTerpilih.value
     };
     var connect =
-        Api.connectionApi("post", body, "load_laporan_absensi_harian");
+        Api.connectionApi("post", body, "load_laporan_absensi_harian_telat");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -290,24 +321,42 @@ class AbsenController extends GetxController {
               "Data periode $bulanSelectedSearchHistory belum tersedia, harap hubungi HRD");
         } else {
           var data = valueBody['data'];
+          print("data ${data}");
           loading.value =
               data.length == 0 ? "Data tidak tersedia" : "Memuat data...";
           var seen = Set<String>();
           List filter =
               data.where((country) => seen.add(country['full_name'])).toList();
+
+          print(filter);
           List filterTelat = [];
           for (var element in filter) {
-            var listJam = element['signin_time'].split(':');
-            var getJamMenit = "${listJam[0]}${listJam[1]}";
-            var jamMasukEmployee = int.parse(getJamMenit);
-            var hitung = jamMasukEmployee - 840;
-            if (hitung > 0) {
+            if (!element['selisih'].toString().contains('-')) {
+              var tempData = element['selisih'].toString().substring(0);
+              var listJam = element['selisih'].split(':');
+              var getJamMenit = "${listJam[0]}${listJam[1]}";
+              var jamMasukEmployee = int.parse(getJamMenit);
+              print("${element['batas_toleransi']} ${jamMasukEmployee}");
+              if (jamMasukEmployee >
+                  int.parse(element['batas_toleransi'] == null ||
+                          element['batas_toleransi'] == "" ||
+                          element['batas_toleransi'] == "null"
+                      ? "0"
+                      : element['batas_toleransi'].toString())) {
+                element['status'] = 1;
+              } else {
+                element['status'] = 0;
+              }
               filterTelat.add(element);
             }
+
+            // if (hitung > 0) {
+            //   filterTelat.add(element);
+            // }
           }
-          filterTelat.sort((a, b) => a['full_name']
-              .toUpperCase()
-              .compareTo(b['full_name'].toUpperCase()));
+          // filterTelat.sort((a, b) => a['full_name']
+          //     .toUpperCase()
+          //     .compareTo(b['full_name'].toUpperCase()));
           jumlahData.value = filterTelat.length;
           listEmployeeTelat.value = filterTelat;
           alllistEmployeeTelat.value = filterTelat;
@@ -328,12 +377,14 @@ class AbsenController extends GetxController {
   }
 
   void aksiEmployeeBelumAbsen(tanggal) {
+    print(idDepartemenTerpilih);
     statusLoadingSubmitLaporan.value = true;
     listLaporanBelumAbsen.value.clear();
     Map<String, dynamic> body = {
       // 'atten_date': '2022-12-05',
       'atten_date': tanggal,
-      'status': "0"
+      // 'status': "0"
+      'status': idDepartemenTerpilih.value
     };
     var connect = Api.connectionApi("post", body, "load_laporan_belum_absen");
     connect.then((dynamic res) {
@@ -349,6 +400,8 @@ class AbsenController extends GetxController {
           data.sort((a, b) => a['full_name']
               .toUpperCase()
               .compareTo(b['full_name'].toUpperCase()));
+
+          print("data belum absen ${data}");
 
           jumlahData.value = valueBody['jumlah'];
           listLaporanBelumAbsen.value = data;
@@ -387,10 +440,11 @@ class AbsenController extends GetxController {
   }
 
   void absenSelfie() async {
+    DateTime startDate = await NTP.now();
     // // absenSelfie();
-    timeString.value = formatDateTime(DateTime.now());
+    timeString.value = formatDateTime(startDate);
     dateNow.value = dateNoww(DateTime.now());
-    tanggalUserFoto.value = dateNoww2(DateTime.now());
+    tanggalUserFoto.value = dateNoww2(startDate);
     imageStatus.refresh();
     timeString.refresh();
     dateNow.refresh();
@@ -518,8 +572,7 @@ class AbsenController extends GetxController {
       'Content-type': 'application/json',
       'Accept': 'application/json',
       'token': Api.token,
-    // 'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
-   
+      // 'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
     };
 
     var request = http.MultipartRequest(
@@ -527,8 +580,8 @@ class AbsenController extends GetxController {
       Uri.parse(Api.luxand),
     );
     request.headers.addAll(headers);
-    File file1 =
-        await urlToFile("${Api.urlFileRecog}${GetStorage().read('file_face')}");
+    File file1 = await urlToFile(
+        "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}");
 
     var picture = await http.MultipartFile.fromPath('face1', file.toString(),
         contentType: MediaType('image', 'png'));
@@ -551,8 +604,12 @@ class AbsenController extends GetxController {
           'Content-type': 'application/json',
           'Accept': 'application/json',
           'token': AppData.setFcmToken,
-          'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
-          
+          'em_id': AppData.informasiUser == null ||
+                  AppData.informasiUser == "null" ||
+                  AppData.informasiUser == "" ||
+                  AppData.informasiUser!.isEmpty
+              ? ""
+              : AppData.informasiUser![0].em_id
         };
         Map<String, String> body = {
           'em_id': getEmpId.toString(),
@@ -625,9 +682,9 @@ class AbsenController extends GetxController {
         'Authorization': Api.basicAuth,
         'Content-type': 'application/json',
         'Accept': 'application/json',
-         'token': Api.token,
-    //    'token': AppData.setFcmToken,
-    // 'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
+        'token': Api.token,
+        //    'token': AppData.setFcmToken,
+        // 'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
       };
       var request = http.MultipartRequest(
         "POST",
@@ -636,7 +693,7 @@ class AbsenController extends GetxController {
 
       request.headers.addAll(headers);
       File file1 = await urlToFile(
-          "${Api.urlFileRecog}${GetStorage().read('file_face')}");
+          "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}");
 
       // if (fotoUser.value != null) {
       var picture = await http.MultipartFile.fromPath('face1', file,
@@ -654,10 +711,12 @@ class AbsenController extends GetxController {
         if (res['similar'] == true) {
           absenSuccess.value = "1";
 
+          DateTime startDate = await NTP.now();
+
           // // absenSelfie();
-          timeString.value = formatDateTime(DateTime.now());
-          dateNow.value = dateNoww(DateTime.now());
-          tanggalUserFoto.value = dateNoww2(DateTime.now());
+          timeString.value = formatDateTime(startDate);
+          dateNow.value = dateNoww(startDate);
+          tanggalUserFoto.value = dateNoww2(startDate);
           imageStatus.refresh();
           timeString.refresh();
           dateNow.refresh();
@@ -1314,6 +1373,7 @@ class AbsenController extends GetxController {
                                 departementAkses.value[index]['name'];
                             return InkWell(
                               onTap: () {
+                                print("tes");
                                 filterLokasiKoordinate.value = "Lokasi";
                                 selectedViewFilterAbsen.value = 0;
                                 Rx<AbsenModel> absenModel = AbsenModel().obs;
@@ -1324,6 +1384,8 @@ class AbsenController extends GetxController {
                                 departemen.value.text =
                                     departementAkses.value[index]['name'];
                                 this.departemen.refresh();
+                                print(
+                                    "id departement ${idDepartemenTerpilih.value}");
                                 Navigator.pop(context);
                                 carilaporanAbsenkaryawan(status);
                               },
@@ -1543,6 +1605,35 @@ class AbsenController extends GetxController {
           ? "Data tidak tersedia"
           : "Memuat data...";
     }
+  }
+
+  void takeFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      PlatformFile file = result.files.first;
+      if (file.size > 5000000) {
+        UtilsAlert.showToast("Maaf file terlalu besar...Max 5MB");
+      } else {
+        namaFileUpload.value = "${file.name}";
+        imageAjuan.value=file.name.toString();
+        filePengajuan.value = await saveFilePermanently(file);
+        uploadFile.value = true;
+        // print(file.name);
+        // print(file.bytes);
+        // print(file.size);
+        // print(file.extension);
+        // print(file.path);
+      }
+    } else {
+      UtilsAlert.showToast("Gagal mengambil file");
+    }
+  }
+
+  Future<File> saveFilePermanently(PlatformFile file) async {
+    final appStorage = await getApplicationDocumentsDirectory();
+    final newFile = File('${appStorage.path}/${file.name}');
+    return File(file.path!).copy(newFile.path);
   }
 
   void carilaporanAbsenkaryawan(status) {
@@ -2014,7 +2105,12 @@ class AbsenController extends GetxController {
         'Content-type': 'application/json',
         'Accept': 'application/json',
         'token': AppData.setFcmToken,
-     'em_id':AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ?"":AppData.informasiUser![0].em_id
+        'em_id': AppData.informasiUser == null ||
+                AppData.informasiUser == "null" ||
+                AppData.informasiUser == "" ||
+                AppData.informasiUser!.isEmpty
+            ? ""
+            : AppData.informasiUser![0].em_id
       };
       print("body" + body.toString());
 
@@ -2094,9 +2190,12 @@ class AbsenController extends GetxController {
           } else {
             isTracking.value = 0;
           }
+          print("data wajah ${data[0]['file_face']}");
           regType.value = data[0]['reg_type'];
           print("Req tye ${regType.value}");
           box.write("file_face", data[0]['file_face']);
+
+          print("data wajah ${GetStorage().read('file_face')}");
 
           if (data[0]['file_face'] == "" || data[0]['file_face'] == null) {
             box.write("face_recog", false);
@@ -2110,7 +2209,6 @@ class AbsenController extends GetxController {
   }
 
   void employeDetaiBpjs() {
-    print("load detal bpjs");
     // UtilsAlert.showLoadingIndicator(Get.context!);
     var dataUser = AppData.informasiUser;
     final box = GetStorage();
@@ -2312,4 +2410,176 @@ class AbsenController extends GetxController {
       },
     );
   }
+
+  void addPengajuan() {}
+
+  void checkAbsensi() {
+    var emId = AppData.informasiUser![0].em_id;
+    Map<String, dynamic> body = {
+      "em_id": emId,
+      'date': tglAjunan.value,
+      
+      'bulan':
+          DateFormat('MM').format(DateTime.parse(tglAjunan.value.toString())),
+      'tahun':
+          DateFormat('yyyy').format(DateTime.parse(tglAjunan.value.toString()))
+    };
+    print(body);
+    var connect = Api.connectionApi("post", body, "employee-attendance");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        List data = valueBody['data'];
+        if (data.isNotEmpty) {
+          checkinAjuan.value = data[0]['signin_time'];
+          checkoutAjuan.value = data[0]['signout_time'];
+        } else {}
+      }
+    });
+
+    
+  }
+
+    void batalkanAjuan({date}) {
+      UtilsAlert.showLoadingIndicator(Get.context!);
+    var emId = AppData.informasiUser![0].em_id;
+    Map<String, dynamic> body = {
+      "em_id": emId,
+      'date': date,
+      'bulan':
+          DateFormat('MM').format(DateTime.parse(date.toString())),
+      'tahun':
+          DateFormat('yyyy').format(DateTime.parse(date.toString()))
+    };
+  
+    var connect = Api.connectionApi("post", body, "delete-employee-attendance");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+          dataPengajuanAbsensi();
+           Get.back();
+                 Get.back();
+     
+    
+      }else{
+           Get.back();
+      }
+    });
+
+    
+  }
+
+    void dataPengajuanAbsensi() {
+      isLoadingPengajuan.value=true;
+    var emId = AppData.informasiUser![0].em_id;
+    Map<String, dynamic> body = {
+      "em_id": emId,
+      'date': tglAjunan.value,
+      'bulan': bulanSelectedSearchHistoryPengajuan.value,
+      'tahun': tahunSelectedSearchHistoryPengajuan.value,
+    };
+    print(body);
+    var connect = Api.connectionApi("post", body, "get-employee-attendance");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+     
+           isLoadingPengajuan.value=false;
+        var valueBody = jsonDecode(res.body);
+        List data = valueBody['data'];
+        print("data pengajuan ${data}");
+        if (data.isEmpty) {
+            loadingPengajuan.value = "Data tidak tersedia";
+          } else {
+            loadingPengajuan.value = "Memuat Data...";
+          };
+        pengajuanAbsensi.value=data;
+      }else{
+           isLoadingPengajuan.value=false;
+      }
+    });
+  }
+
+  void resetData() {
+    tglAjunan.value = "";
+    checkinAjuan.value = "";
+    checkoutAjuan.value = "";
+    checkinAjuan2.value = "";
+    checkoutAjuan2.value = "";
+    catataanAjuan.clear();
+    imageAjuan = "".obs;
+  }
+
+  void kirimPengajuan() {
+    var emId = AppData.informasiUser![0].em_id;
+    Map<String, dynamic> body = {
+      "em_id": emId,
+      'date': tglAjunan.value,
+      'bulan':
+          DateFormat('MM').format(DateTime.parse(tglAjunan.value.toString())),
+      'tahun':
+          DateFormat('yyyy').format(DateTime.parse(tglAjunan.value.toString())),
+      'status': "pending",
+      'catatan': catataanAjuan.text,
+      'checkin': checkinAjuan2.value.toString(),
+      'checkout': checkoutAjuan2.value.toString(),
+      'file': imageAjuan.value,
+      'tgl_ajuan':DateFormat('yyyy-MM-dd').format(DateTime.now()),
+    };
+    print(body);
+    var connect = Api.connectionApi("post", body, "save-employee-attendance");
+    connect.then((dynamic res) {
+       var valueBody = jsonDecode(res.body);
+    
+      if (res.statusCode == 200) {
+        Get.back();
+        Get.back();
+        dataPengajuanAbsensi();
+         UtilsAlert.showToast(valueBody['message']);
+        
+      }else{
+         UtilsAlert.showToast(valueBody['message']);
+        
+      }
+    });
+  }
+
+  void nextKirimPengajuan() async {
+    if (tglAjunan.value == "") {
+      UtilsAlert.showToast("Tanggal belum dipilih");
+      return;
+    }
+
+    if (checkinAjuan2.value == "") {
+      UtilsAlert.showToast("Waktu Checkin belum dipilih");
+      return;
+    }
+
+    if (checkoutAjuan2.value == "") {
+      UtilsAlert.showToast("Waktu Checkout belum dipilih");
+      return;
+    }
+
+    if (catataanAjuan.text == "") {
+      UtilsAlert.showToast("catatan belum diisi");
+      return;
+    }
+
+    if (uploadFile.value == true) {
+      UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan File");
+      var connectUpload = await Api.connectionApiUploadFile(
+          "upload_form_pengajuan_absensi", filePengajuan.value);
+      var valueBody = jsonDecode(connectUpload);
+      if (valueBody['status'] == true) {
+       
+        Navigator.pop(Get.context!);
+        // checkNomorAjuan(status);
+        kirimPengajuan();
+      } else {
+        UtilsAlert.showToast("Gagal kirim file");
+      }
+    }else{
+      kirimPengajuan();
+    }
+  }
+
+
 }

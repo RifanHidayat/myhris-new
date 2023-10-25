@@ -173,6 +173,7 @@ class LemburController extends GetxController {
   }
 
   void getTypeLembur() {
+    print("get data atype lembur");
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {
@@ -332,8 +333,9 @@ class LemburController extends GetxController {
     var dataUser = AppData.informasiUser;
     var getDepGroup = dataUser![0].dep_group;
     var full_name = dataUser[0].full_name;
-    Map<String, dynamic> body = {'val': 'dep_group_id', 'cari': getDepGroup};
-    var connect = Api.connectionApi("post", body, "whereOnce-employee");
+    var emid=dataUser[0].em_id;
+    Map<String, dynamic> body = {'em_id': emid, 'dep_group_id': getDepGroup};
+    var connect = Api.connectionApi("post", body, "employee-delegasi");
     connect.then((dynamic res) {
       if (res == false) {
         UtilsAlert.koneksiBuruk();
@@ -376,6 +378,7 @@ class LemburController extends GetxController {
   }
 
   void validasiKirimPengajuan() {
+    print("data selected ${selectedTypeLembur.value}");
     if (tanggalLembur.value.text == "" ||
         dariJam.value.text == "" ||
         sampaiJam.value.text == "" ||
@@ -429,6 +432,7 @@ class LemburController extends GetxController {
         } else {
           UtilsAlert.showToast(
               "Data periode $finalTanggalPengajuan belum tersedia, harap hubungi HRD");
+               
         }
       }
     });
@@ -527,7 +531,11 @@ class LemburController extends GetxController {
               var nomorAjuanTerakhirDalamAntrian =
                   valueBody['data'][0]['nomor_ajuan'];
               checkNomorAjuanDalamAntrian(nomorAjuanTerakhirDalamAntrian);
-            } else {
+            } if (valueBody['message'] == "date") {
+                       Navigator.pop(Get.context!);
+              UtilsAlert.showToast(
+                  valueBody['error'] );
+            }else {
               Navigator.pop(Get.context!);
               UtilsAlert.showToast(
                   "Data periode $finalTanggalPengajuan belum tersedia, harap hubungi HRD");

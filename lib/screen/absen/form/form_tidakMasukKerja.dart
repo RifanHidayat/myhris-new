@@ -35,7 +35,7 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
       controller.sampaiTanggal.value.text = "$convertSampaiTanggal";
       controller.jamAjuan.value.text = widget.dataForm![0]['time_plan'];
       controller.sampaiJamAjuan.value.text =
-          widget.dataForm![0]['time_plan_to'];
+          widget.dataForm![0]['time_plan_to'].toString();
       controller.alasan.value.text = "${widget.dataForm![0]['reason']}";
       controller.namaFileUpload.value = "${widget.dataForm![0]['leave_files']}";
       controller.validasiTypeWhenEdit("${widget.dataForm![0]['name']}");
@@ -424,7 +424,7 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 8, top: 5),
                               child: Text(
-                                "${controller.sampaiJamAjuan.value.text}",
+                                "${controller.sampaiJamAjuan.value.text.toString()}",
                                 style: TextStyle(fontSize: 16),
                               ),
                             ))),
@@ -444,7 +444,7 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          "Delegasikan Kepada",
+   "Tugas Didelegasikan Kepada",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         SizedBox(

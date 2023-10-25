@@ -3,10 +3,22 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 
 class Constanst {
+  // new color
+  //
+  static Color sfSecondary = HexColor('#68778D');
+  static Color fgPrimary = HexColor('#202327');
+  static Color fgBorder = HexColor('#CBD5E0');
+  static Color warning = HexColor('#F2AA0D');
+    static Color onPrimary= HexColor('#001767');
+
+
+
+  static Color secondary = HexColor('#68778D');
+
   static double defaultMarginPadding = 16.0;
   static double sizeTitle = 16.0;
   static double sizeText = 14.0;
-    static Color greyLight300 = Color(0xffBCC2CE);
+  static Color greyLight300 = Color(0xffBCC2CE);
   static Color greyLight100 = Color(0xffE9EDF5);
   static Color greyLight50 = Color(0xffF8FAFF);
   // static Color coloBackgroundScreen = Color(0xffF8FAFF);
@@ -26,11 +38,11 @@ class Constanst {
   static Color blackSurface = HexColor('#202327');
 
   static Color colorNonAktif = Color(0xffD5DBE5);
- static Color colorButton1 = Color(0xff001767);
+  static Color colorButton1 = Color(0xff001767);
 //  static Color colorButton1 = HexColor('#14A494');
 
   static Color colorButton2 = Color(0xffE9F5FE);
-   static Color colorButton3 = Color(0xffE1E9FA);
+  static Color colorButton3 = Color(0xffE1E9FA);
   //static Color colorButton3 = HexColor('#DFFFF0');
 
   static Color colorPrimary = Color(0xff001767);

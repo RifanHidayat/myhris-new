@@ -133,7 +133,7 @@ class _LaporanBelumAbsenState extends State<LaporanBelumAbsen> {
                                       height: 5,
                                     ),
                                     Text(
-                                      "${controller.jumlahData.value} Karyawan Belum Absen",
+                                      "${controller.listLaporanBelumAbsen.length} Karyawan Belum Absen",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: Constanst.colorText2,

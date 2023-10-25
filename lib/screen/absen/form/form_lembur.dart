@@ -42,7 +42,6 @@ class _FormLemburState extends State<FormLembur> {
       controller.checkingDelegation(widget.dataForm![0]['em_delegation']);
       controller.nomorAjuan.value.text =
           "${widget.dataForm![0]['nomor_ajuan']}";
-      
     }
     super.initState();
   }
@@ -110,7 +109,38 @@ class _FormLemburState extends State<FormLembur> {
           padding: EdgeInsets.all(16.0),
           child: TextButtonWidget(
             title: "Simpan",
-            onTap: () => controller.validasiKirimPengajuan(),
+            onTap: () {
+               print("tes ${controller.dariJam.value.text.toString()}");
+              TimeOfDay _startTime = TimeOfDay(
+                  hour: int.parse(
+                      controller.dariJam.value.text.toString().split(":")[0]),
+                  minute: int.parse(
+                      controller.dariJam.value.text.toString().split(":")[1]));
+              TimeOfDay _endTime = TimeOfDay(
+                  hour: int.parse(
+                      controller.sampaiJam.value.text.toString().split(":")[0]),
+                  minute: int.parse(
+                      controller.sampaiJam.value.text.toString().split(":")[1]));
+
+                     
+
+              if (_endTime.hour >= _startTime.hour) {
+                if (_endTime.hour == _startTime.hour) {
+
+                  if (_endTime.minute < _startTime.minute) {
+                    UtilsAlert.showToast("waktu yang dimasukan tidak valid, coba periksa lagi waktu lemburmu");
+                   
+                    return;
+                  }
+                }
+                print("masuk sini");
+               controller.validasiKirimPengajuan();
+              } else {
+                 UtilsAlert.showToast("waktu yang dimasukan tidak valid, coba periksa lagi waktu lemburmu");
+              }
+              
+              //
+            },
             colorButton: Constanst.colorPrimary,
             colortext: Constanst.colorWhite,
             border: BorderRadius.circular(20.0),

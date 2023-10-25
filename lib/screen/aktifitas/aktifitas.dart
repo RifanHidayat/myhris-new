@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:siscom_operasional/controller/aktifitas_controller.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
@@ -386,11 +387,20 @@ class Aktifitas extends StatelessWidget {
                         if (time != null) {
                           print("$time");
                           var filter = DateFormat('yyyy-MM').format(time);
+                          DateTime previousMonthDate = DateTime(time.year,time.month - 1, time.day);
+                          
+                          
                           var array = filter.split('-');
                           var bulan = array[1];
                           var tahun = array[0];
                           controller.stringBulan.value =
                               "${DateFormat('MMMM').format(time)}";
+                              controller.endPayroll.value=  "${DateFormat('MMMM').format(time)}";
+                              if (AppData.informasiUser![0].beginPayroll==1){
+                                  controller.beginPayroll.value=  "${DateFormat('MMMM').format(time)}";
+                              }else{
+                                  controller.beginPayroll.value=  "${DateFormat('MMMM').format(previousMonthDate)}";
+                              }
                           controller.bulanSelectedSearchHistory.value = bulan;
                           controller.tahunSelectedSearchHistory.value = tahun;
                           controller.bulanDanTahunNow.value = "$bulan-$tahun";
@@ -516,19 +526,28 @@ class Aktifitas extends StatelessWidget {
                   flex: 3,
                   child: Padding(
                     padding: EdgeInsets.only(left: 18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Absen tepat waktu",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        Text(
-                          "Dari ${controller.firstDayMonth.value} ${controller.stringBulan.value} sd ${controller.lastDayMonth.value} ${controller.stringBulan.value} ${controller.tahunSelectedSearchHistory.value}",
-                          style: TextStyle(color: Constanst.colorText2),
-                        )
-                      ],
+                    child: InkWell(
+                      onTap: (){
+                        print(AppData.informasiUser![0].beginPayroll.toString());
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Absen tepat waktu",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                           Text(
+                            "Periode ${controller.stringBulan.value}",
+                                 style: TextStyle(color: Constanst.colorText2),
+                          ),
+                          Text(
+                            "Dari ${AppData.informasiUser![0].beginPayroll}  ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll}  ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
+                            style: TextStyle(color: Constanst.colorText2),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 )

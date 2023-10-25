@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,9 +10,11 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:ntp/ntp.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
+import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/model/menu.dart';
 import 'package:siscom_operasional/model/menu_dashboard_model.dart';
 import 'package:google_maps_utils/google_maps_utils.dart';
@@ -33,6 +36,7 @@ import 'package:siscom_operasional/screen/kandidat/form_kandidat.dart';
 import 'package:siscom_operasional/screen/kandidat/list_kandidat.dart';
 import 'package:siscom_operasional/screen/klaim/form_klaim.dart';
 import 'package:siscom_operasional/screen/klaim/riwayat_klaim.dart';
+import 'package:siscom_operasional/screen/pph21/pphh21.dart';
 import 'package:siscom_operasional/screen/slip_gaji/slip_gaji.dart';
 import 'package:siscom_operasional/screen/verify_password_payroll.dart';
 import 'package:siscom_operasional/services/request.dart';
@@ -42,8 +46,8 @@ import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
-  var departementAkses = [].obs;
 
+var departementAkses = [].obs;
 
 class DashboardController extends GetxController {
   CarouselController corouselDashboard = CarouselController();
@@ -54,6 +58,7 @@ class DashboardController extends GetxController {
 
   var controllerAbsensi = Get.put(AbsenController());
   var menu = <MenuDashboardModel>[].obs;
+  var globalCtr = Get.put(GlobalController());
 
   var user = [].obs;
   var menus = <MenuModel>[].obs;
@@ -64,12 +69,16 @@ class DashboardController extends GetxController {
   var employeeUltah = [].obs;
   var employeeTidakHadir = [].obs;
   var menuShowInMain = [].obs;
-var isPauseCamera=true;
+  var menuShowInMainUtama = [].obs;
+  var isPauseCamera = true;
   var jumlahData = 0.obs;
-   var departementAkses = [].obs;
+  var departementAkses = [].obs;
 
   var timeString = "".obs;
   var dateNow = "".obs;
+  var showUlangTahun = false.obs;
+  var showPkwt = false.obs;
+  var showPengumuman = false.obs;
 
   var selectedPageView = 0.obs;
   var indexBanner = 0.obs;
@@ -103,32 +112,207 @@ var isPauseCamera=true;
   }
 
   void initData() async {
-
-   
+    DateTime startDate = await NTP.now();
     getBannerDashboard();
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     getMenuDashboard();
     loadMenuShowInMain();
+    loadMenuShowInMainUtama();
     getInformasiDashboard();
     getEmployeeBelumAbsen();
-    timeString.value = formatDateTime(DateTime.now());
-    dateNow.value = dateNoww(DateTime.now());
+    timeString.value = formatDateTime(startDate);
+    dateNow.value = dateNoww(startDate);
+
     Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
     getSizeDevice();
     checkStatusPermission();
     checkHakAkses();
     updateInformasiUser();
-   
+    checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id.toString());
   }
 
-  void checkAbsenUser(convert, getEmid) async {
-    Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
-    print(body);
+  // void checkAbsenUser(convert, getEmid) async {
+  //   // Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
+  //   // print(body);
+  //   print("view last absen user");
+  //   var startTime = "";
+  //   var endTime = "";
+
+  //   var startDate = "";
+  //   var endDate = "";
+
+  //   //sekarang jam 03:00
+  //   // start time 05:00
+  //   //end entimenua 02:04
+  //   //jika star time lebih besar dari end time maka  akan memeriksa attendance dari start time di hari sebelumya  tanggal sekarang dengan end time
+  //   //
+  //   TimeOfDay waktu1 = TimeOfDay(
+  //       hour: int.parse(
+  //           AppData.informasiUser![0].startTime.toString().split(':')[0]),
+  //       minute: int.parse(AppData.informasiUser![0].startTime
+  //           .toString()
+  //           .split(':')[1])); // Waktu pertama
+  //   TimeOfDay waktu2 = TimeOfDay(
+  //       hour: int.parse(
+  //           AppData.informasiUser![0].endTime.toString().split(':')[0]),
+  //       minute: int.parse(AppData.informasiUser![0].startTime
+  //           .toString()
+  //           .split(':')[1])); // Waktu kedua
+  //   int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+  //   int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+  //   if (totalMinutes1 < totalMinutes2) {
+  //     startTime = AppData.informasiUser![0].startTime;
+  //     endTime = AppData.informasiUser![0].endTime;
+
+  //     startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //     endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //   } else if (totalMinutes1 > totalMinutes2) {
+  //     var waktu3 =
+  //         TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+  //     int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+  //     if (totalMinutes2 > totalMinutes3) {
+  //       startTime = AppData.informasiUser![0].endTime;
+  //       endTime = AppData.informasiUser![0].startTime;
+  //       startDate = DateFormat('yyyy-MM-dd')
+  //           .format(DateTime.now().add(Duration(days: -1)));
+  //       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //     } else {
+  //       startTime = AppData.informasiUser![0].endTime;
+  //       endTime = AppData.informasiUser![0].startTime;
+  //       startDate = DateFormat('yyyy-MM-dd')
+  //           .format(DateTime.now().add(Duration(days: 1)));
+  //       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //     }
+  //   } else {
+  //     startTime = AppData.informasiUser![0].startTime;
+  //     endTime = AppData.informasiUser![0].endTime;
+
+  //     startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //     endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //     print("Waktu 1 sama dengan waktu 2");
+  //   }
+  //   Map<String, dynamic> body = {
+  //     'atten_date': convert,
+  //     'em_id': getEmid,
+  //     'database': AppData.selectedDatabase,
+  //     'start_date': startDate,
+  //     'end_date': endDate,
+  //     'start_time': startTime,
+  //     'emd_time': endTime
+  //   };
+
+  //   var connect = Api.connectionApi("post", body, "view_last_absen_user");
+  //   var value = await connect;
+  //   var valueBody = jsonDecode(value.body);
+
+  //   List data = valueBody['data'];
+
+  //   print('data response $valueBody');
+  //   if (data.isEmpty) {
+  //     AppData.statusAbsen = false;
+
+  //     // Future.delayed(Duration.zero, () {});
+  //   } else {
+  //     var now = DateTime.parse(DateFormat("yyyy-MM-dd hh:mm:dd")
+  //         .format(DateTime.parse(DateTime.now().toString())));
+  //     var newStartDate = DateTime.parse(DateFormat('yyy-MM-dd hh:mm:ss')
+  //         .format(DateTime.parse(startDate + " " + startTime)));
+  //     var newEndDate = DateTime.parse(DateFormat('yyy-MM-dd hh:mm:ss')
+  //         .format(DateTime.parse(endDate + " " + endTime)));
+
+  //     if (now.isAfter(newStartDate) && now.isBefore(newEndDate)) {
+  //       AppData.statusAbsen =
+  //           data[0]['signout_time'] == "00:00:00" ? true : false;
+  //     } else {
+  //       if (totalMinutes1 < totalMinutes2) {
+  //         var tanggalTerakhirAbsen = data[0]['atten_date'];
+  //         if (tanggalTerakhirAbsen == convert) {
+  //           // print("siggin time ${data[0]['sign_time']}");
+  //           AppData.statusAbsen =
+  //               data[0]['signout_time'] == "00:00:00" ? true : false;
+  //         } else {
+  //           AppData.statusAbsen = false;
+  //         }
+  //       } else {
+  //         AppData.statusAbsen = false;
+  //       }
+  //     }
+  //   }
+  // }
+
+
+    void checkAbsenUser(convert, getEmid) async {
+    // Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
+    // print(body);
+    print("view last absen user");
+
+
+    //sekarang jam 03:00
+    // start time 05:00
+    //end entimenua 02:04
+    //jika star time lebih besar dari end time maka  akan memeriksa attendance dari start time di hari sebelumya  tanggal sekarang dengan end time
+    //
+    // TimeOfDay waktu1 = TimeOfDay(
+    //     hour: int.parse(
+    //         AppData.informasiUser![0].startTime.toString().split(':')[0]),
+    //     minute: int.parse(AppData.informasiUser![0].startTime
+    //         .toString()
+    //         .split(':')[1])); // Waktu pertama
+    // TimeOfDay waktu2 = TimeOfDay(
+    //     hour: int.parse(
+    //         AppData.informasiUser![0].endTime.toString().split(':')[0]),
+    //     minute: int.parse(AppData.informasiUser![0].startTime
+    //         .toString()
+    //         .split(':')[1])); // Waktu kedua
+    // int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+    // int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+    // if (totalMinutes1 < totalMinutes2) {
+    //   startTime = AppData.informasiUser![0].startTime;
+    //   endTime = AppData.informasiUser![0].endTime;
+
+    //   startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    //   endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    // } else if (totalMinutes1 > totalMinutes2) {
+    //   var waktu3 =
+    //       TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+    //   int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+    //   if (totalMinutes2 > totalMinutes3) {
+    //     startTime = AppData.informasiUser![0].endTime;
+    //     endTime = AppData.informasiUser![0].startTime;
+    //     startDate = DateFormat('yyyy-MM-dd')
+    //         .format(DateTime.now().add(Duration(days: -1)));
+    //     endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    //   } else {
+    //     startTime = AppData.informasiUser![0].endTime;
+    //     endTime = AppData.informasiUser![0].startTime;
+    //     startDate = DateFormat('yyyy-MM-dd')
+    //         .format(DateTime.now().add(Duration(days: 1)));
+    //     endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    //   }
+    // } else {
+    //   startTime = AppData.informasiUser![0].startTime;
+    //   endTime = AppData.informasiUser![0].endTime;
+
+    //   startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    //   endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    //   print("Waktu 1 sama dengan waktu 2");
+    // }
+    Map<String, dynamic> body = {
+      'atten_date': convert,
+      'em_id': getEmid,
+      'database': AppData.selectedDatabase,
+ 
+    };
+    
+
+    print("List absen user");
 
     var connect = Api.connectionApi("post", body, "view_last_absen_user");
     var value = await connect;
     var valueBody = jsonDecode(value.body);
- 
+
     List data = valueBody['data'];
 
     print('data response $valueBody');
@@ -137,30 +321,76 @@ var isPauseCamera=true;
 
       // Future.delayed(Duration.zero, () {});
     } else {
-      var tanggalTerakhirAbsen = data[0]['atten_date'];
-      if (tanggalTerakhirAbsen == convert) {
-        // print("siggin time ${data[0]['sign_time']}");
-        AppData.statusAbsen =
-            data[0]['signout_time'] == "00:00:00" ? true : false;
-      } else {
-        AppData.statusAbsen = false;
-      }
+       var tanggalTerakhirAbsen = data[0]['atten_date'];
+       
+          if (tanggalTerakhirAbsen == convert) {
+            // print("siggin time ${data[0]['sign_time']}");
+            AppData.statusAbsen =
+                data[0]['signout_time'] == "00:00:00" ? true : false;
+          } else {
+            AppData.statusAbsen = false;
+          }
     }
+  }
+  // conne.then((dynamic res) {
+  //   if (res.statusCode == 200) {
+  //     var valueBody = jsonDecode(res.body);
 
-    // conne.then((dynamic res) {
-    //   if (res.statusCode == 200) {
-    //     var valueBody = jsonDecode(res.body);
+  //     print("value body ${valueBody}");
 
-    //     print("value body ${valueBody}");
+  //   }
+  // });
 
-    //   }
-    // });
+  Future<bool> checkValidasipayroll({type, page}) async {
+    var dataUser = AppData.informasiUser;
+    var getEmid = dataUser![0].em_id;
+    var desId = dataUser![0].des_id;
+    UtilsAlert.showLoadingIndicator(Get.context!);
+
+    try {
+      Map<String, dynamic> body = {
+        'em_id': getEmid.toString(),
+        'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        "designation_id": desId,
+        'type': type.toString()
+      };
+      print(body);
+
+      var response = await Request(url: "validasi-payroll", body: body).post();
+      var res = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        Get.back();
+        Get.back();
+        Get.to(page);
+        //  UtilsAlert.showToast(res['message']);
+
+        return true;
+      }
+      if (res['em_ids'] == null ||
+          res['em_ids'] == "" ||
+          res['em_ids'] == "null") {
+      } else {
+        globalCtr.kirimNotifikasiFcm(
+            title: "Approval payroll",
+            message:
+                "Halo pak saya mengajukan approval untuk melihat ${type == "slip_gaji" ? "Slip gaji" : ""}");
+      }
+      Get.back();
+      Get.back();
+      UtilsAlert.showToast(res['message']);
+      return false;
+    } catch (e) {
+      UtilsAlert.showToast(e);
+      return false;
+      print(e.toString());
+    }
   }
 
-    void getDepartemen() {
-       controllerAbsensi.showButtonlaporan.value = false;
-      print("get departement ${controllerAbsensi.showButtonlaporan.value}");
-      departementAkses.value=[];
+  void getDepartemen() {
+    controllerAbsensi.showButtonlaporan.value = false;
+    print("get departement ${controllerAbsensi.showButtonlaporan.value}");
+    departementAkses.value = [];
     print("get departement ");
     jumlahData.value = 0;
     var connect = Api.connectionApi("get", {}, "all_department");
@@ -174,8 +404,7 @@ var isPauseCamera=true;
 
           var dataUser = AppData.informasiUser;
           var hakAkses = dataUser![0].em_hak_akses;
-           
-         
+
           if (hakAkses != "" || hakAkses != null) {
             if (hakAkses == '0') {
               var data = {
@@ -206,14 +435,13 @@ var isPauseCamera=true;
               }
             }
           }
-          print("hak akses ${ dataUser![0].em_hak_akses}");
+          print("hak akses ${dataUser![0].em_hak_akses}");
           this.departementAkses.refresh();
           if (departementAkses.value.isNotEmpty) {
-              print("get departement ${departementAkses} ");
+            print("get departement ${departementAkses} ");
             controllerAbsensi.showButtonlaporan.value = true;
-          }else{
-              controllerAbsensi.showButtonlaporan.value = false;
-
+          } else {
+            controllerAbsensi.showButtonlaporan.value = false;
           }
         }
       }
@@ -249,13 +477,15 @@ var isPauseCamera=true;
               'em_control': element.em_control,
               'emp_att_working': element.emp_att_working,
               'em_hak_akses': element.em_hak_akses,
-              'branch_name':element.branchName
+              'branch_name': element.branchName,
+              'begin_payroll': element.beginPayroll,
+              'end_payroll': element.endPayroll
             })
         .toList();
     user.value = userTampung;
     this.user.refresh();
     refreshPagesStatus.value = false;
-      getDepartemen();
+    getDepartemen();
   }
 
   void checkHakAkses() {
@@ -294,38 +524,41 @@ var isPauseCamera=true;
     Map<String, dynamic> body = {'em_id': getEmid};
     var connect = Api.connectionApi("post", body, "refresh_employee");
     connect.then((dynamic res) {
-    
       var valueBody = jsonDecode(res.body);
       if (valueBody['status'] == false) {
         UtilsAlert.showToast(valueBody['message']);
         Navigator.pop(Get.context!);
       } else {
+        print("data ${valueBody['data']}");
         AppData.informasiUser = null;
         List<UserModel> getData = [];
         for (var element in valueBody['data']) {
           var data = UserModel(
-            em_id: element['em_id'] ?? "",
-            des_id: element['des_id'] ?? 0,
-            dep_id: element['dep_id'] ?? 0,
-            dep_group: element['dep_group'] ?? 0,
-            full_name: element['full_name'] ?? "",
-            em_email: element['em_email'] ?? "",
-            em_phone: element['em_phone'] ?? "",
-            em_birthday: element['em_birthday'] ?? "1999-09-09",
-            em_gender: element['em_gender'] ?? "",
-            em_image: element['em_image'] ?? "",
-            em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-            em_status: element['em_status'] ?? "",
-            em_blood_group: element['em_blood_group'] ?? "",
-            posisi: element['posisi'] ?? "",
-            emp_jobTitle: element['emp_jobTitle'] ?? "",
-            emp_departmen: element['emp_departmen'] ?? "",
-            em_control: element['em_control'] ?? 0,
-            em_control_acess: element['em_control_access'] ?? 0,
-            emp_att_working: element['emp_att_working'] ?? 0,
-            em_hak_akses: element['em_hak_akses'] ?? "",
-            branchName: element['branch_name']
-          );
+              em_id: element['em_id'] ?? "",
+              des_id: element['des_id'] ?? 0,
+              dep_id: element['dep_id'] ?? 0,
+              dep_group: element['dep_group'] ?? 0,
+              full_name: element['full_name'] ?? "",
+              em_email: element['em_email'] ?? "",
+              em_phone: element['em_phone'] ?? "",
+              em_birthday: element['em_birthday'] ?? "1999-09-09",
+              em_gender: element['em_gender'] ?? "",
+              em_image: element['em_image'] ?? "",
+              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+              em_status: element['em_status'] ?? "",
+              em_blood_group: element['em_blood_group'] ?? "",
+              posisi: element['posisi'] ?? "",
+              emp_jobTitle: element['emp_jobTitle'] ?? "",
+              emp_departmen: element['emp_departmen'] ?? "",
+              em_control: element['em_control'] ?? 0,
+              em_control_acess: element['em_control_access'] ?? 0,
+              emp_att_working: element['emp_att_working'] ?? 0,
+              em_hak_akses: element['em_hak_akses'] ?? "",
+              beginPayroll: element['begin_payroll'],
+              endPayroll: element['end_payroll'],
+              startTime: "00:01",
+              endTime: "23:59",
+              branchName: element['branch_name']);
           print(element['posisi']);
           getData.add(data);
         }
@@ -402,7 +635,6 @@ var isPauseCamera=true;
       ratioDevice.value = 3.0;
       deviceStatus.value = true;
     }
-    print("lebar $width");
   }
 
   void loadMenuShowInMain() {
@@ -410,14 +642,12 @@ var isPauseCamera=true;
     var connect = Api.connectionApi("get", {}, "menu_dashboard",
         params: "&em_id=${AppData.informasiUser![0].em_id}");
     connect.then((dynamic res) {
-     
       if (res == false) {
         UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
           var temporary = valueBody['data'];
-     
 
           menuShowInMain.value = temporary;
         }
@@ -425,17 +655,68 @@ var isPauseCamera=true;
     });
   }
 
-
-
-  void getInformasiDashboard() async {
-    var connect = await Api.connectionApi("get", {}, "notice");
+  void loadMenuShowInMainUtama() {
+    showPengumuman.value = false;
+    showPkwt.value = false;
+    showUlangTahun.value = false;
+    menuShowInMain.value.clear();
+    var connect = Api.connectionApi("get", {}, "menu_dashboard_utama",
+        params: "&em_id=${AppData.informasiUser![0].em_id}");
     connect.then((dynamic res) {
       if (res == false) {
         UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
+          print("daftar menu utama ${valueBody['data']} ");
+          var temporary = valueBody['data'];
+          menuShowInMainUtama.value = temporary;
+          if (menuShowInMainUtama.isNotEmpty) {
+            List menuPengumuman = menuShowInMainUtama
+                .where((p0) =>
+                    p0['url'].toString().toLowerCase().trim() ==
+                    "InfoHrd".toLowerCase().toString().trim())
+                .toList();
+            List menuPkwt = menuShowInMainUtama
+                .where((p0) =>
+                    p0['url'].toString().toLowerCase().trim() ==
+                    "PKWT".toLowerCase().toString().trim())
+                .toList();
+            List menuUlangtahun = menuShowInMainUtama
+                .where((p0) =>
+                    p0['url'].toString().toLowerCase().trim() ==
+                    "UlangTahun".toLowerCase().toString().trim())
+                .toList();
+
+            if (menuPengumuman.isNotEmpty) {
+              showPengumuman.value = true;
+            }
+
+            if (menuPkwt.isNotEmpty) {
+              showPkwt.value = true;
+            }
+            if (menuUlangtahun.isNotEmpty) {
+              showUlangTahun.value = true;
+            }
+          }
+        }
+      }
+    });
+  }
+
+  void getInformasiDashboard() async {
+    print("masuk sini");
+    var connect = Api.connectionApi("get", {}, "notice");
+    connect.then((dynamic res) {
+      print("masuk sini 1");
+
+      if (res == false) {
+        UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
           var data = valueBody['data'];
+          print("data informasi ${data}");
           var filter1 = [];
           var dt = DateTime.now();
           for (var element in data) {
@@ -489,15 +770,13 @@ var isPauseCamera=true;
         data.sort((a, b) => a['full_name']
             .toUpperCase()
             .compareTo(b['full_name'].toUpperCase()));
-            
-        employeeTidakHadir.value = data;
-          print("data tidak hadir ${employeeTidakHadir}");
-         final ids =employeeTidakHadir.map((e) => e['em_id']).toSet();
-  employeeTidakHadir.retainWhere((x) => ids.remove(x['em_id']));
-      
-        this.employeeTidakHadir.refresh();
 
-      
+        employeeTidakHadir.value = data;
+        print("data tidak hadir ${employeeTidakHadir}");
+        final ids = employeeTidakHadir.map((e) => e['em_id']).toSet();
+        employeeTidakHadir.retainWhere((x) => ids.remove(x['em_id']));
+
+        this.employeeTidakHadir.refresh();
       }
     });
   }
@@ -541,8 +820,9 @@ var isPauseCamera=true;
     });
   }
 
-  void _getTime() {
-    final DateTime now = DateTime.now();
+  void _getTime() async {
+    DateTime startDate = await NTP.now();
+    final DateTime now = startDate;
     final String formattedDateTime = formatDateTime(now);
     timeString.value = formattedDateTime;
   }
@@ -706,10 +986,28 @@ var isPauseCamera=true;
         Get.offAll(Kandidat());
       }
     } else if (url == "SlipGaji") {
-      print('e');
+      //  Get.to(PPh21page());
+
       Get.to(VerifyPasswordPayroll(
         page: SlipGaji(),
+        titlepage: "slip_gaji",
       ));
+      // Get.to(VerifyPasswordPayroll(
+      //   page: SlipGaji(),
+      //   titlepage: "slip_gaji",
+      // ));
+    } else if (url == "Pph21") {
+      //  Get.to(PPh21page());
+      Get.to(PPh21page());
+
+      // Get.to(VerifyPasswordPayroll(
+      //     page: PPh21page(),
+      //     titlepage: "pph21",
+      //   ));
+      // Get.to(VerifyPasswordPayroll(
+      //   page: SlipGaji(),
+      //   titlepage: "slip_gaji",
+      // ));
     } else if (url == "BpjsKesehatan") {
       if (bpjsController.bpjsKesehatanNumber.value == "" ||
           bpjsController.bpjsKesehatanNumber.value == null) {
@@ -718,16 +1016,17 @@ var isPauseCamera=true;
       } else {
         Get.to(VerifyPasswordPayroll(
           page: BpjsKesehatan(),
+          titlepage: "bpjs_kesehatan",
         ));
       }
     } else if (url == "BpjsTenagaKerja") {
       if (bpjsController.BpjsKetenagakerjaanNumber.value == "" ||
           bpjsController.BpjsKetenagakerjaanNumber.value == null) {
-        UtilsAlert.showToast(
-            "\ anda belum tersedia,harap hubungi HRD");
+        UtilsAlert.showToast("\ anda belum tersedia,harap hubungi HRD");
       } else {
         Get.to(VerifyPasswordPayroll(
           page: BpjsKetenagakerjaan(),
+          titlepage: "bpjs_ketenagakerjaan",
         ));
       }
     } else if (url == "lainnya") {
@@ -1053,7 +1352,7 @@ var isPauseCamera=true;
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 16,left: 16,right: 16),
+              padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1101,8 +1400,7 @@ var isPauseCamera=true;
               height: 10,
             ),
             Container(
-           
-           padding: EdgeInsets.only(bottom: 10),
+              padding: EdgeInsets.only(bottom: 10),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1111,114 +1409,124 @@ var isPauseCamera=true;
                   return Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: InkWell(
-                      
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: 16,right: 16),
+                            padding: EdgeInsets.only(left: 16, right: 16),
                             child: Text(
                               data['nama_modul'].toString(),
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
-                          SizedBox(height: 8,),
+                          SizedBox(
+                            height: 8,
+                          ),
                           Container(
-                         child: Wrap(
-                          direction: Axis.horizontal,
-                           runSpacing: 16.0, // gap between lines
-                           
-                          
-                          
-                              
-                             children: List.generate(data['menu'].length, (idxMenu)  {
-                                    var gambar = data['menu'][idxMenu]['gambar'];
-                                   var namaMenu = data['menu'][idxMenu]['nama'];
-                                   return data['menu'][idxMenu]['id']==8?SizedBox(): Container(
-                                    width: MediaQuery.of(context).size.width/4,
-                                   
-                                     child: InkWell(
-                                       onTap: () => routePageDashboard(data['menu'][idxMenu]['url']),
-                                       highlightColor: Colors.white,
-                                       child: Column(
-                                           crossAxisAlignment:
-                                               CrossAxisAlignment.center,
-                                           children: [
-                                             gambar != ""
-                                                 ? Container(
-                                                     decoration: BoxDecoration(
-                                                         color:
-                                                             Constanst.colorButton3,
-                                                         borderRadius: Constanst
-                                                             .styleBoxDecoration1
-                                                             .borderRadius),
-                                                     child: Padding(
-                                                       padding:
-                                                           const EdgeInsets.only(
-                                                               left: 3,
-                                                               right: 3,
-                                                               top: 3,
-                                                               bottom: 3),
-                                                       child: CachedNetworkImage(
-                                                         imageUrl:
-                                                             Api.UrlgambarDashboard +
-                                                                 gambar,
-                                                         progressIndicatorBuilder:
-                                                             (context, url,
-                                                                     downloadProgress) =>
-                                                                 Container(
-                                                           alignment:
-                                                               Alignment.center,
-                                                           height:
-                                                               MediaQuery.of(context)
-                                                                       .size
-                                                                       .height *
-                                                                   0.5,
-                                                           width:
-                                                               MediaQuery.of(context)
-                                                                   .size
-                                                                   .width,
-                                                           child: CircularProgressIndicator(
-                                                               value:
-                                                                   downloadProgress
-                                                                       .progress),
-                                                         ),
-                                                         errorWidget:
-                                                             (context, url, error) =>
-                                                                 SizedBox(),
-                                                         fit: BoxFit.cover,
-                                                         width: 32,
-                                                         height: 32,
-                                                         color:
-                                                             Constanst.colorButton1,
-                                                       ),
-                                                     ),
-                                                   )
-                                                 : Container(
-                                                     color: Constanst.colorButton1,
-                                                     height: 32,
-                                                     width: 32,
-                                                   ),
-                                             SizedBox(
-                                               height: 3,
-                                             ),
-                                             Center(
-                                               child: Text(
-                                                 namaMenu.length > 20
-                                                     ? namaMenu.substring(0, 20) +
-                                                         '...'
-                                                     : namaMenu,
-                                                 textAlign: TextAlign.center,
-                                                 style: TextStyle(
-                                                     fontSize: 10,
-                                                     color: Constanst.colorText1),
-                                               ),
-                                             ),
-                                           ]),
-                                     ),
-                                   );
-                             }),
+                            child: Wrap(
+                              direction: Axis.horizontal,
+                              runSpacing: 16.0, // gap between lines
+
+                              children:
+                                  List.generate(data['menu'].length, (idxMenu) {
+                                var gambar = data['menu'][idxMenu]['gambar'];
+                                var namaMenu = data['menu'][idxMenu]['nama'];
+                                return data['menu'][idxMenu]['id'] == 8
+                                    ? SizedBox()
+                                    : Container(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4,
+                                        child: InkWell(
+                                          onTap: () => routePageDashboard(
+                                              data['menu'][idxMenu]['url']),
+                                          highlightColor: Colors.white,
+                                          child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                gambar != ""
+                                                    ? Container(
+                                                        decoration: BoxDecoration(
+                                                            color: Constanst
+                                                                .colorButton3,
+                                                            borderRadius: Constanst
+                                                                .styleBoxDecoration1
+                                                                .borderRadius),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 3,
+                                                                  right: 3,
+                                                                  top: 3,
+                                                                  bottom: 3),
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl:
+                                                                Api.UrlgambarDashboard +
+                                                                    gambar,
+                                                            progressIndicatorBuilder:
+                                                                (context, url,
+                                                                        downloadProgress) =>
+                                                                    Container(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height *
+                                                                  0.5,
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
+                                                              child: CircularProgressIndicator(
+                                                                  value: downloadProgress
+                                                                      .progress),
+                                                            ),
+                                                            errorWidget:
+                                                                (context, url,
+                                                                        error) =>
+                                                                    SizedBox(),
+                                                            fit: BoxFit.cover,
+                                                            width: 32,
+                                                            height: 32,
+                                                            color: Constanst
+                                                                .colorButton1,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : Container(
+                                                        color: Constanst
+                                                            .colorButton1,
+                                                        height: 32,
+                                                        width: 32,
+                                                      ),
+                                                SizedBox(
+                                                  height: 3,
+                                                ),
+                                                Center(
+                                                  child: Text(
+                                                    namaMenu.length > 20
+                                                        ? namaMenu.substring(
+                                                                0, 20) +
+                                                            '...'
+                                                        : namaMenu,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        color: Constanst
+                                                            .colorText1),
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                      );
+                              }),
                             ),
                           )
                         ],

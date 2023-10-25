@@ -92,13 +92,12 @@ class TidakMasukKerjaController extends GetxController {
   var globalCt = Get.put(GlobalController());
   @override
   void onReady() async {
-  
-
     super.onReady();
   }
-@override
-  void onInit(){
-      getTimeNow();
+
+  @override
+  void onInit() {
+    getTimeNow();
     getLoadsysData();
     loadAllEmployeeDelegasi();
     loadTypeSakit();
@@ -278,14 +277,21 @@ class TidakMasukKerjaController extends GetxController {
   }
 
   void loadAllEmployeeDelegasi() {
-
     allEmployeeDelegasi.value.clear();
     allEmployee.value.clear();
     var dataUser = AppData.informasiUser;
     var getDepGroup = dataUser![0].dep_group;
+    var getDepId = dataUser![0].dep_id;
     var full_name = dataUser[0].full_name;
-    Map<String, dynamic> body = {'val': 'dep_group_id', 'cari': getDepGroup};
-    var connect = Api.connectionApi("post", body, "whereOnce-employee");
+    // Map<String, dynamic> body = {'val': 'dep_group_id', 'cari': getDepGroup};
+    // var connect = Api.connectionApi("post", body, "whereOnce-employee");
+    var emid = dataUser[0].em_id;
+    Map<String, dynamic> body = {
+      'em_id': emid,
+      'dep_group_id': getDepGroup,
+      'dep_id': getDepId
+    };
+    var connect = Api.connectionApi("post", body, "employee-divisi");
     connect.then((dynamic res) {
       if (res == false) {
         UtilsAlert.koneksiBuruk();
@@ -304,8 +310,11 @@ class TidakMasukKerjaController extends GetxController {
             }
           }
           if (idEditFormTidakMasukKerja == "") {
-            List data=valueBody['data'];
-            var listFirst =data.where((element) => element['full_name']!=full_name).toList().first;
+            List data = valueBody['data'];
+            var listFirst = data
+                .where((element) => element['full_name'] != full_name)
+                .toList()
+                .first;
             var fullName = listFirst['full_name'] ?? "";
             String namaUserPertama = "$fullName";
             selectedDropdownFormTidakMasukKerjaDelegasi.value = namaUserPertama;
@@ -321,10 +330,13 @@ class TidakMasukKerjaController extends GetxController {
 
   void validasiEmdelegation(em_id) {
     var dapatData = allEmployee.value
-        .firstWhere((element) => element['em_id'] == emDelegationEdit.value);
-    selectedDropdownFormTidakMasukKerjaDelegasi.value = dapatData['full_name'];
-    this.selectedDropdownFormTidakMasukKerjaDelegasi.refresh();
-
+        .where((element) => element['em_id'] == emDelegationEdit.value)
+        .toList();
+    if (dapatData.isNotEmpty) {
+      selectedDropdownFormTidakMasukKerjaDelegasi.value =
+          dapatData[0]['full_name'];
+      this.selectedDropdownFormTidakMasukKerjaDelegasi.refresh();
+    }
   }
 
   void loadTypeSakit() {
@@ -535,7 +547,7 @@ class TidakMasukKerjaController extends GetxController {
 
   void validasiKirimPengajuan(status) {
     print("tanggal selecetd ${tanggalSelected.value.isEmpty}");
-    print(viewFormWaktu.value );
+    print(viewFormWaktu.value);
     if (viewFormWaktu.value == true) {
       if (jamAjuan.value.text == "" ||
           sampaiJamAjuan.value.text == "" ||
@@ -560,12 +572,9 @@ class TidakMasukKerjaController extends GetxController {
       if (alasan.value.text == "") {
         UtilsAlert.showToast("Form * harus di isi");
       } else if (tanggalSelectedEdit.value.isNotEmpty) {
-         nextKirimPengajuan(status);
-
-        
+        nextKirimPengajuan(status);
 
         // if (tanggalSelectedEdit.value.isNotEmpty){
-        
 
         // }else {
         //   if (tanggalSelected.value.isEmpty){
@@ -576,23 +585,18 @@ class TidakMasukKerjaController extends GetxController {
 
         //   }
         // }
-       
       } else {
-              if (tanggalSelected.value.isEmpty){
-             UtilsAlert.showToast("Pilih tanggal terlebih dahulu");
-
-          }else{
-              nextKirimPengajuan(status);
-
-          }
-        
+        if (tanggalSelected.value.isEmpty) {
+          UtilsAlert.showToast("Pilih tanggal terlebih dahulu");
+        } else {
+          nextKirimPengajuan(status);
+        }
       }
     }
   }
 
-  void 
-  
-  nextKirimPengajuan(status) async {
+  void nextKirimPengajuan(status) async {
+    print("masuk");
     if (uploadFile.value == true) {
       UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan File");
       var connectUpload = await Api.connectionApiUploadFile(
@@ -618,19 +622,30 @@ class TidakMasukKerjaController extends GetxController {
   }
 
   void checkNomorAjuan(status) {
+    print(tanggalBikinPengajuan.value);
     urutkanTanggalSelected(status);
     var convertTanggalBikinPengajuan = status == false
         ? Constanst.convertDateSimpan(tanggalBikinPengajuan.value)
         : tanggalBikinPengajuan.value;
-        print("new type  ${allTipe.value} ${selectedDropdownFormTidakMasukKerjaTipe.value}");
+    print("tanggal bikin ajun" + convertTanggalBikinPengajuan);
+    print(
+        "new type  ${allTipe.value} ${selectedDropdownFormTidakMasukKerjaTipe.value}");
 
-    var pola = selectedDropdownFormTidakMasukKerjaTipe.value.toString().contains("SAKIT DENGAN") 
-        ? "SD" :selectedDropdownFormTidakMasukKerjaTipe.value.toString().contains("SAKIT TANPA")?"ST":"IZ";
+    var pola = selectedDropdownFormTidakMasukKerjaTipe.value
+            .toString()
+            .contains("SAKIT DENGAN")
+        ? "SD"
+        : selectedDropdownFormTidakMasukKerjaTipe.value
+                .toString()
+                .contains("SAKIT TANPA")
+            ? "ST"
+            : "IZ";
 
     Map<String, dynamic> body = {
       'atten_date': convertTanggalBikinPengajuan,
       'pola': pola
     };
+
     var connect = Api.connectionApi("post", body, "emp_leave_lastrow");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -732,6 +747,7 @@ class TidakMasukKerjaController extends GetxController {
   }
 
   void kirimFormAjuanTidakMasukKerja(status, getNomorAjuanTerakhir) async {
+    print("masuk ini ${tanggalBikinPengajuan.value}");
     var dataUser = AppData.informasiUser;
     var getEmid = "${dataUser![0].em_id}";
     var getFullName = "${dataUser[0].full_name}";
@@ -825,11 +841,16 @@ class TidakMasukKerjaController extends GetxController {
               dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
             ));
           } else {
+            print(valueBody['message']);
             if (valueBody['message'] == "ulang") {
               var nomorAjuanTerakhirDalamAntrian =
                   valueBody['data'][0]['nomor_ajuan'];
               checkNomorAjuanDalamAntrian(
                   status, nomorAjuanTerakhirDalamAntrian);
+            }
+            if (valueBody['message'] == "date") {
+              Navigator.pop(Get.context!);
+              UtilsAlert.showToast(valueBody['error']);
             } else {
               Navigator.pop(Get.context!);
               UtilsAlert.showToast(
@@ -1029,7 +1050,7 @@ class TidakMasukKerjaController extends GetxController {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Batalkan Pengajuann",
+                                      "Batalkan Pengajuan",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16),
@@ -1134,11 +1155,12 @@ class TidakMasukKerjaController extends GetxController {
       'cari': '${index["id"]}',
       'status_transaksi': 0,
       'start_date': '${index["start_date"]}',
+      'leave_status': "Cancel"
     };
     var connect = Api.connectionApi("post", body, "edit-emp_leave");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
-        loadDataAjuanIzin() ;
+        loadDataAjuanIzin();
         Navigator.pop(Get.context!);
         Navigator.pop(Get.context!);
         UtilsAlert.showToast("Berhasil batalkan pengajuan");

@@ -511,7 +511,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          "Pemberi Tugas",
+          "Pemberi Tugas *",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         SizedBox(

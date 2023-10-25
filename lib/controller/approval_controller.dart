@@ -46,6 +46,7 @@ class ApprovalController extends GetxController {
   }
 
   void getLoadsysData(title, bulan, tahun) {
+    print(title);
     var connect = Api.connectionApi("get", "", "sysdata");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -69,6 +70,11 @@ class ApprovalController extends GetxController {
               loadDataDinasLuar();
             } else if (title == "Klaim") {
               loadDataKlaim();
+            } else if (title == "Payroll") {
+              loadApprovePayroll();
+            }else if (title=="Absensi"){
+              loadAbsensi();
+
             }
           }
         }
@@ -193,6 +199,135 @@ class ApprovalController extends GetxController {
     });
   }
 
+  void loadApprovePayroll() {
+    print("-------------------data payroll--------------------");
+
+    listNotModif.value.clear();
+    listData.value.clear();
+    listDataAll.value.clear();
+    var dataUser = AppData.informasiUser;
+    var getEmCode = dataUser![0].em_id;
+    Map<String, dynamic> body = {
+      'em_id': getEmCode,
+      'name_data': 'lembur',
+      'bulan': bulanSelected.value,
+      'tahun': tahunSelected.value,
+      'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
+    };
+    var connect = Api.connectionApi("post", body, 'list_approve_payroll');
+
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+
+        print("data payroll ${valueBody}");
+        if (valueBody['data'].length == 0) {
+          loadingString.value = 'Tidak ada pengajuan';
+        }
+        print(valueBody['data']);
+        listNotModif.value = valueBody['data'];
+        for (var element in valueBody['data']) {
+          var fullName = element['full_name'] ?? "";
+          var convertNama = "$fullName";
+          var filterStatus =
+              element['approve_id'] == null ? "Pending" : "Approved";
+          var data = {
+            'id': element['id'],
+            'nama_pengaju': convertNama,
+            'title_ajuan': 'Pengajuan Lembur',
+            'nama_approve1': element['approved_id'],
+            'waktu_pengajuan': element['created_date'],
+            'catatan': element['description'],
+            'type': 'payroll',
+            'category': "",
+            'lainnya': "",
+            'file': "",
+            'nama_divisi': element['nama_divisi'],
+            'full_name': element['full_name'],
+            'em_email': element['em_email']
+          };
+          listData.value.sort(
+              (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
+          listData.value.add(data);
+          listDataAll.value.add(data);
+        }
+        this.listData.refresh();
+        this.listNotModif.refresh();
+      }
+    });
+  }
+
+
+    void loadAbsensi() {
+
+      print("data absensi");
+    var urlLoad = valuePolaPersetujuan.value == "1"
+        ? "spesifik_approval"
+        : "spesifik_approval_multi";
+    listNotModif.value.clear();
+    listData.value.clear();
+    listDataAll.value.clear();
+    var dataUser = AppData.informasiUser;
+    var getEmCode = dataUser![0].em_id;
+    Map<String, dynamic> body = {
+      'em_id': getEmCode,
+      'name_data': 'absensi',
+      'bulan': bulanSelected.value,
+      'tahun': tahunSelected.value,
+    };
+    var connect = Api.connectionApi("post", body, urlLoad);
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        if (valueBody['data'].length == 0) {
+          loadingString.value = 'Tidak ada pengajuan';
+        }
+        listNotModif.value = valueBody['data'];
+
+        print("data body ${valueBody['data']}");
+        for (var element in valueBody['data']) {
+          var fullName = element['full_name'] ?? "";
+          var convertNama = "$fullName";
+          var tanggalDari = Constanst.convertDate1("${element['atten_date']}");
+          var tanggalSampai = Constanst.convertDate1("${element['atten_date']}");
+          var filterStatus = element['leave_status'] == "Approve"
+              ? "Approve 1"
+              : element['leave_status'];
+          var data = {
+            'id': element['id'],
+            'nama_pengaju': convertNama,
+            'emId_pengaju': element['em_id'],
+              'em_id': element['em_id'],
+            'title_ajuan': 'Pengajuan Absensi',
+            'waktu_dari': "${tanggalDari} ${element['dari_jam']??"_ _:_ _"}",
+            'waktu_sampai': "${tanggalDari} ${element['sampai_jam']}",
+            'durasi': element['leave_duration'],
+            'leave_status': filterStatus,
+            'delegasi': element['em_delegation'],
+            'nama_approve1': element['apply_by'],
+            'waktu_pengajuan': element['atten_date'],
+            'catatan': element['reason'],
+            'type': 'absensi',
+            'category': element['category'],
+            'lainnya': "",
+            'file': element['req_file']??"",
+            'dari_jam': element['dari_jam'],
+            'sampai_jam': element['sampai_jam'],
+             'deskripsi': element['uraian'],
+             'nomor_ajuan':element['nomor_ajuan'],
+              
+          };
+          listData.value.add(data);
+          listDataAll.value.add(data);
+        }
+        listData.value.sort(
+            (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
+        this.listData.refresh();
+        this.listNotModif.refresh();
+      }
+    });   
+  }
+
   void loadDataTidakHadir() {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
@@ -311,6 +446,8 @@ class ApprovalController extends GetxController {
       }
     });
   }
+
+  void loadDataPayroll() {}
 
   void loadDataDinasLuar() {
     var urlLoad = valuePolaPersetujuan.value == "1"
@@ -462,7 +599,7 @@ class ApprovalController extends GetxController {
   }
 
   void infoDelegasi(delegasi) {
-     print("info delegasi");
+    print("info delegasi");
     Map<String, dynamic> body = {
       'val': 'em_id',
       'cari': delegasi,
@@ -487,7 +624,7 @@ class ApprovalController extends GetxController {
   }
 
   void loadCutiPengaju(emId) {
-     print("load cuti pengajuan");
+    print("load cuti pengajuan");
     Map<String, dynamic> body = {
       'val': 'em_id',
       'cari': emId,
@@ -669,9 +806,55 @@ class ApprovalController extends GetxController {
             style: styleChose,
             buttonStatus: 1,
             positiveBtnPressed: () {
-              UtilsAlert.loadingSimpanData(
+             print(detailData[0]);
+                  if (detailData[0]['type']=='absensi'){
+                    print("masuk sini ${detailData[0]['type']}");
+                approvalAbsensi(pilihan: pilihan, date: detailData[0]['waktu_pengajuan'].toString(), status: styleChose.toString(), checkin: detailData[0]['dari_jam'].toString(), checkout: detailData[0]['sampai_jam'].toString(), image: detailData[0]['file'].toString(), note: detailData[0]['deskripsi'].toString(), ajuanEmid: detailData[0]['em_id'].toString(), id: detailData[0]['id'].toString());
+                
+              
+              }else{
+                  UtilsAlert.loadingSimpanData(
                   Get.context!, "Proses $stringPilihan pengajuan");
               aksiMenyetujui(pilihan);
+
+              
+              }
+            },
+          ),
+        );
+      },
+      pageBuilder: (BuildContext context, Animation animation,
+          Animation secondaryAnimation) {
+        return null!;
+      },
+    );
+  }
+
+    void validasiMenyetujui1(pilihan) {
+    int styleChose = pilihan == false ? 1 : 2;
+    var stringPilihan = pilihan == false ? 'Tolak' : 'Menyetujui';
+    showGeneralDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      barrierColor: Colors.black54, // space around dialog
+      transitionDuration: Duration(milliseconds: 200),
+      transitionBuilder: (context, a1, a2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+              parent: a1,
+              curve: Curves.elasticOut,
+              reverseCurve: Curves.easeOutCubic),
+          child: CustomDialog(
+            // our custom dialog
+            title: "Peringatan",
+            content: "Yakin $stringPilihan Pengajuan ini ?",
+            positiveBtnText: "Lanjutkan",
+            negativeBtnText: "Kembali",
+            style: styleChose,
+            buttonStatus: 1,
+            positiveBtnPressed: () {
+          
+            
             },
           ),
         );
@@ -894,7 +1077,7 @@ class ApprovalController extends GetxController {
   }
 
   void validasiPemakaianCuti(dataEditFinal) {
-     print("validaasi pemakaian cuti");
+    print("validaasi pemakaian cuti");
     Map<String, dynamic> body = {
       'val': 'name',
       'cari': dataEditFinal[0]['nama_tipe']
@@ -929,8 +1112,99 @@ class ApprovalController extends GetxController {
     });
   }
 
+ Future<bool>? arppovalpayroll({id}) {
+    UtilsAlert.showLoadingIndicator(Get.context!);
+    var emId = AppData.informasiUser![0].em_id;
+    Map<String, dynamic> body = {
+      'id': id,
+      'em_id': emId,
+      'date': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString()
+    };
+    var connect = Api.connectionApi("post", body, "approve_emp_mobile_payroll");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        if (valueBody['status'] == true) {
+          Get.back();
+          Get.back();
+          Get.back();
+             UtilsAlert.showToast('Berhasil menyetujui pengajuan employee');
+          return true;
+       
+        } else {
+          
+          UtilsAlert.showToast('gagal approved');
+          Get.back();
+          return false;
+       
+        }
+      } else {
+        
+        UtilsAlert.showToast('gagal approved');
+        Get.back();
+        return false;
+      }
+    });
+  }
+
+ Future<bool>? approvalAbsensi({required  date,required status,required checkin,required checkout,required image,required note,required ajuanEmid,required id,pilihan}) {
+    UtilsAlert.showLoadingIndicator(Get.context!);
+    var emId = AppData.informasiUser![0].em_id;
+        var name = AppData.informasiUser![0].full_name;
+    Map<String, dynamic> body = {
+      'id': id.toString(),
+      'em_id': ajuanEmid.toString(),
+      'date': DateFormat('yyyy-MM-dd').format(DateTime.parse(date)).toString(),
+      'bulan':DateFormat('MM').format(DateTime.parse(date)).toString(),
+            'tahun':DateFormat('yyyy').format(DateTime.parse(date)).toString(),
+      'status': pilihan == true ? 'Approve' : 'Rejected',
+      'signin_time':checkin.toString(),
+      'signout_time':checkout.toString(),
+      'approved_id':emId.toString(),
+      'approved_by':name.toString(),
+      'approved_date': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+      "image":image.toString(),
+      "note":note.toString(),
+      "place_in":"tes",
+      "place_out":"tes",
+      "ajuan_em_id":ajuanEmid.toString(),
+      'alasan_reject':alasanReject.value.text
+    };
+    print("body ${body}");
+    var connect = Api.connectionApi("post", body, "approval-employee-attendance");
+    connect.then((dynamic res) {
+ var valueBody = jsonDecode(res.body);
+
+ print("gagal ${valueBody}");
+
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        if (valueBody['status'] == true) {
+            loadAbsensi();
+          Get.back();
+          Get.back();
+          Get.back();
+       
+             UtilsAlert.showToast('Berhasil menyetujui pengajuan employee');
+          return true;
+       
+        } else {
+          
+          UtilsAlert.showToast('gagal approved');
+          Get.back();
+          return false;
+       
+        }
+      } else {
+        
+        UtilsAlert.showToast('gagal approved');
+        Get.back();
+        return false;
+      }
+    });
+  }
   void cariEmployee(dataEditFinal) {
-     print("cari employee");
+    print("cari employee");
     Map<String, dynamic> body = {
       'val': 'full_name',
       'cari': dataEditFinal[0]['full_name']

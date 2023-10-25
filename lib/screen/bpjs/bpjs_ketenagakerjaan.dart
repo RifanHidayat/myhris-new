@@ -170,6 +170,8 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                       color: Constanst.colorWhite,
                     )
                   ],
+
+                  
                 )
               ],
             ),

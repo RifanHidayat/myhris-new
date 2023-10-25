@@ -11,6 +11,7 @@ import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
+import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class FormPengajuanCuti extends StatefulWidget {
@@ -149,7 +150,31 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                 : TextButtonWidget(
                     title: "Simpan",
                     onTap: () {
-                      controller.validasiKirimPengajuan();
+                      print(controller.tanggalSelected.value.length);
+
+                    if (controller.statusForm.value == true) {
+                      if ((controller.jumlahCuti.value-controller.cutiTerpakai.value)<controller.tanggalSelectedEdit.value.length){
+                        UtilsAlert.showToast("Tanggal yang dipilih melebihi sisa cuti");
+
+                      }else{
+                        controller.validasiKirimPengajuan();
+
+                      }
+                          
+                     
+                      
+                    } else {
+                  
+                      if ((controller.jumlahCuti.value-controller.cutiTerpakai.value)<controller.tanggalSelected.value.length){
+                        UtilsAlert.showToast("Tanggal yang dipilih melebihi sisa cuti");
+
+                      }else{
+                        controller.validasiKirimPengajuan();
+
+                      }
+                          
+                    }
+                     // controller.validasiKirimPengajuan();
                     },
                     colorButton: Constanst.colorPrimary,
                     colortext: Constanst.colorWhite,
@@ -474,7 +499,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text("Delegasikan Kepada",
+        Text("Tugas Didelegasikan Kepada",
             style: TextStyle(fontWeight: FontWeight.bold)),
         SizedBox(
           height: 5,

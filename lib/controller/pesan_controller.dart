@@ -27,13 +27,17 @@ class PesanController extends GetxController {
   var allRiwayatPersetujuan = [].obs;
 
   var jumlahApproveCuti = 0.obs;
+
   var jumlahApproveLembur = 0.obs;
   var jumlahApproveTidakHadir = 0.obs;
   var jumlahApproveTugasLuar = 0.obs;
   var jumlahApproveDinasLuar = 0.obs;
   var jumlahApproveKlaim = 0.obs;
+  var jumlahApprovePayroll = 0.obs;
   var jumlahNotifikasiBelumDibaca = 0.obs;
+   var jumlahCheckin= 0.obs;
   var jumlahPersetujuan = 0.obs;
+
   var jumlahRiwayat = 0.obs;
 
   var stringLoading = "Memuat Data...".obs;
@@ -53,7 +57,9 @@ class PesanController extends GetxController {
     "Tidak Hadir",
     "Tugas Luar",
     "Dinas Luar",
-    "Klaim"
+    "Klaim",
+    "Payroll",
+    "Absensi" 
   ];
 
   @override
@@ -107,11 +113,13 @@ class PesanController extends GetxController {
       'em_id': getEmid,
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
+      'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
     };
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+        print("data pesan ${valueBody}");
         if (valueBody['status'] == true) {
           jumlahApproveCuti.value = valueBody['jumlah_cuti'];
           jumlahApproveLembur.value = valueBody['jumlah_lembur'];
@@ -119,12 +127,17 @@ class PesanController extends GetxController {
           jumlahApproveTugasLuar.value = valueBody['jumlah_tugasluar'];
           jumlahApproveDinasLuar.value = valueBody['jumlah_dinasluar'];
           jumlahApproveKlaim.value = valueBody['jumlah_klaim'];
+          jumlahApprovePayroll.value = valueBody['jumlah_payroll'];
+          jumlahCheckin.value = valueBody['jumlah_checkin'];
+        
+        
           jumlahPersetujuan.value = jumlahApproveCuti.value +
               jumlahApproveLembur.value +
               jumlahApproveTidakHadir.value +
               jumlahApproveTugasLuar.value +
               jumlahApproveDinasLuar.value +
-              jumlahApproveKlaim.value;
+              jumlahApproveKlaim.value  +
+              jumlahCheckin.value;
           this.jumlahApproveCuti.refresh();
           this.jumlahApproveLembur.refresh();
           this.jumlahApproveTidakHadir.refresh();
@@ -132,6 +145,8 @@ class PesanController extends GetxController {
           this.jumlahApproveDinasLuar.refresh();
           this.jumlahApproveKlaim.refresh();
           this.jumlahPersetujuan.refresh();
+          this.jumlahCheckin.refresh();
+          jumlahApprovePayroll.refresh();
           loadScreenPersetujuan();
         } else {
           statusScreenInfoApproval.value = false;
@@ -512,6 +527,31 @@ class PesanController extends GetxController {
           'title': element,
           'jumlah_approve': "${jumlahApproveKlaim.value}",
         };
+
+        dataScreenPersetujuan.value.add(data);
+        this.dataScreenPersetujuan.refresh();
+      } else if (element == "Payroll") {
+        var data = {
+          'title': element,
+          'jumlah_approve': "${jumlahApprovePayroll.value}",
+        };
+
+        dataScreenPersetujuan.value.add(data);
+        this.dataScreenPersetujuan.refresh();
+      }else if (element == "Absensi") {
+        var data = {
+          'title': element,
+          'jumlah_approve': "${jumlahCheckin.value}",
+        };
+
+        dataScreenPersetujuan.value.add(data);
+        this.dataScreenPersetujuan.refresh();
+      }else if (element == "Absensi") {
+        var data = {
+          'title': element,
+          'jumlah_approve': "${jumlahCheckin.value}",
+        };
+
         dataScreenPersetujuan.value.add(data);
         this.dataScreenPersetujuan.refresh();
       }
@@ -695,7 +735,7 @@ class PesanController extends GetxController {
                   Expanded(
                     flex: 90,
                     child: Text(
-                      "Detail Riwayat",
+                      "Detail Riwaya",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -868,9 +908,13 @@ class PesanController extends GetxController {
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('-'),
+                            listDateSelected.length == 1
+                                ? SizedBox()
+                                : Text('-'),
                             Padding(
-                              padding: EdgeInsets.only(left: 8),
+                              padding: listDateSelected.length == 1
+                                  ? EdgeInsets.only(left: 2)
+                                  : EdgeInsets.only(left: 8),
                               child: Text(
                                 tanggalConvert,
                                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -977,7 +1021,8 @@ class PesanController extends GetxController {
               SizedBox(
                 height: 10,
               ),
-              dataDetail[0]['alasan_reject'] == ""
+              dataDetail[0]['alasan_reject'] == "" ||
+                      dataDetail[0]['alasan_reject'] == null
                   ? SizedBox()
                   : SizedBox(
                       child: Column(
@@ -997,7 +1042,7 @@ class PesanController extends GetxController {
                         ],
                       ),
                     ),
-              dataDetail[0]['file'] == ""
+              dataDetail[0]['file'] == "" || dataDetail[0]['file'] == null
                   ? SizedBox()
                   : SizedBox(
                       child: Column(
@@ -1019,7 +1064,7 @@ class PesanController extends GetxController {
                               Expanded(
                                 flex: 60,
                                 child: Text(
-                                  dataDetail[0]['file'],
+                                  dataDetail[0]['file'].toString(),
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),

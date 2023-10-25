@@ -382,6 +382,7 @@ class Onboard extends StatelessWidget {
 
                 
                   controller.validasiToNextRoute();
+                 
                   if (AppData.isLogin==true){
                         String checkUserKontrol =
                       await controllerBerhasil.checkUserKontrol();
@@ -408,6 +409,9 @@ class Onboard extends StatelessWidget {
                       // Get.offAll(InitScreen());
                     }
                   }
+
+
+
                   }
 
               

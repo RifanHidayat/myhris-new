@@ -760,7 +760,8 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                                                             .colorPrimary)),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    Get.offAll(
+                                                    print(controller.listHistoryAjuan.value[index].toString());
+                                                    Get.to(
                                                         FormPengajuanCuti(
                                                       dataForm: [
                                                         controller

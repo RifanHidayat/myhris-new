@@ -73,6 +73,7 @@ class CutiController extends GetxController {
   var statusCari = false.obs;
   var showButtonlaporan = false.obs;
   var statusLoadingSubmitLaporan = false.obs;
+  var messageApproval="".obs;
 
   var dataTypeAjuanDummy1 = ["Semua", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
@@ -208,7 +209,7 @@ class CutiController extends GetxController {
   }
 
   void loadDataTypeCuti() {
-     print("load data cuti");
+    print("load data cuti");
     allTipeFormCutiDropdown.value.clear();
     allTipe.value.clear();
     Map<String, dynamic> body = {'val': 'status', 'cari': '1'};
@@ -291,7 +292,7 @@ class CutiController extends GetxController {
     } else {
       stringLoading.value = "Memuat data...";
     }
-    print(data);
+
     listHistoryAjuan.value = data;
     statusCari.value = true;
     this.listHistoryAjuan.refresh();
@@ -337,16 +338,23 @@ class CutiController extends GetxController {
   }
 
   void loadAllEmployeeDelegasi() {
-     print("load all employee");
+    print("load all employee");
     allEmployeeDelegasi.value.clear();
     allEmployee.value.clear();
     var dataUser = AppData.informasiUser;
     var getDepGroup = dataUser![0].dep_group;
+    var getDepId = dataUser![0].dep_id;
     var full_name = dataUser[0].full_name;
 
-    
-    Map<String, dynamic> body = {'val': 'dep_group_id', 'cari': getDepGroup};
-    var connect = Api.connectionApi("post", body, "whereOnce-employee");
+    // Map<String, dynamic> body = {'val': 'dep_group_id', 'cari': getDepGroup};
+    // var connect = Api.connectionApi("post", body, "whereOnce-employee");
+    var emid = dataUser[0].em_id;
+    Map<String, dynamic> body = {
+      'em_id': emid,
+      'dep_group_id': getDepGroup,
+      'dep_id': getDepId
+    };
+    var connect = Api.connectionApi("post", body, "employee-divisi");
     connect.then((dynamic res) {
       if (res == false) {
         UtilsAlert.koneksiBuruk();
@@ -379,14 +387,16 @@ class CutiController extends GetxController {
   }
 
   void checkingDelegation(em_id) {
+    print("data employee ${em_id},${allEmployee.value}");
+
     var getData =
-        allEmployee.value.firstWhere((element) => element["em_id"] = em_id);
+        allEmployee.value.firstWhere((element) => element["em_id"] == em_id);
     selectedDelegasi.value = getData["full_name"];
     this.selectedDelegasi.refresh();
   }
 
   void loadCutiUser() {
-     print("load cuti user");
+    print("load cuti user");
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {
@@ -459,8 +469,6 @@ class CutiController extends GetxController {
     } else {
       int hitung = jumlahCuti.value - cutiTerpakai.value;
 
-
-      
       if (hitung <= 0 || hitung == 0) {
         UtilsAlert.showToast("Cuti anda sudah habis");
       } else {
@@ -877,6 +885,7 @@ class CutiController extends GetxController {
       'cari': '${index["id"]}',
       'status_transaksi': 0,
       'start_date': '${index["start_date"]}',
+      'leave_status': "Cancel"
     };
     var connect = Api.connectionApi("post", body, "edit-emp_leave");
     connect.then((dynamic res) {

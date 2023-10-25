@@ -24,14 +24,15 @@ class AuthController extends GetxController {
   var email = TextEditingController().obs;
   var tempEmail = TextEditingController().obs;
   var showpassword = false.obs;
-  
+
   var databases = <DatabaseModel>[].obs;
   var selectedDb = "".obs;
   var selectedPerusahaan = "".obs;
   var perusahaan = TextEditingController();
 
-  var isautoLogout=false.obs;
-  var messageLogout="".obs;
+  var isautoLogout = false.obs;
+  var messageLogout = "".obs;
+  var messageNewPassword = "".obs;
 
   var controllerAbsnsi = Get.put(AbsenController());
 
@@ -89,196 +90,204 @@ class AuthController extends GetxController {
   }
 
   Future<void> loginUser() async {
- 
-      final box = GetStorage();
-     var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+    final box = GetStorage();
+    //  var fcm_registration_token = await FirebaseMessaging.instance.getToken();
 
-      UtilsAlert.showLoadingIndicator(Get.context!);
-      Map<String, dynamic> body = {
-        'email': email.value.text,
-        'password': password.value.text,
-        'token_notif': fcm_registration_token.toString(),
-        'database':selectedDb.value
-      };
-      var connect = Api.connectionApi("post", body, "login");
-      connect.then((dynamic res) {
-        var valueBody = jsonDecode(res.body);
-        print('data login ${valueBody}');
-        if (valueBody['status'] == false) {
-          UtilsAlert.showToast(valueBody['message']);
-          Navigator.pop(Get.context!);
-        } else {
-            AppData.selectedDatabase=selectedDb.value;
-            AppData.selectedPerusahan=selectedPerusahaan.value;
+    UtilsAlert.showLoadingIndicator(Get.context!);
+    Map<String, dynamic> body = {
+      'email': email.value.text,
+      'password': password.value.text,
+      'token_notif': "1",
+      'database': selectedDb.value
+    };
+    var connect = Api.connectionApi("post", body, "login");
+    connect.then((dynamic res) {
+      var valueBody = jsonDecode(res.body);
+      print('data login ${valueBody}');
+      if (valueBody['status'] == false) {
+        UtilsAlert.showToast(valueBody['message']);
+        Navigator.pop(Get.context!);
+      } else {
+        print("nama database ${selectedDb.value}");
+        AppData.selectedDatabase = selectedDb.value;
+        AppData.selectedPerusahan = selectedPerusahaan.value;
 
-          List<UserModel> getData =  [];
+        List<UserModel> getData = [];
 
-          var lastLoginUser = "";
-          var getEmId = "";
-          var getAktif = "";
-          var idMobile="";
-          for (var element in valueBody['data']) {
-            var data = UserModel(
-              em_id: element['em_id'] ?? "",
-              des_id: element['des_id'] ?? 0,
-              dep_id: element['dep_id'] ?? 0,
-              dep_group: element['dep_group'] ?? 0,
-              full_name: element['full_name'] ?? "",
-              em_email: element['em_email'] ?? "",
-              em_phone: element['em_phone'] ?? "",
-              em_birthday: element['em_birthday'] ?? "1999-09-09",
-              em_gender: element['em_gender'] ?? "",
-              em_image: element['em_image'] ?? "",
-              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-              em_status: element['em_status'] ?? "",
-              em_blood_group: element['em_blood_group'] ?? "",
-              posisi: element['posisi'] ?? "",
-              emp_jobTitle: element['emp_jobTitle'] ?? "",
-              emp_departmen: element['emp_departmen'] ?? "",
-              em_control: element['em_control'] ?? 0,
-              em_control_acess: element['em_control_access'] ?? 0,
-              emp_att_working: element['emp_att_working'] ?? 0,
-              em_hak_akses: element['em_hak_akses'] ?? "",
-              branchName: element['branch_name']??""
-            );
+        var lastLoginUser = "";
+        var getEmId = "";
+        var getAktif = "";
+        var idMobile = "";
 
-            if (element['file_face'] == "" || element['file_face'] == null) {
-              box.write("face_recog", false);
-            } else {
-              box.write("face_recog", true);
-            }
-            getData.add(data);
+        for (var element in valueBody['data']) {
+          print("tes ${element['time_attendance'].toString()}");
+          var data = UserModel(
+            em_id: element['em_id'] ?? "",
+            des_id: element['des_id'] ?? 0,
+            dep_id: element['dep_id'] ?? 0,
+            dep_group: element['dep_group'] ?? 0,
+            full_name: element['full_name'] ?? "",
+            em_email: element['em_email'] ?? "",
+            em_phone: element['em_phone'] ?? "",
+            em_birthday: element['em_birthday'] ?? "1999-09-09",
+            em_gender: element['em_gender'] ?? "",
+            em_image: element['em_image'] ?? "",
+            em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+            em_status: element['em_status'] ?? "",
+            em_blood_group: element['em_blood_group'] ?? "",
+            posisi: element['posisi'] ?? "",
+            emp_jobTitle: element['emp_jobTitle'] ?? "",
+            emp_departmen: element['emp_departmen'] ?? "",
+            em_control: element['em_control'] ?? 0,
+            em_control_acess: element['em_control_access'] ?? 0,
+            emp_att_working: element['emp_att_working'] ?? 0,
+            em_hak_akses: element['em_hak_akses'] ?? "",
+            beginPayroll: element['begin_payroll'] ?? 1,
+            endPayroll: element['end_payroll'] ?? 31,
+            branchName: element['branch_name'] ?? "",
+            // startTime: element['time_attendance'].toString().split(',')[0],
+            // endTime: element['time_attendance'].toString().split(',')[1],
+            //   startTime: "00:01",
+            // endTime: "23:59",
+          );
 
-            lastLoginUser = "${element['last_login']}";
-            getEmId = "${element['em_id']}";
-            getAktif = "${element['status_aktif']}";
+          print("data element");
 
-
-            AppData.isLogin=true;
-            AppData.setFcmToken=fcm_registration_token.toString();
-            print(element.toString());
-
-          }
-
-        
-          if (getAktif == "ACTIVE") {
-            if (lastLoginUser == "" ||
-                lastLoginUser == "null" ||
-                lastLoginUser == null ||
-                lastLoginUser == "0000-00-00 00:00:00") {
-
-              fillLastLoginUserNew(getEmId, getData);
-                checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
-
-            } else {
-
-              
-              var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
-              var dateNow = DateTime.now();
-              var convert = DateFormat('dd-MM-yyyy').format(dateNow);
-              if (convert != filterLastLogin) {
-              
-                fillLastLoginUserNew(getEmId, getData);
-                  checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
-              } else {
-
-              //  UtilsAlert.showToast("Anda telah masuk di perangkat lain");
-                 Navigator.pop(Get.context!);
-                validasiLogin();
-              }
-            }
+          if (element['file_face'] == "" || element['file_face'] == null) {
+            box.write("face_recog", false);
           } else {
-            UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
-            Navigator.pop(Get.context!);
+            box.write("face_recog", true);
           }
+          getData.add(data);
+          AppData.informasiUser = getData;
+          lastLoginUser = "${element['last_login']}";
+          getEmId = "${element['em_id']}";
+          getAktif = "${element['status_aktif']}";
+
+          AppData.isLogin = true;
+          AppData.setFcmToken = "1";
+          print(element.toString());
         }
-      });
-  }
 
-    Future<void> loginUser1() async {
- 
-      final box = GetStorage();
-     var fcm_registration_token = await FirebaseMessaging.instance.getToken();
-
-      UtilsAlert.showLoadingIndicator(Get.context!);
-      Map<String, dynamic> body = {
-        'email': email.value.text,
-        'password': password.value.text,
-       'token_notif': fcm_registration_token.toString(),
-        'database':selectedDb.value
-      };
-      var connect = Api.connectionApi("post", body, "login");
-      connect.then((dynamic res) {
-        var valueBody = jsonDecode(res.body);
-        print('data login ${valueBody}');
-        if (valueBody['status'] == false) {
-          UtilsAlert.showToast(valueBody['message']);
-          Navigator.pop(Get.context!);
-        } else {
-            AppData.selectedDatabase=selectedDb.value;
-            AppData.selectedPerusahan=selectedPerusahaan.value;
-
-          List<UserModel> getData =  [];
-          
-
-          var lastLoginUser = "";
-          var getEmId = "";
-          var getAktif = "";
-          var idMobile="";
-          for (var element in valueBody['data']) {
-            var data = UserModel(
-              em_id: element['em_id'] ?? "",
-              des_id: element['des_id'] ?? 0,
-              dep_id: element['dep_id'] ?? 0,
-              dep_group: element['dep_group'] ?? 0,
-              full_name: element['full_name'] ?? "",
-              em_email: element['em_email'] ?? "",
-              em_phone: element['em_phone'] ?? "",
-              em_birthday: element['em_birthday'] ?? "1999-09-09",
-              em_gender: element['em_gender'] ?? "",
-              em_image: element['em_image'] ?? "",
-              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-              em_status: element['em_status'] ?? "",
-              em_blood_group: element['em_blood_group'] ?? "",
-              posisi: element['posisi'] ?? "",
-              emp_jobTitle: element['emp_jobTitle'] ?? "",
-              emp_departmen: element['emp_departmen'] ?? "",
-              em_control: element['em_control'] ?? 0,
-              em_control_acess: element['em_control_access'] ?? 0,
-              emp_att_working: element['emp_att_working'] ?? 0,
-              em_hak_akses: element['em_hak_akses'] ?? "",
-              branchName: element['branch_name']??""
-            );
-
-            if (element['file_face'] == "" || element['file_face'] == null) {
-              box.write("face_recog", false);
-            } else {
-              box.write("face_recog", true);
-            }
-            getData.add(data);
-
-            lastLoginUser = "${element['last_login']}";
-            getEmId = "${element['em_id']}";
-            getAktif = "${element['status_aktif']}";
-
-
-            AppData.isLogin=true;
-            print(element.toString());
-
-          }
-
-        
-          if (getAktif == "ACTIVE") {
+        if (getAktif == "ACTIVE") {
+          if (lastLoginUser == "" ||
+              lastLoginUser == "null" ||
+              lastLoginUser == null ||
+              lastLoginUser == "0000-00-00 00:00:00") {
             fillLastLoginUserNew(getEmId, getData);
-                checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id);
+            checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                AppData.informasiUser![0].em_id);
           } else {
-            UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
-            Navigator.pop(Get.context!);
+            AppData.emailUser = email.value.text;
+            AppData.passwordUser = password.value.text;
+
+            var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
+            var dateNow = DateTime.now();
+            var convert = DateFormat('dd-MM-yyyy').format(dateNow);
+
+            if (convert != filterLastLogin) {
+              fillLastLoginUserNew(getEmId, getData);
+              checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                  AppData.informasiUser![0].em_id);
+            } else {
+              //  UtilsAlert.showToast("Anda telah masuk di perangkat lain");
+              Navigator.pop(Get.context!);
+              validasiLogin();
+            }
           }
+        } else {
+          UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
+          Navigator.pop(Get.context!);
         }
-      });
+      }
+    });
   }
 
+  Future<void> loginUser1() async {
+    final box = GetStorage();
+    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+
+    UtilsAlert.showLoadingIndicator(Get.context!);
+    Map<String, dynamic> body = {
+      'email': email.value.text,
+      'password': password.value.text,
+      'token_notif': "1",
+      'database': selectedDb.value
+    };
+    var connect = Api.connectionApi("post", body, "login");
+    connect.then((dynamic res) {
+      var valueBody = jsonDecode(res.body);
+      print('data login ${valueBody}');
+      if (valueBody['status'] == false) {
+        UtilsAlert.showToast(valueBody['message']);
+        Navigator.pop(Get.context!);
+      } else {
+        AppData.selectedDatabase = selectedDb.value;
+        AppData.selectedPerusahan = selectedPerusahaan.value;
+
+        List<UserModel> getData = [];
+
+        var lastLoginUser = "";
+        var getEmId = "";
+        var getAktif = "";
+        var idMobile = "";
+        for (var element in valueBody['data']) {
+          var data = UserModel(
+            em_id: element['em_id'] ?? "",
+            des_id: element['des_id'] ?? 0,
+            dep_id: element['dep_id'] ?? 0,
+            dep_group: element['dep_group'] ?? 0,
+            full_name: element['full_name'] ?? "",
+            em_email: element['em_email'] ?? "",
+            em_phone: element['em_phone'] ?? "",
+            em_birthday: element['em_birthday'] ?? "1999-09-09",
+            em_gender: element['em_gender'] ?? "",
+            em_image: element['em_image'] ?? "",
+            em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+            em_status: element['em_status'] ?? "",
+            em_blood_group: element['em_blood_group'] ?? "",
+            posisi: element['posisi'] ?? "",
+            emp_jobTitle: element['emp_jobTitle'] ?? "",
+            emp_departmen: element['emp_departmen'] ?? "",
+            em_control: element['em_control'] ?? 0,
+            em_control_acess: element['em_control_access'] ?? 0,
+            emp_att_working: element['emp_att_working'] ?? 0, 
+            em_hak_akses: element['em_hak_akses'] ?? "",
+            beginPayroll: element['begin_payroll'] ?? 1,
+            endPayroll: element['end_payroll'] ?? 31,
+            // startTime: "00:01",
+            // endTime: "23:59",
+            branchName: element['branch_name'] ?? "",
+          );
+
+          if (element['file_face'] == "" || element['file_face'] == null) {
+            box.write("face_recog", false);
+          } else {
+            box.write("face_recog", true);
+          }
+          getData.add(data);
+          AppData.informasiUser = getData;
+          lastLoginUser = "${element['last_login']}";
+          getEmId = "${element['em_id']}";
+          getAktif = "${element['status_aktif']}";
+
+          AppData.isLogin = true;
+          print(element.toString());
+        }
+
+        if (getAktif == "ACTIVE") {
+          AppData.emailUser = email.value.text;
+          AppData.passwordUser = password.value.text;
+          fillLastLoginUserNew(getEmId, getData);
+          checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+              AppData.informasiUser![0].em_id);
+        } else {
+          UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
+          Navigator.pop(Get.context!);
+        }
+      }
+    });
+  }
 
   void fillLastLoginUser(getEmId, getData) {
     var now = DateTime.now();
@@ -306,7 +315,7 @@ class AuthController extends GetxController {
     });
   }
 
-    void fillLastLoginUserNew(getEmId, getData) {
+  void fillLastLoginUserNew(getEmId, getData) {
     var now = DateTime.now();
 
     var jam = "${DateFormat('yyyy-MM-dd HH:mm:ss').format(now)}";
@@ -323,22 +332,164 @@ class AuthController extends GetxController {
         if (valueBody['status'] == true) {
           var dateNow = DateTime.now();
           var convert = DateFormat('yyyy-MM-dd').format(dateNow);
+
           checkAbsenUser(convert, getEmId);
+
           AppData.emailUser = email.value.text;
           AppData.passwordUser = password.value.text;
           AppData.informasiUser = getData;
-          isautoLogout.value=false;
+          isautoLogout.value = false;
         }
       }
     });
   }
 
-  void checkAbsenUser(convert, getEmid) {
+//   void checkAbsenUser(convert, getEmid) {
+//     messageNewPassword.value = "";
+//     print("view last absen user");
+//     print("tes ${AppData.informasiUser![0].startTime.toString()}");
+//     var startTime = "";
+//     var endTime = "";
+
+//     var startDate = "";
+//     var endDate = "";
+
+//     //sekarang jam 03:00
+//     // start time 05:00
+//     //end entimenua 02:04
+//     //jika star time lebih besar dari end time maka  akan memeriksa attendance dari start time di hari sebelumya  tanggal sekarang dengan end time
+//     //
+
+//     TimeOfDay waktu1 = TimeOfDay(
+//         hour: int.parse(
+//             AppData.informasiUser![0].startTime.toString().split(':')[0]),
+//         minute: int.parse(AppData.informasiUser![0].startTime
+//             .toString()
+//             .split(':')[1])); // Waktu pertama
+//     TimeOfDay waktu2 = TimeOfDay(
+//         hour: int.parse(
+//             AppData.informasiUser![0].endTime.toString().split(':')[0]),
+//         minute: int.parse(AppData.informasiUser![0].startTime
+//             .toString()
+//             .split(':')[1])); // Waktu kedua
+//     int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+//     int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+//     if (totalMinutes1 < totalMinutes2) {
+//       startTime = AppData.informasiUser![0].startTime;
+//       endTime = AppData.informasiUser![0].endTime;
+
+//       startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+//       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+//     } else if (totalMinutes1 > totalMinutes2) {
+//       var waktu3 =
+//           TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+//       int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+//       if (totalMinutes2 > totalMinutes3) {
+//         startTime = AppData.informasiUser![0].endTime;
+//         endTime = AppData.informasiUser![0].startTime;
+//         startDate = DateFormat('yyyy-MM-dd')
+//             .format(DateTime.now().add(Duration(days: -1)));
+//         endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+//       } else {
+//         startTime = AppData.informasiUser![0].endTime;
+//         endTime = AppData.informasiUser![0].startTime;
+//         startDate = DateFormat('yyyy-MM-dd')
+//             .format(DateTime.now().add(Duration(days: 1)));
+//         endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+//       }
+//     } else {
+//       startTime = AppData.informasiUser![0].startTime;
+//       endTime = AppData.informasiUser![0].endTime;
+
+//       startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+//       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+//       print("Waktu 1 sama dengan waktu 2");
+//     }
+//     Map<String, dynamic> body = {
+//       'atten_date': DateFormat('yyyy-MM-dd')
+//           .format(DateTime.now().add(Duration(days: -1))),
+//       'em_id': getEmid,
+//       'database': AppData.selectedDatabase,
+//       'start_date': startDate,
+//       'end_date': endDate,
+//       'start_time': startTime,
+//       'emd_time': endTime
+//     };
+//     var connect = Api.connectionApi("post", body, "view_last_absen_user");
+
+//     connect.then((dynamic res) {
+//       if (res.statusCode == 200) {
+//         var valueBody = jsonDecode(res.body);
+//         print("data login ${valueBody}");
+//         var data = valueBody['data'];
+//         if (data.isEmpty) {
+//           isautoLogout.value = false;
+//           AppData.statusAbsen = false;
+//           Get.offAll(InitScreen());
+//         } else {
+//           var now = DateTime.parse(DateFormat("yyyy-MM-dd hh:mm:dd")
+//               .format(DateTime.parse(DateTime.now().toString())));
+//           var newStartDate = DateTime.parse(DateFormat('yyy-MM-dd hh:mm:ss')
+//               .format(DateTime.parse(startDate + " " + startTime)));
+//           var newEndDate = DateTime.parse(DateFormat('yyy-MM-dd hh:mm:ss')
+//               .format(DateTime.parse(endDate + " " + endTime)));
+
+//           if (now.isAfter(newStartDate) && now.isBefore(newEndDate)) {
+//             isautoLogout.value = false;
+//             AppData.statusAbsen =
+//                 data[0]['signout_time'] == "00:00:00" ? true : false;
+//             Get.offAll(InitScreen());
+//           } else {
+
+//             if (totalMinutes1<totalMinutes2){
+//                           var tanggalTerakhirAbsen = data[0]['atten_date'];
+//             if (tanggalTerakhirAbsen == convert) {
+//               isautoLogout.value = false;
+//               AppData.statusAbsen =
+//                   data[0]['signout_time'] == "00:00:00" ? true : false;
+//               Get.offAll(InitScreen());
+//             } else {
+//               isautoLogout.value = false;
+//               AppData.statusAbsen = false;
+//               Get.offAll(InitScreen());
+//             }
+              
+//             }else{
+// isautoLogout.value = false;
+//             AppData.statusAbsen = false;
+//             Get.offAll(InitScreen());
+//             }
+            
+//           }
+
+//           //   var tanggalTerakhirAbsen = data[0]['atten_date'];
+//           //   if (tanggalTerakhirAbsen == convert) {
+//           //     isautoLogout.value = false;
+//           //     AppData.statusAbsen =
+//           //         data[0]['signout_time'] == "00:00:00" ? true : false;
+//           //     Get.offAll(InitScreen());
+//           //   } else {
+//           //     isautoLogout.value = false;
+//           //     AppData.statusAbsen = false;
+//           //     Get.offAll(InitScreen());
+//           //   }
+//         }
+//       }
+//     });
+//   }
+
+    void checkAbsenUser(convert, getEmid) {
+    messageNewPassword.value = "";
     print("view last absen user");
+    print("tes ${AppData.informasiUser![0].startTime.toString()}");
+  
     Map<String, dynamic> body = {
-      'atten_date': convert,
+      'atten_date': DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().add(Duration(days: -1))),
       'em_id': getEmid,
-      'database': AppData.selectedDatabase
+      'database': AppData.selectedDatabase,
+ 
     };
     var connect = Api.connectionApi("post", body, "view_last_absen_user");
 
@@ -348,31 +499,31 @@ class AuthController extends GetxController {
         print("data login ${valueBody}");
         var data = valueBody['data'];
         if (data.isEmpty) {
-          isautoLogout.value=false;
+          isautoLogout.value = false;
           AppData.statusAbsen = false;
           Get.offAll(InitScreen());
         } else {
-          var tanggalTerakhirAbsen = data[0]['atten_date'];
-          if (tanggalTerakhirAbsen == convert) {
-            isautoLogout.value=false;
-            AppData.statusAbsen =
-                data[0]['signout_time'] == "00:00:00" ? true : false;
-            Get.offAll(InitScreen());
-          } else {
-            isautoLogout.value=false;
-            AppData.statusAbsen = false;
-            Get.offAll(InitScreen());
-          }
+        
+            var tanggalTerakhirAbsen = data[0]['atten_date'];
+            if (tanggalTerakhirAbsen == convert) {
+              isautoLogout.value = false;
+              AppData.statusAbsen =
+                  data[0]['signout_time'] == "00:00:00" ? true : false;
+              Get.offAll(InitScreen());
+            } else {
+              isautoLogout.value = false;
+              AppData.statusAbsen = false;
+              Get.offAll(InitScreen());
+            }
         }
       }
     });
   }
 
-    void hapusFoto() {
-      UtilsAlert.showLoadingIndicator(Get.context!);
+  void hapusFoto() {
+    UtilsAlert.showLoadingIndicator(Get.context!);
     print("view last absen user");
     Map<String, dynamic> body = {
-      
       'em_id': AppData.informasiUser![0].em_id,
       'database': AppData.selectedDatabase
     };
@@ -383,21 +534,17 @@ class AuthController extends GetxController {
         var valueBody = jsonDecode(res.body);
         print(valueBody);
 
-  
-       
-        if (valueBody['status']==true) {
+        if (valueBody['status'] == true) {
           Get.back();
           Get.offAll(InitScreen());
           UtilsAlert.showToast("Foto berhasil dihapus");
         } else {
-               Get.back();
-            UtilsAlert.showToast(valueBody['status']);
-      
+          Get.back();
+          UtilsAlert.showToast(valueBody['status']);
         }
       }
     });
   }
-
 
   void validasiLogin() {
     showGeneralDialog(
@@ -412,8 +559,8 @@ class AuthController extends GetxController {
               curve: Curves.elasticOut,
               reverseCurve: Curves.easeOutCubic),
           child: Dialog(
-              elevation: 0,
-      backgroundColor: Colors.transparent,
+            elevation: 0,
+            backgroundColor: Colors.transparent,
             child: Stack(
               alignment: Alignment.topCenter,
               children: <Widget>[
@@ -431,7 +578,11 @@ class AuthController extends GetxController {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      TextLabell(text: "Oops! Anda telah login di perangkat lain.",weight: FontWeight.bold,size: 14,),
+                      TextLabell(
+                        text: "Oops! Anda telah login di perangkat lain.",
+                        weight: FontWeight.bold,
+                        size: 14,
+                      ),
                       // Text(
                       //   "Oops! Anda telah login di perangkat lain.",
                       //   style: Theme.of(context).textTheme.headline6,
@@ -439,47 +590,62 @@ class AuthController extends GetxController {
                       SizedBox(
                         height: 8,
                       ),
-                       TextLabell(text: "Tetap masuk akan mengakibatkan akun Anda keluar dari perangkat lain.",size: 14,),
-                       SizedBox(height: 8,),
-                       Row(
+                      TextLabell(
+                        text:
+                            "Tetap masuk akan mengakibatkan akun Anda keluar dari perangkat lain.",
+                        size: 14,
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Row(
                         children: [
                           Expanded(
                             flex: 50,
                             child: InkWell(
-                              onTap: ()=>Get.back(),
-
+                              onTap: () => Get.back(),
                               child: Container(
-                                padding: EdgeInsets.only(top: 10,bottom: 10),
+                                padding: EdgeInsets.only(top: 10, bottom: 10),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(width: 1,color: Constanst.border)
-                                ),
-                                child: Center(child: TextLabell(text: "Batal",)),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        width: 1, color: Constanst.border)),
+                                child: Center(
+                                    child: TextLabell(
+                                  text: "Batal",
+                                )),
                               ),
                             ),
                           ),
-                          SizedBox(width: 5,),
-                             Expanded(
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Expanded(
                             flex: 50,
                             child: InkWell(
-                              onTap: (){
+                              onTap: () {
                                 loginUser1();
                               },
                               child: Container(
-                                padding: EdgeInsets.only(top: 10,bottom: 10),
+                                padding: EdgeInsets.only(top: 10, bottom: 10),
                                 decoration: BoxDecoration(
-                                  color: Constanst.colorPrimary,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(width: 1,color: Constanst.border)
-                                ),
-                                child: Center(child: TextLabell(text: "Tetap Masuk",color: Colors.white,)),
+                                    color: Constanst.colorPrimary,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        width: 1, color: Constanst.border)),
+                                child: Center(
+                                    child: TextLabell(
+                                  text: "Tetap Masuk",
+                                  color: Colors.white,
+                                )),
                               ),
                             ),
                           ),
-
                         ],
-                       ),
-                       SizedBox(height: 10,)
+                      ),
+                      SizedBox(
+                        height: 10,
+                      )
                       // Text(
                       //   "Tetap masuk akan mengakibatkan akun Anda keluar dari perangkat lain.",
                       //   style: Theme.of(context).textTheme.bodyText1,
@@ -518,6 +684,7 @@ class AuthController extends GetxController {
   //     } else {
   //       return true;
   //     }
+
   //   });
   //   return false;
   // }
@@ -527,7 +694,7 @@ class AuthController extends GetxController {
     try {
       UtilsAlert.showLoadingIndicator(Get.context!);
       var response =
-          await Request(url: "/login/check-database?email=${email.value.text}")
+          await Request(url: "login/check-database?email=${email.value.text}")
               .getCheckDatabase();
       var resp = jsonDecode(response.body);
 

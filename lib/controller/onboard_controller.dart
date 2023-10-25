@@ -42,7 +42,7 @@ class OnboardController extends GetxController {
   }
 
   void validasiToNextRoute() async {
-    // loading.value = true;
+     loading.value = true;
     
 
 
@@ -77,6 +77,7 @@ class OnboardController extends GetxController {
 
         checkAbsenUser(convert, getEmid);
       } else {
+        loading.value=false;
         AppData.informasiUser = null;
         Get.offAll(Login());
       }

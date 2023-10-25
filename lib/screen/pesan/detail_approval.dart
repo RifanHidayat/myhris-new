@@ -4,10 +4,12 @@ import 'package:iconsax/iconsax.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
+import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailApproval extends StatefulWidget {
   String? title, idxDetail, emId, delegasi;
@@ -143,7 +145,7 @@ class _DetailApprovalState extends State<DetailApproval> {
                                 Expanded(
                                   flex: 45,
                                   child: Text(
-                                    "${controller.detailData[0]['waktu_dari']}",
+                                    "${controller.detailData[0]['waktu_dari']} ",
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
@@ -172,7 +174,7 @@ class _DetailApprovalState extends State<DetailApproval> {
                             SizedBox(
                               height: 10,
                             ),
-                            controller.detailData[0]['type'] == "Lembur"
+                         controller.detailData[0]['type'].toString().toLowerCase()=='absensi'.toLowerCase()?SizedBox():    controller.detailData[0]['type'] == "Lembur"
                                 ? Text(
                                     "Pemberi Tugas",
                                     style:
@@ -213,14 +215,17 @@ class _DetailApprovalState extends State<DetailApproval> {
                             SizedBox(
                               height: 5,
                             ),
-                            Text(
+                           controller.detailData[0]['type']=="absensi"? Text(
+                              "${controller.detailData[0]['deskripsi']}",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ):Text(
                               "${controller.detailData[0]['catatan']}",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             SizedBox(
                               height: 5,
                             ),
-                            controller.detailData[0]['durasi'] == ""
+                            controller.detailData[0]['durasi'] == "" || controller.detailData[0]['durasi'] ==null
                                 ? SizedBox()
                                 : durasiWidget(),
                             SizedBox(
@@ -241,7 +246,7 @@ class _DetailApprovalState extends State<DetailApproval> {
                               "${controller.detailData[0]['type']} $namaTipe",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            controller.detailData[0]['file'] == ""
+                            controller.detailData[0]['file'] == "" || controller.detailData[0]['file'] ==null
                                 ? SizedBox()
                                 : fileWidget(),
                             SizedBox(
@@ -263,6 +268,7 @@ class _DetailApprovalState extends State<DetailApproval> {
                                 Expanded(
                                     child: InkWell(
                                   onTap: () {
+                                   // print("tes");
                                     controller.showBottomAlasanReject();
                                   },
                                   child: Container(
@@ -284,6 +290,7 @@ class _DetailApprovalState extends State<DetailApproval> {
                                 Expanded(
                                     child: InkWell(
                                   onTap: () {
+                                    
                                     controller.validasiMenyetujui(true);
                                   },
                                   child: Container(
@@ -359,7 +366,10 @@ class _DetailApprovalState extends State<DetailApproval> {
                         "Pengajuan Klaim") {
                       controller.viewFile(
                           "klaim", controller.detailData[0]['file']);
+                    }else if (controller.detailData[0]['title_ajuan'] =="Pengajuan Absensi"){
+                      viewLampiranAjuan(controller.detailData[0]['file']);
                     }
+                    
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -531,5 +541,17 @@ class _DetailApprovalState extends State<DetailApproval> {
             )
           : SizedBox(),
     );
+  }
+
+     void viewLampiranAjuan(value) async {
+    var urlViewGambar = Api.UrlfotoAbsen + value;
+
+    final url = Uri.parse(urlViewGambar);
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      UtilsAlert.showToast('Tidak dapat membuka file');
+    }
   }
 }

@@ -24,7 +24,10 @@ class AktifitasController extends GetxController {
   var bulanDanTahunNow = "".obs;
   var stringPersenAbsenTepatWaktu = "".obs;
   var stringBulan = "".obs;
-
+  var beginPayroll = "".obs;
+  var endPayroll = "".obs;
+  var beginBulan = "".obs;
+  var endBulanBulan = "".obs;
   var statusPencarian = false.obs;
   var statusFormPencarian = false.obs;
   var visibleWidget = false.obs;
@@ -99,8 +102,21 @@ class AktifitasController extends GetxController {
     bulanDanTahunNow.value = "${dt.month}-${dt.year}";
 
     stringBulan.value = "${DateFormat('MMMM').format(dt)}";
+    beginPayroll.value = "${DateFormat('MMMM').format(dt)}";
+    endPayroll.value = "${DateFormat('MMMM').format(dt)}";
+
+    DateTime previousMonthDate = DateTime(
+        DateTime.now().year, DateTime.now().month - 1, DateTime.now().day);
+
+    if (AppData.informasiUser![0].beginPayroll == 1) {
+      beginPayroll.value =  "${DateFormat('MMMM').format(dt)}";
+    } else {
+      beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
+    }
 
     this.stringBulan.refresh();
+    this.beginPayroll.refresh();
+    this.endPayroll.refresh();
     this.bulanSelectedSearchHistory.refresh();
     this.tahunSelectedSearchHistory.refresh();
     this.bulanDanTahunNow.refresh();
@@ -131,9 +147,7 @@ class AktifitasController extends GetxController {
         listAktifitas.value.add(data);
       }
       this.listAktifitas.refresh();
-      
     });
-    
   }
 
   void getInformasiAktivitas() {

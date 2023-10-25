@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/state_manager.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:siscom_operasional/model/bpjs_kesehatan.dart';
 import 'package:siscom_operasional/model/bpjs_ketenagakerjaan.dart';
-import 'package:siscom_operasional/screen/bpjs/bpjs_kesehatan.dart';
+
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';

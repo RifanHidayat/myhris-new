@@ -23,6 +23,12 @@ var  em_status;
   var em_hak_akses;
   var face_recog;
   var branchName;
+  var branchId;
+  var beginPayroll;
+  var endPayroll;
+  var endDay;
+  var startTime;
+  var endTime;
 
   UserModel(
       {this.em_id,
@@ -46,6 +52,11 @@ var  em_status;
       this.emp_att_working,
       this.face_recog,
       this.branchName,
+      this.branchId,
+      this.beginPayroll,
+      this.endPayroll,
+      this.startTime,
+      this.endTime,
       this.em_hak_akses});
 
   Map<String, dynamic> toMap() {
@@ -71,7 +82,12 @@ var  em_status;
       'emp_att_working': emp_att_working,
       'em_hak_akses': em_hak_akses,
       'face_recog': face_recog,
-      'branch_name':branchName
+      'branch_name':branchName,
+      'begin_payroll':beginPayroll,
+      'end_payroll':endPayroll,
+      'start_time':startTime,
+      'end_time':endTime
+      
     };
   }
 
@@ -98,6 +114,11 @@ var  em_status;
         emp_att_working: map['emp_att_working'],
         face_recog: map['face_recog'],
         branchName: map['branch_name'],
+        endPayroll: map['end_payroll'],
+        startTime: map['start_time'],
+        endTime: map['end_time'],
+        beginPayroll: map['begin_payroll'],
+        
         em_hak_akses: map['em_hak_akses']);
   }
 

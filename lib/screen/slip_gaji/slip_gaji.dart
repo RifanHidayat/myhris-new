@@ -11,19 +11,38 @@ import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/utils/year_picker.dart';
 
-class SlipGaji extends StatelessWidget {
-  SlipGaji({super.key});
-  var controller = Get.put(SlipGajiController());
+// class SlipGaji extends StatelessWidget {
+//   SlipGaji({super.key});
+
+// }
+
+
+class SlipGaji extends StatefulWidget {
+  const SlipGaji({super.key});
+
+  @override
+  State<SlipGaji> createState() => _SlipGajiState();
+}
+
+class _SlipGajiState extends State<SlipGaji> {
+   var controller = Get.put(SlipGajiController());
+
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller.fetchSlipGaji();
+    controller.fetchSlipGajiCurrent();
+  }
 
   @override
   Widget build(BuildContext context) {
-    controller.fetchSlipGaji();
-    controller.fetchSlipGajiCurrent();
+    
     var startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
     var endDate = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
     return Scaffold(
       appBar: AppBarApp(
-        text: "Sllip gaji",
+        text: "Slip gaji",
         elevation: 0.0,
         textSize: 16.0,
         textColor: Constanst.colorWhite,
@@ -271,9 +290,16 @@ class SlipGaji extends StatelessWidget {
 
     return InkWell(
       onTap: () {
+        print(controller.tahun.value);
         controller.bulan.value = data.month;
         controller.args.value = data;
-        Get.to(SlipGajiDetail());
+
+        print(data.amount);
+        Get.to(SlipGajiDetail(
+          month: data.monthNumber,
+          year: controller.tahun,
+          args: data,
+        ));
       },
       child: Container(
         padding: const EdgeInsets.only(

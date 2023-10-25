@@ -108,8 +108,9 @@ class IzinController extends GetxController {
     var dataUser = AppData.informasiUser;
     var getDepGroup = dataUser![0].dep_group;
     var full_name = dataUser[0].full_name;
-    Map<String, dynamic> body = {'val': 'dep_group_id', 'cari': getDepGroup};
-    var connect = Api.connectionApi("post", body, "whereOnce-employee");
+  var emid=dataUser[0].em_id;
+    Map<String, dynamic> body = {'em_id': emid, 'dep_group_id': getDepGroup};
+    var connect = Api.connectionApi("post", body, "employee-delegasi");
     connect.then((dynamic res) {
       if (res == false) {
         UtilsAlert.koneksiBuruk();
@@ -767,7 +768,8 @@ class IzinController extends GetxController {
                           child: TextButtonWidget(
                             title: "Ya, Batalkan",
                             onTap: () async {
-                              batalkanPengajuan(index);
+                              print("batalkan  pengajuan");
+                              // batalkanPengajuan(index);
                             },
                             colorButton: Constanst.colorButton1,
                             colortext: Constanst.colorWhite,
@@ -810,6 +812,7 @@ class IzinController extends GetxController {
   }
 
   void batalkanPengajuan(index) {
+    print("hapus pengajuan izin");
     UtilsAlert.loadingSimpanData(Get.context!, "Batalkan Pengajuan");
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
@@ -821,6 +824,8 @@ class IzinController extends GetxController {
       'val': 'id',
       'cari': '${index["id"]}',
       'atten_date': '${index["atten_date"]}',
+      'leave_status':"Cancel"
+
     };
     var connect = Api.connectionApi("post", body, "delete-emp_labor");
     connect.then((dynamic res) {

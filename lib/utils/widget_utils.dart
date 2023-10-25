@@ -388,7 +388,7 @@ class UtilsAlert {
                 reverseCurve: Curves.easeOutCubic),
             child: CustomDialog(
               title: "Peringatan",
-              content: "Terjadi kesalahan",
+              content: "Periksa koneksi internet anda",
               positiveBtnText: "",
               negativeBtnText: "",
               style: 1,

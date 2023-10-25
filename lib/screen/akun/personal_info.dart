@@ -84,6 +84,12 @@ class PersonalInfo extends StatelessWidget {
                                           child: CircularProgressIndicator(
                                               value: downloadProgress.progress),
                                         ),
+                                        errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                  'assets/avatar_default.png',
+                                  width: 40,
+                                  height: 40,
+                                ),
                                         fit: BoxFit.cover,
                                         width: 150,
                                         height: 150,
