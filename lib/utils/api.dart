@@ -20,11 +20,16 @@ class Api {
 
   
   
- static var basicUrl = "http://mobilehris.siscom.id:3000/";
+
+
+
+  
+// static var basicUrl = "http://mobilehris.siscom.id:3000/";
 
   static var urlImage = 'https://imagehris.siscom.id:4431';
 
-// static var basicUrl = "http://kantor.membersis.com:2629/";
+//
+static var basicUrl = "http://kantor.membersis.com:2628/";
 
 
   static var token = '9d590c04119a4433971a1dd622266d38';
@@ -94,6 +99,7 @@ class Api {
 
         return response;
       } on SocketException catch (e) {
+        print(e);
         return false;
       }
     } else {
@@ -108,13 +114,26 @@ class Api {
     }
   }
 
+
+
+
+
+
+
   static Future connectionApiUploadFile(String url, File newFile) async {
+
+
     var getUrl = basicUrl + url + "?database=${AppData.selectedDatabase}";
+
+
     Map<String, String> headers = {
       'Authorization': basicAuth,
       'Content-type': 'application/json',
       'Accept': 'application/json',
       'token': AppData.setFcmToken,
+    
+    
+    
       'em_id': AppData.informasiUser == null ||
               AppData.informasiUser == "null" ||
               AppData.informasiUser == "" ||
@@ -122,6 +141,7 @@ class Api {
           ? ""
           : AppData.informasiUser![0].em_id
     };
+  
     try {
       final url = Uri.parse(getUrl);
       var request = http.MultipartRequest('POST', url);
@@ -134,8 +154,15 @@ class Api {
       return respStr;
     } on SocketException catch (e) {
       return false;
+  
     }
+  
+  
   }
+
+
+
+
 
   Future<void> checkLogin() async {
     // var response = await http.post(Uri.parse(basicUrl +

@@ -422,7 +422,7 @@ class ApprovalController extends GetxController {
           var data = {
             'id': element['id'],
             'nama_pengaju': convertNama,
-            'title_ajuan': 'Pengajuan Lembur',
+            'title_ajuan': 'Pengajuan Tugas Luar',
             'waktu_dari': element['dari_jam'],
             'waktu_sampai': element['sampai_jam'],
             'durasi': '',

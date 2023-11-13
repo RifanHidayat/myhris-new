@@ -256,6 +256,7 @@ class _KandidatState extends State<Kandidat> {
                       this.controller.bulanSelectedSearchHistory.refresh();
                       this.controller.tahunSelectedSearchHistory.refresh();
                       this.controller.bulanDanTahunNow.refresh();
+                      print("get load permintan kandidat");
                       controller.loadPermintaanKandidat();
                     }
                   },

@@ -132,12 +132,14 @@ class PesanController extends GetxController {
         
         
           jumlahPersetujuan.value = jumlahApproveCuti.value +
-              jumlahApproveLembur.value +
-              jumlahApproveTidakHadir.value +
-              jumlahApproveTugasLuar.value +
-              jumlahApproveDinasLuar.value +
-              jumlahApproveKlaim.value  +
-              jumlahCheckin.value;
+          jumlahApproveLembur.value +
+          jumlahApproveTidakHadir.value +
+          jumlahApproveTugasLuar.value +
+          jumlahApproveDinasLuar.value +
+          jumlahApproveKlaim.value  +
+          jumlahCheckin.value;
+
+
           this.jumlahApproveCuti.refresh();
           this.jumlahApproveLembur.refresh();
           this.jumlahApproveTidakHadir.refresh();

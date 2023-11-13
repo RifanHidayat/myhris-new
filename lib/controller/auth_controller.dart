@@ -119,6 +119,8 @@ class AuthController extends GetxController {
         var getAktif = "";
         var idMobile = "";
 
+        print("data login ${valueBody['data']}");
+
         for (var element in valueBody['data']) {
           print("tes ${element['time_attendance'].toString()}");
           var data = UserModel(
@@ -145,8 +147,8 @@ class AuthController extends GetxController {
             beginPayroll: element['begin_payroll'] ?? 1,
             endPayroll: element['end_payroll'] ?? 31,
             branchName: element['branch_name'] ?? "",
-            // startTime: element['time_attendance'].toString().split(',')[0],
-            // endTime: element['time_attendance'].toString().split(',')[1],
+            startTime: element['time_attendance'].toString().split(',')[0],
+            endTime: element['time_attendance'].toString().split(',')[1],
             //   startTime: "00:01",
             // endTime: "23:59",
           );
@@ -255,9 +257,12 @@ class AuthController extends GetxController {
             em_hak_akses: element['em_hak_akses'] ?? "",
             beginPayroll: element['begin_payroll'] ?? 1,
             endPayroll: element['end_payroll'] ?? 31,
+              branchName: element['branch_name'] ?? "",
+            startTime: element['time_attendance'].toString().split(',')[0],
+            endTime: element['time_attendance'].toString().split(',')[1],
             // startTime: "00:01",
             // endTime: "23:59",
-            branchName: element['branch_name'] ?? "",
+        
           );
 
           if (element['file_face'] == "" || element['file_face'] == null) {
@@ -344,152 +349,93 @@ class AuthController extends GetxController {
     });
   }
 
-//   void checkAbsenUser(convert, getEmid) {
-//     messageNewPassword.value = "";
-//     print("view last absen user");
-//     print("tes ${AppData.informasiUser![0].startTime.toString()}");
-//     var startTime = "";
-//     var endTime = "";
-
-//     var startDate = "";
-//     var endDate = "";
-
-//     //sekarang jam 03:00
-//     // start time 05:00
-//     //end entimenua 02:04
-//     //jika star time lebih besar dari end time maka  akan memeriksa attendance dari start time di hari sebelumya  tanggal sekarang dengan end time
-//     //
-
-//     TimeOfDay waktu1 = TimeOfDay(
-//         hour: int.parse(
-//             AppData.informasiUser![0].startTime.toString().split(':')[0]),
-//         minute: int.parse(AppData.informasiUser![0].startTime
-//             .toString()
-//             .split(':')[1])); // Waktu pertama
-//     TimeOfDay waktu2 = TimeOfDay(
-//         hour: int.parse(
-//             AppData.informasiUser![0].endTime.toString().split(':')[0]),
-//         minute: int.parse(AppData.informasiUser![0].startTime
-//             .toString()
-//             .split(':')[1])); // Waktu kedua
-//     int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
-//     int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
-//     if (totalMinutes1 < totalMinutes2) {
-//       startTime = AppData.informasiUser![0].startTime;
-//       endTime = AppData.informasiUser![0].endTime;
-
-//       startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-//       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-//     } else if (totalMinutes1 > totalMinutes2) {
-//       var waktu3 =
-//           TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
-//       int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
-
-//       if (totalMinutes2 > totalMinutes3) {
-//         startTime = AppData.informasiUser![0].endTime;
-//         endTime = AppData.informasiUser![0].startTime;
-//         startDate = DateFormat('yyyy-MM-dd')
-//             .format(DateTime.now().add(Duration(days: -1)));
-//         endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-//       } else {
-//         startTime = AppData.informasiUser![0].endTime;
-//         endTime = AppData.informasiUser![0].startTime;
-//         startDate = DateFormat('yyyy-MM-dd')
-//             .format(DateTime.now().add(Duration(days: 1)));
-//         endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-//       }
-//     } else {
-//       startTime = AppData.informasiUser![0].startTime;
-//       endTime = AppData.informasiUser![0].endTime;
-
-//       startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-//       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-//       print("Waktu 1 sama dengan waktu 2");
-//     }
-//     Map<String, dynamic> body = {
-//       'atten_date': DateFormat('yyyy-MM-dd')
-//           .format(DateTime.now().add(Duration(days: -1))),
-//       'em_id': getEmid,
-//       'database': AppData.selectedDatabase,
-//       'start_date': startDate,
-//       'end_date': endDate,
-//       'start_time': startTime,
-//       'emd_time': endTime
-//     };
-//     var connect = Api.connectionApi("post", body, "view_last_absen_user");
-
-//     connect.then((dynamic res) {
-//       if (res.statusCode == 200) {
-//         var valueBody = jsonDecode(res.body);
-//         print("data login ${valueBody}");
-//         var data = valueBody['data'];
-//         if (data.isEmpty) {
-//           isautoLogout.value = false;
-//           AppData.statusAbsen = false;
-//           Get.offAll(InitScreen());
-//         } else {
-//           var now = DateTime.parse(DateFormat("yyyy-MM-dd hh:mm:dd")
-//               .format(DateTime.parse(DateTime.now().toString())));
-//           var newStartDate = DateTime.parse(DateFormat('yyy-MM-dd hh:mm:ss')
-//               .format(DateTime.parse(startDate + " " + startTime)));
-//           var newEndDate = DateTime.parse(DateFormat('yyy-MM-dd hh:mm:ss')
-//               .format(DateTime.parse(endDate + " " + endTime)));
-
-//           if (now.isAfter(newStartDate) && now.isBefore(newEndDate)) {
-//             isautoLogout.value = false;
-//             AppData.statusAbsen =
-//                 data[0]['signout_time'] == "00:00:00" ? true : false;
-//             Get.offAll(InitScreen());
-//           } else {
-
-//             if (totalMinutes1<totalMinutes2){
-//                           var tanggalTerakhirAbsen = data[0]['atten_date'];
-//             if (tanggalTerakhirAbsen == convert) {
-//               isautoLogout.value = false;
-//               AppData.statusAbsen =
-//                   data[0]['signout_time'] == "00:00:00" ? true : false;
-//               Get.offAll(InitScreen());
-//             } else {
-//               isautoLogout.value = false;
-//               AppData.statusAbsen = false;
-//               Get.offAll(InitScreen());
-//             }
-              
-//             }else{
-// isautoLogout.value = false;
-//             AppData.statusAbsen = false;
-//             Get.offAll(InitScreen());
-//             }
-            
-//           }
-
-//           //   var tanggalTerakhirAbsen = data[0]['atten_date'];
-//           //   if (tanggalTerakhirAbsen == convert) {
-//           //     isautoLogout.value = false;
-//           //     AppData.statusAbsen =
-//           //         data[0]['signout_time'] == "00:00:00" ? true : false;
-//           //     Get.offAll(InitScreen());
-//           //   } else {
-//           //     isautoLogout.value = false;
-//           //     AppData.statusAbsen = false;
-//           //     Get.offAll(InitScreen());
-//           //   }
-//         }
-//       }
-//     });
-//   }
-
-    void checkAbsenUser(convert, getEmid) {
+  void checkAbsenUser(convert, getEmid) {
     messageNewPassword.value = "";
     print("view last absen user");
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
-  
+    var startTime = "";
+    var endTime = "";
+    var startDate = "";
+    var endDate = "";
+    TimeOfDay waktu1 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[0]),
+        minute: int.parse(AppData.informasiUser![0].startTime
+            .toString()
+            .split(':')[1])); 
+            
+    TimeOfDay waktu2 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].endTime.toString().split(':')[0]),
+        minute: int.parse(AppData.informasiUser![0].startTime
+            .toString()
+            .split(':')[1])); // Waktu kedua
+
+
+
+
+    int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+    int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+    
+    //alur normal
+    if (totalMinutes1 < totalMinutes2) {
+      startTime = AppData.informasiUser![0].startTime;
+      endTime = AppData.informasiUser![0].endTime;
+
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+
+
+    //alur beda hari
+    } else if (totalMinutes1 > totalMinutes2) {
+     
+      var waktu3 =
+          TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+      int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+
+      if (totalMinutes2 > totalMinutes3) {
+
+      
+      startTime = AppData.informasiUser![0].endTime;
+      endTime = AppData.informasiUser![0].startTime;
+        
+      startDate = DateFormat('yyyy-MM-dd')
+           .format(DateTime.now().add(Duration(days: -1)));        
+    
+    
+        endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      
+      
+      } else {
+
+        startTime = AppData.informasiUser![0].endTime;
+        endTime = AppData.informasiUser![0].startTime;
+        
+        endDate = DateFormat('yyyy-MM-dd')
+        .format(DateTime.now().add(Duration(days: 1)));
+        
+        startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      }
+    } else {
+      startTime = AppData.informasiUser![0].startTime;
+      endTime = AppData.informasiUser![0].endTime;
+
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      print("Waktu 1 sama dengan waktu 2");
+    }
     Map<String, dynamic> body = {
       'atten_date': DateFormat('yyyy-MM-dd')
           .format(DateTime.now().add(Duration(days: -1))),
       'em_id': getEmid,
       'database': AppData.selectedDatabase,
- 
+      'start_date': startDate,
+      'end_date': endDate,
+      'start_time': startTime,
+      'end_time': endTime,
+    
     };
     var connect = Api.connectionApi("post", body, "view_last_absen_user");
 
@@ -503,22 +449,55 @@ class AuthController extends GetxController {
           AppData.statusAbsen = false;
           Get.offAll(InitScreen());
         } else {
-        
-            var tanggalTerakhirAbsen = data[0]['atten_date'];
-            if (tanggalTerakhirAbsen == convert) {
               isautoLogout.value = false;
               AppData.statusAbsen =
-                  data[0]['signout_time'] == "00:00:00" ? true : false;
+              data[0]['signout_time'] == "00:00:00" ? true : false;
               Get.offAll(InitScreen());
-            } else {
-              isautoLogout.value = false;
-              AppData.statusAbsen = false;
-              Get.offAll(InitScreen());
-            }
         }
       }
     });
   }
+
+  //   void checkAbsenUser(convert, getEmid) {
+  //   messageNewPassword.value = "";
+  //   print("view last absen user");
+  //   print("tes ${AppData.informasiUser![0].startTime.toString()}");
+  
+  //   Map<String, dynamic> body = {
+  //     'atten_date': DateFormat('yyyy-MM-dd')
+  //         .format(DateTime.now().add(Duration(days: -1))),
+  //     'em_id': getEmid,
+  //     'database': AppData.selectedDatabase,
+ 
+  //   };
+  //   var connect = Api.connectionApi("post", body, "view_last_absen_user");
+
+  //   connect.then((dynamic res) {
+  //     if (res.statusCode == 200) {
+  //       var valueBody = jsonDecode(res.body);
+  //       print("data login ${valueBody}");
+  //       var data = valueBody['data'];
+  //       if (data.isEmpty) {
+  //         isautoLogout.value = false;
+  //         AppData.statusAbsen = false;
+  //         Get.offAll(InitScreen());
+  //       } else {
+        
+  //           var tanggalTerakhirAbsen = data[0]['atten_date'];
+  //           if (tanggalTerakhirAbsen == convert) {
+  //             isautoLogout.value = false;
+  //             AppData.statusAbsen =
+  //                 data[0]['signout_time'] == "00:00:00" ? true : false;
+  //             Get.offAll(InitScreen());
+  //           } else {
+  //             isautoLogout.value = false;
+  //             AppData.statusAbsen = false;
+  //             Get.offAll(InitScreen());
+  //           }
+  //       }
+  //     }
+  //   });
+  // }
 
   void hapusFoto() {
     UtilsAlert.showLoadingIndicator(Get.context!);

@@ -58,6 +58,7 @@ class _DashboardState extends State<Dashboard> {
       controller.updateInformasiUser();
       controller.onInit();
       controller.initData();
+      absenControllre.absenStatus.value=AppData.statusAbsen;
       controllerAbsensi.userShift();
     });
   }
@@ -436,59 +437,61 @@ class _DashboardState extends State<Dashboard> {
           ),
           Expanded(
               flex: 15,
-              child: Stack(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      var pesanCtrl = Get.find<PesanController>();
-                      pesanCtrl.routesIcon();
-                      pushNewScreen(
-                        Get.context!,
-                        screen: Pesan(
-                          status: true,
-                        ),
-                        withNavBar: false,
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Center(
-                        child: CircleAvatar(
-                          backgroundColor: Constanst.colorWhite,
-                          child: Icon(
-                            Iconsax.notification,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  controllerPesan.jumlahNotifikasiBelumDibaca.value == 0
-                      ? SizedBox()
-                      : Padding(
-                          padding: const EdgeInsets.only(bottom: 24, left: 16),
-                          child: Center(
-                              child: AnimatedTextKit(
-                            animatedTexts: [
-                              FadeAnimatedText(
-                                // "${controllerPesan.jumlahNotifikasiBelumDibaca.value}",
-                                "🔴",
-                                textStyle: const TextStyle(
-                                  fontSize: 10.0,
-                                  // color: Color.fromARGB(255, 255, 174, 0),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                duration: const Duration(milliseconds: 2000),
-                              ),
-                            ],
-                            totalRepeatCount: 500,
-                            pause: const Duration(milliseconds: 100),
-                            displayFullTextOnTap: true,
-                            stopPauseOnTap: true,
-                          )),
-                        )
-                ],
-              )),
+              child: SizedBox(),
+              // child: Stack(
+              //   children: [
+              //     InkWell(
+              //       onTap: () {
+              //         var pesanCtrl = Get.find<PesanController>();
+              //         pesanCtrl.routesIcon();
+              //         pushNewScreen(
+              //           Get.context!,
+              //           screen: Pesan(
+              //             status: false,
+              //           ),
+              //           withNavBar: false,
+              //         );
+              //       },
+              //       child: Padding(
+              //         padding: const EdgeInsets.only(bottom: 10),
+              //         child: Center(
+              //           child: CircleAvatar(
+              //             backgroundColor: Constanst.colorWhite,
+              //             child: Icon(
+              //               Iconsax.notification,
+              //               color: Colors.black,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //     controllerPesan.jumlahNotifikasiBelumDibaca.value == 0
+              //         ? SizedBox()
+              //         : Padding(
+              //             padding: const EdgeInsets.only(bottom: 24, left: 16),
+              //             child: Center(
+              //                 child: AnimatedTextKit(
+              //               animatedTexts: [
+              //                 FadeAnimatedText(
+              //                   // "${controllerPesan.jumlahNotifikasiBelumDibaca.value}",
+              //                   "🔴",
+              //                   textStyle: const TextStyle(
+              //                     fontSize: 10.0,
+              //                     // color: Color.fromARGB(255, 255, 174, 0),
+              //                     fontWeight: FontWeight.bold,
+              //                   ),
+              //                   duration: const Duration(milliseconds: 2000),
+              //                 ),
+              //               ],
+              //               totalRepeatCount: 500,
+              //               pause: const Duration(milliseconds: 100),
+              //               displayFullTextOnTap: true,
+              //               stopPauseOnTap: true,
+              //             )),
+              //           )
+              //   ],
+              // )
+               ),
         ],
       ),
     );
@@ -523,14 +526,18 @@ class _DashboardState extends State<Dashboard> {
               children: [
                 Expanded(
                   child: InkWell(
+                      onTap: () {
+                        print(AppData.informasiUser![0].endTime);
+                     
+                      },
                       // onTap: () => controller.getMenuTest(),
                       child: Text(
-                    "Live Attendance",
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Constanst.color2),
-                  )),
+                        "Live Attendance",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Constanst.color2),
+                      )),
                 ),
                 Expanded(
                   child: Container(
@@ -1416,14 +1423,18 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
+    controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        AppData.informasiUser![0].em_id);
     controllerBpj.employeDetaiBpjs();
+
     controllerAbsensi.employeDetail();
 
+  
+    controller.initData();
     
-     absenControllre.getTimeNow();
-          controller.initData();
-          controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        AppData.informasiUser![0].em_id);
+    
+    absenControllre.getTimeNow();
+
     // Api().checkLogin();
   }
 

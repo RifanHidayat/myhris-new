@@ -32,6 +32,8 @@ class TidakMasukKerjaController extends GetxController {
   var alasan = TextEditingController().obs;
   var departemen = TextEditingController().obs;
 
+  var typeTap=0.obs;
+
   var filePengajuan = File("").obs;
 
   var dataTypeAjuan = [].obs;
@@ -49,6 +51,7 @@ class TidakMasukKerjaController extends GetxController {
 
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
   Rx<List<String>> allTipeFormTidakMasukKerja = Rx<List<String>>([]);
+  Rx<List<String>> allTipeFormTidakMasukKerja1 = Rx<List<String>>([]);
 
   var bulanSelectedSearchHistory = "".obs;
   var tahunSelectedSearchHistory = "".obs;
@@ -103,6 +106,7 @@ class TidakMasukKerjaController extends GetxController {
     loadTypeSakit();
     loadDataAjuanIzin();
     getDepartemen(1, "");
+    
     super.onInit();
   }
 
@@ -348,6 +352,8 @@ class TidakMasukKerjaController extends GetxController {
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
         for (var element in data) {
+           allTipeFormTidakMasukKerja1.value
+              .add("${element['name']} - ${element['category']}");
           allTipeFormTidakMasukKerja.value
               .add("${element['name']} - ${element['category']}");
           var data = {
@@ -377,6 +383,8 @@ class TidakMasukKerjaController extends GetxController {
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
         for (var element in data) {
+            allTipeFormTidakMasukKerja1.value
+              .add("${element['name']} - ${element['category']}");
           allTipeFormTidakMasukKerja.value
               .add("${element['name']} - ${element['category']}");
           var data = {
@@ -393,6 +401,7 @@ class TidakMasukKerjaController extends GetxController {
         this.showTipe.refresh();
         this.allTipe.refresh();
         this.allTipeFormTidakMasukKerja.refresh();
+        this.allTipeFormTidakMasukKerja1.refresh();
       }
     });
   }
@@ -411,15 +420,24 @@ class TidakMasukKerjaController extends GetxController {
   }
 
   void changeTypeSelected(index) {
-    print(index);
+
+    typeTap.value=index;
     listHistoryAjuan.value.clear();
     if (index == 0) {
+       allTipeFormTidakMasukKerja.value=  allTipeFormTidakMasukKerja1.value.where((element) {
+        return element.toString().contains("FULLDAY");
+
+      }).toList();
       AlllistHistoryAjuan.value.forEach((element) {
         if (element['category'] == "FULLDAY") {
           listHistoryAjuan.value.add(element);
         }
       });
     } else {
+    allTipeFormTidakMasukKerja.value=   allTipeFormTidakMasukKerja1.value.where((element) {
+        return element.toString().contains("HALFDAY");
+
+      }).toList();
       AlllistHistoryAjuan.value.forEach((element) {
         if (element['category'] == "HALFDAY") {
           listHistoryAjuan.value.add(element);
@@ -441,6 +459,7 @@ class TidakMasukKerjaController extends GetxController {
     this.listHistoryAjuan.refresh();
     this.selectedType.refresh();
     typeAjuanRefresh("Semua");
+  
   }
 
   void typeAjuanRefresh(name) {

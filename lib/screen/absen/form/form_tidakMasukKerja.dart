@@ -161,9 +161,14 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Tipe*",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        InkWell(
+          onTap: (){
+            print(controller.allTipeFormTidakMasukKerja.value);
+          },
+          child: Text(
+            "Tipe*",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
         SizedBox(
           height: 5,

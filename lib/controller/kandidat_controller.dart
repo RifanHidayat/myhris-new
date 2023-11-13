@@ -268,6 +268,7 @@ class KandidatController extends GetxController {
   }
 
   void loadPermintaanKandidat() {
+    print("Load permintaan kandidat...");
     loadingUpdateData.value = true;
     listPermintaanKandidatAll.value.clear();
     listPermintaanKandidat.value.clear();
@@ -276,6 +277,7 @@ class KandidatController extends GetxController {
       'tahun': tahunSelectedSearchHistory.value,
       'status': idDepartemenTerpilih.value
     };
+    print("body data ${body}");
     var connect =
         Api.connectionApi("post", body, "history-permintaan_kandidat");
     connect.then((dynamic res) {
@@ -827,8 +829,8 @@ class KandidatController extends GetxController {
             "upload_file_permintaan_kandidat", filePengajuan.value);
         var valueBody = jsonDecode(connectUpload);
         if (valueBody['status'] == true) {
-          UtilsAlert.showToast("Berhasil upload file");
-          Navigator.pop(Get.context!);
+       //   UtilsAlert.showToast("Berhasil upload file");
+         // Navigator.pop(Get.context!);
           checkNomorAjuan(status);
         } else {
           UtilsAlert.showToast("Gagal kirim file");
@@ -846,13 +848,14 @@ class KandidatController extends GetxController {
   }
 
   void checkNomorAjuan(status) {
+    print("check nomor ajuan permintaan kandidat");
     Map<String, dynamic> body = {'pola': "PK"};
     var connect = Api.connectionApi("post", body, "emp_request_lastrow");
     connect.then((dynamic res) {
+   
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-        if (valueBody['status'] == true) {
-          print(valueBody['data']);
+        if (valueBody['status'] == true) {                     
           if (valueBody['data'].isEmpty) {
             var now = DateTime.now();
             var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
@@ -869,6 +872,9 @@ class KandidatController extends GetxController {
           UtilsAlert.showToast("");
         }
       }
+    }).catchError((e){
+      print("error");
+      print(e);
     });
   }
 
@@ -881,11 +887,13 @@ class KandidatController extends GetxController {
   }
 
   void kirimPermintaanKandidat(status, nomorAjuanTerakhir) {
+    print("Kirim permintaan");
     // data user
     var dataUser = AppData.informasiUser;
     var getEmid = "${dataUser![0].em_id}";
     var getFullName = "${dataUser[0].full_name}";
 
+    
     Map<String, dynamic> body = {
       'em_id': '$getEmid',
       'nomor_ajuan': '$nomorAjuanTerakhir',
@@ -901,6 +909,10 @@ class KandidatController extends GetxController {
       'activity_name':
           'Membuat Permintaan karyawan. posisi = ${posisi.value.text}',
     };
+
+    print("body permintaan ${body}");
+
+
     var connect = Api.connectionApi("post", body, "insert-employee_request");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -912,7 +924,9 @@ class KandidatController extends GetxController {
           var pesan3 = "";
 
           var pesan4 = "";
-          var data = jsonDecode(globalCt.konfirmasiAtasan.toString());
+             print("data global ${globalCt.konfirmasiAtasan.toString()}");
+          List data = globalCt.konfirmasiAtasan;
+
           var newList = [];
           for (var e in data) {
             newList.add(e.values.join('token'));

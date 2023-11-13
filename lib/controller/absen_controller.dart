@@ -281,6 +281,8 @@ class AbsenController extends GetxController {
             }
           }
 
+          print("data ${placeCoordinate.value}");
+
           placeCoordinate.value = filter;
           placeCoordinate.refresh();
           placeCoordinate.refresh();

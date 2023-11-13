@@ -115,6 +115,8 @@ class DashboardController extends GetxController {
     DateTime startDate = await NTP.now();
     getBannerDashboard();
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
+    checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        AppData.informasiUser![0].em_id.toString());
     getMenuDashboard();
     loadMenuShowInMain();
     loadMenuShowInMainUtama();
@@ -128,10 +130,117 @@ class DashboardController extends GetxController {
     checkStatusPermission();
     checkHakAkses();
     updateInformasiUser();
-    checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), AppData.informasiUser![0].em_id.toString());
   }
 
-  // void checkAbsenUser(convert, getEmid) async {
+  
+  void checkAbsenUser(convert, getEmid) {
+    print("view last absen user");
+    print("tes ${AppData.informasiUser![0].startTime.toString()}");
+    var startTime = "";
+    var endTime = "";
+    var startDate = "";
+    var endDate = "";
+    TimeOfDay waktu1 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[0]),
+        minute: int.parse(AppData.informasiUser![0].startTime
+            .toString()
+            .split(':')[1])); 
+            
+    TimeOfDay waktu2 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].endTime.toString().split(':')[0]),
+        minute: int.parse(AppData.informasiUser![0].startTime
+            .toString()
+            .split(':')[1])); // Waktu kedua
+
+
+
+
+    int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+    int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+    
+    //alur normal
+    if (totalMinutes1 < totalMinutes2) {
+      startTime = AppData.informasiUser![0].startTime;
+      endTime = AppData.informasiUser![0].endTime;
+
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+
+
+    //alur beda hari
+    } else if (totalMinutes1 > totalMinutes2) {
+     
+      var waktu3 =
+          TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+      int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+
+      if (totalMinutes2 > totalMinutes3) {
+
+      
+      startTime = AppData.informasiUser![0].endTime;
+      endTime = AppData.informasiUser![0].startTime;
+        
+      startDate = DateFormat('yyyy-MM-dd')
+           .format(DateTime.now().add(Duration(days: -1)));        
+
+        endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      
+      
+      } else {
+
+        startTime = AppData.informasiUser![0].endTime;
+        endTime = AppData.informasiUser![0].startTime;
+        
+        endDate = DateFormat('yyyy-MM-dd')
+        .format(DateTime.now().add(Duration(days: 1)));
+        
+        startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      }
+    } else {
+      startTime = AppData.informasiUser![0].startTime;
+      endTime = AppData.informasiUser![0].endTime;
+
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      print("Waktu 1 sama dengan waktu 2");
+    }
+    Map<String, dynamic> body = {
+      'atten_date': DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().add(Duration(days: -1))),
+      'em_id': getEmid,
+      'database': AppData.selectedDatabase,
+      'start_date': startDate,
+      'end_date': endDate,
+      'start_time': startTime,
+      'end_time': endTime,
+    
+    };
+    var connect = Api.connectionApi("post", body, "view_last_absen_user");
+
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print("data login ${valueBody}");
+        var data = valueBody['data'];
+        if (data.isEmpty) {
+      
+          AppData.statusAbsen = false;
+      
+        } else {
+           
+              AppData.statusAbsen =
+              data[0]['signout_time'] == "00:00:00" ? true : false;
+          
+        }
+      }
+    });
+  }
+
+  //void checkAbsenUser(convert, getEmid) async {
   //   // Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
   //   // print(body);
   //   print("view last absen user");
@@ -146,18 +255,24 @@ class DashboardController extends GetxController {
   //   //end entimenua 02:04
   //   //jika star time lebih besar dari end time maka  akan memeriksa attendance dari start time di hari sebelumya  tanggal sekarang dengan end time
   //   //
+    
   //   TimeOfDay waktu1 = TimeOfDay(
   //       hour: int.parse(
   //           AppData.informasiUser![0].startTime.toString().split(':')[0]),
   //       minute: int.parse(AppData.informasiUser![0].startTime
   //           .toString()
-  //           .split(':')[1])); // Waktu pertama
+  //           .split(':')[1]));
+    
+  //   // Waktu pertama
   //   TimeOfDay waktu2 = TimeOfDay(
   //       hour: int.parse(
   //           AppData.informasiUser![0].endTime.toString().split(':')[0]),
   //       minute: int.parse(AppData.informasiUser![0].startTime
   //           .toString()
-  //           .split(':')[1])); // Waktu kedua
+  //           .split(':')[1]));
+
+
+  //   // Waktu kedua
   //   int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
   //   int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
   //   if (totalMinutes1 < totalMinutes2) {
@@ -203,135 +318,171 @@ class DashboardController extends GetxController {
   //   };
 
   //   var connect = Api.connectionApi("post", body, "view_last_absen_user");
-  //   var value = await connect;
-  //   var valueBody = jsonDecode(value.body);
 
-  //   List data = valueBody['data'];
+    
+  //   connect.then((dynamic res) {
+  //     print("status code ${res.statusCode }");
+  //   if (res.statusCode == 200) {
+  //     var valueBody = jsonDecode(res.body);
+  //         List data = valueBody['data'];
 
-  //   print('data response $valueBody');
   //   if (data.isEmpty) {
   //     AppData.statusAbsen = false;
 
-  //     // Future.delayed(Duration.zero, () {});
+  //      Future.delayed(Duration.zero, () {});
   //   } else {
-  //     var now = DateTime.parse(DateFormat("yyyy-MM-dd hh:mm:dd")
-  //         .format(DateTime.parse(DateTime.now().toString())));
-  //     var newStartDate = DateTime.parse(DateFormat('yyy-MM-dd hh:mm:ss')
-  //         .format(DateTime.parse(startDate + " " + startTime)));
-  //     var newEndDate = DateTime.parse(DateFormat('yyy-MM-dd hh:mm:ss')
-  //         .format(DateTime.parse(endDate + " " + endTime)));
+  //         AppData.statusAbsen =
+  //               data[0]['signout_time'] == "00:00:00" ? true : false;
 
-  //     if (now.isAfter(newStartDate) && now.isBefore(newEndDate)) {
-  //       AppData.statusAbsen =
-  //           data[0]['signout_time'] == "00:00:00" ? true : false;
-  //     } else {
-  //       if (totalMinutes1 < totalMinutes2) {
-  //         var tanggalTerakhirAbsen = data[0]['atten_date'];
+  //     //  var tanggalTerakhirAbsen = data[0]['atten_date'];
+  //     //     if (tanggalTerakhirAbsen == endDate) {
+  //     //       // print("siggin time ${data[0]['sign_time']}");
+  //     //       AppData.statusAbsen =
+  //     //           data[0]['signout_time'] == "00:00:00" ? true : false;
+
+  //     //     } else {
+  //     //       AppData.statusAbsen = false;
+  //     //     }
+
+  //   }
+
+  //   }
+  // });
+  //   // var value = await connect;
+  //   // var valueBody = jsonDecode(value.body);
+
+  //   // List data = valueBody['data'];
+
+  //   // print('data response $valueBody');
+  //   // if (data.isEmpty) {
+  //   //   AppData.statusAbsen = false;
+
+  //   //   // Future.delayed(Duration.zero, () {});
+  //   // } else {
+  //   //   var now = DateTime.parse(DateFormat("yyyy-MM-dd hh:mm:dd")
+  //   //       .format(DateTime.parse(DateTime.now().toString())));
+  //   //   var newStartDate = DateTime.parse(DateFormat('yyy-MM-dd hh:mm:ss')
+  //   //       .format(DateTime.parse(startDate + " " + startTime)));
+  //   //   var newEndDate = DateTime.parse(DateFormat('yyy-MM-dd hh:mm:ss')
+  //   //       .format(DateTime.parse(endDate + " " + endTime)));
+
+  //   //   if (now.isAfter(newStartDate) && now.isBefore(newEndDate)) {
+  //   //     AppData.statusAbsen =
+  //   //         data[0]['signout_time'] == "00:00:00" ? true : false;
+  //   //   } else {
+  //   //     if (totalMinutes1 < totalMinutes2) {
+  //   //       var tanggalTerakhirAbsen = data[0]['atten_date'];
+  //   //       if (tanggalTerakhirAbsen == convert) {
+  //   //         // print("siggin time ${data[0]['sign_time']}");
+  //   //         AppData.statusAbsen =
+  //   //             data[0]['signout_time'] == "00:00:00" ? true : false;
+  //   //       } else {
+  //   //         AppData.statusAbsen = false;
+  //   //       }
+  //   //     } else {
+  //   //       AppData.statusAbsen = false;
+  //   //     }
+  //   //   }
+  //   // }
+  //}
+
+  //   void checkAbsenUser(convert, getEmid) async {
+  //   // Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
+  //   // print(body);
+  //   print("view last absen user");
+
+  //   //sekarang jam 03:00
+  //   // start time 05:00
+  //   //end entimenua 02:04
+  //   //jika star time lebih besar dari end time maka  akan memeriksa attendance dari start time di hari sebelumya  tanggal sekarang dengan end time
+  //   //
+  //   // TimeOfDay waktu1 = TimeOfDay(
+  //   //     hour: int.parse(
+  //   //         AppData.informasiUser![0].startTime.toString().split(':')[0]),
+  //   //     minute: int.parse(AppData.informasiUser![0].startTime
+  //   //         .toString()
+  //   //         .split(':')[1])); // Waktu pertama
+  //   // TimeOfDay waktu2 = TimeOfDay(
+  //   //     hour: int.parse(
+  //   //         AppData.informasiUser![0].endTime.toString().split(':')[0]),
+  //   //     minute: int.parse(AppData.informasiUser![0].startTime
+  //   //         .toString()
+  //   //         .split(':')[1])); // Waktu kedua
+  //   // int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+  //   // int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+  //   // if (totalMinutes1 < totalMinutes2) {
+  //   //   startTime = AppData.informasiUser![0].startTime;
+  //   //   endTime = AppData.informasiUser![0].endTime;
+
+  //   //   startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //   //   endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //   // } else if (totalMinutes1 > totalMinutes2) {
+  //   //   var waktu3 =
+  //   //       TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+  //   //   int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+  //   //   if (totalMinutes2 > totalMinutes3) {
+  //   //     startTime = AppData.informasiUser![0].endTime;
+  //   //     endTime = AppData.informasiUser![0].startTime;
+  //   //     startDate = DateFormat('yyyy-MM-dd')
+  //   //         .format(DateTime.now().add(Duration(days: -1)));
+  //   //     endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //   //   } else {
+  //   //     startTime = AppData.informasiUser![0].endTime;
+  //   //     endTime = AppData.informasiUser![0].startTime;
+  //   //     startDate = DateFormat('yyyy-MM-dd')
+  //   //         .format(DateTime.now().add(Duration(days: 1)));
+  //   //     endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //   //   }
+  //   // } else {
+  //   //   startTime = AppData.informasiUser![0].startTime;
+  //   //   endTime = AppData.informasiUser![0].endTime;
+
+  //   //   startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //   //   endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //   //   print("Waktu 1 sama dengan waktu 2");
+  //   // }
+  //   Map<String, dynamic> body = {
+  //     'atten_date': convert,
+  //     'em_id': getEmid,
+  //     'database': AppData.selectedDatabase,
+
+  //   };
+
+  //   print(" last absen ${body}");
+
+  //   print("List absen usernew ");
+
+  //   var connect = Api.connectionApi("post", body, "view_last_absen_user");
+
+  //   connect.then((dynamic res) {
+  //     print("status code ${res.statusCode }");
+  //   if (res.statusCode == 200) {
+  //     var valueBody = jsonDecode(res.body);
+  //         List data = valueBody['data'];
+
+  //   if (data.isEmpty) {
+  //     AppData.statusAbsen = false;
+
+  //      Future.delayed(Duration.zero, () {});
+  //   } else {
+
+  //      var tanggalTerakhirAbsen = data[0]['atten_date'];
   //         if (tanggalTerakhirAbsen == convert) {
   //           // print("siggin time ${data[0]['sign_time']}");
   //           AppData.statusAbsen =
   //               data[0]['signout_time'] == "00:00:00" ? true : false;
+
   //         } else {
   //           AppData.statusAbsen = false;
   //         }
-  //       } else {
-  //         AppData.statusAbsen = false;
-  //       }
-  //     }
+
   //   }
+
+  //   }
+  // });
+
   // }
-
-
-    void checkAbsenUser(convert, getEmid) async {
-    // Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
-    // print(body);
-    print("view last absen user");
-
-
-    //sekarang jam 03:00
-    // start time 05:00
-    //end entimenua 02:04
-    //jika star time lebih besar dari end time maka  akan memeriksa attendance dari start time di hari sebelumya  tanggal sekarang dengan end time
-    //
-    // TimeOfDay waktu1 = TimeOfDay(
-    //     hour: int.parse(
-    //         AppData.informasiUser![0].startTime.toString().split(':')[0]),
-    //     minute: int.parse(AppData.informasiUser![0].startTime
-    //         .toString()
-    //         .split(':')[1])); // Waktu pertama
-    // TimeOfDay waktu2 = TimeOfDay(
-    //     hour: int.parse(
-    //         AppData.informasiUser![0].endTime.toString().split(':')[0]),
-    //     minute: int.parse(AppData.informasiUser![0].startTime
-    //         .toString()
-    //         .split(':')[1])); // Waktu kedua
-    // int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
-    // int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
-    // if (totalMinutes1 < totalMinutes2) {
-    //   startTime = AppData.informasiUser![0].startTime;
-    //   endTime = AppData.informasiUser![0].endTime;
-
-    //   startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    //   endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    // } else if (totalMinutes1 > totalMinutes2) {
-    //   var waktu3 =
-    //       TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
-    //   int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
-
-    //   if (totalMinutes2 > totalMinutes3) {
-    //     startTime = AppData.informasiUser![0].endTime;
-    //     endTime = AppData.informasiUser![0].startTime;
-    //     startDate = DateFormat('yyyy-MM-dd')
-    //         .format(DateTime.now().add(Duration(days: -1)));
-    //     endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    //   } else {
-    //     startTime = AppData.informasiUser![0].endTime;
-    //     endTime = AppData.informasiUser![0].startTime;
-    //     startDate = DateFormat('yyyy-MM-dd')
-    //         .format(DateTime.now().add(Duration(days: 1)));
-    //     endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    //   }
-    // } else {
-    //   startTime = AppData.informasiUser![0].startTime;
-    //   endTime = AppData.informasiUser![0].endTime;
-
-    //   startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    //   endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    //   print("Waktu 1 sama dengan waktu 2");
-    // }
-    Map<String, dynamic> body = {
-      'atten_date': convert,
-      'em_id': getEmid,
-      'database': AppData.selectedDatabase,
- 
-    };
-    
-
-    print("List absen user");
-
-    var connect = Api.connectionApi("post", body, "view_last_absen_user");
-    var value = await connect;
-    var valueBody = jsonDecode(value.body);
-
-    List data = valueBody['data'];
-
-    print('data response $valueBody');
-    if (data.isEmpty) {
-      AppData.statusAbsen = false;
-
-      // Future.delayed(Duration.zero, () {});
-    } else {
-       var tanggalTerakhirAbsen = data[0]['atten_date'];
-       
-          if (tanggalTerakhirAbsen == convert) {
-            // print("siggin time ${data[0]['sign_time']}");
-            AppData.statusAbsen =
-                data[0]['signout_time'] == "00:00:00" ? true : false;
-          } else {
-            AppData.statusAbsen = false;
-          }
-    }
-  }
   // conne.then((dynamic res) {
   //   if (res.statusCode == 200) {
   //     var valueBody = jsonDecode(res.body);
@@ -556,8 +707,8 @@ class DashboardController extends GetxController {
               em_hak_akses: element['em_hak_akses'] ?? "",
               beginPayroll: element['begin_payroll'],
               endPayroll: element['end_payroll'],
-              startTime: "00:01",
-              endTime: "23:59",
+              startTime: element['time_attendance'].toString().split(',')[0],
+              endTime: element['time_attendance'].toString().split(',')[1],
               branchName: element['branch_name']);
           print(element['posisi']);
           getData.add(data);

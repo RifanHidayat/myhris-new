@@ -236,29 +236,31 @@ class _FormKandidatState extends State<FormKandidat> {
         SizedBox(
           height: 5,
         ),
-        InkWell(
-          onTap: () {
-            controller.showModalHtmlEditor();
-          },
-          child: Container(
-              width: MediaQuery.of(Get.context!).size.width,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: Constanst.borderStyle1,
-                  border: Border.all(
-                      width: 1.0, color: Color.fromARGB(255, 211, 205, 205))),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8, top: 10, bottom: 10),
-                child: Html(
-                  data: controller.spesifikasi.value.text,
-                  style: {
-                    "body": Style(
-                      fontSize: FontSize(14),
-                      color: Colors.black,
-                    ),
-                  },
-                ),
-              )),
+          Container(
+          height: 40,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: Constanst.borderStyle1,
+              border: Border.all(
+                  width: 0.5, color: Color.fromARGB(255, 211, 205, 205))),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+               controller: controller.spesifikasi.value,
+              cursorColor: Colors.black,
+              keyboardType: TextInputType.text,
+            
+              decoration: InputDecoration(
+                border: InputBorder.none,
+              ),
+              style:
+                  TextStyle(fontSize: 14.0, height: 2.0, color: Colors.black),
+              onSubmitted: (value) {
+                controller.kebutuhan.value.text = value;
+                this.controller.kebutuhan.refresh();
+              },
+            ),
+          ),
         ),
       ],
     );

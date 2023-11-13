@@ -49,7 +49,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
         title: TextLabell(
           text: "Pengajuan Absen",
           color: Constanst.fgPrimary,
-          size: 14.0,
+          size: 16.0,
         ),
       ),
       body:Obx(() {
@@ -320,7 +320,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextLabell(
-                          text: "Absen Masuk",
+                          text: "Absen Masuk *",
                           color: Constanst.fgPrimary,
                           size: 14,
                         ),
@@ -400,7 +400,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextLabell(
-                          text: "Absen Keluar",
+                          text: "Absen Keluar *",
                           color: Constanst.fgPrimary,
                           size: 14,
                         ),
@@ -511,7 +511,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextLabell(
-                          text: "Catatan",
+                          text: "Catatan *",
                           size: 14,
                         ),
                         TextFormField(
