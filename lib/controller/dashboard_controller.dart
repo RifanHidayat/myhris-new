@@ -832,7 +832,7 @@ class DashboardController extends GetxController {
                 .where((p0) =>
                     p0['url'].toString().toLowerCase().trim() ==
                     "PKWT".toLowerCase().toString().trim())
-                .toList();
+                .toList(); 
             List menuUlangtahun = menuShowInMainUtama
                 .where((p0) =>
                     p0['url'].toString().toLowerCase().trim() ==
