@@ -53,13 +53,20 @@ class _DashboardState extends State<Dashboard> {
     controller.refreshPagesStatus.value = true;
     await Future.delayed(Duration(seconds: 2));
     setState(() {
+      controller.updateInformasiUser();
       controllerBpj.employeDetaiBpjs();
       controllerAbsensi.employeDetail();
-      controller.updateInformasiUser();
+
       controller.onInit();
-      controller.initData();
-      absenControllre.absenStatus.value=AppData.statusAbsen;
+
       controllerAbsensi.userShift();
+     
+      Future.delayed(const Duration(milliseconds: 500), () {
+         controller.initData();
+        absenControllre.absenStatus.value = AppData.statusAbsen;
+        absenControllre.absenStatus.value =
+            controller.dashboardStatusAbsen.value;
+      });
     });
   }
 
@@ -436,62 +443,62 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           Expanded(
-              flex: 15,
-              child: SizedBox(),
-              // child: Stack(
-              //   children: [
-              //     InkWell(
-              //       onTap: () {
-              //         var pesanCtrl = Get.find<PesanController>();
-              //         pesanCtrl.routesIcon();
-              //         pushNewScreen(
-              //           Get.context!,
-              //           screen: Pesan(
-              //             status: false,
-              //           ),
-              //           withNavBar: false,
-              //         );
-              //       },
-              //       child: Padding(
-              //         padding: const EdgeInsets.only(bottom: 10),
-              //         child: Center(
-              //           child: CircleAvatar(
-              //             backgroundColor: Constanst.colorWhite,
-              //             child: Icon(
-              //               Iconsax.notification,
-              //               color: Colors.black,
-              //             ),
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //     controllerPesan.jumlahNotifikasiBelumDibaca.value == 0
-              //         ? SizedBox()
-              //         : Padding(
-              //             padding: const EdgeInsets.only(bottom: 24, left: 16),
-              //             child: Center(
-              //                 child: AnimatedTextKit(
-              //               animatedTexts: [
-              //                 FadeAnimatedText(
-              //                   // "${controllerPesan.jumlahNotifikasiBelumDibaca.value}",
-              //                   "🔴",
-              //                   textStyle: const TextStyle(
-              //                     fontSize: 10.0,
-              //                     // color: Color.fromARGB(255, 255, 174, 0),
-              //                     fontWeight: FontWeight.bold,
-              //                   ),
-              //                   duration: const Duration(milliseconds: 2000),
-              //                 ),
-              //               ],
-              //               totalRepeatCount: 500,
-              //               pause: const Duration(milliseconds: 100),
-              //               displayFullTextOnTap: true,
-              //               stopPauseOnTap: true,
-              //             )),
-              //           )
-              //   ],
-              // )
-               ),
+            flex: 15,
+            child: SizedBox(),
+            // child: Stack(
+            //   children: [
+            //     InkWell(
+            //       onTap: () {
+            //         var pesanCtrl = Get.find<PesanController>();
+            //         pesanCtrl.routesIcon();
+            //         pushNewScreen(
+            //           Get.context!,
+            //           screen: Pesan(
+            //             status: false,
+            //           ),
+            //           withNavBar: false,
+            //         );
+            //       },
+            //       child: Padding(
+            //         padding: const EdgeInsets.only(bottom: 10),
+            //         child: Center(
+            //           child: CircleAvatar(
+            //             backgroundColor: Constanst.colorWhite,
+            //             child: Icon(
+            //               Iconsax.notification,
+            //               color: Colors.black,
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //     controllerPesan.jumlahNotifikasiBelumDibaca.value == 0
+            //         ? SizedBox()
+            //         : Padding(
+            //             padding: const EdgeInsets.only(bottom: 24, left: 16),
+            //             child: Center(
+            //                 child: AnimatedTextKit(
+            //               animatedTexts: [
+            //                 FadeAnimatedText(
+            //                   // "${controllerPesan.jumlahNotifikasiBelumDibaca.value}",
+            //                   "🔴",
+            //                   textStyle: const TextStyle(
+            //                     fontSize: 10.0,
+            //                     // color: Color.fromARGB(255, 255, 174, 0),
+            //                     fontWeight: FontWeight.bold,
+            //                   ),
+            //                   duration: const Duration(milliseconds: 2000),
+            //                 ),
+            //               ],
+            //               totalRepeatCount: 500,
+            //               pause: const Duration(milliseconds: 100),
+            //               displayFullTextOnTap: true,
+            //               stopPauseOnTap: true,
+            //             )),
+            //           )
+            //   ],
+            // )
+          ),
         ],
       ),
     );
@@ -528,7 +535,6 @@ class _DashboardState extends State<Dashboard> {
                   child: InkWell(
                       onTap: () {
                         print(AppData.informasiUser![0].endTime);
-                     
                       },
                       // onTap: () => controller.getMenuTest(),
                       child: Text(
@@ -1429,10 +1435,8 @@ class _DashboardState extends State<Dashboard> {
 
     controllerAbsensi.employeDetail();
 
-  
     controller.initData();
-    
-    
+
     absenControllre.getTimeNow();
 
     // Api().checkLogin();
