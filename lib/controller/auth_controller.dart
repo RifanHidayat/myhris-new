@@ -437,7 +437,7 @@ class AuthController extends GetxController {
       'end_time': endTime,
     
     };
-    var connect = Api.connectionApi("post", body, "view_last_absen_user");
+    var connect = Api.connectionApi("post", body, "view_last_absen_user1");
 
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
