@@ -64,8 +64,8 @@ class _DashboardState extends State<Dashboard> {
       Future.delayed(const Duration(milliseconds: 500), () {
          controller.initData();
         absenControllre.absenStatus.value = AppData.statusAbsen;
-        absenControllre.absenStatus.value =
-            controller.dashboardStatusAbsen.value;
+        // absenControllre.absenStatus.value =
+        //     controller.dashboardStatusAbsen.value;
       });
     });
   }
@@ -1429,15 +1429,24 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
+    controller.updateInformasiUser();
+        controller.initData();
+    absenControllre.getTimeNow();
     controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
         AppData.informasiUser![0].em_id);
     controllerBpj.employeDetaiBpjs();
 
     controllerAbsensi.employeDetail();
 
-    controller.initData();
 
-    absenControllre.getTimeNow();
+  absenControllre.absenStatus.value = AppData.statusAbsen;
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+         controller.initData();
+        absenControllre.absenStatus.value = AppData.statusAbsen;
+        // absenControllre.absenStatus.value =
+        //     controller.dashboardStatusAbsen.value;
+      });
 
     // Api().checkLogin();
   }
