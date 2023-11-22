@@ -277,7 +277,7 @@ class _FormKlaimState extends State<FormKlaim> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          "Unggah File *",
+          "Unggah File ",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         SizedBox(

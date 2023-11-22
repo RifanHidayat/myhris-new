@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -31,6 +32,10 @@ class TidakMasukKerjaController extends GetxController {
   var sampaiJamAjuan = TextEditingController().obs;
   var alasan = TextEditingController().obs;
   var departemen = TextEditingController().obs;
+    var izinTerpakai=0.obs;
+  var jumlahIzin=0.obs;
+  var percentIzin=0.0.obs;
+  var showDurationIzin=false.obs;
 
   var typeTap=0.obs;
 
@@ -51,6 +56,7 @@ class TidakMasukKerjaController extends GetxController {
 
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
   Rx<List<String>> allTipeFormTidakMasukKerja = Rx<List<String>>([]);
+  var izinCategory=[].obs;
   Rx<List<String>> allTipeFormTidakMasukKerja1 = Rx<List<String>>([]);
 
   var bulanSelectedSearchHistory = "".obs;
@@ -258,6 +264,39 @@ class TidakMasukKerjaController extends GetxController {
       }
     });
   }
+    Future<bool> loadDataAjuanIzinCategori({id}) async {
+      print("masuk sini");
+    AlllistHistoryAjuan.value.clear();
+    listHistoryAjuan.value.clear();
+    var dataUser = AppData.informasiUser;
+    var getEmid = dataUser![0].em_id;
+    Map<String, dynamic> body = {
+      'em_id': getEmid,
+      'bulan': bulanSelectedSearchHistory.value,
+      'tahun': tahunSelectedSearchHistory.value,
+      'type_id':id.toString()
+    };
+    var connect = Api.connectionApi("post", body, "emp_leave_load_izin_Kategori");
+   await connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+      print("data value body ${valueBody}");
+        if (valueBody['status'] == false) {
+          // loadingString.value = "Tidak ada pengajuan";
+          izinCategory.value=[];
+          this.loadingString.refresh();
+          izinTerpakai.value=0;
+          return true;
+         } else {
+          izinTerpakai.value=valueBody['jumlah_data'];
+          izinCategory.value=valueBody['data'];
+           return true;
+          
+        }
+      }
+    });
+  return true;
+  }
 
   void cariData(value) {
     var text = value.toLowerCase();
@@ -361,6 +400,7 @@ class TidakMasukKerjaController extends GetxController {
             'name': element['name'],
             'status': element['status'],
             'category': element['category'],
+            'leave_day':element['leave_day'],
             'ajuan': 2,
             'active': false,
           };
@@ -388,6 +428,7 @@ class TidakMasukKerjaController extends GetxController {
           allTipeFormTidakMasukKerja.value
               .add("${element['name']} - ${element['category']}");
           var data = {
+             'leave_day':element['leave_day'],
             'type_id': element['id'],
             'name': element['name'],
             'status': element['status'],
@@ -804,6 +845,7 @@ class TidakMasukKerjaController extends GetxController {
       'ajuan': getAjuanType,
     };
     if (status == false) {
+      
       body['created_by'] = getEmid;
       body['menu_name'] = "Tidak Hadir";
       body['activity_name'] =

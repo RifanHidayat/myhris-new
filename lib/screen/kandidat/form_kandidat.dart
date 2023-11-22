@@ -310,7 +310,7 @@ class _FormKandidatState extends State<FormKandidat> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          "Unggah File *",
+          "Unggah File ",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         SizedBox(

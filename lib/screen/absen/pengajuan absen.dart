@@ -28,13 +28,12 @@ class pengajuanAbsen extends StatefulWidget {
 class _pengajuanAbsenState extends State<pengajuanAbsen> {
   var absenController = Get.put(AbsenController());
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     absenController.resetData();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,60 +49,71 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
           text: "Pengajuan Absen",
           color: Constanst.fgPrimary,
           size: 16.0,
+          weight: FontWeight.bold,
         ),
       ),
-      body:Obx(() {
+      body: Obx(() {
+        return Container(
+          height: MediaQuery.of(context).size.height,
+          child: Container(
+            height: double.maxFinite,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Container(
+                      height: double.maxFinite,
+                      child: SingleChildScrollView(child: item())),
+                ),
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          if (absenController.checkinAjuan.value!=""){
+                            if (absenController.placeCoordinateCheckout.where((p0) => p0['is_selected']==true).isEmpty){
+                              UtilsAlert.showToast("Lokasi absen masuk belum diisi");
+                              return;
+                            }
 
-      
-          return Container(
-            height: MediaQuery.of(context).size.height,
-            child: Container(
-              height: double.maxFinite,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Container(
-                        height: double.maxFinite,
-                        child: SingleChildScrollView(child: item())),
-                  ),
-                  Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        InkWell(
-                          onTap: (){
-                            absenController.nextKirimPengajuan();
+                          }
+                            if (absenController.checkoutAjuan2.value!=""){
+                            if (absenController.placeCoordinateCheckout.where((p0) => p0['is_selected']==true).isEmpty){
+                              UtilsAlert.showToast("Lokasi absen keluar belum diisi");
+                              return;
+                            }
 
-                          },
+                          }
+                          absenController.nextKirimPengajuan();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(16),
                           child: Container(
-                            padding: EdgeInsets.all(16),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: Constanst.onPrimary,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                  child: Padding(
-                                      padding: EdgeInsets.only(top: 8, bottom: 8),
-                                      child: TextLabell(
-                                        text: "Kirim",
-                                        color: Colors.white,
-                                        size: 14,
-                                      ))),
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              color: Constanst.onPrimary,
+                              borderRadius: BorderRadius.circular(8),
                             ),
+                            child: Center(
+                                child: Padding(
+                                    padding: EdgeInsets.only(top: 8, bottom: 8),
+                                    child: TextLabell(
+                                      text: "Kirim",
+                                      color: Colors.white,
+                                      size: 14,
+                                    ))),
                           ),
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-          );
-        }
-      ),
+          ),
+        );
+      }),
     );
   }
 
@@ -125,16 +135,25 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                 DatePicker.showPicker(
                   context,
                   pickerModel: CustomDatePicker(
-                    minTime: DateTime(DateTime.now().year, DateTime.now().month-1, int.parse(AppData.informasiUser![0].beginPayroll.toString())),
-                    maxTime:DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                    minTime: DateTime(
+                        DateTime.now().year,
+                        DateTime.now().month - 1,
+                        int.parse(
+                            AppData.informasiUser![0].beginPayroll.toString())),
+                    maxTime: DateTime(DateTime.now().year, DateTime.now().month,
+                        DateTime.now().day),
                     currentTime: DateTime.now(),
                   ),
                   onConfirm: (time) {
                     if (time != null) {
                       print("$time");
-                        absenController.tglAjunan.value=DateFormat('yyyy-MM-dd').format(time).toString();
+                      absenController.tglAjunan.value =
+                          DateFormat('yyyy-MM-dd').format(time).toString();
                       absenController.checkAbsensi();
-                  
+
+                      absenController.getPlaceCoordinateCheckin();
+                      absenController.getPlaceCoordinateCheckout();
+
                       // var filter = DateFormat('yyyy-MM').format(time);
                       // var array = filter.split('-');
                       // var bulan = array[1];
@@ -295,13 +314,12 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                   if (value == null) {
                     UtilsAlert.showToast('gagal pilih jam');
                   } else {
-                    var convertJam = value.hour <= 9
-                        ? "0${value.hour}"
-                        : "${value.hour}";
+                    var convertJam =
+                        value.hour <= 9 ? "0${value.hour}" : "${value.hour}";
                     var convertMenit = value.minute <= 9
                         ? "0${value.minute}"
                         : "${value.minute}";
-                    absenController.checkinAjuan2.value=
+                    absenController.checkinAjuan2.value =
                         "$convertJam:$convertMenit";
                     // this.controller.dariJam.refresh();
                   }
@@ -330,7 +348,72 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                 flex: 90,
                                 child: TextLabell(
                                   text:
-                                      "${absenController.checkinAjuan2.value== "" ? "_ _ : _ _" : absenController.checkinAjuan2.value}",
+                                      "${absenController.checkinAjuan2.value == "" ? "_ _ : _ _" : absenController.checkinAjuan2.value}",
+                                  color: Constanst.fgPrimary,
+                                  weight: FontWeight.bold,
+                                  size: 14,
+                                )),
+                            Expanded(
+                                flex: 10,
+                                child: Icon(Iconsax.arrow_down_1,
+                                    color: Constanst.fgPrimary)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+
+            Divider(),
+            SizedBox(
+              height: 5,
+            ),
+            InkWell(
+              onTap: () {
+                if (absenController.tglAjunan.value!=""){
+            bottomSheetPengajuanAbsen();
+            return ;
+                }
+                UtilsAlert.showToast("Pilih terlebih dahulu tanggal absensi");
+                
+              },
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 10, child: Icon(Iconsax.login_1)),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Expanded(
+                    flex: 90,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextLabell(
+                          text: "Lokasi Absen masuk *",
+                          color: Constanst.fgPrimary,
+                          size: 14,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                flex: 90,
+                                child: TextLabell(
+                                  text: absenController.placeCoordinateCheckin
+                                          .where(
+                                              (p0) => p0['is_selected'] == true)
+                                          .toList()
+                                          .isNotEmpty
+                                      ? absenController.placeCoordinateCheckin
+                                          .where(
+                                              (p0) => p0['is_selected'] == true)
+                                          .toList()[0]['place']
+                                      : "-",
                                   color: Constanst.fgPrimary,
                                   weight: FontWeight.bold,
                                   size: 14,
@@ -366,13 +449,12 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                   if (value == null) {
                     UtilsAlert.showToast('gagal pilih jam');
                   } else {
-                          var convertJam = value.hour <= 9
-                        ? "0${value.hour}"
-                        : "${value.hour}";
+                    var convertJam =
+                        value.hour <= 9 ? "0${value.hour}" : "${value.hour}";
                     var convertMenit = value.minute <= 9
                         ? "0${value.minute}"
                         : "${value.minute}";
-                    absenController.checkoutAjuan2.value=
+                    absenController.checkoutAjuan2.value =
                         "$convertJam:$convertMenit";
 
                     // var convertJam = value.hour <= 9
@@ -437,6 +519,72 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
             ),
 
             InkWell(
+              onTap: () {
+                 if (absenController.tglAjunan.value!=""){
+        bottomSheetLokasiCheckout();
+            return ;
+                }
+                UtilsAlert.showToast("Pilih terlebih dahulu tanggal absensi");
+             
+              },
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 10, child: Icon(Iconsax.logout_1)),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Expanded(
+                    flex: 90,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextLabell(
+                          text: "Lokasi Absen Keluar *",
+                          color: Constanst.fgPrimary,
+                          size: 14,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                flex: 90,
+                                child: TextLabell(
+                                  text: absenController.placeCoordinateCheckout
+                                          .where(
+                                              (p0) => p0['is_selected'] == true)
+                                          .toList()
+                                          .isNotEmpty
+                                      ? absenController.placeCoordinateCheckout
+                                          .where(
+                                              (p0) => p0['is_selected'] == true)
+                                          .toList()[0]['place']
+                                      : "-",
+                                  color: Constanst.fgPrimary,
+                                  weight: FontWeight.bold,
+                                  size: 14,
+                                )),
+                            Expanded(
+                                flex: 10,
+                                child: Icon(Iconsax.arrow_down_1,
+                                    color: Constanst.fgPrimary)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+
+            Divider(),
+            SizedBox(
+              height: 5,
+            ),
+
+            InkWell(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -465,21 +613,24 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                           ),
                           InkWell(
                             onTap: () {
-                               absenController.takeFile();
+                              absenController.takeFile();
                             },
-                            child: Obx(() => absenController.imageAjuan.value ==
-                                    ""
-                                ? Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(6),
-                                        border: Border.all(
-                                            width: 1,
-                                            color: Constanst.fgBorder)),
-                                    padding: EdgeInsets.all(1),
-                                    child: Icon(Iconsax.add),
-                                  )
-                                : TextLabell(
-                                    text: absenController.imageAjuan.value,color: Constanst.onPrimary,)),
+                            child:
+                                Obx(() => absenController.imageAjuan.value == ""
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Constanst.fgBorder)),
+                                        padding: EdgeInsets.all(1),
+                                        child: Icon(Iconsax.add),
+                                      )
+                                    : TextLabell(
+                                        text: absenController.imageAjuan.value,
+                                        color: Constanst.onPrimary,
+                                      )),
                           )
                         ],
                       ))
@@ -536,11 +687,457 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;
       final imageTemp = File(image.path);
-      absenController.imageAjuan.value=imageTemp.toString();
-    
+      absenController.imageAjuan.value = imageTemp.toString();
+
 // setState(() => this.image = imageTemp);
     } on PlatformException catch (e) {
       // print('Failed to pick image: $e');
     }
+  }
+
+  void bottomSheetPengajuanAbsen() {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10.0),
+        ),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 30,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 90,
+                    child: Text(
+                      "Lokasi Absen Checkin",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 10,
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.pop(Get.context!);
+                        },
+                        child: Icon(Iconsax.close_circle)),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Divider(
+                height: 5,
+                color: Constanst.colorText2,
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Expanded(
+                child: Container(
+                  height: double.maxFinite,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Obx(() => ListView.builder(
+                          itemCount:
+                              absenController.placeCoordinateCheckin.length,
+                          physics: BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (context, index) {
+                            var data =
+                                absenController.placeCoordinateCheckin[index];
+
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 12),
+                              child: InkWell(
+                                onTap: () {
+                                  absenController.placeCoordinateCheckin
+                                      .forEach((element) {
+                                    element['is_selected'] = false;
+                                  });
+
+                                  data['is_selected'] = true;
+                                  absenController.placeCoordinateCheckin
+                                      .refresh();
+                                  Get.back();
+                                },
+                                child: Container(
+                                  child: data['is_selected'] == false
+                                      ? InkWell(
+                                          onTap: () {
+                                            absenController
+                                                .placeCoordinateCheckin
+                                                .forEach((element) {
+                                              element['is_selected'] = false;
+                                            });
+
+                                            data['is_selected'] = true;
+                                            absenController
+                                                .placeCoordinateCheckin
+                                                .refresh();
+                                            Get.back();
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color:
+                                                        Constanst.secondary)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 10, bottom: 10),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                    flex: 80,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8.0),
+                                                      child: Text(
+                                                        absenController
+                                                            .placeCoordinateCheckin[
+                                                                index]['place']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: Constanst
+                                                                .colorText3),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            absenController
+                                                .placeCoordinateCheckin
+                                                .forEach((element) {
+                                              element['is_selected'] = false;
+                                            });
+
+                                            data['is_selected'] = true;
+                                            absenController
+                                                .placeCoordinateCheckin
+                                                .refresh();
+                                            Get.back();
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Constanst
+                                                        .colorPrimary)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 10, bottom: 10),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                    flex: 80,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8.0),
+                                                      child: Text(
+                                                        absenController
+                                                            .placeCoordinateCheckin[
+                                                                index]['place']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Constanst
+                                                              .onPrimary,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 10,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 5),
+                                                      child: Icon(
+                                                        Iconsax.tick_circle4,
+                                                        size: 18,
+                                                        color:
+                                                            Constanst.onPrimary,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                ),
+                              ),
+                            );
+                          })),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void bottomSheetLokasiCheckout() {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10.0),
+        ),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 30,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 90,
+                    child: Text(
+                      "Lokasi Absen Checkout",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 10,
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.pop(Get.context!);
+                        },
+                        child: Icon(Iconsax.close_circle)),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Divider(
+                height: 5,
+                color: Constanst.colorText2,
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Expanded(
+                child: Container(
+                  height: double.maxFinite,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Obx(() => ListView.builder(
+                          itemCount:
+                              absenController.placeCoordinateCheckout.length,
+                          physics: BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (context, index) {
+                            var data =
+                                absenController.placeCoordinateCheckout[index];
+
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 12),
+                              child: InkWell(
+                                onTap: () {
+                                  absenController.placeCoordinateCheckout
+                                      .forEach((element) {
+                                    element['is_selected'] = false;
+                                  });
+
+                                  data['is_selected'] = true;
+                                  absenController.placeCoordinateCheckout
+                                      .refresh();
+                                  Get.back();
+                                },
+                                child: Container(
+                                  child: data['is_selected'] == false
+                                      ? InkWell(
+                                          onTap: () {
+                                            absenController
+                                                .placeCoordinateCheckout
+                                                .forEach((element) {
+                                              element['is_selected'] = false;
+                                            });
+
+                                            data['is_selected'] = true;
+                                            absenController
+                                                .placeCoordinateCheckout
+                                                .refresh();
+                                            Get.back();
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color:
+                                                        Constanst.secondary)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 10, bottom: 10),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                    flex: 80,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8.0),
+                                                      child: Text(
+                                                        absenController
+                                                            .placeCoordinateCheckout[
+                                                                index]['place']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: Constanst
+                                                                .colorText3),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            absenController
+                                                .placeCoordinateCheckout
+                                                .forEach((element) {
+                                              element['is_selected'] = false;
+                                            });
+
+                                            data['is_selected'] = true;
+                                            absenController
+                                                .placeCoordinateCheckout
+                                                .refresh();
+                                            Get.back();
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Constanst
+                                                        .colorPrimary)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 10, bottom: 10),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                    flex: 80,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8.0),
+                                                      child: Text(
+                                                        absenController
+                                                            .placeCoordinateCheckout[
+                                                                index]['place']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Constanst
+                                                              .onPrimary,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 10,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 5),
+                                                      child: Icon(
+                                                        Iconsax.tick_circle4,
+                                                        size: 18,
+                                                        color:
+                                                            Constanst.onPrimary,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                ),
+                              ),
+                            );
+                          })),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 }
