@@ -32,6 +32,7 @@ class ApprovalController extends GetxController {
   var listData = [].obs;
   var listDataAll = [].obs;
   var detailData = [].obs;
+  var showButton=false.obs;
 
   var jumlahCuti = 0.obs;
   var typeIdEdit = 0.obs;
@@ -72,9 +73,8 @@ class ApprovalController extends GetxController {
               loadDataKlaim();
             } else if (title == "Payroll") {
               loadApprovePayroll();
-            }else if (title=="Absensi"){
+            } else if (title == "Absensi") {
               loadAbsensi();
-
             }
           }
         }
@@ -128,6 +128,8 @@ class ApprovalController extends GetxController {
             'catatan': element['reason'],
             'type': 'Cuti',
             'category': element['category'],
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
             'lainnya': "",
             'file': element['leave_files']
           };
@@ -186,7 +188,9 @@ class ApprovalController extends GetxController {
             'type': 'Lembur',
             'category': "",
             'lainnya': "",
-            'file': ""
+            'file': "",
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
           };
           listData.value.sort(
               (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
@@ -244,7 +248,9 @@ class ApprovalController extends GetxController {
             'file': "",
             'nama_divisi': element['nama_divisi'],
             'full_name': element['full_name'],
-            'em_email': element['em_email']
+            'em_email': element['em_email'],
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
           };
           listData.value.sort(
               (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
@@ -257,10 +263,8 @@ class ApprovalController extends GetxController {
     });
   }
 
-
-    void loadAbsensi() {
-
-      print("data absensi");
+  void loadAbsensi() {
+    print("data absensi");
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
         : "spesifik_approval_multi";
@@ -289,7 +293,8 @@ class ApprovalController extends GetxController {
           var fullName = element['full_name'] ?? "";
           var convertNama = "$fullName";
           var tanggalDari = Constanst.convertDate1("${element['atten_date']}");
-          var tanggalSampai = Constanst.convertDate1("${element['atten_date']}");
+          var tanggalSampai =
+              Constanst.convertDate1("${element['atten_date']}");
           var filterStatus = element['leave_status'] == "Approve"
               ? "Approve 1"
               : element['leave_status'];
@@ -297,9 +302,9 @@ class ApprovalController extends GetxController {
             'id': element['id'],
             'nama_pengaju': convertNama,
             'emId_pengaju': element['em_id'],
-              'em_id': element['em_id'],
+            'em_id': element['em_id'],
             'title_ajuan': 'Pengajuan Absensi',
-            'waktu_dari': "${tanggalDari} ${element['dari_jam']??"_ _:_ _"}",
+            'waktu_dari': "${tanggalDari} ${element['dari_jam'] ?? "_ _:_ _"}",
             'waktu_sampai': "${tanggalDari} ${element['sampai_jam']}",
             'durasi': element['leave_duration'],
             'leave_status': filterStatus,
@@ -310,12 +315,13 @@ class ApprovalController extends GetxController {
             'type': 'absensi',
             'category': element['category'],
             'lainnya': "",
-            'file': element['req_file']??"",
+            'file': element['req_file'] ?? "",
             'dari_jam': element['dari_jam'],
             'sampai_jam': element['sampai_jam'],
-             'deskripsi': element['uraian'],
-             'nomor_ajuan':element['nomor_ajuan'],
-              
+            'deskripsi': element['uraian'],
+            'nomor_ajuan': element['nomor_ajuan'],
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -325,7 +331,7 @@ class ApprovalController extends GetxController {
         this.listData.refresh();
         this.listNotModif.refresh();
       }
-    });   
+    });
   }
 
   void loadDataTidakHadir() {
@@ -377,7 +383,9 @@ class ApprovalController extends GetxController {
             'jamAjuan': element['time_plan'],
             'sampaiJamAjaun': element['time_plan_to'],
             'lainnya': "",
-            'file': element['leave_files']
+            'file': element['leave_files'],
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -414,6 +422,7 @@ class ApprovalController extends GetxController {
         }
         ;
         listNotModif.value = valueBody['data'];
+        print("data tugas ${valueBody['data']}");
         for (var element in valueBody['data']) {
           var fullName = element['full_name'] ?? "";
           var convertNama = "$fullName";
@@ -434,7 +443,9 @@ class ApprovalController extends GetxController {
             'type': 'Tugas Luar',
             'category': "",
             'lainnya': "",
-            'file': ''
+            'file': '',
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -496,7 +507,9 @@ class ApprovalController extends GetxController {
             'type': "Dinas Luar",
             'category': "",
             'lainnya': "",
-            'file': element['leave_files']
+            'file': element['leave_files'],
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -557,7 +570,9 @@ class ApprovalController extends GetxController {
             'type': "Klaim",
             'category': "",
             'lainnya': element,
-            'file': element['nama_file']
+            'file': element['nama_file'],
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -806,18 +821,23 @@ class ApprovalController extends GetxController {
             style: styleChose,
             buttonStatus: 1,
             positiveBtnPressed: () {
-             print(detailData[0]);
-                  if (detailData[0]['type']=='absensi'){
-                    print("masuk sini ${detailData[0]['type']}");
-                approvalAbsensi(pilihan: pilihan, date: detailData[0]['waktu_pengajuan'].toString(), status: styleChose.toString(), checkin: detailData[0]['dari_jam'].toString(), checkout: detailData[0]['sampai_jam'].toString(), image: detailData[0]['file'].toString(), note: detailData[0]['deskripsi'].toString(), ajuanEmid: detailData[0]['em_id'].toString(), id: detailData[0]['id'].toString());
-                
-              
-              }else{
-                  UtilsAlert.loadingSimpanData(
-                  Get.context!, "Proses $stringPilihan pengajuan");
-              aksiMenyetujui(pilihan);
-
-              
+              print(detailData[0]);
+              if (detailData[0]['type'] == 'absensi') {
+                print("masuk sini ${detailData[0]['type']}");
+                approvalAbsensi(
+                    pilihan: pilihan,
+                    date: detailData[0]['waktu_pengajuan'].toString(),
+                    status: styleChose.toString(),
+                    checkin: detailData[0]['dari_jam'].toString(),
+                    checkout: detailData[0]['sampai_jam'].toString(),
+                    image: detailData[0]['file'].toString(),
+                    note: detailData[0]['deskripsi'].toString(),
+                    ajuanEmid: detailData[0]['em_id'].toString(),
+                    id: detailData[0]['id'].toString());
+              } else {
+                UtilsAlert.loadingSimpanData(
+                    Get.context!, "Proses $stringPilihan pengajuan");
+                aksiMenyetujui(pilihan);
               }
             },
           ),
@@ -830,7 +850,7 @@ class ApprovalController extends GetxController {
     );
   }
 
-    void validasiMenyetujui1(pilihan) {
+  void validasiMenyetujui1(pilihan) {
     int styleChose = pilihan == false ? 1 : 2;
     var stringPilihan = pilihan == false ? 'Tolak' : 'Menyetujui';
     showGeneralDialog(
@@ -852,10 +872,7 @@ class ApprovalController extends GetxController {
             negativeBtnText: "Kembali",
             style: styleChose,
             buttonStatus: 1,
-            positiveBtnPressed: () {
-          
-            
-            },
+            positiveBtnPressed: () {},
           ),
         );
       },
@@ -1112,7 +1129,7 @@ class ApprovalController extends GetxController {
     });
   }
 
- Future<bool>? arppovalpayroll({id}) {
+  Future<bool>? arppovalpayroll({id}) {
     UtilsAlert.showLoadingIndicator(Get.context!);
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
@@ -1128,18 +1145,14 @@ class ApprovalController extends GetxController {
           Get.back();
           Get.back();
           Get.back();
-             UtilsAlert.showToast('Berhasil menyetujui pengajuan employee');
+          UtilsAlert.showToast('Berhasil menyetujui pengajuan employee');
           return true;
-       
         } else {
-          
           UtilsAlert.showToast('gagal approved');
           Get.back();
           return false;
-       
         }
       } else {
-        
         UtilsAlert.showToast('gagal approved');
         Get.back();
         return false;
@@ -1147,62 +1160,70 @@ class ApprovalController extends GetxController {
     });
   }
 
- Future<bool>? approvalAbsensi({required  date,required status,required checkin,required checkout,required image,required note,required ajuanEmid,required id,pilihan}) {
+  Future<bool>? approvalAbsensi(
+      {required date,
+      required status,
+      required checkin,
+      required checkout,
+      required image,
+      required note,
+      required ajuanEmid,
+      required id,
+      pilihan}) {
     UtilsAlert.showLoadingIndicator(Get.context!);
     var emId = AppData.informasiUser![0].em_id;
-        var name = AppData.informasiUser![0].full_name;
+    var name = AppData.informasiUser![0].full_name;
     Map<String, dynamic> body = {
       'id': id.toString(),
       'em_id': ajuanEmid.toString(),
       'date': DateFormat('yyyy-MM-dd').format(DateTime.parse(date)).toString(),
-      'bulan':DateFormat('MM').format(DateTime.parse(date)).toString(),
-            'tahun':DateFormat('yyyy').format(DateTime.parse(date)).toString(),
+      'bulan': DateFormat('MM').format(DateTime.parse(date)).toString(),
+      'tahun': DateFormat('yyyy').format(DateTime.parse(date)).toString(),
       'status': pilihan == true ? 'Approve' : 'Rejected',
-      'signin_time':checkin.toString(),
-      'signout_time':checkout.toString(),
-      'approved_id':emId.toString(),
-      'approved_by':name.toString(),
-      'approved_date': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
-      "image":image.toString(),
-      "note":note.toString(),
-      "place_in":"tes",
-      "place_out":"tes",
-      "ajuan_em_id":ajuanEmid.toString(),
-      'alasan_reject':alasanReject.value.text
+      'signin_time': checkin.toString(),
+      'signout_time': checkout.toString(),
+      'approved_id': emId.toString(),
+      'approved_by': name.toString(),
+      'approved_date':
+          DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+      "image": image.toString(),
+      "note": note.toString(),
+      "place_in": "tes",
+      "place_out": "tes",
+      "ajuan_em_id": ajuanEmid.toString(),
+      'alasan_reject': alasanReject.value.text
     };
     print("body ${body}");
-    var connect = Api.connectionApi("post", body, "approval-employee-attendance");
+    var connect =
+        Api.connectionApi("post", body, "approval-employee-attendance");
     connect.then((dynamic res) {
- var valueBody = jsonDecode(res.body);
+      var valueBody = jsonDecode(res.body);
 
- print("gagal ${valueBody}");
+      print("gagal ${valueBody}");
 
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         if (valueBody['status'] == true) {
-            loadAbsensi();
+          loadAbsensi();
           Get.back();
           Get.back();
           Get.back();
-       
-             UtilsAlert.showToast('Berhasil menyetujui pengajuan employee');
+
+          UtilsAlert.showToast('Berhasil menyetujui pengajuan employee');
           return true;
-       
         } else {
-          
           UtilsAlert.showToast('gagal approved');
           Get.back();
           return false;
-       
         }
       } else {
-        
         UtilsAlert.showToast('gagal approved');
         Get.back();
         return false;
       }
     });
   }
+
   void cariEmployee(dataEditFinal) {
     print("cari employee");
     Map<String, dynamic> body = {

@@ -105,7 +105,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
                         SizedBox(
                           height: 20,
                         ),
-                        widget.dataForm![1] == true ? SizedBox() : formTipe(),
+                        // widget.dataForm![1] == true ? SizedBox() : formTipe(),
                         widget.dataForm![1] == true
                             ? SizedBox()
                             : SizedBox(

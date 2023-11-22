@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/controller/tidak_masuk_kerja_controller.dart';
 import 'package:siscom_operasional/screen/absen/tidak_masuk_kerja.dart';
@@ -26,8 +27,12 @@ class FormTidakMasukKerja extends StatefulWidget {
 class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
   var controller = Get.put(TidakMasukKerjaController());
 
+  var izinTerpakai = 0.obs;
+  var jumlahCuti = 0.obs;
+
   @override
   void initState() {
+    controller.percentIzin.value = 0.0;
     if (widget.dataForm![1] == true) {
       var convertDariTanggal = widget.dataForm![0]['start_date'];
       var convertSampaiTanggal = widget.dataForm![0]['end_date'];
@@ -61,6 +66,26 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
       setState(() {
         controller.tanggalSelectedEdit.value = getDummy;
       });
+    } else {
+      var data = controller.allTipe.value
+          .where((element) => controller.allTipeFormTidakMasukKerja.value
+              .toString()
+              .toLowerCase()
+              .contains(element['name'].toString().toLowerCase()))
+          .toList();
+      if (data[0]['leave_day'] > 0) {
+        controller.loadDataAjuanIzinCategori(id: data[0]['id']);
+        controller.showDurationIzin.value = true;
+        controller.jumlahIzin.value = data[0]['leave_day'];
+        controller.percentIzin.value = double.parse(
+            ((controller.jumlahIzin.value / controller.izinTerpakai.value) *
+                    100)
+                .toString());
+
+        print(controller.jumlahIzin.value);
+      } else {
+        controller.showDurationIzin.value = false;
+      }
     }
     super.initState();
   }
@@ -107,7 +132,12 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
                             SizedBox(
                               height: 20,
                             ),
-                             formTipe(),
+                            Obx(() => controller.showDurationIzin.value == true
+                                ? Padding(
+                                    padding: EdgeInsets.only(bottom: 12),
+                                    child: informasiSisaCuti())
+                                : SizedBox()),
+                            formTipe(),
                             SizedBox(
                               height: 20,
                             ),
@@ -125,7 +155,7 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
                                     height: 20,
                                   ),
                             formDelegasiKepada(),
-                         
+
                             SizedBox(
                               height: 20,
                             ),
@@ -148,7 +178,13 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
           child: TextButtonWidget(
             title: "Simpan",
             onTap: () {
-              controller.validasiKirimPengajuan(widget.dataForm![1]);
+              print(controller.percentIzin.value);
+              if (controller.percentIzin.value >= 1) {
+                UtilsAlert.showToast(
+                    "Pemakaian izin telah melewati batas maksimal");
+              } else {
+                controller.validasiKirimPengajuan(widget.dataForm![1]);
+              }
             },
             colorButton: Constanst.colorPrimary,
             colortext: Constanst.colorWhite,
@@ -162,7 +198,7 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
-          onTap: (){
+          onTap: () {
             print(controller.allTipeFormTidakMasukKerja.value);
           },
           child: Text(
@@ -199,7 +235,36 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
                 }).toList(),
                 value: controller.selectedDropdownFormTidakMasukKerjaTipe.value,
                 onChanged: (selectedValue) {
+                  controller.percentIzin.value = 0;
                   controller.gantiTypeAjuan(selectedValue);
+                  var data = controller.allTipe.value
+                      .where((element) => selectedValue
+                          .toString()
+                          .toLowerCase()
+                          .contains(element['name'].toString().toLowerCase()))
+                      .toList();
+                  if (data[0]['leave_day'] > 0) {
+                    print("data ${data[0]['id']}");
+                    print("data ${data[0]['leave_day'].toString()}");
+                    controller
+                        .loadDataAjuanIzinCategori(id: data[0]['type_id'])
+                        .then((value) {
+                      if (value == true) {
+                        controller.showDurationIzin.value = true;
+                        controller.jumlahIzin.value = data[0]['leave_day'];
+                        controller.percentIzin.value = double.parse(((int.parse(
+                                    controller.izinTerpakai.value.toString()) /
+                                int.parse(
+                                    controller.jumlahIzin.value.toString())))
+                            .toString());
+                        print("persen ${controller.jumlahIzin.value}");
+                        print("persen ${controller.izinTerpakai.value}");
+                        print("persen ${controller.percentIzin.value}");
+                      }
+                    });
+                  } else {
+                    controller.showDurationIzin.value = false;
+                  }
                 },
                 isExpanded: true,
               ),
@@ -449,7 +514,7 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-   "Tugas Didelegasikan Kepada",
+          "Tugas Didelegasikan Kepada",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         SizedBox(
@@ -584,6 +649,61 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget informasiSisaCuti() {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: Constanst.styleBoxDecoration1.borderRadius),
+      child: Padding(
+        padding: EdgeInsets.only(left: 16, right: 16),
+        child: Obx(
+          () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                      child: Text(
+                    "Izin Pribadi",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  Expanded(
+                      child: Text(
+                    "${controller.izinTerpakai.value}/${controller.jumlahIzin.value}",
+                    textAlign: TextAlign.right,
+                  )),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                width: MediaQuery.of(Get.context!).size.width,
+                child: Center(
+                  child: LinearPercentIndicator(
+                    barRadius: Radius.circular(15.0),
+                    lineHeight: 8.0,
+                    percent: controller.percentIzin.value,
+                    progressColor: Constanst.colorPrimary,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              // Text("Cuti Khusus"),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

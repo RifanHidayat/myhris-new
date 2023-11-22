@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/utils/api.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
@@ -29,6 +31,53 @@ class _DetailApprovalState extends State<DetailApproval> {
     controller.getDetailData(
         widget.idxDetail, widget.emId, widget.title, widget.delegasi);
     super.initState();
+    var emId = AppData.informasiUser![0].em_id;
+
+    if (controllerGlobal.valuePolaPersetujuan.value.toString() == "1") {
+      if (controller.detailData[0]['nama_approve1'] == "" ||
+          controller.detailData[0]['nama_approve1'] == "null" ||
+          controller.detailData[0]['nama_approve1'] == null) {
+        if (emId
+            .toString()
+            .contains(controller.detailData[0]['em_report_to'])) {
+          controller.showButton.value = true;
+        } else {
+          controller.showButton.value = false;
+        }
+      } else {}
+    } else {
+      if (controller.detailData[0]['nama_approve1'] == "" ||
+          controller.detailData[0]['nama_approve1'] == "null" ||
+          controller.detailData[0]['nama_approve1'] == null) {
+        if (emId
+            .toString()
+            .contains(controller.detailData[0]['em_report_to'])) {
+          controller.showButton.value = true;
+        } else {
+          controller.showButton.value = false;
+        }
+      } else {
+        if (controller.detailData[0]['em_report2_to'] == "" ||
+            controller.detailData[0]['em_report2_to'] == "null" ||
+            controller.detailData[0]['em_report2_to'] == null) {
+          if (emId
+              .toString()
+              .contains(controller.detailData[0]['em_report_to'])) {
+            controller.showButton.value = true;
+          } else {
+            controller.showButton.value = false;
+          }
+        } else {
+          if (emId
+              .toString()
+              .contains(controller.detailData[0]['em_report2_to'])) {
+            controller.showButton.value = true;
+          } else {
+            controller.showButton.value = false;
+          }
+        }
+      }
+    }
   }
 
   @override
@@ -174,23 +223,29 @@ class _DetailApprovalState extends State<DetailApproval> {
                             SizedBox(
                               height: 10,
                             ),
-                         controller.detailData[0]['type'].toString().toLowerCase()=='absensi'.toLowerCase()?SizedBox():    controller.detailData[0]['type'] == "Lembur"
-                                ? Text(
-                                    "Pemberi Tugas",
-                                    style:
-                                        TextStyle(color: Constanst.colorText2),
-                                  )
-                                : controller.detailData[0]['type'] == "Klaim"
+                            controller.detailData[0]['type']
+                                        .toString()
+                                        .toLowerCase() ==
+                                    'absensi'.toLowerCase()
+                                ? SizedBox()
+                                : controller.detailData[0]['type'] == "Lembur"
                                     ? Text(
-                                        "Total Klaim",
+                                        "Pemberi Tugas",
                                         style: TextStyle(
                                             color: Constanst.colorText2),
                                       )
-                                    : Text(
-                                        "Delegasi Kepada",
-                                        style: TextStyle(
-                                            color: Constanst.colorText2),
-                                      ),
+                                    : controller.detailData[0]['type'] ==
+                                            "Klaim"
+                                        ? Text(
+                                            "Total Klaim",
+                                            style: TextStyle(
+                                                color: Constanst.colorText2),
+                                          )
+                                        : Text(
+                                            "Delegasi Kepada",
+                                            style: TextStyle(
+                                                color: Constanst.colorText2),
+                                          ),
                             SizedBox(
                               height: 5,
                             ),
@@ -215,17 +270,22 @@ class _DetailApprovalState extends State<DetailApproval> {
                             SizedBox(
                               height: 5,
                             ),
-                           controller.detailData[0]['type']=="absensi"? Text(
-                              "${controller.detailData[0]['deskripsi']}",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ):Text(
-                              "${controller.detailData[0]['catatan']}",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                            controller.detailData[0]['type'] == "absensi"
+                                ? Text(
+                                    "${controller.detailData[0]['deskripsi']}",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  )
+                                : Text(
+                                    "${controller.detailData[0]['catatan']}",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                             SizedBox(
                               height: 5,
                             ),
-                            controller.detailData[0]['durasi'] == "" || controller.detailData[0]['durasi'] ==null
+                            controller.detailData[0]['durasi'] == "" ||
+                                    controller.detailData[0]['durasi'] == null
                                 ? SizedBox()
                                 : durasiWidget(),
                             SizedBox(
@@ -246,7 +306,8 @@ class _DetailApprovalState extends State<DetailApproval> {
                               "${controller.detailData[0]['type']} $namaTipe",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            controller.detailData[0]['file'] == "" || controller.detailData[0]['file'] ==null
+                            controller.detailData[0]['file'] == "" ||
+                                    controller.detailData[0]['file'] == null
                                 ? SizedBox()
                                 : fileWidget(),
                             SizedBox(
@@ -262,54 +323,69 @@ class _DetailApprovalState extends State<DetailApproval> {
                                         null
                                 ? SizedBox()
                                 : infoApprove1(),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                    child: InkWell(
-                                  onTap: () {
-                                   // print("tes");
-                                    controller.showBottomAlasanReject();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 5, right: 5),
-                                    decoration: BoxDecoration(
-                                        color: Constanst.color4,
-                                        borderRadius: Constanst.borderStyle2),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          "Tolak",
-                                          style: TextStyle(color: Colors.white),
+                            Obx(() => controller.showButton.value == true
+                                ? Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                          child: InkWell(
+                                        onTap: () {
+                                          print(
+                                              AppData.informasiUser![0].em_id);
+                                          print(controller.detailData[0]
+                                              ['em_report_to']);
+                                              print(controller.detailData[0]
+                                              ['em_report2_to']);
+                                          // print("tes");
+                                          controller.showBottomAlasanReject();
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              left: 5, right: 5),
+                                          decoration: BoxDecoration(
+                                              color: Constanst.color4,
+                                              borderRadius:
+                                                  Constanst.borderStyle2),
+                                          child: Center(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                "Tolak",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                                Expanded(
-                                    child: InkWell(
-                                  onTap: () {
-                                    
-                                    controller.validasiMenyetujui(true);
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 5, right: 5),
-                                    decoration: BoxDecoration(
-                                        color: Constanst.colorPrimary,
-                                        borderRadius: Constanst.borderStyle2),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Menyetujui",
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                      ),
-                                    ),
-                                  ),
-                                ))
-                              ],
-                            ),
+                                      )),
+                                      Expanded(
+                                          child: InkWell(
+                                        onTap: () {
+                                         controller.validasiMenyetujui(true);
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              left: 5, right: 5),
+                                          decoration: BoxDecoration(
+                                              color: Constanst.colorPrimary,
+                                              borderRadius:
+                                                  Constanst.borderStyle2),
+                                          child: Center(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text("Menyetujui",
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                            ),
+                                          ),
+                                        ),
+                                      ))
+                                    ],
+                                  )
+                                : SizedBox()),
                             SizedBox(
                               height: 20,
                             ),
@@ -366,10 +442,10 @@ class _DetailApprovalState extends State<DetailApproval> {
                         "Pengajuan Klaim") {
                       controller.viewFile(
                           "klaim", controller.detailData[0]['file']);
-                    }else if (controller.detailData[0]['title_ajuan'] =="Pengajuan Absensi"){
+                    } else if (controller.detailData[0]['title_ajuan'] ==
+                        "Pengajuan Absensi") {
                       viewLampiranAjuan(controller.detailData[0]['file']);
                     }
-                    
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -543,7 +619,7 @@ class _DetailApprovalState extends State<DetailApproval> {
     );
   }
 
-     void viewLampiranAjuan(value) async {
+  void viewLampiranAjuan(value) async {
     var urlViewGambar = Api.UrlfotoAbsen + value;
 
     final url = Uri.parse(urlViewGambar);
