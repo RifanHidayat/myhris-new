@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/utils/constans.dart';
-
 
 class TextApp {
   static Widget label(
@@ -13,14 +13,15 @@ class TextApp {
       decoration,
       align,
       letterSpacing,
-      height,onTap}) {
+      height,
+      onTap}) {
     return InkWell(
       onTap: onTap,
       child: Text(
         text,
         textAlign: align ?? TextAlign.left,
-        style: TextStyle(
-          color: color??Constanst.colorBlack,
+        style: GoogleFonts.inter(
+          color: color ?? Constanst.colorBlack,
           decoration: decoration ?? TextDecoration.none,
           fontSize: size ?? 12,
           fontWeight: weigh ?? FontWeight.w500,
@@ -31,18 +32,16 @@ class TextApp {
     );
   }
 
-  static Widget TextGroupColumn({title,
-      subtitle,
-      subtitleBold,
-      isDropdown,
-      onTapClear,
-      titleBold}){
-        return Column(
+  static Widget TextGroupColumn(
+      {title, subtitle, subtitleBold, isDropdown, onTapClear, titleBold}) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextApp.label(  text: title,
+        TextApp.label(
+          text: title,
           weigh: titleBold == true ? FontWeight.bold : FontWeight.w400,
-          size: 14.0,),
+          size: 14.0,
+        ),
         SizedBox(
           height: 5,
         ),
@@ -52,10 +51,12 @@ class TextApp {
             children: [
               Expanded(
                 flex: 90,
-                child: TextApp.label(   text: subtitle,
+                child: TextApp.label(
+                  text: subtitle,
                   weigh:
                       subtitleBold == true ? FontWeight.bold : FontWeight.w400,
-                  size: 13.0,),
+                  size: 13.0,
+                ),
               ),
               isDropdown == true
                   ? Expanded(
@@ -70,7 +71,7 @@ class TextApp {
                                       onTap: onTapClear,
                                       child: Icon(
                                         Iconsax.close_circle,
-                                        color:Constanst.colorPrimary,
+                                        color: Constanst.colorPrimary,
                                         size: 20,
                                       ),
                                     )

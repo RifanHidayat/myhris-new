@@ -1,7 +1,8 @@
+import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:google_fonts/google_fonts.dart';
+// import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:siscom_operasional/controller/tab_controller.dart';
 import 'package:siscom_operasional/screen/aktifitas/aktifitas.dart';
 import 'package:siscom_operasional/screen/akun/setting.dart';
@@ -9,6 +10,7 @@ import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/kontrol/kontrol_list.dart';
 import 'package:siscom_operasional/screen/pesan/pesan.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class InitScreen extends StatefulWidget {
   @override
@@ -18,98 +20,321 @@ class InitScreen extends StatefulWidget {
 class _InitScreenState extends State<InitScreen> {
   final controller = Get.put(TabbController());
 
-  List<Widget> _buildScreens() {
+  // int _currentIndex = 0;
+
+  late final List<Widget> _buildScreens = [
+    const Dashboard(),
+    KontrolList(),
+    Aktifitas(),
+    const Pesan(
+      status: false,
+    ),
+    const Setting(),
+  ];
+
+  late final List<Widget> _buildScreens1 = [
+    const Dashboard(),
+    Aktifitas(),
+    const Pesan(
+      status: false,
+    ),
+    const Setting(),
+  ];
+
+  List<CustomNavigationBarItem> _navBarsItems() {
     return [
-      Dashboard(),
-      KontrolList(),
-      Aktifitas(),
-      Pesan(
-        status: false,
+      CustomNavigationBarItem(
+        selectedIcon: SvgPicture.asset(
+          'assets/home_fill.svg',
+          height: 23,
+          width: 23,
+          // color: Constanst.onPrimary,
+        ),
+        icon: SvgPicture.asset(
+          'assets/home.svg',
+          // color: Constanst.colorNeutralFgTertiary,
+          height: 23,
+          width: 23,
+        ),
+        selectedTitle: Text(
+          "Home",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.onPrimary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        title: Text(
+          "Home",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.colorNeutralFgTertiary,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
       ),
-      Setting(),
+      CustomNavigationBarItem(
+        selectedIcon: SvgPicture.asset(
+          'assets/tracking_fill.svg',
+          // color: Constanst.onPrimary,
+          height: 23,
+          width: 23,
+        ),
+        icon: SvgPicture.asset(
+          'assets/tracking.svg',
+          // color: Constanst.colorNeutralFgTertiary,
+          height: 23,
+          width: 23,
+        ),
+        selectedTitle: Text(
+          "Tracking",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.onPrimary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        title: Text(
+          "Tracking",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.colorNeutralFgTertiary,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ),
+      CustomNavigationBarItem(
+        selectedIcon: SvgPicture.asset(
+          'assets/aktivitas_fill.svg',
+          // color: Constanst.onPrimary,
+          height: 23,
+          width: 23,
+        ),
+        icon: SvgPicture.asset(
+          'assets/aktivitas.svg',
+          // color: Constanst.colorNeutralFgTertiary,
+          height: 23,
+          width: 23,
+        ),
+        selectedTitle: Text(
+          "Aktivitas",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.onPrimary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        title: Text(
+          "Aktivitas",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.colorNeutralFgTertiary,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ),
+      CustomNavigationBarItem(
+        selectedIcon: SvgPicture.asset(
+          'assets/inbox_fill.svg',
+          // color: Constanst.onPrimary,
+          height: 23,
+          width: 23,
+        ),
+        icon: SvgPicture.asset(
+          'assets/inbox.svg',
+          // color: Constanst.colorNeutralFgTertiary,
+          height: 23,
+          width: 23,
+        ),
+        selectedTitle: Text(
+          "Inbox",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.onPrimary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        title: Text(
+          "Inbox",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.colorNeutralFgTertiary,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ),
+      CustomNavigationBarItem(
+        selectedIcon: SvgPicture.asset(
+          'assets/akun_fill.svg',
+          // color: Constanst.onPrimary,
+          height: 23,
+          width: 23,
+        ),
+        icon: SvgPicture.asset(
+          'assets/akun.svg',
+          // color: Constanst.colorNeutralFgTertiary,
+          height: 23,
+          width: 23,
+        ),
+        selectedTitle: Text(
+          "Akun",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.onPrimary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        title: Text(
+          "Akun",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.colorNeutralFgTertiary,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ),
     ];
   }
 
-  List<Widget> _buildScreens1() {
+  List<CustomNavigationBarItem> _navBarsItems1() {
     return [
-      Dashboard(),
-      Aktifitas(),
-      Pesan(
-        status: false,
+      CustomNavigationBarItem(
+        selectedIcon: SvgPicture.asset(
+          'assets/home_fill.svg',
+          height: 23,
+          width: 23,
+          // color: Constanst.onPrimary,
+        ),
+        icon: SvgPicture.asset(
+          'assets/home.svg',
+          // color: Constanst.colorNeutralFgTertiary,
+          height: 23,
+          width: 23,
+        ),
+        selectedTitle: Text(
+          "Home",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.onPrimary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        title: Text(
+          "Home",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.colorNeutralFgTertiary,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
       ),
-      Setting(),
-    ];
-  }
-
-  List<PersistentBottomNavBarItem> _navBarsItems() {
-    return [
-      PersistentBottomNavBarItem(
-        icon: ImageIcon(AssetImage("assets/beranda_fill.png")),
-        inactiveIcon: ImageIcon(AssetImage("assets/beranda.png")),
-        title: "Beranda",
-        activeColorPrimary: Constanst.colorButton1,
-        inactiveColorPrimary: Constanst.color1,
+      CustomNavigationBarItem(
+        selectedIcon: SvgPicture.asset(
+          'assets/aktivitas_fill.svg',
+          // color: Constanst.onPrimary,
+          height: 23,
+          width: 23,
+        ),
+        icon: SvgPicture.asset(
+          'assets/aktivitas.svg',
+          // color: Constanst.colorNeutralFgTertiary,
+          height: 23,
+          width: 23,
+        ),
+        selectedTitle: Text(
+          "Aktivitas",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.onPrimary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        title: Text(
+          "Aktivitas",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.colorNeutralFgTertiary,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
       ),
-      PersistentBottomNavBarItem(
-        icon: ImageIcon(AssetImage("assets/kontrol_fill.png")),
-        inactiveIcon: ImageIcon(AssetImage("assets/kontrol.png")),
-        title: "Tracking",
-        activeColorPrimary: Constanst.colorButton1,
-        inactiveColorPrimary: Constanst.color1,
+      CustomNavigationBarItem(
+        selectedIcon: SvgPicture.asset(
+          'assets/inbox_fill.svg',
+          // color: Constanst.onPrimary,
+          height: 23,
+          width: 23,
+        ),
+        icon: SvgPicture.asset(
+          'assets/inbox.svg',
+          // color: Constanst.colorNeutralFgTertiary,
+          height: 23,
+          width: 23,
+        ),
+        selectedTitle: Text(
+          "Inbox",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.onPrimary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        title: Text(
+          "Inbox",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.colorNeutralFgTertiary,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
       ),
-      PersistentBottomNavBarItem(
-        icon: ImageIcon(AssetImage("assets/aktifitas_fill.png")),
-        inactiveIcon: ImageIcon(AssetImage("assets/aktifitas.png")),
-        title: "Aktivitas",
-        activeColorPrimary: Constanst.colorButton1,
-        inactiveColorPrimary: Constanst.color1,
-      ),
-      PersistentBottomNavBarItem(
-        icon: ImageIcon(AssetImage("assets/pesan_fill.png")),
-        inactiveIcon: ImageIcon(AssetImage("assets/pesan.png")),
-        title: "Pesan",
-        activeColorPrimary: Constanst.colorButton1,
-        inactiveColorPrimary: Constanst.color1,
-      ),
-      PersistentBottomNavBarItem(
-        icon: ImageIcon(AssetImage("assets/akun_fill.png")),
-        inactiveIcon: ImageIcon(AssetImage("assets/akun.png")),
-        title: "Akun",
-        activeColorPrimary: Constanst.colorButton1,
-        inactiveColorPrimary: Constanst.color1,
-      ),
-    ];
-  }
-
-  List<PersistentBottomNavBarItem> _navBarsItems1() {
-    return [
-      PersistentBottomNavBarItem(
-        icon: ImageIcon(AssetImage("assets/beranda_fill.png")),
-        inactiveIcon: ImageIcon(AssetImage("assets/beranda.png")),
-        title: "Beranda",
-        activeColorPrimary: Constanst.colorButton1,
-        inactiveColorPrimary: Constanst.color1,
-      ),
-      PersistentBottomNavBarItem(
-        icon: ImageIcon(AssetImage("assets/aktifitas_fill.png")),
-        inactiveIcon: ImageIcon(AssetImage("assets/aktifitas.png")),
-        title: "Aktivitas",
-        activeColorPrimary: Constanst.colorButton1,
-        inactiveColorPrimary: Constanst.color1,
-      ),
-      PersistentBottomNavBarItem(
-        icon: ImageIcon(AssetImage("assets/pesan_fill.png")),
-        inactiveIcon: ImageIcon(AssetImage("assets/pesan.png")),
-        title: "Pesan",
-        activeColorPrimary: Constanst.colorButton1,
-        inactiveColorPrimary: Constanst.color1,
-      ),
-      PersistentBottomNavBarItem(
-        icon: ImageIcon(AssetImage("assets/akun_fill.png")),
-        inactiveIcon: ImageIcon(AssetImage("assets/akun.png")),
-        title: "Akun",
-        activeColorPrimary: Constanst.colorButton1,
-        inactiveColorPrimary: Constanst.color1,
+      CustomNavigationBarItem(
+        selectedIcon: SvgPicture.asset(
+          'assets/akun_fill.svg',
+          // color: Constanst.onPrimary,
+          height: 23,
+          width: 23,
+        ),
+        icon: SvgPicture.asset(
+          'assets/akun.svg',
+          // color: Constanst.colorNeutralFgTertiary,
+          height: 23,
+          width: 23,
+        ),
+        selectedTitle: Text(
+          "Akun",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.onPrimary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        title: Text(
+          "Akun",
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            height: 1.8,
+            color: Constanst.colorNeutralFgTertiary,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
       ),
     ];
   }
@@ -117,54 +342,53 @@ class _InitScreenState extends State<InitScreen> {
   @override
   void initState() {
     super.initState();
+    controller.currentIndex.value = 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => PersistentTabView(
-        context,
-        controller: controller.tabPersistantController.value,
-        screens: controller.kontrolAkses.value == true
-            ? _buildScreens()
-            : _buildScreens1(),
-        items: controller.kontrolAkses.value == true
-            ? _navBarsItems()
-            : _navBarsItems1(),
-        confineInSafeArea: true,
-        onWillPop: (s) async => await controller.onWillPop(),
-        onItemSelected: (s) => controller.onClickItem(s),
-        backgroundColor: Colors.white, // Default is Colors.white.
-        handleAndroidBackButtonPress: true, // Default is true.
-        resizeToAvoidBottomInset:
-            true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-        stateManagement: true, // Default is true.
-        hideNavigationBarWhenKeyboardShows:
-            true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-        decoration: const NavBarDecoration(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-          boxShadow: [
-            BoxShadow(
-                color: Color(0xffE9F5FE), blurRadius: 0.5, spreadRadius: 0.1)
-          ],
-          colorBehindNavBar: Colors.red,
+    return WillPopScope(
+      onWillPop: controller.onWillPop,
+      child: DefaultTabController(
+        length: controller.kontrolAkses.value == true ? 4 : 5,
+        initialIndex: controller.currentIndex.value,
+        child: Scaffold(
+          body: Center(
+            child: Obx(
+              () => controller.kontrolAkses.value == true
+                  ? _buildScreens1.elementAt(controller.currentIndex.value)
+                  : _buildScreens.elementAt(controller.currentIndex.value),
+            ),
+          ),
+          bottomNavigationBar: Obx(
+            () => SizedBox(
+              height: 80,
+              child: CustomNavigationBar(
+                currentIndex: controller.currentIndex.value,
+                onTap: (index) {
+                  setState(() {
+                    controller.currentIndex.value = index;
+                    controller.onClickItem(index);
+                  });
+                },
+                bubbleCurve: Curves.linear,
+                scaleCurve: Curves.linear,
+                elevation: 20.0,
+                // iconSize: 30.0,
+                strokeColor: Constanst.onPrimary,
+                // controller: controller.tabPersistantController.value,
+                // screens: controller.kontrolAkses.value == true
+                //     ? _buildScreens()
+                //     : _buildScreens1(),
+                items: controller.kontrolAkses.value == true
+                    ? _navBarsItems1()
+                    : _navBarsItems(),
+                // onWillPop: (s) async => await controller.onWillPop(),
+                // onItemSelected: (s) => controller.onClickItem(s),
+              ),
+            ),
+          ),
         ),
-        popAllScreensOnTapOfSelectedTab: true,
-        popActionScreens: PopActionScreensType.all,
-        itemAnimationProperties: const ItemAnimationProperties(
-          // Navigation Bar's items animation properties.
-          duration: Duration(milliseconds: 200),
-          curve: Curves.ease,
-        ),
-        screenTransitionAnimation: const ScreenTransitionAnimation(
-          // Screen transition animation on change of selected tab.
-          animateTabTransition: true,
-          curve: Curves.ease,
-          duration: Duration(milliseconds: 100),
-        ),
-        navBarStyle:
-            NavBarStyle.style9, // Choose the nav bar style with this property.
       ),
     );
   }

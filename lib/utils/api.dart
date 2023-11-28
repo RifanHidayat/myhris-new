@@ -18,26 +18,16 @@ class Api {
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
-  
-  
-
-
-
-  
-// static var basicUrl = "http://mobilehris.siscom.id:3000/";
+  static var basicUrl = "http://mobilehris.siscom.id:3000/";
 
   static var urlImage = 'https://imagehris.siscom.id:4431';
 
 //
-static var basicUrl = "http://kantor.membersis.com:2628/";
-
+  // static var basicUrl = "http://kantor.membersis.com:2629/";
 
   static var token = '9d590c04119a4433971a1dd622266d38';
   static var luxand = 'https://api.luxand.cloud/photo/similarity';
   static var wappin = 'https://api.wappin.id/v1';
-   
-
-
 
   static var UrlfotoAbsen =
       urlImage + "/${AppData.selectedDatabase}/foto_absen/";
@@ -58,7 +48,6 @@ static var basicUrl = "http://kantor.membersis.com:2628/";
       urlImage + "/${AppData.selectedDatabase}/file_kandidat/";
   static var urlFileRecog =
       urlImage + "/${AppData.selectedDatabase}/face_recog/";
-
 
   static Future connectionApi(String typeConnect, valFormData, String url,
       {params = ""}) async {
@@ -114,26 +103,14 @@ static var basicUrl = "http://kantor.membersis.com:2628/";
     }
   }
 
-
-
-
-
-
-
   static Future connectionApiUploadFile(String url, File newFile) async {
-
-
     var getUrl = basicUrl + url + "?database=${AppData.selectedDatabase}";
-
 
     Map<String, String> headers = {
       'Authorization': basicAuth,
       'Content-type': 'application/json',
       'Accept': 'application/json',
       'token': AppData.setFcmToken,
-    
-    
-    
       'em_id': AppData.informasiUser == null ||
               AppData.informasiUser == "null" ||
               AppData.informasiUser == "" ||
@@ -141,7 +118,7 @@ static var basicUrl = "http://kantor.membersis.com:2628/";
           ? ""
           : AppData.informasiUser![0].em_id
     };
-  
+
     try {
       final url = Uri.parse(getUrl);
       var request = http.MultipartRequest('POST', url);
@@ -154,15 +131,8 @@ static var basicUrl = "http://kantor.membersis.com:2628/";
       return respStr;
     } on SocketException catch (e) {
       return false;
-  
     }
-  
-  
   }
-
-
-
-
 
   Future<void> checkLogin() async {
     // var response = await http.post(Uri.parse(basicUrl +
@@ -177,7 +147,6 @@ static var basicUrl = "http://kantor.membersis.com:2628/";
 
   validateAuth(code, message) {
     if (code == 402 || code == "" || code == null) {
-      
       AppData.isLogin = false;
       Get.offAll(Login());
 

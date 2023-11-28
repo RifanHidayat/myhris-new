@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -12,7 +12,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/init_controller.dart';
 
 import 'package:siscom_operasional/fireabase_option.dart';
-
 
 import 'package:siscom_operasional/screen/init_screen.dart';
 
@@ -35,6 +34,10 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 late List<CameraDescription> cameras;
 
 void main() async {
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.dark,
+  ));
   await GetStorage.init();
   AppData.clearAllData();
 
@@ -72,8 +75,8 @@ void main() async {
       carPlay: true,
       criticalAlert: false,
       provisional: true,
-      sound: true);  
-      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      sound: true);
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     print('User granted permission');
   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
     print('User granted provisional permission');
@@ -81,7 +84,6 @@ void main() async {
     print(
         'User declined or has not accepted permission ${settings.authorizationStatus}');
   }
-
 
   runApp(const MyApp());
 }
@@ -238,7 +240,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       alignment: Alignment.bottomCenter,
                       child: Image.asset(
                         'assets/logo_login.png',
-                        width: MediaQuery.of(context).size.width/2,
+                        width: MediaQuery.of(context).size.width / 2,
                       ),
                     ),
                   ),
@@ -253,8 +255,7 @@ class _SplashScreenState extends State<SplashScreen> {
                               "© Copyright 2022 PT. Shan Informasi Sistem\nBuilld Version 2022.10.17",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: HexColor('#68778D'),
-                                  fontSize: 10)),
+                                  color: HexColor('#68778D'), fontSize: 10)),
                         ),
                       ),
                     ),

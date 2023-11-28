@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
 class TextLabell extends StatelessWidget {
@@ -19,7 +20,7 @@ class TextLabell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: TextStyle(
+      style: GoogleFonts.inter(
           fontSize: double.parse(size != null ? size.toString() : '12.0'),
           color: color ?? Constanst.colorBlack,
           fontWeight: weight ?? FontWeight.w400),

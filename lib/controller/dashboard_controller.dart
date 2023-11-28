@@ -8,6 +8,7 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
@@ -17,7 +18,7 @@ import 'package:siscom_operasional/controller/bpjs.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/model/menu.dart';
 import 'package:siscom_operasional/model/menu_dashboard_model.dart';
-import 'package:google_maps_utils/google_maps_utils.dart';
+import 'package:google_maps_utils/google_maps_utils.dart' as maps;
 import 'package:siscom_operasional/model/user_model.dart';
 import 'package:siscom_operasional/screen/absen/form/form_lembur.dart';
 import 'package:siscom_operasional/screen/absen/form/form_tidakMasukKerja.dart';
@@ -53,6 +54,9 @@ class DashboardController extends GetxController {
   CarouselController corouselDashboard = CarouselController();
   PageController menuController = PageController(initialPage: 0);
   PageController informasiController = PageController(initialPage: 0);
+
+  RxBool isSearching = false.obs;
+  var searchController = TextEditingController();
 
   var bpjsController = Get.put(BpjsController());
 
@@ -91,6 +95,14 @@ class DashboardController extends GetxController {
   var deviceStatus = false.obs;
   var refreshPagesStatus = false.obs;
   var viewInformasiSisaKontrak = false.obs;
+
+  void toggleSearch() {
+    isSearching.value = !isSearching.value;
+  }
+
+  void clearText() {
+    searchController.clear();
+  }
 
   List sortcardPengajuan = [
     {"id": 1, "nama_pengajuan": "Pengajuan Lembur"},
@@ -132,7 +144,6 @@ class DashboardController extends GetxController {
     updateInformasiUser();
   }
 
-  
   void checkAbsenUser(convert, getEmid) {
     print("view last absen user");
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
@@ -143,10 +154,9 @@ class DashboardController extends GetxController {
     TimeOfDay waktu1 = TimeOfDay(
         hour: int.parse(
             AppData.informasiUser![0].startTime.toString().split(':')[0]),
-        minute: int.parse(AppData.informasiUser![0].startTime
-            .toString()
-            .split(':')[1])); 
-            
+        minute: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[1]));
+
     TimeOfDay waktu2 = TimeOfDay(
         hour: int.parse(
             AppData.informasiUser![0].endTime.toString().split(':')[0]),
@@ -154,12 +164,9 @@ class DashboardController extends GetxController {
             .toString()
             .split(':')[1])); // Waktu kedua
 
-
-
-
     int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
     int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
-    
+
     //alur normal
     if (totalMinutes1 < totalMinutes2) {
       startTime = AppData.informasiUser![0].startTime;
@@ -168,36 +175,27 @@ class DashboardController extends GetxController {
       startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-
-
-    //alur beda hari
+      //alur beda hari
     } else if (totalMinutes1 > totalMinutes2) {
-     
       var waktu3 =
           TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
       int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
 
-
       if (totalMinutes2 > totalMinutes3) {
-
-      
-      startTime = AppData.informasiUser![0].endTime;
-      endTime = AppData.informasiUser![0].startTime;
-        
-      startDate = DateFormat('yyyy-MM-dd')
-           .format(DateTime.now().add(Duration(days: -1)));        
-
-        endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      
-      
-      } else {
-
         startTime = AppData.informasiUser![0].endTime;
         endTime = AppData.informasiUser![0].startTime;
-        
+
+        startDate = DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(Duration(days: -1)));
+
+        endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      } else {
+        startTime = AppData.informasiUser![0].endTime;
+        endTime = AppData.informasiUser![0].startTime;
+
         endDate = DateFormat('yyyy-MM-dd')
-        .format(DateTime.now().add(Duration(days: 1)));
-        
+            .format(DateTime.now().add(Duration(days: 1)));
+
         startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       }
     } else {
@@ -217,7 +215,6 @@ class DashboardController extends GetxController {
       'end_date': endDate,
       'start_time': startTime,
       'end_time': endTime,
-    
     };
     var connect = Api.connectionApi("post", body, "view_last_absen_user");
 
@@ -227,14 +224,10 @@ class DashboardController extends GetxController {
         print("data login ${valueBody}");
         var data = valueBody['data'];
         if (data.isEmpty) {
-      
           AppData.statusAbsen = false;
-      
         } else {
-           
-              AppData.statusAbsen =
+          AppData.statusAbsen =
               data[0]['signout_time'] == "00:00:00" ? true : false;
-          
         }
       }
     });
@@ -255,14 +248,14 @@ class DashboardController extends GetxController {
   //   //end entimenua 02:04
   //   //jika star time lebih besar dari end time maka  akan memeriksa attendance dari start time di hari sebelumya  tanggal sekarang dengan end time
   //   //
-    
+
   //   TimeOfDay waktu1 = TimeOfDay(
   //       hour: int.parse(
   //           AppData.informasiUser![0].startTime.toString().split(':')[0]),
   //       minute: int.parse(AppData.informasiUser![0].startTime
   //           .toString()
   //           .split(':')[1]));
-    
+
   //   // Waktu pertama
   //   TimeOfDay waktu2 = TimeOfDay(
   //       hour: int.parse(
@@ -270,7 +263,6 @@ class DashboardController extends GetxController {
   //       minute: int.parse(AppData.informasiUser![0].startTime
   //           .toString()
   //           .split(':')[1]));
-
 
   //   // Waktu kedua
   //   int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
@@ -319,7 +311,6 @@ class DashboardController extends GetxController {
 
   //   var connect = Api.connectionApi("post", body, "view_last_absen_user");
 
-    
   //   connect.then((dynamic res) {
   //     print("status code ${res.statusCode }");
   //   if (res.statusCode == 200) {
@@ -832,7 +823,7 @@ class DashboardController extends GetxController {
                 .where((p0) =>
                     p0['url'].toString().toLowerCase().trim() ==
                     "PKWT".toLowerCase().toString().trim())
-                .toList(); 
+                .toList();
             List menuUlangtahun = menuShowInMainUtama
                 .where((p0) =>
                     p0['url'].toString().toLowerCase().trim() ==
@@ -1018,7 +1009,7 @@ class DashboardController extends GetxController {
     var langDefault = listLatLang[1];
     var to = Point(double.parse(latDefault), double.parse(langDefault));
 
-    double distance = SphericalUtils.computeDistanceBetween(from, from);
+    double distance = maps.SphericalUtils.computeDistanceBetween(from, from);
     print('Distance: $distance meters');
     var filter = double.parse((distance).toStringAsFixed(0));
     if (filter <= double.parse(defaultRadius)) {
@@ -1344,76 +1335,89 @@ class DashboardController extends GetxController {
   void widgetButtomSheetFormPengajuan() {
     showModalBottomSheet(
       context: Get.context!,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(10.0),
+          top: Radius.circular(16.0),
         ),
       ),
+      backgroundColor: Constanst.colorWhite,
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
+        return SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 90,
-                    child: Text(
-                      "Buat Pengajuan",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              Padding(
+                padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Iconsax.add_square5,
+                          color: Constanst.infoLight,
+                          size: 26,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12),
+                          child: Text(
+                            "Buat Pengajuan",
+                            style: GoogleFonts.inter(
+                                color: Constanst.fgPrimary,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Expanded(
-                    flex: 10,
-                    child: InkWell(
+                    InkWell(
                         onTap: () {
                           Navigator.pop(Get.context!);
                         },
-                        child: Icon(Iconsax.close_circle)),
-                  )
-                ],
+                        child: Icon(
+                          Icons.close,
+                          size: 24,
+                          color: Constanst.fgSecondary,
+                        ))
+                  ],
+                ),
               ),
-              SizedBox(
-                height: 8,
-              ),
-              Divider(
-                height: 5,
-                color: Constanst.colorText2,
-              ),
-              SizedBox(
-                height: 8,
-              ),
+              const SizedBox(height: 16),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
-                    itemCount: sortcardPengajuan.length,
-                    physics: BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (context, index) {
-                      var id = sortcardPengajuan[index]['id'];
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 10, bottom: 10),
-                        child: InkWell(
-                          highlightColor: Colors.white,
-                          onTap: () {
-                            routeSortcartForm(id);
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 10,
-                                child: id == 1
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Constanst.fgBorder,
+                ),
+              ),
+              ListView.builder(
+                  itemCount: sortcardPengajuan.length,
+                  physics: const BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (context, index) {
+                    var id = sortcardPengajuan[index]['id'];
+                    return InkWell(
+                      // highlightColor: Colors.white,
+                      onTap: () {
+                        routeSortcartForm(id);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 12, bottom: 12, left: 16, right: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                id == 1
                                     ? Icon(
                                         Iconsax.clock,
                                         color: Constanst.colorPrimary,
@@ -1447,40 +1451,32 @@ class DashboardController extends GetxController {
                                                             color: Constanst
                                                                 .colorPrimary,
                                                           )
-                                                        : SizedBox(),
-                              ),
-                              Expanded(
-                                flex: 80,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
+                                                        : const SizedBox(),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 12.0),
                                   child: Text(
                                     sortcardPengajuan[index]['nama_pengajuan'],
-                                    style: TextStyle(
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
                                         fontSize: 16,
-                                        color: Constanst.colorText3),
+                                        fontWeight: FontWeight.w500),
                                   ),
                                 ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child: Icon(
+                                Icons.add,
+                                size: 18,
+                                color: Constanst.infoLight,
                               ),
-                              Expanded(
-                                flex: 10,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 5),
-                                  child: Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 16,
-                                    color: Constanst.colorText2,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      );
-                    }),
-              ),
-              SizedBox(
-                height: 30,
-              )
+                      ),
+                    );
+                  }),
             ],
           ),
         );
@@ -1494,339 +1490,336 @@ class DashboardController extends GetxController {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20.0),
+          top: Radius.circular(16.0),
         ),
       ),
+      backgroundColor: Constanst.colorWhite,
       builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 90,
-                    child: Row(
+        return SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 12, left: 16, right: 16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.network(
-                          Api.UrlgambarDashboard + "lainnya.png",
-                          width: 25,
-                          height: 25,
+                          "${Api.UrlgambarDashboard}lainnya.png",
+                          width: 26,
+                          height: 26,
                           color: Constanst.colorPrimary,
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 10, top: 2),
+                          padding: const EdgeInsets.only(left: 12),
                           child: Text(
-                            "Semua Menu",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            "Semua Menu SISCOM HRIS",
+                            style: GoogleFonts.inter(
+                                color: Constanst.fgPrimary,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  Expanded(
-                    flex: 10,
-                    child: InkWell(
+                    InkWell(
                         onTap: () {
                           Navigator.pop(Get.context!);
                         },
-                        child: Icon(Iconsax.close_circle)),
-                  )
-                ],
+                        child: Icon(
+                          Icons.close,
+                          size: 24,
+                          color: Constanst.fgSecondary,
+                        ))
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Divider(
-              height: 5,
-              color: Constanst.colorText2,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              padding: EdgeInsets.only(bottom: 10),
-              child: Column(
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Constanst.fgBorder,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(menuShowInMain.length, (index) {
                   var data = menuShowInMain[index];
-                  return Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: InkWell(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 16, right: 16),
-                            child: Text(
-                              data['nama_modul'].toString(),
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                  return InkWell(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16),
+                          child: Text(
+                            data['nama_modul'].toString(),
+                            style: GoogleFonts.inter(
+                                color: Constanst.fgPrimary,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500),
                           ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Container(
-                            child: Wrap(
-                              direction: Axis.horizontal,
-                              runSpacing: 16.0, // gap between lines
-
-                              children:
-                                  List.generate(data['menu'].length, (idxMenu) {
-                                var gambar = data['menu'][idxMenu]['gambar'];
-                                var namaMenu = data['menu'][idxMenu]['nama'];
-                                return data['menu'][idxMenu]['id'] == 8
-                                    ? SizedBox()
-                                    : Container(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4,
-                                        child: InkWell(
-                                          onTap: () => routePageDashboard(
-                                              data['menu'][idxMenu]['url']),
-                                          highlightColor: Colors.white,
-                                          child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                gambar != ""
-                                                    ? Container(
+                        ),
+                        const SizedBox(height: 16),
+                        Wrap(
+                          direction: Axis.horizontal,
+                          runSpacing: 16.0, // gap between lines
+                          children:
+                              List.generate(data['menu'].length, (idxMenu) {
+                            var gambar = data['menu'][idxMenu]['gambar'];
+                            var namaMenu = data['menu'][idxMenu]['nama'];
+                            return data['menu'][idxMenu]['id'] == 8
+                                ? const SizedBox()
+                                : SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width / 4,
+                                    child: InkWell(
+                                      onTap: () => routePageDashboard(
+                                          data['menu'][idxMenu]['url']),
+                                      highlightColor: Colors.white,
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            gambar != ""
+                                                ? Stack(
+                                                    children: [
+                                                      Container(
+                                                        height: 42,
+                                                        width: 42,
                                                         decoration: BoxDecoration(
                                                             color: Constanst
-                                                                .colorButton3,
-                                                            borderRadius: Constanst
-                                                                .styleBoxDecoration1
-                                                                .borderRadius),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 3,
-                                                                  right: 3,
-                                                                  top: 3,
-                                                                  bottom: 3),
-                                                          child:
-                                                              CachedNetworkImage(
-                                                            imageUrl:
-                                                                Api.UrlgambarDashboard +
-                                                                    gambar,
-                                                            progressIndicatorBuilder:
-                                                                (context, url,
-                                                                        downloadProgress) =>
-                                                                    Container(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height *
-                                                                  0.5,
-                                                              width:
-                                                                  MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                              child: CircularProgressIndicator(
-                                                                  value: downloadProgress
-                                                                      .progress),
-                                                            ),
-                                                            errorWidget:
-                                                                (context, url,
-                                                                        error) =>
-                                                                    SizedBox(),
-                                                            fit: BoxFit.cover,
-                                                            width: 32,
-                                                            height: 32,
-                                                            color: Constanst
-                                                                .colorButton1,
-                                                          ),
-                                                        ),
-                                                      )
-                                                    : Container(
-                                                        color: Constanst
-                                                            .colorButton1,
-                                                        height: 32,
-                                                        width: 32,
+                                                                .infoLight1,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        100.0)),
                                                       ),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Center(
-                                                  child: Text(
-                                                    namaMenu.length > 20
-                                                        ? namaMenu.substring(
-                                                                0, 20) +
-                                                            '...'
-                                                        : namaMenu,
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 10,
-                                                        color: Constanst
-                                                            .colorText1),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          left: 8,
+                                                          top: 8,
+                                                        ),
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          imageUrl:
+                                                              Api.UrlgambarDashboard +
+                                                                  gambar,
+                                                          progressIndicatorBuilder:
+                                                              (context, url,
+                                                                      downloadProgress) =>
+                                                                  Container(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height *
+                                                                0.5,
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            child: CircularProgressIndicator(
+                                                                value: downloadProgress
+                                                                    .progress),
+                                                          ),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              SizedBox(),
+                                                          fit: BoxFit.cover,
+                                                          width: 42,
+                                                          height: 42,
+                                                          color: Constanst
+                                                              .colorButton1,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Container(
+                                                    color:
+                                                        Constanst.colorButton1,
+                                                    height: 32,
+                                                    width: 32,
                                                   ),
-                                                ),
-                                              ]),
-                                        ),
-                                      );
-                              }),
-                            ),
-                          )
-                        ],
-                      ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              namaMenu.length > 20
+                                                  ? namaMenu.substring(0, 20) +
+                                                      '...'
+                                                  : namaMenu,
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.inter(
+                                                  color: Constanst.fgPrimary,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          ]),
+                                    ),
+                                  );
+                          }),
+                        ),
+                        SizedBox(height: index == 0 ? 32 : 0),
+                      ],
                     ),
                   );
                   //                 style
                 }),
               ),
-            )
-            // Flexible(
-            //   flex: 3,
-            //   child: Padding(
-            //     padding: EdgeInsets.only(left: 8, right: 8),
-            //     child: ListView.builder(
-            //         shrinkWrap: true,
-            //         scrollDirection: Axis.vertical,
-            //         physics: BouncingScrollPhysics(),
-            //         itemCount: finalMenu.value.length,
-            //         itemBuilder: (context, index) {
-            //           return Column(
-            //             crossAxisAlignment: CrossAxisAlignment.start,
-            //             mainAxisAlignment: MainAxisAlignment.start,
-            //             children: [
-            //               Text(
-            //                 finalMenu.value[index]['nama_modul'],
-            //                 style: TextStyle(fontWeight: FontWeight.bold),
-            //               ),
-            //               SizedBox(
-            //                 height: 10,
-            //               ),
-            //               Padding(
-            //                   padding: EdgeInsets.only(left: 8, right: 8),
-            //                   child: GridView.builder(
-            //                       physics: NeverScrollableScrollPhysics(),
-            //                       padding: EdgeInsets.all(0),
-            //                       shrinkWrap: true,
-            //                       itemCount:
-            //                           finalMenu.value[index]['menu'].length,
-            //                       scrollDirection: Axis.vertical,
-            //                       gridDelegate:
-            //                           SliverGridDelegateWithFixedCrossAxisCount(
-            //                         crossAxisCount: 4,
-            //                       ),
-            //                       itemBuilder: (context, idxMenu) {
-            //                         var gambar = finalMenu[index]['menu']
-            //                             [idxMenu]['gambar'];
-            //                         var url = finalMenu[index]['menu']
-            //                             [idxMenu]['url'];
-            //                         var namaMenu = finalMenu[index]['menu']
-            //                             [idxMenu]['nama_menu'];
-            //                         return InkWell(
-            //                           onTap: () {
-            //                             Navigator.pop(context);
-            //                             routePageDashboard(url);
-            //                           },
-            //                           highlightColor: Colors.white,
-            //                           child: Column(
-            //                               crossAxisAlignment:
-            //                                   CrossAxisAlignment.center,
-            //                               children: [
-            //                                 gambar != ""
-            //                                     ? Container(
-            //                                         decoration: BoxDecoration(
-            //                                             color: Constanst
-            //                                                 .colorButton2,
-            //                                             borderRadius: Constanst
-            //                                                 .styleBoxDecoration1
-            //                                                 .borderRadius),
-            //                                         child: Padding(
-            //                                           padding:
-            //                                               const EdgeInsets
-            //                                                       .only(
-            //                                                   left: 3,
-            //                                                   right: 3,
-            //                                                   top: 3,
-            //                                                   bottom: 3),
-            //                                           child:
-            //                                               CachedNetworkImage(
-            //                                             imageUrl:
-            //                                                 Api.UrlgambarDashboard +
-            //                                                     gambar,
-            //                                             progressIndicatorBuilder:
-            //                                                 (context, url,
-            //                                                         downloadProgress) =>
-            //                                                     Container(
-            //                                               alignment: Alignment
-            //                                                   .center,
-            //                                               height: MediaQuery.of(
-            //                                                           context)
-            //                                                       .size
-            //                                                       .height *
-            //                                                   0.5,
-            //                                               width:
-            //                                                   MediaQuery.of(
-            //                                                           context)
-            //                                                       .size
-            //                                                       .width,
-            //                                               child: CircularProgressIndicator(
-            //                                                   value: downloadProgress
-            //                                                       .progress),
-            //                                             ),
-            //                                             fit: BoxFit.cover,
-            //                                             width: 32,
-            //                                             height: 32,
-            //                                             color: Constanst
-            //                                                 .colorPrimary,
-            //                                           ),
-            //                                         ),
-            //                                       )
-            //                                     : Container(
-            //                                         color: Constanst
-            //                                             .colorButton2,
-            //                                         height: 32,
-            //                                         width: 32,
-            //                                       ),
-            //                                 SizedBox(
-            //                                   height: 3,
-            //                                 ),
-            //                                 Center(
-            //                                   child: Text(
-            //                                     namaMenu.length > 20
-            //                                         ? namaMenu.substring(
-            //                                                 0, 20) +
-            //                                             '...'
-            //                                         : namaMenu,
-            //                                     textAlign: TextAlign.center,
-            //                                     style: TextStyle(
-            //                                         fontSize: 10,
-            //                                         color:
-            //                                             Constanst.colorText3),
-            //                                   ),
-            //                                 ),
-            //                               ]),
-            //                         );
-            //                       })),
-            //               Divider(
-            //                 height: 5,
-            //                 color: Constanst.colorText2,
-            //               ),
-            //               SizedBox(
-            //                 height: 10,
-            //               ),
-            //             ],
-            //           );
-            //         }),
-            //   ),
-            // ),
-          ],
+
+              // Flexible(
+              //   flex: 3,
+              //   child: Padding(
+              //     padding: EdgeInsets.only(left: 8, right: 8),
+              //     child: ListView.builder(
+              //         shrinkWrap: true,
+              //         scrollDirection: Axis.vertical,
+              //         physics: BouncingScrollPhysics(),
+              //         itemCount: finalMenu.value.length,
+              //         itemBuilder: (context, index) {
+              //           return Column(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             mainAxisAlignment: MainAxisAlignment.start,
+              //             children: [
+              //               Text(
+              //                 finalMenu.value[index]['nama_modul'],
+              //                 style: TextStyle(fontWeight: FontWeight.bold),
+              //               ),
+              //               SizedBox(
+              //                 height: 10,
+              //               ),
+              //               Padding(
+              //                   padding: EdgeInsets.only(left: 8, right: 8),
+              //                   child: GridView.builder(
+              //                       physics: NeverScrollableScrollPhysics(),
+              //                       padding: EdgeInsets.all(0),
+              //                       shrinkWrap: true,
+              //                       itemCount:
+              //                           finalMenu.value[index]['menu'].length,
+              //                       scrollDirection: Axis.vertical,
+              //                       gridDelegate:
+              //                           SliverGridDelegateWithFixedCrossAxisCount(
+              //                         crossAxisCount: 4,
+              //                       ),
+              //                       itemBuilder: (context, idxMenu) {
+              //                         var gambar = finalMenu[index]['menu']
+              //                             [idxMenu]['gambar'];
+              //                         var url = finalMenu[index]['menu']
+              //                             [idxMenu]['url'];
+              //                         var namaMenu = finalMenu[index]['menu']
+              //                             [idxMenu]['nama_menu'];
+              //                         return InkWell(
+              //                           onTap: () {
+              //                             Navigator.pop(context);
+              //                             routePageDashboard(url);
+              //                           },
+              //                           highlightColor: Colors.white,
+              //                           child: Column(
+              //                               crossAxisAlignment:
+              //                                   CrossAxisAlignment.center,
+              //                               children: [
+              //                                 gambar != ""
+              //                                     ? Container(
+              //                                         decoration: BoxDecoration(
+              //                                             color: Constanst
+              //                                                 .colorButton2,
+              //                                             borderRadius: Constanst
+              //                                                 .styleBoxDecoration1
+              //                                                 .borderRadius),
+              //                                         child: Padding(
+              //                                           padding:
+              //                                               const EdgeInsets
+              //                                                       .only(
+              //                                                   left: 3,
+              //                                                   right: 3,
+              //                                                   top: 3,
+              //                                                   bottom: 3),
+              //                                           child:
+              //                                               CachedNetworkImage(
+              //                                             imageUrl:
+              //                                                 Api.UrlgambarDashboard +
+              //                                                     gambar,
+              //                                             progressIndicatorBuilder:
+              //                                                 (context, url,
+              //                                                         downloadProgress) =>
+              //                                                     Container(
+              //                                               alignment: Alignment
+              //                                                   .center,
+              //                                               height: MediaQuery.of(
+              //                                                           context)
+              //                                                       .size
+              //                                                       .height *
+              //                                                   0.5,
+              //                                               width:
+              //                                                   MediaQuery.of(
+              //                                                           context)
+              //                                                       .size
+              //                                                       .width,
+              //                                               child: CircularProgressIndicator(
+              //                                                   value: downloadProgress
+              //                                                       .progress),
+              //                                             ),
+              //                                             fit: BoxFit.cover,
+              //                                             width: 32,
+              //                                             height: 32,
+              //                                             color: Constanst
+              //                                                 .colorPrimary,
+              //                                           ),
+              //                                         ),
+              //                                       )
+              //                                     : Container(
+              //                                         color: Constanst
+              //                                             .colorButton2,
+              //                                         height: 32,
+              //                                         width: 32,
+              //                                       ),
+              //                                 SizedBox(
+              //                                   height: 3,
+              //                                 ),
+              //                                 Center(
+              //                                   child: Text(
+              //                                     namaMenu.length > 20
+              //                                         ? namaMenu.substring(
+              //                                                 0, 20) +
+              //                                             '...'
+              //                                         : namaMenu,
+              //                                     textAlign: TextAlign.center,
+              //                                     style: TextStyle(
+              //                                         fontSize: 10,
+              //                                         color:
+              //                                             Constanst.colorText3),
+              //                                   ),
+              //                                 ),
+              //                               ]),
+              //                         );
+              //                       })),
+              //               Divider(
+              //                 height: 5,
+              //                 color: Constanst.colorText2,
+              //               ),
+              //               SizedBox(
+              //                 height: 10,
+              //               ),
+              //             ],
+              //           );
+              //         }),
+              //   ),
+              // ),
+            ],
+          ),
         );
       },
     );

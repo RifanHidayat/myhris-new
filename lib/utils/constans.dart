@@ -5,14 +5,15 @@ import 'package:intl/intl.dart';
 class Constanst {
   // new color
   //
-  static Color sfSecondary = HexColor('#68778D');
+  static Color fgSecondary = HexColor('#68778D');
   static Color fgPrimary = HexColor('#202327');
   static Color fgBorder = HexColor('#CBD5E0');
   static Color warning = HexColor('#F2AA0D');
-    static Color onPrimary= HexColor('#001767');
-
-
-
+  static Color onPrimary = HexColor('#001767');
+  static Color colorNeutralBgTertiary = HexColor('#E2E8F0');
+  static Color colorNeutralBgSecondary = HexColor('#F1F4F9');
+  static Color colorNeutralFgTertiary = HexColor('#A9B9CC');
+  static Color colorStateInfoBorder = HexColor('#81BFF9');
   static Color secondary = HexColor('#68778D');
 
   static double defaultMarginPadding = 16.0;
@@ -163,6 +164,20 @@ class Constanst {
     return outputDate;
   }
 
+  static String convertDate5(String date) {
+    DateTime convert = DateTime.parse(date);
+    var bulan = DateFormat('MMMM');
+    var hari = DateFormat('dd');
+    var tahun = DateFormat('yyyy');
+    var convertBulan = bulan.format(convert);
+    var hasilConvertBulan = bulanIndo(convertBulan);
+    var convertHari = hari.format(convert);
+    var convertTahun = tahun.format(convert);
+    // var valid2 = tanggal.format(convert);
+    var validFinal = "$convertHari $hasilConvertBulan $convertTahun";
+    return validFinal;
+  }
+
   static String convertDateSimpan(String date) {
     var inputFormat = DateFormat('dd-MM-yyyy');
     var inputDate = inputFormat.parse(date);
@@ -220,6 +235,49 @@ class Constanst {
       hari = hari;
     }
     return hari;
+  }
+
+  static String bulanIndo(String bulan) {
+    if (bulan == "January") {
+      bulan = "Jan";
+      // bulan = "Januari";
+    } else if (bulan == "February") {
+      bulan = "Feb";
+      // bulan = "Februari";
+    } else if (bulan == "March") {
+      bulan = "Mar";
+      // bulan = "Maret";
+    } else if (bulan == "April") {
+      bulan = "Apr";
+      // bulan = "April";
+    } else if (bulan == "May") {
+      bulan = "Mei";
+      // bulan = "Mei";
+    } else if (bulan == "June") {
+      bulan = "Jun";
+      // bulan = "Juni";
+    } else if (bulan == "July") {
+      bulan = "Jul";
+      // bulan = "Juli";
+    } else if (bulan == "August") {
+      bulan = "Agu";
+      // bulan = "Agustus";
+    } else if (bulan == "September") {
+      bulan = "Sep";
+      // bulan = "September";
+    } else if (bulan == "October") {
+      bulan = "Okt";
+      // bulan = "Oktober";
+    } else if (bulan == "November") {
+      bulan = "Nov";
+      // bulan = "November";
+    } else if (bulan == "December") {
+      bulan = "Des";
+      // bulan = "Desember";
+    } else {
+      bulan = bulan;
+    }
+    return bulan;
   }
 
   // boxShadow: [

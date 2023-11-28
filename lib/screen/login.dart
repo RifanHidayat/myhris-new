@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:siscom_operasional/components/text.dart';
 import 'package:siscom_operasional/components/text_field.dart';
@@ -25,7 +26,7 @@ class Login extends StatelessWidget {
             Container(
               height: 400,
               width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   image: DecorationImage(
                       alignment: Alignment.topCenter,
                       image: AssetImage('assets/vector_login.png'),
@@ -38,88 +39,102 @@ class Login extends StatelessWidget {
                     () => Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 30,
-                        ),
+                        const SizedBox(height: 30),
                         Image.asset(
                           'assets/logo_login.png',
                           width: 200,
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
+                        const SizedBox(height: 20),
                         Text(
-                          "Login",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 28),
+                          "Login.",
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600, fontSize: 38),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 8),
                         Text(
                           "Selamat Datang kembali di SISCOM HRIS 👋",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500, fontSize: 16),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 8),
                         Text(
                           "Ketik alamat email dan password untuk masuk",
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w400, fontSize: 14),
                         ),
-                        SizedBox(
-                          height: 20,
+                        const SizedBox(height: 24),
+                        Obx(
+                          () => controller.isautoLogout.value == false
+                              ? const SizedBox()
+                              : Padding(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Constanst.colorPrimary)),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                            flex: 10,
+                                            child: Icon(
+                                              Iconsax.info_circle,
+                                              color: Constanst.colorPrimary,
+                                            )),
+                                        Expanded(
+                                            flex: 90,
+                                            child: TextLabell(
+                                              text: controller
+                                                  .messageLogout.value
+                                                  .toString(),
+                                              color: Constanst.colorPrimary,
+                                            ))
+
+                                        //  Seseorang masuk menggunakan akun anda menyebabkan akun anda keluar secara otomatis
+                                      ],
+                                    ),
+                                  ),
+                                ),
                         ),
-                     Obx(() =>  controller.isautoLogout.value==false?SizedBox():   Padding(
-                          padding: EdgeInsets.only(bottom: 16),
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                             
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(width: 1,color: Constanst.colorPrimary)
-                            ),
-                            child: Row(
-                              children: [
-                              Expanded(
-                                flex: 10,
-                                child: Icon(Iconsax.info_circle,color: Constanst.colorPrimary,)),
-                              Expanded(
-                                flex: 90,
-                                child: TextLabell(text: controller.messageLogout.value.toString(),color: Constanst.colorPrimary,))
-                        
-                      //  Seseorang masuk menggunakan akun anda menyebabkan akun anda keluar secara otomatis
-                              ],
-                            ),
-                          ),
-                        ),),
-                         Obx(() =>  controller.messageNewPassword.value==""?SizedBox():   Padding(
-                          padding: EdgeInsets.only(bottom: 16,top: 5),
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                             
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(width: 1,color: Constanst.colorPrimary)
-                            ),
-                            child: Row(
-                              children: [
-                              Expanded(
-                                flex: 10,
-                                child: Icon(Iconsax.info_circle,color: Constanst.colorPrimary,)),
-                              Expanded(
-                                flex: 90,
-                                child: TextLabell(text: controller.messageNewPassword.value.toString(),color: Constanst.colorPrimary,))
-                        
-                      //  Seseorang masuk menggunakan akun anda menyebabkan akun anda keluar secara otomatis
-                              ],
-                            ),
-                          ),
-                        ),),
-                          SizedBox(
-                          height: 10,
+                        Obx(
+                          () => controller.messageNewPassword.value == ""
+                              ? const SizedBox()
+                              : Padding(
+                                  padding:
+                                      const EdgeInsets.only(bottom: 16, top: 5),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                            width: 1,
+                                            color: Constanst.colorPrimary)),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                            flex: 10,
+                                            child: Icon(
+                                              Iconsax.info_circle,
+                                              color: Constanst.colorPrimary,
+                                            )),
+                                        Expanded(
+                                            flex: 90,
+                                            child: TextLabell(
+                                              text: controller
+                                                  .messageNewPassword.value
+                                                  .toString(),
+                                              color: Constanst.colorPrimary,
+                                            ))
+
+                                        //  Seseorang masuk menggunakan akun anda menyebabkan akun anda keluar secara otomatis
+                                      ],
+                                    ),
+                                  ),
+                                ),
                         ),
-                           
+
                         // Padding(
                         //   padding: EdgeInsets.only(left: 5),
                         //   child: Text(
@@ -157,7 +172,7 @@ class Login extends StatelessWidget {
                         //     ),
                         //   ),
                         // ),
-                
+
                         TextFieldApp.groupColumn(
                             title: "Email",
                             icon: Iconsax.sms,
@@ -184,35 +199,35 @@ class Login extends StatelessWidget {
                                 if (controller.tempEmail.value.text ==
                                     controller.email.value.text) {
                                   if (controller.databases.isNotEmpty) {
-                                     controller.dataabse().then((value) {
-                                    if (value == true) {
-                                      showModalBottomSheet(
-                                        backgroundColor: Colors.transparent,
-                                        isScrollControlled: true,
-                                        context: context,
-                                        builder: (context) {
-                                          return FractionallySizedBox(
-                                              heightFactor: 0.6,
-                                              child: _bottomSheetBpjsDetail(
-                                                  context));
-                                        },
-                                      );
-                                    } else {
-                                      UtilsAlert.showToast(
-                                          "Database tidak tersedia");
-                                    }
-                                  });
-                                      // showModalBottomSheet(
-                                      //   backgroundColor: Colors.transparent,
-                                      //   isScrollControlled: true,
-                                      //   context: context,
-                                      //   builder: (context) {
-                                      //     return FractionallySizedBox(
-                                      //         heightFactor: 0.6,
-                                      //         child: _bottomSheetBpjsDetail(
-                                      //             context));
-                                      //   },
-                                      // );
+                                    controller.dataabse().then((value) {
+                                      if (value == true) {
+                                        showModalBottomSheet(
+                                          backgroundColor: Colors.transparent,
+                                          isScrollControlled: true,
+                                          context: context,
+                                          builder: (context) {
+                                            return FractionallySizedBox(
+                                                heightFactor: 0.6,
+                                                child: _bottomSheetBpjsDetail(
+                                                    context));
+                                          },
+                                        );
+                                      } else {
+                                        UtilsAlert.showToast(
+                                            "Database tidak tersedia");
+                                      }
+                                    });
+                                    // showModalBottomSheet(
+                                    //   backgroundColor: Colors.transparent,
+                                    //   isScrollControlled: true,
+                                    //   context: context,
+                                    //   builder: (context) {
+                                    //     return FractionallySizedBox(
+                                    //         heightFactor: 0.6,
+                                    //         child: _bottomSheetBpjsDetail(
+                                    //             context));
+                                    //   },
+                                    // );
                                     // showModalBottomSheet(
                                     //   backgroundColor: Colors.transparent,
                                     //   isScrollControlled: true,
@@ -268,10 +283,14 @@ class Login extends StatelessWidget {
                         Align(
                           alignment: Alignment.centerRight,
                           child: InkWell(
-                            onTap: (){
-                              Get.to(LupaPassword());
-                            },
-                            child: TextLabell(text: "Lupa password ?",size: 12,color:Constanst.colorPrimary,)),
+                              onTap: () {
+                                Get.to(LupaPassword());
+                              },
+                              child: TextLabell(
+                                text: "Lupa password ?",
+                                size: 12,
+                                color: Constanst.colorPrimary,
+                              )),
                         ),
                         // Padding(
                         //   padding: EdgeInsets.only(left: 5),
@@ -463,7 +482,6 @@ class Login extends StatelessWidget {
                                 var data = controller.databases[index];
                                 return InkWell(
                                   onTap: () {
-                                    
                                     controller.databases.forEach((element) {
                                       element.isSelected = false;
                                     });
@@ -474,11 +492,8 @@ class Login extends StatelessWidget {
                                     controller.selectedDb.value = data.dbname;
                                     controller.perusahaan.text = data.name;
 
-                                    AppData.selectedDatabase=data.dbname;
-                                  
+                                    AppData.selectedDatabase = data.dbname;
 
-
-                                
                                     Get.back();
                                   },
                                   child: Container(
