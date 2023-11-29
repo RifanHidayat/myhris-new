@@ -36,6 +36,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -103,6 +104,253 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constanst.coloBackgroundScreen,
+      floatingActionButton: _isVisible == true
+          ? Container()
+          : Container(
+              decoration: BoxDecoration(
+                // color: Colors.white,
+                borderRadius: BorderRadius.circular(100),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color.fromARGB(255, 155, 155, 155)
+                        .withOpacity(0.5),
+                    spreadRadius: 1.0,
+                    blurRadius: 3,
+                    offset: const Offset(0, 0),
+                  ),
+                ],
+              ),
+              child: FloatingActionButton.extended(
+                  // shape: RoundedRectangleBorder(
+                  //   borderRadius: BorderRadius.circular(10),
+                  // ),
+                  extendedPadding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                  // splashColor: Colors.black,
+                  elevation: 0,
+                  onPressed: !controllerAbsensi.absenStatus.value
+                      ? () {
+                          if (controllerAbsensi.absenStatus.value == true) {
+                            UtilsAlert.showToast(
+                                "Anda harus absen keluar terlebih dahulu");
+                          } else {
+                            var dataUser = AppData.informasiUser;
+                            var faceRecog = dataUser![0].face_recog;
+                            print(
+                                "facee recog ${GetStorage().read('face_recog')}");
+                            if (GetStorage().read('face_recog') == true) {
+                              print("masuk sini");
+                              var statusCamera = Permission.camera.status;
+                              statusCamera.then((value) {
+                                var statusLokasi = Permission.location.status;
+                                statusLokasi.then((value2) async {
+                                  if (value != PermissionStatus.granted ||
+                                      value2 != PermissionStatus.granted) {
+                                    UtilsAlert.showToast(
+                                        "Anda harus aktifkan kamera dan lokasi anda");
+                                    controller.widgetButtomSheetAktifCamera(
+                                        'loadfirst');
+                                  } else {
+                                    print("masuk absen user");
+                                    // Get.offAll(AbsenMasukKeluar(
+                                    //   status: "Absen Masuk",
+                                    //   type: 1,
+                                    // ));
+                                    //  controllerAbsensi.absenSelfie();
+
+                                    var validasiAbsenMasukUser =
+                                        controller.validasiAbsenMasukUser();
+                                    if (!validasiAbsenMasukUser) {
+                                      print("masuk sini");
+                                    } else {
+                                      controllerAbsensi.titleAbsen.value =
+                                          "Absen masuk";
+
+                                      controllerAbsensi.typeAbsen.value = 1;
+
+                                      //begin image picker
+                                      // final getFoto = await ImagePicker()
+                                      //     .pickImage(
+                                      //         source: ImageSource.camera,
+                                      //         preferredCameraDevice:
+                                      //             CameraDevice.front,
+                                      //         imageQuality: 100,
+                                      //         maxHeight: 350,
+                                      //         maxWidth: 350);
+                                      // if (getFoto == null) {
+                                      //   UtilsAlert.showToast(
+                                      //       "Gagal mengambil gambar");
+                                      // } else {
+                                      //   // controllerAbsensi.facedDetection(
+                                      //   //     status: "registration",
+                                      //   //     absenStatus: "Absen Masuk",
+                                      //   //     img: getFoto.path,
+                                      //   //     type: "1");
+                                      //   Get.to(LoadingAbsen(
+                                      //     file: getFoto.path,
+                                      //     status: "detection",
+                                      //     statusAbsen: 'masuk',
+                                      //   ));
+                                      //   // Get.to(FaceidRegistration(
+                                      //   //   status: "registration",
+                                      //   // ));
+                                      // }
+                                      //end image picker
+
+                                      //begin face recognition
+                                      // Get.to(FaceDetectorView(
+                                      //   status: "masuk",
+                                      // ));
+                                      //end begin face recogniton
+
+                                      if (controllerAbsensi.regType.value ==
+                                          1) {
+                                        Get.to(AbsensiLocation(
+                                          status: "masuk",
+                                        ));
+                                      } else {
+                                        Get.to(FaceDetectorView(
+                                          status: "masuk",
+                                        ));
+                                      }
+
+                                      // // controllerAbsensi.getPlaceCoordinate();
+                                      // ;
+                                      // controllerAbsensi.facedDetection(
+                                      //     status: "detection",
+                                      //     absenStatus: "masuk",
+                                      //     type: "1");
+
+                                      // var kalkulasiRadius =
+                                      //     controller.radiusNotOpen();
+                                      // Get.to(faceDetectionPage(
+                                      //   status: "masuk",
+                                      // ));
+                                      // kalkulasiRadius.then((value) {
+                                      //   print(value);
+                                      //   // if (value) {
+                                      //   //   controllerAbsensi.titleAbsen.value =
+                                      //   //       "Absen Masuk";
+                                      //   //   controllerAbsensi.typeAbsen.value = 1;
+                                      //   //   Get.offAll(faceDetectionPage());
+                                      //   //   // controllerAbsensi.absenSelfie();
+                                      //   // }
+                                      // });
+                                    }
+                                  }
+                                });
+                              });
+                            } else {
+                              controllerAbsensi
+                                  .widgetButtomSheetFaceRegistrattion();
+                            }
+                          }
+                        }
+                      : () async {
+                          if (!controllerAbsensi.absenStatus.value) {
+                            UtilsAlert.showToast("Absen Masuk terlebih dahulu");
+                          } else {
+                            var dataUser = AppData.informasiUser;
+                            var faceRecog = dataUser![0].face_recog;
+
+                            if (GetStorage().read('face_recog') == true) {
+                              controllerAbsensi.getPlaceCoordinate();
+                              controllerAbsensi.titleAbsen.value =
+                                  "Absen Keluar";
+                              controllerAbsensi.typeAbsen.value = 2;
+
+                              //begin image picker
+                              // final getFoto = await ImagePicker()
+                              //     .pickImage(
+                              //         source: ImageSource.camera,
+                              //         preferredCameraDevice:
+                              //             CameraDevice.front,
+                              //         imageQuality: 100,
+                              //         maxHeight: 350,
+                              //         maxWidth: 350);
+                              // if (getFoto == null) {
+                              //   UtilsAlert.showToast(
+                              //       "Gagal mengambil gambar");
+                              // } else {
+                              //   // controllerAbsensi.facedDetection(
+                              //   //     status: "registration",
+                              //   //     absenStatus: "Absen Masuk",
+                              //   //     img: getFoto.path,
+                              //   //     type: "1");
+                              //   Get.to(LoadingAbsen(
+                              //     file: getFoto.path,
+                              //     status: "detection",
+                              //     statusAbsen: 'keluar',
+                              //   ));
+                              //   // Get.to(FaceidRegistration(
+                              //   //   status: "registration",
+                              //   // ));
+                              // }
+                              //end image picker
+
+                              if (controllerAbsensi.regType.value == 1) {
+                                Get.to(AbsensiLocation(
+                                  status: "keluar",
+                                ));
+                              } else {
+                                Get.to(FaceDetectorView(
+                                  status: "keluar",
+                                ));
+                              }
+
+                              // controllerAbsensi.facedDetection(
+                              //     status: "detection",
+                              //     type: "2",
+                              // //     absenStatus: "keluar");
+                              // Get.to(faceDetectionPage(
+                              //   status: "keluar",
+                              // ));
+                              // Get.offAll(AbsenMasukKeluar(
+                              //   status: "Absen Keluar",
+                              //   type: 2,
+                              // ));
+                              // controllerAbsensi.absenSelfie();
+                              // var validasiAbsenMasukUser =
+                              //     controller.validasiAbsenMasukUser();
+                              // print(validasiAbsenMasukUser);
+                              // if (validasiAbsenMasukUser == false) {
+
+                              // } else {
+                              //   var kalkulasiRadius =
+                              //       controller.radiusNotOpen();
+                              //   kalkulasiRadius.then((value) {
+                              //     if (value) {
+                              //       controllerAbsensi.titleAbsen.value =
+                              //           "Absen Keluar";
+                              //       controllerAbsensi.typeAbsen.value = 2;
+                              //       Get.offAll(AbsenMasukKeluar());
+                              //       controllerAbsensi.absenSelfie();
+                              //     }
+                              //   });
+                              // }
+                            } else {
+                              controllerAbsensi
+                                  .widgetButtomSheetFaceRegistrattion();
+                            }
+                          }
+                        },
+                  label: Text(
+                    !controllerAbsensi.absenStatus.value ? "Masuk" : "Keluar",
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  icon: Icon(
+                    !controllerAbsensi.absenStatus.value
+                        ? Iconsax.login5
+                        : Iconsax.logout_15,
+                    size: 32,
+                    color: !controllerAbsensi.absenStatus.value
+                        ? Constanst.color5
+                        : Constanst.color4,
+                  ),
+                  backgroundColor: Constanst.colorWhite),
+            ),
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
           return true;
@@ -1726,25 +1974,10 @@ class _DashboardState extends State<Dashboard> {
                                     left: 8,
                                     top: 8,
                                   ),
-                                  child: CachedNetworkImage(
-                                    imageUrl: Api.UrlgambarDashboard + gambar2,
-                                    progressIndicatorBuilder:
-                                        (context, url, downloadProgress) =>
-                                            Container(
-                                      alignment: Alignment.center,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.5,
-                                      width: MediaQuery.of(context).size.width,
-                                      child: CircularProgressIndicator(
-                                          value: downloadProgress.progress),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        SizedBox(),
-                                    fit: BoxFit.cover,
-                                    width: 42,
+                                  child: SvgPicture.asset(
+                                    'assets/1_more.svg',
                                     height: 42,
-                                    color: Constanst.colorButton1,
+                                    width: 42,
                                   ),
                                 ),
                               ],
@@ -1817,31 +2050,28 @@ class _DashboardState extends State<Dashboard> {
                                             left: 8,
                                             top: 8,
                                           ),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                Api.UrlgambarDashboard + gambar,
-                                            progressIndicatorBuilder: (context,
-                                                    url, downloadProgress) =>
-                                                Container(
-                                              alignment: Alignment.center,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.5,
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              child: CircularProgressIndicator(
-                                                  value: downloadProgress
-                                                      .progress),
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    SizedBox(),
-                                            fit: BoxFit.cover,
-                                            width: 42,
+                                          child: SvgPicture.asset(
+                                            gambar == "watch.png"
+                                                ? 'assets/2_absen.svg'
+                                                : gambar == "tidak_masuk.png"
+                                                    ? 'assets/3_izin.svg'
+                                                    : gambar == "clock.png"
+                                                        ? 'assets/4_lembur.svg'
+                                                        : gambar ==
+                                                                "riwayat_cuti.png"
+                                                            ? 'assets/5_cuti.svg'
+                                                            : gambar ==
+                                                                    "tugas_luar.png"
+                                                                ? 'assets/6_tugas_luar.svg'
+                                                                : gambar ==
+                                                                        "limit_claim.png"
+                                                                    ? 'assets/7_klaim.svg'
+                                                                    : gambar ==
+                                                                            "8_kandidat.png"
+                                                                        ? 'assets/profile_kandidat.svg'
+                                                                        : 'assets/8_kandidat.svg',
                                             height: 42,
-                                            color: Constanst.colorButton1,
+                                            width: 42,
                                           ),
                                         ),
                                       ],

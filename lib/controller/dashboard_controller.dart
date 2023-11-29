@@ -47,6 +47,7 @@ import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 var departementAkses = [].obs;
 
@@ -1510,11 +1511,10 @@ class DashboardController extends GetxController {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.network(
-                          "${Api.UrlgambarDashboard}lainnya.png",
-                          width: 26,
+                        SvgPicture.asset(
+                          'assets/1_more.svg',
                           height: 26,
-                          color: Constanst.colorPrimary,
+                          width: 26,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 12),
@@ -1577,6 +1577,7 @@ class DashboardController extends GetxController {
                           children:
                               List.generate(data['menu'].length, (idxMenu) {
                             var gambar = data['menu'][idxMenu]['gambar'];
+                            print(gambar);
                             var namaMenu = data['menu'][idxMenu]['nama'];
                             return data['menu'][idxMenu]['id'] == 8
                                 ? const SizedBox()
@@ -1612,39 +1613,35 @@ class DashboardController extends GetxController {
                                                           left: 8,
                                                           top: 8,
                                                         ),
-                                                        child:
-                                                            CachedNetworkImage(
-                                                          imageUrl:
-                                                              Api.UrlgambarDashboard +
-                                                                  gambar,
-                                                          progressIndicatorBuilder:
-                                                              (context, url,
-                                                                      downloadProgress) =>
-                                                                  Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            height: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .height *
-                                                                0.5,
-                                                            width:
-                                                                MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                            child: CircularProgressIndicator(
-                                                                value: downloadProgress
-                                                                    .progress),
-                                                          ),
-                                                          errorWidget: (context,
-                                                                  url, error) =>
-                                                              SizedBox(),
-                                                          fit: BoxFit.cover,
-                                                          width: 42,
+                                                        child: SvgPicture.asset(
+                                                          gambar == "watch.png"
+                                                              ? 'assets/2_absen.svg'
+                                                              : gambar ==
+                                                                      "tidak_masuk.png"
+                                                                  ? 'assets/3_izin.svg'
+                                                                  : gambar ==
+                                                                          "clock.png"
+                                                                      ? 'assets/4_lembur.svg'
+                                                                      : gambar ==
+                                                                              "riwayat_cuti.png"
+                                                                          ? 'assets/5_cuti.svg'
+                                                                          : gambar == "tugas_luar.png"
+                                                                              ? 'assets/6_tugas_luar.svg'
+                                                                              : gambar == "limit_claim.png"
+                                                                                  ? 'assets/7_klaim.svg'
+                                                                                  : gambar == "profile_kandidat.png"
+                                                                                      ? 'assets/8_kandidat.svg'
+                                                                                      : gambar == "slip_gaji.png"
+                                                                                          ? 'assets/9_slip_gaji.svg'
+                                                                                          : gambar == "pph.png"
+                                                                                              ? 'assets/10_pph_21.svg'
+                                                                                              : gambar == "bpjstng.png"
+                                                                                                  ? 'assets/11_bpjs_kes.svg'
+                                                                                                  : gambar == "bpjsksh.png"
+                                                                                                      ? 'assets/12_bpjs_ket.svg'
+                                                                                                      : 'assets/12_bpjs_ket.svg',
                                                           height: 42,
-                                                          color: Constanst
-                                                              .colorButton1,
+                                                          width: 42,
                                                         ),
                                                       ),
                                                     ],

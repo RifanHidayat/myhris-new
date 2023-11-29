@@ -8,6 +8,7 @@ import 'package:siscom_operasional/controller/setting_controller.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class InfoKaryawan extends StatelessWidget {
   final controller = Get.put(SettingController());
@@ -35,23 +36,107 @@ class InfoKaryawan extends StatelessWidget {
         leadingWidth: 50,
         titleSpacing: 0,
         centerTitle: true,
-        title: Text(
-          "Info Karyawan",
-          style: GoogleFonts.inter(
-              color: Constanst.fgPrimary,
-              fontWeight: FontWeight.w500,
-              fontSize: 20),
-        ),
-        leading: IconButton(
-          icon: Icon(
-            Iconsax.arrow_left,
-            color: Constanst.fgPrimary,
-            size: 24,
+        title: Obx(() {
+          if (controller.isSearching.value) {
+            return SizedBox(
+              height: 40,
+              child: TextFormField(
+                controller: controller.searchController,
+                // onFieldSubmitted: (value) {
+                // controller.report();
+                // },
+                onChanged: (value) {
+                  controller.pencarianNamaKaryawan(value);
+                },
+                textAlignVertical: TextAlignVertical.center,
+                style: GoogleFonts.inter(
+                    height: 1.5,
+                    fontWeight: FontWeight.w400,
+                    color: Constanst.fgPrimary,
+                    fontSize: 15),
+                cursorColor: Constanst.onPrimary,
+                decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Constanst.colorNeutralBgSecondary,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(100),
+                      borderSide: const BorderSide(
+                        color: Colors.transparent,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(100),
+                      borderSide: const BorderSide(
+                        color: Colors.transparent,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.only(left: 20, right: 20),
+                    hintText: "Cari data...",
+                    hintStyle: GoogleFonts.inter(
+                        height: 1.5,
+                        fontWeight: FontWeight.w400,
+                        color: Constanst.fgSecondary,
+                        fontSize: 14),
+                    prefixIconConstraints:
+                        BoxConstraints.tight(const Size(46, 46)),
+                    suffixIconConstraints:
+                        BoxConstraints.tight(const Size(46, 46)),
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.only(left: 16.0, right: 8),
+                      child: IconButton(
+                        icon: Icon(
+                          Iconsax.close_circle5,
+                          color: Constanst.fgSecondary,
+                          size: 24,
+                        ),
+                        padding: EdgeInsets.zero,
+                        onPressed: controller.clearText,
+                      ),
+                    )),
+              ),
+            );
+          } else {
+            return Text(
+              "Info Karyawan",
+              style: GoogleFonts.inter(
+                  color: Constanst.fgPrimary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18),
+            );
+          }
+        }),
+        actions: [
+          Obx(
+            () => controller.isSearching.value
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: Container(),
+                  )
+                : IconButton(
+                    icon: Icon(
+                      Iconsax.search_normal_1,
+                      color: Constanst.fgPrimary,
+                      size: 24,
+                    ),
+                    onPressed: controller.toggleSearch,
+                  ),
           ),
-          onPressed: () {
-            controller.cari.value.text = "";
-            Get.back();
-          },
+        ],
+        leading: Obx(
+          () => IconButton(
+            icon: Icon(
+              Iconsax.arrow_left,
+              color: Constanst.fgPrimary,
+              size: 24,
+            ),
+            onPressed: controller.isSearching.value
+                ? controller.toggleSearch
+                : Get.back,
+            // onPressed: () {
+            //   controller.cari.value.text = "";
+            //   Get.back();
+            // },
+          ),
         ),
       ),
       body: WillPopScope(
@@ -67,8 +152,8 @@ class InfoKaryawan extends StatelessWidget {
                 children: [
                   const SizedBox(height: 8),
                   formDepartemen(),
-                  const SizedBox(height: 16),
-                  pencarianData(),
+                  // const SizedBox(height: 16),
+                  // pencarianData(),
                   const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0, right: 16.0),
@@ -79,13 +164,13 @@ class InfoKaryawan extends StatelessWidget {
                         Text(
                           controller.namaDepartemenTerpilih.value,
                           style: GoogleFonts.inter(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
                               color: Constanst.fgPrimary),
                         ),
                         Text("${controller.jumlahData.value} Karyawan",
                             style: GoogleFonts.inter(
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 color: Constanst.fgSecondary)),
                       ],
@@ -185,7 +270,7 @@ class InfoKaryawan extends StatelessWidget {
                     Text(
                       controller.departemen.value.text,
                       style: GoogleFonts.inter(
-                          fontSize: 14.0,
+                          fontSize: 12.0,
                           color: Constanst.fgSecondary,
                           fontWeight: FontWeight.w500),
                     ),
@@ -230,11 +315,11 @@ class InfoKaryawan extends StatelessWidget {
                           image == ""
                               ? Image.asset(
                                   'assets/avatar_default.png',
-                                  width: 50,
-                                  height: 50,
+                                  width: 48,
+                                  height: 48,
                                 )
                               : CircleAvatar(
-                                  radius: 25,
+                                  radius: 24,
                                   child: ClipOval(
                                     child: ClipOval(
                                       child: CachedNetworkImage(
@@ -255,12 +340,12 @@ class InfoKaryawan extends StatelessWidget {
                                         errorWidget: (context, url, error) =>
                                             Image.asset(
                                           'assets/avatar_default.png',
-                                          width: 50,
-                                          height: 50,
+                                          width: 48,
+                                          height: 48,
                                         ),
                                         fit: BoxFit.cover,
-                                        width: 50,
-                                        height: 50,
+                                        width: 48,
+                                        height: 48,
                                       ),
                                     ),
                                   ),
@@ -273,7 +358,7 @@ class InfoKaryawan extends StatelessWidget {
                                 Text(
                                   "$full_name",
                                   style: GoogleFonts.inter(
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       color: Constanst.fgPrimary,
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -281,7 +366,7 @@ class InfoKaryawan extends StatelessWidget {
                                 Text(
                                   "$title",
                                   style: GoogleFonts.inter(
-                                      fontSize: 14,
+                                      fontSize: 12,
                                       color: Constanst.fgSecondary,
                                       fontWeight: FontWeight.w400),
                                 )

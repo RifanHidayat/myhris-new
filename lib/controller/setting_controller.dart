@@ -61,7 +61,19 @@ class SettingController extends GetxController {
   var dataGolonganDarah = ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'OB+'];
 
   var apiController = Get.put(ApiController());
-  var authController=Get.put(AuthController());
+  var authController = Get.put(AuthController());
+
+  RxBool isSearching = false.obs;
+  var searchController = TextEditingController();
+
+  void toggleSearch() {
+    isSearching.value = !isSearching.value;
+  }
+
+  void clearText() {
+    searchController.clear();
+    pencarianNamaKaryawan('');
+  }
 
   @override
   void onReady() async {
@@ -111,7 +123,7 @@ class SettingController extends GetxController {
   void aksiEditLastLogin() {
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
-  authController.  isautoLogout.value=true;
+    authController.isautoLogout.value = true;
     Map<String, dynamic> body = {
       'last_login': '0000-00-00 00:00:00',
       'em_id': getEmid
@@ -125,19 +137,19 @@ class SettingController extends GetxController {
         Navigator.pop(Get.context!);
         _stopForegroundTask();
         Get.offAll(Login());
-         AppData.isLogin = false;
+        AppData.isLogin = false;
       }
     });
   }
-    validateAuth(code) {
+
+  validateAuth(code) {
     print("kode validate");
     if (code == 401) {
-          AppData.informasiUser = null;
-        Navigator.pop(Get.context!);
-        _stopForegroundTask();
-        Get.offAll(Login());
-         AppData.isLogin = false;
-    
+      AppData.informasiUser = null;
+      Navigator.pop(Get.context!);
+      _stopForegroundTask();
+      Get.offAll(Login());
+      AppData.isLogin = false;
     }
   }
 
@@ -311,14 +323,15 @@ class SettingController extends GetxController {
             Navigator.pop(Get.context!);
             UtilsAlert.showToast(valueBody['message']);
           } else {
-            AppData.passwordUser= passwordBaru.value.text;
-           authController.password.value.text = passwordBaru.value.text;
+            AppData.passwordUser = passwordBaru.value.text;
+            authController.password.value.text = passwordBaru.value.text;
             Navigator.pop(Get.context!);
             UtilsAlert.berhasilSimpanData(Get.context!, "Data Berhasil diubah");
             await Future.delayed(const Duration(seconds: 2));
             Navigator.pop(Get.context!);
-           aksiEditLastLogin();
-           authController.messageNewPassword.value="Silahkan login menggunakan password baru";
+            aksiEditLastLogin();
+            authController.messageNewPassword.value =
+                "Silahkan login menggunakan password baru";
           }
         }
       });
@@ -529,7 +542,6 @@ class SettingController extends GetxController {
                   SizedBox(
                     height: 16,
                   ),
-                  
                   Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: InkWell(
@@ -560,12 +572,12 @@ class SettingController extends GetxController {
                   SizedBox(
                     height: 16,
                   ),
-                         Padding(
+                  Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: InkWell(
                       onTap: () {
                         Navigator.pop(Get.context!);
-                       authController.hapusFoto();
+                        authController.hapusFoto();
                       },
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -602,8 +614,7 @@ class SettingController extends GetxController {
     );
   }
 
-
-    void validasiHapusFoto() {
+  void validasiHapusFoto() {
     showModalBottomSheet(
       context: Get.context!,
       shape: const RoundedRectangleBorder(
@@ -694,7 +705,6 @@ class SettingController extends GetxController {
                   SizedBox(
                     height: 16,
                   ),
-                  
                   Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: InkWell(
@@ -725,7 +735,7 @@ class SettingController extends GetxController {
                   SizedBox(
                     height: 16,
                   ),
-                         Padding(
+                  Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: InkWell(
                       onTap: () {
@@ -766,7 +776,6 @@ class SettingController extends GetxController {
       },
     );
   }
-
 
   void ubahFotoCamera() async {
     fotoUser.value = File("");
