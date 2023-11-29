@@ -100,11 +100,24 @@ class _FormLemburState extends State<FormLembur> {
                             ? const SizedBox()
                             : formType(),
                         formHariDanTanggal(),
-                        formJam(),
                         const SizedBox(height: 20),
-                        formDelegasiKepada(),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
+                          child: formJam(),
+                        ),
                         const SizedBox(height: 20),
-                        formCatatan(),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
+                          child: formDelegasiKepada(),
+                        ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
+                          child: formCatatan(),
+                        ),
                       ],
                     ),
                   )),

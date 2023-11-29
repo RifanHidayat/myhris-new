@@ -108,6 +108,25 @@ class _SettingState extends State<Setting> {
   }
 
   Widget firstLine() {
+    // var span = TextSpan(
+    //   text: AppData.informasiUser![0].em_status,
+    //   style: const TextStyle(fontSize: 12),
+    // );
+
+    // // Use a textpainter to determine if it will exceed max lines
+    // var tp = TextPainter(
+    //   maxLines: 1,
+    //   textAlign: TextAlign.left,
+    //   textDirection: TextDirection.ltr,
+    //   text: span,
+    // );
+
+    // // trigger it to layout
+    // tp.layout(maxWidth: size.maxWidth);
+
+    // // whether the text overflowed or not
+    // var exceeded = tp.didExceedMaxLines;
+
     return controller.refreshPageStatus.value
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,145 +154,161 @@ class _SettingState extends State<Setting> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              Stack(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Constanst.color5,
-                                          width: 2.0,
-                                        ),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(100))),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: AppData.informasiUser![0]
-                                                      .em_image ==
-                                                  null ||
-                                              AppData.informasiUser![0]
-                                                      .em_image ==
-                                                  ""
-                                          ? Image.asset(
-                                              'assets/avatar_default.png',
-                                              width: 56,
-                                              height: 56,
-                                            )
-                                          : CircleAvatar(
-                                              radius: 28,
-                                              child: ClipOval(
+                          Expanded(
+                            flex: 90,
+                            child: Row(
+                              children: [
+                                Stack(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Constanst.color5,
+                                            width: 2.0,
+                                          ),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(100))),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: AppData.informasiUser![0]
+                                                        .em_image ==
+                                                    null ||
+                                                AppData.informasiUser![0]
+                                                        .em_image ==
+                                                    ""
+                                            ? Image.asset(
+                                                'assets/avatar_default.png',
+                                                width: 56,
+                                                height: 56,
+                                              )
+                                            : CircleAvatar(
+                                                radius: 28,
                                                 child: ClipOval(
-                                                  child: CachedNetworkImage(
-                                                    imageUrl:
-                                                        "${Api.UrlfotoProfile}${AppData.informasiUser![0].em_image}",
-                                                    progressIndicatorBuilder:
-                                                        (context, url,
-                                                                downloadProgress) =>
-                                                            Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.5,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      child: CircularProgressIndicator(
-                                                          value:
-                                                              downloadProgress
-                                                                  .progress),
-                                                    ),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            Image.asset(
-                                                      'assets/avatar_default.png',
+                                                  child: ClipOval(
+                                                    child: CachedNetworkImage(
+                                                      imageUrl:
+                                                          "${Api.UrlfotoProfile}${AppData.informasiUser![0].em_image}",
+                                                      progressIndicatorBuilder:
+                                                          (context, url,
+                                                                  downloadProgress) =>
+                                                              Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.5,
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
+                                                        child: CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                      ),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          Image.asset(
+                                                        'assets/avatar_default.png',
+                                                        width: 56,
+                                                        height: 56,
+                                                      ),
+                                                      fit: BoxFit.cover,
                                                       width: 56,
                                                       height: 56,
                                                     ),
-                                                    fit: BoxFit.cover,
-                                                    width: 56,
-                                                    height: 56,
                                                   ),
                                                 ),
                                               ),
-                                            ),
+                                      ),
                                     ),
-                                  ),
-                                  Positioned(
-                                      bottom: 0,
-                                      right: 0,
-                                      child: ClipOval(
-                                        child: Container(
-                                          padding: const EdgeInsets.all(2),
-                                          color: Colors.white,
-                                          child: ClipOval(
-                                            child: Container(
-                                              padding: const EdgeInsets.all(3),
-                                              color: Constanst.color5,
-                                              child: const Icon(
-                                                Icons.check,
-                                                size: 12,
-                                                color: Colors.white,
+                                    Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: ClipOval(
+                                          child: Container(
+                                            padding: const EdgeInsets.all(2),
+                                            color: Colors.white,
+                                            child: ClipOval(
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(3),
+                                                color: Constanst.color5,
+                                                child: const Icon(
+                                                  Icons.check,
+                                                  size: 12,
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ))
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 12.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${AppData.informasiUser![0].full_name}",
-                                      style: GoogleFonts.inter(
-                                          color: Constanst.fgPrimary,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Row(
+                                        ))
+                                  ],
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 12.0),
+                                    child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "${AppData.informasiUser![0].emp_jobTitle} • ",
+                                          "${AppData.informasiUser![0].full_name}",
                                           style: GoogleFonts.inter(
                                               color: Constanst.fgPrimary,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500),
                                         ),
-                                        Text(
-                                          "${AppData.informasiUser![0].posisi} • ",
-                                          style: GoogleFonts.inter(
-                                              color: Constanst.fgPrimary,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        Text(
-                                          "${AppData.informasiUser![0].em_status}",
-                                          style: GoogleFonts.inter(
-                                              color: Constanst.fgPrimary,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400),
+                                        const SizedBox(height: 4),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                "${AppData.informasiUser![0].emp_jobTitle} • ${AppData.informasiUser![0].posisi} • ${AppData.informasiUser![0].em_status}",
+                                                style: GoogleFonts.inter(
+                                                    color: Constanst.fgPrimary,
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
+                                            ),
+                                            // Text(
+                                            //   "",
+                                            //   style: GoogleFonts.inter(
+                                            //       color: Constanst.fgPrimary,
+                                            //       fontSize: 12,
+                                            //       fontWeight: FontWeight.w400),
+                                            // ),
+                                            // Expanded(
+                                            //   child: Text(
+                                            //     "",
+                                            //     style: GoogleFonts.inter(
+                                            //         color: Constanst.fgPrimary,
+                                            //         fontSize: 12,
+                                            //         fontWeight:
+                                            //             FontWeight.w400),
+                                            //   ),
+                                            // ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 16,
-                            color: Constanst.fgSecondary,
+                          Expanded(
+                            flex: 10,
+                            child: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 16,
+                              color: Constanst.fgSecondary,
+                            ),
                           ),
                         ],
                       ),
