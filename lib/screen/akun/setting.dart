@@ -125,14 +125,13 @@ class _SettingState extends State<Setting> {
                 child: Container(
                     decoration: BoxDecoration(
                         border: Border.all(
-                          color: Constanst.colorNeutralBgTertiary,
+                          color: Constanst.fgBorder,
                           width: 1.0,
                         ),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(12))),
                     child: Padding(
-                      padding:
-                          const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+                      padding: const EdgeInsets.fromLTRB(16.0, 12.0, 0.0, 12.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -297,7 +296,7 @@ class _SettingState extends State<Setting> {
               child: Container(
                 decoration: BoxDecoration(
                     border: Border.all(
-                      color: Constanst.colorNeutralBgTertiary,
+                      color: Constanst.fgBorder,
                       width: 1.0,
                     ),
                     borderRadius: const BorderRadius.all(Radius.circular(12))),
@@ -360,7 +359,7 @@ class _SettingState extends State<Setting> {
               child: Container(
                 decoration: BoxDecoration(
                     border: Border.all(
-                      color: Constanst.colorNeutralBgTertiary,
+                      color: Constanst.fgBorder,
                       width: 1.0,
                     ),
                     color: Constanst.colorNonAktif,
