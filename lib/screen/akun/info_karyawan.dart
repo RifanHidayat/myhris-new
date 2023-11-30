@@ -101,7 +101,7 @@ class InfoKaryawan extends StatelessWidget {
               style: GoogleFonts.inter(
                   color: Constanst.fgPrimary,
                   fontWeight: FontWeight.w500,
-                  fontSize: 18),
+                  fontSize: 20),
             );
           }
         }),
@@ -161,16 +161,16 @@ class InfoKaryawan extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          controller.namaDepartemenTerpilih.value,
-                          style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Constanst.fgPrimary),
-                        ),
+                        // Text(
+                        //   controller.namaDepartemenTerpilih.value,
+                        //   style: GoogleFonts.inter(
+                        //       fontSize: 16,
+                        //       fontWeight: FontWeight.w500,
+                        //       color: Constanst.fgPrimary),
+                        // ),
                         Text("${controller.jumlahData.value} Karyawan",
                             style: GoogleFonts.inter(
-                                fontSize: 12,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w400,
                                 color: Constanst.fgSecondary)),
                       ],
@@ -313,40 +313,40 @@ class InfoKaryawan extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           image == ""
-                              ? Image.asset(
-                                  'assets/avatar_default.png',
-                                  width: 48,
-                                  height: 48,
+                              ? SvgPicture.asset(
+                                  'assets/avatar_default.svg',
+                                  width: 50,
+                                  height: 50,
                                 )
                               : CircleAvatar(
-                                  radius: 24,
+                                  radius: 25,
                                   child: ClipOval(
-                                    child: ClipOval(
-                                      child: CachedNetworkImage(
-                                        imageUrl: "${Api.UrlfotoProfile}$image",
-                                        progressIndicatorBuilder:
-                                            (context, url, downloadProgress) =>
-                                                Container(
-                                          alignment: Alignment.center,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.5,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: CircularProgressIndicator(
-                                              value: downloadProgress.progress),
-                                        ),
-                                        errorWidget: (context, url, error) =>
-                                            Image.asset(
-                                          'assets/avatar_default.png',
-                                          width: 48,
-                                          height: 48,
-                                        ),
-                                        fit: BoxFit.cover,
-                                        width: 48,
-                                        height: 48,
+                                    child: CachedNetworkImage(
+                                      imageUrl: "${Api.UrlfotoProfile}$image",
+                                      progressIndicatorBuilder:
+                                          (context, url, downloadProgress) =>
+                                              Container(
+                                        alignment: Alignment.center,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.5,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: CircularProgressIndicator(
+                                            value: downloadProgress.progress),
                                       ),
+                                      errorWidget: (context, url, error) =>
+                                          Container(
+                                        color: Colors.white,
+                                        child: SvgPicture.asset(
+                                          'assets/avatar_default.svg',
+                                          width: 50,
+                                          height: 50,
+                                        ),
+                                      ),
+                                      fit: BoxFit.cover,
+                                      width: 50,
+                                      height: 50,
                                     ),
                                   ),
                                 ),
@@ -358,7 +358,7 @@ class InfoKaryawan extends StatelessWidget {
                                 Text(
                                   "$full_name",
                                   style: GoogleFonts.inter(
-                                      fontSize: 14,
+                                      fontSize: 16,
                                       color: Constanst.fgPrimary,
                                       fontWeight: FontWeight.w500),
                                 ),

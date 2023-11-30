@@ -9,6 +9,7 @@ import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class GlobalController extends GetxController {
   var valuePolaPersetujuan = "".obs;
@@ -114,8 +115,8 @@ class GlobalController extends GetxController {
   //   });
   // }
 
-    void loadAllSisaCuti() {
-      var emId=AppData.informasiUser![0].em_id;
+  void loadAllSisaCuti() {
+    var emId = AppData.informasiUser![0].em_id;
     print("sisa PKWT`");
     var statusReminder = "";
     var emids = [];
@@ -130,13 +131,16 @@ class GlobalController extends GetxController {
     }
 
     print("data ${emids.toString()}");
-    Map<String, dynamic> body = {'reminder': statusReminder,"em_id":emId.toString()};
+    Map<String, dynamic> body = {
+      'reminder': statusReminder,
+      "em_id": emId.toString()
+    };
     var connect = Api.connectionApi("post", body, "info_sisa_kontrak");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         employeeSisaCuti.value = valueBody['data'];
-      //  var tempData = [];
+        //  var tempData = [];
         // emids.forEach((element) {
         //   if (element.toString() ==
         //       AppData.informasiUser![0].em_id.toString()) {
@@ -240,8 +244,8 @@ class GlobalController extends GetxController {
                                       Expanded(
                                         flex: 15,
                                         child: gambar == ""
-                                            ? Image.asset(
-                                                'assets/avatar_default.png',
+                                            ? SvgPicture.asset(
+                                                'assets/avatar_default.svg',
                                                 width: 40,
                                                 height: 40,
                                               )
@@ -275,10 +279,13 @@ class GlobalController extends GetxController {
                                                       ),
                                                       errorWidget: (context,
                                                               url, error) =>
-                                                          Image.asset(
-                                                        'assets/avatar_default.png',
-                                                        width: 40,
-                                                        height: 40,
+                                                          Container(
+                                                        color: Colors.white,
+                                                        child: SvgPicture.asset(
+                                                          'assets/avatar_default.svg',
+                                                          width: 40,
+                                                          height: 40,
+                                                        ),
                                                       ),
                                                       fit: BoxFit.cover,
                                                       width: 50,

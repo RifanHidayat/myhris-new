@@ -8,9 +8,11 @@ import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
+import 'package:siscom_operasional/screen/detail_informasi.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Informasi extends StatelessWidget {
   final index;
@@ -141,7 +143,7 @@ class Informasi extends StatelessWidget {
                       size: 24,
                     ),
                     onPressed: () {
-                      Get.offAll(InitScreen());
+                      controller.toggleSearch();
                     },
                   )
                 : IconButton(
@@ -162,18 +164,15 @@ class Informasi extends StatelessWidget {
           },
           child: SafeArea(
             child: Obx(
-              () => Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    lineTitle(),
-                    Flexible(
-                      flex: 3,
-                      child: pageViewPesan(),
-                    )
-                  ],
-                ),
+              () => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  lineTitle(),
+                  Flexible(
+                    flex: 3,
+                    child: pageViewPesan(),
+                  )
+                ],
               ),
             ),
           )),
@@ -372,61 +371,75 @@ class Informasi extends StatelessWidget {
               child: Text("Tidak ada Informasi"),
             ),
           )
-        : ListView.builder(
-            itemCount: controller.informasiDashboard.value.length,
-            physics: const BouncingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) {
-              var title = controller.informasiDashboard.value[index]['title'];
-              var desc =
-                  controller.informasiDashboard.value[index]['description'];
-              var create =
-                  controller.informasiDashboard.value[index]['created_on'];
+        : Padding(
+            padding: const EdgeInsets.only(top: 12.0),
+            child: ListView.builder(
+                itemCount: controller.informasiDashboard.value.length,
+                physics: const BouncingScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  var title =
+                      controller.informasiDashboard.value[index]['title'];
+                  var desc =
+                      controller.informasiDashboard.value[index]['description'];
+                  var create =
+                      controller.informasiDashboard.value[index]['created_on'];
 
-              return Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8, top: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      Constanst.convertDate("$create"),
-                      textAlign: TextAlign.right,
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: Constanst.fgSecondary),
+                  return InkWell(
+                    onTap: () => Get.to(DetailInformasi(
+                      title: title,
+                      create: create,
+                      desc: desc,
+                    )),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(left: 16, right: 16, top: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            Constanst.convertDate("$create"),
+                            textAlign: TextAlign.right,
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                color: Constanst.fgSecondary),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            "$title",
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Constanst.fgPrimary),
+                          ),
+                          Html(
+                            data: desc,
+                            style: {
+                              "body": Style(
+                                fontSize: const FontSize(14),
+                                maxLines: 2,
+                                textOverflow: TextOverflow.ellipsis,
+                                margin: const EdgeInsets.all(0.0),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "GoogleFonts.inter",
+                                color: Constanst.fgSecondary,
+                              ),
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          Divider(
+                            height: 0,
+                            thickness: 1,
+                            color: Constanst.fgBorder,
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      "$title",
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: Constanst.fgPrimary),
-                    ),
-                    Html(
-                      data: desc,
-                      style: {
-                        "body": Style(
-                          fontSize: const FontSize(14),
-                          margin: const EdgeInsets.all(0.0),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "GoogleFonts.inter",
-                          color: Constanst.fgSecondary,
-                        ),
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    Divider(
-                      height: 0,
-                      thickness: 1,
-                      color: Constanst.fgBorder,
-                    ),
-                  ],
-                ),
-              );
-            });
+                  );
+                }),
+          );
   }
 
   Widget screenUltah() {
@@ -441,7 +454,7 @@ class Informasi extends StatelessWidget {
             ),
           )
         : Padding(
-            padding: const EdgeInsets.only(top: 24.0),
+            padding: const EdgeInsets.only(top: 24.0, left: 16, right: 16),
             child: GridView.builder(
               itemCount: controller.employeeUltah.value.length,
               shrinkWrap: true,
@@ -490,8 +503,8 @@ class Informasi extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(2.0),
                                 child: image == ""
-                                    ? Image.asset(
-                                        'assets/avatar_default.png',
+                                    ? SvgPicture.asset(
+                                        'assets/avatar_default.svg',
                                         width: 56,
                                         height: 56,
                                       )
@@ -523,10 +536,13 @@ class Informasi extends StatelessWidget {
                                                 ),
                                                 errorWidget:
                                                     (context, url, error) =>
-                                                        Image.asset(
-                                                  'assets/avatar_default.png',
-                                                  width: 56,
-                                                  height: 56,
+                                                        Container(
+                                                  color: Colors.white,
+                                                  child: SvgPicture.asset(
+                                                    'assets/avatar_default.svg',
+                                                    width: 56,
+                                                    height: 56,
+                                                  ),
                                                 ),
                                                 fit: BoxFit.cover,
                                                 width: 56,
@@ -619,7 +635,7 @@ class Informasi extends StatelessWidget {
             ),
           )
         : Padding(
-            padding: const EdgeInsets.only(top: 24.0),
+            padding: const EdgeInsets.only(top: 24.0, left: 16, right: 16),
             child: ListView.builder(
                 itemCount: controller.employeeTidakHadir.value.length,
                 shrinkWrap: true,
@@ -675,8 +691,8 @@ class Informasi extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(2.0),
                                     child: image == ""
-                                        ? Image.asset(
-                                            'assets/avatar_default.png',
+                                        ? SvgPicture.asset(
+                                            'assets/avatar_default.svg',
                                             width: 40,
                                             height: 40,
                                           )
@@ -710,10 +726,13 @@ class Informasi extends StatelessWidget {
                                                     ),
                                                     errorWidget:
                                                         (context, url, error) =>
-                                                            Image.asset(
-                                                      'assets/avatar_default.png',
-                                                      width: 40,
-                                                      height: 40,
+                                                            Container(
+                                                      color: Colors.white,
+                                                      child: SvgPicture.asset(
+                                                        'assets/avatar_default.svg',
+                                                        width: 40,
+                                                        height: 40,
+                                                      ),
                                                     ),
                                                     fit: BoxFit.cover,
                                                     width: 40,
@@ -806,7 +825,7 @@ class Informasi extends StatelessWidget {
             ),
           )
         : Padding(
-            padding: const EdgeInsets.only(top: 24.0),
+            padding: const EdgeInsets.only(top: 24.0, left: 16, right: 16),
             child: ListView.builder(
                 itemCount: controllerGlobal.employeeSisaCuti.value.length,
                 shrinkWrap: true,
@@ -862,8 +881,8 @@ class Informasi extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(2.0),
                                     child: image == ""
-                                        ? Image.asset(
-                                            'assets/avatar_default.png',
+                                        ? SvgPicture.asset(
+                                            'assets/avatar_default.svg',
                                             width: 40,
                                             height: 40,
                                           )
@@ -897,10 +916,13 @@ class Informasi extends StatelessWidget {
                                                     ),
                                                     errorWidget:
                                                         (context, url, error) =>
-                                                            Image.asset(
-                                                      'assets/avatar_default.png',
-                                                      width: 40,
-                                                      height: 40,
+                                                            Container(
+                                                      color: Colors.white,
+                                                      child: SvgPicture.asset(
+                                                        'assets/avatar_default.svg',
+                                                        width: 40,
+                                                        height: 40,
+                                                      ),
                                                     ),
                                                     fit: BoxFit.cover,
                                                     width: 40,

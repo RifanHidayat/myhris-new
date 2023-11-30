@@ -8,6 +8,7 @@ import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'dart:math' as math;
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FaceRecognitionPhotoPage extends StatelessWidget {
   const FaceRecognitionPhotoPage({super.key});
@@ -32,16 +33,18 @@ class FaceRecognitionPhotoPage extends StatelessWidget {
         ),
       ),
       body: InkWell(
-        onTap: (){
+        onTap: () {
           print(AppData.selectedDatabase);
-          print("${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}");
+          print(
+              "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}");
         },
         child: Center(
           child: Transform(
             alignment: Alignment.center,
             transform: Matrix4.rotationY(mirror),
             child: CachedNetworkImage(
-              imageUrl: "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}",
+              imageUrl:
+                  "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}",
               progressIndicatorBuilder: (context, url, downloadProgress) =>
                   Container(
                 alignment: Alignment.center,
@@ -50,10 +53,13 @@ class FaceRecognitionPhotoPage extends StatelessWidget {
                 child:
                     CircularProgressIndicator(value: downloadProgress.progress),
               ),
-              errorWidget: (context, url, error) => Image.asset(
-                'assets/avatar_default.png',
-                width: 40,
-                height: 40,
+              errorWidget: (context, url, error) => Container(
+                color: Colors.white,
+                child: SvgPicture.asset(
+                  'assets/avatar_default.svg',
+                  width: 40,
+                  height: 40,
+                ),
               ),
               fit: BoxFit.cover,
             ),
@@ -80,7 +86,8 @@ class FaceRecognitionPhotoPage extends StatelessWidget {
   }
 
   Future _deleteImageFromCache() async {
-    String url =  "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}";
+    String url =
+        "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}";
     await CachedNetworkImage.evictFromCache(url);
   }
 }

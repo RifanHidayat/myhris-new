@@ -25,6 +25,7 @@ import 'package:siscom_operasional/screen/absen/face_id_registration.dart';
 import 'package:siscom_operasional/screen/absen/facee_id_detection.dart';
 import 'package:siscom_operasional/screen/absen/loading_absen.dart';
 import 'package:siscom_operasional/screen/akun/personal_info.dart';
+import 'package:siscom_operasional/screen/detail_informasi.dart';
 import 'package:siscom_operasional/screen/informasi.dart';
 import 'package:siscom_operasional/screen/pesan/pesan.dart';
 import 'package:siscom_operasional/utils/api.dart';
@@ -725,7 +726,7 @@ class _DashboardState extends State<Dashboard> {
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 8),
                         ],
                       )
                     : Container(),
@@ -747,8 +748,8 @@ class _DashboardState extends State<Dashboard> {
               ],
             ),
             AppData.informasiUser![0].em_image == ""
-                ? Image.asset(
-                    'assets/avatar_default.png',
+                ? SvgPicture.asset(
+                    'assets/avatar_default.svg',
                     width: _isVisible ? 50 : 42,
                     height: _isVisible ? 50 : 42,
                   )
@@ -767,10 +768,13 @@ class _DashboardState extends State<Dashboard> {
                             child: CircularProgressIndicator(
                                 value: downloadProgress.progress),
                           ),
-                          errorWidget: (context, url, error) => Image.asset(
-                            'assets/avatar_default.png',
-                            width: 40,
-                            height: 40,
+                          errorWidget: (context, url, error) => Container(
+                            color: Colors.white,
+                            child: SvgPicture.asset(
+                              'assets/avatar_default.svg',
+                              width: 40,
+                              height: 40,
+                            ),
                           ),
                           fit: BoxFit.cover,
                           width: 50,
@@ -1951,9 +1955,8 @@ class _DashboardState extends State<Dashboard> {
             Padding(
               padding: const EdgeInsets.only(right: 12),
               child: InkWell(
-                onTap: () => controller.routePageDashboard(controller
-                        .menuShowInMain[0]['menu']
-                    [tabbController.kontrolAkses.value == true ? 6 : 7]['url']),
+                onTap: () => controller.routePageDashboard(
+                    controller.menuShowInMain[0]['menu'][7]['url']),
                 highlightColor: Colors.white,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -2235,8 +2238,8 @@ class _DashboardState extends State<Dashboard> {
             child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
-                itemCount: controller.informasiDashboard.value.length > 4
-                    ? 4
+                itemCount: controller.informasiDashboard.value.length > 3
+                    ? 3
                     : controller.informasiDashboard.value.length,
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
@@ -2247,47 +2250,55 @@ class _DashboardState extends State<Dashboard> {
                       controller.informasiDashboard.value[index]['description'];
                   var create =
                       controller.informasiDashboard.value[index]['created_on'];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      index == 0
-                          ? Container()
-                          : Divider(
-                              height: 0,
-                              thickness: 1,
-                              color: Constanst.fgBorder,
-                            ),
-                      const SizedBox(height: 12),
-                      Text(
-                        "$title",
-                        style: GoogleFonts.inter(
-                            color: Constanst.fgPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      Html(
-                        data: desc,
-                        style: {
-                          "body": Style(
-                              fontSize: const FontSize(14),
-                              margin: const EdgeInsets.all(0.0),
+                  return InkWell(
+                    onTap: () => Get.to(DetailInformasi(
+                      title: title,
+                      create: create,
+                      desc: desc,
+                    )),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        index == 0
+                            ? Container()
+                            : Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Constanst.fgBorder,
+                              ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "$title",
+                          style: GoogleFonts.inter(
                               color: Constanst.fgPrimary,
-                              fontFamily: "GoogleFonts.inter",
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        Html(
+                          data: desc,
+                          style: {
+                            "body": Style(
+                                fontSize: const FontSize(14),
+                                maxLines: 2,
+                                textOverflow: TextOverflow.ellipsis,
+                                margin: const EdgeInsets.all(0.0),
+                                color: Constanst.fgPrimary,
+                                fontFamily: "GoogleFonts.inter",
+                                fontWeight: FontWeight.w400),
+                          },
+                        ),
+                        Text(
+                          Constanst.convertDate("$create"),
+                          textAlign: TextAlign.right,
+                          style: GoogleFonts.inter(
+                              color: Constanst.fgSecondary,
+                              fontSize: 12,
                               fontWeight: FontWeight.w400),
-                        },
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        Constanst.convertDate("$create"),
-                        textAlign: TextAlign.right,
-                        style: GoogleFonts.inter(
-                            color: Constanst.fgSecondary,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400),
-                      ),
-                      const SizedBox(height: 14),
-                    ],
+                        ),
+                        const SizedBox(height: 14),
+                      ],
+                    ),
                   );
                 }),
           );
@@ -2304,15 +2315,18 @@ class _DashboardState extends State<Dashboard> {
               var fullname = controller.employeeUltah.value[index]['full_name'];
               var image = controller.employeeUltah.value[index]['em_image'];
               var jobtitle = controller.employeeUltah.value[index]['job_title'];
+              var tanggalLahir =
+                  controller.employeeUltah.value[index]['em_birthday'];
+              var listTanggalLahir = tanggalLahir.split('-');
               return Padding(
-                padding: EdgeInsets.only(left: index == 0 ? 16 : 6, right: 6),
+                padding: EdgeInsets.only(left: index == 0 ? 16 : 8, right: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     image == ""
-                        ? Image.asset(
-                            'assets/avatar_default.png',
+                        ? SvgPicture.asset(
+                            'assets/avatar_default.svg',
                             width: 66,
                             height: 66,
                           )
@@ -2335,10 +2349,13 @@ class _DashboardState extends State<Dashboard> {
                                           value: downloadProgress.progress),
                                     ),
                                     errorWidget: (context, url, error) =>
-                                        Image.asset(
-                                      'assets/avatar_default.png',
-                                      width: 66,
-                                      height: 66,
+                                        Container(
+                                      color: Colors.white,
+                                      child: SvgPicture.asset(
+                                        'assets/avatar_default.svg',
+                                        width: 66,
+                                        height: 66,
+                                      ),
                                     ),
                                     fit: BoxFit.cover,
                                     width: 66,
@@ -2351,19 +2368,22 @@ class _DashboardState extends State<Dashboard> {
                     const SizedBox(height: 8),
                     Center(
                       child: Text(
-                        "$fullname",
+                        fullname.length > 8
+                            ? fullname.substring(0, 8) + '...'
+                            : fullname,
                         style: GoogleFonts.inter(
                             color: Constanst.fgPrimary,
-                            fontSize: 12,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500),
                       ),
                     ),
                     Center(
                       child: Text(
-                        "$jobtitle",
+                        Constanst.convertDateBulanDanHari(
+                            '${listTanggalLahir[1]}-${listTanggalLahir[2]}'),
                         style: GoogleFonts.inter(
                             color: Constanst.fgSecondary,
-                            fontSize: 10,
+                            fontSize: 12,
                             fontWeight: FontWeight.w500),
                       ),
                     )
@@ -2390,14 +2410,14 @@ class _DashboardState extends State<Dashboard> {
               var endDate =
                   controllerGlobal.employeeSisaCuti.value[index]['end_date'];
               return Padding(
-                padding: EdgeInsets.only(left: index == 0 ? 16 : 6, right: 6),
+                padding: EdgeInsets.only(left: index == 0 ? 16 : 8, right: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     image == ""
-                        ? Image.asset(
-                            'assets/avatar_default.png',
+                        ? SvgPicture.asset(
+                            'assets/avatar_default.svg',
                             width: 66,
                             height: 66,
                           )
@@ -2420,10 +2440,13 @@ class _DashboardState extends State<Dashboard> {
                                           value: downloadProgress.progress),
                                     ),
                                     errorWidget: (context, url, error) =>
-                                        Image.asset(
-                                      'assets/avatar_default.png',
-                                      width: 66,
-                                      height: 66,
+                                        Container(
+                                      color: Colors.white,
+                                      child: SvgPicture.asset(
+                                        'assets/avatar_default.svg',
+                                        width: 66,
+                                        height: 66,
+                                      ),
                                     ),
                                     fit: BoxFit.cover,
                                     width: 66,
@@ -2436,19 +2459,12 @@ class _DashboardState extends State<Dashboard> {
                     const SizedBox(height: 8),
                     Center(
                       child: Text(
-                        "$fullname",
+                        fullname.length > 8
+                            ? fullname.substring(0, 8) + '...'
+                            : fullname,
                         style: GoogleFonts.inter(
                             color: Constanst.fgPrimary,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        Constanst.convertDate('$endDate'),
-                        style: GoogleFonts.inter(
-                            color: Constanst.fgSecondary,
-                            fontSize: 10,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500),
                       ),
                     ),
@@ -2457,7 +2473,7 @@ class _DashboardState extends State<Dashboard> {
                         "Sisa $sisaKontrak Hari",
                         style: GoogleFonts.inter(
                             color: Constanst.fgSecondary,
-                            fontSize: 10,
+                            fontSize: 12,
                             fontWeight: FontWeight.w500),
                       ),
                     )

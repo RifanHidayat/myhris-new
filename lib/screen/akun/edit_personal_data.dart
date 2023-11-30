@@ -10,6 +10,7 @@ import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class EditPersonalInfo extends StatelessWidget {
   final controller = Get.put(SettingController());
@@ -47,9 +48,10 @@ class EditPersonalInfo extends StatelessWidget {
                     SizedBox(
                       height: 30,
                     ),
+
                     Center(
-                      child: Image.asset(
-                        'assets/avatar_default.png',
+                      child: SvgPicture.asset(
+                        'assets/avatar_default.svg',
                       ),
                     ),
                     SizedBox(

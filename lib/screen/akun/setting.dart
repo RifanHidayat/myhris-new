@@ -11,12 +11,11 @@ import 'package:siscom_operasional/screen/akun/edit_password.dart';
 import 'package:siscom_operasional/screen/akun/face_recognigration.dart';
 import 'package:siscom_operasional/screen/akun/info_karyawan.dart';
 import 'package:siscom_operasional/screen/akun/personal_info.dart';
-import 'package:siscom_operasional/screen/akun/pusat_bantuan.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
-
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -49,7 +48,6 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
     getFace();
-
     return Scaffold(
       backgroundColor: Constanst.colorWhite,
       body: WillPopScope(
@@ -176,8 +174,8 @@ class _SettingState extends State<Setting> {
                                                 AppData.informasiUser![0]
                                                         .em_image ==
                                                     ""
-                                            ? Image.asset(
-                                                'assets/avatar_default.png',
+                                            ? SvgPicture.asset(
+                                                'assets/avatar_default.svg',
                                                 width: 56,
                                                 height: 56,
                                               )
@@ -210,10 +208,13 @@ class _SettingState extends State<Setting> {
                                                       ),
                                                       errorWidget: (context,
                                                               url, error) =>
-                                                          Image.asset(
-                                                        'assets/avatar_default.png',
-                                                        width: 56,
-                                                        height: 56,
+                                                          Container(
+                                                        color: Colors.white,
+                                                        child: SvgPicture.asset(
+                                                          'assets/avatar_default.svg',
+                                                          width: 56,
+                                                          height: 56,
+                                                        ),
                                                       ),
                                                       fit: BoxFit.cover,
                                                       width: 56,
@@ -258,7 +259,7 @@ class _SettingState extends State<Setting> {
                                           "${AppData.informasiUser![0].full_name}",
                                           style: GoogleFonts.inter(
                                               color: Constanst.fgPrimary,
-                                              fontSize: 16,
+                                              fontSize: 17,
                                               fontWeight: FontWeight.w500),
                                         ),
                                         const SizedBox(height: 4),
@@ -359,7 +360,7 @@ class _SettingState extends State<Setting> {
                                   style: GoogleFonts.inter(
                                       color: Constanst.fgPrimary,
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 13),
+                                      fontSize: 14),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
@@ -424,7 +425,7 @@ class _SettingState extends State<Setting> {
                                       color: const Color.fromARGB(
                                           168, 166, 167, 158),
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 13),
+                                      fontSize: 14),
                                 ),
                                 const SizedBox(height: 4),
                                 Row(
@@ -485,7 +486,7 @@ class _SettingState extends State<Setting> {
           child: Text(
             "Pengaturan",
             style: GoogleFonts.inter(
-                fontSize: 15,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
                 color: Constanst.fgSecondary),
           ),
