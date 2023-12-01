@@ -59,6 +59,12 @@ class LaporanTidakHadirController extends GetxController {
     "Pending"
   ];
 
+  RxBool isSearching = false.obs;
+
+  void toggleSearch() {
+    isSearching.value = !isSearching.value;
+  }
+
   @override
   void onReady() async {
     super.onReady();

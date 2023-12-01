@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/laporan_tidakHadir_controller.dart';
@@ -39,33 +40,134 @@ class _LaporanTidakMasukState extends State<LaporanTidakMasuk> {
     return Scaffold(
         backgroundColor: Constanst.coloBackgroundScreen,
         appBar: AppBar(
-            backgroundColor: Colors.white,
-            automaticallyImplyLeading: false,
-            elevation: 3,
-            flexibleSpace: AppbarMenu1(
-              title: widget.title == "tidak_hadir"
-                  ? "Laporan Tidak Hadir"
-                  : widget.title == "cuti"
-                      ? "Laporan Cuti"
-                      : widget.title == "lembur"
-                          ? "Laporan Lembur"
-                          : widget.title == "tugas_luar"
-                              ? "Laporan Tugas Luar"
-                              : widget.title == "dinas_luar"
-                                  ? "Laporan Dinas Luar"
-                                  : widget.title == "klaim"
-                                      ? "Laporan Klaim"
-                                      : "",
-              colorTitle: Colors.black,
-              icon: 1,
-              rightIcon: Icon(Iconsax.document_download),
-              onTap: () {
-                Get.back();
-              },
-              // onTap2: () {
-              //   UtilsAlert.showToast("Comming Soon");
+          backgroundColor: Constanst.colorWhite,
+          elevation: 0,
+          leadingWidth: 50,
+          titleSpacing: 0,
+          centerTitle: true,
+          title: Obx(() {
+            if (controller.isSearching.value) {
+              return SizedBox(
+                height: 40,
+                child: TextFormField(
+                  controller: controller.cari.value,
+                  // onFieldSubmitted: (value) {
+                  // controller.report();
+                  // },
+                  onChanged: (value) {
+                    controller.pencarianNamaKaryawan(value);
+                  },
+                  textAlignVertical: TextAlignVertical.center,
+                  style: GoogleFonts.inter(
+                      height: 1.5,
+                      fontWeight: FontWeight.w400,
+                      color: Constanst.fgPrimary,
+                      fontSize: 15),
+                  cursorColor: Constanst.onPrimary,
+                  decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Constanst.colorNeutralBgSecondary,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(100),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(100),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      contentPadding:
+                          const EdgeInsets.only(left: 20, right: 20),
+                      hintText: "Cari nama karyawan...",
+                      hintStyle: GoogleFonts.inter(
+                          height: 1.5,
+                          fontWeight: FontWeight.w400,
+                          color: Constanst.fgSecondary,
+                          fontSize: 14),
+                      prefixIconConstraints:
+                          BoxConstraints.tight(const Size(46, 46)),
+                      suffixIconConstraints:
+                          BoxConstraints.tight(const Size(46, 46)),
+                      suffixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 16.0, right: 8),
+                        child: IconButton(
+                          icon: Icon(
+                            Iconsax.close_circle5,
+                            color: Constanst.fgSecondary,
+                            size: 24,
+                          ),
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            controller.statusCari.value = false;
+                            controller.cari.value.text = "";
+                            controller.title.value = widget.title;
+                            controller.getDepartemen(1, "");
+                          },
+                        ),
+                      )),
+                ),
+              );
+            } else {
+              return Text(
+                widget.title == "tidak_hadir"
+                    ? "Laporan Tidak Hadir"
+                    : widget.title == "cuti"
+                        ? "Laporan Cuti"
+                        : widget.title == "lembur"
+                            ? "Laporan Lembur"
+                            : widget.title == "tugas_luar"
+                                ? "Laporan Tugas Luar"
+                                : widget.title == "dinas_luar"
+                                    ? "Laporan Dinas Luar"
+                                    : widget.title == "klaim"
+                                        ? "Laporan Klaim"
+                                        : "",
+                style: GoogleFonts.inter(
+                    color: Constanst.fgPrimary,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20),
+              );
+            }
+          }),
+          actions: [
+            Obx(
+              () => controller.bulanDanTahunNow.value == ""
+                  ? const SizedBox()
+                  : controller.isSearching.value
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Container(),
+                        )
+                      : IconButton(
+                          icon: Icon(
+                            Iconsax.search_normal_1,
+                            color: Constanst.fgPrimary,
+                            size: 24,
+                          ),
+                          onPressed: controller.toggleSearch,
+                        ),
+            ),
+          ],
+          leading: Obx(
+            () => IconButton(
+              icon: Icon(
+                Iconsax.arrow_left,
+                color: Constanst.fgPrimary,
+                size: 24,
+              ),
+              onPressed: controller.isSearching.value
+                  ? controller.toggleSearch
+                  : Get.back,
+              // onPressed: () {
+              //   controller.cari.value.text = "";
+              //   Get.back();
               // },
-            )),
+            ),
+          ),
+        ),
         body: WillPopScope(
             onWillPop: () async {
               Get.back();
@@ -74,16 +176,13 @@ class _LaporanTidakMasukState extends State<LaporanTidakMasuk> {
             child: SafeArea(
               child: Obx(
                 () => Padding(
-                  padding: EdgeInsets.only(left: 16, right: 16),
+                  padding: const EdgeInsets.only(top: 8, left: 16, right: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: 16,
-                      ),
-                      controller.bulanDanTahunNow.value == ""
-                          ? SizedBox()
-                          : pencarianData(),
+                      // controller.bulanDanTahunNow.value == ""
+                      //     ? SizedBox()
+                      //     : pencarianData(),
                       SizedBox(
                         height: 8,
                       ),
@@ -262,71 +361,71 @@ class _LaporanTidakMasukState extends State<LaporanTidakMasuk> {
     );
   }
 
-  Widget pencarianData() {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: Constanst.borderStyle5,
-          border: Border.all(color: Constanst.colorText2)),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 15,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 7, left: 10),
-              child: Icon(Iconsax.search_normal_1),
-            ),
-          ),
-          Expanded(
-            flex: 85,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: SizedBox(
-                height: 40,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 85,
-                      child: TextField(
-                        controller: controller.cari.value,
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Cari Nama Karyawan"),
-                        style: TextStyle(
-                            fontSize: 14.0, height: 1.0, color: Colors.black),
-                        onChanged: (value) {
-                          controller.pencarianNamaKaryawan(value);
-                        },
-                      ),
-                    ),
-                    !controller.statusCari.value
-                        ? SizedBox()
-                        : Expanded(
-                            flex: 15,
-                            child: IconButton(
-                              icon: Icon(
-                                Iconsax.close_circle,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                controller.statusCari.value = false;
-                                controller.cari.value.text = "";
-                                controller.title.value = widget.title;
-                                controller.getDepartemen(1, "");
-                              },
-                            ),
-                          )
-                  ],
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
+  // Widget pencarianData() {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //         borderRadius: Constanst.borderStyle5,
+  //         border: Border.all(color: Constanst.colorText2)),
+  //     child: Row(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       children: [
+  //         Expanded(
+  //           flex: 15,
+  //           child: Padding(
+  //             padding: const EdgeInsets.only(top: 7, left: 10),
+  //             child: Icon(Iconsax.search_normal_1),
+  //           ),
+  //         ),
+  //         Expanded(
+  //           flex: 85,
+  //           child: Padding(
+  //             padding: const EdgeInsets.only(left: 10),
+  //             child: SizedBox(
+  //               height: 40,
+  //               child: Row(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Expanded(
+  //                     flex: 85,
+  //                     child: TextField(
+  //                       controller: controller.cari.value,
+  //                       decoration: InputDecoration(
+  //                           border: InputBorder.none,
+  //                           hintText: "Cari Nama Karyawan"),
+  //                       style: TextStyle(
+  //                           fontSize: 14.0, height: 1.0, color: Colors.black),
+  //                       onChanged: (value) {
+  //                         controller.pencarianNamaKaryawan(value);
+  //                       },
+  //                     ),
+  //                   ),
+  //                   !controller.statusCari.value
+  //                       ? SizedBox()
+  //                       : Expanded(
+  //                           flex: 15,
+  //                           child: IconButton(
+  //                             icon: Icon(
+  //                               Iconsax.close_circle,
+  //                               color: Colors.red,
+  //                             ),
+  //                             onPressed: () {
+  //                               controller.statusCari.value = false;
+  //                               controller.cari.value.text = "";
+  //                               controller.title.value = widget.title;
+  //                               controller.getDepartemen(1, "");
+  //                             },
+  //                           ),
+  //                         )
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget listPengajuanKaryawan() {
     return ListView.builder(

@@ -938,9 +938,12 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       Stack(
                         children: [
-                          Image.asset(
-                            'assets/cardInfoImage.gif',
-                            height: 101,
+                          ClipRRect(
+                            borderRadius: Constanst.borderStyle1,
+                            child: Image.asset(
+                              'assets/cardInfoImage.gif',
+                              height: 101,
+                            ),
                           ),
                           Positioned(
                             bottom: 2,
@@ -1751,20 +1754,20 @@ class _DashboardState extends State<Dashboard> {
             child: Container(
               decoration: BoxDecoration(
                   border: Border.all(
-                    color: Constanst.color1,
+                    color: Constanst.colorStateInfoBorder,
                     width: 1.0,
                   ),
                   // color: Constanst.colorButton3,
                   borderRadius: Constanst.borderStyle2),
               child: Material(
                 borderRadius: Constanst.borderStyle2,
-                color: Constanst.colorNonAktif,
+                color: Constanst.infoLight1,
                 child: InkWell(
                   customBorder: RoundedRectangleBorder(
                     borderRadius: Constanst.borderStyle2,
                   ),
                   onTap: () {
-                    // controller.widgetButtomSheetFormPengajuan();
+                    controller.widgetButtomSheetFormLaporan();
                   },
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
@@ -1774,9 +1777,9 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Iconsax.document_text5,
-                              color: Color.fromARGB(168, 166, 167, 158),
+                              color: Constanst.infoLight,
                               size: 26,
                             ),
                             const SizedBox(width: 10),
@@ -1786,8 +1789,7 @@ class _DashboardState extends State<Dashboard> {
                                 Text(
                                   "Laporan",
                                   style: GoogleFonts.inter(
-                                      color: const Color.fromARGB(
-                                          168, 166, 167, 158),
+                                      color: Constanst.fgPrimary,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -1795,8 +1797,7 @@ class _DashboardState extends State<Dashboard> {
                                 Text(
                                   "Cek laporan disini!",
                                   style: GoogleFonts.inter(
-                                      color: const Color.fromARGB(
-                                          168, 166, 167, 158),
+                                      color: Constanst.fgPrimary,
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400),
                                 ),
@@ -1804,9 +1805,9 @@ class _DashboardState extends State<Dashboard> {
                             ),
                           ],
                         ),
-                        const Icon(
+                        Icon(
                           Icons.arrow_forward_ios_rounded,
-                          color: Color.fromARGB(168, 166, 167, 158),
+                          color: Constanst.fgSecondary,
                           size: 18,
                         ),
                       ],

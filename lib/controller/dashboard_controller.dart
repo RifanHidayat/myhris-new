@@ -24,6 +24,8 @@ import 'package:siscom_operasional/screen/absen/form/form_lembur.dart';
 import 'package:siscom_operasional/screen/absen/form/form_tidakMasukKerja.dart';
 import 'package:siscom_operasional/screen/absen/form/form_tugas_luar.dart';
 import 'package:siscom_operasional/screen/absen/history_absen.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_absen.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan.dart';
 import 'package:siscom_operasional/screen/absen/lembur.dart';
 import 'package:siscom_operasional/screen/absen/tidak_masuk_kerja.dart';
 import 'package:siscom_operasional/screen/absen/tugas_luar.dart';
@@ -1215,6 +1217,42 @@ class DashboardController extends GetxController {
     }
   }
 
+  void routeSortcartFormLaporan(id) {
+    if (id == 1) {
+      Get.to(LaporanTidakMasuk(
+        title: 'lembur',
+      ));
+    } else if (id == 2) {
+      Get.to(LaporanTidakMasuk(
+        title: 'cuti',
+      ));
+    } else if (id == 3) {
+      Get.to(LaporanTidakMasuk(
+        title: 'tugas_luar',
+      ));
+    } else if (id == 4) {
+      Get.to(LaporanTidakMasuk(
+        title: 'izin',
+      ));
+    } else if (id == 5) {
+      Get.to(LaporanTidakMasuk(
+        title: 'klaim',
+      ));
+    } else if (id == 6) {
+      var dataUser = AppData.informasiUser;
+      var getHakAkses = dataUser![0].em_hak_akses;
+      if (getHakAkses == "" || getHakAkses == null || getHakAkses == "null") {
+        UtilsAlert.showToast('Maaf anda tidak memiliki akses menu ini');
+      } else {
+        Get.to(LaporanTidakMasuk(
+          title: 'tugas_luar',
+        ));
+      }
+    } else {
+      UtilsAlert.showToast("Tahap Development");
+    }
+  }
+
   void widgetButtomSheetAktifCamera(type) {
     showModalBottomSheet(
       context: Get.context!,
@@ -1404,9 +1442,11 @@ class DashboardController extends GetxController {
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
                     var id = sortcardPengajuan[index]['id'];
+                    var gambar = sortcardPengajuan[index]['gambar'];
                     return InkWell(
                       // highlightColor: Colors.white,
                       onTap: () {
+                        Get.back();
                         routeSortcartForm(id);
                       },
                       child: Padding(
@@ -1418,41 +1458,23 @@ class DashboardController extends GetxController {
                           children: [
                             Row(
                               children: [
-                                id == 1
-                                    ? Icon(
-                                        Iconsax.clock,
-                                        color: Constanst.colorPrimary,
-                                      )
-                                    : id == 2
-                                        ? Icon(
-                                            Iconsax.calendar_remove,
-                                            color: Constanst.colorPrimary,
-                                          )
-                                        : id == 3
-                                            ? Icon(
-                                                Iconsax.send_2,
-                                                color: Constanst.colorPrimary,
-                                              )
-                                            : id == 4
-                                                ? Icon(
-                                                    Iconsax.clipboard_close,
-                                                    color:
-                                                        Constanst.colorPrimary,
-                                                  )
-                                                : id == 5
-                                                    ? Icon(
-                                                        Iconsax.receipt_2,
-                                                        color: Constanst
-                                                            .colorPrimary,
-                                                      )
-                                                    : id == 6
-                                                        ? Icon(
-                                                            Iconsax
-                                                                .profile_2user,
-                                                            color: Constanst
-                                                                .colorPrimary,
-                                                          )
-                                                        : const SizedBox(),
+                                SvgPicture.asset(
+                                  id == 1
+                                      ? 'assets/4_lembur.svg'
+                                      : id == 2
+                                          ? 'assets/5_cuti.svg'
+                                          : id == 3
+                                              ? 'assets/6_tugas_luar.svg'
+                                              : id == 4
+                                                  ? 'assets/3_izin.svg'
+                                                  : id == 5
+                                                      ? 'assets/7_klaim.svg'
+                                                      : id == 6
+                                                          ? 'assets/8_kandidat.svg'
+                                                          : 'assets/2_absen.svg',
+                                  height: 35,
+                                  width: 35,
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 12.0),
                                   child: Text(
@@ -1484,6 +1506,501 @@ class DashboardController extends GetxController {
       },
     );
   }
+
+  void widgetButtomSheetFormLaporan() {
+    showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      backgroundColor: Constanst.colorWhite,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Iconsax.document_text5,
+                          color: Constanst.infoLight,
+                          size: 26,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12),
+                          child: Text(
+                            "Cek Laporan",
+                            style: GoogleFonts.inter(
+                                color: Constanst.fgPrimary,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ],
+                    ),
+                    InkWell(
+                        onTap: () {
+                          Navigator.pop(Get.context!);
+                        },
+                        child: Icon(
+                          Icons.close,
+                          size: 24,
+                          color: Constanst.fgSecondary,
+                        ))
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Constanst.fgBorder,
+                ),
+              ),
+              InkWell(
+                // highlightColor: Colors.white,
+                onTap: () {
+                  Get.back();
+                  Get.to(LaporanAbsen(
+                    dataForm: "",
+                  ));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 12, bottom: 12, left: 16, right: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/2_absen.svg',
+                            height: 35,
+                            width: 35,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: Text(
+                              'Laporan Absensi',
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 18,
+                          color: Constanst.fgSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              InkWell(
+                // highlightColor: Colors.white,
+                onTap: () {
+                  Get.back();
+                  Get.to(LaporanTidakMasuk(
+                    title: 'tidak_hadir',
+                  ));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 12, bottom: 12, left: 16, right: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/3_izin.svg',
+                            height: 35,
+                            width: 35,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: Text(
+                              'Laporan Izin',
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 18,
+                          color: Constanst.fgSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              InkWell(
+                // highlightColor: Colors.white,
+                onTap: () {
+                  Get.back();
+                  Get.to(LaporanTidakMasuk(
+                    title: 'lembur',
+                  ));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 12, bottom: 12, left: 16, right: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/4_lembur.svg',
+                            height: 35,
+                            width: 35,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: Text(
+                              'Laporan Lembur',
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 18,
+                          color: Constanst.fgSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              InkWell(
+                // highlightColor: Colors.white,
+                onTap: () {
+                  Get.back();
+                  Get.to(LaporanTidakMasuk(
+                    title: 'cuti',
+                  ));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 12, bottom: 12, left: 16, right: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/5_cuti.svg',
+                            height: 35,
+                            width: 35,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: Text(
+                              'Laporan Cuti',
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 18,
+                          color: Constanst.fgSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              InkWell(
+                // highlightColor: Colors.white,
+                onTap: () {
+                  Get.back();
+                  Get.to(LaporanTidakMasuk(
+                    title: 'tugas_luar',
+                  ));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 12, bottom: 12, left: 16, right: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/6_tugas_luar.svg',
+                            height: 35,
+                            width: 35,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: Text(
+                              'Laporan Tugas Luar',
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 18,
+                          color: Constanst.fgSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              InkWell(
+                // highlightColor: Colors.white,
+                onTap: () {
+                  Get.back();
+                  Get.to(LaporanTidakMasuk(
+                    title: 'klaim',
+                  ));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 12, bottom: 12, left: 16, right: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/7_klaim.svg',
+                            height: 35,
+                            width: 35,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: Text(
+                              'Laporan Klaim',
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 18,
+                          color: Constanst.fgSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // void widgetButtomSheetFormLaporan() {
+  //   showModalBottomSheet(
+  //     context: Get.context!,
+  //     isScrollControlled: true,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(
+  //         top: Radius.circular(16.0),
+  //       ),
+  //     ),
+  //     backgroundColor: Constanst.colorWhite,
+  //     builder: (context) {
+  //       return SafeArea(
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             Padding(
+  //               padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+  //               child: Row(
+  //                 crossAxisAlignment: CrossAxisAlignment.center,
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.start,
+  //                     crossAxisAlignment: CrossAxisAlignment.center,
+  //                     children: [
+  //                       Icon(
+  //                         Iconsax.document_text5,
+  //                         color: Constanst.infoLight,
+  //                         size: 26,
+  //                       ),
+  //                       Padding(
+  //                         padding: const EdgeInsets.only(left: 12),
+  //                         child: Text(
+  //                           "Cek Laporan",
+  //                           style: GoogleFonts.inter(
+  //                               color: Constanst.fgPrimary,
+  //                               fontSize: 18,
+  //                               fontWeight: FontWeight.w500),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                   InkWell(
+  //                       onTap: () {
+  //                         Navigator.pop(Get.context!);
+  //                       },
+  //                       child: Icon(
+  //                         Icons.close,
+  //                         size: 24,
+  //                         color: Constanst.fgSecondary,
+  //                       ))
+  //                 ],
+  //               ),
+  //             ),
+  //             const SizedBox(height: 16),
+  //             Padding(
+  //               padding: const EdgeInsets.only(left: 16, right: 16),
+  //               child: Divider(
+  //                 height: 0,
+  //                 thickness: 1,
+  //                 color: Constanst.fgBorder,
+  //               ),
+  //             ),
+  //             ListView.builder(
+  //                 itemCount: sortcardPengajuan.length,
+  //                 physics: const BouncingScrollPhysics(),
+  //                 shrinkWrap: true,
+  //                 scrollDirection: Axis.vertical,
+  //                 itemBuilder: (context, index) {
+  //                   var id = sortcardPengajuan[index]['id'];
+  //                   var gambar = sortcardPengajuan[index]['gambar'];
+  //                   return InkWell(
+  //                     // highlightColor: Colors.white,
+  //                     onTap: () {
+  //                       Get.back();
+  //                       routeSortcartFormLaporan(id);
+  //                     },
+  //                     child: Padding(
+  //                       padding: const EdgeInsets.only(
+  //                           top: 12, bottom: 12, left: 16, right: 16),
+  //                       child: Row(
+  //                         crossAxisAlignment: CrossAxisAlignment.center,
+  //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         children: [
+  //                           Row(
+  //                             children: [
+  //                               SvgPicture.asset(
+  //                                 id == 1
+  //                                     ? 'assets/4_lembur.svg'
+  //                                     : id == 2
+  //                                         ? 'assets/5_cuti.svg'
+  //                                         : id == 3
+  //                                             ? 'assets/6_tugas_luar.svg'
+  //                                             : id == 4
+  //                                                 ? 'assets/3_izin.svg'
+  //                                                 : id == 5
+  //                                                     ? 'assets/7_klaim.svg'
+  //                                                     : id == 6
+  //                                                         ? 'assets/8_kandidat.svg'
+  //                                                         : 'assets/8_kandidat.svg',
+  //                                 height: 35,
+  //                                 width: 35,
+  //                               ),
+  //                               Padding(
+  //                                 padding: const EdgeInsets.only(left: 12.0),
+  //                                 child: Text(
+  //                                   id == 1
+  //                                       ? 'Laporan Lembur'
+  //                                       : id == 2
+  //                                           ? 'Laporan Cuti'
+  //                                           : id == 3
+  //                                               ? 'Laporan Tugas Luar'
+  //                                               : id == 4
+  //                                                   ? 'Laporan Izin'
+  //                                                   : id == 5
+  //                                                       ? 'Laporan Klaim'
+  //                                                       : id == 6
+  //                                                           ? 'Laporan Kandidat'
+  //                                                           : 'Laporan Absensi',
+  //                                   style: GoogleFonts.inter(
+  //                                       color: Constanst.fgPrimary,
+  //                                       fontSize: 16,
+  //                                       fontWeight: FontWeight.w500),
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                           Padding(
+  //                             padding: const EdgeInsets.only(top: 5),
+  //                             child: Icon(
+  //                               Icons.arrow_forward_ios_rounded,
+  //                               size: 18,
+  //                               color: Constanst.fgSecondary,
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                   );
+  //                 }),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   void widgetButtomSheetMenuLebihDetail() {
     showModalBottomSheet(

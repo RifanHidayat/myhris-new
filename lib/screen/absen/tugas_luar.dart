@@ -31,7 +31,7 @@ class _TugasLuarState extends State<TugasLuar> {
   @override
   void initState() {
     super.initState();
-      Api().checkLogin();
+    Api().checkLogin();
   }
 
   Future<void> refreshData() async {
@@ -133,8 +133,18 @@ class _TugasLuarState extends State<TugasLuar> {
                         color: Constanst.colorPrimary,
                         onRefresh: refreshData,
                         child: controller.viewTugasLuar.value
-                                ? controller.listTugasLuar.isEmpty?Center(child: TextLabell(text: "Tidak ada pengajuan"),):  riwayatTugasLuar()
-                                : controller.listDinasLuar.isEmpty?Center(child: TextLabell(text: "Tidak ada pengajuan"),):riwayatDinasLuar()))
+                            ? controller.listTugasLuar.isEmpty
+                                ? Center(
+                                    child:
+                                        TextLabell(text: "Tidak ada pengajuan"),
+                                  )
+                                : riwayatTugasLuar()
+                            : controller.listDinasLuar.isEmpty
+                                ? Center(
+                                    child:
+                                        TextLabell(text: "Tidak ada pengajuan"),
+                                  )
+                                : riwayatDinasLuar()))
               ],
             ),
           ),
@@ -179,9 +189,10 @@ class _TugasLuarState extends State<TugasLuar> {
                       child: Icon(Iconsax.add_square),
                       backgroundColor: Color(0xff14B156),
                       foregroundColor: Colors.white,
-                      label:controller.viewTugasLuar.value? 'Buat Pengajuan Tugas Luar':"Buat Pengajuan Dinas Luar",
+                      label: controller.viewTugasLuar.value
+                          ? 'Buat Pengajuan Tugas Luar'
+                          : "Buat Pengajuan Dinas Luar",
                       onTap: () {
-                      
                         Get.to(FormTugasLuar(
                           dataForm: [[], false],
                         ));
@@ -195,9 +206,10 @@ class _TugasLuarState extends State<TugasLuar> {
             child: controller.showButtonlaporan.value == true
                 ? SizedBox()
                 : TextButtonWidget2(
-                    title:  controller.viewTugasLuar.value? "Buat Pengajuan Tugas Luar":"Buat Pengajuan Dinas Luar",
+                    title: controller.viewTugasLuar.value
+                        ? "Buat Pengajuan Tugas Luar"
+                        : "Buat Pengajuan Dinas Luar",
                     onTap: () {
-                     
                       Get.to(FormTugasLuar(
                         dataForm: [[], false],
                       ));
