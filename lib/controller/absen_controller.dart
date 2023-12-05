@@ -63,6 +63,9 @@ class AbsenController extends GetxController {
   var settingAppInfo = AppData.infoSettingApp.obs;
 
   Rx<List<String>> placeCoordinateDropdown = Rx<List<String>>([]);
+  var  placeCoordinateCheckin=[].obs;
+   var  placeCoordinateCheckout=[].obs;
+
   var selectedType = "".obs;
 
   var pauseCamera = false.obs;
@@ -286,6 +289,80 @@ class AbsenController extends GetxController {
           placeCoordinate.value = filter;
           placeCoordinate.refresh();
           placeCoordinate.refresh();
+        } else {
+          print("Place cordinate !=200" + res.body.toString());
+          print(res.body.toString());
+        }
+      }
+    });
+  }
+   
+    void getPlaceCoordinateCheckin() {
+    print("place coodinates");
+    placeCoordinateCheckin.clear();
+    var connect = Api.connectionApi("get", {}, "places_coordinate_pengajuan",
+        params: "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}");
+    connect.then((dynamic res) {
+      if (res == false) {
+        print("errror");
+        UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          print("Place cordinate 200" + res.body.toString());
+          var valueBody = jsonDecode(res.body);
+          selectedType.value = valueBody['data'][0]['place'];
+          // for (var element in valueBody['data']) {
+          //  placeCoordinateCheckin.value.add(element['place']);
+          // }
+          List filter = [];
+          for (var element in valueBody['data']) {
+            if (element['isFilterView'] == 1) {
+              element['is_selected']=false;
+              filter.add(element);
+            }
+          }
+
+          placeCoordinateCheckin.value = filter;
+          placeCoordinate.refresh();
+          placeCoordinate.refresh();
+        } else {
+          print("Place cordinate !=200" + res.body.toString());
+          print(res.body.toString());
+        }
+      }
+    });
+  }
+
+
+
+    void getPlaceCoordinateCheckout() {
+    print("place coodinates");
+    placeCoordinate.clear();
+    var connect = Api.connectionApi("get", {}, "places_coordinate_pengajuan",
+        params: "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}");
+    connect.then((dynamic res) {
+      if (res == false) {
+        print("errror");
+        UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          print("Place cordinate 200" + res.body.toString());
+          var valueBody = jsonDecode(res.body);
+          selectedType.value = valueBody['data'][0]['place'];
+        
+          List filter = [];
+          for (var element in valueBody['data']) {
+            if (element['isFilterView'] == 1) {
+                element['is_selected']=false;
+              filter.add(element);
+            }
+          }
+
+          print("data ${placeCoordinate.value}");
+
+          placeCoordinateCheckout.value = filter;
+          placeCoordinateCheckout.refresh();
+          placeCoordinateCheckout.refresh();
         } else {
           print("Place cordinate !=200" + res.body.toString());
           print(res.body.toString());
@@ -2511,6 +2588,8 @@ class AbsenController extends GetxController {
   }
 
   void kirimPengajuan() {
+
+
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
       "em_id": emId,
@@ -2523,6 +2602,8 @@ class AbsenController extends GetxController {
       'catatan': catataanAjuan.text,
       'checkin': checkinAjuan2.value.toString(),
       'checkout': checkoutAjuan2.value.toString(),
+      'lokasi_masuk_id':placeCoordinateCheckin.where((p0) => p0['is_selected']==true).toList().isNotEmpty?placeCoordinateCheckin.where((p0) => p0['is_selected']==true).toList()[0]['id']:"",
+       'lokasi_keluar_id':placeCoordinateCheckout.where((p0) => p0['is_selected']==true).toList().isNotEmpty?placeCoordinateCheckout.where((p0) => p0['is_selected']==true).toList()[0]['id']:"",
       'file': imageAjuan.value,
       'tgl_ajuan':DateFormat('yyyy-MM-dd').format(DateTime.now()),
     };

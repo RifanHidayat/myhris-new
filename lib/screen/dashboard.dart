@@ -64,9 +64,11 @@ class _DashboardState extends State<Dashboard> {
       controller.onInit();
 
       controllerAbsensi.userShift();
-
+ 
+     
       Future.delayed(const Duration(milliseconds: 500), () {
-        controller.initData();
+         controller.initData();
+ 
         absenControllre.absenStatus.value = AppData.statusAbsen;
         // absenControllre.absenStatus.value =
         //     controller.dashboardStatusAbsen.value;
@@ -782,10 +784,18 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                     ),
+ 
                   ),
             // Expanded(
             //   flex: 15,
             //   child: SizedBox(),
+ 
+                  )
+                ],
+              ),
+            ),
+          ),
+ 
             // child: Stack(
             //   children: [
             //     InkWell(
@@ -839,9 +849,11 @@ class _DashboardState extends State<Dashboard> {
             //           )
             //   ],
             // )
+ 
             // ),
           ],
         ),
+ 
       ),
     );
   }
@@ -871,6 +883,7 @@ class _DashboardState extends State<Dashboard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+// <<<<<<< dev_chandra
             // InkWell(
             //     onTap: () {
             //       print(AppData.informasiUser![0].endTime);
@@ -888,6 +901,57 @@ class _DashboardState extends State<Dashboard> {
               child: Column(
                 children: [
                   Row(
+// =======
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: InkWell(
+                      onTap: () {
+                        print(AppData.informasiUser![0].endTime);
+                      },
+                      // onTap: () => controller.getMenuTest(),
+                      child: Text(
+                        "Live Attendance",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Constanst.color2),
+                      )),
+                ),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: () => UtilsAlert.informasiDashboard(Get.context!),
+                      child: Icon(
+                        Iconsax.info_circle,
+                        size: 20,
+                        color: Constanst.colorPrimary,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Divider(
+              height: 5,
+              color: Colors.grey,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 70,
+                  child: Column(
+// >>>>>>> main
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -2488,22 +2552,27 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
     controller.updateInformasiUser();
-    controller.initData();
-    // absenControllre.getTimeNow();
+ 
+        controller.initData();
+    absenControllre.getTimeNow();
+ 
     controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
         AppData.informasiUser![0].em_id);
     controllerBpj.employeDetaiBpjs();
 
     controllerAbsensi.employeDetail();
 
-    absenControllre.absenStatus.value = AppData.statusAbsen;
+ 
 
-    Future.delayed(const Duration(milliseconds: 500), () {
-      controller.initData();
-      absenControllre.absenStatus.value = AppData.statusAbsen;
-      // absenControllre.absenStatus.value =
-      //     controller.dashboardStatusAbsen.value;
-    });
+  absenControllre.absenStatus.value = AppData.statusAbsen;
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+         controller.initData();
+        absenControllre.absenStatus.value = AppData.statusAbsen;
+        // absenControllre.absenStatus.value =
+        //     controller.dashboardStatusAbsen.value;
+      });
+ 
 
     // Api().checkLogin();
     // Add a listener to the scroll controller

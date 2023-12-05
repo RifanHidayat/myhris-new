@@ -122,6 +122,8 @@ class AuthController extends GetxController {
         print("data login ${valueBody['data']}");
 
         for (var element in valueBody['data']) {
+                    print("data att ${element['time_attendance'].toString().split(',')[0]}");
+             print("data att ${element['time_attendance'].toString().split(',')[1]}");
           print("tes ${element['time_attendance'].toString()}");
           var data = UserModel(
             em_id: element['em_id'] ?? "",
@@ -234,6 +236,7 @@ class AuthController extends GetxController {
         var getAktif = "";
         var idMobile = "";
         for (var element in valueBody['data']) {
+
           var data = UserModel(
             em_id: element['em_id'] ?? "",
             des_id: element['des_id'] ?? 0,
@@ -437,7 +440,7 @@ class AuthController extends GetxController {
       'end_time': endTime,
     
     };
-    var connect = Api.connectionApi("post", body, "view_last_absen_user");
+    var connect = Api.connectionApi("post", body, "view_last_absen_user1");
 
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
