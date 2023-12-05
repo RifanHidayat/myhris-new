@@ -22,6 +22,8 @@ class LaporanTidakHadirController extends GetxController {
   var departemen = TextEditingController().obs;
   var cari = TextEditingController().obs;
 
+  // var limitPages = <LimitPageModel>[].obs;
+
   var loadingString = "Memuat data...".obs;
   var idDepartemenTerpilih = "".obs;
   var namaDepartemenTerpilih = "".obs;

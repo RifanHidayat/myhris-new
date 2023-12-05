@@ -1806,6 +1806,52 @@ class DashboardController extends GetxController {
                 onTap: () {
                   Get.back();
                   Get.to(LaporanTidakMasuk(
+                    title: 'dinas_luar',
+                  ));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 12, bottom: 12, left: 16, right: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/6_tugas_luar.svg',
+                            height: 35,
+                            width: 35,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: Text(
+                              'Laporan Dinas Luar',
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 18,
+                          color: Constanst.fgSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              InkWell(
+                // highlightColor: Colors.white,
+                onTap: () {
+                  Get.back();
+                  Get.to(LaporanTidakMasuk(
                     title: 'klaim',
                   ));
                 },
