@@ -66,7 +66,7 @@ class DashboardController extends GetxController {
   var controllerAbsensi = Get.put(AbsenController());
   var menu = <MenuDashboardModel>[].obs;
   var globalCtr = Get.put(GlobalController());
-  var dashboardStatusAbsen=false.obs;
+  var dashboardStatusAbsen = false.obs;
 
   var user = [].obs;
   var menus = <MenuModel>[].obs;
@@ -128,10 +128,10 @@ class DashboardController extends GetxController {
   }
 
   void initData() async {
-    dashboardStatusAbsen.value=AppData.statusAbsen;
+    dashboardStatusAbsen.value = AppData.statusAbsen;
     DateTime startDate = await NTP.now();
     getBannerDashboard();
-       updateInformasiUser();
+    updateInformasiUser();
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
         AppData.informasiUser![0].em_id.toString());
@@ -147,11 +147,9 @@ class DashboardController extends GetxController {
     getSizeDevice();
     checkStatusPermission();
     checkHakAkses();
- 
   }
 
- 
- void checkAbsenUser(convert, getEmid) {
+  void checkAbsenUser(convert, getEmid) {
     print("view last absen user");
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
     var startTime = "";
@@ -192,13 +190,12 @@ class DashboardController extends GetxController {
         startTime = AppData.informasiUser![0].endTime;
         endTime = AppData.informasiUser![0].startTime;
 
- 
-      startTime = AppData.informasiUser![0].endTime;
-      endTime = AppData.informasiUser![0].startTime;
-        
-      startDate = DateFormat('yyyy-MM-dd')
-           .format(DateTime.now().add(Duration(days: -1)));        
-   
+        startTime = AppData.informasiUser![0].endTime;
+        endTime = AppData.informasiUser![0].startTime;
+
+        startDate = DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(Duration(days: -1)));
+
         endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       } else {
         startTime = AppData.informasiUser![0].endTime;
@@ -235,31 +232,17 @@ class DashboardController extends GetxController {
         print("data login ${valueBody}");
         var data = valueBody['data'];
         if (data.isEmpty) {
- 
           AppData.statusAbsen = false;
         } else {
           AppData.statusAbsen =
               data[0]['signout_time'] == "00:00:00" ? true : false;
- 
-       
-          AppData.statusAbsen = false;
-          dashboardStatusAbsen.value = false;
-        
-        } else {
-             
-              AppData.statusAbsen =
+          dashboardStatusAbsen.value =
               data[0]['signout_time'] == "00:00:00" ? true : false;
-              dashboardStatusAbsen.value =
-              data[0]['signout_time'] == "00:00:00" ? true : false;
-            
- 
         }
       }
     });
   }
 
-
-  
   // void checkAbsenUser(convert, getEmid) {
   //   print("view last absen user");
   //   print("tes ${AppData.informasiUser![0].startTime.toString()}");
@@ -272,8 +255,8 @@ class DashboardController extends GetxController {
   //           AppData.informasiUser![0].startTime.toString().split(':')[0]),
   //       minute: int.parse(AppData.informasiUser![0].startTime
   //           .toString()
-  //           .split(':')[1])); 
-            
+  //           .split(':')[1]));
+
   //   TimeOfDay waktu2 = TimeOfDay(
   //       hour: int.parse(
   //           AppData.informasiUser![0].endTime.toString().split(':')[0]),
@@ -281,12 +264,9 @@ class DashboardController extends GetxController {
   //           .toString()
   //           .split(':')[1])); // Waktu kedua
 
-
-
-
   //   int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
   //   int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
-    
+
   //   //alur normal
   //   if (totalMinutes1 < totalMinutes2) {
   //     startTime = AppData.informasiUser![0].startTime;
@@ -295,36 +275,31 @@ class DashboardController extends GetxController {
   //     startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
   //     endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-
-
   //   //alur beda hari
   //   } else if (totalMinutes1 > totalMinutes2) {
-     
+
   //     var waktu3 =
   //         TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
   //     int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
 
-
   //     if (totalMinutes2 > totalMinutes3) {
 
-      
   //     startTime = AppData.informasiUser![0].endTime;
   //     endTime = AppData.informasiUser![0].startTime;
-        
+
   //     startDate = DateFormat('yyyy-MM-dd')
-  //          .format(DateTime.now().add(Duration(days: -1)));        
+  //          .format(DateTime.now().add(Duration(days: -1)));
 
   //       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      
-      
+
   //     } else {
 
   //       startTime = AppData.informasiUser![0].endTime;
   //       endTime = AppData.informasiUser![0].startTime;
-        
+
   //       endDate = DateFormat('yyyy-MM-dd')
   //       .format(DateTime.now().add(Duration(days: 1)));
-        
+
   //       startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
   //     }
   //   } else {
@@ -344,7 +319,7 @@ class DashboardController extends GetxController {
   //     'end_date': endDate,
   //     'start_time': startTime,
   //     'end_time': endTime,
-    
+
   //   };
   //   var connect = Api.connectionApi("post", body, "view_last_absen_user");
 
@@ -354,14 +329,14 @@ class DashboardController extends GetxController {
   //       print("data login ${valueBody}");
   //       var data = valueBody['data'];
   //       if (data.isEmpty) {
-      
+
   //         AppData.statusAbsen = false;
-      
+
   //       } else {
-           
+
   //             AppData.statusAbsen =
   //             data[0]['signout_time'] == "00:00:00" ? true : false;
-          
+
   //       }
   //     }
   //   });
@@ -839,7 +814,7 @@ class DashboardController extends GetxController {
           getData.add(data);
         }
         AppData.informasiUser = getData;
-     
+
         getUserInfo();
       }
       //   Api().validateAuth(res.statusCode );

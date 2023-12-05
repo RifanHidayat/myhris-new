@@ -95,7 +95,7 @@ PODS:
     - Flutter
   - google_maps_flutter_ios (0.0.1):
     - Flutter
-    - GoogleMaps (< 8.0)
+    - GoogleMaps
   - google_mlkit_commons (0.2.0):
     - Flutter
     - MLKitVision
@@ -357,7 +357,7 @@ SPEC CHECKSUMS:
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
   geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
-  google_maps_flutter_ios: abdac20d6ce8931f6ebc5f46616df241bfaa2cfd
+  google_maps_flutter_ios: 66201f392bf62d500f07670a30488a247b9bb5b9
   google_mlkit_commons: e9070f57232c3a3e4bd42fdfa621bb1f4bb3e709
   google_mlkit_face_detection: ab4c98846c4e9b0d48e5bd386cedb14feb676802
   GoogleDataTransport: 54dee9d48d14580407f8f5fbf2f496e92437a2f2
