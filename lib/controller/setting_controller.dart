@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:siscom_operasional/controller/api_controller.dart';
@@ -61,7 +62,19 @@ class SettingController extends GetxController {
   var dataGolonganDarah = ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'OB+'];
 
   var apiController = Get.put(ApiController());
-  var authController=Get.put(AuthController());
+  var authController = Get.put(AuthController());
+
+  RxBool isSearching = false.obs;
+  var searchController = TextEditingController();
+
+  void toggleSearch() {
+    isSearching.value = !isSearching.value;
+  }
+
+  void clearText() {
+    searchController.clear();
+    pencarianNamaKaryawan('');
+  }
 
   @override
   void onReady() async {
@@ -111,7 +124,7 @@ class SettingController extends GetxController {
   void aksiEditLastLogin() {
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
-  authController.  isautoLogout.value=true;
+    authController.isautoLogout.value = true;
     Map<String, dynamic> body = {
       'last_login': '0000-00-00 00:00:00',
       'em_id': getEmid
@@ -125,19 +138,19 @@ class SettingController extends GetxController {
         Navigator.pop(Get.context!);
         _stopForegroundTask();
         Get.offAll(Login());
-         AppData.isLogin = false;
+        AppData.isLogin = false;
       }
     });
   }
-    validateAuth(code) {
+
+  validateAuth(code) {
     print("kode validate");
     if (code == 401) {
-          AppData.informasiUser = null;
-        Navigator.pop(Get.context!);
-        _stopForegroundTask();
-        Get.offAll(Login());
-         AppData.isLogin = false;
-    
+      AppData.informasiUser = null;
+      Navigator.pop(Get.context!);
+      _stopForegroundTask();
+      Get.offAll(Login());
+      AppData.isLogin = false;
     }
   }
 
@@ -311,14 +324,15 @@ class SettingController extends GetxController {
             Navigator.pop(Get.context!);
             UtilsAlert.showToast(valueBody['message']);
           } else {
-            AppData.passwordUser= passwordBaru.value.text;
-           authController.password.value.text = passwordBaru.value.text;
+            AppData.passwordUser = passwordBaru.value.text;
+            authController.password.value.text = passwordBaru.value.text;
             Navigator.pop(Get.context!);
             UtilsAlert.berhasilSimpanData(Get.context!, "Data Berhasil diubah");
             await Future.delayed(const Duration(seconds: 2));
             Navigator.pop(Get.context!);
-           aksiEditLastLogin();
-           authController.messageNewPassword.value="Silahkan login menggunakan password baru";
+            aksiEditLastLogin();
+            authController.messageNewPassword.value =
+                "Silahkan login menggunakan password baru";
           }
         }
       });
@@ -382,7 +396,7 @@ class SettingController extends GetxController {
   //                 Center(
   //                   child: Text(
   //                     "Ubah Foto",
-  //                     style: TextStyle(fontWeight: FontWeight.bold),
+  //                     style: GoogleFonts.inter(fontWeight: FontWeight.bold),
   //                   ),
   //                 ),
   //                 SizedBox(
@@ -443,330 +457,459 @@ class SettingController extends GetxController {
       context: Get.context!,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(15.0),
+          top: Radius.circular(16.0),
         ),
       ),
       builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 8,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 90,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 8, top: 5),
-                              child: Text(
-                                "Ubah Foto Profile",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                            )
-                          ],
-                        ),
+        return SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Ubah Foto Profile",
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.fgPrimary,
                       ),
-                      Expanded(
-                        flex: 10,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.pop(Get.context!);
-                            },
-                            child: Icon(
-                              Iconsax.close_circle,
-                              color: Colors.red,
-                            ),
+                    ),
+                    InkWell(
+                      customBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      onTap: () {
+                        Navigator.pop(Get.context!);
+                      },
+                      child: Icon(
+                        Icons.close,
+                        size: 26,
+                        color: Constanst.fgSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 0,
+                thickness: 1,
+                color: Constanst.fgBorder,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(Get.context!);
+                  ubahFotoCamera();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Iconsax.camera,
+                            size: 26,
+                            color: Constanst.fgPrimary,
                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: Text(
+                              "Buka Kamera",
+                              style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.fgPrimary),
+                            ),
+                          )
+                        ],
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 18,
+                        color: Constanst.fgSecondary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(Get.context!);
+                  ubahFotoGalery();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Iconsax.gallery,
+                            size: 26,
+                            color: Constanst.fgPrimary,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: Text(
+                              "Pilih dari Galeri",
+                              style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.fgPrimary),
+                            ),
+                          )
+                        ],
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 18,
+                        color: Constanst.fgSecondary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(Get.context!);
+                  validasiHapusFoto();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Iconsax.trash,
+                        size: 26,
+                        color: Constanst.color4,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: Text(
+                          "Hapus Foto",
+                          style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.color4),
                         ),
                       )
                     ],
                   ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(Get.context!);
-                        ubahFotoCamera();
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.camera,
-                            color: Constanst.colorPrimary,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 18, top: 3),
-                            child: Text(
-                              "Buka Kamera",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Constanst.colorText3),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(Get.context!);
-                        ubahFotoGalery();
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.gallery_add,
-                            color: Constanst.colorPrimary,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 18, top: 3),
-                            child: Text(
-                              "Pilih dari Galeri",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Constanst.colorText3),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                         Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(Get.context!);
-                       authController.hapusFoto();
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.trash,
-                            color: Constanst.colorPrimary,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 18, top: 3),
-                            child: Text(
-                              "Hapus Foto",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Constanst.colorText3),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 8,
-            )
-          ],
+            ],
+          ),
         );
       },
     );
   }
 
-
-    void validasiHapusFoto() {
+  void validasiHapusFoto() {
     showModalBottomSheet(
       context: Get.context!,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(15.0),
+          top: Radius.circular(16.0),
         ),
       ),
       builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 8,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 90,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 8, top: 5),
-                              child: Text(
-                                "Hapus",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        flex: 10,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.pop(Get.context!);
-                            },
-                            child: Icon(
-                              Iconsax.close_circle,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(Get.context!);
-                        ubahFotoCamera();
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.camera,
-                            color: Constanst.colorPrimary,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 18, top: 3),
-                            child: Text(
-                              "Buka Kamera",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Constanst.colorText3),
-                            ),
-                          )
-                        ],
+        return SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Hapus Foto Profile",
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.fgPrimary,
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: InkWell(
+                    InkWell(
+                      customBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
                       onTap: () {
                         Navigator.pop(Get.context!);
-                        ubahFotoGalery();
                       },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.gallery_add,
-                            color: Constanst.colorPrimary,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 18, top: 3),
-                            child: Text(
-                              "Pilih dari Galeri",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Constanst.colorText3),
-                            ),
-                          )
-                        ],
+                      child: Icon(
+                        Icons.close,
+                        size: 26,
+                        color: Constanst.fgSecondary,
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                         Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(Get.context!);
-                        // ubahFotoGalery();
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.trash,
-                            color: Constanst.colorPrimary,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 18, top: 3),
-                            child: Text(
-                              "Hapus Foto",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Constanst.colorText3),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 8,
-            )
-          ],
+              Divider(
+                height: 0,
+                thickness: 1,
+                color: Constanst.fgBorder,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  "Apakah Anda yakin ingin menghapus Foto Profile?",
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Constanst.fgPrimary,
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 42,
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Constanst.fgBorder,
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(Get.context!);
+                            authController.hapusFoto();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.color4,
+                            backgroundColor: Constanst.colorWhite,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            'Hapus',
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Constanst.color4),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.colorWhite,
+                            backgroundColor: Constanst.onPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 0,
+                            padding: const EdgeInsets.fromLTRB(0, 12, 0, 12)),
+                        child: Text(
+                          'Batal',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: Constanst.colorWhite),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
   }
 
+  // void validasiHapusFoto() {
+  //   showModalBottomSheet(
+  //     context: Get.context!,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(
+  //         top: Radius.circular(15.0),
+  //       ),
+  //     ),
+  //     builder: (context) {
+  //       return Column(
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: [
+  //           SizedBox(
+  //             height: 8,
+  //           ),
+  //           Padding(
+  //             padding: const EdgeInsets.only(left: 16, right: 16),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.center,
+  //               children: [
+  //                 Row(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Expanded(
+  //                       flex: 90,
+  //                       child: Row(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Padding(
+  //                             padding: EdgeInsets.only(left: 8, top: 5),
+  //                             child: Text(
+  //                               "Hapus",
+  //                               style: GoogleFonts.inter(
+  //                                   fontSize: 16, fontWeight: FontWeight.bold),
+  //                             ),
+  //                           )
+  //                         ],
+  //                       ),
+  //                     ),
+  //                     Expanded(
+  //                       flex: 10,
+  //                       child: Padding(
+  //                         padding: const EdgeInsets.only(top: 2),
+  //                         child: InkWell(
+  //                           onTap: () {
+  //                             Navigator.pop(Get.context!);
+  //                           },
+  //                           child: Icon(
+  //                             Iconsax.close_circle,
+  //                             color: Colors.red,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     )
+  //                   ],
+  //                 ),
+  //                 SizedBox(
+  //                   height: 16,
+  //                 ),
+  //                 Padding(
+  //                   padding: const EdgeInsets.only(left: 8),
+  //                   child: InkWell(
+  //                     onTap: () {
+  //                       Navigator.pop(Get.context!);
+  //                       ubahFotoCamera();
+  //                     },
+  //                     child: Row(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Icon(
+  //                           Iconsax.camera,
+  //                           color: Constanst.colorPrimary,
+  //                         ),
+  //                         Padding(
+  //                           padding: EdgeInsets.only(left: 18, top: 3),
+  //                           child: Text(
+  //                             "Buka Kamera",
+  //                             style: GoogleFonts.inter(
+  //                                 fontWeight: FontWeight.bold,
+  //                                 color: Constanst.colorText3),
+  //                           ),
+  //                         )
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 SizedBox(
+  //                   height: 16,
+  //                 ),
+  //                 Padding(
+  //                   padding: const EdgeInsets.only(left: 8),
+  //                   child: InkWell(
+  //                     onTap: () {
+  //                       Navigator.pop(Get.context!);
+  //                       ubahFotoGalery();
+  //                     },
+  //                     child: Row(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Icon(
+  //                           Iconsax.gallery_add,
+  //                           color: Constanst.colorPrimary,
+  //                         ),
+  //                         Padding(
+  //                           padding: EdgeInsets.only(left: 18, top: 3),
+  //                           child: Text(
+  //                             "Pilih dari Galeri",
+  //                             style: GoogleFonts.inter(
+  //                                 fontWeight: FontWeight.bold,
+  //                                 color: Constanst.colorText3),
+  //                           ),
+  //                         )
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 SizedBox(
+  //                   height: 16,
+  //                 ),
+  //                 Padding(
+  //                   padding: const EdgeInsets.only(left: 8),
+  //                   child: InkWell(
+  //                     onTap: () {
+  //                       Navigator.pop(Get.context!);
+  //                       // ubahFotoGalery();
+  //                     },
+  //                     child: Row(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Icon(
+  //                           Iconsax.trash,
+  //                           color: Constanst.colorPrimary,
+  //                         ),
+  //                         Padding(
+  //                           padding: EdgeInsets.only(left: 18, top: 3),
+  //                           child: Text(
+  //                             "Hapus Foto",
+  //                             style: GoogleFonts.inter(
+  //                                 fontWeight: FontWeight.bold,
+  //                                 color: Constanst.colorText3),
+  //                           ),
+  //                         )
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 SizedBox(
+  //                   height: 16,
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           SizedBox(
+  //             height: 8,
+  //           )
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   void ubahFotoCamera() async {
     fotoUser.value = File("");
@@ -889,7 +1032,7 @@ class SettingController extends GetxController {
                         flex: 90,
                         child: Text(
                           "Pilih Divisi",
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                               fontWeight: FontWeight.bold, fontSize: 14),
                         ),
                       ),
@@ -945,7 +1088,7 @@ class SettingController extends GetxController {
                                       child: Center(
                                         child: Text(
                                           dep_name,
-                                          style: TextStyle(
+                                          style: GoogleFonts.inter(
                                               fontWeight: FontWeight.bold,
                                               color: id ==
                                                       idDepartemenTerpilih.value

@@ -15,6 +15,7 @@ import 'package:siscom_operasional/utils/custom_dialog.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class IzinController extends GetxController {
   var controllerApiGlobal = Get.put(ApiController());
@@ -108,7 +109,7 @@ class IzinController extends GetxController {
     var dataUser = AppData.informasiUser;
     var getDepGroup = dataUser![0].dep_group;
     var full_name = dataUser[0].full_name;
-  var emid=dataUser[0].em_id;
+    var emid = dataUser[0].em_id;
     Map<String, dynamic> body = {'em_id': emid, 'dep_group_id': getDepGroup};
     var connect = Api.connectionApi("post", body, "employee-delegasi");
     connect.then((dynamic res) {
@@ -433,8 +434,8 @@ class IzinController extends GetxController {
                                       Expanded(
                                         flex: 15,
                                         child: gambar == ""
-                                            ? Image.asset(
-                                                'assets/avatar_default.png',
+                                            ? SvgPicture.asset(
+                                                'assets/avatar_default.svg',
                                                 width: 40,
                                                 height: 40,
                                               )
@@ -468,10 +469,13 @@ class IzinController extends GetxController {
                                                       ),
                                                       errorWidget: (context,
                                                               url, error) =>
-                                                          Image.asset(
-                                                        'assets/avatar_default.png',
-                                                        width: 40,
-                                                        height: 40,
+                                                          Container(
+                                                        color: Colors.white,
+                                                        child: SvgPicture.asset(
+                                                          'assets/avatar_default.svg',
+                                                          width: 40,
+                                                          height: 40,
+                                                        ),
                                                       ),
                                                       fit: BoxFit.cover,
                                                       width: 50,
@@ -824,8 +828,7 @@ class IzinController extends GetxController {
       'val': 'id',
       'cari': '${index["id"]}',
       'atten_date': '${index["atten_date"]}',
-      'leave_status':"Cancel"
-
+      'leave_status': "Cancel"
     };
     var connect = Api.connectionApi("post", body, "delete-emp_labor");
     connect.then((dynamic res) {

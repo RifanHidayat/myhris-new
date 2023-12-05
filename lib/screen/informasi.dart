@@ -3,14 +3,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
+import 'package:siscom_operasional/screen/detail_informasi.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
-import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Informasi extends StatelessWidget {
   final index;
@@ -30,17 +32,130 @@ class Informasi extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Constanst.coloBackgroundScreen,
+      // appBar: AppBar(
+      //     backgroundColor: Constanst.colorPrimary,
+      //     elevation: 2,
+      //     flexibleSpace: AppbarMenu1(
+      //       title: "Informasi",
+      //       colorTitle: Colors.white,
+      //       colorIcon: Colors.white,
+      //       icon: 1,
+      //       onTap: () {
+      //         Get.offAll(InitScreen());
+      //       },
+      //     )),
       appBar: AppBar(
-          backgroundColor: Constanst.colorPrimary,
-          elevation: 2,
-          flexibleSpace: AppbarMenu1(
-            title: "Informasi",
-            colorTitle: Colors.white,
-            colorIcon: Colors.white,
-            icon: 1,
-            onTap: () {
-              Get.offAll(InitScreen());
-            },
+          backgroundColor: Constanst.colorWhite,
+          elevation: 0,
+          leadingWidth: 50,
+          titleSpacing: 0,
+          centerTitle: false,
+          title: Obx(() {
+            if (controller.isSearching.value) {
+              return SizedBox(
+                height: 40,
+                child: TextFormField(
+                  controller: controller.searchController,
+                  onFieldSubmitted: (value) {
+                    // controller.report();
+                  },
+                  textAlignVertical: TextAlignVertical.center,
+                  style: GoogleFonts.inter(
+                      height: 1.5,
+                      fontWeight: FontWeight.w400,
+                      color: Constanst.fgPrimary,
+                      fontSize: 15),
+                  cursorColor: Constanst.onPrimary,
+                  decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Constanst.colorNeutralBgSecondary,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(100),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(100),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      contentPadding:
+                          const EdgeInsets.only(left: 20, right: 20),
+                      hintText: "Cari data...",
+                      hintStyle: GoogleFonts.inter(
+                          height: 1.5,
+                          fontWeight: FontWeight.w400,
+                          color: Constanst.fgSecondary,
+                          fontSize: 14),
+                      prefixIconConstraints:
+                          BoxConstraints.tight(const Size(46, 46)),
+                      suffixIconConstraints:
+                          BoxConstraints.tight(const Size(46, 46)),
+                      suffixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 16.0, right: 8),
+                        child: IconButton(
+                          icon: Icon(
+                            Iconsax.close_circle5,
+                            color: Constanst.fgSecondary,
+                            size: 24,
+                          ),
+                          padding: EdgeInsets.zero,
+                          onPressed: controller.clearText,
+                        ),
+                      )),
+                ),
+              );
+            } else {
+              return Text(
+                "Informasi",
+                style: GoogleFonts.inter(
+                    color: Constanst.fgPrimary,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20),
+              );
+            }
+          }),
+          actions: [
+            Obx(
+              () => controller.isSearching.value
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: Container(),
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        Iconsax.search_normal_1,
+                        color: Constanst.fgPrimary,
+                        size: 24,
+                      ),
+                      onPressed: controller.toggleSearch,
+                    ),
+            ),
+          ],
+          leading: Obx(
+            () => controller.isSearching.value
+                ? IconButton(
+                    icon: Icon(
+                      Iconsax.arrow_left,
+                      color: Constanst.fgPrimary,
+                      size: 24,
+                    ),
+                    onPressed: () {
+                      controller.toggleSearch();
+                    },
+                  )
+                : IconButton(
+                    icon: Icon(
+                      Iconsax.arrow_left,
+                      color: Constanst.fgPrimary,
+                      size: 24,
+                    ),
+                    onPressed: () {
+                      Get.offAll(InitScreen());
+                    },
+                  ),
           )),
       body: WillPopScope(
           onWillPop: () async {
@@ -49,24 +164,15 @@ class Informasi extends StatelessWidget {
           },
           child: SafeArea(
             child: Obx(
-              () => Padding(
-                padding: EdgeInsets.only(left: 16, right: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 16,
-                    ),
-                    lineTitle(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Flexible(
-                      flex: 3,
-                      child: pageViewPesan(),
-                    )
-                  ],
-                ),
+              () => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  lineTitle(),
+                  Flexible(
+                    flex: 3,
+                    child: pageViewPesan(),
+                  )
+                ],
               ),
             ),
           )),
@@ -82,30 +188,33 @@ class Informasi extends StatelessWidget {
             onTap: () {
               controller.selectedInformasiView.value = 0;
               controller.informasiController.jumpToPage(0);
-              this.controller.selectedInformasiView.refresh();
+              controller.selectedInformasiView.refresh();
             },
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: controller.selectedInformasiView.value == 0
-                        ? Constanst.colorPrimary
-                        : Constanst.color6,
-                    width: 2.0,
-                  ),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  "Informasi",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
                       color: controller.selectedInformasiView.value == 0
                           ? Constanst.colorPrimary
-                          : Constanst.colorText2,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12),
+                          : Constanst.color6,
+                      width: 3.0,
+                    ),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    "Informasi",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                        color: controller.selectedInformasiView.value == 0
+                            ? Constanst.colorPrimary
+                            : Constanst.colorText2,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14),
+                  ),
                 ),
               ),
             ),
@@ -116,30 +225,33 @@ class Informasi extends StatelessWidget {
             onTap: () {
               controller.selectedInformasiView.value = 1;
               controller.informasiController.jumpToPage(1);
-              this.controller.selectedInformasiView.refresh();
+              controller.selectedInformasiView.refresh();
             },
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: controller.selectedInformasiView.value == 1
-                        ? Constanst.colorPrimary
-                        : Constanst.color6,
-                    width: 2.0,
-                  ),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  "Ulang Tahun",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
                       color: controller.selectedInformasiView.value == 1
                           ? Constanst.colorPrimary
-                          : Constanst.colorText2,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12),
+                          : Constanst.color6,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    "Ulang Tahun",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                        color: controller.selectedInformasiView.value == 1
+                            ? Constanst.colorPrimary
+                            : Constanst.colorText2,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14),
+                  ),
                 ),
               ),
             ),
@@ -150,30 +262,33 @@ class Informasi extends StatelessWidget {
             onTap: () {
               controller.selectedInformasiView.value = 2;
               controller.informasiController.jumpToPage(2);
-              this.controller.selectedInformasiView.refresh();
+              controller.selectedInformasiView.refresh();
             },
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: controller.selectedInformasiView.value == 2
-                        ? Constanst.colorPrimary
-                        : Constanst.color6,
-                    width: 2.0,
-                  ),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  "Tidak Hadir",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
                       color: controller.selectedInformasiView.value == 2
                           ? Constanst.colorPrimary
-                          : Constanst.colorText2,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12),
+                          : Constanst.color6,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    "Tidak Hadir",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                        color: controller.selectedInformasiView.value == 2
+                            ? Constanst.colorPrimary
+                            : Constanst.colorText2,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14),
+                  ),
                 ),
               ),
             ),
@@ -187,30 +302,33 @@ class Informasi extends StatelessWidget {
             onTap: () {
               controller.selectedInformasiView.value = 3;
               controller.informasiController.jumpToPage(3);
-              this.controller.selectedInformasiView.refresh();
+              controller.selectedInformasiView.refresh();
             },
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: controller.selectedInformasiView.value == 3
-                        ? Constanst.colorPrimary
-                        : Constanst.color6,
-                    width: 2.0,
-                  ),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  "Sisa Kontrak",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
                       color: controller.selectedInformasiView.value == 3
                           ? Constanst.colorPrimary
-                          : Constanst.colorText2,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12),
+                          : Constanst.color6,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    "Sisa Kontrak",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                        color: controller.selectedInformasiView.value == 3
+                            ? Constanst.colorPrimary
+                            : Constanst.colorText2,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14),
+                  ),
                 ),
               ),
             ),
@@ -222,17 +340,17 @@ class Informasi extends StatelessWidget {
 
   Widget pageViewPesan() {
     return PageView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         controller: controller.informasiController,
         onPageChanged: (index) {
           controller.selectedInformasiView.value = index;
-          this.controller.selectedInformasiView.refresh();
+          controller.selectedInformasiView.refresh();
         },
         // itemCount: !controller.viewInformasiSisaKontrak.value ? 3 : 4,
         itemCount: 4,
         itemBuilder: (context, index) {
           return Padding(
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               child: index == 0
                   ? screenInformasi()
                   : index == 1
@@ -241,443 +359,689 @@ class Informasi extends StatelessWidget {
                           ? screenTidakHadir()
                           : index == 3
                               ? screenSisaKontrak()
-                              : SizedBox());
+                              : const SizedBox());
         });
   }
 
   Widget screenInformasi() {
     return controller.informasiDashboard.value.isEmpty
-        ? Center(
+        ? const Center(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: Text("Tidak ada Informasi"),
             ),
           )
-        : ListView.builder(
-            itemCount: controller.informasiDashboard.value.length,
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) {
-              var title = controller.informasiDashboard.value[index]['title'];
-              var desc =
-                  controller.informasiDashboard.value[index]['description'];
-              var create =
-                  controller.informasiDashboard.value[index]['created_on'];
+        : Padding(
+            padding: const EdgeInsets.only(top: 12.0),
+            child: ListView.builder(
+                itemCount: controller.informasiDashboard.value.length,
+                physics: const BouncingScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  var title =
+                      controller.informasiDashboard.value[index]['title'];
+                  var desc =
+                      controller.informasiDashboard.value[index]['description'];
+                  var create =
+                      controller.informasiDashboard.value[index]['created_on'];
 
-              return Padding(
-                padding: EdgeInsets.only(left: 8, right: 8, top: 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 50,
-                          child: Text(
-                            "$title",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                                color: Constanst.colorText3),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 50,
-                          child: Text(
+                  return InkWell(
+                    onTap: () => Get.to(DetailInformasi(
+                      title: title,
+                      create: create,
+                      desc: desc,
+                    )),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(left: 16, right: 16, top: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
                             Constanst.convertDate("$create"),
                             textAlign: TextAlign.right,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                                color: Constanst.colorText2),
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                color: Constanst.fgSecondary),
                           ),
-                        )
-                      ],
+                          const SizedBox(height: 20),
+                          Text(
+                            "$title",
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Constanst.fgPrimary),
+                          ),
+                          Html(
+                            data: desc,
+                            style: {
+                              "body": Style(
+                                fontSize: const FontSize(14),
+                                maxLines: 2,
+                                textOverflow: TextOverflow.ellipsis,
+                                margin: const EdgeInsets.all(0.0),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "GoogleFonts.inter",
+                                color: Constanst.fgSecondary,
+                              ),
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          Divider(
+                            height: 0,
+                            thickness: 1,
+                            color: Constanst.fgBorder,
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Html(
-                      data: desc,
-                      style: {
-                        "body": Style(
-                          fontSize: FontSize(14),
-                          color: Constanst.colorText2,
-                        ),
-                      },
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Divider(
-                      height: 5,
-                      color: Constanst.colorNonAktif,
-                    ),
-                    SizedBox(
-                      height: 8,
-                    )
-                  ],
-                ),
-              );
-            });
+                  );
+                }),
+          );
   }
 
   Widget screenUltah() {
     return controller.employeeUltah.value.isEmpty
-        ? Center(
+        ? const Center(
             child: Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
+              padding: EdgeInsets.only(left: 30, right: 30, top: 24),
               child: Text(
                 "Tidak ada karyawan yang berulang tahun pada bulan ini",
                 textAlign: TextAlign.center,
               ),
             ),
           )
-        : ListView.builder(
-            itemCount: controller.employeeUltah.value.length,
-            shrinkWrap: true,
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) {
-              var fullname = controller.employeeUltah.value[index]['full_name'];
-              var jobtitle = controller.employeeUltah.value[index]['job_title'];
-              var tanggalLahir =
-                  controller.employeeUltah.value[index]['em_birthday'];
-              var nowa = controller.employeeUltah.value[index]['em_mobile'];
-              var image = controller.employeeUltah.value[index]['em_image'];
-              var listTanggalLahir = tanggalLahir.split('-');
+        : Padding(
+            padding: const EdgeInsets.only(top: 24.0, left: 16, right: 16),
+            child: GridView.builder(
+              itemCount: controller.employeeUltah.value.length,
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12.0,
+                mainAxisSpacing: 16.0,
+                childAspectRatio: 0.89,
+              ),
+              itemBuilder: (context, index) {
+                var fullname =
+                    controller.employeeUltah.value[index]['full_name'];
+                var jobtitle =
+                    controller.employeeUltah.value[index]['job_title'];
+                var tanggalLahir =
+                    controller.employeeUltah.value[index]['em_birthday'];
+                var nowa = controller.employeeUltah.value[index]['em_mobile'];
+                var image = controller.employeeUltah.value[index]['em_image'];
+                var listTanggalLahir = tanggalLahir.split('-');
 
-              return Padding(
-                padding: EdgeInsets.only(left: 8, right: 8, top: 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 15,
-                            child: image == ""
-                                ? Image.asset(
-                                    'assets/avatar_default.png',
-                                    width: 50,
-                                    height: 50,
-                                  )
-                                : Center(
-                                    child: CircleAvatar(
-                                      radius: 25, // Image radius
-                                      child: ClipOval(
-                                        child: ClipOval(
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                Api.UrlfotoProfile + "${image}",
-                                            progressIndicatorBuilder: (context,
-                                                    url, downloadProgress) =>
-                                                Container(
-                                              alignment: Alignment.center,
-                                              height: MediaQuery.of(context)
+                return Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Constanst.colorNeutralBgTertiary,
+                        width: 1.0,
+                      ),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(12))),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Constanst.infoLight,
+                                    width: 2.0,
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(100))),
+                              child: Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: image == ""
+                                    ? SvgPicture.asset(
+                                        'assets/avatar_default.svg',
+                                        width: 56,
+                                        height: 56,
+                                      )
+                                    : Center(
+                                        child: CircleAvatar(
+                                          radius: 28,
+                                          child: ClipOval(
+                                            child: ClipOval(
+                                              child: CachedNetworkImage(
+                                                imageUrl:
+                                                    "${Api.UrlfotoProfile}$image",
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        Container(
+                                                  alignment: Alignment.center,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.5,
+                                                  width: MediaQuery.of(context)
                                                       .size
-                                                      .height *
-                                                  0.5,
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              child: CircularProgressIndicator(
-                                                  value: downloadProgress
-                                                      .progress),
+                                                      .width,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress),
+                                                ),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Container(
+                                                  color: Colors.white,
+                                                  child: SvgPicture.asset(
+                                                    'assets/avatar_default.svg',
+                                                    width: 56,
+                                                    height: 56,
+                                                  ),
+                                                ),
+                                                fit: BoxFit.cover,
+                                                width: 56,
+                                                height: 56,
+                                              ),
                                             ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Image.asset(
-                                              'assets/avatar_default.png',
-                                              width: 50,
-                                              height: 50,
-                                            ),
-                                            fit: BoxFit.cover,
-                                            width: 50,
-                                            height: 50,
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                          ),
-                          Expanded(
-                            flex: 85,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 12),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 6,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 60,
-                                        child: Text(
-                                          "$fullname",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 40,
-                                        child: Text(
-                                          "${Constanst.convertDateBulanDanHari('${listTanggalLahir[1]}-${listTanggalLahir[2]}')}",
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 6,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 60,
-                                        child: Text(
-                                          "$jobtitle",
-                                          style: TextStyle(
-                                              color: Constanst.colorText2),
-                                        ),
-                                      ),
-                                      Expanded(
-                                          flex: 40,
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Image.asset(
-                                                'assets/whatsapp.png',
-                                                width: 18,
-                                                height: 18,
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 6),
-                                                child: InkWell(
-                                                    onTap: () {
-                                                      var message =
-                                                          "Selamat Ulang Tahun $fullname, ";
-                                                      var nomorUltah = "$nowa";
-                                                      controllerGlobal
-                                                          .kirimUcapanWa(
-                                                              message,
-                                                              nomorUltah);
-                                                    },
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 3),
-                                                      child: Text(
-                                                        "Beri ucapan",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
-                                                        ),
-                                                      ),
-                                                    )),
-                                              ),
-                                            ],
-                                          ))
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 6,
-                                  ),
-                                ],
                               ),
                             ),
-                          )
-                        ],
-                      ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "$fullname",
+                          style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.fgPrimary),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$jobtitle ",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Constanst.fgSecondary),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          Constanst.convertDateBulanDanHari(
+                              '${listTanggalLahir[1]}-${listTanggalLahir[2]}'),
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Constanst.fgSecondary),
+                        ),
+                        const SizedBox(height: 8),
+                        Material(
+                          color: Constanst.infoLight1,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
+                          child: InkWell(
+                            customBorder: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                            ),
+                            onTap: () {
+                              var message = "Selamat Ulang Tahun $fullname, ";
+                              var nomorUltah = "$nowa";
+                              controllerGlobal.kirimUcapanWa(
+                                  message, nomorUltah);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 8.0),
+                                  child: Text(
+                                    "Beri ucapan 🎉",
+                                    style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        color: Constanst.infoLight,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Divider(
-                      height: 5,
-                      color: Constanst.colorNonAktif,
-                    ),
-                    SizedBox(
-                      height: 8,
-                    )
-                  ],
-                ),
-              );
-            });
+                  ),
+                );
+              },
+            ),
+          );
   }
 
   Widget screenTidakHadir() {
     return controller.employeeTidakHadir.value.isEmpty
-        ? Center(
+        ? const Center(
             child: Text(
               "Semua karyawan hadir pada hari ini",
               textAlign: TextAlign.center,
             ),
           )
-        : ListView.builder(
-            itemCount: controller.employeeTidakHadir.value.length,
-            shrinkWrap: true,
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) {
-              var fullname =
-                  controller.employeeTidakHadir.value[index]['full_name'];
-              var jobtitle =
-                  controller.employeeTidakHadir.value[index]['job_title'];
-              var ket = controller.employeeTidakHadir.value[index]
-                          ['ket_izin'] ==
-                      null
-                  ? "Tidak hadir/Belum absen"
-                  : controller.employeeTidakHadir.value[index]['ket_izin'] == 1
-                      ? "Lembur"
+        : Padding(
+            padding: const EdgeInsets.only(top: 24.0, left: 16, right: 16),
+            child: ListView.builder(
+                itemCount: controller.employeeTidakHadir.value.length,
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  var fullname =
+                      controller.employeeTidakHadir.value[index]['full_name'];
+                  var jobtitle =
+                      controller.employeeTidakHadir.value[index]['job_title'];
+                  var ket = controller.employeeTidakHadir.value[index]
+                              ['ket_izin'] ==
+                          null
+                      ? "Tidak hadir/Belum absen"
                       : controller.employeeTidakHadir.value[index]
                                   ['ket_izin'] ==
-                              2
-                          ? "Tugas Luar"
+                              1
+                          ? "Lembur"
                           : controller.employeeTidakHadir.value[index]
-                              ['ket_izin'];
-              return Padding(
-                padding: EdgeInsets.only(left: 8, right: 8, top: 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "$fullname",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      ['ket_izin'] ==
+                                  2
+                              ? "Tugas Luar"
+                              : controller.employeeTidakHadir.value[index]
+                                  ['ket_izin'];
+                  var image =
+                      controller.employeeTidakHadir.value[index]['em_image'];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Constanst.colorNeutralBgTertiary,
+                            width: 1.0,
+                          ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(12))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Constanst.infoLight,
+                                        width: 2.0,
+                                      ),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(100))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: image == ""
+                                        ? SvgPicture.asset(
+                                            'assets/avatar_default.svg',
+                                            width: 40,
+                                            height: 40,
+                                          )
+                                        : Center(
+                                            child: CircleAvatar(
+                                              radius: 20,
+                                              child: ClipOval(
+                                                child: ClipOval(
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        "${Api.UrlfotoProfile}$image",
+                                                    progressIndicatorBuilder:
+                                                        (context, url,
+                                                                downloadProgress) =>
+                                                            Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.5,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress),
+                                                    ),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Container(
+                                                      color: Colors.white,
+                                                      child: SvgPicture.asset(
+                                                        'assets/avatar_default.svg',
+                                                        width: 40,
+                                                        height: 40,
+                                                      ),
+                                                    ),
+                                                    fit: BoxFit.cover,
+                                                    width: 40,
+                                                    height: 40,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "$fullname",
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16,
+                                          color: Constanst.fgPrimary,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "$jobtitle",
+                                      style: GoogleFonts.inter(
+                                          fontSize: 14,
+                                          color: Constanst.fgSecondary,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: Constanst.colorNeutralBgSecondary,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(8))),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    8.0, 12.0, 0.0, 12.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 5,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Iconsax.calendar_tick5,
+                                            color: Constanst.infoLight,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            '$ket',
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14,
+                                                color: Constanst.fgPrimary),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Text(
-                      "$jobtitle",
-                      style: TextStyle(color: Constanst.colorText2),
-                    ),
-                    Text(
-                      "$ket",
-                      style: TextStyle(color: Constanst.colorText2),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Divider(
-                      height: 5,
-                      color: Constanst.colorNonAktif,
-                    ),
-                    SizedBox(
-                      height: 8,
-                    )
-                  ],
-                ),
-              );
-            });
+                  );
+                }),
+          );
   }
 
   Widget screenSisaKontrak() {
     return controllerGlobal.employeeSisaCuti.value.isEmpty
-        ? Center(
+        ? const Center(
             child: Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
+              padding: EdgeInsets.only(left: 30, right: 30),
               child: Text(
                 "Tidak ada data",
                 textAlign: TextAlign.center,
               ),
             ),
           )
-        : ListView.builder(
-            itemCount: controllerGlobal.employeeSisaCuti.value.length,
-            shrinkWrap: true,
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) {
-              var emId =
-                  controllerGlobal.employeeSisaCuti.value[index]['em_id'];
-              var fullname =
-                  controllerGlobal.employeeSisaCuti.value[index]['full_name'];
-              var deskripsi =
-                  controllerGlobal.employeeSisaCuti.value[index]['description'];
-              var beginDate =
-                  controllerGlobal.employeeSisaCuti.value[index]['begin_date'];
-              var endDate =
-                  controllerGlobal.employeeSisaCuti.value[index]['end_date'];
-              var remark =
-                  controllerGlobal.employeeSisaCuti.value[index]['remark'];
-              var sisaCuti = controllerGlobal.employeeSisaCuti.value[index]
-                  ['sisa_kontrak'];
+        : Padding(
+            padding: const EdgeInsets.only(top: 24.0, left: 16, right: 16),
+            child: ListView.builder(
+                itemCount: controllerGlobal.employeeSisaCuti.value.length,
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  var emId =
+                      controllerGlobal.employeeSisaCuti.value[index]['em_id'];
+                  var fullname = controllerGlobal.employeeSisaCuti.value[index]
+                      ['full_name'];
+                  var deskripsi = controllerGlobal.employeeSisaCuti.value[index]
+                      ['description'];
+                  var beginDate = controllerGlobal.employeeSisaCuti.value[index]
+                      ['begin_date'];
+                  var endDate = controllerGlobal.employeeSisaCuti.value[index]
+                      ['end_date'];
+                  var remark =
+                      controllerGlobal.employeeSisaCuti.value[index]['remark'];
+                  var sisaCuti = controllerGlobal.employeeSisaCuti.value[index]
+                      ['sisa_kontrak'];
+                  var image = controllerGlobal.employeeSisaCuti.value[index]
+                      ['em_image'];
+                  var jobtitle = controllerGlobal.employeeSisaCuti.value[index]
+                      ['job_title'];
 
-              return Padding(
-                padding: EdgeInsets.only(left: 8, right: 8, top: 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 70,
-                          child: Text(
-                            "$fullname",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Constanst.colorNeutralBgTertiary,
+                            width: 1.0,
                           ),
-                        ),
-                        Expanded(
-                          flex: 30,
-                          child: Container(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              "$sisaCuti Hari",
-                              style: TextStyle(
-                                  fontSize: 12, color: Constanst.colorText2),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(12))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Constanst.infoLight,
+                                        width: 2.0,
+                                      ),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(100))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: image == ""
+                                        ? SvgPicture.asset(
+                                            'assets/avatar_default.svg',
+                                            width: 40,
+                                            height: 40,
+                                          )
+                                        : Center(
+                                            child: CircleAvatar(
+                                              radius: 20,
+                                              child: ClipOval(
+                                                child: ClipOval(
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        "${Api.UrlfotoProfile}$image",
+                                                    progressIndicatorBuilder:
+                                                        (context, url,
+                                                                downloadProgress) =>
+                                                            Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.5,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress),
+                                                    ),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Container(
+                                                      color: Colors.white,
+                                                      child: SvgPicture.asset(
+                                                        'assets/avatar_default.svg',
+                                                        width: 40,
+                                                        height: 40,
+                                                      ),
+                                                    ),
+                                                    fit: BoxFit.cover,
+                                                    width: 40,
+                                                    height: 40,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "$fullname",
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16,
+                                          color: Constanst.fgPrimary,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "$deskripsi",
+                                      style: GoogleFonts.inter(
+                                          fontSize: 14,
+                                          color: Constanst.fgSecondary,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ),
+                            // Text(
+                            //   "$sisaCuti Hari",
+                            //   style: GoogleFonts.inter(
+                            //       fontSize: 12, color: Constanst.colorText2),
+                            // ),
+                            // Text(
+                            //   "$deskripsi",
+                            //   style:
+                            //       GoogleFonts.inter(color: Constanst.colorText2),
+                            // ),
+                            const SizedBox(height: 8),
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: Constanst.colorNeutralBgSecondary,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(8))),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    8.0, 12.0, 0.0, 12.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 5,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Iconsax.calendar_tick5,
+                                            color: Constanst.infoLight,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            Constanst.convertDate5(
+                                                '$beginDate'),
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14,
+                                                color: Constanst.fgPrimary),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Icon(
+                                      Iconsax.arrow_right_1,
+                                      color: Constanst.colorNeutralFgTertiary,
+                                      size: 14,
+                                    ),
+                                    Expanded(
+                                      flex: 5,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 16.0),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Iconsax.calendar_remove5,
+                                              color: Constanst.color4,
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              Constanst.convertDate5(
+                                                  '$endDate'),
+                                              style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14,
+                                                  color: Constanst.fgPrimary),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "$deskripsi",
-                      style: TextStyle(color: Constanst.colorText2),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "${Constanst.convertDate('$beginDate')}  -  ${Constanst.convertDate('$endDate')}",
-                      style: TextStyle(color: Constanst.colorText2),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Divider(
-                      height: 5,
-                      color: Constanst.colorNonAktif,
-                    ),
-                    SizedBox(
-                      height: 8,
-                    )
-                  ],
-                ),
-              );
-            });
+                  );
+                }),
+          );
   }
 
   void moveeToAbsen() {

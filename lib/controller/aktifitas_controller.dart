@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -67,12 +68,52 @@ class AktifitasController extends GetxController {
     },
   ];
 
+  void toggleSearch() {
+    statusFormPencarian.value = false;
+    this.statusFormPencarian.refresh();
+  }
+
+  // final ScrollController controllerScroll = ScrollController();
+  RxBool isVisible = true.obs;
+
+  void scrollListener() {
+    // Hide/show the text based on the scroll direction
+    if (controllerScroll.position.userScrollDirection ==
+        ScrollDirection.reverse) {
+      // setState(() {
+      isVisible.value = false;
+      // });
+    } else if (controllerScroll.position.userScrollDirection ==
+            ScrollDirection.forward &&
+        (controllerScroll.offset == 0.0 || controllerScroll.offset <= 0.0)) {
+      // setState(() {
+      isVisible.value = true;
+      // });
+    }
+    print("Scrolled: ${controllerScroll.offset}");
+  }
+
+  @override
+  void initState() {
+    // super.initState();
+
+    controllerScroll.addListener(scrollListener);
+  }
+
+  @override
+  void dispose() {
+    // Dispose the scroll controller to avoid memory leaks
+    controllerScroll.dispose();
+    super.dispose();
+  }
+
   @override
   void onReady() async {
     getTimeNow();
     loadAktifitas();
     getInformasiAktivitas();
     controllerScroll.addListener(listenScrolling);
+    controllerScroll.addListener(scrollListener);
     super.onReady();
   }
 
@@ -109,7 +150,7 @@ class AktifitasController extends GetxController {
         DateTime.now().year, DateTime.now().month - 1, DateTime.now().day);
 
     if (AppData.informasiUser![0].beginPayroll == 1) {
-      beginPayroll.value =  "${DateFormat('MMMM').format(dt)}";
+      beginPayroll.value = "${DateFormat('MMMM').format(dt)}";
     } else {
       beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
     }
@@ -321,10 +362,10 @@ class AktifitasController extends GetxController {
         };
         listAktifitas.value.add(data);
       }
-      cari.value.text = "";
+      // cari.value.text = "";
       statusPencarian.value = true;
-      statusFormPencarian.value = false;
-      this.statusFormPencarian.refresh();
+      // statusFormPencarian.value = false;
+      // this.statusFormPencarian.refresh();
       this.statusPencarian.refresh();
       this.listAktifitas.refresh();
       Navigator.pop(Get.context!);

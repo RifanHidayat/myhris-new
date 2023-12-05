@@ -30,7 +30,6 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
   @override
   void initState() {
     super.initState();
-      
   }
 
   Future<void> refreshData() async {
@@ -38,7 +37,6 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
     controller.loadDataAjuanIzin();
     controller.selectedType.value = 0;
     this.controller.selectedType.refresh();
-
   }
 
   @override
@@ -167,7 +165,8 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
                       foregroundColor: Colors.white,
                       label: 'Buat Pengajuan Tidak Hadir',
                       onTap: () {
-                        controller.changeTypeSelected(controller.selectedType.value);
+                        controller
+                            .changeTypeSelected(controller.selectedType.value);
                         Get.to(FormTidakMasukKerja(
                           dataForm: [[], false],
                         ));

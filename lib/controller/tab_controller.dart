@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+// import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/aktifitas_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
@@ -26,8 +26,9 @@ import 'package:move_to_background/move_to_background.dart';
 
 class TabbController extends GetxController {
   var currentPage = 0.obs;
-  Rx<PersistentTabController> tabPersistantController =
-      PersistentTabController().obs;
+  // Rx<PersistentTabController> tabPersistantController =
+  //     PersistentTabController().obs;
+  var currentIndex = 0.obs;
   DateTime? _currentBackPressTime;
 
   var kontrolAkses = false.obs;
@@ -92,9 +93,9 @@ class TabbController extends GetxController {
               negativeBtnText: "Kembali",
               style: 1,
               buttonStatus: 1,
-              positiveBtnPressed: () async{
+              positiveBtnPressed: () async {
                 Get.back();
-                 MoveToBackground.moveTaskToBack();
+                MoveToBackground.moveTaskToBack();
 
                 //   MinimizeApp .minimizeApp();
                 // SystemNavigator.pop();

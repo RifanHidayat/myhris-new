@@ -33,7 +33,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
   final panelController = PanelController();
   final controller = Get.put(AbsenController());
   final controllerDashboard = Get.put(DashboardController());
-   FocusNode myfocus = FocusNode();
+  FocusNode myfocus = FocusNode();
 
   Completer<GoogleMapController> _controller = Completer();
 
@@ -48,7 +48,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
   int maxExtend = 250;
 
   void initState() {
-      Api().checkLogin();
+    Api().checkLogin();
     // TODO: implement initState
     super.initState();
     controller.deskripsiAbsen.clear();
@@ -59,11 +59,9 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
       destinationIcon = onValue;
     });
 
-
     controller.absenSelfie();
 
     controller.getPlaceCoordinate();
-
 
     _fabHeight = _initFabHeight;
   }
@@ -635,8 +633,8 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                               Expanded(
                                 flex: 90,
                                 child: InkWell(
-                                  onTap: (){
-                                       validasiButtonSheet();
+                                  onTap: () {
+                                    validasiButtonSheet();
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -711,7 +709,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
     );
   }
 
-   void validasiButtonSheet() {
+  void validasiButtonSheet() {
     showModalBottomSheet(
       context: Get.context!,
       isDismissible: false,
@@ -774,9 +772,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                 InkWell(
                   onTap: () {},
                   child: InkWell(
-                    onTap: (){
-                                
-                    },
+                    onTap: () {},
                     child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
@@ -786,14 +782,13 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: InkWell(
-                          onTap: (){
+                          onTap: () {
                             print("tes");
-                               
                           },
                           child: TextField(
                             focusNode: myfocus,
                             autofocus: true,
-                            controller:    controller.deskripsiAbsen,
+                            controller: controller.deskripsiAbsen,
                             cursorColor: Colors.black,
                             maxLines: null,
                             onSubmitted: (value) {
@@ -805,7 +800,9 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                             keyboardType: TextInputType.multiline,
                             textInputAction: TextInputAction.done,
                             style: TextStyle(
-                                fontSize: 12.0, height: 2.0, color: Colors.black),
+                                fontSize: 12.0,
+                                height: 2.0,
+                                color: Colors.black),
                           ),
                         ),
                       ),

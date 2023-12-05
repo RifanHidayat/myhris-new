@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 
 import 'package:siscom_operasional/components/text.dart';
@@ -7,7 +8,6 @@ import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
 
 class TextFieldApp {
-  
   static Widget groupColumn(
       {hintText,
       controller,
@@ -20,104 +20,114 @@ class TextFieldApp {
       format,
       enabled,
       icon,
-      isPassword,subtitle}) {
-    return Container(
+      isPassword,
+      subtitle}) {
+    return SizedBox(
       width: width ?? MediaQuery.of(Get.context!).size.width,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 5),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextApp.label(
-              text: title,
-              weigh: FontWeight.w600,
-              size: 14.0,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextFormField(
-              enabled: enabled ?? true,
-              inputFormatters: format,
-              keyboardType: keyBoardType ?? TextInputType.text,
-              controller: controller,
-              decoration: icon == null || icon == ""
-                  ? InputDecoration(
-                      hintText: hintText ?? "",
-                      hintStyle: TextStyle(color: Constanst.Secondary),
-                      contentPadding: const EdgeInsets.only(
-                          left: 15, top: 8, right: 15, bottom: 0),
-                      border: OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8.0),
-                        ),
-                        borderSide: BorderSide(
-                          color: bgColor ?? Constanst.border,
-                          width: 2.0,
-                        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextApp.label(
+            text: title,
+            weigh: FontWeight.w500,
+            size: 16.0,
+          ),
+          const SizedBox(height: 6),
+          TextFormField(
+            enabled: enabled ?? true,
+            inputFormatters: format,
+            keyboardType: keyBoardType ?? TextInputType.text,
+            controller: controller,
+            decoration: icon == null || icon == ""
+                ? InputDecoration(
+                    hintText: hintText ?? "",
+                    hintStyle: GoogleFonts.inter(
+                        color: Constanst.Secondary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400),
+                    contentPadding: const EdgeInsets.only(
+                        left: 15, top: 8, right: 15, bottom: 0),
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(8.0),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide(
-                          color: bgColor ?? Constanst.border,
-                        ),
+                      borderSide: BorderSide(
+                        color: bgColor ?? Constanst.border,
+                        width: 2.0,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide(
-                          color: bgColor ?? Constanst.border,
-                        ),
-                      ),
-                      fillColor: bgColor ?? Colors.transparent,
-                      filled: true,
-                    )
-                  : InputDecoration(
-                      // suffixIcon: Suc,
-                      prefixIcon: Icon(
-                        icon,
-                        color: Constanst.border,
-                      ),
-                      hintText: hintText ?? "",
-                      hintStyle: TextStyle(color: Constanst.Secondary),
-                      contentPadding: const EdgeInsets.only(
-                          left: 15, top: 8, right: 15, bottom: 0),
-                      border: OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8.0),
-                        ),
-                        borderSide: BorderSide(
-                          color: bgColor ?? Constanst.border,
-                          width: 2.0,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide(
-                          color: bgColor ?? Constanst.border,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide(
-                          color: bgColor ?? Constanst.border,
-                        ),
-                      ),
-                      fillColor: bgColor ?? Colors.transparent,
-                      filled: true,
                     ),
-              style: TextStyle(
-                color:Constanst.colorBlack,
-              ),
-              validator: validator,
-              onChanged: onChange,
-            ),
-            SizedBox(height: 5,),
-            TextLabell(text: subtitle ?? "",size: 12,color:Constanst.border,)
-          ],
-        ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                        color: bgColor ?? Constanst.border,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                        color: bgColor ?? Constanst.border,
+                      ),
+                    ),
+                    fillColor: bgColor ?? Colors.transparent,
+                    filled: true,
+                  )
+                : InputDecoration(
+                    // suffixIcon: Suc,
+                    prefixIcon: Icon(
+                      icon,
+                      color: Constanst.secondary,
+                    ),
+                    hintText: hintText ?? "",
+                    hintStyle: GoogleFonts.inter(
+                        color: Constanst.Secondary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400),
+                    contentPadding: const EdgeInsets.only(
+                        left: 15, top: 8, right: 15, bottom: 0),
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(0.0),
+                      ),
+                      borderSide: BorderSide(
+                        color: bgColor ?? Constanst.border,
+                        width: 1.0,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                        color: bgColor ?? Constanst.border,
+                        width: 1.0,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                        color: bgColor ?? Constanst.border,
+                        width: 1.0,
+                      ),
+                    ),
+                    fillColor: bgColor ?? Colors.transparent,
+                    filled: true,
+                  ),
+            style: GoogleFonts.inter(
+                color: Constanst.colorBlack,
+                fontSize: 16,
+                fontWeight: FontWeight.w400),
+            validator: validator,
+            onChanged: onChange,
+          ),
+          const SizedBox(height: 5),
+          TextLabell(
+            text: subtitle ?? "",
+            size: 12,
+            color: Constanst.border,
+          )
+        ],
       ),
     );
   }
+
   static Widget groupColumnSelected(
       {hintText,
       controller,
@@ -143,8 +153,8 @@ class TextFieldApp {
             children: [
               TextApp.label(
                 text: title,
-                weigh: FontWeight.w600,
-                size: 14.0,
+                weigh: FontWeight.w500,
+                size: 16.0,
               ),
               const SizedBox(
                 height: 10,
@@ -157,7 +167,11 @@ class TextFieldApp {
                 decoration: icon == null || icon == ""
                     ? InputDecoration(
                         hintText: hintText ?? "",
-                        hintStyle: TextStyle(color: Constanst.Secondary),
+                        hintStyle: TextStyle(
+                          color: Constanst.Secondary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
                         contentPadding: const EdgeInsets.only(
                             left: 15, top: 8, right: 15, bottom: 0),
                         border: OutlineInputBorder(
@@ -191,7 +205,11 @@ class TextFieldApp {
                           color: Constanst.border,
                         ),
                         hintText: hintText ?? "",
-                        hintStyle: TextStyle(color: Constanst.Secondary),
+                        hintStyle: TextStyle(
+                          color: Constanst.Secondary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
                         contentPadding: const EdgeInsets.only(
                             left: 15, top: 8, right: 15, bottom: 0),
                         border: OutlineInputBorder(
@@ -219,7 +237,9 @@ class TextFieldApp {
                         filled: true,
                       ),
                 style: TextStyle(
-                  color:Constanst.colorBlack,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Constanst.colorBlack,
                 ),
                 validator: validator,
                 onChanged: onChange,
@@ -230,6 +250,7 @@ class TextFieldApp {
       ),
     );
   }
+
   static Widget groupColumnPassword(
       {hintText,
       controller,
@@ -243,7 +264,8 @@ class TextFieldApp {
       enabled,
       icon,
       isPassword,
-      onTap,visble}) {
+      onTap,
+      visble}) {
     return Container(
       width: width ?? MediaQuery.of(Get.context!).size.width,
       child: Padding(
@@ -253,8 +275,8 @@ class TextFieldApp {
           children: [
             TextApp.label(
               text: title,
-              weigh: FontWeight.w600,
-              size: 14.0,
+              weigh: FontWeight.w500,
+              size: 16.0,
             ),
             const SizedBox(
               height: 10,
@@ -263,22 +285,27 @@ class TextFieldApp {
               enabled: enabled ?? true,
               inputFormatters: format,
               keyboardType: TextInputType.text,
-              obscureText: visble??true,
+              obscureText: visble ?? true,
               controller: controller,
               decoration: icon == null || icon == ""
                   ? InputDecoration(
-                    
-                       suffixIcon: InkWell(
+                      suffixIcon: InkWell(
                           onTap: onTap,
-                          child: visble==true? Icon(
-                            Iconsax.eye_slash,
-                            color: Constanst.Secondary,
-                          ):Icon(
-                            Iconsax.eye,
-                            color: Constanst.Secondary,
-                          )),
+                          child: visble == true
+                              ? Icon(
+                                  Iconsax.eye_slash,
+                                  color: Constanst.Secondary,
+                                )
+                              : Icon(
+                                  Iconsax.eye,
+                                  color: Constanst.Secondary,
+                                )),
                       hintText: hintText ?? "",
-                      hintStyle: TextStyle(color: Constanst.Secondary),
+                      hintStyle: TextStyle(
+                        color: Constanst.Secondary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
                       contentPadding: const EdgeInsets.only(
                           left: 15, top: 8, right: 15, bottom: 0),
                       border: OutlineInputBorder(
@@ -289,7 +316,6 @@ class TextFieldApp {
                           color: bgColor ?? Constanst.border,
                           width: 2.0,
                         ),
-                        
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
@@ -305,25 +331,30 @@ class TextFieldApp {
                       ),
                       fillColor: bgColor ?? Colors.transparent,
                       filled: true,
-                      
                     )
                   : InputDecoration(
-                    suffixIcon: InkWell(
+                      suffixIcon: InkWell(
                           onTap: onTap,
-                          child: visble==true? Icon(
-                            Iconsax.eye_slash,
-                            color: Constanst.Secondary,
-                          ):Icon(
-                            Iconsax.eye,
-                            color: Constanst.Secondary,
-                          )),
+                          child: visble == true
+                              ? Icon(
+                                  Iconsax.eye_slash,
+                                  color: Constanst.Secondary,
+                                )
+                              : Icon(
+                                  Iconsax.eye,
+                                  color: Constanst.Secondary,
+                                )),
                       // suffixIcon: Suc,
                       prefixIcon: Icon(
                         icon,
-                        color:Constanst.border,
+                        color: Constanst.border,
                       ),
                       hintText: hintText ?? "",
-                      hintStyle: TextStyle(color: Constanst.Secondary),
+                      hintStyle: TextStyle(
+                        color: Constanst.Secondary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
                       contentPadding: const EdgeInsets.only(
                           left: 15, top: 8, right: 15, bottom: 0),
                       border: OutlineInputBorder(
@@ -351,7 +382,9 @@ class TextFieldApp {
                       filled: true,
                     ),
               style: TextStyle(
-                color:Constanst.colorBlack,
+                color: Constanst.colorBlack,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
               ),
               validator: validator,
               onChanged: onChange,
@@ -362,7 +395,7 @@ class TextFieldApp {
     );
   }
 
-   static Widget search(
+  static Widget search(
       {hintText,
       controller,
       keyBoardType,
@@ -373,9 +406,7 @@ class TextFieldApp {
       onChange,
       format,
       enabled,
-      onTap
-     
-     }) {
+      onTap}) {
     return Container(
       width: width ?? MediaQuery.of(Get.context!).size.width,
       child: Row(
@@ -387,42 +418,39 @@ class TextFieldApp {
               inputFormatters: format,
               keyboardType: keyBoardType ?? TextInputType.text,
               controller: controller,
-              decoration:  InputDecoration(
-                      hintText: hintText ?? "",
-                      hintStyle: TextStyle(color: Constanst.Secondary),
-                      contentPadding: const EdgeInsets.only(
-                          left: 15, top: 8, right: 15, bottom: 0),
-                      border: OutlineInputBorder(
-                         borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          bottomLeft: Radius.circular(8)
-                        ),
-                        borderSide: BorderSide(
-                          color: bgColor ?? Constanst.border,
-                          width: 2.0,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          bottomLeft: Radius.circular(8)
-                        ),
-                        borderSide: BorderSide(
-                          color: bgColor ??Constanst.border,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                         borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          bottomLeft: Radius.circular(8)
-                        ),
-                        borderSide: BorderSide(
-                          color: bgColor ?? Constanst.border,
-                        ),
-                      ),
-                      fillColor: bgColor ?? Colors.transparent,
-                      filled: true,
-                    ),
+              decoration: InputDecoration(
+                hintText: hintText ?? "",
+                hintStyle: TextStyle(color: Constanst.Secondary),
+                contentPadding: const EdgeInsets.only(
+                    left: 15, top: 8, right: 15, bottom: 0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      bottomLeft: Radius.circular(8)),
+                  borderSide: BorderSide(
+                    color: bgColor ?? Constanst.border,
+                    width: 2.0,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      bottomLeft: Radius.circular(8)),
+                  borderSide: BorderSide(
+                    color: bgColor ?? Constanst.border,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      bottomLeft: Radius.circular(8)),
+                  borderSide: BorderSide(
+                    color: bgColor ?? Constanst.border,
+                  ),
+                ),
+                fillColor: bgColor ?? Colors.transparent,
+                filled: true,
+              ),
               style: TextStyle(
                 color: Constanst.colorBlack,
               ),
@@ -431,25 +459,25 @@ class TextFieldApp {
             ),
           ),
           Expanded(
-            flex: 20,
-            child: InkWell(
-              onTap: onTap,
-              child: Container(
-                      
-              
-              decoration: BoxDecoration(
-                      
-                borderRadius: BorderRadius.only(topRight: Radius.circular(8),bottomRight:Radius.circular(8)),
-                border: Border.all(width: 1,color: Constanst.border,)
-              ),
-              padding: EdgeInsets.only(top: 11,bottom: 11,left: 9,right: 9),
-              child:Icon(Iconsax.search_normal) ,
-                      ),
-            )),
-    
+              flex: 20,
+              child: InkWell(
+                onTap: onTap,
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          bottomRight: Radius.circular(8)),
+                      border: Border.all(
+                        width: 1,
+                        color: Constanst.border,
+                      )),
+                  padding:
+                      EdgeInsets.only(top: 11, bottom: 11, left: 9, right: 9),
+                  child: Icon(Iconsax.search_normal),
+                ),
+              )),
         ],
       ),
     );
   }
-
 }

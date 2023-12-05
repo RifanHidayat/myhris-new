@@ -550,7 +550,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
             padding: EdgeInsets.only(bottom: 8),
             child: InkWell(
               onTap: () {
-                showBottomDetailItemCharging(context,index);
+                showBottomDetailItemCharging(context, index);
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -568,12 +568,12 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                       ),
                       TextLabell(
                         text: "Absen masuk ${data['dari_jam']}",
-                        color: Constanst.sfSecondary,
+                        color: Constanst.fgSecondary,
                         size: 13.0,
                       ),
                       TextLabell(
                         text: "Absen Keluar  ${data['sampai_jam']}",
-                        color: Constanst.sfSecondary,
+                        color: Constanst.fgSecondary,
                         size: 13.0,
                       ),
                       SizedBox(
@@ -600,13 +600,14 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         TextLabell(
-                                          text: "Approved by ${data['approve_by']}",
+                                          text:
+                                              "Approved by ${data['approve_by']}",
                                           color: Constanst.fgPrimary,
                                           weight: FontWeight.bold,
                                         ),
                                         // TextLabell(
                                         //   text: "Absen Keluar Tanggal",
-                                        //   color: Constanst.sfSecondary,
+                                        //   color: Constanst.fgSecondary,
                                         // ),
                                       ],
                                     ))
@@ -628,24 +629,26 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                             Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 TextLabell(
-                                                text: "Rejected by ${data['approve_by']}",
+                                                  text:
+                                                      "Rejected by ${data['approve_by']}",
                                                   color: Constanst.fgPrimary,
                                                   weight: FontWeight.bold,
                                                 ),
-                                                 TextLabell(
-                                                text: "${data['alasan_reject']}",
+                                                TextLabell(
+                                                  text:
+                                                      "${data['alasan_reject']}",
                                                   color: Constanst.fgPrimary,
-                                        
                                                 ),
                                               ],
                                             ),
                                             // TextLabell(
                                             //   text: "Absen Keluar Tanggal",
-                                            //   color: Constanst.sfSecondary,
+                                            //   color: Constanst.fgSecondary,
                                             // ),
                                           ],
                                         ))
@@ -672,7 +675,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                             ),
                                             // TextLabell(
                                             //   text: "Absen Keluar Tanggal",
-                                            //   color: Constanst.sfSecondary,
+                                            //   color: Constanst.fgSecondary,
                                             // ),
                                           ],
                                         ))
@@ -855,11 +858,11 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                           Flexible(
                             child: Padding(
                               padding: EdgeInsets.only(left: 8),
-                              child:  Text(
-                                      "${jamKeluar}",
-                                      style: TextStyle(
-                                          color: getColorKeluar, fontSize: 14),
-                                    ),
+                              child: Text(
+                                "${jamKeluar}",
+                                style: TextStyle(
+                                    color: getColorKeluar, fontSize: 14),
+                              ),
                             ),
                           )
                         ],
@@ -1080,8 +1083,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
         });
   }
 
-  void showBottomDetailItemCharging(BuildContext context,index) {
-    var data=controller.pengajuanAbsensi[index];
+  void showBottomDetailItemCharging(BuildContext context, index) {
+    var data = controller.pengajuanAbsensi[index];
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -1129,7 +1132,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                   children: [
                                     TextLabell(
                                       text: "No. Pengajuan",
-                                      color: Constanst.sfSecondary,
+                                      color: Constanst.fgSecondary,
                                     ),
                                     TextLabell(
                                       text: data['nomor_ajuan'],
@@ -1146,10 +1149,10 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 children: [
                                   TextLabell(
                                     text: "Tanggal Pengajuan",
-                                    color: Constanst.sfSecondary,
+                                    color: Constanst.fgSecondary,
                                   ),
                                   TextLabell(
-                                    text: data['tgl_ajuan']??'',
+                                    text: data['tgl_ajuan'] ?? '',
                                     weight: FontWeight.bold,
                                   ),
                                 ],
@@ -1182,7 +1185,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                               //   children: [
                               //     TextLabell(
                               //       text: "Nama Pengajuan",
-                              //       color: Constanst.sfSecondary,
+                              //       color: Constanst.fgSecondary,
                               //     ),
                               //     TextLabell(
                               //       text: "Pengajuan Absensi",
@@ -1205,10 +1208,10 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 children: [
                                   TextLabell(
                                     text: "Tanggal",
-                                    color: Constanst.sfSecondary,
+                                    color: Constanst.fgSecondary,
                                   ),
                                   TextLabell(
-                                    text:  data['atten_date'],
+                                    text: data['atten_date'],
                                     weight: FontWeight.bold,
                                   ),
                                   SizedBox(
@@ -1230,15 +1233,17 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         children: [
                                           TextLabell(
                                             text: "Absen Masuk",
-                                            color: Constanst.sfSecondary,
+                                            color: Constanst.fgSecondary,
                                           ),
-                                          data['dari_jam']==""? TextLabell(
-                                            text: "_ _ : _ _",
-                                            color: Constanst.fgPrimary,
-                                          ):TextLabell(
-                                            text: data['dari_jam'],
-                                            color: Constanst.fgPrimary,
-                                          )
+                                          data['dari_jam'] == ""
+                                              ? TextLabell(
+                                                  text: "_ _ : _ _",
+                                                  color: Constanst.fgPrimary,
+                                                )
+                                              : TextLabell(
+                                                  text: data['dari_jam'],
+                                                  color: Constanst.fgPrimary,
+                                                )
                                         ],
                                       ),
                                     ),
@@ -1251,13 +1256,15 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                             text: "Absen Keluar",
                                             color: Constanst.secondary,
                                           ),
-                                         data['sampai_jam']==""? TextLabell(
-                                            text: "_ _ : _ _",
-                                            color: Constanst.fgPrimary,
-                                          ):TextLabell(
-                                            text: data['sampai_jam'],
-                                            color: Constanst.fgPrimary,
-                                          )
+                                          data['sampai_jam'] == ""
+                                              ? TextLabell(
+                                                  text: "_ _ : _ _",
+                                                  color: Constanst.fgPrimary,
+                                                )
+                                              : TextLabell(
+                                                  text: data['sampai_jam'],
+                                                  color: Constanst.fgPrimary,
+                                                )
                                         ],
                                       ),
                                     )
@@ -1265,18 +1272,18 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 ),
                               ),
                               SizedBox(
-                                    height: 4,
-                                  ),
-                                  Divider(),
-                                  SizedBox(
-                                    height: 4,
-                                  ),
+                                height: 4,
+                              ),
+                              Divider(),
+                              SizedBox(
+                                height: 4,
+                              ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   TextLabell(
                                     text: "Catatan",
-                                    color: Constanst.sfSecondary,
+                                    color: Constanst.fgSecondary,
                                   ),
                                   TextLabell(
                                     text: data['uraian'],
@@ -1296,10 +1303,10 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 children: [
                                   TextLabell(
                                     text: "File disematkan",
-                                    color: Constanst.sfSecondary,
+                                    color: Constanst.fgSecondary,
                                   ),
                                   InkWell(
-                                    onTap: (){
+                                    onTap: () {
                                       viewLampiranAjuan(data['req_file']);
                                     },
                                     child: TextLabell(
@@ -1318,100 +1325,108 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 ],
                               ),
                               data['status'].toString().toLowerCase() ==
-                              "approve".toLowerCase()
-                          ? Row(
-                              children: [
-                                Expanded(
-                                    flex: 10,
-                                    child: Icon(
-                                      Iconsax.tick_circle,
-                                      color: Colors.green,
-                                    )),
-                                Expanded(
-                                    flex: 90,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      "approve".toLowerCase()
+                                  ? Row(
                                       children: [
-                                        TextLabell(
-                                         text: "Approved by ${data['approve_by']}",
-                                          color: Constanst.fgPrimary,
-                                          weight: FontWeight.bold,
-                                        ),
-                                        // TextLabell(
-                                        //   text: "Absen Keluar Tanggal",
-                                        //   color: Constanst.sfSecondary,
-                                        // ),
-                                      ],
-                                    ))
-                              ],
-                            )
-                          : data['status'].toString().toLowerCase() ==
-                                  "rejected".toLowerCase()
-                              ? Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 10,
-                                        child: Icon(
-                                          Iconsax.close_circle,
-                                          color:Colors.red,
-                                        )),
-                                    Expanded(
-                                        flex: 90,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                        Expanded(
+                                            flex: 10,
+                                            child: Icon(
+                                              Iconsax.tick_circle,
+                                              color: Colors.green,
+                                            )),
+                                        Expanded(
+                                            flex: 90,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 TextLabell(
-                                                text: "Rejected by ${data['approve_by']}",
+                                                  text:
+                                                      "Approved by ${data['approve_by']}",
                                                   color: Constanst.fgPrimary,
                                                   weight: FontWeight.bold,
                                                 ),
-                                                 TextLabell(
-                                                text: "${data['alasan_reject']}",
-                                                  color: Constanst.fgPrimary,
-                                        
-                                                ),
+                                                // TextLabell(
+                                                //   text: "Absen Keluar Tanggal",
+                                                //   color: Constanst.fgSecondary,
+                                                // ),
                                               ],
-                                            ),
-                                            // TextLabell(
-                                            //   text: "Absen Keluar Tanggal",
-                                            //   color: Constanst.sfSecondary,
-                                            // ),
-                                          ],
-                                        ))
-                                  ],
-                                )
-                              : Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 10,
-                                        child: Icon(
-                                          Iconsax.timer4,
-                                          color: Constanst.warning,
-                                        )),
-                                    Expanded(
-                                        flex: 90,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                            ))
+                                      ],
+                                    )
+                                  : data['status'].toString().toLowerCase() ==
+                                          "rejected".toLowerCase()
+                                      ? Row(
                                           children: [
-                                            TextLabell(
-                                              text: "Pending Approval",
-                                              color: Constanst.fgPrimary,
-                                              weight: FontWeight.bold,
-                                            ),
-                                            // TextLabell(
-                                            //   text: "Absen Keluar Tanggal",
-                                            //   color: Constanst.sfSecondary,
-                                            // ),
+                                            Expanded(
+                                                flex: 10,
+                                                child: Icon(
+                                                  Iconsax.close_circle,
+                                                  color: Colors.red,
+                                                )),
+                                            Expanded(
+                                                flex: 90,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        TextLabell(
+                                                          text:
+                                                              "Rejected by ${data['approve_by']}",
+                                                          color: Constanst
+                                                              .fgPrimary,
+                                                          weight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                        TextLabell(
+                                                          text:
+                                                              "${data['alasan_reject']}",
+                                                          color: Constanst
+                                                              .fgPrimary,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    // TextLabell(
+                                                    //   text: "Absen Keluar Tanggal",
+                                                    //   color: Constanst.fgSecondary,
+                                                    // ),
+                                                  ],
+                                                ))
                                           ],
-                                        ))
-                                  ],
-                                )
+                                        )
+                                      : Row(
+                                          children: [
+                                            Expanded(
+                                                flex: 10,
+                                                child: Icon(
+                                                  Iconsax.timer4,
+                                                  color: Constanst.warning,
+                                                )),
+                                            Expanded(
+                                                flex: 90,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    TextLabell(
+                                                      text: "Pending Approval",
+                                                      color:
+                                                          Constanst.fgPrimary,
+                                                      weight: FontWeight.bold,
+                                                    ),
+                                                    // TextLabell(
+                                                    //   text: "Absen Keluar Tanggal",
+                                                    //   color: Constanst.fgSecondary,
+                                                    // ),
+                                                  ],
+                                                ))
+                                          ],
+                                        )
                             ],
                           ),
                         ),
@@ -1419,46 +1434,51 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                     ],
                   ),
                 ),
+                data['status'].toString().toLowerCase() ==
+                        "Pending".toLowerCase()
+                    ? Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                flex: 50,
+                                child: InkWell(
+                                  onTap: () {
+                                    absenControllre.batalkanAjuan(
+                                        date: data['atten_date']);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.only(top: 8, bottom: 8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                            width: 1, color: Colors.red)),
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Center(
+                                        child: TextLabell(
+                                      text: "Batalkan",
+                                      color: Colors.red,
+                                    )),
+                                  ),
+                                )),
+                            // SizedBox(width: 8,),
+                            //  Expanded(
+                            //   flex: 50,
+                            //   child: Container(
+                            //        padding: EdgeInsets.only(top: 8,bottom: 8),
+                            //     decoration: BoxDecoration(
 
-                
-                
-               data['status'].toString().toLowerCase()=="Pending".toLowerCase()? Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 50,
-                        child: InkWell(
-                          onTap: (){
-                            absenControllre.batalkanAjuan(date: data['atten_date']);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.only(top: 8,bottom: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                                border: Border.all(width: 1,color: Colors.red)
-                            ),
-                            width: MediaQuery.of(context).size.width,
-                          child: Center(child: TextLabell(text:"Batalkan",color: Colors.red,)),
-                                              ),
-                        )),
-                      // SizedBox(width: 8,),
-                      //  Expanded(
-                      //   flex: 50,
-                      //   child: Container(
-                      //        padding: EdgeInsets.only(top: 8,bottom: 8),
-                      //     decoration: BoxDecoration(
-                            
-                      //       color: Constanst.onPrimary,
-                      //         borderRadius: BorderRadius.circular(8),
-                      //         border: Border.all(width: 1)
-                      //     ),
-                      //        width: MediaQuery.of(context).size.width,
-                      //   child: Center(child: TextLabell(text:"Edit",color: Colors.white,)),
-                      // ))
-                    ],
-                  ),
-                ):SizedBox()
+                            //       color: Constanst.onPrimary,
+                            //         borderRadius: BorderRadius.circular(8),
+                            //         border: Border.all(width: 1)
+                            //     ),
+                            //        width: MediaQuery.of(context).size.width,
+                            //   child: Center(child: TextLabell(text:"Edit",color: Colors.white,)),
+                            // ))
+                          ],
+                        ),
+                      )
+                    : SizedBox()
               ],
             ),
           ),
@@ -1466,7 +1486,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
       },
     );
   }
-    void viewLampiranAjuan(value) async {
+
+  void viewLampiranAjuan(value) async {
     var urlViewGambar = Api.UrlfotoAbsen + value;
 
     final url = Uri.parse(urlViewGambar);

@@ -245,7 +245,7 @@ class UtilsAlert {
   }
 
   static shimmerMenuDashboard(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Shimmer.fromColors(
           baseColor: Colors.grey.shade300,

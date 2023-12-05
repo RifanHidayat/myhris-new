@@ -17,9 +17,12 @@ class Api {
   static var basicAuth = 'Basic ' +
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
+ 
  static var basicUrl = "http://mobilehris.siscom.id:3000/";
+ 
   static var urlImage = 'https://imagehris.siscom.id:4431';
 //
+ 
 //static var basicUrl = "http://kantor.membersis.com:2629/";
 
 
@@ -30,7 +33,7 @@ static var luxand = 'https://api.luxand.cloud/photo/similarity';
 static var wappin = 'https://api.wappin.id/v1';
    
 
-
+ 
 
   static var UrlfotoAbsen =
       urlImage + "/${AppData.selectedDatabase}/foto_absen/";
@@ -51,7 +54,6 @@ static var wappin = 'https://api.wappin.id/v1';
       urlImage + "/${AppData.selectedDatabase}/file_kandidat/";
   static var urlFileRecog =
       urlImage + "/${AppData.selectedDatabase}/face_recog/";
-
 
   static Future connectionApi(String typeConnect, valFormData, String url,
       {params = ""}) async {
@@ -107,26 +109,14 @@ static var wappin = 'https://api.wappin.id/v1';
     }
   }
 
-
-
-
-
-
-
   static Future connectionApiUploadFile(String url, File newFile) async {
-
-
     var getUrl = basicUrl + url + "?database=${AppData.selectedDatabase}";
-
 
     Map<String, String> headers = {
       'Authorization': basicAuth,
       'Content-type': 'application/json',
       'Accept': 'application/json',
       'token': AppData.setFcmToken,
-    
-    
-    
       'em_id': AppData.informasiUser == null ||
               AppData.informasiUser == "null" ||
               AppData.informasiUser == "" ||
@@ -134,7 +124,7 @@ static var wappin = 'https://api.wappin.id/v1';
           ? ""
           : AppData.informasiUser![0].em_id
     };
-  
+
     try {
       final url = Uri.parse(getUrl);
       var request = http.MultipartRequest('POST', url);
@@ -147,15 +137,8 @@ static var wappin = 'https://api.wappin.id/v1';
       return respStr;
     } on SocketException catch (e) {
       return false;
-  
     }
-  
-  
   }
-
-
-
-
 
   Future<void> checkLogin() async {
     // var response = await http.post(Uri.parse(basicUrl +
@@ -170,7 +153,6 @@ static var wappin = 'https://api.wappin.id/v1';
 
   validateAuth(code, message) {
     if (code == 402 || code == "" || code == null) {
-      
       AppData.isLogin = false;
       Get.offAll(Login());
 
