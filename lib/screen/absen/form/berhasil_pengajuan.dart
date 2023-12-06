@@ -92,7 +92,7 @@ class _BerhasilPengajuanState extends State<BerhasilPengajuan> {
                       elevation: 0,
                       padding: const EdgeInsets.fromLTRB(0, 12, 0, 12)),
                   child: Text(
-                    'Kembali ke beranda3434',
+                    'Kembali ke beranda',
                     style: GoogleFonts.inter(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
@@ -129,7 +129,7 @@ class _BerhasilPengajuanState extends State<BerhasilPengajuan> {
                           elevation: 0,
                         ),
                         child: Text(
-                          'Konfirmasi via Whatsapp234',
+                          'Konfirmasi via Whatsapp',
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
