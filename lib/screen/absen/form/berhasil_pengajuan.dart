@@ -2,11 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:siscom_operasional/controller/absen_controller.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
-import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class BerhasilPengajuan extends StatefulWidget {
   List dataBerhasil;
@@ -21,120 +21,126 @@ class _BerhasilPengajuanState extends State<BerhasilPengajuan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 232, 240, 248),
+      backgroundColor: Constanst.coloBackgroundScreen,
       body: WillPopScope(
         onWillPop: () async {
           return false;
         },
         child: SafeArea(
             child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(flex: 30, child: SizedBox()),
-            Expanded(
-                flex: 70,
-                child: Column(
-                  children: [
-                    Image.asset(
-                      "assets/berhasil_pengajuan.png",
-                      width: 150,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text("${widget.dataBerhasil[0]}",
-                          textAlign: TextAlign.center,
-                          style: Constanst.boldType1),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30, right: 30),
-                      child: Text("${widget.dataBerhasil[1]}",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Constanst.colorText2, fontSize: 14)),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30, right: 30),
-                      child: Text("${widget.dataBerhasil[2]}",
-                          textAlign: TextAlign.center,
-                          style: Constanst.boldType2),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ))
+            SvgPicture.asset(
+              'assets/send.svg',
+              width: 240,
+              height: 240,
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Text(
+                "${widget.dataBerhasil[0]}",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                    color: Constanst.fgPrimary),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.only(left: 32, right: 32),
+              child: Text(
+                "${widget.dataBerhasil[1]}",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                    color: Constanst.fgPrimary),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "${widget.dataBerhasil[2]}",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: Constanst.fgPrimary),
+            ),
           ],
         )),
       ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: MediaQuery.of(Get.context!).size.width,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 6.0, left: 8, right: 8),
-              child: ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        Constanst.colorPrimary),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            side: BorderSide(color: Colors.white)))),
-                onPressed: () {
-                  Get.offAll(InitScreen());
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 12, bottom: 12),
-                  child: Text('Kembali ke beranda'),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(right: 16.0, left: 16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.offAll(InitScreen());
+                  },
+                  style: ElevatedButton.styleFrom(
+                      foregroundColor: Constanst.colorWhite,
+                      backgroundColor: Constanst.onPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0,
+                      padding: const EdgeInsets.fromLTRB(0, 12, 0, 12)),
+                  child: Text(
+                    'Kembali ke beranda',
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        color: Constanst.colorWhite),
+                  ),
                 ),
               ),
-            ),
-          ),
-          widget.dataBerhasil[3] == false
-              ? SizedBox()
-              : SizedBox(
-                  width: MediaQuery.of(Get.context!).size.width,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: 6.0, left: 8, right: 8),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      side: BorderSide(
-                                          color: Constanst.colorPrimary)))),
-                      onPressed: () {
-                        controllerGlobal
-                            .showDataPilihAtasan(widget.dataBerhasil[3]);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 12, bottom: 12),
+              const SizedBox(height: 8),
+              widget.dataBerhasil[3] == false
+                  ? const SizedBox()
+                  : Container(
+                      height: 42,
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Constanst.fgBorder,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          controllerGlobal
+                              .showDataPilihAtasan(widget.dataBerhasil[3]);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Constanst.onPrimary,
+                          backgroundColor: Constanst.colorWhite,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 0,
+                        ),
                         child: Text(
-                          'Konfirmasi via WA',
-                          style: TextStyle(color: Constanst.colorPrimary),
+                          'Konfirmasi via Whatsapp',
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.onPrimary,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }

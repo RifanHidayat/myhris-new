@@ -1952,8 +1952,6 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget MenuDashboard() {
-    var gambar2 = controller.menuShowInMain[0]['menu']
-        [tabbController.kontrolAkses.value == true ? 6 : 7]['gambar'];
     return SizedBox(
       width: MediaQuery.of(Get.context!).size.width,
       height: controller.heightPageView.value / 2,
@@ -1966,41 +1964,33 @@ class _DashboardState extends State<Dashboard> {
             Padding(
               padding: const EdgeInsets.only(right: 12),
               child: InkWell(
-                onTap: () => controller.routePageDashboard(
-                    controller.menuShowInMain[0]['menu'][7]['url']),
+                onTap: () => controller.widgetButtomSheetMenuLebihDetail(),
                 highlightColor: Colors.white,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      gambar2 != ""
-                          ? Stack(
-                              children: [
-                                Container(
-                                  height: 42,
-                                  width: 42,
-                                  decoration: BoxDecoration(
-                                      color: Constanst.infoLight1,
-                                      borderRadius:
-                                          BorderRadius.circular(100.0)),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 8,
-                                    top: 8,
-                                  ),
-                                  child: SvgPicture.asset(
-                                    'assets/1_more.svg',
-                                    height: 42,
-                                    width: 42,
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Container(
-                              color: Constanst.colorButton1,
-                              height: 32,
-                              width: 32,
+                      Stack(
+                        children: [
+                          Container(
+                            height: 42,
+                            width: 42,
+                            decoration: BoxDecoration(
+                                color: Constanst.infoLight1,
+                                borderRadius: BorderRadius.circular(100.0)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 8,
+                              top: 8,
                             ),
+                            child: SvgPicture.asset(
+                              'assets/1_more.svg',
+                              height: 42,
+                              width: 42,
+                            ),
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 4),
                       Text(
                         "Semua",
