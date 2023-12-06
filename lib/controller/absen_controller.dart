@@ -1,4 +1,3 @@
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +25,7 @@ import 'package:siscom_operasional/screen/absen/berhasil_registrasi.dart';
 import 'package:siscom_operasional/screen/absen/detail_absen.dart';
 import 'package:siscom_operasional/screen/absen/face_id_registration.dart';
 import 'package:siscom_operasional/screen/absen/loading_absen.dart';
+import 'package:siscom_operasional/screen/absen/pengajuan%20absen_berhasil.dart';
 
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
@@ -43,6 +43,11 @@ import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 class AbsenController extends GetxController {
   PageController? pageViewFilterAbsen;
 
+  RxBool isChecked = false.obs;
+  RxBool isChecked2 = false.obs;
+
+  Rx<DateTime> selectedDate = DateTime.now().obs;
+
   var tglAjunan = "".obs;
   var checkinAjuan = "".obs;
   var checkoutAjuan = "".obs;
@@ -51,7 +56,7 @@ class AbsenController extends GetxController {
   var catataanAjuan = TextEditingController();
   var imageAjuan = "".obs;
 
-  var pengajuanAbsensi=[].obs;
+  var pengajuanAbsensi = [].obs;
 
   TextEditingController deskripsiAbsen = TextEditingController();
   var tanggalLaporan = TextEditingController().obs;
@@ -63,8 +68,8 @@ class AbsenController extends GetxController {
   var settingAppInfo = AppData.infoSettingApp.obs;
 
   Rx<List<String>> placeCoordinateDropdown = Rx<List<String>>([]);
-  var  placeCoordinateCheckin=[].obs;
-   var  placeCoordinateCheckout=[].obs;
+  var placeCoordinateCheckin = [].obs;
+  var placeCoordinateCheckout = [].obs;
 
   var selectedType = "".obs;
 
@@ -84,12 +89,12 @@ class AbsenController extends GetxController {
   var isCollapse = true.obs;
   var shift = OfficeShiftModel().obs;
 
-  var isLoadingPengajuan=false.obs;
+  var isLoadingPengajuan = false.obs;
 
   var absenSelected;
 
   var loading = "Memuat data...".obs;
-    var loadingPengajuan = "Memuat data...".obs;
+  var loadingPengajuan = "Memuat data...".obs;
   var base64fotoUser = "".obs;
   var timeString = "".obs;
   var dateNow = "".obs;
@@ -98,16 +103,15 @@ class AbsenController extends GetxController {
   var tanggalUserFoto = "".obs;
 
   var stringImageSelected = "".obs;
-  
+
   var bulanSelectedSearchHistory = "".obs;
   var tahunSelectedSearchHistory = "".obs;
   var bulanDanTahunNow = "".obs;
 
-    var bulanSelectedSearchHistoryPengajuan = "".obs;
+  var bulanSelectedSearchHistoryPengajuan = "".obs;
   var tahunSelectedSearchHistoryPengajuan = "".obs;
   var bulanDanTahunNowPengajuan = "".obs;
-  
-  
+
   var namaDepartemenTerpilih = "".obs;
   var idDepartemenTerpilih = "".obs;
   var testingg = "".obs;
@@ -179,10 +183,10 @@ class AbsenController extends GetxController {
     bulanSelectedSearchHistory.value = "${dt.month}";
     tahunSelectedSearchHistory.value = "${dt.year}";
 
-     bulanSelectedSearchHistoryPengajuan.value = "${dt.month}";
+    bulanSelectedSearchHistoryPengajuan.value = "${dt.month}";
     tahunSelectedSearchHistoryPengajuan.value = "${dt.year}";
     bulanDanTahunNow.value = "${dt.month}-${dt.year}";
-      bulanDanTahunNowPengajuan.value = "${dt.month}-${dt.year}";
+    bulanDanTahunNowPengajuan.value = "${dt.month}-${dt.year}";
     var convert = Constanst.convertDate1("${dt.year}-${dt.month}-${dt.day}");
     tanggalLaporan.value.text = convert;
     absenStatus.value = AppData.statusAbsen;
@@ -296,12 +300,13 @@ class AbsenController extends GetxController {
       }
     });
   }
-   
-    void getPlaceCoordinateCheckin() {
+
+  void getPlaceCoordinateCheckin() {
     print("place coodinates");
     placeCoordinateCheckin.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate_pengajuan",
-        params: "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}");
+        params:
+            "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}");
     connect.then((dynamic res) {
       if (res == false) {
         print("errror");
@@ -317,7 +322,7 @@ class AbsenController extends GetxController {
           List filter = [];
           for (var element in valueBody['data']) {
             if (element['isFilterView'] == 1) {
-              element['is_selected']=false;
+              element['is_selected'] = false;
               filter.add(element);
             }
           }
@@ -333,13 +338,12 @@ class AbsenController extends GetxController {
     });
   }
 
-
-
-    void getPlaceCoordinateCheckout() {
+  void getPlaceCoordinateCheckout() {
     print("place coodinates");
     placeCoordinate.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate_pengajuan",
-        params: "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}");
+        params:
+            "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}");
     connect.then((dynamic res) {
       if (res == false) {
         print("errror");
@@ -349,11 +353,11 @@ class AbsenController extends GetxController {
           print("Place cordinate 200" + res.body.toString());
           var valueBody = jsonDecode(res.body);
           selectedType.value = valueBody['data'][0]['place'];
-        
+
           List filter = [];
           for (var element in valueBody['data']) {
             if (element['isFilterView'] == 1) {
-                element['is_selected']=false;
+              element['is_selected'] = false;
               filter.add(element);
             }
           }
@@ -1695,7 +1699,7 @@ class AbsenController extends GetxController {
         UtilsAlert.showToast("Maaf file terlalu besar...Max 5MB");
       } else {
         namaFileUpload.value = "${file.name}";
-        imageAjuan.value=file.name.toString();
+        imageAjuan.value = file.name.toString();
         filePengajuan.value = await saveFilePermanently(file);
         uploadFile.value = true;
         // print(file.name);
@@ -2497,7 +2501,6 @@ class AbsenController extends GetxController {
     Map<String, dynamic> body = {
       "em_id": emId,
       'date': tglAjunan.value,
-      
       'bulan':
           DateFormat('MM').format(DateTime.parse(tglAjunan.value.toString())),
       'tahun':
@@ -2515,40 +2518,32 @@ class AbsenController extends GetxController {
         } else {}
       }
     });
-
-    
   }
 
-    void batalkanAjuan({date}) {
-      UtilsAlert.showLoadingIndicator(Get.context!);
+  void batalkanAjuan({date}) {
+    UtilsAlert.showLoadingIndicator(Get.context!);
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
       "em_id": emId,
       'date': date,
-      'bulan':
-          DateFormat('MM').format(DateTime.parse(date.toString())),
-      'tahun':
-          DateFormat('yyyy').format(DateTime.parse(date.toString()))
+      'bulan': DateFormat('MM').format(DateTime.parse(date.toString())),
+      'tahun': DateFormat('yyyy').format(DateTime.parse(date.toString()))
     };
-  
+
     var connect = Api.connectionApi("post", body, "delete-employee-attendance");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
-          dataPengajuanAbsensi();
-           Get.back();
-                 Get.back();
-     
-    
-      }else{
-           Get.back();
+        dataPengajuanAbsensi();
+        Get.back();
+        Get.back();
+      } else {
+        Get.back();
       }
     });
-
-    
   }
 
-    void dataPengajuanAbsensi() {
-      isLoadingPengajuan.value=true;
+  void dataPengajuanAbsensi() {
+    isLoadingPengajuan.value = true;
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
       "em_id": emId,
@@ -2560,24 +2555,28 @@ class AbsenController extends GetxController {
     var connect = Api.connectionApi("post", body, "get-employee-attendance");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
-     
-           isLoadingPengajuan.value=false;
+        isLoadingPengajuan.value = false;
         var valueBody = jsonDecode(res.body);
         List data = valueBody['data'];
         print("data pengajuan ${data}");
         if (data.isEmpty) {
-            loadingPengajuan.value = "Data tidak tersedia";
-          } else {
-            loadingPengajuan.value = "Memuat Data...";
-          };
-        pengajuanAbsensi.value=data;
-      }else{
-           isLoadingPengajuan.value=false;
+          loadingPengajuan.value = "Data tidak tersedia";
+        } else {
+          loadingPengajuan.value = "Memuat Data...";
+        }
+        ;
+        pengajuanAbsensi.value = data;
+      } else {
+        isLoadingPengajuan.value = false;
       }
     });
   }
 
   void resetData() {
+    placeCoordinateCheckin.clear();
+    placeCoordinateCheckout.clear();
+    isChecked.value = false;
+    isChecked2.value = false;
     tglAjunan.value = "";
     checkinAjuan.value = "";
     checkoutAjuan.value = "";
@@ -2588,8 +2587,6 @@ class AbsenController extends GetxController {
   }
 
   void kirimPengajuan() {
-
-
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
       "em_id": emId,
@@ -2602,25 +2599,37 @@ class AbsenController extends GetxController {
       'catatan': catataanAjuan.text,
       'checkin': checkinAjuan2.value.toString(),
       'checkout': checkoutAjuan2.value.toString(),
-      'lokasi_masuk_id':placeCoordinateCheckin.where((p0) => p0['is_selected']==true).toList().isNotEmpty?placeCoordinateCheckin.where((p0) => p0['is_selected']==true).toList()[0]['id']:"",
-       'lokasi_keluar_id':placeCoordinateCheckout.where((p0) => p0['is_selected']==true).toList().isNotEmpty?placeCoordinateCheckout.where((p0) => p0['is_selected']==true).toList()[0]['id']:"",
+      'lokasi_masuk_id': placeCoordinateCheckin
+              .where((p0) => p0['is_selected'] == true)
+              .toList()
+              .isNotEmpty
+          ? placeCoordinateCheckin
+              .where((p0) => p0['is_selected'] == true)
+              .toList()[0]['id']
+          : "",
+      'lokasi_keluar_id': placeCoordinateCheckout
+              .where((p0) => p0['is_selected'] == true)
+              .toList()
+              .isNotEmpty
+          ? placeCoordinateCheckout
+              .where((p0) => p0['is_selected'] == true)
+              .toList()[0]['id']
+          : "",
       'file': imageAjuan.value,
-      'tgl_ajuan':DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      'tgl_ajuan': DateFormat('yyyy-MM-dd').format(DateTime.now()),
     };
     print(body);
     var connect = Api.connectionApi("post", body, "save-employee-attendance");
     connect.then((dynamic res) {
-       var valueBody = jsonDecode(res.body);
-    
+      var valueBody = jsonDecode(res.body);
+
       if (res.statusCode == 200) {
-        Get.back();
-        Get.back();
+        Get.to(pengajuanAbsenBerhasil());
+
         dataPengajuanAbsensi();
-         UtilsAlert.showToast(valueBody['message']);
-        
-      }else{
-         UtilsAlert.showToast(valueBody['message']);
-        
+        UtilsAlert.showToast(valueBody['message']);
+      } else {
+        UtilsAlert.showToast(valueBody['message']);
       }
     });
   }
@@ -2652,17 +2661,14 @@ class AbsenController extends GetxController {
           "upload_form_pengajuan_absensi", filePengajuan.value);
       var valueBody = jsonDecode(connectUpload);
       if (valueBody['status'] == true) {
-       
         Navigator.pop(Get.context!);
         // checkNomorAjuan(status);
         kirimPengajuan();
       } else {
         UtilsAlert.showToast("Gagal kirim file");
       }
-    }else{
+    } else {
       kirimPengajuan();
     }
   }
-
-
 }

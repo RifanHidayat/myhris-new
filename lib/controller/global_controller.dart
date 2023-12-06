@@ -4,12 +4,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../utils/constans.dart';
 
 class GlobalController extends GetxController {
   var valuePolaPersetujuan = "".obs;
@@ -173,176 +176,233 @@ class GlobalController extends GetxController {
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20.0),
+            top: Radius.circular(16.0),
           ),
         ),
+        backgroundColor: Constanst.colorWhite,
         builder: (context) {
-          return Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
+          return SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
-                  height: 30,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 18.0, 16.0, 18.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Konfirmasi via Whatsapp",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18),
+                      ),
+                      InkWell(
+                          customBorder: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          onTap: () => Navigator.pop(Get.context!),
+                          child: Icon(
+                            Icons.close,
+                            size: 24.0,
+                            color: Constanst.fgSecondary,
+                          ))
+                    ],
+                  ),
                 ),
+                Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Constanst.fgBorder,
+                ),
+                const SizedBox(height: 44),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      flex: 90,
-                      child: Text(
-                        "Konfirmasi via whatsapp",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Constanst.colorNeutralBgSecondary,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(16.0),
+                          topLeft: Radius.circular(16.0),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(16.0),
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/character1.svg',
+                              width: 120,
+                              height: 110,
+                            ),
+                          ),
+                          const SizedBox(height: 19),
+                        ],
                       ),
                     ),
-                    Expanded(
-                        flex: 10,
-                        child: InkWell(
-                            onTap: () => Navigator.pop(Get.context!),
-                            child: Icon(Iconsax.close_circle)))
+                    Container(
+                        color: Constanst.colorNeutralBgSecondary,
+                        child: const SizedBox(width: 33, height: 129)),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Constanst.colorNeutralBgSecondary,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(16.0),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 25),
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomRight: Radius.circular(16.0),
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/character2.svg',
+                              width: 127,
+                              height: 104,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-                SizedBox(
-                  height: 16,
+                const SizedBox(height: 24),
+                Text(
+                  "Beri tahu Atasanmu tentang pengajuan yang telah\nKamu buat melalui Whatsapp",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                      color: Constanst.fgPrimary,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14),
                 ),
-                Flexible(
-                  flex: 3,
-                  child: Padding(
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          physics: BouncingScrollPhysics(),
-                          itemCount: konfirmasiAtasan.value.length,
-                          itemBuilder: (context, index) {
-                            var full_name =
-                                konfirmasiAtasan.value[index]['full_name'];
-                            var job_title =
-                                konfirmasiAtasan.value[index]['job_title'];
-                            var gambar =
-                                konfirmasiAtasan.value[index]['em_image'];
-                            var nohp =
-                                konfirmasiAtasan.value[index]['em_mobile'];
-                            var jeniKelamin =
-                                konfirmasiAtasan.value[index]['em_gender'];
-                            return InkWell(
-                              onTap: () {
-                                kirimKonfirmasiWa(
-                                    dataEmployee, full_name, nohp, jeniKelamin);
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 15, bottom: 15),
-                                child: IntrinsicHeight(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        flex: 15,
-                                        child: gambar == ""
-                                            ? SvgPicture.asset(
-                                                'assets/avatar_default.svg',
-                                                width: 40,
-                                                height: 40,
-                                              )
-                                            : CircleAvatar(
-                                                radius: 25, // Image radius
-                                                child: ClipOval(
-                                                  child: ClipOval(
-                                                    child: CachedNetworkImage(
-                                                      imageUrl:
-                                                          Api.UrlfotoProfile +
-                                                              "$gambar",
-                                                      progressIndicatorBuilder:
-                                                          (context, url,
-                                                                  downloadProgress) =>
-                                                              Container(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        height: MediaQuery.of(
-                                                                    context)
+                const SizedBox(height: 28),
+                ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: konfirmasiAtasan.value.length,
+                    itemBuilder: (context, index) {
+                      var full_name =
+                          konfirmasiAtasan.value[index]['full_name'];
+                      var job_title =
+                          konfirmasiAtasan.value[index]['job_title'];
+                      var gambar = konfirmasiAtasan.value[index]['em_image'];
+                      var nohp = konfirmasiAtasan.value[index]['em_mobile'];
+                      var jeniKelamin =
+                          konfirmasiAtasan.value[index]['em_gender'];
+                      return InkWell(
+                        onTap: () {
+                          kirimKonfirmasiWa(
+                              dataEmployee, full_name, nohp, jeniKelamin);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 12, bottom: 12, left: 16, right: 16),
+                          child: IntrinsicHeight(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    gambar == ""
+                                        ? SvgPicture.asset(
+                                            'assets/avatar_default.svg',
+                                            width: 40,
+                                            height: 40,
+                                          )
+                                        : CircleAvatar(
+                                            radius: 25, // Image radius
+                                            child: ClipOval(
+                                              child: ClipOval(
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      "${Api.UrlfotoProfile}$gambar",
+                                                  progressIndicatorBuilder:
+                                                      (context, url,
+                                                              downloadProgress) =>
+                                                          Container(
+                                                    alignment: Alignment.center,
+                                                    height:
+                                                        MediaQuery.of(context)
                                                                 .size
                                                                 .height *
                                                             0.5,
-                                                        width: MediaQuery.of(
-                                                                context)
+                                                    width:
+                                                        MediaQuery.of(context)
                                                             .size
                                                             .width,
-                                                        child: CircularProgressIndicator(
+                                                    child:
+                                                        CircularProgressIndicator(
                                                             value:
                                                                 downloadProgress
                                                                     .progress),
-                                                      ),
-                                                      errorWidget: (context,
-                                                              url, error) =>
+                                                  ),
+                                                  errorWidget:
+                                                      (context, url, error) =>
                                                           Container(
-                                                        color: Colors.white,
-                                                        child: SvgPicture.asset(
-                                                          'assets/avatar_default.svg',
-                                                          width: 40,
-                                                          height: 40,
-                                                        ),
-                                                      ),
-                                                      fit: BoxFit.cover,
-                                                      width: 50,
-                                                      height: 50,
+                                                    color: Colors.white,
+                                                    child: SvgPicture.asset(
+                                                      'assets/avatar_default.svg',
+                                                      width: 40,
+                                                      height: 40,
                                                     ),
                                                   ),
+                                                  fit: BoxFit.cover,
+                                                  width: 40,
+                                                  height: 40,
                                                 ),
                                               ),
-                                      ),
-                                      Expanded(
-                                        flex: 75,
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "$full_name",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 8,
-                                              ),
-                                              Text(
-                                                "$job_title",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 10,
-                                        child: Center(
-                                          child: Image.asset(
-                                            'assets/whatsapp.png',
-                                            width: 25,
-                                            height: 25,
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 12.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "$full_name",
+                                            style: GoogleFonts.inter(
+                                                color: Constanst.fgPrimary,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16),
                                           ),
-                                        ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "$job_title",
+                                            style: GoogleFonts.inter(
+                                                color: Constanst.fgSecondary,
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
+                                  ],
+                                ),
+                                Center(
+                                  child: Icon(
+                                    Iconsax.wa,
+                                    size: 24.0,
+                                    color: Constanst.fgSecondary,
                                   ),
                                 ),
-                              ),
-                            );
-                          })),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
               ],
             ),
           );
