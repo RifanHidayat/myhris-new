@@ -178,10 +178,20 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
           child: TextButtonWidget(
             title: "Simpan",
             onTap: () {
-              print(controller.percentIzin.value);
-              if (controller.percentIzin.value >= 1) {
-                UtilsAlert.showToast(
-                    "Pemakaian izin telah melewati batas maksimal");
+              if (controller.jumlahIzin.value > 0) {
+                if (controller.percentIzin.value >= 1) {
+                  UtilsAlert.showToast(
+                      "Pemakaian izin telah melewati batas maksimal");
+                } else {
+                  var totalTerpakai = controller.tanggalSelected.value.length +
+                      controller.izinTerpakai.value;
+                  if (totalTerpakai > controller.jumlahIzin.value) {
+                    UtilsAlert.showToast(
+                        "Pemakaian izin telah melewati batas maksimal");
+                  } else {
+                    controller.validasiKirimPengajuan(widget.dataForm![1]);
+                  }
+                }
               } else {
                 controller.validasiKirimPengajuan(widget.dataForm![1]);
               }
