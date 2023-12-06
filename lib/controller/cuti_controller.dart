@@ -378,8 +378,8 @@ class CutiController extends GetxController {
             }
           }
           if (statusForm.value == false) {
-            var listFirst = valueBody['data'].first;
-            var fullName = listFirst['full_name'] ?? "";
+            var listFirst = allEmployeeDelegasi.value;
+            var fullName =  allEmployeeDelegasi.value[0] ;
             String namaUserPertama = "$fullName";
             selectedDelegasi.value = namaUserPertama;
           }
@@ -941,6 +941,7 @@ class CutiController extends GetxController {
       'start_date': '${index["start_date"]}',
       'leave_status': "Cancel"
     };
+    print("body ${body}");
     var connect = Api.connectionApi("post", body, "edit-emp_leave");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -1042,6 +1043,7 @@ class CutiController extends GetxController {
                           child: TextButtonWidget(
                             title: "Ya, Batalkan",
                             onTap: () async {
+                              print("dat ${index}");
                               batalkanPengajuan(index);
                             },
                             colorButton: Constanst.colorButton1,

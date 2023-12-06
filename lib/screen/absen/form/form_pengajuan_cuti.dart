@@ -404,6 +404,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             }).toList(),
             value: controller.selectedTypeCuti.value,
             onChanged: (selectedValue) {
+              print(controller.allEmployeeDelegasi.value);
               var data = controller.allTipe
                   .where((p0) =>
                       p0['name'].toString().toLowerCase() ==
