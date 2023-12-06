@@ -504,9 +504,15 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5)),
                                     onChanged: (value) {
-                                      // setState(() {
-                                      //   isChecked = value!;
-                                      // });
+                                      setState(() {
+                                        absenController.checkinAjuan2.value =
+                                            "";
+                                        absenController.placeCoordinateCheckin
+                                            .clear();
+                                        absenController
+                                            .getPlaceCoordinateCheckin();
+                                        absenController.isChecked.value = false;
+                                      });
                                     },
                                     activeColor: Constanst.onPrimary,
                                   ),
@@ -738,9 +744,16 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5)),
                                     onChanged: (value) {
-                                      // setState(() {
-                                      //   isChecked2 = value!;
-                                      // });
+                                      setState(() {
+                                        absenController.checkoutAjuan2.value =
+                                            "";
+                                        absenController.placeCoordinateCheckout
+                                            .clear();
+                                        absenController
+                                            .getPlaceCoordinateCheckout();
+                                        absenController.isChecked2.value =
+                                            false;
+                                      });
                                     },
                                     activeColor: Constanst.onPrimary,
                                   ),

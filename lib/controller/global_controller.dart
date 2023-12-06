@@ -391,10 +391,10 @@ class GlobalController extends GetxController {
                                   ],
                                 ),
                                 Center(
-                                  child: Icon(
-                                    Iconsax.wa,
-                                    size: 24.0,
-                                    color: Constanst.fgSecondary,
+                                  child: Image.asset(
+                                    'assets/whatsapp.png',
+                                    width: 25,
+                                    height: 25,
                                   ),
                                 ),
                               ],
