@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
 class pengajuanAbsenBerhasil extends StatefulWidget {
@@ -12,6 +13,7 @@ class pengajuanAbsenBerhasil extends StatefulWidget {
 }
 
 class _pengajuanAbsenBerhasilState extends State<pengajuanAbsenBerhasil> {
+  var controllerGlobal = Get.put(GlobalController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,7 +172,13 @@ class _pengajuanAbsenBerhasilState extends State<pengajuanAbsenBerhasil> {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          var dataPengajuan = {
+                            'nameType': ' ',
+                            'nomor_ajuan': ' ',
+                          };
+                          controllerGlobal.showDataPilihAtasan(dataPengajuan);
+                        },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Constanst.onPrimary,
                           backgroundColor: Constanst.colorWhite,
