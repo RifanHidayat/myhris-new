@@ -189,7 +189,7 @@ class Constanst {
   static String convertDateBulanDanTahun(String date) {
     var inputFormat = DateFormat('MM-yyyy');
     var inputDate = inputFormat.parse(date);
-    var outputFormat = DateFormat('MMMM yyyy');
+    var outputFormat = DateFormat('MMMM yyyy', 'id');
     var outputDate = outputFormat.format(inputDate);
     return outputDate;
   }
@@ -197,7 +197,7 @@ class Constanst {
   static String convertDateBulanDanHari(String date) {
     var inputFormat = DateFormat('MM-dd');
     var inputDate = inputFormat.parse(date);
-    var outputFormat = DateFormat('dd MMMM');
+    var outputFormat = DateFormat('dd MMMM', 'id');
     var outputDate = outputFormat.format(inputDate);
     return outputDate;
   }
