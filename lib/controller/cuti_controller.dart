@@ -28,7 +28,8 @@ class CutiController extends GetxController {
   var departemen = TextEditingController().obs;
 
   var filePengajuan = File("").obs;
-
+  var startDate = "".obs;
+  var endDate = "".obs;
   var allTipe = [].obs;
   var allEmployee = [].obs;
   var dataTypeAjuan = [].obs;
@@ -39,7 +40,7 @@ class CutiController extends GetxController {
   var allNameLaporanCuti = [].obs;
   var allNameLaporanCutiCopy = [].obs;
   var tanggalSelectedEdit = <DateTime>[].obs;
-
+  var durasiCutiMelahirkan = 0.obs;
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
   Rx<List<String>> allTipeFormCutiDropdown = Rx<List<String>>([]);
 
@@ -73,7 +74,7 @@ class CutiController extends GetxController {
   var statusCari = false.obs;
   var showButtonlaporan = false.obs;
   var statusLoadingSubmitLaporan = false.obs;
-  var messageApproval="".obs;
+  var messageApproval = "".obs;
 
   var dataTypeAjuanDummy1 = ["Semua", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
@@ -97,6 +98,8 @@ class CutiController extends GetxController {
     getDepartemen(1, "");
     super.onReady();
   }
+
+  
 
   void getDepartemen(status, tanggal) {
     jumlahData.value = 0;
@@ -211,7 +214,8 @@ class CutiController extends GetxController {
   void loadDataTypeCuti() {
     print("load data cuti");
     allTipeFormCutiDropdown.value.clear();
-    allTipe.value.clear();
+    allTipe.value.clear(); 
+    
     Map<String, dynamic> body = {'val': 'status', 'cari': '1'};
     var connect = Api.connectionApi("post", body, "whereOnce-leave_types");
     connect.then((dynamic res) {
@@ -224,6 +228,7 @@ class CutiController extends GetxController {
             'id': element['id'],
             'name': element['name'],
             'status': element['status'],
+            'leave_day': element['leave_day'],
             'active': false,
           };
           allTipe.value.add(data);
@@ -393,6 +398,25 @@ class CutiController extends GetxController {
         allEmployee.value.firstWhere((element) => element["em_id"] == em_id);
     selectedDelegasi.value = getData["full_name"];
     this.selectedDelegasi.refresh();
+  }
+
+  void loadCutiUserMelahirkan() {
+    var validasiTipeSelected = validasiSelectedType();
+    print(validasiTipeSelected);
+    var dataUser = AppData.informasiUser;
+    var getEmid = dataUser![0].em_id;
+    Map<String, dynamic> body = {
+      'val': 'em_id',
+      'cari': getEmid,
+      'em_id': getEmid,
+      'type_id': validasiTipeSelected
+    };
+    var connect = Api.connectionApi("post", body, "load_cuti_melahirkan");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+      }
+    });
   }
 
   void loadCutiUser() {
@@ -625,25 +649,55 @@ class CutiController extends GetxController {
     var convertTanggalBikinPengajuan = statusForm.value == false
         ? Constanst.convertDateSimpan(afterConvert)
         : atten_date_edit.value;
-    Map<String, dynamic> body = {
-      'em_id': '$getEmid',
-      'typeid': validasiTipeSelected,
-      'nomor_ajuan': getNomorAjuanTerakhir,
-      'leave_type': 'Full Day',
-      'start_date': dariTanggal.value.text,
-      'end_date': sampaiTanggal.value.text,
-      'leave_duration': durasiIzin.value,
-      'date_selected': stringSelectedTanggal.value,
-      'apply_date': '',
-      'reason': alasan.value.text,
-      'leave_status': 'Pending',
-      'atten_date': convertTanggalBikinPengajuan,
-      'em_delegation': validasiDelegasiSelected,
-      'leave_files': namaFileUpload.value,
-      'ajuan': '1',
-      'created_by': getEmid,
-      'menu_name': 'Cuti'
-    };
+    Map<String, dynamic> body;
+
+    if (selectedTypeCuti.value
+        .toString()
+        .toLowerCase()
+        .toLowerCase()
+        .contains("Cuti Melahirkan".toLowerCase())) {
+      body = {
+        'em_id': '$getEmid',
+        'typeid': validasiTipeSelected,
+        'nomor_ajuan': getNomorAjuanTerakhir,
+        'leave_type': 'Full Day',
+        'start_date': startDate.value,
+        'end_date': endDate.value,
+        'leave_duration': durasiCutiMelahirkan.value,
+        'date_selected': '',
+        'apply_date': '',
+        'reason': alasan.value.text,
+        'leave_status': 'Pending',
+        'atten_date': convertTanggalBikinPengajuan,
+        'em_delegation': validasiDelegasiSelected,
+        'leave_files': namaFileUpload.value,
+        'ajuan': '1',
+        'created_by': getEmid,
+        'menu_name': 'Cuti'
+      };
+    } else {
+      body = {
+        'em_id': '$getEmid',
+        'typeid': validasiTipeSelected,
+        'nomor_ajuan': getNomorAjuanTerakhir,
+        'leave_type': 'Full Day',
+        'start_date': dariTanggal.value.text,
+        'end_date': sampaiTanggal.value.text,
+        'leave_duration': durasiIzin.value,
+        'date_selected': stringSelectedTanggal.value,
+        'apply_date': '',
+        'reason': alasan.value.text,
+        'leave_status': 'Pending',
+        'atten_date': convertTanggalBikinPengajuan,
+        'em_delegation': validasiDelegasiSelected,
+        'leave_files': namaFileUpload.value,
+        'ajuan': '1',
+        'created_by': getEmid,
+        'menu_name': 'Cuti'
+      };
+    }
+
+    print(body);
     var typeNotifFcm = "Pengajuan Cuti";
     if (statusForm.value == false) {
       body['activity_name'] =
@@ -1361,29 +1415,63 @@ class CutiController extends GetxController {
                   : SizedBox(
                       height: 8,
                     ),
-              Text("Tanggal Terpilih"),
+              // Text("Tanggal Terpilih"),
+              detailData['date_selected'] == null ||
+                      detailData['date_selected'] == "" ||
+                      detailData['date_selected'] == "null"
+                  ? Row(
+                      children: [
+                        Expanded(
+                          flex: 30,
+                          child: Text("Tanggal"),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Text(":"),
+                        ),
+                        Expanded(
+                          flex: 68,
+                          child: Text(
+                              "${tanggalAjuanDari} s/d ${tanggalAjuanSampai}"),
+                        ),
+                      ],
+                    )
+                  : Text("Tanggal Terpilih"),
               SizedBox(
                 height: 8,
               ),
-              ListView.builder(
-                  itemCount: listTanggalTerpilih.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    var nomor = index + 1;
-                    var tanggalConvert =
-                        Constanst.convertDate1(listTanggalTerpilih[index]);
-                    return Row(
+              detailData['date_selected'] == null ||
+                      detailData['date_selected'] == "" ||
+                      detailData['date_selected'] == "null"
+                  ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text("$nomor."),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8),
-                          child: Text(tanggalConvert),
-                        )
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [Text("")],
+                        ),
                       ],
-                    );
-                  }),
+                    )
+                  : ListView.builder(
+                      itemCount: listTanggalTerpilih.length,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        var nomor = index + 1;
+                        var tanggalConvert =
+                            Constanst.convertDate1(listTanggalTerpilih[index]);
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("$nomor."),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Text(tanggalConvert),
+                            )
+                          ],
+                        );
+                      }),
               SizedBox(
                 height: 16,
               ),

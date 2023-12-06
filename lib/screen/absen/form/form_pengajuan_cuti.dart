@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,8 @@ import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:siscom_operasional/utils/date_picker.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -30,6 +33,8 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
     if (widget.dataForm![1] == true) {
       controller.dariTanggal.value.text = widget.dataForm![0]['start_date'];
       controller.sampaiTanggal.value.text = widget.dataForm![0]['end_date'];
+      controller.startDate.value = widget.dataForm![0]['start_date'];
+      controller.endDate.value = widget.dataForm![0]['end_date'];
       controller.alasan.value.text = widget.dataForm![0]['reason'];
       controller.atten_date_edit.value = widget.dataForm![0]['atten_date'];
       controller.typeIdEdit.value = widget.dataForm![0]['typeid'];
@@ -46,13 +51,40 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
       print(widget.dataForm![0]['id']);
       var listDateTerpilih = widget.dataForm![0]['date_selected'].split(',');
       List<DateTime> getDummy = [];
-      for (var element in listDateTerpilih) {
-        var convertDate = DateTime.parse(element);
-        getDummy.add(convertDate);
+
+      var data = controller.allTipe
+          .where((p0) =>
+              p0['id'].toString().toLowerCase() ==
+              widget.dataForm![0]['typeid'].toString().toLowerCase())
+          .toList();
+
+      print("data cuti new ${controller.allTipe}");
+      print("data cuti new ${data}");
+
+      if (data.isNotEmpty) {
+        controller.jumlahCuti.value = data[0]['leave_day'];
+        controller.selectedTypeCuti.value = data[0]['name'];
       }
+      if (controller.selectedTypeCuti.value
+          .toString()
+          .toLowerCase()
+          .toLowerCase()
+          .contains("Cuti Melahirkan".toLowerCase())) {
+      } else {
+        for (var element in listDateTerpilih) {
+          var convertDate = DateTime.parse(element);
+          getDummy.add(convertDate);
+        }
+      }
+
       setState(() {
         controller.tanggalSelectedEdit.value = getDummy;
       });
+    }else{
+      controller.startDate.value="";
+      controller.endDate.value="";
+      controller.alasan.value.text="";
+  
     }
     super.initState();
   }
@@ -109,7 +141,13 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                             SizedBox(
                               height: 16,
                             ),
-                            informasiSisaCuti(),
+                            controller.selectedTypeCuti.value
+                                    .toString()
+                                    .toLowerCase()
+                                    .toLowerCase()
+                                    .contains("Cuti Melahirkan".toLowerCase())
+                                ? informasiSisaCutiMelahirkan()
+                                : informasiSisaCuti(),
                             SizedBox(
                               height: 16,
                             ),
@@ -120,7 +158,13 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                             SizedBox(
                               height: 16,
                             ),
-                            formTanggalCuti(),
+                            controller.selectedTypeCuti.value
+                                    .toString()
+                                    .toLowerCase()
+                                    .toLowerCase()
+                                    .contains("Cuti Melahirkan".toLowerCase())
+                                ? formTanggalCutiMelahirkan()
+                                : formTanggalCuti(),
                             SizedBox(
                               height: 16,
                             ),
@@ -150,31 +194,72 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                 : TextButtonWidget(
                     title: "Simpan",
                     onTap: () {
-                      print(controller.tanggalSelected.value.length);
+                      if (controller.selectedTypeCuti.value
+                          .toString()
+                          .toLowerCase()
+                          .toLowerCase()
+                          .contains("Cuti Melahirkan".toLowerCase())) {
+                        DateTime tempStartDate = DateTime.parse(
+                            DateFormat('yyyy-MM-dd')
+                                .format(DateFormat('yyyy-MM-dd')
+                                    .parse(controller.startDate.value))
+                                .toString());
+                        DateTime tempEndDate = DateTime.parse(
+                            DateFormat('yyyy-MM-dd')
+                                .format(DateTime.parse(
+                                    controller.endDate.value.toString()))
+                                .toString());
 
-                    if (controller.statusForm.value == true) {
-                      if ((controller.jumlahCuti.value-controller.cutiTerpakai.value)<controller.tanggalSelectedEdit.value.length){
-                        UtilsAlert.showToast("Tanggal yang dipilih melebihi sisa cuti");
+                        // Define two DateTime objects representing the two dates
+                        DateTime date1 = DateTime(tempStartDate.year,
+                            tempStartDate.month, tempStartDate.day);
+                        DateTime date2 = DateTime(tempEndDate.year,
+                            tempEndDate.month, tempEndDate.day);
 
-                      }else{
+                        // Calculate the difference between the two dates
+                        Duration difference = date2.difference(date1);
+                        controller.durasiIzin.value = difference.inDays + 1;
+                        controller.durasiCutiMelahirkan.value =
+                            difference.inDays + 1;
+
+                        if (difference.inDays + 1 >
+                            controller.jumlahCuti.value) {
+                          UtilsAlert.showToast(
+                              "Total hari melewati batas limit");
+                          return;
+                        }
+                        controller.tanggalSelected.clear();
+                        controller.tanggalSelected.value
+                            .add(DateTime.parse(controller.startDate.value));
+                        controller.tanggalSelected.value
+                            .add(DateTime.parse(controller.endDate.value));
+
                         controller.validasiKirimPengajuan();
 
+                        // Print the result
+                      } else {
+                        if (controller.statusForm.value == true) {
+                          if ((controller.jumlahCuti.value -
+                                  controller.cutiTerpakai.value) <
+                              controller.tanggalSelectedEdit.value.length) {
+                            UtilsAlert.showToast(
+                                "Tanggal yang dipilih melebihi sisa cuti");
+                          } else {
+                            controller.validasiKirimPengajuan();
+                          }
+                        } else {
+                          if ((controller.jumlahCuti.value -
+                                  controller.cutiTerpakai.value) <
+                              controller.tanggalSelected.value.length) {
+                            UtilsAlert.showToast(
+                                "Tanggal yang dipilih melebihi sisa cuti");
+                          } else {
+                            controller.validasiKirimPengajuan();
+                          }
+                        }
                       }
-                          
-                     
-                      
-                    } else {
-                  
-                      if ((controller.jumlahCuti.value-controller.cutiTerpakai.value)<controller.tanggalSelected.value.length){
-                        UtilsAlert.showToast("Tanggal yang dipilih melebihi sisa cuti");
 
-                      }else{
-                        controller.validasiKirimPengajuan();
-
-                      }
-                          
-                    }
-                     // controller.validasiKirimPengajuan();
+                      // controller.validasiKirimPengajuan();
                     },
                     colorButton: Constanst.colorPrimary,
                     colortext: Constanst.colorWhite,
@@ -239,6 +324,61 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
     );
   }
 
+  Widget informasiSisaCutiMelahirkan() {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: Constanst.styleBoxDecoration1.borderRadius),
+      child: Padding(
+        padding: EdgeInsets.only(left: 16, right: 16),
+        child: Obx(
+          () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                      child: Text(
+                    "Limit Cuti",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  Expanded(
+                      child: Text(
+                    "${controller.jumlahCuti.value}",
+                    textAlign: TextAlign.right,
+                  )),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                width: MediaQuery.of(Get.context!).size.width,
+                child: Center(
+                  child: LinearPercentIndicator(
+                    barRadius: Radius.circular(15.0),
+                    lineHeight: 8.0,
+                    percent: controller.persenCuti.value,
+                    progressColor: Constanst.colorPrimary,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              // Text("Cuti Khusus"),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget formTipe() {
     return Container(
       height: 50,
@@ -264,12 +404,215 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             }).toList(),
             value: controller.selectedTypeCuti.value,
             onChanged: (selectedValue) {
+              var data = controller.allTipe
+                  .where((p0) =>
+                      p0['name'].toString().toLowerCase() ==
+                      selectedValue.toString().toLowerCase())
+                  .toList();
+              controller.loadCutiUserMelahirkan();
+
+              print(data.toString());
+
+              if (data.isNotEmpty) {
+                controller.jumlahCuti.value = data[0]['leave_day'];
+              }
+
+              // var data=controller.allTipe.value.whe
               controller.selectedTypeCuti.value = selectedValue!;
+              // controller.selectedTypeCuti.value = selectedValue!;
             },
             isExpanded: true,
           ),
         ),
       ),
+    );
+  }
+
+  Widget formTanggalCutiMelahirkan() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Text("Tanggal*", style: TextStyle(fontWeight: FontWeight.bold)),
+        SizedBox(
+          height: 5,
+        ),
+        widget.dataForm![1] == true
+            ? controller.selectedTypeCuti.value
+                    .toString()
+                    .toLowerCase()
+                    .toLowerCase()
+                    .contains("Cuti Melahirkan".toLowerCase())
+                ? SizedBox()
+                : customTanggalDariSampaiDari()
+            : SizedBox(),
+
+        Row(
+          children: [
+            Expanded(
+              flex: 50,
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Tanggal Mulai *",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        DatePicker.showPicker(
+                          context,
+                          pickerModel: CustomDatePicker(
+                            currentTime: DateTime.now(),
+                          ),
+                          onConfirm: (time) {
+                            if (time != null) {
+                              controller.startDate.value =
+                                  DateFormat('yyyy-MM-dd')
+                                      .format(time)
+                                      .toString();
+
+                              print("$time");
+                            }
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(left: 8, right: 8),
+                        width: MediaQuery.of(context).size.width,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border:
+                              Border.all(width: 1, color: Constanst.Secondary),
+                        ),
+                        child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Obx(() => TextLabell(
+                                  text: controller.startDate.value,
+                                  size: 14,
+                                ))),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 16,
+            ),
+            Expanded(
+              flex: 50,
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Tanggal Selesai  *",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        if (controller.startDate.value == "") {
+                          UtilsAlert.showToast("Tanggal Mulai belum diisi");
+                          return;
+                        }
+                        print("kesini");
+                        DatePicker.showPicker(
+                          context,
+                          pickerModel: CustomDatePicker(
+                            // minTime: DateTime(
+                            //     DateTime.now().year,
+                            //     DateTime.now().month - 1,
+                            //     int.parse(
+                            //         AppData.informasiUser![0].beginPayroll.toString())),
+                            // maxTime: DateTime(DateTime.now().year, DateTime.now().month,
+                            //     DateTime.now().day),
+                            currentTime: DateTime.now(),
+                          ),
+                          onConfirm: (time) {
+                            if (time != null) {
+                              controller.endDate.value =
+                                  DateFormat('yyyy-MM-dd')
+                                      .format(DateFormat('yyyy-MM-dd')
+                                          .parse(time.toString()))
+                                      .toString();
+
+                              // absenController.tglAjunan.value =
+                              //     DateFormat('yyyy-MM-dd').format(time).toString();
+                              // absenController.checkAbsensi();
+
+                              // absenController.getPlaceCoordinateCheckin();
+                              // absenController.getPlaceCoordinateCheckout();
+
+                              // var filter = DateFormat('yyyy-MM').format(time);
+                              // var array = filter.split('-');
+                              // var bulan = array[1];
+                              // var tahun = array[0];
+                              // controller.bulanSelectedSearchHistory.value = bulan;
+                              // controller.tahunSelectedSearchHistory.value = tahun;
+                              // controller.bulanDanTahunNow.value = "$bulan-$tahun";
+                              // this.controller.bulanSelectedSearchHistory.refresh();
+                              // this.controller.tahunSelectedSearchHistory.refresh();
+                              // this.controller.bulanDanTahunNow.refresh();
+                              // controller.loadHistoryAbsenUser();
+                            }
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(left: 8, right: 8),
+                        width: MediaQuery.of(context).size.width,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border:
+                              Border.all(width: 1, color: Constanst.Secondary),
+                        ),
+                        child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Obx(() => TextLabell(
+                                  text: controller.endDate.value,
+                                  size: 14,
+                                ))),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        )
+        // controller.screenTanggalSelected.value == true
+        //     ? Card(
+        //         margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+        //         shape: RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.circular(20.0),
+        //         ),
+        //         child: SfDateRangePicker(
+        //           selectionMode: DateRangePickerSelectionMode.range,
+        //           initialSelectedDates: controller.tanggalSelectedEdit.value,
+        //           monthCellStyle: DateRangePickerMonthCellStyle(
+        //             weekendTextStyle: TextStyle(color: Colors.red),
+        //             blackoutDateTextStyle: TextStyle(
+        //                 color: Colors.red,
+        //                 decoration: TextDecoration.lineThrough),
+        //           ),
+        //           onSelectionChanged:
+        //               (DateRangePickerSelectionChangedArgs args) {
+        //             if (controller.statusForm.value == true) {
+        //               controller.tanggalSelectedEdit.value = args.value;
+        //               this.controller.tanggalSelectedEdit.refresh();
+        //             } else {
+        //               controller.tanggalSelected.value = args.value;
+        //               this.controller.tanggalSelected.refresh();
+        //             }
+        //           },
+        //         ))
+        //     : SizedBox(),
+      ],
     );
   }
 
@@ -284,33 +627,29 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
         widget.dataForm![1] == true
             ? customTanggalDariSampaiDari()
             : SizedBox(),
-        controller.screenTanggalSelected.value == true
-            ? Card(
-                margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: SfDateRangePicker(
-                  selectionMode: DateRangePickerSelectionMode.multiple,
-                  initialSelectedDates: controller.tanggalSelectedEdit.value,
-                  monthCellStyle: DateRangePickerMonthCellStyle(
-                    weekendTextStyle: TextStyle(color: Colors.red),
-                    blackoutDateTextStyle: TextStyle(
-                        color: Colors.red,
-                        decoration: TextDecoration.lineThrough),
-                  ),
-                  onSelectionChanged:
-                      (DateRangePickerSelectionChangedArgs args) {
-                    if (controller.statusForm.value == true) {
-                      controller.tanggalSelectedEdit.value = args.value;
-                      this.controller.tanggalSelectedEdit.refresh();
-                    } else {
-                      controller.tanggalSelected.value = args.value;
-                      this.controller.tanggalSelected.refresh();
-                    }
-                  },
-                ))
-            : SizedBox(),
+        Card(
+            margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: SfDateRangePicker(
+              selectionMode: DateRangePickerSelectionMode.multiple,
+              initialSelectedDates: controller.tanggalSelectedEdit.value,
+              monthCellStyle: DateRangePickerMonthCellStyle(
+                weekendTextStyle: TextStyle(color: Colors.red),
+                blackoutDateTextStyle: TextStyle(
+                    color: Colors.red, decoration: TextDecoration.lineThrough),
+              ),
+              onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+                if (controller.statusForm.value == true) {
+                  controller.tanggalSelectedEdit.value = args.value;
+                  this.controller.tanggalSelectedEdit.refresh();
+                } else {
+                  controller.tanggalSelected.value = args.value;
+                  this.controller.tanggalSelected.refresh();
+                }
+              },
+            ))
       ],
     );
 
