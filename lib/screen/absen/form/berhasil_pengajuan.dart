@@ -129,7 +129,7 @@ class _BerhasilPengajuanState extends State<BerhasilPengajuan> {
                           elevation: 0,
                         ),
                         child: Text(
-                          'Konfirmasi via Whatsapp',
+                          'Konfirmasi via Whatsapp2',
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
