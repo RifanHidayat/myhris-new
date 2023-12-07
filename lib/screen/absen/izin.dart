@@ -30,7 +30,7 @@ class _IzinState extends State<Izin> {
 
   @override
   void initState() {
-      Api().checkLogin();
+    Api().checkLogin();
     controller.startData();
     super.initState();
   }

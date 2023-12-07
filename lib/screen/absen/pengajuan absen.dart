@@ -355,7 +355,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                       text: absenController
                                                   .checkinAjuan.value ==
                                               ""
-                                          ? "09:00"
+                                          ? "_ _ : _ _"
                                           : absenController.checkinAjuan.value,
                                       color: Constanst.fgSecondary,
                                       weight: FontWeight.w500,
@@ -393,7 +393,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                       text: absenController
                                                   .checkoutAjuan.value ==
                                               ""
-                                          ? "18:00"
+                                          ? "_ _ : _ _"
                                           : absenController.checkoutAjuan.value,
                                       color: Constanst.fgSecondary,
                                       weight: FontWeight.w500,
@@ -436,7 +436,6 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                               initialTime: TimeOfDay.now(),
                               initialEntryMode: TimePickerEntryMode.input,
                               cancelText: 'Batal',
-                              useRootNavigator: false,
                               confirmText: 'Simpan',
                               builder: (context, child) {
                                 return MediaQuery(
@@ -668,7 +667,6 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                               initialTime: TimeOfDay.now(),
                               initialEntryMode: TimePickerEntryMode.input,
                               cancelText: 'Batal',
-                              useRootNavigator: false,
                               confirmText: 'Simpan',
                               builder: (context, child) {
                                 return MediaQuery(

@@ -190,7 +190,7 @@ class AbsenController extends GetxController {
     var convert = Constanst.convertDate1("${dt.year}-${dt.month}-${dt.day}");
     tanggalLaporan.value.text = convert;
     absenStatus.value = AppData.statusAbsen;
-    this.absenStatus.refresh();
+    // this.absenStatus.refresh();
   }
 
   void getDepartemen(status, tanggal) {
