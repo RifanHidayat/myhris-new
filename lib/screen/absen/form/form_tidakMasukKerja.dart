@@ -266,10 +266,8 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
                                     controller.izinTerpakai.value.toString()) /
                                 int.parse(
                                     controller.jumlahIzin.value.toString())))
-                            .toString());
-                        print("persen ${controller.jumlahIzin.value}");
-                        print("persen ${controller.izinTerpakai.value}");
-                        print("persen ${controller.percentIzin.value}");
+                            .toString()); 
+                            
                       }
                     });
                   } else {

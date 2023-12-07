@@ -350,14 +350,14 @@ class _InitScreenState extends State<InitScreen> {
     return WillPopScope(
       onWillPop: controller.onWillPop,
       child: DefaultTabController(
-        length: controller.kontrolAkses.value == true ? 4 : 5,
+        length: controller.kontrolAkses.value == true ? 5 : 4,
         initialIndex: controller.currentIndex.value,
         child: Scaffold(
           body: Center(
             child: Obx(
               () => controller.kontrolAkses.value == true
-                  ? _buildScreens1.elementAt(controller.currentIndex.value)
-                  : _buildScreens.elementAt(controller.currentIndex.value),
+                  ? _buildScreens.elementAt(controller.currentIndex.value)
+                  : _buildScreens1.elementAt(controller.currentIndex.value),
             ),
           ),
           bottomNavigationBar: Obx(
@@ -381,8 +381,8 @@ class _InitScreenState extends State<InitScreen> {
                 //     ? _buildScreens()
                 //     : _buildScreens1(),
                 items: controller.kontrolAkses.value == true
-                    ? _navBarsItems1()
-                    : _navBarsItems(),
+                    ? _navBarsItems()
+                    : _navBarsItems1(),
                 // onWillPop: (s) async => await controller.onWillPop(),
                 // onItemSelected: (s) => controller.onClickItem(s),
               ),

@@ -697,7 +697,7 @@ class CutiController extends GetxController {
       };
     }
 
-    print(body);
+
     var typeNotifFcm = "Pengajuan Cuti";
     if (statusForm.value == false) {
       body['activity_name'] =
@@ -926,6 +926,11 @@ class CutiController extends GetxController {
     );
   }
 
+
+
+
+
+
   void batalkanPengajuan(index) {
     UtilsAlert.loadingSimpanData(Get.context!, "Batalkan Pengajuan");
     var dataUser = AppData.informasiUser;
@@ -938,7 +943,7 @@ class CutiController extends GetxController {
       'val': 'id',
       'cari': '${index["id"]}',
       'status_transaksi': 0,
-      'start_date': '${index["start_date"]}',
+      'start_date': '${index["atten_date"]}',
       'leave_status': "Cancel"
     };
     print("body ${body}");
@@ -952,6 +957,11 @@ class CutiController extends GetxController {
       }
     });
   }
+
+
+
+
+
 
   void showModalBatalPengajuan(index) {
     showModalBottomSheet(
