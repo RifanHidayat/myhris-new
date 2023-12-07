@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
@@ -40,7 +39,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
   }
 
   Future<void> refreshData() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     controller.onReady();
   }
 
@@ -51,162 +50,192 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
       child: Scaffold(
           backgroundColor: Constanst.coloBackgroundScreen,
           appBar: AppBar(
-            backgroundColor: Constanst.coloBackgroundScreen,
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            title: Text(
-              "Absensi",
-              style: GoogleFonts.inter(
-                  color: Constanst.fgPrimary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20),
-            ),
-            leading: IconButton(
-              icon: Icon(
-                Iconsax.arrow_left,
-                color: Constanst.fgPrimary,
-                size: 24,
-              ),
-              onPressed: () {
-                controller.removeAll();
-                Get.offAll(InitScreen());
-              },
-            ),
-            // actions: [
-            //   IconButton(
-            //     icon: Icon(
-            //       Iconsax.document_text,
-            //       color: Constanst.fgPrimary,
-            //       size: 24,
-            //     ),
-            //     onPressed: () {
-            //       Get.to(LaporanAbsen(
-            //         dataForm: "",
-            //       ));
-            //     },
-            //   ),
-            // ],
-          ),
+              automaticallyImplyLeading: false,
+              backgroundColor: Constanst.coloBackgroundScreen,
+              elevation: 2,
+              flexibleSpace: AppbarMenu1(
+                title: "History Absen",
+                icon: 1,
+                colorTitle: Colors.black,
+                onTap: () {
+                  controller.removeAll();
+                  Get.offAll(InitScreen());
+                },
+              )),
           body: WillPopScope(
             onWillPop: () async {
               controller.removeAll();
               Get.offAll(InitScreen());
               return true;
             },
-            child: SizedBox(
+            child: Container(
               height: MediaQuery.of(context).size.height,
               child: Column(
                 children: [
                   Obx(
                     () => Expanded(
-                      child: SizedBox(
+                      child: Container(
                         height: double.maxFinite,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TabBar(
                               indicatorColor: Constanst.colorPrimary,
-                              labelColor: Constanst.colorPrimary,
-                              unselectedLabelColor: Constanst.fgSecondary,
                               indicatorWeight: 4.0,
-                              labelPadding:
-                                  const EdgeInsets.fromLTRB(0, 14, 0, 14),
+                              labelPadding: EdgeInsets.fromLTRB(0, 12, 0, 12),
                               indicatorSize: TabBarIndicatorSize.label,
-                              physics: const BouncingScrollPhysics(),
+                              physics: BouncingScrollPhysics(),
                               tabs: [
-                                Text("Absensi",
-                                    style: GoogleFonts.inter(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w500)),
-                                Text("Pengajuan",
-                                    style: GoogleFonts.inter(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w500)),
+                                TextLabell(
+                                    text: "Absensi",
+                                    color: Constanst.colorPrimary,
+                                    size: 14.0,
+                                    weight: FontWeight.w500),
+                                TextLabell(
+                                    text: "Pengajuan",
+                                    color: Constanst.colorPrimary,
+                                    size: 14.0,
+                                    weight: FontWeight.w500),
                               ],
                             ),
                             Divider(
                               thickness: 1,
-                              height: 0,
-                              color: Constanst.fgBorder,
+                              height: 1,
+                              color: Constanst.Secondary,
                             ),
+                            // Expanded(
+                            //   child: Container(
+                            //     height: double.maxFinite,
+                            //     width: MediaQuery.of(context).size.width,
+                            //     child: TabBarView(children: [
+                            //       TextLabell(text: ""),
+                            //       TextLabell(text: "")
+                            //     ]),
+                            //   ),
+                            // )
                             Expanded(
                                 child: Container(
                               height: double.maxFinite,
-                              padding:
-                                  const EdgeInsets.only(left: 16, right: 16),
+                              padding: EdgeInsets.only(left: 16, right: 16),
                               child: TabBarView(
                                   physics: const BouncingScrollPhysics(),
                                   children: [
-                                    Column(
-                                      children: [
-                                        const SizedBox(height: 16),
-                                        controller.bulanDanTahunNow.value == ""
-                                            ? const SizedBox()
-                                            : pickDate(),
-                                        const SizedBox(height: 16),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              flex: 85,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 8),
-                                                child: Text(
-                                                  "Riwayat Absensi",
-                                                  textAlign: TextAlign.left,
-                                                  style: GoogleFonts.inter(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize:
-                                                          Constanst.sizeTitle),
+                                    // padding: const EdgeInsets.only(left: 16, right: 16),
+                                    Container(
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          controller.bulanDanTahunNow.value ==
+                                                  ""
+                                              ? SizedBox()
+                                              : pickDate(),
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                flex: 85,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 8),
+                                                  child: Text(
+                                                    "Riwayat Absensi",
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: Constanst
+                                                            .sizeTitle),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 8),
-                                        Flexible(
-                                            child: RefreshIndicator(
-                                          onRefresh: refreshData,
-                                          child: controller
-                                                  .historyAbsen.value.isEmpty
-                                              ? Center(
-                                                  child: Text(
-                                                      controller.loading.value),
-                                                )
-                                              : listAbsen(),
-                                        ))
-                                      ],
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 8,
+                                          ),
+                                          Flexible(
+                                              child: RefreshIndicator(
+                                            onRefresh: refreshData,
+                                            child: controller
+                                                    .historyAbsen.value.isEmpty
+                                                ? Center(
+                                                    child: Text(controller
+                                                        .loading.value),
+                                                  )
+                                                : listAbsen(),
+                                          ))
+                                        ],
+                                      ),
                                     ),
-                                    Column(
-                                      children: [
-                                        const SizedBox(height: 16),
-                                        controller.bulanDanTahunNowPengajuan
-                                                    .value ==
-                                                ""
-                                            ? const SizedBox()
-                                            : pickDateBulanDanTahun(),
-                                        const SizedBox(height: 16),
-                                        Flexible(
-                                            child: Obx(
-                                          () => RefreshIndicator(
-                                              onRefresh: refreshData,
-                                              color: Constanst.colorPrimary,
-                                              child: controller
-                                                      .pengajuanAbsensi.isEmpty
-                                                  ? Center(
-                                                      child: Text(controller
-                                                          .loadingPengajuan
-                                                          .value
-                                                          .toString()),
-                                                    )
-                                                  : listPengajuan()),
-                                        ))
-                                      ],
+
+                                    Container(
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          controller.bulanDanTahunNowPengajuan
+                                                      .value ==
+                                                  ""
+                                              ? SizedBox()
+                                              : pickDateBulanDanTahun(),
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                flex: 85,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 8),
+                                                  child: Text(
+                                                    "Riwayat Pengajuan",
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: Constanst
+                                                            .sizeTitle),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 8,
+                                          ),
+                                          Flexible(
+                                              child: Obx(
+                                            () => RefreshIndicator(
+                                                onRefresh: refreshData,
+                                                child: controller
+                                                        .pengajuanAbsensi
+                                                        .isEmpty
+                                                    ? Center(
+                                                        child: Text(controller
+                                                            .loadingPengajuan
+                                                            .value
+                                                            .toString()),
+                                                      )
+                                                    : listPengajuan()),
+                                          ))
+                                        ],
+                                      ),
                                     )
                                   ]),
                             ))
@@ -327,7 +356,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                       padding: const EdgeInsets.only(left: 10),
                       child: Text(
                         "${Constanst.convertDateBulanDanTahun(controller.bulanDanTahunNow.value)}",
-                        style: GoogleFonts.inter(fontSize: 16),
+                        style: TextStyle(fontSize: 16),
                       ),
                     ),
                   ],
@@ -354,138 +383,77 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
   }
 
   Widget pickDateBulanDanTahun() {
-    return Row(
-      children: [
-        InkWell(
-          customBorder: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(100))),
-          onTap: () async {
-            print("kesini");
-            DatePicker.showPicker(
-              context,
-              pickerModel: CustomMonthPicker(
-                minTime: DateTime(2020, 1, 1),
-                maxTime: DateTime(2050, 1, 1),
-                currentTime: DateTime.now(),
-              ),
-              onConfirm: (time) {
-                if (time != null) {
-                  print("$time");
-                  var filter = DateFormat('yyyy-MM').format(time);
-                  var array = filter.split('-');
-                  var bulan = array[1];
-                  var tahun = array[0];
-                  controller.bulanSelectedSearchHistoryPengajuan.value = bulan;
-                  controller.tahunSelectedSearchHistoryPengajuan.value = tahun;
-                  controller.bulanDanTahunNowPengajuan.value = "$bulan-$tahun";
-                  this.controller.bulanSelectedSearchHistoryPengajuan.refresh();
-                  this.controller.tahunSelectedSearchHistoryPengajuan.refresh();
-                  this.controller.bulanDanTahunNowPengajuan.refresh();
-                  controller.dataPengajuanAbsensi();
-                }
-              },
-            );
+    return InkWell(
+      onTap: () async {
+        print("kesini");
+        DatePicker.showPicker(
+          context,
+          pickerModel: CustomMonthPicker(
+            minTime: DateTime(2020, 1, 1),
+            maxTime: DateTime(2050, 1, 1),
+            currentTime: DateTime.now(),
+          ),
+          onConfirm: (time) {
+            if (time != null) {
+              print("$time");
+              var filter = DateFormat('yyyy-MM').format(time);
+              var array = filter.split('-');
+              var bulan = array[1];
+              var tahun = array[0];
+              controller.bulanSelectedSearchHistoryPengajuan.value = bulan;
+              controller.tahunSelectedSearchHistoryPengajuan.value = tahun;
+              controller.bulanDanTahunNowPengajuan.value = "$bulan-$tahun";
+              this.controller.bulanSelectedSearchHistoryPengajuan.refresh();
+              this.controller.tahunSelectedSearchHistoryPengajuan.refresh();
+              this.controller.bulanDanTahunNowPengajuan.refresh();
+              controller.dataPengajuanAbsensi();
+            }
           },
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(100),
+        );
+      },
+      child: Container(
+        decoration: Constanst.styleBoxDecoration1,
+        child: Padding(
+          padding: EdgeInsets.only(top: 15, bottom: 10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 90,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Icon(Iconsax.calendar_2),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        "${Constanst.convertDateBulanDanTahun(controller.bulanDanTahunNowPengajuan.value)}",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
                 ),
-                border: Border.all(color: Constanst.fgBorder)),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      Constanst.convertDateBulanDanTahun(
-                          controller.bulanDanTahunNowPengajuan.value),
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: Constanst.fgSecondary),
+              ),
+              Expanded(
+                flex: 10,
+                child: Container(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Icon(
+                      Icons.arrow_drop_down_rounded,
+                      size: 24,
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  Icon(
-                    Iconsax.arrow_down_1,
-                    size: 18,
-                    color: Constanst.fgPrimary,
-                  )
-                ],
-              ),
-            ),
+                ),
+              )
+            ],
           ),
         ),
-        const SizedBox(width: 4),
-        // InkWell(
-        //   customBorder: const RoundedRectangleBorder(
-        //       borderRadius: BorderRadius.all(Radius.circular(100))),
-        //   onTap: () async {
-        //     print("kesini");
-        //     DatePicker.showPicker(
-        //       context,
-        //       pickerModel: CustomMonthPicker(
-        //         minTime: DateTime(2020, 1, 1),
-        //         maxTime: DateTime(2050, 1, 1),
-        //         currentTime: DateTime.now(),
-        //       ),
-        //       onConfirm: (time) {
-        //         if (time != null) {
-        //           print("$time");
-        //           var filter = DateFormat('yyyy-MM').format(time);
-        //           var array = filter.split('-');
-        //           var bulan = array[1];
-        //           var tahun = array[0];
-        //           controller.bulanSelectedSearchHistoryPengajuan.value = bulan;
-        //           controller.tahunSelectedSearchHistoryPengajuan.value = tahun;
-        //           controller.bulanDanTahunNowPengajuan.value = "$bulan-$tahun";
-        //           this.controller.bulanSelectedSearchHistoryPengajuan.refresh();
-        //           this.controller.tahunSelectedSearchHistoryPengajuan.refresh();
-        //           this.controller.bulanDanTahunNowPengajuan.refresh();
-        //           controller.dataPengajuanAbsensi();
-        //         }
-        //       },
-        //     );
-        //   },
-        //   child: Container(
-        //     decoration: BoxDecoration(
-        //         color: Colors.white,
-        //         borderRadius: const BorderRadius.all(
-        //           Radius.circular(100),
-        //         ),
-        //         border: Border.all(color: Constanst.fgBorder)),
-        //     child: Padding(
-        //       padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-        //       child: Row(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           Padding(
-        //             padding: const EdgeInsets.only(left: 10),
-        //             child: Text(
-        //               Constanst.convertDateBulanDanTahun(
-        //                   controller.bulanDanTahunNowPengajuan.value),
-        //               style: GoogleFonts.inter(
-        //                   fontWeight: FontWeight.w500,
-        //                   fontSize: 14,
-        //                   color: Constanst.fgSecondary),
-        //             ),
-        //           ),
-        //           const SizedBox(width: 4),
-        //           Icon(
-        //             Iconsax.arrow_down_1,
-        //             size: 18,
-        //             color: Constanst.fgPrimary,
-        //           )
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // ),
-      ],
+      ),
     );
   }
 
@@ -573,161 +541,144 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
   Widget listPengajuan() {
     return ListView.builder(
         physics: controller.pengajuanAbsensi.value.length <= 10
-            ? const AlwaysScrollableScrollPhysics()
-            : const BouncingScrollPhysics(),
+            ? AlwaysScrollableScrollPhysics()
+            : BouncingScrollPhysics(),
         itemCount: controller.pengajuanAbsensi.value.length,
         itemBuilder: (context, index) {
           var data = controller.pengajuanAbsensi[index];
           return Container(
-            padding: const EdgeInsets.only(bottom: 16),
+            padding: EdgeInsets.only(bottom: 8),
             child: InkWell(
-              customBorder: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12))),
               onTap: () {
-                showBottomDetailPengajuan(context, index);
+                showBottomDetailItemCharging(context, index);
               },
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(width: 1, color: Constanst.fgBorder)),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
+                  padding: EdgeInsets.all(8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextLabell(
                         text: data['atten_date'],
-                        weight: FontWeight.w500,
-                        size: 16.0,
-                        color: Constanst.fgPrimary,
+                        weight: FontWeight.bold,
+                        size: 14.0,
                       ),
-                      const SizedBox(height: 4),
                       TextLabell(
-                        text: data['nomor_ajuan'],
-                        weight: FontWeight.w400,
-                        size: 16.0,
-                        color: Constanst.fgSecondary,
-                      ),
-                      const SizedBox(height: 4),
-                      TextLabell(
-                        text:
-                            "Absen Masuk Tanggal ${data['atten_date']}, ${data['dari_jam']}",
+                        text: "Absen masuk ${data['dari_jam']}",
                         color: Constanst.fgSecondary,
                         size: 13.0,
-                        weight: FontWeight.w400,
                       ),
                       TextLabell(
-                        text:
-                            "Absen Keluar Tanggal ${data['atten_date']}, ${data['sampai_jam']}",
+                        text: "Absen Keluar  ${data['sampai_jam']}",
                         color: Constanst.fgSecondary,
                         size: 13.0,
-                        weight: FontWeight.w400,
                       ),
-                      const SizedBox(height: 12),
-                      Divider(
-                        height: 0,
-                        thickness: 1,
-                        color: Constanst.fgBorder,
+                      SizedBox(
+                        height: 6,
                       ),
-                      const SizedBox(height: 8),
+                      Divider(),
+                      SizedBox(
+                        height: 6,
+                      ),
                       data['status'].toString().toLowerCase() ==
                               "approve".toLowerCase()
                           ? Row(
                               children: [
-                                const Icon(
-                                  Iconsax.tick_circle,
-                                  size: 20,
-                                  color: Colors.green,
-                                ),
-                                const SizedBox(width: 8),
-                                TextLabell(
-                                  text: "Approved by ${data['approve_by']}",
-                                  color: Constanst.fgPrimary,
-                                  weight: FontWeight.w500,
-                                  size: 14,
-                                )
+                                Expanded(
+                                    flex: 10,
+                                    child: Icon(
+                                      Iconsax.tick_circle,
+                                      color: Colors.green,
+                                    )),
+                                Expanded(
+                                    flex: 90,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        TextLabell(
+                                          text:
+                                              "Approved by ${data['approve_by']}",
+                                          color: Constanst.fgPrimary,
+                                          weight: FontWeight.bold,
+                                        ),
+                                        // TextLabell(
+                                        //   text: "Absen Keluar Tanggal",
+                                        //   color: Constanst.fgSecondary,
+                                        // ),
+                                      ],
+                                    ))
                               ],
                             )
                           : data['status'].toString().toLowerCase() ==
                                   "rejected".toLowerCase()
                               ? Row(
                                   children: [
-                                    const Icon(
-                                      Iconsax.close_circle,
-                                      size: 20,
-                                      color: Colors.red,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Column(
+                                    Expanded(
+                                        flex: 10,
+                                        child: Icon(
+                                          Iconsax.close_circle,
+                                          color: Colors.red,
+                                        )),
+                                    Expanded(
+                                        flex: 90,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                TextLabell(
+                                                  text:
+                                                      "Rejected by ${data['approve_by']}",
+                                                  color: Constanst.fgPrimary,
+                                                  weight: FontWeight.bold,
+                                                ),
+                                                TextLabell(
+                                                  text:
+                                                      "${data['alasan_reject']}",
+                                                  color: Constanst.fgPrimary,
+                                                ),
+                                              ],
+                                            ),
+                                            // TextLabell(
+                                            //   text: "Absen Keluar Tanggal",
+                                            //   color: Constanst.fgSecondary,
+                                            // ),
+                                          ],
+                                        ))
+                                  ],
+                                )
+                              : Row(
+                                  children: [
+                                    Expanded(
+                                        flex: 10,
+                                        child: Icon(
+                                          Iconsax.timer4,
+                                          color: Constanst.warning,
+                                        )),
+                                    Expanded(
+                                        flex: 90,
+                                        child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             TextLabell(
-                                              text:
-                                                  "Rejected by ${data['approve_by']}",
+                                              text: "Pending Approval",
                                               color: Constanst.fgPrimary,
-                                              weight: FontWeight.w500,
-                                              size: 14,
+                                              weight: FontWeight.bold,
                                             ),
-                                            const SizedBox(height: 4),
-                                            TextLabell(
-                                              text: "${data['alasan_reject']}",
-                                              color: Constanst.fgSecondary,
-                                              weight: FontWeight.w400,
-                                              size: 14,
-                                            ),
+                                            // TextLabell(
+                                            //   text: "Absen Keluar Tanggal",
+                                            //   color: Constanst.fgSecondary,
+                                            // ),
                                           ],
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                )
-                              : Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Icon(
-                                      Iconsax.timer,
-                                      size: 20,
-                                      color: Constanst.warning,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: TextLabell(
-                                            text: "Pending Approval",
-                                            color: Constanst.fgPrimary,
-                                            weight: FontWeight.w500,
-                                            size: 14,
-                                          ),
-                                        ),
-                                        InkWell(
-                                          onTap: () => print('object'),
-                                          customBorder:
-                                              const RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              100))),
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                8.0, 4.0, 8.0, 4.0),
-                                            child: TextLabell(
-                                              text: "Konfirmasi via Whatsapp",
-                                              color: Constanst.infoLight,
-                                              weight: FontWeight.w400,
-                                              size: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )
+                                        ))
                                   ],
                                 )
                     ],
@@ -757,17 +708,17 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("${Constanst.convertDate('${index['atten_date']}')}",
-                        style: GoogleFonts.inter(
+                        style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold)),
                     // index['status_view'] == true
                     //     ? Text(
                     //         "${index['turunan'][0]['reg_type'] == 0 ? "Face Recognition" : "Photo"}",
-                    //         style: GoogleFonts.inter(
+                    //         style: TextStyle(
                     //           fontSize: 9,
                     //         ))
                     //     : Text(
                     //         " ${index['reg_type'] == 0 ? "Face Recognition" : ""}",
-                    //         style: GoogleFonts.inter(
+                    //         style: TextStyle(
                     //           fontSize: 9,
                     //         )),
                   ],
@@ -864,10 +815,10 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                         children: [
                           Text(
                               "${Constanst.convertDate('${index['atten_date']}')}",
-                              style: GoogleFonts.inter(
+                              style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold)),
                           Text("${regType == 0 ? "Face Recognition" : "Photo"}",
-                              style: GoogleFonts.inter(
+                              style: TextStyle(
                                 fontSize: 10,
                               )),
                         ],
@@ -887,8 +838,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                             padding: EdgeInsets.only(left: 8),
                             child: Text(
                               "${jamMasuk}",
-                              style: GoogleFonts.inter(
-                                  color: getColorMasuk, fontSize: 14),
+                              style:
+                                  TextStyle(color: getColorMasuk, fontSize: 14),
                             ),
                           )
                         ],
@@ -909,7 +860,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                               padding: EdgeInsets.only(left: 8),
                               child: Text(
                                 "${jamKeluar}",
-                                style: GoogleFonts.inter(
+                                style: TextStyle(
                                     color: getColorKeluar, fontSize: 14),
                               ),
                             ),
@@ -938,15 +889,14 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                             flex: 50,
                             child: Text(
                                 "${Constanst.convertDate('${index['atten_date']}')}",
-                                style: GoogleFonts.inter(
+                                style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.bold)),
                           ),
                           Expanded(
                             flex: 50,
                             child: Text(
                               "${note}".toLowerCase(),
-                              style: GoogleFonts.inter(
-                                  color: Constanst.colorText3),
+                              style: TextStyle(color: Constanst.colorText3),
                             ),
                           )
                         ],
@@ -1050,7 +1000,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                             padding: EdgeInsets.only(left: 8),
                                             child: Text(
                                               "${jamMasuk}",
-                                              style: GoogleFonts.inter(
+                                              style: TextStyle(
                                                   color: getColorMasuk,
                                                   fontSize: 14),
                                             ),
@@ -1059,7 +1009,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                       ),
                                       Text(
                                           " ${regType == 0 ? "Face Recognition" : "Photo"}",
-                                          style: GoogleFonts.inter(
+                                          style: TextStyle(
                                             fontSize: 9,
                                           )),
                                     ],
@@ -1083,7 +1033,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                             ? Text("")
                                             : Text(
                                                 "${jamKeluar}",
-                                                style: GoogleFonts.inter(
+                                                style: TextStyle(
                                                     color: getColorKeluar,
                                                     fontSize: 14),
                                               ),
@@ -1113,8 +1063,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                               children: [
                                 Text(
                                   "${note}".toLowerCase(),
-                                  style: GoogleFonts.inter(
-                                      color: Constanst.colorText3),
+                                  style: TextStyle(color: Constanst.colorText3),
                                 )
                               ],
                             ),
@@ -1134,7 +1083,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
         });
   }
 
-  void showBottomDetailPengajuan(BuildContext context, index) {
+  void showBottomDetailItemCharging(BuildContext context, index) {
     var data = controller.pengajuanAbsensi[index];
     showModalBottomSheet(
       context: context,
@@ -1145,72 +1094,66 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
       ),
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return SafeArea(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Constanst.colorNeutralBgTertiary,
-                          borderRadius: BorderRadius.circular(100)),
-                      width: 32,
-                      height: 6,
-                    ),
+        return SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Constanst.fgBorder,
+                        borderRadius: BorderRadius.circular(16)),
+                    width: 50,
+                    height: 5,
                   ),
-                  const SizedBox(height: 12),
-                  Column(
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  child: Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(8),
                             border: Border.all(
                                 width: 1, color: Constanst.fgBorder)),
                         child: Row(
                           children: [
                             Expanded(
-                              flex: 1,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextLabell(
-                                    text: "No. Pengajuan",
-                                    color: Constanst.fgSecondary,
-                                    size: 14,
-                                    weight: FontWeight.w400,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  TextLabell(
-                                    text: data['nomor_ajuan'],
-                                    color: Constanst.fgPrimary,
-                                    size: 16,
-                                    weight: FontWeight.w500,
-                                  ),
-                                ],
+                              flex: 50,
+                              child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextLabell(
+                                      text: "No. Pengajuan",
+                                      color: Constanst.fgSecondary,
+                                    ),
+                                    TextLabell(
+                                      text: data['nomor_ajuan'],
+                                      weight: FontWeight.bold,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             Expanded(
-                              flex: 1,
+                              flex: 50,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   TextLabell(
                                     text: "Tanggal Pengajuan",
                                     color: Constanst.fgSecondary,
-                                    size: 14,
-                                    weight: FontWeight.w400,
                                   ),
-                                  const SizedBox(height: 4),
                                   TextLabell(
                                     text: data['tgl_ajuan'] ?? '',
-                                    color: Constanst.fgPrimary,
-                                    size: 16,
-                                    weight: FontWeight.w500,
+                                    weight: FontWeight.bold,
                                   ),
                                 ],
                               ),
@@ -1220,341 +1163,323 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                       )
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  Column(
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  child: Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(8),
                             border: Border.all(
                                 width: 1, color: Constanst.fgBorder)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextLabell(
-                                  text: "Nama Pengajuan",
-                                  color: Constanst.fgSecondary,
-                                  size: 14,
-                                  weight: FontWeight.w400,
-                                ),
-                                const SizedBox(height: 4),
-                                TextLabell(
-                                  text: "Pengajuan Absensi",
-                                  color: Constanst.fgPrimary,
-                                  size: 16,
-                                  weight: FontWeight.w500,
-                                ),
-                                const SizedBox(height: 12),
-                                const Divider(
-                                  thickness: 1,
-                                  height: 0,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextLabell(
-                                  text: "Tanggal",
-                                  color: Constanst.fgSecondary,
-                                  size: 14,
-                                  weight: FontWeight.w400,
-                                ),
-                                const SizedBox(height: 4),
-                                TextLabell(
-                                  text: data['atten_date'],
-                                  color: Constanst.fgPrimary,
-                                  size: 16,
-                                  weight: FontWeight.w500,
-                                ),
-                                const SizedBox(height: 12),
-                                const Divider(
-                                  thickness: 1,
-                                  height: 0,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      TextLabell(
-                                        text: "Absen Masuk",
-                                        color: Constanst.fgSecondary,
-                                        size: 14,
-                                        weight: FontWeight.w400,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      data['dari_jam'] == ""
-                                          ? TextLabell(
-                                              text: "_ _ : _ _",
-                                              color: Constanst.fgPrimary,
-                                              size: 16,
-                                              weight: FontWeight.w500,
-                                            )
-                                          : TextLabell(
-                                              text: data['dari_jam'],
-                                              color: Constanst.fgPrimary,
-                                              size: 16,
-                                              weight: FontWeight.w500,
-                                            )
-                                    ],
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Column(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: [
+                              //     TextLabell(
+                              //       text: "Nama Pengajuan",
+                              //       color: Constanst.fgSecondary,
+                              //     ),
+                              //     TextLabell(
+                              //       text: "Pengajuan Absensi",
+                              //       weight: FontWeight.bold,
+                              //     ),
+                              //     SizedBox(
+                              //       height: 4,
+                              //     ),
+                              //     Divider(),
+                              //     SizedBox(
+                              //       height: 4,
+                              //     ),
+                              //   ],
+                              // ),
+                              // SizedBox(
+                              //   height: 8,
+                              // ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextLabell(
+                                    text: "Tanggal",
+                                    color: Constanst.fgSecondary,
                                   ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      TextLabell(
-                                        text: "Absen Keluar",
-                                        color: Constanst.fgSecondary,
-                                        size: 14,
-                                        weight: FontWeight.w400,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      data['sampai_jam'] == ""
-                                          ? TextLabell(
-                                              text: "_ _ : _ _",
-                                              color: Constanst.fgPrimary,
-                                              size: 16,
-                                              weight: FontWeight.w500,
-                                            )
-                                          : TextLabell(
-                                              text: data['sampai_jam'],
-                                              color: Constanst.fgPrimary,
-                                              size: 16,
-                                              weight: FontWeight.w500,
-                                            )
-                                    ],
+                                  TextLabell(
+                                    text: data['atten_date'],
+                                    weight: FontWeight.bold,
                                   ),
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            const Divider(
-                              thickness: 1,
-                              height: 0,
-                            ),
-                            const SizedBox(height: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextLabell(
-                                  text: "Catatan",
-                                  color: Constanst.fgSecondary,
-                                  size: 14,
-                                  weight: FontWeight.w400,
-                                ),
-                                const SizedBox(height: 4),
-                                TextLabell(
-                                  text: data['uraian'],
-                                  color: Constanst.fgPrimary,
-                                  size: 16,
-                                  weight: FontWeight.w500,
-                                ),
-                                const SizedBox(height: 12),
-                                const Divider(
-                                  thickness: 1,
-                                  height: 0,
-                                ),
-                                const SizedBox(height: 12),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextLabell(
-                                  text: "File disematkan",
-                                  color: Constanst.fgSecondary,
-                                  size: 14,
-                                  weight: FontWeight.w400,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    viewLampiranAjuan(data['req_file']);
-                                  },
-                                  child: TextLabell(
-                                    text: data['req_file'],
-                                    color: Constanst.fgPrimary,
-                                    size: 16,
-                                    weight: FontWeight.w500,
+                                  SizedBox(
+                                    height: 4,
                                   ),
-                                ),
-                                const SizedBox(height: 12),
-                                const Divider(
-                                  thickness: 1,
-                                  height: 0,
-                                ),
-                                const SizedBox(height: 12),
-                              ],
-                            ),
-                            data['status'].toString().toLowerCase() ==
-                                    "approve".toLowerCase()
-                                ? Row(
-                                    children: [
-                                      const Icon(
-                                        Iconsax.tick_circle,
-                                        size: 20,
-                                        color: Colors.green,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      TextLabell(
-                                        text:
-                                            "Approved by ${data['approve_by']}",
-                                        color: Constanst.fgPrimary,
-                                        weight: FontWeight.w500,
-                                        size: 14,
-                                      )
-                                    ],
-                                  )
-                                : data['status'].toString().toLowerCase() ==
-                                        "rejected".toLowerCase()
-                                    ? Row(
-                                        children: [
-                                          const Icon(
-                                            Iconsax.close_circle,
-                                            size: 20,
-                                            color: Colors.red,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  TextLabell(
-                                                    text:
-                                                        "Rejected by ${data['approve_by']}",
-                                                    color: Constanst.fgPrimary,
-                                                    weight: FontWeight.bold,
-                                                  ),
-                                                  TextLabell(
-                                                    text:
-                                                        "${data['alasan_reject']}",
-                                                    color: Constanst.fgPrimary,
-                                                  ),
-                                                ],
-                                              ),
-                                              // TextLabell(
-                                              //   text: "Absen Keluar Tanggal",
-                                              //   color: Constanst.fgSecondary,
-                                              // ),
-                                            ],
-                                          )
-                                        ],
-                                      )
-                                    : Row(
+                                  Divider(),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Icon(
-                                            Iconsax.timer,
-                                            size: 20,
-                                            color: Constanst.warning,
+                                          TextLabell(
+                                            text: "Absen Masuk",
+                                            color: Constanst.fgSecondary,
                                           ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8.0),
-                                                child: TextLabell(
-                                                  text: "Pending Approval",
+                                          data['dari_jam'] == ""
+                                              ? TextLabell(
+                                                  text: "_ _ : _ _",
                                                   color: Constanst.fgPrimary,
-                                                  weight: FontWeight.w500,
-                                                  size: 14,
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () => print('object'),
-                                                customBorder:
-                                                    const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    100))),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          8.0, 4.0, 8.0, 4.0),
-                                                  child: TextLabell(
-                                                    text:
-                                                        "Konfirmasi via Whatsapp",
-                                                    color: Constanst.infoLight,
-                                                    weight: FontWeight.w400,
-                                                    size: 14,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
+                                                )
+                                              : TextLabell(
+                                                  text: data['dari_jam'],
+                                                  color: Constanst.fgPrimary,
+                                                )
                                         ],
-                                      )
-                          ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          TextLabell(
+                                            text: "Absen Keluar",
+                                            color: Constanst.secondary,
+                                          ),
+                                          data['sampai_jam'] == ""
+                                              ? TextLabell(
+                                                  text: "_ _ : _ _",
+                                                  color: Constanst.fgPrimary,
+                                                )
+                                              : TextLabell(
+                                                  text: data['sampai_jam'],
+                                                  color: Constanst.fgPrimary,
+                                                )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Divider(),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextLabell(
+                                    text: "Catatan",
+                                    color: Constanst.fgSecondary,
+                                  ),
+                                  TextLabell(
+                                    text: data['uraian'],
+                                    weight: FontWeight.bold,
+                                  ),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                  Divider(),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextLabell(
+                                    text: "File disematkan",
+                                    color: Constanst.fgSecondary,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      viewLampiranAjuan(data['req_file']);
+                                    },
+                                    child: TextLabell(
+                                      text: data['req_file'],
+                                      weight: FontWeight.bold,
+                                      color: Constanst.colorPrimary,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                  Divider(),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                ],
+                              ),
+                              data['status'].toString().toLowerCase() ==
+                                      "approve".toLowerCase()
+                                  ? Row(
+                                      children: [
+                                        Expanded(
+                                            flex: 10,
+                                            child: Icon(
+                                              Iconsax.tick_circle,
+                                              color: Colors.green,
+                                            )),
+                                        Expanded(
+                                            flex: 90,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                TextLabell(
+                                                  text:
+                                                      "Approved by ${data['approve_by']}",
+                                                  color: Constanst.fgPrimary,
+                                                  weight: FontWeight.bold,
+                                                ),
+                                                // TextLabell(
+                                                //   text: "Absen Keluar Tanggal",
+                                                //   color: Constanst.fgSecondary,
+                                                // ),
+                                              ],
+                                            ))
+                                      ],
+                                    )
+                                  : data['status'].toString().toLowerCase() ==
+                                          "rejected".toLowerCase()
+                                      ? Row(
+                                          children: [
+                                            Expanded(
+                                                flex: 10,
+                                                child: Icon(
+                                                  Iconsax.close_circle,
+                                                  color: Colors.red,
+                                                )),
+                                            Expanded(
+                                                flex: 90,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        TextLabell(
+                                                          text:
+                                                              "Rejected by ${data['approve_by']}",
+                                                          color: Constanst
+                                                              .fgPrimary,
+                                                          weight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                        TextLabell(
+                                                          text:
+                                                              "${data['alasan_reject']}",
+                                                          color: Constanst
+                                                              .fgPrimary,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    // TextLabell(
+                                                    //   text: "Absen Keluar Tanggal",
+                                                    //   color: Constanst.fgSecondary,
+                                                    // ),
+                                                  ],
+                                                ))
+                                          ],
+                                        )
+                                      : Row(
+                                          children: [
+                                            Expanded(
+                                                flex: 10,
+                                                child: Icon(
+                                                  Iconsax.timer4,
+                                                  color: Constanst.warning,
+                                                )),
+                                            Expanded(
+                                                flex: 90,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    TextLabell(
+                                                      text: "Pending Approval",
+                                                      color:
+                                                          Constanst.fgPrimary,
+                                                      weight: FontWeight.bold,
+                                                    ),
+                                                    // TextLabell(
+                                                    //   text: "Absen Keluar Tanggal",
+                                                    //   color: Constanst.fgSecondary,
+                                                    // ),
+                                                  ],
+                                                ))
+                                          ],
+                                        )
+                            ],
+                          ),
                         ),
                       )
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  data['status'].toString().toLowerCase() ==
-                          "Pending".toLowerCase()
-                      ? Row(
+                ),
+                data['status'].toString().toLowerCase() ==
+                        "Pending".toLowerCase()
+                    ? Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Row(
                           children: [
                             Expanded(
-                              child: Container(
-                                height: 42,
-                                width: double.infinity,
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Constanst.fgBorder,
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                child: ElevatedButton(
-                                  onPressed: () {
+                                flex: 50,
+                                child: InkWell(
+                                  onTap: () {
                                     absenControllre.batalkanAjuan(
                                         date: data['atten_date']);
                                   },
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Constanst.color4,
-                                    backgroundColor: Constanst.colorWhite,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    elevation: 0,
+                                  child: Container(
+                                    padding: EdgeInsets.only(top: 8, bottom: 8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                            width: 1, color: Colors.red)),
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Center(
+                                        child: TextLabell(
+                                      text: "Batalkan",
+                                      color: Colors.red,
+                                    )),
                                   ),
-                                  child: Text(
-                                    'Batalkan',
-                                    style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Constanst.color4,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                                )),
+                            // SizedBox(width: 8,),
+                            //  Expanded(
+                            //   flex: 50,
+                            //   child: Container(
+                            //        padding: EdgeInsets.only(top: 8,bottom: 8),
+                            //     decoration: BoxDecoration(
+
+                            //       color: Constanst.onPrimary,
+                            //         borderRadius: BorderRadius.circular(8),
+                            //         border: Border.all(width: 1)
+                            //     ),
+                            //        width: MediaQuery.of(context).size.width,
+                            //   child: Center(child: TextLabell(text:"Edit",color: Colors.white,)),
+                            // ))
                           ],
-                        )
-                      : const SizedBox()
-                ],
-              ),
+                        ),
+                      )
+                    : SizedBox()
+              ],
             ),
           ),
         );

@@ -122,8 +122,10 @@ class AuthController extends GetxController {
         print("data login ${valueBody['data']}");
 
         for (var element in valueBody['data']) {
-                    print("data att ${element['time_attendance'].toString().split(',')[0]}");
-             print("data att ${element['time_attendance'].toString().split(',')[1]}");
+          print(
+              "data att ${element['time_attendance'].toString().split(',')[0]}");
+          print(
+              "data att ${element['time_attendance'].toString().split(',')[1]}");
           print("tes ${element['time_attendance'].toString()}");
           var data = UserModel(
             em_id: element['em_id'] ?? "",
@@ -236,7 +238,6 @@ class AuthController extends GetxController {
         var getAktif = "";
         var idMobile = "";
         for (var element in valueBody['data']) {
-
           var data = UserModel(
             em_id: element['em_id'] ?? "",
             des_id: element['des_id'] ?? 0,
@@ -256,16 +257,15 @@ class AuthController extends GetxController {
             emp_departmen: element['emp_departmen'] ?? "",
             em_control: element['em_control'] ?? 0,
             em_control_acess: element['em_control_access'] ?? 0,
-            emp_att_working: element['emp_att_working'] ?? 0, 
+            emp_att_working: element['emp_att_working'] ?? 0,
             em_hak_akses: element['em_hak_akses'] ?? "",
             beginPayroll: element['begin_payroll'] ?? 1,
             endPayroll: element['end_payroll'] ?? 31,
-              branchName: element['branch_name'] ?? "",
+            branchName: element['branch_name'] ?? "",
             startTime: element['time_attendance'].toString().split(',')[0],
             endTime: element['time_attendance'].toString().split(',')[1],
             // startTime: "00:01",
             // endTime: "23:59",
-        
           );
 
           if (element['file_face'] == "" || element['file_face'] == null) {
@@ -363,10 +363,9 @@ class AuthController extends GetxController {
     TimeOfDay waktu1 = TimeOfDay(
         hour: int.parse(
             AppData.informasiUser![0].startTime.toString().split(':')[0]),
-        minute: int.parse(AppData.informasiUser![0].startTime
-            .toString()
-            .split(':')[1])); 
-            
+        minute: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[1]));
+
     TimeOfDay waktu2 = TimeOfDay(
         hour: int.parse(
             AppData.informasiUser![0].endTime.toString().split(':')[0]),
@@ -374,12 +373,9 @@ class AuthController extends GetxController {
             .toString()
             .split(':')[1])); // Waktu kedua
 
-
-
-
     int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
     int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
-    
+
     //alur normal
     if (totalMinutes1 < totalMinutes2) {
       startTime = AppData.informasiUser![0].startTime;
@@ -388,37 +384,27 @@ class AuthController extends GetxController {
       startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-
-
-    //alur beda hari
+      //alur beda hari
     } else if (totalMinutes1 > totalMinutes2) {
-     
       var waktu3 =
           TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
       int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
 
-
       if (totalMinutes2 > totalMinutes3) {
-
-      
-      startTime = AppData.informasiUser![0].endTime;
-      endTime = AppData.informasiUser![0].startTime;
-        
-      startDate = DateFormat('yyyy-MM-dd')
-           .format(DateTime.now().add(Duration(days: -1)));        
-    
-    
-        endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      
-      
-      } else {
-
         startTime = AppData.informasiUser![0].endTime;
         endTime = AppData.informasiUser![0].startTime;
-        
+
+        startDate = DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(Duration(days: -1)));
+
+        endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      } else {
+        startTime = AppData.informasiUser![0].endTime;
+        endTime = AppData.informasiUser![0].startTime;
+
         endDate = DateFormat('yyyy-MM-dd')
-        .format(DateTime.now().add(Duration(days: 1)));
-        
+            .format(DateTime.now().add(Duration(days: 1)));
+
         startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       }
     } else {
@@ -438,7 +424,6 @@ class AuthController extends GetxController {
       'end_date': endDate,
       'start_time': startTime,
       'end_time': endTime,
-    
     };
     var connect = Api.connectionApi("post", body, "view_last_absen_user1");
 
@@ -452,10 +437,10 @@ class AuthController extends GetxController {
           AppData.statusAbsen = false;
           Get.offAll(InitScreen());
         } else {
-              isautoLogout.value = false;
-              AppData.statusAbsen =
+          isautoLogout.value = false;
+          AppData.statusAbsen =
               data[0]['signout_time'] == "00:00:00" ? true : false;
-              Get.offAll(InitScreen());
+          Get.offAll(InitScreen());
         }
       }
     });
@@ -465,13 +450,13 @@ class AuthController extends GetxController {
   //   messageNewPassword.value = "";
   //   print("view last absen user");
   //   print("tes ${AppData.informasiUser![0].startTime.toString()}");
-  
+
   //   Map<String, dynamic> body = {
   //     'atten_date': DateFormat('yyyy-MM-dd')
   //         .format(DateTime.now().add(Duration(days: -1))),
   //     'em_id': getEmid,
   //     'database': AppData.selectedDatabase,
- 
+
   //   };
   //   var connect = Api.connectionApi("post", body, "view_last_absen_user");
 
@@ -485,7 +470,7 @@ class AuthController extends GetxController {
   //         AppData.statusAbsen = false;
   //         Get.offAll(InitScreen());
   //       } else {
-        
+
   //           var tanggalTerakhirAbsen = data[0]['atten_date'];
   //           if (tanggalTerakhirAbsen == convert) {
   //             isautoLogout.value = false;
