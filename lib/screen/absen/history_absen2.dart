@@ -72,20 +72,20 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                 Get.offAll(InitScreen());
               },
             ),
-            // actions: [
-            //   IconButton(
-            //     icon: Icon(
-            //       Iconsax.document_text,
-            //       color: Constanst.fgPrimary,
-            //       size: 24,
-            //     ),
-            //     onPressed: () {
-            //       Get.to(LaporanAbsen(
-            //         dataForm: "",
-            //       ));
-            //     },
-            //   ),
-            // ],
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Iconsax.document_text,
+                  color: Constanst.fgPrimary,
+                  size: 24,
+                ),
+                onPressed: () {
+                  Get.to(LaporanAbsen(
+                    dataForm: "",
+                  ));
+                },
+              ),
+            ],
           ),
           body: WillPopScope(
             onWillPop: () async {
@@ -138,37 +138,190 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                   physics: const BouncingScrollPhysics(),
                                   children: [
                                     Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        const SizedBox(height: 16),
-                                        controller.bulanDanTahunNow.value == ""
-                                            ? const SizedBox()
-                                            : pickDate(),
-                                        const SizedBox(height: 16),
+                                        const SizedBox(height: 12.0),
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
                                           children: [
                                             Expanded(
-                                              flex: 85,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 8),
-                                                child: Text(
-                                                  "Riwayat Absensi",
-                                                  textAlign: TextAlign.left,
-                                                  style: GoogleFonts.inter(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize:
-                                                          Constanst.sizeTitle),
+                                              flex: 9,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Constanst.infoLight1,
+                                                  border: Border.all(
+                                                    color: Constanst
+                                                        .colorStateInfoBorder,
+                                                  ),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(8.0),
+                                                  ),
+                                                ),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "15",
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 16,
+                                                                color: Constanst
+                                                                    .fgPrimary),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        "Masuk Kerja",
+                                                        style: GoogleFonts.inter(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: 12,
+                                                            color: Constanst
+                                                                .fgSecondary),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              flex: 9,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Constanst.infoLight1,
+                                                  border: Border.all(
+                                                    color: Constanst
+                                                        .colorStateInfoBorder,
+                                                  ),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(8.0),
+                                                  ),
+                                                ),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "0",
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 16,
+                                                                color: Constanst
+                                                                    .fgPrimary),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        "Terlambat",
+                                                        style: GoogleFonts.inter(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: 12,
+                                                            color: Constanst
+                                                                .fgSecondary),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              flex: 10,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Constanst.infoLight1,
+                                                  border: Border.all(
+                                                    color: Constanst
+                                                        .colorStateInfoBorder,
+                                                  ),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(8.0),
+                                                  ),
+                                                ),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "5",
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 16,
+                                                                color: Constanst
+                                                                    .fgPrimary),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        "Tidak Absen Keluar",
+                                                        style: GoogleFonts.inter(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: 12,
+                                                            color: Constanst
+                                                                .fgSecondary),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 16),
+                                        controller.bulanDanTahunNow.value == ""
+                                            ? const SizedBox()
+                                            : pickDate(),
+                                        const SizedBox(height: 16),
+                                        // Row(
+                                        //   mainAxisAlignment:
+                                        //       MainAxisAlignment.start,
+                                        //   crossAxisAlignment:
+                                        //       CrossAxisAlignment.start,
+                                        //   children: [
+                                        //     Expanded(
+                                        //       flex: 85,
+                                        //       child: Padding(
+                                        //         padding: const EdgeInsets.only(
+                                        //             top: 8),
+                                        //         child: Text(
+                                        //           "Riwayat Absensi",
+                                        //           textAlign: TextAlign.left,
+                                        //           style: GoogleFonts.inter(
+                                        //               fontWeight:
+                                        //                   FontWeight.bold,
+                                        //               fontSize:
+                                        //                   Constanst.sizeTitle),
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        // SizedBox(height: 8),
                                         Flexible(
                                             child: RefreshIndicator(
                                           onRefresh: refreshData,
@@ -279,7 +432,20 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
   }
 
   Widget pickDate() {
+    DateTime getLastDayOfMonth(String dateString) {
+      // Parsing string menjadi objek DateTime
+      DateTime parsedDate = DateFormat("MM-yyyy").parseStrict(dateString);
+
+      // Menggunakan objek DateTime untuk mendapatkan hari terakhir dari bulan
+      return DateTime(parsedDate.year, parsedDate.month + 1, 0);
+    }
+
+    DateTime lastDayOfMonth =
+        getLastDayOfMonth(controller.bulanDanTahunNow.value);
+
     return InkWell(
+      customBorder: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12))),
       onTap: () async {
         print("kesini");
         DatePicker.showPicker(
@@ -308,41 +474,48 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
         );
       },
       child: Container(
-        decoration: Constanst.styleBoxDecoration1,
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            border: Border.all(color: const Color(0xffD5DBE5))),
         child: Padding(
-          padding: EdgeInsets.only(top: 15, bottom: 10),
+          padding: const EdgeInsets.fromLTRB(
+            12.0,
+            8.0,
+            12.0,
+            12.0,
+          ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                flex: 90,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Icon(Iconsax.calendar_2),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        "${Constanst.convertDateBulanDanTahun(controller.bulanDanTahunNow.value)}",
-                        style: GoogleFonts.inter(fontSize: 16),
-                      ),
-                    ),
-                  ],
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Periode",
+                    style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.fgPrimary),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${lastDayOfMonth.toLocal()}',
+                    style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Constanst.fgSecondary),
+                  ),
+                ],
               ),
-              Expanded(
-                flex: 10,
-                child: Container(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Icon(
-                      Icons.arrow_drop_down_rounded,
-                      size: 24,
-                    ),
+              Container(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Icon(
+                    Iconsax.arrow_down_1,
+                    size: 18,
+                    color: Constanst.fgSecondary,
                   ),
                 ),
               )
@@ -492,8 +665,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
   Widget listAbsen() {
     return ListView.builder(
         physics: controller.historyAbsenShow.value.length <= 10
-            ? AlwaysScrollableScrollPhysics()
-            : BouncingScrollPhysics(),
+            ? const AlwaysScrollableScrollPhysics()
+            : const BouncingScrollPhysics(),
         itemCount: controller.historyAbsenShow.value.length,
         itemBuilder: (context, index) {
           var jamMasuk =
@@ -578,6 +751,14 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
         itemCount: controller.pengajuanAbsensi.value.length,
         itemBuilder: (context, index) {
           var data = controller.pengajuanAbsensi[index];
+
+          // Parse the input date string
+          DateTime atten_date =
+              DateFormat('yyyy-MM-dd').parse(data['atten_date']);
+          // Format the date using the Indonesian month format
+          String formatAttenDate =
+              DateFormat('dd MMM yyyy', 'id').format(atten_date);
+
           return Container(
             padding: const EdgeInsets.only(bottom: 16),
             child: InkWell(
@@ -596,7 +777,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextLabell(
-                        text: data['atten_date'],
+                        text: formatAttenDate,
                         weight: FontWeight.w500,
                         size: 16.0,
                         color: Constanst.fgPrimary,
@@ -611,14 +792,14 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                       const SizedBox(height: 4),
                       TextLabell(
                         text:
-                            "Absen Masuk Tanggal ${data['atten_date']}, ${data['dari_jam']}",
+                            "Absen Masuk Tanggal $formatAttenDate, ${data['dari_jam']}",
                         color: Constanst.fgSecondary,
                         size: 13.0,
                         weight: FontWeight.w400,
                       ),
                       TextLabell(
                         text:
-                            "Absen Keluar Tanggal ${data['atten_date']}, ${data['sampai_jam']}",
+                            "Absen Keluar Tanggal $formatAttenDate, ${data['sampai_jam']}",
                         color: Constanst.fgSecondary,
                         size: 13.0,
                         weight: FontWeight.w400,
@@ -840,128 +1021,197 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
     } else if (perhitunganJamMasuk2 < 0) {
       getColorKeluar = Constanst.colorPrimary;
     }
-    return InkWell(
-      onTap: () {
-        if (statusView == false) {
-          controller.historySelected(index['id'], 'history');
-        }
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            height: 16,
-          ),
-          statusView == false
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 40,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              "${Constanst.convertDate('${index['atten_date']}')}",
-                              style: GoogleFonts.inter(
-                                  fontSize: 14, fontWeight: FontWeight.bold)),
-                          Text("${regType == 0 ? "Face Recognition" : "Photo"}",
-                              style: GoogleFonts.inter(
-                                fontSize: 10,
-                              )),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 25,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.login_rounded,
-                            color: getColorMasuk,
-                            size: 14,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 8),
-                            child: Text(
-                              "${jamMasuk}",
-                              style: GoogleFonts.inter(
-                                  color: getColorMasuk, fontSize: 14),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 25,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.logout_rounded,
-                            color: getColorKeluar,
-                            size: 14,
-                          ),
-                          Flexible(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 8),
-                              child: Text(
-                                "${jamKeluar}",
-                                style: GoogleFonts.inter(
-                                    color: getColorKeluar, fontSize: 14),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: InkWell(
+        customBorder: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12))),
+        onTap: () {
+          if (statusView == false) {
+            controller.historySelected(index['id'], 'history');
+          }
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            statusView == false
+                ? Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border:
+                            Border.all(width: 1, color: Constanst.fgBorder)),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 15,
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Constanst.colorNeutralBgSecondary,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(8.0),
+                                  bottomLeft: Radius.circular(8.0),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 5.0, bottom: 5.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                        DateFormat('d').format(
+                                            DateFormat('yyyy-MM-dd')
+                                                .parse(index['atten_date'])),
+                                        style: GoogleFonts.inter(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                          color: Constanst.fgPrimary,
+                                        )),
+                                    Text(
+                                        DateFormat('EEEE', 'id').format(
+                                            DateFormat('yyyy-MM-dd')
+                                                .parse(index['atten_date'])),
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          color: Constanst.fgSecondary,
+                                        )),
+                                  ],
+                                ),
                               ),
                             ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 10,
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 14,
-                      ),
-                    ),
-                  ],
-                )
-              : Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 50,
-                            child: Text(
-                                "${Constanst.convertDate('${index['atten_date']}')}",
-                                style: GoogleFonts.inter(
-                                    fontSize: 14, fontWeight: FontWeight.bold)),
                           ),
-                          Expanded(
-                            flex: 50,
-                            child: Text(
-                              "${note}".toLowerCase(),
-                              style: GoogleFonts.inter(
-                                  color: Constanst.colorText3),
+                        ),
+                        Expanded(
+                          flex: 38,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Iconsax.login_1,
+                                  color: Constanst.color5,
+                                  size: 16,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "$jamMasuk",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgPrimary,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        regType == 0
+                                            ? "Face Recognition"
+                                            : "Photo",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 10),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
                             ),
-                          )
-                        ],
-                      ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 38,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Iconsax.logout_14,
+                                  color: Constanst.color4,
+                                  size: 16,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "$jamKeluar",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgPrimary,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        regType == 0
+                                            ? "Face Recognition"
+                                            : "Photo",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 10),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 9,
+                          child: Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 16,
+                            color: Constanst.colorNeutralFgTertiary,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-          SizedBox(
-            height: 16,
-          ),
-          Divider(
-            height: 3,
-            color: Colors.grey,
-          ),
-        ],
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 50,
+                              child: Text(
+                                  "${Constanst.convertDate('${index['atten_date']}')}",
+                                  style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                            Expanded(
+                              flex: 50,
+                              child: Text(
+                                "${note}".toLowerCase(),
+                                style: GoogleFonts.inter(
+                                    color: Constanst.colorText3),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+          ],
+        ),
       ),
     );
   }
@@ -1207,7 +1457,9 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                   ),
                                   const SizedBox(height: 4),
                                   TextLabell(
-                                    text: data['tgl_ajuan'] ?? '',
+                                    text: DateFormat('EEEE, dd MMM yyyy', 'id')
+                                        .format(DateFormat('yyyy-MM-dd')
+                                            .parse(data['tgl_ajuan'] ?? '')),
                                     color: Constanst.fgPrimary,
                                     size: 16,
                                     weight: FontWeight.w500,
@@ -1267,7 +1519,9 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 ),
                                 const SizedBox(height: 4),
                                 TextLabell(
-                                  text: data['atten_date'],
+                                  text: DateFormat('EEEE, dd MMM yyyy', 'id')
+                                      .format(DateFormat('yyyy-MM-dd')
+                                          .parse(data['atten_date'] ?? '')),
                                   color: Constanst.fgPrimary,
                                   size: 16,
                                   weight: FontWeight.w500,
