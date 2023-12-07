@@ -2627,9 +2627,9 @@ class AbsenController extends GetxController {
         Get.to(pengajuanAbsenBerhasil());
 
         dataPengajuanAbsensi();
-        UtilsAlert.showToast(valueBody['message']);
+        UtilsAlert.showToast("data ${valueBody['message']}");
       } else {
-        UtilsAlert.showToast(valueBody['message']);
+        UtilsAlert.showToast("dataq ${valueBody['message']}");
       }
     });
   }

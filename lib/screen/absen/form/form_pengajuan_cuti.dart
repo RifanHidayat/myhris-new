@@ -199,6 +199,11 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                           .toLowerCase()
                           .toLowerCase()
                           .contains("Cuti Melahirkan".toLowerCase())) {
+
+                      
+
+
+
                         DateTime tempStartDate = DateTime.parse(
                             DateFormat('yyyy-MM-dd')
                                 .format(DateFormat('yyyy-MM-dd')
@@ -209,6 +214,13 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                                 .format(DateTime.parse(
                                     controller.endDate.value.toString()))
                                 .toString());
+
+                                if (tempEndDate.isBefore(tempStartDate)){
+                                   UtilsAlert.showToast(
+                              "Tanggal mulai lebih besar dari tanggal selesai");
+                              return;
+
+                                }
 
                         // Define two DateTime objects representing the two dates
                         DateTime date1 = DateTime(tempStartDate.year,
@@ -236,7 +248,11 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
 
                         controller.validasiKirimPengajuan();
 
+
+
                         // Print the result
+                      
+                      
                       } else {
                         if (controller.statusForm.value == true) {
                           if ((controller.jumlahCuti.value -
