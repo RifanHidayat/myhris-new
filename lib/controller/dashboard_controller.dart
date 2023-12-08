@@ -58,6 +58,9 @@ class DashboardController extends GetxController {
   PageController menuController = PageController(initialPage: 0);
   PageController informasiController = PageController(initialPage: 0);
 
+  RxString signoutTime = "".obs;
+  RxString signinTime = "".obs;
+
   RxBool isSearching = false.obs;
   var searchController = TextEditingController();
 
@@ -238,6 +241,9 @@ class DashboardController extends GetxController {
               data[0]['signout_time'] == "00:00:00" ? true : false;
           dashboardStatusAbsen.value =
               data[0]['signout_time'] == "00:00:00" ? true : false;
+
+          signoutTime.value = data[0]['signout_time'].toString();
+          signinTime.value = data[0]['signin_time'].toString();
         }
       }
     });

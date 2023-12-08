@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
+import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
@@ -52,6 +53,7 @@ class _DashboardState extends State<Dashboard> {
   var controllerGlobal = Get.put(GlobalController());
   var controllerBpj = Get.put(BpjsController());
   final tabbController = Get.put(TabbController());
+  final authController = Get.put(AuthController());
 
   Future<void> refreshData() async {
     controller.refreshPagesStatus.value = true;
@@ -401,8 +403,8 @@ class _DashboardState extends State<Dashboard> {
                       onRefresh: refreshData,
                       child: SingleChildScrollView(
                         controller: _scrollController,
-                        physics: const BouncingScrollPhysics(),
-                        //  physics: ClampingScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        // physics: ClampingScrollPhysics(),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -663,7 +665,7 @@ class _DashboardState extends State<Dashboard> {
                                 : const SizedBox(),
                             controller.showUlangTahun.value == true
                                 ? controller.employeeUltah.isEmpty
-                                    ? const SizedBox()
+                                    ? Container(height: 180)
                                     : const SizedBox(height: 20)
                                 : const SizedBox(),
                           ],
@@ -1188,7 +1190,17 @@ class _DashboardState extends State<Dashboard> {
                                                               166, 167, 158)),
                                                 ),
                                                 Text(
-                                                  "_ _:_ _:_ _",
+                                                  controller.signinTime.value ==
+                                                          "00:00:00"
+                                                      ? authController
+                                                                  .signinTime
+                                                                  .value ==
+                                                              "00:00:00"
+                                                          ? "_ _:_ _:_ _"
+                                                          : authController
+                                                              .signinTime.value
+                                                      : controller
+                                                          .signinTime.value,
                                                   style: GoogleFonts.inter(
                                                       fontWeight:
                                                           FontWeight.w500,
@@ -1379,7 +1391,18 @@ class _DashboardState extends State<Dashboard> {
                                                               166, 167, 158)),
                                                 ),
                                                 Text(
-                                                  "_ _:_ _:_ _",
+                                                  controller.signoutTime
+                                                              .value ==
+                                                          "00:00:00"
+                                                      ? authController
+                                                                  .signoutTime
+                                                                  .value ==
+                                                              "00:00:00"
+                                                          ? "_ _:_ _:_ _"
+                                                          : authController
+                                                              .signoutTime.value
+                                                      : controller
+                                                          .signoutTime.value,
                                                   style: GoogleFonts.inter(
                                                       fontWeight:
                                                           FontWeight.w500,
@@ -1850,7 +1873,7 @@ class _DashboardState extends State<Dashboard> {
                   // height: controller.heightbanner.value,
                   enlargeCenterPage: true,
                   viewportFraction: 1.0,
-                  aspectRatio: 16 / 4.5,
+                  aspectRatio: 2.92 / 1,
                   initialPage: 1,
                 ),
                 itemCount: controller.bannerDashboard.value.length,

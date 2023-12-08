@@ -25,6 +25,9 @@ class AuthController extends GetxController {
   var tempEmail = TextEditingController().obs;
   var showpassword = false.obs;
 
+  RxString signoutTime = "".obs;
+  RxString signinTime = "".obs;
+
   var databases = <DatabaseModel>[].obs;
   var selectedDb = "".obs;
   var selectedPerusahaan = "".obs;
@@ -440,6 +443,9 @@ class AuthController extends GetxController {
           isautoLogout.value = false;
           AppData.statusAbsen =
               data[0]['signout_time'] == "00:00:00" ? true : false;
+
+          signoutTime.value = data[0]['signout_time'].toString();
+          signinTime.value = data[0]['signin_time'].toString();
           Get.offAll(InitScreen());
         }
       }
