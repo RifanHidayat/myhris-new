@@ -115,7 +115,7 @@ dependencies:
   # screen_capture_event: ^1.1.1
   # screenshot:
   new_version_plus:
-
+  animations: ^2.0.10
   # system_alert_window: ^1.1.2
   # video_player: ^2.4.2
   # google_sign_in: ^5.4.0

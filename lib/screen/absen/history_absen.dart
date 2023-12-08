@@ -351,7 +351,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                           left: 16, right: 16),
                                       child: Column(
                                         children: [
-                                          const SizedBox(height: 16),
+                                          const SizedBox(height: 12),
                                           controller.bulanDanTahunNowPengajuan
                                                       .value ==
                                                   ""
@@ -468,7 +468,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
 
     return InkWell(
       customBorder: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12))),
+          borderRadius: BorderRadius.all(Radius.circular(100))),
       onTap: () async {
         print("kesini");
         DatePicker.showPicker(
@@ -501,54 +501,88 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
       },
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(12)),
-            border: Border.all(color: const Color(0xffD5DBE5))),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(100),
+            ),
+            border: Border.all(color: Constanst.fgBorder)),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            12.0,
-            8.0,
-            12.0,
-            12.0,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Periode",
+          padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    Constanst.convertDateBulanDanTahun(
+                        controller.bulanDanTahunNow.value),
                     style: GoogleFonts.inter(
-                        fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Constanst.fgPrimary),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    lastDayOfMonth,
-                    style: GoogleFonts.inter(
                         fontSize: 14,
-                        fontWeight: FontWeight.w400,
                         color: Constanst.fgSecondary),
                   ),
-                ],
-              ),
-              Container(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: Icon(
-                    Iconsax.arrow_down_1,
-                    size: 18,
-                    color: Constanst.fgSecondary,
-                  ),
                 ),
-              )
-            ],
+                const SizedBox(width: 4),
+                Icon(
+                  Iconsax.arrow_down_1,
+                  size: 18,
+                  color: Constanst.fgPrimary,
+                )
+              ],
+            ),
           ),
         ),
       ),
+      // child: Container(
+      //   decoration: BoxDecoration(
+      //       borderRadius: const BorderRadius.all(Radius.circular(12)),
+      //       border: Border.all(color: const Color(0xffD5DBE5))),
+      //   child: Padding(
+      //     padding: const EdgeInsets.fromLTRB(
+      //       12.0,
+      //       8.0,
+      //       12.0,
+      //       12.0,
+      //     ),
+      //     child: Row(
+      //       crossAxisAlignment: CrossAxisAlignment.center,
+      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //       children: [
+      //         Column(
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           children: [
+      //             Text(
+      //               "Periode",
+      //               style: GoogleFonts.inter(
+      //                   fontSize: 16,
+      //                   fontWeight: FontWeight.w500,
+      //                   color: Constanst.fgPrimary),
+      //             ),
+      //             const SizedBox(height: 4),
+      //             Text(
+      //               lastDayOfMonth,
+      //               style: GoogleFonts.inter(
+      //                   fontSize: 14,
+      //                   fontWeight: FontWeight.w400,
+      //                   color: Constanst.fgSecondary),
+      //             ),
+      //           ],
+      //         ),
+      //         Container(
+      //           alignment: Alignment.topRight,
+      //           child: Padding(
+      //             padding: const EdgeInsets.only(right: 10),
+      //             child: Icon(
+      //               Iconsax.arrow_down_1,
+      //               size: 18,
+      //               color: Constanst.fgSecondary,
+      //             ),
+      //           ),
+      //         )
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 
@@ -565,7 +599,12 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
               pickerModel: CustomMonthPicker(
                 minTime: DateTime(2020, 1, 1),
                 maxTime: DateTime(2050, 1, 1),
-                currentTime: DateTime.now(),
+                currentTime: DateTime(
+                    int.parse(
+                        controller.tahunSelectedSearchHistoryPengajuan.value),
+                    int.parse(
+                        controller.bulanSelectedSearchHistoryPengajuan.value),
+                    1),
               ),
               onConfirm: (time) {
                 if (time != null) {
@@ -587,7 +626,6 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
           },
           child: Container(
             decoration: BoxDecoration(
-                color: Colors.white,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(100),
                 ),
