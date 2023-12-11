@@ -150,10 +150,11 @@ class DashboardController extends GetxController {
     getSizeDevice();
     checkStatusPermission();
     checkHakAkses();
+    
   }
 
   void checkAbsenUser(convert, getEmid) {
-    print("view last absen user");
+    print("view last absen user dashboard");
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
     var startTime = "";
     var endTime = "";
@@ -235,7 +236,10 @@ class DashboardController extends GetxController {
         print("data login ${valueBody}");
         var data = valueBody['data'];
         if (data.isEmpty) {
+           
           AppData.statusAbsen = false;
+              signoutTime.value = '00:00:00';
+          signinTime.value = '00:00:00';
         } else {
           AppData.statusAbsen =
               data[0]['signout_time'] == "00:00:00" ? true : false;
