@@ -63,7 +63,7 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 37
+        versionCode 40
         versionName "1.0.17"
         multiDexEnabled true
 
@@ -98,6 +98,10 @@ dependencies {
      implementation 'com.google.mlkit:text-recognition-chinese:16.0.0-beta5'
      api 'com.google.firebase:firebase-ml-vision-image-label-model:19.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5' 
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    
+    
+   
+      
 }
  apply plugin: 'com.google.gms.google-services'

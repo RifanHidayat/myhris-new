@@ -437,6 +437,8 @@ class AuthController extends GetxController {
         var data = valueBody['data'];
         if (data.isEmpty) {
           isautoLogout.value = false;
+          signoutTime.value = '00:00:00';
+          signinTime.value = '00:00:00';
           AppData.statusAbsen = false;
           Get.offAll(InitScreen());
         } else {
@@ -446,6 +448,8 @@ class AuthController extends GetxController {
 
           signoutTime.value = data[0]['signout_time'].toString();
           signinTime.value = data[0]['signin_time'].toString();
+
+          
           Get.offAll(InitScreen());
         }
       }

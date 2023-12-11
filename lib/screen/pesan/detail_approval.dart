@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -37,9 +39,9 @@ class _DetailApprovalState extends State<DetailApproval> {
       if (controller.detailData[0]['nama_approve1'] == "" ||
           controller.detailData[0]['nama_approve1'] == "null" ||
           controller.detailData[0]['nama_approve1'] == null) {
-        if (emId
+        if (controller.detailData[0]['em_report_to']
             .toString()
-            .contains(controller.detailData[0]['em_report_to'])) {
+            .contains(emId)) {
           controller.showButton.value = true;
         } else {
           controller.showButton.value = false;
@@ -49,9 +51,9 @@ class _DetailApprovalState extends State<DetailApproval> {
       if (controller.detailData[0]['nama_approve1'] == "" ||
           controller.detailData[0]['nama_approve1'] == "null" ||
           controller.detailData[0]['nama_approve1'] == null) {
-        if (emId
+        if (controller.detailData[0]['em_report_to']
             .toString()
-            .contains(controller.detailData[0]['em_report_to'])) {
+            .contains(emId)) {
           controller.showButton.value = true;
         } else {
           controller.showButton.value = false;
@@ -60,17 +62,17 @@ class _DetailApprovalState extends State<DetailApproval> {
         if (controller.detailData[0]['em_report2_to'] == "" ||
             controller.detailData[0]['em_report2_to'] == "null" ||
             controller.detailData[0]['em_report2_to'] == null) {
-          if (emId
+          if (controller.detailData[0]['em_report_to']
               .toString()
-              .contains(controller.detailData[0]['em_report_to'])) {
+              .contains(emId)) {
             controller.showButton.value = true;
           } else {
             controller.showButton.value = false;
           }
         } else {
-          if (emId
+          if (controller.detailData[0]['em_report2_to']
               .toString()
-              .contains(controller.detailData[0]['em_report2_to'])) {
+              .contains(emId)) {
             controller.showButton.value = true;
           } else {
             controller.showButton.value = false;

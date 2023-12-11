@@ -198,11 +198,8 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                           .toString()
                           .toLowerCase()
                           .toLowerCase()
+                          
                           .contains("Cuti Melahirkan".toLowerCase())) {
-
-                      
-
-
 
                         DateTime tempStartDate = DateTime.parse(
                             DateFormat('yyyy-MM-dd')
@@ -340,7 +337,8 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
     );
   }
 
-  Widget informasiSisaCutiMelahirkan() {
+  Widget 
+  informasiSisaCutiMelahirkan() {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,

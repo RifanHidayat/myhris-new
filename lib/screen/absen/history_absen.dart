@@ -947,8 +947,9 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         ),
                                         InkWell(
                                           onTap: () {
+                                            print("${namaTypeAjuan}");
                                             var dataEmployee = {
-                                              'nameType': '$namaTypeAjuan',
+                                              'nameType': 'Absensi',
                                               'nomor_ajuan': '$nomorAjuan',
                                             };
                                             controllerGlobal
