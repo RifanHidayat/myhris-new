@@ -131,6 +131,7 @@ class ApprovalController extends GetxController {
             'em_report_to': element['em_report_to'],
             'em_report2_to': element['em_report2_to'],
             'lainnya': "",
+            'nama_pengajuan':element['nama_pengajuan'],
             'file': element['leave_files']
           };
           listData.value.add(data);

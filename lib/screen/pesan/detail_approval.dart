@@ -304,7 +304,10 @@ class _DetailApprovalState extends State<DetailApproval> {
                             SizedBox(
                               height: 5,
                             ),
-                            Text(
+                         controller.detailData[0]['type'].toString().toLowerCase()=="Cuti".toString().toLowerCase()? Text(
+                              "${controller.detailData[0]['nama_pengajuan']} ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ):   Text(
                               "${controller.detailData[0]['type']} $namaTipe",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),

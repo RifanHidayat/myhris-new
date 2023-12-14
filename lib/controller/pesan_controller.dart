@@ -103,6 +103,8 @@ class PesanController extends GetxController {
   }
 
   void loadApproveInfo() {
+
+    print("load approval info");
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "load_approve_info"
         : "load_approve_info_multi";
@@ -115,11 +117,12 @@ class PesanController extends GetxController {
       'tahun': tahunSelectedSearchHistory.value,
       'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
     };
+    print("load data ${getEmid}");
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-        print("data pesan ${valueBody}");
+       
         if (valueBody['status'] == true) {
           jumlahApproveCuti.value = valueBody['jumlah_cuti'];
           jumlahApproveLembur.value = valueBody['jumlah_lembur'];
@@ -149,6 +152,9 @@ class PesanController extends GetxController {
           this.jumlahPersetujuan.refresh();
           this.jumlahCheckin.refresh();
           jumlahApprovePayroll.refresh();
+
+          print("Jumlah Approval payroll ${jumlahApprovePayroll}");
+           print("Jumlah Approval payroll ${valueBody}");
           loadScreenPersetujuan();
         } else {
           statusScreenInfoApproval.value = false;
@@ -737,7 +743,7 @@ class PesanController extends GetxController {
                   Expanded(
                     flex: 90,
                     child: Text(
-                      "Detail Riwaya",
+                      "Detail Riwayat",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -935,23 +941,37 @@ class PesanController extends GetxController {
               SizedBox(
                 height: 5,
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "${dataDetail[0]['type']} $namaTipe",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  dataDetail[0]['nama_tipe'] == ""
-                      ? SizedBox()
-                      : Padding(
-                          padding: EdgeInsets.only(left: 8),
-                          child: Text(
-                            "(${dataDetail[0]['nama_tipe']} - ${dataDetail[0]['category']})",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+              Container(
+              
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                 
+                     namaTipe=="" || namaTipe=="null" || namaTipe==null? Text(
+                      "${dataDetail[0]['type']} ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ):Text(
+                      "${dataDetail[0]['type']} $namaTipe",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                 
+                    dataDetail[0]['nama_tipe'] == "" || dataDetail[0]['nama_tipe'] ==null || dataDetail[0]['nama_tipe'] =='null'
+                        ? SizedBox()
+                        : Expanded(
+                        
+                          child: Container(
+                            width: double.maxFinite,
+                            child: Padding(
+                                padding: EdgeInsets.only(left: 8),
+                                child: Text(
+                                  "( ${dataDetail[0]['nama_tipe']}  ${dataDetail[0]['category']=="" || dataDetail[0]['category']==null?"":" - ${dataDetail[0]['category'] }"})",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
                           ),
                         )
-                ],
+                  ],
+                ),
               ),
               SizedBox(
                 height: 10,
@@ -1010,7 +1030,7 @@ class PesanController extends GetxController {
               SizedBox(
                 height: 5,
               ),
-              Text(
+            dataDetail[0]['apply_by']==null || dataDetail[0]['apply_by']==""?SizedBox():  Text(
                 "${dataDetail[0]['status']} oleh ${dataDetail[0]['apply_by']}",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
