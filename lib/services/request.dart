@@ -57,9 +57,11 @@ class Request {
   //tampa database
   
     Future<http.Response> getCheckDatabase() async {
-    print("ural ${baseUrl+url}");
+  
     return await http
         .get(Uri.parse(baseUrl+url), headers: headers)
         .timeout(Duration(minutes: 2));
+
+
   }
 }

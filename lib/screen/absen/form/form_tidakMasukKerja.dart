@@ -67,22 +67,29 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
         controller.tanggalSelectedEdit.value = getDummy;
       });
     } else {
+      
+      
       var data = controller.allTipe.value
           .where((element) => controller.allTipeFormTidakMasukKerja.value
               .toString()
               .toLowerCase()
               .contains(element['name'].toString().toLowerCase()))
           .toList();
+      
+      
       if (data[0]['leave_day'] > 0) {
         controller.loadDataAjuanIzinCategori(id: data[0]['id']);
         controller.showDurationIzin.value = true;
         controller.jumlahIzin.value = data[0]['leave_day'];
         controller.percentIzin.value = double.parse(
-            ((controller.jumlahIzin.value / controller.izinTerpakai.value) *
+            ((controller.izinTerpakai.value/ controller.jumlahIzin.value) *
                     100)
                 .toString());
 
-        print(controller.jumlahIzin.value);
+
+       
+     
+     
       } else {
         controller.showDurationIzin.value = false;
       }
@@ -178,10 +185,20 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
           child: TextButtonWidget(
             title: "Simpan",
             onTap: () {
-              print(controller.percentIzin.value);
-              if (controller.percentIzin.value >= 1) {
-                UtilsAlert.showToast(
-                    "Pemakaian izin telah melewati batas maksimal");
+              if (controller.jumlahIzin.value > 0) {
+                if (controller.percentIzin.value >= 1) {
+                  UtilsAlert.showToast(
+                      "Pemakaian izin telah melewati batas maksimal");
+                } else {
+                  var totalTerpakai = controller.tanggalSelected.value.length +
+                      controller.izinTerpakai.value;
+                  if (totalTerpakai > controller.jumlahIzin.value) {
+                    UtilsAlert.showToast(
+                        "Pemakaian izin telah melewati batas maksimal");
+                  } else {
+                    controller.validasiKirimPengajuan(widget.dataForm![1]);
+                  }
+                }
               } else {
                 controller.validasiKirimPengajuan(widget.dataForm![1]);
               }
@@ -256,10 +273,8 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
                                     controller.izinTerpakai.value.toString()) /
                                 int.parse(
                                     controller.jumlahIzin.value.toString())))
-                            .toString());
-                        print("persen ${controller.jumlahIzin.value}");
-                        print("persen ${controller.izinTerpakai.value}");
-                        print("persen ${controller.percentIzin.value}");
+                            .toString()); 
+                            
                       }
                     });
                   } else {

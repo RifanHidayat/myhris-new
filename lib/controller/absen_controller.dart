@@ -2603,6 +2603,7 @@ class AbsenController extends GetxController {
               .where((p0) => p0['is_selected'] == true)
               .toList()
               .isNotEmpty
+              
           ? placeCoordinateCheckin
               .where((p0) => p0['is_selected'] == true)
               .toList()[0]['id']
@@ -2615,21 +2616,26 @@ class AbsenController extends GetxController {
               .where((p0) => p0['is_selected'] == true)
               .toList()[0]['id']
           : "",
-      'file': imageAjuan.value,
+      'file': imageAjuan.value
+      
+      
+      ,
       'tgl_ajuan': DateFormat('yyyy-MM-dd').format(DateTime.now()),
     };
-    print(body);
+    print('body data ajuan ${body}');
     var connect = Api.connectionApi("post", body, "save-employee-attendance");
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
+      print("data berhasil absensi ${valueBody}");
 
       if (res.statusCode == 200) {
+
         Get.to(pengajuanAbsenBerhasil());
 
         dataPengajuanAbsensi();
-        UtilsAlert.showToast(valueBody['message']);
+        UtilsAlert.showToast("${valueBody['message']}");
       } else {
-        UtilsAlert.showToast(valueBody['message']);
+        UtilsAlert.showToast("${valueBody['message']}");
       }
     });
   }
