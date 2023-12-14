@@ -556,7 +556,82 @@ class _VerifyPasswordPayrollState extends State<VerifyPasswordPayroll> {
                                       ),
                                     ),
                                   )
-                                : Container()
+                                : Expanded(
+                                    child: Container(
+                                      height: double.maxFinite,
+                                      child: Column(
+                                        children: [
+                                     
+                                          Expanded(
+                                            child: Container(
+                                              width: double.maxFinite,
+                                              child: Align(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () {
+                                                                    if (passwordCtr.text
+                                                        .toString() ==
+                                                    controller
+                                                        .password.value.text) {
+                                                  dashboarController
+                                                      .checkValidasipayroll(
+                                                          type:
+                                                              widget.titlepage,
+                                                          page: widget.page)
+                                                      .then((value) {
+                                                    if (value == true) {
+                                                      var pesanController =
+                                                          Get.find<
+                                                              PesanController>();
+                                                      pesanController
+                                                          .loadApproveInfo();
+                                                      pesanController
+                                                          .loadApproveHistory();
+                                                     
+                                                    }
+                                                  });
+                                                } else {
+                                                  return UtilsAlert.showToast(
+                                                      "Konfirmasi password gagal");
+                                                }
+                                                      },
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        8),
+                                                            color: Constanst
+                                                                .colorPrimary),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 8,
+                                                                bottom: 8),
+                                                        child: Center(
+                                                            child: TextLabell(
+                                                          text:
+                                                              "Lihat Slip gaji",
+                                                          color: Colors.white,
+                                                          size: 16,
+                                                        )),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )
                   ],
                 ),
               ),

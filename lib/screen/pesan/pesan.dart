@@ -24,10 +24,12 @@ class _PesanState extends State<Pesan> {
   final controller = Get.put(PesanController());
 
   Future<void> refreshData() async {
+    
     await Future.delayed(Duration(seconds: 2));
     setState(() {
       var dashboardController = Get.find<DashboardController>();
       dashboardController.updateInformasiUser();
+       controller.clearFilter();
       controller.onReady();
     });
   }
