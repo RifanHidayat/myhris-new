@@ -22,19 +22,16 @@ class Api {
  
   static var urlImage = 'https://imagehris.siscom.id:4431';
 //
+
+
+
  
 static var basicUrl = "http://kantor.membersis.com:2629/";
-
-
 
 
 static var token = '9d590c04119a4433971a1dd622266d38';
 static var luxand = 'https://api.luxand.cloud/photo/similarity';
 static var wappin = 'https://api.wappin.id/v1';
-   
-
- 
-
   static var UrlfotoAbsen =
       urlImage + "/${AppData.selectedDatabase}/foto_absen/";
   static var UrlfotoProfile =
@@ -86,10 +83,14 @@ static var wappin = 'https://api.wappin.id/v1';
           authController.isautoLogout = true.obs;
           Api().validateAuth(response.statusCode, resp);
           return;
-        } else {
+        } else if (response.statusCode == 200) {
+          
           var authController = Get.put(AuthController());
           authController.messageLogout.value = "";
           authController.isautoLogout.value = false;
+        
+        }else{
+          print("error");
         }
 
         return response;

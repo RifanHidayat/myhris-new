@@ -1290,6 +1290,8 @@ class CutiController extends GetxController {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  
+                  
                   Expanded(
                     flex: 30,
                     child: Column(
@@ -1299,6 +1301,8 @@ class CutiController extends GetxController {
                       ],
                     ),
                   ),
+
+                  
                   Expanded(
                     flex: 2,
                     child: Column(
