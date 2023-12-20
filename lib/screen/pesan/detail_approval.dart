@@ -83,7 +83,7 @@ class _DetailApprovalState extends State<DetailApproval> {
       }
     }
 
-    if (controller.detailData[0]['waktu_pengajuan'] != "Klaim") {
+    if (controller.detailData[0]['type'].toString().toLowerCase() == "Lembur".toString().toLowerCase()) {
       DateTime start = DateTime.parse(
           "${controller.detailData[0]['waktu_pengajuan']} ${controller.detailData[0]['waktu_dari']}");
       DateTime end = DateTime.parse(

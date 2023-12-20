@@ -1287,43 +1287,7 @@ class CutiController extends GetxController {
               SizedBox(
                 height: 8,
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  
-                  
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Tanggal Cuti"),
-                      ],
-                    ),
-                  ),
-
-                  
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            "${Constanst.convertDate("$tanggalAjuanDari")}  SD  ${Constanst.convertDate("$tanggalAjuanSampai")}"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+             
               SizedBox(
                 height: 8,
               ),
