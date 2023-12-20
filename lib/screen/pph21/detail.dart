@@ -46,7 +46,7 @@ class _DetailPph21PageState extends State<DetailPph21Page> {
               final directory = await getApplicationDocumentsDirectory();
               final localPath = directory.path;
               controller.downloadFile(
-                'https://myhris.siscom.id/custom/${AppData.selectedDatabase.toString()}/slipApi?uid=${base64.encode(utf8.encode(AppData.emailUser))}=&pid=${base64.encode(utf8.encode(AppData.passwordUser))}&eid=${base64.encode(utf8.encode(AppData.informasiUser![0].em_id))}&mid=${base64.encode(utf8.encode(widget.month.toString().padLeft(2, '0')))}&yid=${base64.encode(utf8.encode(widget.year.toString()))}',
+                'https://myhris.siscom.id/custom/${AppData.selectedDatabase.toString()}/sptApi?uid=${base64.encode(utf8.encode(AppData.emailUser))}=&pid=${base64.encode(utf8.encode(AppData.passwordUser))}&eid=${base64.encode(utf8.encode(AppData.informasiUser![0].em_id))}&mid=${base64.encode(utf8.encode(widget.month.toString().padLeft(2, '0')))}&yid=${base64.encode(utf8.encode(widget.year.toString()))}',
                 "${localPath}/slip_gaji_${widget.month.toString().padLeft(2, '0')}_${widget.year.toString()}.pdf",
               );
               },
