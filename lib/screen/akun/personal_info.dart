@@ -660,6 +660,100 @@ class PersonalInfo extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                         child: Column(
                           children: [
+                              Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, bottom: 12.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Iconsax.buildings,
+                                    size: 24,
+                                    color: Constanst.fgPrimary,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Nama Perusahaan",
+                                          style: GoogleFonts.inter(
+                                              fontSize: 14,
+                                              color: Constanst.fgSecondary,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        const SizedBox(height: 4),
+                                       
+                                        Text(
+                                          "${ AppData.selectedPerusahan}",
+                                          style: GoogleFonts.inter(
+                                              fontSize: 16,
+                                              color: Constanst.fgPrimary,
+                                              fontWeight: FontWeight.w500),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Divider(
+                              height: 0,
+                              thickness: 1,
+                              color: Constanst.fgBorder,
+                            ),
+                              Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, bottom: 12.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Iconsax.buildings_2,
+                                    size: 24,
+                                    color: Constanst.fgPrimary,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Cabang",
+                                          style: GoogleFonts.inter(
+                                              fontSize: 14,
+                                              color: Constanst.fgSecondary,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        const SizedBox(height: 4),
+                                 
+                                        Text(
+                                               AppData.informasiUser![0].branchName.toString(),
+                                          style: GoogleFonts.inter(
+                                              fontSize: 16,
+                                              color: Constanst.fgPrimary,
+                                              fontWeight: FontWeight.w500),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Divider(
+                              height: 0,
+                              thickness: 1,
+                              color: Constanst.fgBorder,
+                            ),
                             Padding(
                               padding: const EdgeInsets.only(
                                   top: 12.0, bottom: 12.0),

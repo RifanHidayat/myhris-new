@@ -1342,6 +1342,7 @@ class CutiController extends GetxController {
                             ],
                           ),
                         ),
+ 
                       ],
                     ),
                   ),
@@ -1363,7 +1364,6 @@ class CutiController extends GetxController {
                             fontSize: 14,
                             color: Constanst.fgSecondary,
                           ),
-                        ),
                         const SizedBox(height: 4),
                         Text(
                           "$namaTypeAjuan",

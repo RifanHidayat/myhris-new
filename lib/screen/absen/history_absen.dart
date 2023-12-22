@@ -931,6 +931,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                       size: 20,
                                       color: Constanst.warning,
                                     ),
+                                    
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,

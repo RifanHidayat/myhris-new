@@ -13,6 +13,7 @@ import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 
 class Informasi extends StatelessWidget {
   final index;
@@ -558,8 +559,11 @@ class Informasi extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
+                          
                           "$fullname",
+                          textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
+                          
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                               color: Constanst.fgPrimary),
@@ -851,6 +855,35 @@ class Informasi extends StatelessWidget {
                   var jobtitle = controllerGlobal.employeeSisaCuti.value[index]
                       ['job_title'];
 
+                  var lamaBekerja = controllerGlobal
+                      .employeeSisaCuti.value[index]['lama_bekerja'];
+                  int days = int.parse(lamaBekerja == "" ||
+                          lamaBekerja == "null" ||
+                          lamaBekerja == null ||
+                          lamaBekerja == ""
+                      ? "0"
+                      : lamaBekerja.toString());
+
+                  int years = days ~/ 365;
+                  int months = (days % 365) ~/ 30;
+                  int remainingDays = (days % 365) % 30;
+ 
+
+                  var remainingText = "";
+                  if (years > 0) {
+                    remainingText = "${years} Tahun";
+                  }
+                  if (months > 0) {
+                    remainingText += " ${months} Bulan";
+                  }
+
+                  if (months > 0) {
+                    remainingText += " $remainingDays Hari";
+                  }
+
+                  var emJoiningDate = controllerGlobal
+                      .employeeSisaCuti.value[index]['lama_bekerja'];
+
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: Container(
@@ -981,56 +1014,238 @@ class Informasi extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      flex: 5,
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Iconsax.calendar_tick5,
-                                            color: Constanst.infoLight,
-                                            size: 16,
+                                        flex: 20,
+                                        child: Container(
+                                          
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 20,
+                                                child: Image.asset(
+                                                  'assets/lama_bekerja.png',
+                                                  width: 20,
+                                                  height: 20,
+                                                ),
+                                              ),
+                                             
+                                              SizedBox(
+                                                        width: 5,
+                                                      ),
+                                              Expanded(
+                                                flex: 95,
+                                                child: Container(
+                                                  child: Column(
+                                                    
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      TextLabell(
+                                                        text: "Lama Bekerja",
+                                                        color:
+                                                            Constanst.fgSecondary,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      // TextLabell(
+                                                      //   text: "${remainingText} ",
+                                                      //   weight: FontWeight.bold,
+                                                      //   color:
+                                                      //       Constanst.fgPrimary,
+                                                      // ),
+                                                      Container(
+                                                       
+                                                        child: RichText(
+                                                          overflow: TextOverflow
+                                                              .ellipsis, // Menambahkan elipsis jika teks melebihi satu baris
+                                                          maxLines:
+                                                              1, // Memastikan hanya satu baris yang ditampilkan
+                                                          text: TextSpan(
+                                                            text:
+                                                               "${remainingText } ",
+
+                                                            style: TextStyle(
+                                                              fontSize: 11.0,
+                                                             fontWeight: FontWeight.bold,
+                                                        color:
+                                                            Constanst.fgPrimary,
+                                                            ),
+                                                            children: <TextSpan>[
+                                                        
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            ],
                                           ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            Constanst.convertDate5(
-                                                '$beginDate'),
-                                            style: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 14,
-                                                color: Constanst.fgPrimary),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Icon(
-                                      Iconsax.arrow_right_1,
-                                      color: Constanst.colorNeutralFgTertiary,
-                                      size: 14,
-                                    ),
+                                        )),
                                     Expanded(
-                                      flex: 5,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 16.0),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Iconsax.calendar_remove5,
-                                              color: Constanst.color4,
-                                              size: 16,
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              Constanst.convertDate5(
-                                                  '$endDate'),
-                                              style: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
-                                                  color: Constanst.fgPrimary),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                        flex: 20,
+                                        child: Container(
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 20,
+                                                child: Image.asset(
+                                                  'assets/waktu_tersisa.png',
+                                                  width: 20,
+                                                  height: 20,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Expanded(
+                                                flex: 80,
+                                                child: Container(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      TextLabell(
+                                                        text: "Waktu Tersisa",
+                                                        color:
+                                                            Constanst.fgSecondary,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      TextLabell(
+                                                        text: "${sisaCuti} Hari",
+                                                        weight: FontWeight.bold,
+                                                        color:
+                                                            Constanst.fgPrimary,
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        )),
+                                    Expanded(
+                                        flex: 20,
+                                        child: Container(
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 20,
+                                                child: Image.asset(
+                                                  'assets/tanggal_berakhir.png',
+                                                  width: 20,
+                                                  height: 20,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Expanded(
+                                                flex: 80,
+                                                child: Container(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      TextLabell(
+                                                        text: "Tanggal berakhir",
+                                                        color:
+                                                            Constanst.fgSecondary,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      TextLabell(
+                                                        text: Constanst
+                                                            .convertDate5(
+                                                                '$endDate'),
+                                                        weight: FontWeight.bold,
+                                                        color:
+                                                            Constanst.fgPrimary,
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ))
+                                    // Expanded(
+                                    //   flex: 5,
+                                    //   child: Row(
+                                    //     children: [
+                                    //       Icon(
+                                    //         Iconsax.calendar_tick5,
+                                    //         color: Constanst.infoLight,
+                                    //         size: 16,
+                                    //       ),
+                                    //       const SizedBox(width: 4),
+                                    //       Text(
+                                    //         Constanst.convertDate5(
+                                    //             '$beginDate'),
+                                    //         style: GoogleFonts.inter(
+                                    //             fontWeight: FontWeight.w400,
+                                    //             fontSize: 14,
+                                    //             color: Constanst.fgPrimary),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
+
+                                    // Expanded(
+                                    //   flex: 5,
+                                    //   child: Row(
+                                    //     children: [
+                                    //       Icon(
+                                    //         Iconsax.calendar_tick5,
+                                    //         color: Constanst.infoLight,
+                                    //         size: 16,
+                                    //       ),
+                                    //       const SizedBox(width: 4),
+                                    //       Text(
+                                    //         Constanst.convertDate5(
+                                    //             '$beginDate'),
+                                    //         style: GoogleFonts.inter(
+                                    //             fontWeight: FontWeight.w400,
+                                    //             fontSize: 14,
+                                    //             color: Constanst.fgPrimary),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
+                                    // Icon(
+                                    //   Iconsax.arrow_right_1,
+                                    //   color: Constanst.colorNeutralFgTertiary,
+                                    //   size: 14,
+                                    // ),
+                                    // Expanded(
+                                    //   flex: 5,
+                                    //   child: Padding(
+                                    //     padding:
+                                    //         const EdgeInsets.only(left: 16.0),
+                                    //     child: Row(
+                                    //       children: [
+                                    //         Icon(
+                                    //           Iconsax.calendar_remove5,
+                                    //           color: Constanst.color4,
+                                    //           size: 16,
+                                    //         ),
+                                    //         const SizedBox(width: 4),
+                                    //         Text(
+                                    //           Constanst.convertDate5(
+                                    //               '$endDate'),
+                                    //           style: GoogleFonts.inter(
+                                    //               fontWeight: FontWeight.w400,
+                                    //               fontSize: 14,
+                                    //               color: Constanst.fgPrimary),
+                                    //         ),
+                                    //       ],
+                                    //     ),
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                               ),

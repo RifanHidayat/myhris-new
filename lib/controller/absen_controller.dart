@@ -523,7 +523,8 @@ class AbsenController extends GetxController {
   }
 
   void absenSelfie() async {
-    DateTime startDate = await NTP.now();
+    // DateTime startDate = await NTP.now();
+    DateTime startDate = DateTime.now();
     // // absenSelfie();
     timeString.value = formatDateTime(startDate);
     dateNow.value = dateNoww(DateTime.now());
@@ -794,7 +795,8 @@ class AbsenController extends GetxController {
         if (res['similar'] == true) {
           absenSuccess.value = "1";
 
-          DateTime startDate = await NTP.now();
+          // DateTime startDate = await NTP.now();
+          DateTime startDate = DateTime.now();
 
           // // absenSelfie();
           timeString.value = formatDateTime(startDate);

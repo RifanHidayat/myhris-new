@@ -2505,6 +2505,7 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     controller.updateInformasiUser();
 
+
     controller.initData();
     absenControllre.getTimeNow();
 
@@ -2529,6 +2530,7 @@ class _DashboardState extends State<Dashboard> {
     // Api().checkLogin();
     // Add a listener to the scroll controller
     _scrollController.addListener(_scrollListener);
+        // controller.loadMenuShowInMain();
   }
 
   void _checkversion() async {

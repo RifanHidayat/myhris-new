@@ -165,9 +165,9 @@ class _ApprovalState extends State<Approval> {
           var typeAjuan = controller.listData.value[index]['type'];
           var namaApprove1 = controller.listData.value[index]['nama_approve1'];
           var leave_status = controller.listData.value[index]['leave_status'];
-          var dariJam= controller.listData.value[index]['dari_jam'];
-             var sampaiJam= controller.listData.value[index]['sampai_jam'];
-                    var nomor_ajuan= controller.listData.value[index]['nomor_ajuan'];
+          var dariJam = controller.listData.value[index]['dari_jam'];
+          var sampaiJam = controller.listData.value[index]['sampai_jam'];
+          var nomor_ajuan = controller.listData.value[index]['nomor_ajuan'];
           var tanggalPengajuan =
               controller.listData.value[index]['waktu_pengajuan'];
           return data['type'] == "payroll"
@@ -326,7 +326,8 @@ class _ApprovalState extends State<Approval> {
                                       child: Padding(
                                         padding: const EdgeInsets.only(top: 5),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               nomor_ajuan.toString(),
@@ -336,16 +337,18 @@ class _ApprovalState extends State<Approval> {
                                             ),
                                             Text(
                                               namaPengaju,
-                                              style: TextStyle(
-                                               
-                                                  fontSize: 16),
+                                              style: TextStyle(fontSize: 16),
                                             ),
                                           ],
                                         ),
                                       ),
                                     ),
                                     Expanded(
-                                      flex: 30,
+                                      flex: controller.valuePolaPersetujuan ==
+                                                              1 ||
+                                                          controller
+                                                                  .valuePolaPersetujuan ==
+                                                              "1"? 30:55,
                                       child: Container(
                                         margin: EdgeInsets.only(right: 8),
                                         decoration: BoxDecoration(
@@ -362,9 +365,7 @@ class _ApprovalState extends State<Approval> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              leave_status != "Pending"
-                                                  ? SizedBox()
-                                                  : Icon(
+                                               Icon(
                                                       Iconsax.timer,
                                                       color: Constanst.color3,
                                                       size: 14,
@@ -373,7 +374,16 @@ class _ApprovalState extends State<Approval> {
                                                 padding: const EdgeInsets.only(
                                                     left: 3),
                                                 child: Text(
-                                                  '$leave_status',
+                                                   controller.valuePolaPersetujuan ==
+                                                              1 ||
+                                                          controller
+                                                                  .valuePolaPersetujuan ==
+                                                              "1"
+                                                      ? '$leave_status'
+                                                      : leave_status ==
+                                                              "Pending"
+                                                          ? "Pending Approve1"
+                                                          : "Pending Approve2",
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                       fontWeight:
@@ -396,14 +406,14 @@ class _ApprovalState extends State<Approval> {
                                     Expanded(
                                       flex: 50,
                                       child: Text(
-                                        "Checkin ${dariJam??"_ _ : _ _"}",
+                                        "Checkin ${dariJam ?? "_ _ : _ _"}",
                                         style: TextStyle(fontSize: 14),
                                       ),
                                     ),
-                                     Expanded(
+                                    Expanded(
                                       flex: 50,
                                       child: Text(
-                                        "Checkout ${sampaiJam??"_ _ : _ _"}",
+                                        "Checkout ${sampaiJam ?? "_ _ : _ _"}",
                                         style: TextStyle(fontSize: 14),
                                       ),
                                     ),
@@ -505,7 +515,11 @@ class _ApprovalState extends State<Approval> {
                                       ),
                                     ),
                                     Expanded(
-                                      flex: 30,
+                                      flex: controller.valuePolaPersetujuan ==
+                                                              1 ||
+                                                          controller
+                                                                  .valuePolaPersetujuan ==
+                                                              "1"? 30:55,
                                       child: Container(
                                         margin: EdgeInsets.only(right: 8),
                                         decoration: BoxDecoration(
@@ -522,9 +536,7 @@ class _ApprovalState extends State<Approval> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              leave_status != "Pending"
-                                                  ? SizedBox()
-                                                  : Icon(
+                                              Icon(
                                                       Iconsax.timer,
                                                       color: Constanst.color3,
                                                       size: 14,
@@ -533,7 +545,16 @@ class _ApprovalState extends State<Approval> {
                                                 padding: const EdgeInsets.only(
                                                     left: 3),
                                                 child: Text(
-                                                  '$leave_status',
+                                                  controller.valuePolaPersetujuan ==
+                                                              1 ||
+                                                          controller
+                                                                  .valuePolaPersetujuan ==
+                                                              "1"
+                                                      ? '$leave_status'
+                                                      : leave_status ==
+                                                              "Pending"
+                                                          ? "Pending Approve1"
+                                                          : "Pending Approve2",
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                       fontWeight:

@@ -138,7 +138,9 @@ class DashboardController extends GetxController {
 
   void initData() async {
     dashboardStatusAbsen.value = AppData.statusAbsen;
-    DateTime startDate = await NTP.now();
+    // DateTime startDate = await NTP.now();
+
+      DateTime startDate = DateTime.now();
     getBannerDashboard();
     updateInformasiUser();
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
@@ -159,7 +161,7 @@ class DashboardController extends GetxController {
   }
 
   void checkAbsenUser(convert, getEmid) {
-    print("view last absen user dashboard");
+  
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
     var startTime = "";
     var endTime = "";
@@ -902,7 +904,7 @@ class DashboardController extends GetxController {
     }
   }
 
-  void loadMenuShowInMain() {
+  void    loadMenuShowInMain() {
     menuShowInMain.value.clear();
     var connect = Api.connectionApi("get", {}, "menu_dashboard",
         params: "&em_id=${AppData.informasiUser![0].em_id}");
@@ -913,6 +915,8 @@ class DashboardController extends GetxController {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
           var temporary = valueBody['data'];
+
+          print("data temporary ${temporary}");
 
           menuShowInMain.value = temporary;
         }
@@ -1086,7 +1090,8 @@ class DashboardController extends GetxController {
   }
 
   void _getTime() async {
-    DateTime startDate = await NTP.now();
+    // DateTime startDate = await NTP.now();
+    DateTime startDate = DateTime.now();
     final DateTime now = startDate;
     final String formattedDateTime = formatDateTime(now);
     timeString.value = formattedDateTime;

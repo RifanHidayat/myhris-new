@@ -17,6 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class DetailApproval extends StatefulWidget {
   String? title, idxDetail, emId, delegasi;
+
   DetailApproval(
       {Key? key, this.title, this.idxDetail, this.emId, this.delegasi})
       : super(key: key);
@@ -27,6 +28,7 @@ class DetailApproval extends StatefulWidget {
 class _DetailApprovalState extends State<DetailApproval> {
   var controller = Get.put(ApprovalController());
   var controllerGlobal = Get.put(GlobalController());
+  int hours = 0, minutes = 0, second = 0;
 
   @override
   void initState() {
@@ -79,6 +81,19 @@ class _DetailApprovalState extends State<DetailApproval> {
           }
         }
       }
+    }
+
+    if (controller.detailData[0]['type'].toString().toLowerCase() == "Lembur".toString().toLowerCase()) {
+      DateTime start = DateTime.parse(
+          "${controller.detailData[0]['waktu_pengajuan']} ${controller.detailData[0]['waktu_dari']}");
+      DateTime end = DateTime.parse(
+          "${controller.detailData[0]['waktu_pengajuan']} ${controller.detailData[0]['waktu_sampai']}");
+
+      Duration difference = end.difference(start);
+
+      hours = difference.inHours;
+      minutes = (difference.inMinutes % 60);
+      second = (difference.inSeconds % 60);
     }
   }
 
@@ -222,6 +237,26 @@ class _DetailApprovalState extends State<DetailApproval> {
                                       ),
                               ],
                             ),
+                            controller.detailData[0]['type'] == "Lembur"
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text("Durasi Lembur",
+                                          style: TextStyle(
+                                              color: Constanst.colorText2)),
+                                      SizedBox(
+                                        height: 3,
+                                      ),
+                                      Text("${hours} Jam ${minutes} Menit ${second} Detik",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold))
+                                    ],
+                                  )
+                                : SizedBox(),
                             SizedBox(
                               height: 10,
                             ),
@@ -230,7 +265,12 @@ class _DetailApprovalState extends State<DetailApproval> {
                                         .toLowerCase() ==
                                     'absensi'.toLowerCase()
                                 ? SizedBox()
-                                : controller.detailData[0]['type'] == "Lembur"
+                                : controller.detailData[0]['type'] ==
+                                            "Lembur" ||
+                                        controller.detailData[0]['type'] ==
+                                            "Tugas Luar" ||
+                                        controller.detailData[0]['type'] ==
+                                            "Dinas Luar"
                                     ? Text(
                                         "Pemberi Tugas",
                                         style: TextStyle(
@@ -304,13 +344,24 @@ class _DetailApprovalState extends State<DetailApproval> {
                             SizedBox(
                               height: 5,
                             ),
-                         controller.detailData[0]['type'].toString().toLowerCase()=="Cuti".toString().toLowerCase()? Text(
-                              "${controller.detailData[0]['nama_pengajuan']} ",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ):   Text(
-                              "${controller.detailData[0]['type']} $namaTipe",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                            controller.detailData[0]['type']
+                                            .toString()
+                                            .toLowerCase() ==
+                                        "Cuti".toString().toLowerCase() ||
+                                    controller.detailData[0]['type']
+                                            .toString()
+                                            .toLowerCase() ==
+                                        "Lembur".toString().toLowerCase()
+                                ? Text(
+                                    "${controller.detailData[0]['nama_pengajuan']} ",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  )
+                                : Text(
+                                    "${controller.detailData[0]['type']} $namaTipe",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                             controller.detailData[0]['file'] == "" ||
                                     controller.detailData[0]['file'] == null
                                 ? SizedBox()
@@ -340,7 +391,7 @@ class _DetailApprovalState extends State<DetailApproval> {
                                               AppData.informasiUser![0].em_id);
                                           print(controller.detailData[0]
                                               ['em_report_to']);
-                                              print(controller.detailData[0]
+                                          print(controller.detailData[0]
                                               ['em_report2_to']);
                                           // print("tes");
                                           controller.showBottomAlasanReject();
@@ -368,7 +419,7 @@ class _DetailApprovalState extends State<DetailApproval> {
                                       Expanded(
                                           child: InkWell(
                                         onTap: () {
-                                         controller.validasiMenyetujui(true);
+                                          controller.validasiMenyetujui(true);
                                         },
                                         child: Container(
                                           margin: EdgeInsets.only(
