@@ -58,7 +58,7 @@ class _FormLemburState extends State<FormLembur> {
         titleSpacing: 0,
         centerTitle: true,
         title: Text(
-          "Pengajuan Lembur",
+          "Pengajuan Lembur   ",
           style: GoogleFonts.inter(
               color: Constanst.fgPrimary,
               fontWeight: FontWeight.w500,
@@ -434,7 +434,7 @@ class _FormLemburState extends State<FormLembur> {
                               showTimePicker(
                                 context: Get.context!,
                                 initialTime: TimeOfDay.now(),
-                                initialEntryMode: TimePickerEntryMode.dial,
+                                initialEntryMode: TimePickerEntryMode.input,
                                 builder: (context, child) {
                                   return MediaQuery(
                                     data: MediaQuery.of(context)
@@ -527,7 +527,7 @@ class _FormLemburState extends State<FormLembur> {
                               showTimePicker(
                                 context: Get.context!,
                                 initialTime: TimeOfDay.now(),
-                                initialEntryMode: TimePickerEntryMode.dial,
+                                initialEntryMode: TimePickerEntryMode.input,
                                 builder: (context, child) {
                                   return MediaQuery(
                                     data: MediaQuery.of(context)
