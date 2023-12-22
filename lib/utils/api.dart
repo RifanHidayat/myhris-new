@@ -17,19 +17,12 @@ class Api {
   static var basicAuth = 'Basic ' +
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
- 
- 
-// static var basicUrl = "http://mobilehris.siscom.id:3000/";
- 
-static var urlImage = 'https://imagehris.siscom.id:4431';
 
- 
+// static var basicUrl = "http://mobilehris.siscom.id:3000/";
+
+  static var urlImage = 'https://imagehris.siscom.id:4431';
 
   // static var basicUrl = "http://mobilehris.siscom.id:3000/";
-
- 
-  static var urlImage = 'https://imagehris.siscom.id:4431';
-//
 
   static var basicUrl = "http://kantor.membersis.com:2629/";
 
@@ -37,7 +30,6 @@ static var urlImage = 'https://imagehris.siscom.id:4431';
   static var luxand = 'https://api.luxand.cloud/photo/similarity';
   static var wappin = 'https://api.wappin.id/v1';
 
- 
   static var UrlfotoAbsen =
       urlImage + "/${AppData.selectedDatabase}/foto_absen/";
   static var UrlfotoProfile =
@@ -90,12 +82,10 @@ static var urlImage = 'https://imagehris.siscom.id:4431';
           Api().validateAuth(response.statusCode, resp);
           return;
         } else if (response.statusCode == 200) {
-          
           var authController = Get.put(AuthController());
           authController.messageLogout.value = "";
           authController.isautoLogout.value = false;
-        
-        }else{
+        } else {
           print("error");
         }
 

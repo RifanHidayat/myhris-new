@@ -527,7 +527,42 @@ class _FormLemburState extends State<FormLembur> {
                               showTimePicker(
                                 context: Get.context!,
                                 initialTime: TimeOfDay.now(),
-                                initialEntryMode: TimePickerEntryMode.dial,
+                                initialEntryMode: TimePickerEntryMode.input,
+                                builder: (context, child) {
+                                  return MediaQuery(
+                                    data: MediaQuery.of(context)
+                                        .copyWith(alwaysUse24HourFormat: true),
+                                    child: Theme(
+                                      data: ThemeData(
+                                        colorScheme: ColorScheme.light(
+                                          primary: Constanst.onPrimary,
+                                        ),
+                                        // useMaterial3: settings.useMaterial3,
+                                        dialogTheme: const DialogTheme(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(16)))),
+                                        primaryColor: Constanst.fgPrimary,
+                                        textTheme: TextTheme(
+                                          titleMedium: GoogleFonts.inter(
+                                            color: Constanst.fgPrimary,
+                                          ),
+                                        ),
+                                        dialogBackgroundColor:
+                                            Constanst.colorWhite,
+                                        canvasColor: Colors.white,
+                                        hintColor: Constanst.onPrimary,
+                                        textButtonTheme: TextButtonThemeData(
+                                          style: TextButton.styleFrom(
+                                            foregroundColor:
+                                                Constanst.onPrimary,
+                                          ),
+                                        ),
+                                      ),
+                                      child: child!,
+                                    ),
+                                  );
+                                },
                               ).then((value) {
                                 if (value == null) {
                                   UtilsAlert.showToast('gagal pilih jam');
