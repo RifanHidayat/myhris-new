@@ -508,7 +508,7 @@ class _FormLemburState extends State<FormLembur> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Sampai Jam *",
+                    "Sampai Jam ggg*",
                     style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
