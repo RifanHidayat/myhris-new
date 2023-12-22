@@ -266,7 +266,7 @@ class AbsenController extends GetxController {
 
   void getPlaceCoordinate() {
     print("place coodinates");
-    placeCoordinate.clear();
+    // placeCoordinate.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate",
         params: "&id=${AppData.informasiUser![0].em_id}");
     connect.then((dynamic res) {
@@ -289,7 +289,7 @@ class AbsenController extends GetxController {
           }
 
           print("data ${placeCoordinate.value}");
-
+          placeCoordinate.clear();
           placeCoordinate.value = filter;
           placeCoordinate.refresh();
           placeCoordinate.refresh();
@@ -2605,7 +2605,6 @@ class AbsenController extends GetxController {
               .where((p0) => p0['is_selected'] == true)
               .toList()
               .isNotEmpty
-              
           ? placeCoordinateCheckin
               .where((p0) => p0['is_selected'] == true)
               .toList()[0]['id']
@@ -2618,10 +2617,7 @@ class AbsenController extends GetxController {
               .where((p0) => p0['is_selected'] == true)
               .toList()[0]['id']
           : "",
-      'file': imageAjuan.value
-      
-      
-      ,
+      'file': imageAjuan.value,
       'tgl_ajuan': DateFormat('yyyy-MM-dd').format(DateTime.now()),
     };
     print('body data ajuan ${body}');
@@ -2631,7 +2627,6 @@ class AbsenController extends GetxController {
       print("data berhasil absensi ${valueBody}");
 
       if (res.statusCode == 200) {
-
         Get.to(pengajuanAbsenBerhasil());
 
         dataPengajuanAbsensi();

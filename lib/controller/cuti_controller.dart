@@ -6,11 +6,13 @@ import 'dart:math';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/screen/absen/form/berhasil_pengajuan.dart';
+import 'package:siscom_operasional/screen/absen/form/form_pengajuan_cuti.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -44,12 +46,17 @@ class CutiController extends GetxController {
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
   Rx<List<String>> allTipeFormCutiDropdown = Rx<List<String>>([]);
 
+  var statusFormPencarian = false.obs;
+
   var jumlahCuti = 0.obs;
   var typeIdEdit = 0.obs;
   var cutiTerpakai = 0.obs;
   var persenCuti = 0.0.obs;
   var durasiIzin = 0.obs;
   var jumlahData = 0.obs;
+
+  var tempKodeStatus1 = "".obs;
+  var tempNamaStatus1 = "Semua Status".obs;
 
   var namaFileUpload = "".obs;
   var stringSelectedTanggal = "".obs;
@@ -76,9 +83,9 @@ class CutiController extends GetxController {
   var statusLoadingSubmitLaporan = false.obs;
   var messageApproval = "".obs;
 
-  var dataTypeAjuanDummy1 = ["Semua", "Approve", "Rejected", "Pending"];
+  var dataTypeAjuanDummy1 = ["Semua Status", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
-    "Semua",
+    "Semua Status",
     "Approve 1",
     "Approve 2",
     "Rejected",
@@ -86,6 +93,8 @@ class CutiController extends GetxController {
   ];
 
   GlobalController globalCt = Get.put(GlobalController());
+
+  var controllerGlobal = Get.put(GlobalController());
 
   @override
   void onReady() async {
@@ -99,7 +108,14 @@ class CutiController extends GetxController {
     super.onReady();
   }
 
-  
+  void toggleSearch() {
+    statusFormPencarian.value = false;
+    this.statusFormPencarian.refresh();
+  }
+
+  void showInputCari() {
+    statusFormPencarian.value = !statusFormPencarian.value;
+  }
 
   void getDepartemen(status, tanggal) {
     jumlahData.value = 0;
@@ -196,8 +212,8 @@ class CutiController extends GetxController {
         var data = {'nama': element, 'status': false};
         dataTypeAjuan.value.add(data);
       }
-      dataTypeAjuan.value
-          .firstWhere((element) => element['nama'] == 'Semua')['status'] = true;
+      dataTypeAjuan.value.firstWhere(
+          (element) => element['nama'] == 'Semua Status')['status'] = true;
       this.dataTypeAjuan.refresh();
     } else {
       dataTypeAjuan.value.clear();
@@ -205,8 +221,8 @@ class CutiController extends GetxController {
         var data = {'nama': element, 'status': false};
         dataTypeAjuan.value.add(data);
       }
-      dataTypeAjuan.value
-          .firstWhere((element) => element['nama'] == 'Semua')['status'] = true;
+      dataTypeAjuan.value.firstWhere(
+          (element) => element['nama'] == 'Semua Status')['status'] = true;
       this.dataTypeAjuan.refresh();
     }
   }
@@ -214,8 +230,8 @@ class CutiController extends GetxController {
   void loadDataTypeCuti() {
     print("load data cuti");
     allTipeFormCutiDropdown.value.clear();
-    allTipe.value.clear(); 
-    
+    allTipe.value.clear();
+
     Map<String, dynamic> body = {'val': 'status', 'cari': '1'};
     var connect = Api.connectionApi("post", body, "whereOnce-leave_types");
     connect.then((dynamic res) {
@@ -325,7 +341,7 @@ class CutiController extends GetxController {
     this.dataTypeAjuan.refresh();
     var dataFilter = [];
     AlllistHistoryAjuan.value.forEach((element) {
-      if (name == "Semua") {
+      if (name == "Semua Status") {
         dataFilter.add(element);
       } else {
         if (element['leave_status'] == filter) {
@@ -336,7 +352,7 @@ class CutiController extends GetxController {
     listHistoryAjuan.value = dataFilter;
     this.listHistoryAjuan.refresh();
     if (dataFilter.isEmpty) {
-      stringLoading.value = "Tidak ada Pengajuan";
+      stringLoading.value = "Anda tidak memiliki\nRiwayat Pengajuan Cuti";
     } else {
       stringLoading.value = "Sedang memuat...";
     }
@@ -379,7 +395,7 @@ class CutiController extends GetxController {
           }
           if (statusForm.value == false) {
             var listFirst = allEmployeeDelegasi.value;
-            var fullName =  allEmployeeDelegasi.value[0] ;
+            var fullName = allEmployeeDelegasi.value[0];
             String namaUserPertama = "$fullName";
             selectedDelegasi.value = namaUserPertama;
           }
@@ -697,7 +713,6 @@ class CutiController extends GetxController {
       };
     }
 
-
     var typeNotifFcm = "Pengajuan Cuti";
     if (statusForm.value == false) {
       body['activity_name'] =
@@ -893,43 +908,173 @@ class CutiController extends GetxController {
     return "$hitung";
   }
 
+  // void batalkanPengajuanCuti(index) {
+  //   showGeneralDialog(
+  //     barrierDismissible: false,
+  //     context: Get.context!,
+  //     barrierColor: Colors.black54, // space around dialog
+  //     transitionDuration: Duration(milliseconds: 200),
+  //     transitionBuilder: (context, a1, a2, child) {
+  //       return ScaleTransition(
+  //         scale: CurvedAnimation(
+  //             parent: a1,
+  //             curve: Curves.elasticOut,
+  //             reverseCurve: Curves.easeOutCubic),
+  //         child: CustomDialog(
+  //           // our custom dialog
+  //           title: "Peringatan",
+  //           content: "Yakin Batalkan Pengajuan ?",
+  //           positiveBtnText: "Batalkan",
+  //           negativeBtnText: "Kembali",
+  //           style: 1,
+  //           buttonStatus: 1,
+  //           positiveBtnPressed: () {
+  //             batalkanPengajuan(index);
+  //           },
+  //         ),
+  //       );
+  //     },
+  //     pageBuilder: (BuildContext context, Animation animation,
+  //         Animation secondaryAnimation) {
+  //       return null!;
+  //     },
+  //   );
+  // }
+
   void batalkanPengajuanCuti(index) {
-    showGeneralDialog(
-      barrierDismissible: false,
+    showModalBottomSheet(
       context: Get.context!,
-      barrierColor: Colors.black54, // space around dialog
-      transitionDuration: Duration(milliseconds: 200),
-      transitionBuilder: (context, a1, a2, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(
-              parent: a1,
-              curve: Curves.elasticOut,
-              reverseCurve: Curves.easeOutCubic),
-          child: CustomDialog(
-            // our custom dialog
-            title: "Peringatan",
-            content: "Yakin Batalkan Pengajuan ?",
-            positiveBtnText: "Batalkan",
-            negativeBtnText: "Kembali",
-            style: 1,
-            buttonStatus: 1,
-            positiveBtnPressed: () {
-              batalkanPengajuan(index);
-            },
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Iconsax.info_circle5,
+                          color: Constanst.color4,
+                          size: 30,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          "Batalkan Pengajuan",
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              color: Constanst.fgPrimary),
+                        ),
+                      ],
+                    ),
+                    InkWell(
+                      onTap: () => Get.back(),
+                      customBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      child: Icon(
+                        Icons.close,
+                        color: Constanst.fgSecondary,
+                        size: 26,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "Data pengajuan yang telah kamu buat akan di hapus. Yakin ingin membatalkan pengajuan?",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      color: Constanst.fgPrimary),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 40,
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Constanst
+                                .border, // Set the desired border color
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            batalkanPengajuan(index);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              foregroundColor: Constanst.color4,
+                              backgroundColor: Constanst.colorWhite,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              elevation: 0,
+                              // padding: EdgeInsets.zero,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                          child: Text(
+                            'Ya, Batalkan',
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.color4,
+                                fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: SizedBox(
+                        height: 40,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.colorWhite,
+                            backgroundColor: Constanst.colorPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 0,
+                            // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                          ),
+                          child: Text(
+                            'Kembali',
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.colorWhite,
+                                fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         );
       },
-      pageBuilder: (BuildContext context, Animation animation,
-          Animation secondaryAnimation) {
-        return null!;
-      },
     );
   }
-
-
-
-
-
 
   void batalkanPengajuan(index) {
     UtilsAlert.loadingSimpanData(Get.context!, "Batalkan Pengajuan");
@@ -957,11 +1102,6 @@ class CutiController extends GetxController {
       }
     });
   }
-
-
-
-
-
 
   void showModalBatalPengajuan(index) {
     showModalBottomSheet(
@@ -1096,7 +1236,7 @@ class CutiController extends GetxController {
     );
   }
 
-  void showDetailRiwayat(detailData) {
+  void showDetailRiwayat(detailData, apply_by, alasanReject) {
     var nomorAjuan = detailData['nomor_ajuan'];
     var tanggalMasukAjuan = detailData['atten_date'];
     var namaTypeAjuan = detailData['name'];
@@ -1121,341 +1261,446 @@ class CutiController extends GetxController {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20.0),
+          top: Radius.circular(16.0),
         ),
       ),
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 16,
-              ),
-              IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 60,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "$namaTypeAjuan",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                              "${Constanst.convertDate("$tanggalMasukAjuan")}"),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 40,
-                      child: Center(
-                        child: Container(
-                          margin: EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            color: typeAjuan == 'Approve'
-                                ? Constanst.colorBGApprove
-                                : typeAjuan == 'Approve 1'
-                                    ? Constanst.colorBGApprove
-                                    : typeAjuan == 'Approve 2'
-                                        ? Constanst.colorBGApprove
-                                        : typeAjuan == 'Rejected'
-                                            ? Constanst.colorBGRejected
-                                            : typeAjuan == 'Pending'
-                                                ? Constanst.colorBGPending
-                                                : Colors.grey,
-                            borderRadius: Constanst.borderStyle1,
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                left: 3, right: 3, top: 5, bottom: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                typeAjuan == 'Approve'
-                                    ? Icon(
-                                        Iconsax.tick_square,
-                                        color: Constanst.color5,
-                                        size: 14,
-                                      )
-                                    : typeAjuan == 'Approve 1'
-                                        ? Icon(
-                                            Iconsax.tick_square,
-                                            color: Constanst.color5,
-                                            size: 14,
-                                          )
-                                        : typeAjuan == 'Approve 2'
-                                            ? Icon(
-                                                Iconsax.tick_square,
-                                                color: Constanst.color5,
-                                                size: 14,
-                                              )
-                                            : typeAjuan == 'Rejected'
-                                                ? Icon(
-                                                    Iconsax.close_square,
-                                                    color: Constanst.color4,
-                                                    size: 14,
-                                                  )
-                                                : typeAjuan == 'Pending'
-                                                    ? Icon(
-                                                        Iconsax.timer,
-                                                        color: Constanst.color3,
-                                                        size: 14,
-                                                      )
-                                                    : SizedBox(),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 3),
-                                  child: Text(
-                                    '$typeAjuan',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: typeAjuan == 'Approve'
-                                            ? Colors.green
-                                            : typeAjuan == 'Approve 1'
-                                                ? Colors.green
-                                                : typeAjuan == 'Approve 2'
-                                                    ? Colors.green
-                                                    : typeAjuan == 'Rejected'
-                                                        ? Colors.red
-                                                        : typeAjuan == 'Pending'
-                                                            ? Constanst.color3
-                                                            : Colors.black),
-                                  ),
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 12),
+                Center(
+                  child: Container(
+                      height: 6,
+                      width: 34,
+                      decoration: BoxDecoration(
+                          color: Constanst.colorNeutralBgTertiary,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(20.0),
+                          ))),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Constanst.colorNonAktif)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Tanggal Pengajuan",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Constanst.fgSecondary,
                                 ),
-                              ],
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                Constanst.convertDate("$tanggalMasukAjuan"),
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "No. Pengajuan",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Constanst.fgSecondary,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                nomorAjuan,
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+ 
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Constanst.colorNonAktif)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Nama Pengajuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$namaTypeAjuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Tanggal Cuti",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        detailData['date_selected'] == null ||
+                                detailData['date_selected'] == "" ||
+                                detailData['date_selected'] == "null"
+                            ? Text(
+                                "${Constanst.convertDate6(tanggalAjuanDari)} - ${Constanst.convertDate6(tanggalAjuanSampai)}",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
+                                ),
+                              )
+                            : Container(),
+                        detailData['date_selected'] == null ||
+                                detailData['date_selected'] == "" ||
+                                detailData['date_selected'] == "null"
+                            ? Container()
+                            : Row(
+                                children: List.generate(
+                                    listTanggalTerpilih.length, (index) {
+                                  var nomor = index + 1;
+                                  var tanggalConvert = Constanst.convertDate7(
+                                      listTanggalTerpilih[index]);
+                                  var tanggalConvert2 = Constanst.convertDate5(
+                                      listTanggalTerpilih[index]);
+                                  return Row(
+                                    children: [
+                                      Text(
+                                        index == listTanggalTerpilih.length - 1
+                                            ? tanggalConvert2
+                                            : '$tanggalConvert, ',
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Constanst.fgPrimary,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }),
+                              ),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Durasi Cuti",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$durasi Hari",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Catatan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$alasan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        leave_files == "" ||
+                                leave_files == "NULL" ||
+                                leave_files == null
+                            ? const SizedBox()
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                    color: Constanst.border,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    "File disematkan",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Constanst.fgSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  InkWell(
+                                      onTap: () {
+                                        viewLampiranAjuan(leave_files);
+                                      },
+                                      child: Text(
+                                        "$leave_files",
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Constanst.fgPrimary,
+                                        ),
+                                      )),
+                                  const SizedBox(height: 12),
+                                ],
+                              ),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        typeAjuan == 'Rejected'
+                            ? Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Iconsax.close_circle,
+                                    color: Constanst.color4,
+                                    size: 22,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Rejected by $apply_by",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14)),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        alasanReject,
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : typeAjuan == "Approve" ||
+                                    typeAjuan == "Approve 1" ||
+                                    typeAjuan == "Approve 2"
+                                ? Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Iconsax.tick_circle,
+                                        color: Colors.green,
+                                        size: 22,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text("Approved by $apply_by",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14)),
+                                    ],
+                                  )
+                                : Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Iconsax.timer,
+                                        color: Constanst.color3,
+                                        size: 22,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Pending Approval",
+                                              style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Constanst.fgPrimary,
+                                                  fontSize: 14)),
+                                          const SizedBox(height: 4),
+                                          InkWell(
+                                              onTap: () {
+                                                var dataEmployee = {
+                                                  'nameType': '$namaTypeAjuan',
+                                                  'nomor_ajuan': '$nomorAjuan',
+                                                };
+                                                controllerGlobal
+                                                    .showDataPilihAtasan(
+                                                        dataEmployee);
+                                              },
+                                              child: Text(
+                                                  "Konfirmasi via Whatsapp",
+                                                  style: GoogleFonts.inter(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color:
+                                                          Constanst.infoLight,
+                                                      fontSize: 14))),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                      ],
+                    ),
+                  ),
+                ),
+                typeAjuan == "Approve" ||
+                        typeAjuan == "Approve 1" ||
+                        typeAjuan == "Approve 2"
+                    ? Container()
+                    : const SizedBox(height: 16),
+                typeAjuan == "Approve" ||
+                        typeAjuan == "Approve 1" ||
+                        typeAjuan == "Approve 2"
+                    ? Container()
+                    : Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Constanst
+                                      .border, // Set the desired border color
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  // Get.back();
+                                  batalkanPengajuanCuti(detailData);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    foregroundColor: Constanst.color4,
+                                    backgroundColor: Constanst.colorWhite,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 0,
+                                    // padding: EdgeInsets.zero,
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                                child: Text(
+                                  'Batalkan',
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.color4,
+                                      fontSize: 14),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              Divider(
-                height: 5,
-                color: Constanst.colorText2,
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Nomor Ajuan"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$nomorAjuan"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-             
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Durasi Cuti"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$durasi Hari"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Alasan"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$alasan"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              leave_files == "" || leave_files == "NULL" || leave_files == null
-                  ? SizedBox()
-                  : Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 30,
-                          child: Text("File Ajuan"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(":"),
-                        ),
-                        Expanded(
-                          flex: 68,
-                          child: InkWell(
-                              onTap: () {
-                                viewLampiranAjuan(leave_files);
-                              },
-                              child: Text(
-                                "$leave_files",
-                                style: TextStyle(
-                                  color: Constanst.colorPrimary,
-                                  decoration: TextDecoration.underline,
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: SizedBox(
+                              height: 40,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  print(detailData.toString());
+                                  Get.to(FormPengajuanCuti(
+                                    dataForm: [detailData, true],
+                                  ));
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Constanst.colorWhite,
+                                  backgroundColor: Constanst.colorPrimary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                  // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
                                 ),
-                              )),
-                        )
-                      ],
-                    ),
-              leave_files == "" || leave_files == "NULL" || leave_files == null
-                  ? SizedBox()
-                  : SizedBox(
-                      height: 8,
-                    ),
-              // Text("Tanggal Terpilih"),
-              detailData['date_selected'] == null ||
-                      detailData['date_selected'] == "" ||
-                      detailData['date_selected'] == "null"
-                  ? Row(
-                      children: [
-                        Expanded(
-                          flex: 30,
-                          child: Text("Tanggal"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(":"),
-                        ),
-                        Expanded(
-                          flex: 68,
-                          child: Text(
-                              "${tanggalAjuanDari} s/d ${tanggalAjuanSampai}"),
-                        ),
-                      ],
-                    )
-                  : Text("Tanggal Terpilih"),
-              SizedBox(
-                height: 8,
-              ),
-              detailData['date_selected'] == null ||
-                      detailData['date_selected'] == "" ||
-                      detailData['date_selected'] == "null"
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [Text("")],
-                        ),
-                      ],
-                    )
-                  : ListView.builder(
-                      itemCount: listTanggalTerpilih.length,
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        var nomor = index + 1;
-                        var tanggalConvert =
-                            Constanst.convertDate1(listTanggalTerpilih[index]);
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("$nomor."),
-                            Padding(
-                              padding: EdgeInsets.only(left: 8),
-                              child: Text(tanggalConvert),
-                            )
-                          ],
-                        );
-                      }),
-              SizedBox(
-                height: 16,
-              ),
-            ],
+                                child: Text(
+                                  'Edit',
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.colorWhite,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+              ],
+            ),
           ),
         );
       },

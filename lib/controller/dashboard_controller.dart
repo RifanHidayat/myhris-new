@@ -25,7 +25,13 @@ import 'package:siscom_operasional/screen/absen/form/form_tidakMasukKerja.dart';
 import 'package:siscom_operasional/screen/absen/form/form_tugas_luar.dart';
 import 'package:siscom_operasional/screen/absen/history_absen.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_absen.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_cuti.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_dinas_luar.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_izin.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_klaim.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_lembur.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_tugas_luar.dart';
 import 'package:siscom_operasional/screen/absen/lembur.dart';
 import 'package:siscom_operasional/screen/absen/tidak_masuk_kerja.dart';
 import 'package:siscom_operasional/screen/absen/tugas_luar.dart';
@@ -152,7 +158,6 @@ class DashboardController extends GetxController {
     getSizeDevice();
     checkStatusPermission();
     checkHakAkses();
-    
   }
 
   void checkAbsenUser(convert, getEmid) {
@@ -238,9 +243,8 @@ class DashboardController extends GetxController {
         print("data login ${valueBody}");
         var data = valueBody['data'];
         if (data.isEmpty) {
-           
           AppData.statusAbsen = false;
-              signoutTime.value = '00:00:00';
+          signoutTime.value = '00:00:00';
           signinTime.value = '00:00:00';
         } else {
           AppData.statusAbsen =
@@ -1280,20 +1284,23 @@ class DashboardController extends GetxController {
         UtilsAlert.showToast(
             "Nomor BPJS anda belum tersedia,harap hubungi HRD");
       } else {
-        Get.to(VerifyPasswordPayroll(
-          page: BpjsKesehatan(),
-          titlepage: "bpjs_kesehatan",
-        ));
+        Get.to(BpjsKesehatan());
+        // Get.to(VerifyPasswordPayroll(
+        //   page: BpjsKesehatan(),
+        //   titlepage: "bpjs_kesehatan",
+        // ));
       }
     } else if (url == "BpjsTenagaKerja") {
       if (bpjsController.BpjsKetenagakerjaanNumber.value == "" ||
           bpjsController.BpjsKetenagakerjaanNumber.value == null) {
         UtilsAlert.showToast("\ anda belum tersedia,harap hubungi HRD");
       } else {
-        Get.to(VerifyPasswordPayroll(
-          page: BpjsKetenagakerjaan(),
-          titlepage: "bpjs_ketenagakerjaan",
-        ));
+        Get.to(BpjsKetenagakerjaan());
+
+        // Get.to(VerifyPasswordPayroll(
+        //   page: BpjsKetenagakerjaan(),
+        //   titlepage: "bpjs_ketenagakerjaan",
+        // ));
       }
     } else if (url == "lainnya") {
       widgetButtomSheetMenuLebihDetail();
@@ -1340,23 +1347,23 @@ class DashboardController extends GetxController {
 
   void routeSortcartFormLaporan(id) {
     if (id == 1) {
-      Get.to(LaporanTidakMasuk(
+      Get.to(LaporanLembur(
         title: 'lembur',
       ));
     } else if (id == 2) {
-      Get.to(LaporanTidakMasuk(
+      Get.to(LaporanCuti(
         title: 'cuti',
       ));
     } else if (id == 3) {
-      Get.to(LaporanTidakMasuk(
+      Get.to(LaporanTugasLuar(
         title: 'tugas_luar',
       ));
     } else if (id == 4) {
-      Get.to(LaporanTidakMasuk(
+      Get.to(LaporanIzin(
         title: 'izin',
       ));
     } else if (id == 5) {
-      Get.to(LaporanTidakMasuk(
+      Get.to(LaporanKlaim(
         title: 'klaim',
       ));
     } else if (id == 6) {
@@ -1365,7 +1372,7 @@ class DashboardController extends GetxController {
       if (getHakAkses == "" || getHakAkses == null || getHakAkses == "null") {
         UtilsAlert.showToast('Maaf anda tidak memiliki akses menu ini');
       } else {
-        Get.to(LaporanTidakMasuk(
+        Get.to(LaporanTugasLuar(
           title: 'tugas_luar',
         ));
       }
@@ -1742,7 +1749,7 @@ class DashboardController extends GetxController {
                 // highlightColor: Colors.white,
                 onTap: () {
                   Get.back();
-                  Get.to(LaporanTidakMasuk(
+                  Get.to(LaporanIzin(
                     title: 'tidak_hadir',
                   ));
                 },
@@ -1788,7 +1795,7 @@ class DashboardController extends GetxController {
                 // highlightColor: Colors.white,
                 onTap: () {
                   Get.back();
-                  Get.to(LaporanTidakMasuk(
+                  Get.to(LaporanLembur(
                     title: 'lembur',
                   ));
                 },
@@ -1834,7 +1841,7 @@ class DashboardController extends GetxController {
                 // highlightColor: Colors.white,
                 onTap: () {
                   Get.back();
-                  Get.to(LaporanTidakMasuk(
+                  Get.to(LaporanCuti(
                     title: 'cuti',
                   ));
                 },
@@ -1880,7 +1887,7 @@ class DashboardController extends GetxController {
                 // highlightColor: Colors.white,
                 onTap: () {
                   Get.back();
-                  Get.to(LaporanTidakMasuk(
+                  Get.to(LaporanTugasLuar(
                     title: 'tugas_luar',
                   ));
                 },
@@ -1926,7 +1933,7 @@ class DashboardController extends GetxController {
                 // highlightColor: Colors.white,
                 onTap: () {
                   Get.back();
-                  Get.to(LaporanTidakMasuk(
+                  Get.to(LaporanDinasLuar(
                     title: 'dinas_luar',
                   ));
                 },
@@ -1972,7 +1979,7 @@ class DashboardController extends GetxController {
                 // highlightColor: Colors.white,
                 onTap: () {
                   Get.back();
-                  Get.to(LaporanTidakMasuk(
+                  Get.to(LaporanKlaim(
                     title: 'klaim',
                   ));
                 },

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';  
+import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:siscom_operasional/controller/auth_controller.dart';
@@ -18,20 +18,26 @@ class Api {
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
  
+ 
 // static var basicUrl = "http://mobilehris.siscom.id:3000/";
  
 static var urlImage = 'https://imagehris.siscom.id:4431';
 
+ 
 
-
+  // static var basicUrl = "http://mobilehris.siscom.id:3000/";
 
  
-static var basicUrl = "http://kantor.membersis.com:2629/";
+  static var urlImage = 'https://imagehris.siscom.id:4431';
+//
 
+  static var basicUrl = "http://kantor.membersis.com:2629/";
 
-static var token = '9d590c04119a4433971a1dd622266d38';
-static var luxand = 'https://api.luxand.cloud/photo/similarity';
-static var wappin = 'https://api.wappin.id/v1';
+  static var token = '9d590c04119a4433971a1dd622266d38';
+  static var luxand = 'https://api.luxand.cloud/photo/similarity';
+  static var wappin = 'https://api.wappin.id/v1';
+
+ 
   static var UrlfotoAbsen =
       urlImage + "/${AppData.selectedDatabase}/foto_absen/";
   static var UrlfotoProfile =

@@ -178,6 +178,25 @@ class Constanst {
     return validFinal;
   }
 
+  static String convertDate6(String date) {
+    DateTime convert = DateTime.parse(date);
+    var hari = DateFormat('EEEE');
+    var tanggal = DateFormat('dd MMM yyyy');
+    var convertHari = hari.format(convert);
+    var hasilConvertHari = hariIndo(convertHari);
+    var valid2 = tanggal.format(convert);
+    var validFinal = "$hasilConvertHari, $valid2";
+    return validFinal;
+  }
+
+  static String convertDate7(String date) {
+    var inputFormat = DateFormat('yyyy-MM-dd');
+    var inputDate = inputFormat.parse(date);
+    var outputFormat = DateFormat('dd');
+    var outputDate = outputFormat.format(inputDate);
+    return outputDate;
+  }
+
   static String convertDateSimpan(String date) {
     var inputFormat = DateFormat('dd-MM-yyyy');
     var inputDate = inputFormat.parse(date);

@@ -5,20 +5,15 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
-import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
-import 'package:siscom_operasional/controller/lembur_controller.dart';
-import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/controller/klaim_controller.dart';
-import 'package:siscom_operasional/screen/absen/form/form_lembur.dart';
-import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_klaim.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/screen/klaim/form_klaim.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
-import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class Klaim extends StatefulWidget {
   @override
@@ -143,7 +138,7 @@ class _KlaimState extends State<Klaim> {
                       foregroundColor: Colors.white,
                       label: 'Laporan Klaim',
                       onTap: () {
-                        Get.to(LaporanTidakMasuk(
+                        Get.to(LaporanKlaim(
                           title: 'klaim',
                         ));
                       }),

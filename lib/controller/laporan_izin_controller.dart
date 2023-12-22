@@ -2,13 +2,11 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
-import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -16,7 +14,7 @@ import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class LaporanTidakHadirController extends GetxController {
+class LaporanIzinController extends GetxController {
   PageController? pageViewFilterWaktu;
 
   var departemen = TextEditingController().obs;
@@ -42,9 +40,6 @@ class LaporanTidakHadirController extends GetxController {
   var jumlahData = 0.obs;
   var selectedType = 0.obs;
   var selectedViewFilterPengajuan = 0.obs;
-
-  var tempKodeStatus1 = "".obs;
-  var tempNamaStatus1 = "Semua".obs;
 
   var listDetailLaporanEmployee = [].obs;
   var alllistDetailLaporanEmployee = [].obs;
