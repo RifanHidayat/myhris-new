@@ -58,7 +58,7 @@ class _FormLemburState extends State<FormLembur> {
         titleSpacing: 0,
         centerTitle: true,
         title: Text(
-          "Pengajuan Lembur   ",
+          "Pengajuan Lembur",
           style: GoogleFonts.inter(
               color: Constanst.fgPrimary,
               fontWeight: FontWeight.w500,
@@ -413,7 +413,10 @@ class _FormLemburState extends State<FormLembur> {
                 children: [
                   Text(
                     "Dari Jam *",
-                    style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+                    style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Constanst.fgPrimary),
                   ),
                   SizedBox(
                     height: 5,
@@ -506,7 +509,10 @@ class _FormLemburState extends State<FormLembur> {
                 children: [
                   Text(
                     "Sampai Jam *",
-                    style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+                    style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Constanst.fgPrimary),
                   ),
                   SizedBox(
                     height: 5,
