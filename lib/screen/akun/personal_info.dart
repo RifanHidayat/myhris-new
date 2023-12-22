@@ -668,7 +668,7 @@ class PersonalInfo extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Icon(
-                                    Iconsax.briefcase,
+                                    Iconsax.buildings,
                                     size: 24,
                                     color: Constanst.fgPrimary,
                                   ),
@@ -715,7 +715,7 @@ class PersonalInfo extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Icon(
-                                    Iconsax.briefcase,
+                                    Iconsax.buildings_2,
                                     size: 24,
                                     color: Constanst.fgPrimary,
                                   ),

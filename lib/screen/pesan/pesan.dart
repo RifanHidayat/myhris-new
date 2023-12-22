@@ -36,6 +36,7 @@ class _PesanState extends State<Pesan> {
 
   @override
   Widget build(BuildContext context) {
+    controller.selectedView.value =0;
     return Scaffold(
       backgroundColor: Constanst.coloBackgroundScreen,
       appBar: AppBar(

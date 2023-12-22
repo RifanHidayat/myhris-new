@@ -156,7 +156,7 @@ class DashboardController extends GetxController {
   }
 
   void checkAbsenUser(convert, getEmid) {
-    print("view last absen user dashboard");
+  
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
     var startTime = "";
     var endTime = "";
