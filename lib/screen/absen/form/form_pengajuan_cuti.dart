@@ -3,6 +3,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/cuti_controller.dart';
@@ -16,6 +17,7 @@ import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FormPengajuanCuti extends StatefulWidget {
   List? dataForm;
@@ -80,11 +82,10 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
       setState(() {
         controller.tanggalSelectedEdit.value = getDummy;
       });
-    }else{
-      controller.startDate.value="";
-      controller.endDate.value="";
-      controller.alasan.value.text="";
-  
+    } else {
+      controller.startDate.value = "";
+      controller.endDate.value = "";
+      controller.alasan.value.text = "";
     }
     super.initState();
   }
@@ -93,19 +94,118 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constanst.coloBackgroundScreen,
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          automaticallyImplyLeading: false,
-          elevation: 2,
-          flexibleSpace: AppbarMenu1(
-            title: "Pengajuan Cuti",
-            colorTitle: Colors.black,
-            colorIcon: Colors.black,
-            icon: 1,
-            onTap: () {
-              Get.back();
-            },
-          )),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
+        child: Obx(
+          () => Container(
+            decoration: const BoxDecoration(boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0, 2.0),
+                blurRadius: 4.0,
+              )
+            ]),
+            child: AppBar(
+              backgroundColor: Constanst.colorWhite,
+              elevation: 0,
+              // leadingWidth: controller.statusFormPencarian.value ? 50 : 16,
+              titleSpacing: 0,
+              centerTitle: true,
+              title: controller.statusFormPencarian.value
+                  ? SizedBox(
+                      height: 40,
+                      child: TextFormField(
+                        // controller: controller.searchController,
+                        controller: controller.cari.value,
+                        onFieldSubmitted: (value) {
+                          if (controller.cari.value.text == "") {
+                            UtilsAlert.showToast(
+                                "Isi form cari terlebih dahulu");
+                          } else {
+                            // UtilsAlert.loadingSimpanData(
+                            //     Get.context!, "Mencari Data...");
+                            controller.cariData(value);
+                          }
+                        },
+                        textAlignVertical: TextAlignVertical.center,
+                        style: GoogleFonts.inter(
+                            height: 1.5,
+                            fontWeight: FontWeight.w400,
+                            color: Constanst.fgPrimary,
+                            fontSize: 15),
+                        cursorColor: Constanst.onPrimary,
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Constanst.colorNeutralBgSecondary,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100),
+                              borderSide: const BorderSide(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100),
+                              borderSide: const BorderSide(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                            contentPadding:
+                                const EdgeInsets.only(left: 20, right: 20),
+                            hintText: "Cari data...",
+                            hintStyle: GoogleFonts.inter(
+                                height: 1.5,
+                                fontWeight: FontWeight.w400,
+                                color: Constanst.fgSecondary,
+                                fontSize: 14),
+                            prefixIconConstraints:
+                                BoxConstraints.tight(const Size(46, 46)),
+                            suffixIconConstraints:
+                                BoxConstraints.tight(const Size(46, 46)),
+                            suffixIcon: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 16.0, right: 8),
+                              child: IconButton(
+                                icon: Icon(
+                                  Iconsax.close_circle5,
+                                  color: Constanst.fgSecondary,
+                                  size: 24,
+                                ),
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  controller.statusCari.value = false;
+                                  controller.cari.value.text = "";
+                                  controller.loadDataAjuanCuti();
+                                },
+                              ),
+                            )),
+                      ),
+                    )
+                  : Text(
+                      "Pengajuan Cuti",
+                      style: GoogleFonts.inter(
+                          color: Constanst.fgPrimary,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20),
+                    ),
+
+              leading: IconButton(
+                icon: Icon(
+                  Iconsax.arrow_left,
+                  color: Constanst.fgPrimary,
+                  size: 24,
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+                // onPressed: () {
+                //   controller.cari.value.text = "";
+                //   Get.back();
+                // },
+              ),
+            ),
+          ),
+        ),
+      ),
       body: WillPopScope(
           onWillPop: () async {
             Get.back();
@@ -138,47 +238,44 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                              height: 16,
+                            const SizedBox(height: 16),
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(12)),
+                                  border:
+                                      Border.all(color: Constanst.fgBorder)),
+                              child: controller.selectedTypeCuti.value
+                                      .toString()
+                                      .toLowerCase()
+                                      .toLowerCase()
+                                      .contains("Cuti Melahirkan".toLowerCase())
+                                  ? informasiSisaCutiMelahirkan()
+                                  : informasiSisaCuti(),
                             ),
-                            controller.selectedTypeCuti.value
-                                    .toString()
-                                    .toLowerCase()
-                                    .toLowerCase()
-                                    .contains("Cuti Melahirkan".toLowerCase())
-                                ? informasiSisaCutiMelahirkan()
-                                : informasiSisaCuti(),
-                            SizedBox(
-                              height: 16,
-                            ),
-                            Text("Tipe *",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            SizedBox(height: 5),
-                            formTipe(),
-                            SizedBox(
-                              height: 16,
-                            ),
-                            controller.selectedTypeCuti.value
-                                    .toString()
-                                    .toLowerCase()
-                                    .toLowerCase()
-                                    .contains("Cuti Melahirkan".toLowerCase())
-                                ? formTanggalCutiMelahirkan()
-                                : formTanggalCuti(),
-                            SizedBox(
-                              height: 16,
-                            ),
-                            formDelegasiKepada(),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            formUploadFile(),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            formAlasan(),
-                            SizedBox(
-                              height: 30,
+                            const SizedBox(height: 16),
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(12)),
+                                  border:
+                                      Border.all(color: Constanst.fgBorder)),
+                              child: Column(
+                                children: [
+                                  formTipe(),
+                                  controller.selectedTypeCuti.value
+                                          .toString()
+                                          .toLowerCase()
+                                          .toLowerCase()
+                                          .contains(
+                                              "Cuti Melahirkan".toLowerCase())
+                                      ? formTanggalCutiMelahirkan()
+                                      : formTanggalCuti(),
+                                  formDelegasiKepada(),
+                                  formUploadFile(),
+                                  formAlasan(),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -186,259 +283,391 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
               ),
             ),
           )),
-      bottomNavigationBar: Obx(
-        () => Padding(
-            padding: EdgeInsets.all(16.0),
-            child: !controller.statusHitungCuti.value
-                ? SizedBox()
-                : TextButtonWidget(
-                    title: "Simpan",
-                    onTap: () {
-                      if (controller.selectedTypeCuti.value
-                          .toString()
-                          .toLowerCase()
-                          .toLowerCase()
-                          
-                          .contains("Cuti Melahirkan".toLowerCase())) {
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            color: Constanst.colorWhite,
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0, 2.0),
+                blurRadius: 12.0,
+              )
+            ]),
+        child: SafeArea(
+          child: Obx(
+            () => Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                child: !controller.statusHitungCuti.value
+                    ? const SizedBox()
+                    : TextButtonWidget(
+                        title: "Kirim",
+                        onTap: () {
+                          if (controller.selectedTypeCuti.value
+                              .toString()
+                              .toLowerCase()
+                              .toLowerCase()
+                              .contains("Cuti Melahirkan".toLowerCase())) {
+                            DateTime tempStartDate = DateTime.parse(
+                                DateFormat('yyyy-MM-dd')
+                                    .format(DateFormat('yyyy-MM-dd')
+                                        .parse(controller.startDate.value))
+                                    .toString());
+                            DateTime tempEndDate = DateTime.parse(
+                                DateFormat('yyyy-MM-dd')
+                                    .format(DateTime.parse(
+                                        controller.endDate.value.toString()))
+                                    .toString());
 
-                        DateTime tempStartDate = DateTime.parse(
-                            DateFormat('yyyy-MM-dd')
-                                .format(DateFormat('yyyy-MM-dd')
-                                    .parse(controller.startDate.value))
-                                .toString());
-                        DateTime tempEndDate = DateTime.parse(
-                            DateFormat('yyyy-MM-dd')
-                                .format(DateTime.parse(
-                                    controller.endDate.value.toString()))
-                                .toString());
-
-                                if (tempEndDate.isBefore(tempStartDate)){
-                                   UtilsAlert.showToast(
-                              "Tanggal mulai lebih besar dari tanggal selesai");
+                            if (tempEndDate.isBefore(tempStartDate)) {
+                              UtilsAlert.showToast(
+                                  "Tanggal mulai lebih besar dari tanggal selesai");
                               return;
+                            }
 
-                                }
+                            // Define two DateTime objects representing the two dates
+                            DateTime date1 = DateTime(tempStartDate.year,
+                                tempStartDate.month, tempStartDate.day);
+                            DateTime date2 = DateTime(tempEndDate.year,
+                                tempEndDate.month, tempEndDate.day);
 
-                        // Define two DateTime objects representing the two dates
-                        DateTime date1 = DateTime(tempStartDate.year,
-                            tempStartDate.month, tempStartDate.day);
-                        DateTime date2 = DateTime(tempEndDate.year,
-                            tempEndDate.month, tempEndDate.day);
+                            // Calculate the difference between the two dates
+                            Duration difference = date2.difference(date1);
+                            controller.durasiIzin.value = difference.inDays + 1;
+                            controller.durasiCutiMelahirkan.value =
+                                difference.inDays + 1;
 
-                        // Calculate the difference between the two dates
-                        Duration difference = date2.difference(date1);
-                        controller.durasiIzin.value = difference.inDays + 1;
-                        controller.durasiCutiMelahirkan.value =
-                            difference.inDays + 1;
+                            if (difference.inDays + 1 >
+                                controller.jumlahCuti.value) {
+                              UtilsAlert.showToast(
+                                  "Total hari melewati batas limit");
+                              return;
+                            }
+                            controller.tanggalSelected.clear();
+                            controller.tanggalSelected.value.add(
+                                DateTime.parse(controller.startDate.value));
+                            controller.tanggalSelected.value
+                                .add(DateTime.parse(controller.endDate.value));
 
-                        if (difference.inDays + 1 >
-                            controller.jumlahCuti.value) {
-                          UtilsAlert.showToast(
-                              "Total hari melewati batas limit");
-                          return;
-                        }
-                        controller.tanggalSelected.clear();
-                        controller.tanggalSelected.value
-                            .add(DateTime.parse(controller.startDate.value));
-                        controller.tanggalSelected.value
-                            .add(DateTime.parse(controller.endDate.value));
-
-                        controller.validasiKirimPengajuan();
-
-
-
-                        // Print the result
-                      
-                      
-                      } else {
-                        if (controller.statusForm.value == true) {
-                          if ((controller.jumlahCuti.value -
-                                  controller.cutiTerpakai.value) <
-                              controller.tanggalSelectedEdit.value.length) {
-                            UtilsAlert.showToast(
-                                "Tanggal yang dipilih melebihi sisa cuti");
-                          } else {
                             controller.validasiKirimPengajuan();
-                          }
-                        } else {
-                          if ((controller.jumlahCuti.value -
-                                  controller.cutiTerpakai.value) <
-                              controller.tanggalSelected.value.length) {
-                            UtilsAlert.showToast(
-                                "Tanggal yang dipilih melebihi sisa cuti");
+
+                            // Print the result
                           } else {
-                            controller.validasiKirimPengajuan();
+                            if (controller.statusForm.value == true) {
+                              if ((controller.jumlahCuti.value -
+                                      controller.cutiTerpakai.value) <
+                                  controller.tanggalSelectedEdit.value.length) {
+                                UtilsAlert.showToast(
+                                    "Tanggal yang dipilih melebihi sisa cuti");
+                              } else {
+                                controller.validasiKirimPengajuan();
+                              }
+                            } else {
+                              if ((controller.jumlahCuti.value -
+                                      controller.cutiTerpakai.value) <
+                                  controller.tanggalSelected.value.length) {
+                                UtilsAlert.showToast(
+                                    "Tanggal yang dipilih melebihi sisa cuti");
+                              } else {
+                                controller.validasiKirimPengajuan();
+                              }
+                            }
                           }
-                        }
-                      }
 
-                      // controller.validasiKirimPengajuan();
-                    },
-                    colorButton: Constanst.colorPrimary,
-                    colortext: Constanst.colorWhite,
-                    border: BorderRadius.circular(20.0),
-                  )),
-      ),
-    );
-  }
-
-  Widget informasiSisaCuti() {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: Constanst.styleBoxDecoration1.borderRadius),
-      child: Padding(
-        padding: EdgeInsets.only(left: 16, right: 16),
-        child: Obx(
-          () => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                      child: Text(
-                    "Cuti Pribadi",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )),
-                  Expanded(
-                      child: Text(
-                    "${controller.cutiTerpakai.value}/${controller.jumlahCuti.value}",
-                    textAlign: TextAlign.right,
-                  )),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: MediaQuery.of(Get.context!).size.width,
-                child: Center(
-                  child: LinearPercentIndicator(
-                    barRadius: Radius.circular(15.0),
-                    lineHeight: 8.0,
-                    percent: controller.persenCuti.value,
-                    progressColor: Constanst.colorPrimary,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              // Text("Cuti Khusus"),
-            ],
+                          // controller.validasiKirimPengajuan();
+                        },
+                        colorButton: Constanst.colorPrimary,
+                        colortext: Constanst.colorWhite,
+                        border: BorderRadius.circular(8.0),
+                      )),
           ),
         ),
       ),
     );
   }
 
-  Widget 
-  informasiSisaCutiMelahirkan() {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: Constanst.styleBoxDecoration1.borderRadius),
-      child: Padding(
-        padding: EdgeInsets.only(left: 16, right: 16),
-        child: Obx(
-          () => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                      child: Text(
-                    "Limit Cuti",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )),
-                  Expanded(
-                      child: Text(
-                    "${controller.jumlahCuti.value}",
-                    textAlign: TextAlign.right,
-                  )),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: MediaQuery.of(Get.context!).size.width,
-                child: Center(
-                  child: LinearPercentIndicator(
-                    barRadius: Radius.circular(15.0),
-                    lineHeight: 8.0,
-                    percent: controller.persenCuti.value,
-                    progressColor: Constanst.colorPrimary,
-                  ),
+  Widget informasiSisaCuti() {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Obx(
+        () => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/5_cuti.svg',
+                      height: 22,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      "Cuti Pribadi",
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          color: Constanst.fgPrimary,
+                          fontSize: 16),
+                    ),
+                  ],
+                ),
+                Text(
+                  "${controller.jumlahCuti.value} Total",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w500,
+                      color: Constanst.fgSecondary,
+                      fontSize: 12),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: MediaQuery.of(Get.context!).size.width,
+              child: Center(
+                child: LinearPercentIndicator(
+                  barRadius: const Radius.circular(100.0),
+                  lineHeight: 8.0,
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                  percent: controller.persenCuti.value,
+                  progressColor: Constanst.infoLight,
+                  backgroundColor: Constanst.colorNeutralBgTertiary,
                 ),
               ),
-              SizedBox(
-                height: 16,
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "${controller.jumlahCuti.value - controller.cutiTerpakai.value} Tersisa",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w500,
+                      color: Constanst.infoLight,
+                      fontSize: 12),
+                ),
+                Text(
+                  "${controller.cutiTerpakai.value} Terpakai",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w500,
+                      color: Constanst.color4,
+                      fontSize: 12),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget informasiSisaCutiMelahirkan() {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Obx(
+        () => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/5_cuti.svg',
+                      height: 22,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      "Cuti Melahirkan",
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          color: Constanst.fgPrimary,
+                          fontSize: 16),
+                    ),
+                  ],
+                ),
+                Text(
+                  "${controller.jumlahCuti.value} Total",
+                  textAlign: TextAlign.right,
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w500,
+                      color: Constanst.fgSecondary,
+                      fontSize: 12),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: MediaQuery.of(Get.context!).size.width,
+              child: Center(
+                child: LinearPercentIndicator(
+                  barRadius: const Radius.circular(100.0),
+                  lineHeight: 8.0,
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                  percent: controller.persenCuti.value,
+                  progressColor: Constanst.infoLight,
+                  backgroundColor: Constanst.colorNeutralBgTertiary,
+                ),
               ),
-              // Text("Cuti Khusus"),
-            ],
-          ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "${controller.jumlahCuti.value - controller.cutiTerpakai.value} Tersisa",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w500,
+                      color: Constanst.infoLight,
+                      fontSize: 12),
+                ),
+                Text(
+                  "${controller.cutiTerpakai.value} Terpakai",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w500,
+                      color: Constanst.color4,
+                      fontSize: 12),
+                ),
+              ],
+            ),
+            // Text("Cuti Khusus"),
+          ],
         ),
       ),
     );
   }
 
   Widget formTipe() {
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: Constanst.borderStyle1,
-          border: Border.all(
-              width: 0.5, color: Color.fromARGB(255, 211, 205, 205))),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
-            isDense: true,
-            items: controller.allTipeFormCutiDropdown.value
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
+    return InkWell(
+      onTap: () async {
+        await showMenu(
+          context: context,
+          position: const RelativeRect.fromLTRB(17, 235, 17, 0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          // initialValue: controller.selectedTypeLembur.value,
+          items: controller.allTipeFormCutiDropdown.value
+              .map<PopupMenuItem<String>>((String value) {
+            return PopupMenuItem<String>(
+              value: value,
+              padding: EdgeInsets.zero,
+              onTap: () => controller.selectedTypeCuti.value = value,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
                 child: Text(
                   value,
-                  style: TextStyle(fontSize: 14),
+                  style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Constanst.fgPrimary),
                 ),
-              );
-            }).toList(),
-            value: controller.selectedTypeCuti.value,
-            onChanged: (selectedValue) {
-              print(controller.allEmployeeDelegasi.value);
-              var data = controller.allTipe
-                  .where((p0) =>
-                      p0['name'].toString().toLowerCase() ==
-                      selectedValue.toString().toLowerCase())
-                  .toList();
-              controller.loadCutiUserMelahirkan();
-
-              print(data.toString());
-
-              if (data.isNotEmpty) {
-                controller.jumlahCuti.value = data[0]['leave_day'];
-              }
-
-              // var data=controller.allTipe.value.whe
-              controller.selectedTypeCuti.value = selectedValue!;
-              // controller.selectedTypeCuti.value = selectedValue!;
-            },
-            isExpanded: true,
-          ),
+              ),
+            );
+          }).toList(),
+        );
+      },
+      customBorder: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(12.0),
+          topLeft: Radius.circular(12.0),
         ),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                const Icon(
+                  Iconsax.note_2,
+                  size: 26,
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Tipe Cuti*",
+                      style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Constanst.fgPrimary),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      controller.selectedTypeCuti.value,
+                      style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Constanst.fgPrimary),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+            child: Divider(
+              height: 0,
+              thickness: 1,
+              color: Constanst.fgBorder,
+            ),
+          ),
+          // Container(
+          //   height: 50,
+          //   decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: Constanst.borderStyle1,
+          //       border: Border.all(
+          //           width: 0.5, color: Color.fromARGB(255, 211, 205, 205))),
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(8.0),
+          //     child: DropdownButtonHideUnderline(
+          //       child: DropdownButton<String>(
+          //         isDense: true,
+          //         items: controller.allTipeFormCutiDropdown.value
+          //             .map<DropdownMenuItem<String>>((String value) {
+          //           return DropdownMenuItem<String>(
+          //             value: value,
+          //             child: Text(
+          //               value,
+          //               style: TextStyle(fontSize: 14),
+          //             ),
+          //           );
+          //         }).toList(),
+          //         value: controller.selectedTypeCuti.value,
+          //         onChanged: (selectedValue) {
+          //           print(controller.allEmployeeDelegasi.value);
+          //           var data = controller.allTipe
+          //               .where((p0) =>
+          //                   p0['name'].toString().toLowerCase() ==
+          //                   selectedValue.toString().toLowerCase())
+          //               .toList();
+          //           controller.loadCutiUserMelahirkan();
+
+          //           print(data.toString());
+
+          //           if (data.isNotEmpty) {
+          //             controller.jumlahCuti.value = data[0]['leave_day'];
+          //           }
+
+          //           // var data=controller.allTipe.value.whe
+          //           controller.selectedTypeCuti.value = selectedValue!;
+          //           // controller.selectedTypeCuti.value = selectedValue!;
+          //         },
+          //         isExpanded: true,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+        ],
       ),
     );
   }
@@ -448,158 +677,329 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Text("Tanggal*", style: TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(
-          height: 5,
-        ),
-        widget.dataForm![1] == true
-            ? controller.selectedTypeCuti.value
-                    .toString()
-                    .toLowerCase()
-                    .toLowerCase()
-                    .contains("Cuti Melahirkan".toLowerCase())
-                ? SizedBox()
-                : customTanggalDariSampaiDari()
-            : SizedBox(),
+        // widget.dataForm![1] == true
+        //     ? controller.selectedTypeCuti.value
+        //             .toString()
+        //             .toLowerCase()
+        //             .toLowerCase()
+        //             .contains("Cuti Melahirkan".toLowerCase())
+        //         ? SizedBox()
+        //         : customTanggalDariSampaiDari()
+        //     : SizedBox(),
 
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 50,
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Tanggal Mulai *",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        DatePicker.showPicker(
-                          context,
-                          pickerModel: CustomDatePicker(
-                            currentTime: DateTime.now(),
-                          ),
-                          onConfirm: (time) {
-                            if (time != null) {
-                              controller.startDate.value =
-                                  DateFormat('yyyy-MM-dd')
-                                      .format(time)
-                                      .toString();
-
-                              print("$time");
-                            }
-                          },
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(left: 8, right: 8),
-                        width: MediaQuery.of(context).size.width,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border:
-                              Border.all(width: 1, color: Constanst.Secondary),
-                        ),
-                        child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Obx(() => TextLabell(
-                                  text: controller.startDate.value,
-                                  size: 14,
-                                ))),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: InkWell(
+                  onTap: () {
+                    DatePicker.showPicker(
+                      context,
+                      pickerModel: CustomDatePicker(
+                        currentTime: DateTime.now(),
                       ),
-                    )
-                  ],
+                      onConfirm: (time) {
+                        if (time != null) {
+                          controller.startDate.value =
+                              DateFormat('yyyy-MM-dd').format(time).toString();
+
+                          print("$time");
+                        }
+                      },
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 16.0, 0.0, 16.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(Iconsax.calendar_2),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextLabell(
+                                text: "Tanggal Mulai *",
+                                color: Constanst.fgPrimary,
+                                size: 14,
+                                weight: FontWeight.w400,
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextLabell(
+                                    text: controller.startDate.value == ""
+                                        ? controller.startDate.value
+                                        : DateFormat('dd MMM yyyy', 'id')
+                                            .format(DateTime.parse(controller
+                                                .startDate.value
+                                                .toString())),
+                                    color: Constanst.fgPrimary,
+                                    weight: FontWeight.w500,
+                                    size: 16,
+                                  ),
+                                  Icon(Iconsax.arrow_down_1,
+                                      size: 20, color: Constanst.fgPrimary),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
-            SizedBox(
-              width: 16,
-            ),
             Expanded(
-              flex: 50,
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Tanggal Selesai  *",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    SizedBox(
-                      height: 12,
+              child: InkWell(
+                onTap: () {
+                  if (controller.startDate.value == "") {
+                    UtilsAlert.showToast("Tanggal Mulai belum diisi");
+                    return;
+                  }
+                  print("kesini");
+                  DatePicker.showPicker(
+                    context,
+                    pickerModel: CustomDatePicker(
+                      // minTime: DateTime(
+                      //     DateTime.now().year,
+                      //     DateTime.now().month - 1,
+                      //     int.parse(
+                      //         AppData.informasiUser![0].beginPayroll.toString())),
+                      // maxTime: DateTime(DateTime.now().year, DateTime.now().month,
+                      //     DateTime.now().day),
+                      currentTime: DateTime.now(),
                     ),
-                    InkWell(
-                      onTap: () {
-                        if (controller.startDate.value == "") {
-                          UtilsAlert.showToast("Tanggal Mulai belum diisi");
-                          return;
-                        }
-                        print("kesini");
-                        DatePicker.showPicker(
-                          context,
-                          pickerModel: CustomDatePicker(
-                            // minTime: DateTime(
-                            //     DateTime.now().year,
-                            //     DateTime.now().month - 1,
-                            //     int.parse(
-                            //         AppData.informasiUser![0].beginPayroll.toString())),
-                            // maxTime: DateTime(DateTime.now().year, DateTime.now().month,
-                            //     DateTime.now().day),
-                            currentTime: DateTime.now(),
-                          ),
-                          onConfirm: (time) {
-                            if (time != null) {
-                              controller.endDate.value =
-                                  DateFormat('yyyy-MM-dd')
-                                      .format(DateFormat('yyyy-MM-dd')
-                                          .parse(time.toString()))
-                                      .toString();
+                    onConfirm: (time) {
+                      if (time != null) {
+                        controller.endDate.value = DateFormat('yyyy-MM-dd')
+                            .format(
+                                DateFormat('yyyy-MM-dd').parse(time.toString()))
+                            .toString();
 
-                              // absenController.tglAjunan.value =
-                              //     DateFormat('yyyy-MM-dd').format(time).toString();
-                              // absenController.checkAbsensi();
+                        // absenController.tglAjunan.value =
+                        //     DateFormat('yyyy-MM-dd').format(time).toString();
+                        // absenController.checkAbsensi();
 
-                              // absenController.getPlaceCoordinateCheckin();
-                              // absenController.getPlaceCoordinateCheckout();
+                        // absenController.getPlaceCoordinateCheckin();
+                        // absenController.getPlaceCoordinateCheckout();
 
-                              // var filter = DateFormat('yyyy-MM').format(time);
-                              // var array = filter.split('-');
-                              // var bulan = array[1];
-                              // var tahun = array[0];
-                              // controller.bulanSelectedSearchHistory.value = bulan;
-                              // controller.tahunSelectedSearchHistory.value = tahun;
-                              // controller.bulanDanTahunNow.value = "$bulan-$tahun";
-                              // this.controller.bulanSelectedSearchHistory.refresh();
-                              // this.controller.tahunSelectedSearchHistory.refresh();
-                              // this.controller.bulanDanTahunNow.refresh();
-                              // controller.loadHistoryAbsenUser();
-                            }
-                          },
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(left: 8, right: 8),
-                        width: MediaQuery.of(context).size.width,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border:
-                              Border.all(width: 1, color: Constanst.Secondary),
+                        // var filter = DateFormat('yyyy-MM').format(time);
+                        // var array = filter.split('-');
+                        // var bulan = array[1];
+                        // var tahun = array[0];
+                        // controller.bulanSelectedSearchHistory.value = bulan;
+                        // controller.tahunSelectedSearchHistory.value = tahun;
+                        // controller.bulanDanTahunNow.value = "$bulan-$tahun";
+                        // this.controller.bulanSelectedSearchHistory.refresh();
+                        // this.controller.tahunSelectedSearchHistory.refresh();
+                        // this.controller.bulanDanTahunNow.refresh();
+                        // controller.loadHistoryAbsenUser();
+                      }
+                    },
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 16.0, 16.0, 16.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(Iconsax.calendar_2),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextLabell(
+                              text: "Tanggal Selesai*",
+                              color: Constanst.fgPrimary,
+                              size: 14,
+                              weight: FontWeight.w400,
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: TextLabell(
+                                    text: controller.endDate.value == ""
+                                        ? controller.endDate.value
+                                        : DateFormat('dd MMM yyyy', 'id')
+                                            .format(DateTime.parse(controller
+                                                .endDate.value
+                                                .toString())),
+                                    color: Constanst.fgPrimary,
+                                    weight: FontWeight.w500,
+                                    size: 16,
+                                  ),
+                                ),
+                                Icon(Iconsax.arrow_down_1,
+                                    size: 20, color: Constanst.fgPrimary),
+                              ],
+                            ),
+                          ],
                         ),
-                        child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Obx(() => TextLabell(
-                                  text: controller.endDate.value,
-                                  size: 14,
-                                ))),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
           ],
-        )
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+          child: Divider(
+            height: 0,
+            thickness: 1,
+            color: Constanst.fgBorder,
+          ),
+        ),
+        // Row(
+        //   children: [
+        //     Expanded(
+        //       flex: 50,
+        //       child: Container(
+        //         child: Column(
+        //           crossAxisAlignment: CrossAxisAlignment.start,
+        //           children: [
+        //             Text("Tanggal Mulai *",
+        //                 style: TextStyle(fontWeight: FontWeight.bold)),
+        //             SizedBox(
+        //               height: 12,
+        //             ),
+        //             InkWell(
+        //               onTap: () {
+        //                 DatePicker.showPicker(
+        //                   context,
+        //                   pickerModel: CustomDatePicker(
+        //                     currentTime: DateTime.now(),
+        //                   ),
+        //                   onConfirm: (time) {
+        //                     if (time != null) {
+        //                       controller.startDate.value =
+        //                           DateFormat('yyyy-MM-dd')
+        //                               .format(time)
+        //                               .toString();
+
+        //                       print("$time");
+        //                     }
+        //                   },
+        //                 );
+        //               },
+        //               child: Container(
+        //                 padding: EdgeInsets.only(left: 8, right: 8),
+        //                 width: MediaQuery.of(context).size.width,
+        //                 height: 40,
+        //                 decoration: BoxDecoration(
+        //                   borderRadius: BorderRadius.circular(12),
+        //                   border:
+        //                       Border.all(width: 1, color: Constanst.Secondary),
+        //                 ),
+        //                 child: Align(
+        //                     alignment: Alignment.centerLeft,
+        //                     child: Obx(() => TextLabell(
+        //                           text: controller.startDate.value,
+        //                           size: 14,
+        //                         ))),
+        //               ),
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //     ),
+        //     SizedBox(
+        //       width: 16,
+        //     ),
+        //     Expanded(
+        //       flex: 50,
+        //       child: Container(
+        //         child: Column(
+        //           crossAxisAlignment: CrossAxisAlignment.start,
+        //           children: [
+        //             Text("Tanggal Selesai  *",
+        //                 style: TextStyle(fontWeight: FontWeight.bold)),
+        //             SizedBox(
+        //               height: 12,
+        //             ),
+        //             InkWell(
+        //               onTap: () {
+        //                 if (controller.startDate.value == "") {
+        //                   UtilsAlert.showToast("Tanggal Mulai belum diisi");
+        //                   return;
+        //                 }
+        //                 print("kesini");
+        //                 DatePicker.showPicker(
+        //                   context,
+        //                   pickerModel: CustomDatePicker(
+        //                     // minTime: DateTime(
+        //                     //     DateTime.now().year,
+        //                     //     DateTime.now().month - 1,
+        //                     //     int.parse(
+        //                     //         AppData.informasiUser![0].beginPayroll.toString())),
+        //                     // maxTime: DateTime(DateTime.now().year, DateTime.now().month,
+        //                     //     DateTime.now().day),
+        //                     currentTime: DateTime.now(),
+        //                   ),
+        //                   onConfirm: (time) {
+        //                     if (time != null) {
+        //                       controller.endDate.value =
+        //                           DateFormat('yyyy-MM-dd')
+        //                               .format(DateFormat('yyyy-MM-dd')
+        //                                   .parse(time.toString()))
+        //                               .toString();
+
+        //                       // absenController.tglAjunan.value =
+        //                       //     DateFormat('yyyy-MM-dd').format(time).toString();
+        //                       // absenController.checkAbsensi();
+
+        //                       // absenController.getPlaceCoordinateCheckin();
+        //                       // absenController.getPlaceCoordinateCheckout();
+
+        //                       // var filter = DateFormat('yyyy-MM').format(time);
+        //                       // var array = filter.split('-');
+        //                       // var bulan = array[1];
+        //                       // var tahun = array[0];
+        //                       // controller.bulanSelectedSearchHistory.value = bulan;
+        //                       // controller.tahunSelectedSearchHistory.value = tahun;
+        //                       // controller.bulanDanTahunNow.value = "$bulan-$tahun";
+        //                       // this.controller.bulanSelectedSearchHistory.refresh();
+        //                       // this.controller.tahunSelectedSearchHistory.refresh();
+        //                       // this.controller.bulanDanTahunNow.refresh();
+        //                       // controller.loadHistoryAbsenUser();
+        //                     }
+        //                   },
+        //                 );
+        //               },
+        //               child: Container(
+        //                 padding: EdgeInsets.only(left: 8, right: 8),
+        //                 width: MediaQuery.of(context).size.width,
+        //                 height: 40,
+        //                 decoration: BoxDecoration(
+        //                   borderRadius: BorderRadius.circular(12),
+        //                   border:
+        //                       Border.all(width: 1, color: Constanst.Secondary),
+        //                 ),
+        //                 child: Align(
+        //                     alignment: Alignment.centerLeft,
+        //                     child: Obx(() => TextLabell(
+        //                           text: controller.endDate.value,
+        //                           size: 14,
+        //                         ))),
+        //               ),
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // )
         // controller.screenTanggalSelected.value == true
         //     ? Card(
         //         margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -632,40 +1032,47 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
   }
 
   Widget formTanggalCuti() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Tanggal*", style: TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(
-          height: 5,
-        ),
-        widget.dataForm![1] == true
-            ? customTanggalDariSampaiDari()
-            : SizedBox(),
-        Card(
-            margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            child: SfDateRangePicker(
-              selectionMode: DateRangePickerSelectionMode.multiple,
-              initialSelectedDates: controller.tanggalSelectedEdit.value,
-              monthCellStyle: DateRangePickerMonthCellStyle(
-                weekendTextStyle: TextStyle(color: Colors.red),
-                blackoutDateTextStyle: TextStyle(
-                    color: Colors.red, decoration: TextDecoration.lineThrough),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Pilih Tanggal*",
+              style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Constanst.fgPrimary)),
+          // SizedBox(
+          //   height: 5,
+          // ),
+          // widget.dataForm![1] == true
+          //     ? customTanggalDariSampaiDari()
+          //     : SizedBox(),
+          Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
               ),
-              onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-                if (controller.statusForm.value == true) {
-                  controller.tanggalSelectedEdit.value = args.value;
-                  this.controller.tanggalSelectedEdit.refresh();
-                } else {
-                  controller.tanggalSelected.value = args.value;
-                  this.controller.tanggalSelected.refresh();
-                }
-              },
-            ))
-      ],
+              child: SfDateRangePicker(
+                selectionMode: DateRangePickerSelectionMode.multiple,
+                initialSelectedDates: controller.tanggalSelectedEdit.value,
+                monthCellStyle: const DateRangePickerMonthCellStyle(
+                  weekendTextStyle: TextStyle(color: Colors.red),
+                  blackoutDateTextStyle: TextStyle(
+                      color: Colors.red,
+                      decoration: TextDecoration.lineThrough),
+                ),
+                onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+                  if (controller.statusForm.value == true) {
+                    controller.tanggalSelectedEdit.value = args.value;
+                    this.controller.tanggalSelectedEdit.refresh();
+                  } else {
+                    controller.tanggalSelected.value = args.value;
+                    this.controller.tanggalSelected.refresh();
+                  }
+                },
+              ))
+        ],
+      ),
     );
 
     //  Column(
@@ -794,197 +1201,304 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
     // );
   }
 
-  Widget customTanggalDariSampaiDari() {
-    return Container(
-        height: 50,
-        width: MediaQuery.of(Get.context!).size.width,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: Constanst.borderStyle1,
-            border: Border.all(
-                width: 0.5, color: Color.fromARGB(255, 211, 205, 205))),
-        child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 90,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(Constanst.convertDate1(
-                            "${controller.dariTanggal.value.text}")),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Text("sd"),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Text(Constanst.convertDate1(
-                              "${controller.sampaiTanggal.value.text}")),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 10,
-                  child: IconButton(
-                    onPressed: () {
-                      controller.screenTanggalSelected.value =
-                          !controller.screenTanggalSelected.value;
-                    },
-                    icon: Icon(
-                      Iconsax.edit,
-                      size: 18,
-                    ),
-                  ),
-                )
-              ],
-            )));
-  }
+  // Widget customTanggalDariSampaiDari() {
+  //   return Container(
+  //       height: 50,
+  //       width: MediaQuery.of(Get.context!).size.width,
+  //       decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           borderRadius: Constanst.borderStyle1,
+  //           border: Border.all(
+  //               width: 0.5, color: Color.fromARGB(255, 211, 205, 205))),
+  //       child: Padding(
+  //           padding: const EdgeInsets.all(8.0),
+  //           child: Row(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             mainAxisAlignment: MainAxisAlignment.start,
+  //             children: [
+  //               Expanded(
+  //                 flex: 90,
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.only(top: 6),
+  //                   child: Row(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(Constanst.convertDate1(
+  //                           "${controller.dariTanggal.value.text}")),
+  //                       Padding(
+  //                         padding: const EdgeInsets.only(left: 8),
+  //                         child: Text("sd"),
+  //                       ),
+  //                       Padding(
+  //                         padding: const EdgeInsets.only(left: 8),
+  //                         child: Text(Constanst.convertDate1(
+  //                             "${controller.sampaiTanggal.value.text}")),
+  //                       )
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //               Expanded(
+  //                 flex: 10,
+  //                 child: IconButton(
+  //                   onPressed: () {
+  //                     controller.screenTanggalSelected.value =
+  //                         !controller.screenTanggalSelected.value;
+  //                   },
+  //                   icon: Icon(
+  //                     Iconsax.edit,
+  //                     size: 18,
+  //                   ),
+  //                 ),
+  //               )
+  //             ],
+  //           )));
+  // }
 
   Widget formDelegasiKepada() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text("Tugas Didelegasikan Kepada",
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(
-          height: 5,
-        ),
-        Container(
-          height: 50,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: Constanst.borderStyle1,
-              border: Border.all(
-                  width: 0.5, color: Color.fromARGB(255, 211, 205, 205))),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                isDense: true,
-                items: controller.allEmployeeDelegasi.value
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  );
-                }).toList(),
-                value: controller.selectedDelegasi.value,
-                onChanged: (selectedValue) {
-                  controller.selectedDelegasi.value = selectedValue!;
-                },
-                isExpanded: true,
+    return InkWell(
+      onTap: () async {
+        await showMenu(
+          context: context,
+          position: const RelativeRect.fromLTRB(17, 235, 17, 0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          // initialValue: controller.selectedTypeLembur.value,
+          items: controller.allEmployeeDelegasi.value
+              .map<PopupMenuItem<String>>((String value) {
+            return PopupMenuItem<String>(
+              value: value,
+              padding: EdgeInsets.zero,
+              onTap: () => controller.selectedDelegasi.value = value,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+                child: Text(
+                  value,
+                  style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Constanst.fgPrimary),
+                ),
               ),
+            );
+          }).toList(),
+        );
+      },
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                const Icon(
+                  Iconsax.profile_add,
+                  size: 26,
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Delegasikan Tugas kepada*",
+                      style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Constanst.fgPrimary),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      controller.selectedDelegasi.value,
+                      style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Constanst.fgPrimary),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+            child: Divider(
+              height: 0,
+              thickness: 1,
+              color: Constanst.fgBorder,
+            ),
+          ),
+          // Container(
+          //   height: 50,
+          //   decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: Constanst.borderStyle1,
+          //       border: Border.all(
+          //           width: 0.5, color: Color.fromARGB(255, 211, 205, 205))),
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(8.0),
+          //     child: DropdownButtonHideUnderline(
+          //       child: DropdownButton<String>(
+          //         isDense: true,
+          //         items: controller.allTipeFormCutiDropdown.value
+          //             .map<DropdownMenuItem<String>>((String value) {
+          //           return DropdownMenuItem<String>(
+          //             value: value,
+          //             child: Text(
+          //               value,
+          //               style: TextStyle(fontSize: 14),
+          //             ),
+          //           );
+          //         }).toList(),
+          //         value: controller.selectedTypeCuti.value,
+          //         onChanged: (selectedValue) {
+          //           print(controller.allEmployeeDelegasi.value);
+          //           var data = controller.allTipe
+          //               .where((p0) =>
+          //                   p0['name'].toString().toLowerCase() ==
+          //                   selectedValue.toString().toLowerCase())
+          //               .toList();
+          //           controller.loadCutiUserMelahirkan();
+
+          //           print(data.toString());
+
+          //           if (data.isNotEmpty) {
+          //             controller.jumlahCuti.value = data[0]['leave_day'];
+          //           }
+
+          //           // var data=controller.allTipe.value.whe
+          //           controller.selectedTypeCuti.value = selectedValue!;
+          //           // controller.selectedTypeCuti.value = selectedValue!;
+          //         },
+          //         isExpanded: true,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+        ],
+      ),
     );
   }
 
   Widget formUploadFile() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Text("Upload File (Max 5MB)",
-              style: TextStyle(fontWeight: FontWeight.bold)),
-        ),
-        Expanded(
-          child: Container(
-              alignment: Alignment.centerRight,
-              margin: EdgeInsets.only(right: 10),
-              child: controller.namaFileUpload.value == ""
-                  ? InkWell(
-                      onTap: () {
-                        controller.takeFile();
-                      },
-                      child: Icon(
-                        Iconsax.document_upload,
-                        color: Constanst.colorPrimary,
-                      ))
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+    return InkWell(
+      onTap: () async {
+        controller.takeFile();
+      },
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Iconsax.document_upload,
+                  size: 26,
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Unggah File*",
+                      style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Constanst.fgPrimary),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Ukuran file max 5 MB",
+                      style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Constanst.fgSecondary),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
                       children: [
-                        Expanded(
-                          flex: 85,
-                          child: Text(
-                            controller.namaFileUpload.value.length > 20
-                                ? controller.namaFileUpload.value
-                                        .substring(0, 15) +
-                                    '...'
-                                : controller.namaFileUpload.value,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Expanded(
-                          flex: 15,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 5),
-                            child: InkWell(
-                              onTap: () {
-                                // controller.namaFileUpload.value == "";
-                                // controller.base64FilePengajuan.value == "";
-                                // controller.takeFile();
-                              },
-                              child: Icon(
-                                Iconsax.close_circle,
-                                color: Colors.red,
-                                size: 18,
-                              ),
+                        InkWell(
+                          onTap: () async {
+                            controller.takeFile();
+                          },
+                          customBorder: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                    width: 1.0,
+                                    color: Color.fromARGB(255, 211, 205, 205))),
+                            child: Icon(
+                              Iconsax.add,
+                              size: 26,
+                              color: Constanst.fgSecondary,
                             ),
                           ),
-                        )
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          controller.namaFileUpload.value.length > 20
+                              ? controller.namaFileUpload.value
+                                      .substring(0, 15) +
+                                  '...'
+                              : controller.namaFileUpload.value,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ],
-                    )),
-        )
-      ],
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+            child: Divider(
+              height: 0,
+              thickness: 1,
+              color: Constanst.fgBorder,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget formAlasan() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text("Alasan*", style: TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(
-          height: 5,
-        ),
-        Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: Constanst.borderStyle1,
-              border: Border.all(
-                  width: 1.0, color: Color.fromARGB(255, 211, 205, 205))),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: TextField(
-              cursorColor: Colors.black,
-              controller: controller.alasan.value,
-              maxLines: null,
-              decoration: new InputDecoration(
-                  border: InputBorder.none, hintText: "Tambahkan Alasan"),
-              keyboardType: TextInputType.multiline,
-              textInputAction: TextInputAction.done,
-              style:
-                  TextStyle(fontSize: 12.0, height: 2.0, color: Colors.black),
-            ),
-          ),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Iconsax.textalign_justifyleft, size: 24),
+          const SizedBox(width: 8),
+          Expanded(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextLabell(
+                text: "Catatan",
+                color: Constanst.fgPrimary,
+                size: 14,
+                weight: FontWeight.w400,
+              ),
+              TextFormField(
+                controller: controller.alasan.value,
+                decoration: const InputDecoration(
+                  hintText: 'Tulis catatan disini',
+                  border: InputBorder.none,
+                ),
+                style: GoogleFonts.inter(
+                    color: Constanst.fgPrimary,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16),
+              )
+            ],
+          ))
+        ],
+      ),
     );
   }
 }

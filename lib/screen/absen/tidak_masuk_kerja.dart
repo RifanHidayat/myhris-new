@@ -10,6 +10,7 @@ import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/tidak_masuk_kerja_controller.dart';
 import 'package:siscom_operasional/screen/absen/detail_absen.dart';
 import 'package:siscom_operasional/screen/absen/form/form_tidakMasukKerja.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_izin.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan.dart';
 import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
@@ -155,7 +156,7 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
                       foregroundColor: Colors.white,
                       label: 'Laporan Tidak Hadir',
                       onTap: () {
-                        Get.to(LaporanTidakMasuk(
+                        Get.to(LaporanIzin(
                           title: 'tidak_hadir',
                         ));
                       }),

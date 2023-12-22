@@ -5,12 +5,10 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
-
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/lembur_controller.dart';
-
 import 'package:siscom_operasional/screen/absen/form/form_lembur.dart';
-import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_lembur.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
@@ -143,7 +141,7 @@ class _LemburState extends State<Lembur> {
                       foregroundColor: Colors.white,
                       label: 'Laporan Lembur',
                       onTap: () {
-                        Get.to(LaporanTidakMasuk(
+                        Get.to(LaporanLembur(
                           title: 'lembur',
                         ));
                       }),

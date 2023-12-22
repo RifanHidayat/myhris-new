@@ -84,7 +84,7 @@ class BpjsController extends GetxController {
   }
 
   void employeDetaiBpjs() {
-     print("employee detail bpjs");
+    print("employee detail bpjs");
     var dataUser = AppData.informasiUser;
     final box = GetStorage();
     var id = dataUser![0].em_id;

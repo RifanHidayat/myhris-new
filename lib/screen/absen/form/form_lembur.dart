@@ -293,12 +293,45 @@ class _FormLemburState extends State<FormLembur> {
         // DateTime lastDayOfMonth =
         //     DateTime(now.year, now.month + 1, 0);
         var dateSelect = await showDatePicker(
-            context: Get.context!,
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2100),
-            initialDate: controller.initialDate.value,
-            cancelText: 'Batal',
-            confirmText: 'Simpan');
+          context: Get.context!,
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2100),
+          initialDate: controller.initialDate.value,
+          cancelText: 'Batal',
+          confirmText: 'Simpan',
+          builder: (context, child) {
+            return Theme(
+              data: ThemeData(
+                colorScheme: ColorScheme.dark(
+                  primary: Constanst.onPrimary,
+                  onPrimary: Constanst.colorWhite,
+                  onSurface: Constanst.fgPrimary,
+                  surface: Constanst.colorWhite,
+                ),
+                // useMaterial3: settings.useMaterial3,
+                visualDensity: VisualDensity.standard,
+                dialogTheme: const DialogTheme(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(16)))),
+                primaryColor: Constanst.fgPrimary,
+                textTheme: TextTheme(
+                  titleMedium: GoogleFonts.inter(
+                    color: Constanst.fgPrimary,
+                  ),
+                ),
+                dialogBackgroundColor: Constanst.colorWhite,
+                canvasColor: Colors.white,
+                hintColor: Constanst.onPrimary,
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Constanst.onPrimary,
+                  ),
+                ),
+              ),
+              child: child!,
+            );
+          },
+        );
         if (dateSelect == null) {
           UtilsAlert.showToast("Tanggal tidak terpilih");
         } else {
@@ -401,42 +434,41 @@ class _FormLemburState extends State<FormLembur> {
                               showTimePicker(
                                 context: Get.context!,
                                 initialTime: TimeOfDay.now(),
-                                initialEntryMode: TimePickerEntryMode.dial,
+                                initialEntryMode: TimePickerEntryMode.input,
                                 builder: (context, child) {
-                                  return Theme(
+                                  return MediaQuery(
+                                    data: MediaQuery.of(context)
+                                        .copyWith(alwaysUse24HourFormat: true),
+                                    child: Theme(
                                       data: ThemeData(
-                                        primaryColor: Colors.red,
-                                        timePickerTheme: TimePickerThemeData(
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
+                                        colorScheme: ColorScheme.light(
+                                          primary: Constanst.onPrimary,
+                                        ),
+                                        // useMaterial3: settings.useMaterial3,
+                                        dialogTheme: const DialogTheme(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(16)))),
+                                        primaryColor: Constanst.fgPrimary,
+                                        textTheme: TextTheme(
+                                          titleMedium: GoogleFonts.inter(
+                                            color: Constanst.fgPrimary,
                                           ),
-                                          // hourMinuteShape:
-                                          //     const RoundedRectangleBorder(
-                                          //         side: BorderSide.none),
-                                          // hourMinuteColor: Colors.white,
-                                          // hourMinuteTextColor:
-                                          //     MaterialStateColor.resolveWith(
-                                          //         (states) => states.contains(
-                                          //                 MaterialState
-                                          //                     .selected)
-                                          //             ? Colors.pink
-                                          //             : Colors.grey),
-                                          // dayPeriodBorderSide: BorderSide.none,
-                                          // dayPeriodColor: Colors.white,
-                                          // dayPeriodTextColor:
-                                          //     MaterialStateColor.resolveWith(
-                                          //         (states) => states.contains(
-                                          //                 MaterialState
-                                          //                     .selected)
-                                          //             ? Colors.pink
-                                          //             : Colors.grey),
-                                          // entryModeIconColor:
-                                          //     Colors.red.shade900,
+                                        ),
+                                        dialogBackgroundColor:
+                                            Constanst.colorWhite,
+                                        canvasColor: Colors.white,
+                                        hintColor: Constanst.onPrimary,
+                                        textButtonTheme: TextButtonThemeData(
+                                          style: TextButton.styleFrom(
+                                            foregroundColor:
+                                                Constanst.onPrimary,
+                                          ),
                                         ),
                                       ),
-                                      child: child!);
+                                      child: child!,
+                                    ),
+                                  );
                                 },
                               ).then((value) {
                                 if (value == null) {

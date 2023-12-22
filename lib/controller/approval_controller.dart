@@ -32,7 +32,7 @@ class ApprovalController extends GetxController {
   var listData = [].obs;
   var listDataAll = [].obs;
   var detailData = [].obs;
-  var showButton=false.obs;
+  var showButton = false.obs;
 
   var jumlahCuti = 0.obs;
   var typeIdEdit = 0.obs;
@@ -131,7 +131,7 @@ class ApprovalController extends GetxController {
             'em_report_to': element['em_report_to'],
             'em_report2_to': element['em_report2_to'],
             'lainnya': "",
-            'nama_pengajuan':element['nama_pengajuan'],
+            'nama_pengajuan': element['nama_pengajuan'],
             'file': element['leave_files']
           };
           listData.value.add(data);

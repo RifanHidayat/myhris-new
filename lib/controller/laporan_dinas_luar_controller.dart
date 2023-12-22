@@ -1,28 +1,22 @@
 import 'dart:convert';
-import 'dart:async';
-import 'dart:io';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
-import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class LaporanTidakHadirController extends GetxController {
+class LaporanDinasLuarController extends GetxController {
   PageController? pageViewFilterWaktu;
 
   var departemen = TextEditingController().obs;
   var cari = TextEditingController().obs;
 
-  // var limitPages = <LimitPageModel>[].obs;
+  // // var limitPages = <LimitPageModel>[].obs;
 
   var loadingString = "Memuat data...".obs;
   var idDepartemenTerpilih = "".obs;
@@ -40,14 +34,11 @@ class LaporanTidakHadirController extends GetxController {
   var statusFilterWaktu = 0.obs;
 
   var jumlahData = 0.obs;
-  var selectedType = 0.obs;
+  // var selectedType = 0.obs;
   var selectedViewFilterPengajuan = 0.obs;
 
-  var tempKodeStatus1 = "".obs;
-  var tempNamaStatus1 = "Semua".obs;
-
-  var listDetailLaporanEmployee = [].obs;
-  var alllistDetailLaporanEmployee = [].obs;
+  // var listDetailLaporanEmployee = [].obs;
+  // var alllistDetailLaporanEmployee = [].obs;
   var dataTypeAjuan = [].obs;
   var departementAkses = [].obs;
   var allNameLaporanTidakhadir = [].obs;
@@ -64,11 +55,11 @@ class LaporanTidakHadirController extends GetxController {
     "Pending"
   ];
 
-  RxBool isSearching = false.obs;
+  // RxBool isSearching = false.obs;
 
-  void toggleSearch() {
-    isSearching.value = !isSearching.value;
-  }
+  // void toggleSearch() {
+  //   isSearching.value = !isSearching.value;
+  // }
 
   @override
   void onReady() async {
@@ -254,97 +245,97 @@ class LaporanTidakHadirController extends GetxController {
     }
   }
 
-  void loadDataTidakHadirEmployee(emId, bulan, tahun, title) {
-    listDetailLaporanEmployee.value.clear();
-    Map<String, dynamic> body = {
-      'em_id': emId,
-      'bulan': bulan,
-      'tahun': tahun,
-      'type': title,
-    };
-    var connect =
-        Api.connectionApi("post", body, "load_detail_laporan_pengajuan");
-    connect.then((dynamic res) {
-      if (res.statusCode == 200) {
-        var valueBody = jsonDecode(res.body);
-        var data = valueBody['data'];
-        listDetailLaporanEmployee.value = data;
-        alllistDetailLaporanEmployee.value = data;
-        this.listDetailLaporanEmployee.refresh();
-        this.alllistDetailLaporanEmployee.refresh();
-        loadingString.value = listDetailLaporanEmployee.isEmpty
-            ? "Data pengajuan tidak ada"
-            : "Memuat data...";
-        this.loadingString.refresh();
-        typeAjuanRefresh("Semua");
-      }
-    });
-  }
+  // void loadDataTidakHadirEmployee(emId, bulan, tahun, title) {
+  //   listDetailLaporanEmployee.value.clear();
+  //   Map<String, dynamic> body = {
+  //     'em_id': emId,
+  //     'bulan': bulan,
+  //     'tahun': tahun,
+  //     'type': title,
+  //   };
+  //   var connect =
+  //       Api.connectionApi("post", body, "load_detail_laporan_pengajuan");
+  //   connect.then((dynamic res) {
+  //     if (res.statusCode == 200) {
+  //       var valueBody = jsonDecode(res.body);
+  //       var data = valueBody['data'];
+  //       listDetailLaporanEmployee.value = data;
+  //       alllistDetailLaporanEmployee.value = data;
+  //       this.listDetailLaporanEmployee.refresh();
+  //       this.alllistDetailLaporanEmployee.refresh();
+  //       loadingString.value = listDetailLaporanEmployee.isEmpty
+  //           ? "Data pengajuan tidak ada"
+  //           : "Memuat data...";
+  //       this.loadingString.refresh();
+  //       typeAjuanRefresh("Semua");
+  //     }
+  //   });
+  // }
 
-  void typeAjuanRefresh(name) {
-    for (var element in dataTypeAjuan.value) {
-      if (element['nama'] == name) {
-        element['status'] = true;
-      } else {
-        element['status'] = false;
-      }
-    }
-    this.dataTypeAjuan.refresh();
-  }
+  // void typeAjuanRefresh(name) {
+  //   for (var element in dataTypeAjuan.value) {
+  //     if (element['nama'] == name) {
+  //       element['status'] = true;
+  //     } else {
+  //       element['status'] = false;
+  //     }
+  //   }
+  //   this.dataTypeAjuan.refresh();
+  // }
 
-  void changeTypeAjuanLaporan(name, title) {
-    var statusFilter = name == "Approve 1"
-        ? "Approve"
-        : name == "Approve 2"
-            ? "Approve2"
-            : name == "Rejected"
-                ? "Rejected"
-                : name == "Pending"
-                    ? "Pending"
-                    : "Approve";
-    for (var element in dataTypeAjuan.value) {
-      if (element['nama'] == name) {
-        element['status'] = true;
-      } else {
-        element['status'] = false;
-      }
-    }
-    if (name == "Semua") {
-      List data = [];
-      for (var element in alllistDetailLaporanEmployee.value) {
-        data.add(element);
-      }
-      listDetailLaporanEmployee.value = data;
-      this.listDetailLaporanEmployee.refresh();
-      this.selectedType.refresh();
-      loadingString.value = listDetailLaporanEmployee.value.length != 0
-          ? "Memuat data..."
-          : "Tidak ada pengajuan";
-      this.loadingString.refresh();
-    } else {
-      List data = [];
-      for (var element in alllistDetailLaporanEmployee.value) {
-        if (title == "tidak_hadir" ||
-            title == "cuti" ||
-            title == "dinas_luar") {
-          if (element['leave_status'] == statusFilter) {
-            data.add(element);
-          }
-        } else {
-          if (element['status'] == statusFilter) {
-            data.add(element);
-          }
-        }
-      }
-      listDetailLaporanEmployee.value = data;
-      this.listDetailLaporanEmployee.refresh();
-      this.selectedType.refresh();
-      loadingString.value = listDetailLaporanEmployee.value.length != 0
-          ? "Memuat data..."
-          : "Tidak ada pengajuan";
-      this.loadingString.refresh();
-    }
-  }
+  // void changeTypeAjuanLaporan(name, title) {
+  //   var statusFilter = name == "Approve 1"
+  //       ? "Approve"
+  //       : name == "Approve 2"
+  //           ? "Approve2"
+  //           : name == "Rejected"
+  //               ? "Rejected"
+  //               : name == "Pending"
+  //                   ? "Pending"
+  //                   : "Approve";
+  //   for (var element in dataTypeAjuan.value) {
+  //     if (element['nama'] == name) {
+  //       element['status'] = true;
+  //     } else {
+  //       element['status'] = false;
+  //     }
+  //   }
+  //   if (name == "Semua") {
+  //     List data = [];
+  //     for (var element in alllistDetailLaporanEmployee.value) {
+  //       data.add(element);
+  //     }
+  //     listDetailLaporanEmployee.value = data;
+  //     this.listDetailLaporanEmployee.refresh();
+  //     this.selectedType.refresh();
+  //     loadingString.value = listDetailLaporanEmployee.value.length != 0
+  //         ? "Memuat data..."
+  //         : "Tidak ada pengajuan";
+  //     this.loadingString.refresh();
+  //   } else {
+  //     List data = [];
+  //     for (var element in alllistDetailLaporanEmployee.value) {
+  //       if (title == "tidak_hadir" ||
+  //           title == "cuti" ||
+  //           title == "dinas_luar") {
+  //         if (element['leave_status'] == statusFilter) {
+  //           data.add(element);
+  //         }
+  //       } else {
+  //         if (element['status'] == statusFilter) {
+  //           data.add(element);
+  //         }
+  //       }
+  //     }
+  //     listDetailLaporanEmployee.value = data;
+  //     this.listDetailLaporanEmployee.refresh();
+  //     this.selectedType.refresh();
+  //     loadingString.value = listDetailLaporanEmployee.value.length != 0
+  //         ? "Memuat data..."
+  //         : "Tidak ada pengajuan";
+  //     this.loadingString.refresh();
+  //   }
+  // }
 
   void pencarianNamaKaryawan(value) {
     var textCari = value.toLowerCase();
@@ -896,417 +887,417 @@ class LaporanTidakHadirController extends GetxController {
         ));
   }
 
-  void showDetailRiwayat(detailData) {
-    var nomorAjuan = detailData['nomor_ajuan'];
-    var get2StringNomor = '${nomorAjuan[0]}${nomorAjuan[1]}';
-    var tanggalMasukAjuan = detailData['atten_date'];
-    var namaTypeAjuan = detailData['name'];
-    var tanggalAjuanDari = detailData['start_date'];
-    var tanggalAjuanSampai = detailData['end_date'];
-    var alasan = detailData['reason'];
-    var durasi = detailData['leave_duration'];
-    var typeAjuan;
-    if (valuePolaPersetujuan.value == "1") {
-      typeAjuan = detailData['leave_status'];
-    } else {
-      typeAjuan = detailData['leave_status'] == "Approve"
-          ? "Approve 1"
-          : detailData['leave_status'] == "Approve2"
-              ? "Approve 2"
-              : detailData['leave_status'];
-    }
-    var jamAjuan =
-        detailData['time_plan'] == null || detailData['time_plan'] == ""
-            ? "00:00:00"
-            : detailData['time_plan'];
-    var sampaiJamAjuan =
-        detailData['time_plan_to'] == null || detailData['time_plan_to'] == ""
-            ? "00:00:00"
-            : detailData['time_plan_to'];
-    var leave_files = detailData['leave_files'];
-    var categoryIzin = detailData['category'];
+  // void showDetailRiwayat(detailData) {
+  //   var nomorAjuan = detailData['nomor_ajuan'];
+  //   var get2StringNomor = '${nomorAjuan[0]}${nomorAjuan[1]}';
+  //   var tanggalMasukAjuan = detailData['atten_date'];
+  //   var namaTypeAjuan = detailData['name'];
+  //   var tanggalAjuanDari = detailData['start_date'];
+  //   var tanggalAjuanSampai = detailData['end_date'];
+  //   var alasan = detailData['reason'];
+  //   var durasi = detailData['leave_duration'];
+  //   var typeAjuan;
+  //   if (valuePolaPersetujuan.value == "1") {
+  //     typeAjuan = detailData['leave_status'];
+  //   } else {
+  //     typeAjuan = detailData['leave_status'] == "Approve"
+  //         ? "Approve 1"
+  //         : detailData['leave_status'] == "Approve2"
+  //             ? "Approve 2"
+  //             : detailData['leave_status'];
+  //   }
+  //   var jamAjuan =
+  //       detailData['time_plan'] == null || detailData['time_plan'] == ""
+  //           ? "00:00:00"
+  //           : detailData['time_plan'];
+  //   var sampaiJamAjuan =
+  //       detailData['time_plan_to'] == null || detailData['time_plan_to'] == ""
+  //           ? "00:00:00"
+  //           : detailData['time_plan_to'];
+  //   var leave_files = detailData['leave_files'];
+  //   var categoryIzin = detailData['category'];
 
-    var listTanggalTerpilih = detailData['date_selected'].split(',');
-    showModalBottomSheet(
-      context: Get.context!,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20.0),
-        ),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 16,
-              ),
-              IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 60,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          get2StringNomor == "DL"
-                              ? Text(
-                                  "DINAS LUAR",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              : Text(
-                                  "$namaTypeAjuan",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                          Text(
-                            "$categoryIzin",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                              "${Constanst.convertDate("$tanggalMasukAjuan")}"),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 40,
-                      child: Center(
-                        child: Container(
-                          margin: EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            color: typeAjuan == 'Approve'
-                                ? Constanst.colorBGApprove
-                                : typeAjuan == 'Approve 1'
-                                    ? Constanst.colorBGApprove
-                                    : typeAjuan == 'Approve 2'
-                                        ? Constanst.colorBGApprove
-                                        : typeAjuan == 'Rejected'
-                                            ? Constanst.colorBGRejected
-                                            : typeAjuan == 'Pending'
-                                                ? Constanst.colorBGPending
-                                                : Colors.grey,
-                            borderRadius: Constanst.borderStyle1,
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                left: 3, right: 3, top: 5, bottom: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                typeAjuan == 'Approve'
-                                    ? Icon(
-                                        Iconsax.tick_square,
-                                        color: Constanst.color5,
-                                        size: 14,
-                                      )
-                                    : typeAjuan == 'Approve 1'
-                                        ? Icon(
-                                            Iconsax.tick_square,
-                                            color: Constanst.color5,
-                                            size: 14,
-                                          )
-                                        : typeAjuan == 'Approve 2'
-                                            ? Icon(
-                                                Iconsax.tick_square,
-                                                color: Constanst.color5,
-                                                size: 14,
-                                              )
-                                            : typeAjuan == 'Rejected'
-                                                ? Icon(
-                                                    Iconsax.close_square,
-                                                    color: Constanst.color4,
-                                                    size: 14,
-                                                  )
-                                                : typeAjuan == 'Pending'
-                                                    ? Icon(
-                                                        Iconsax.timer,
-                                                        color: Constanst.color3,
-                                                        size: 14,
-                                                      )
-                                                    : SizedBox(),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 3),
-                                  child: Text(
-                                    '$typeAjuan',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: typeAjuan == 'Approve'
-                                            ? Colors.green
-                                            : typeAjuan == 'Approve 1'
-                                                ? Colors.green
-                                                : typeAjuan == 'Approve 2'
-                                                    ? Colors.green
-                                                    : typeAjuan == 'Rejected'
-                                                        ? Colors.red
-                                                        : typeAjuan == 'Pending'
-                                                            ? Constanst.color3
-                                                            : Colors.black),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              Divider(
-                height: 5,
-                color: Constanst.colorText2,
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Nomor Ajuan"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$nomorAjuan"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Tanggal izin"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            "${Constanst.convertDate("$tanggalAjuanDari")}  SD  ${Constanst.convertDate("$tanggalAjuanSampai")}"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Durasi Izin"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$durasi Hari"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Alasan"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$alasan"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              categoryIzin == "HALFDAY"
-                  ? SizedBox(
-                      height: 8,
-                    )
-                  : SizedBox(),
-              categoryIzin == "HALFDAY"
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 30,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Jam"),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(":"),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 68,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("$jamAjuan sd $sampaiJamAjuan"),
-                            ],
-                          ),
-                        )
-                      ],
-                    )
-                  : SizedBox(),
-              SizedBox(
-                height: 8,
-              ),
-              Text("Tanggal Terpilih"),
-              SizedBox(
-                height: 8,
-              ),
-              ListView.builder(
-                  itemCount: listTanggalTerpilih.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    var nomor = index + 1;
-                    var tanggalConvert =
-                        Constanst.convertDate1(listTanggalTerpilih[index]);
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$nomor."),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8),
-                          child: Text(tanggalConvert),
-                        )
-                      ],
-                    );
-                  }),
-              SizedBox(
-                height: 16,
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  //   var listTanggalTerpilih = detailData['date_selected'].split(',');
+  //   showModalBottomSheet(
+  //     context: Get.context!,
+  //     isScrollControlled: true,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(
+  //         top: Radius.circular(20.0),
+  //       ),
+  //     ),
+  //     builder: (context) {
+  //       return Padding(
+  //         padding: const EdgeInsets.only(left: 16, right: 16),
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           mainAxisAlignment: MainAxisAlignment.start,
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             SizedBox(
+  //               height: 16,
+  //             ),
+  //             IntrinsicHeight(
+  //               child: Row(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Expanded(
+  //                     flex: 60,
+  //                     child: Column(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         get2StringNomor == "DL"
+  //                             ? Text(
+  //                                 "DINAS LUAR",
+  //                                 style: TextStyle(
+  //                                     fontSize: 16,
+  //                                     fontWeight: FontWeight.bold),
+  //                               )
+  //                             : Text(
+  //                                 "$namaTypeAjuan",
+  //                                 style: TextStyle(
+  //                                     fontSize: 16,
+  //                                     fontWeight: FontWeight.bold),
+  //                               ),
+  //                         Text(
+  //                           "$categoryIzin",
+  //                           style: TextStyle(
+  //                               fontSize: 16, fontWeight: FontWeight.bold),
+  //                         ),
+  //                         SizedBox(
+  //                           height: 8,
+  //                         ),
+  //                         Text(
+  //                             "${Constanst.convertDate("$tanggalMasukAjuan")}"),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                   Expanded(
+  //                     flex: 40,
+  //                     child: Center(
+  //                       child: Container(
+  //                         margin: EdgeInsets.only(right: 8),
+  //                         decoration: BoxDecoration(
+  //                           color: typeAjuan == 'Approve'
+  //                               ? Constanst.colorBGApprove
+  //                               : typeAjuan == 'Approve 1'
+  //                                   ? Constanst.colorBGApprove
+  //                                   : typeAjuan == 'Approve 2'
+  //                                       ? Constanst.colorBGApprove
+  //                                       : typeAjuan == 'Rejected'
+  //                                           ? Constanst.colorBGRejected
+  //                                           : typeAjuan == 'Pending'
+  //                                               ? Constanst.colorBGPending
+  //                                               : Colors.grey,
+  //                           borderRadius: Constanst.borderStyle1,
+  //                         ),
+  //                         child: Padding(
+  //                           padding: EdgeInsets.only(
+  //                               left: 3, right: 3, top: 5, bottom: 5),
+  //                           child: Row(
+  //                             mainAxisAlignment: MainAxisAlignment.center,
+  //                             children: [
+  //                               typeAjuan == 'Approve'
+  //                                   ? Icon(
+  //                                       Iconsax.tick_square,
+  //                                       color: Constanst.color5,
+  //                                       size: 14,
+  //                                     )
+  //                                   : typeAjuan == 'Approve 1'
+  //                                       ? Icon(
+  //                                           Iconsax.tick_square,
+  //                                           color: Constanst.color5,
+  //                                           size: 14,
+  //                                         )
+  //                                       : typeAjuan == 'Approve 2'
+  //                                           ? Icon(
+  //                                               Iconsax.tick_square,
+  //                                               color: Constanst.color5,
+  //                                               size: 14,
+  //                                             )
+  //                                           : typeAjuan == 'Rejected'
+  //                                               ? Icon(
+  //                                                   Iconsax.close_square,
+  //                                                   color: Constanst.color4,
+  //                                                   size: 14,
+  //                                                 )
+  //                                               : typeAjuan == 'Pending'
+  //                                                   ? Icon(
+  //                                                       Iconsax.timer,
+  //                                                       color: Constanst.color3,
+  //                                                       size: 14,
+  //                                                     )
+  //                                                   : SizedBox(),
+  //                               Padding(
+  //                                 padding: const EdgeInsets.only(left: 3),
+  //                                 child: Text(
+  //                                   '$typeAjuan',
+  //                                   textAlign: TextAlign.center,
+  //                                   style: TextStyle(
+  //                                       fontWeight: FontWeight.bold,
+  //                                       color: typeAjuan == 'Approve'
+  //                                           ? Colors.green
+  //                                           : typeAjuan == 'Approve 1'
+  //                                               ? Colors.green
+  //                                               : typeAjuan == 'Approve 2'
+  //                                                   ? Colors.green
+  //                                                   : typeAjuan == 'Rejected'
+  //                                                       ? Colors.red
+  //                                                       : typeAjuan == 'Pending'
+  //                                                           ? Constanst.color3
+  //                                                           : Colors.black),
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   )
+  //                 ],
+  //               ),
+  //             ),
+  //             SizedBox(
+  //               height: 6,
+  //             ),
+  //             Divider(
+  //               height: 5,
+  //               color: Constanst.colorText2,
+  //             ),
+  //             SizedBox(
+  //               height: 16,
+  //             ),
+  //             Row(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Expanded(
+  //                   flex: 30,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text("Nomor Ajuan"),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   flex: 2,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(":"),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   flex: 68,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text("$nomorAjuan"),
+  //                     ],
+  //                   ),
+  //                 )
+  //               ],
+  //             ),
+  //             SizedBox(
+  //               height: 8,
+  //             ),
+  //             Row(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Expanded(
+  //                   flex: 30,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text("Tanggal izin"),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   flex: 2,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(":"),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   flex: 68,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                           "${Constanst.convertDate("$tanggalAjuanDari")}  SD  ${Constanst.convertDate("$tanggalAjuanSampai")}"),
+  //                     ],
+  //                   ),
+  //                 )
+  //               ],
+  //             ),
+  //             SizedBox(
+  //               height: 8,
+  //             ),
+  //             Row(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Expanded(
+  //                   flex: 30,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text("Durasi Izin"),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   flex: 2,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(":"),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   flex: 68,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text("$durasi Hari"),
+  //                     ],
+  //                   ),
+  //                 )
+  //               ],
+  //             ),
+  //             SizedBox(
+  //               height: 8,
+  //             ),
+  //             Row(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Expanded(
+  //                   flex: 30,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text("Alasan"),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   flex: 2,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(":"),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   flex: 68,
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text("$alasan"),
+  //                     ],
+  //                   ),
+  //                 )
+  //               ],
+  //             ),
+  //             categoryIzin == "HALFDAY"
+  //                 ? SizedBox(
+  //                     height: 8,
+  //                   )
+  //                 : SizedBox(),
+  //             categoryIzin == "HALFDAY"
+  //                 ? Row(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Expanded(
+  //                         flex: 30,
+  //                         child: Column(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           children: [
+  //                             Text("Jam"),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                       Expanded(
+  //                         flex: 2,
+  //                         child: Column(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           children: [
+  //                             Text(":"),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                       Expanded(
+  //                         flex: 68,
+  //                         child: Column(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           children: [
+  //                             Text("$jamAjuan sd $sampaiJamAjuan"),
+  //                           ],
+  //                         ),
+  //                       )
+  //                     ],
+  //                   )
+  //                 : SizedBox(),
+  //             SizedBox(
+  //               height: 8,
+  //             ),
+  //             Text("Tanggal Terpilih"),
+  //             SizedBox(
+  //               height: 8,
+  //             ),
+  //             ListView.builder(
+  //                 itemCount: listTanggalTerpilih.length,
+  //                 physics: NeverScrollableScrollPhysics(),
+  //                 shrinkWrap: true,
+  //                 itemBuilder: (context, index) {
+  //                   var nomor = index + 1;
+  //                   var tanggalConvert =
+  //                       Constanst.convertDate1(listTanggalTerpilih[index]);
+  //                   return Row(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text("$nomor."),
+  //                       Padding(
+  //                         padding: EdgeInsets.only(left: 8),
+  //                         child: Text(tanggalConvert),
+  //                       )
+  //                     ],
+  //                   );
+  //                 }),
+  //             SizedBox(
+  //               height: 16,
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
-  void viewLampiranAjuanKlaim(value) async {
-    var urlViewGambar = Api.UrlfileKlaim + value;
+  // void viewLampiranAjuanKlaim(value) async {
+  //   var urlViewGambar = Api.UrlfileKlaim + value;
 
-    final url = Uri.parse(urlViewGambar);
-    if (!await launchUrl(
-      url,
-      mode: LaunchMode.externalApplication,
-    )) {
-      UtilsAlert.showToast('Tidak dapat membuka file');
-    }
-  }
+  //   final url = Uri.parse(urlViewGambar);
+  //   if (!await launchUrl(
+  //     url,
+  //     mode: LaunchMode.externalApplication,
+  //   )) {
+  //     UtilsAlert.showToast('Tidak dapat membuka file');
+  //   }
+  // }
 
-  String convertToIdr(dynamic number, int decimalDigit) {
-    NumberFormat currencyFormatter = NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp ',
-      decimalDigits: decimalDigit,
-    );
-    return currencyFormatter.format(number);
-  }
+  // String convertToIdr(dynamic number, int decimalDigit) {
+  //   NumberFormat currencyFormatter = NumberFormat.currency(
+  //     locale: 'id',
+  //     symbol: 'Rp ',
+  //     decimalDigits: decimalDigit,
+  //   );
+  //   return currencyFormatter.format(number);
+  // }
 }
