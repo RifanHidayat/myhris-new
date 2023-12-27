@@ -82,9 +82,11 @@ class _FormTidakMasukKerjaState extends State<FormTidakMasukKerja> {
             ((controller.izinTerpakai.value / controller.jumlahIzin.value) *
                     100)
                 .toString());
+ 
       } else {
         controller.showDurationIzin.value = false;
       }
+      
     }
     super.initState();
   }

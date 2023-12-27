@@ -64,6 +64,7 @@ class Pph21Controller extends GetxController {
   var iuranPensiun = 0.0.obs;
 
   Future<void> fetchSlipGaji() async {
+    print("masuk sini");
     var dataUser = AppData.informasiUser;
 
     var id = dataUser![0].em_id;
@@ -79,7 +80,7 @@ class Pph21Controller extends GetxController {
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
-          print(valueBody);
+          print("body pph21");
           if (valueBody['status'] == true) {
             List pendapatanList = valueBody['data'];
             print("data gaji ${valueBody['data']}");
@@ -138,10 +139,13 @@ class Pph21Controller extends GetxController {
           } else {
             isLoading.value = false;
           }
+        }else{
+          print("tes");
         }
         isLoading.value = false;
       });
     } catch (e) {
+      print("error ${e}");
       isLoading.value = false;
     }
   }

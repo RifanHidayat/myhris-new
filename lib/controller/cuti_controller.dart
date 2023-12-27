@@ -46,6 +46,13 @@ class CutiController extends GetxController {
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
   Rx<List<String>> allTipeFormCutiDropdown = Rx<List<String>>([]);
 
+
+  var limitCuti=0.obs;
+  var cutLeave=1.obs;
+
+
+  var dateSelected=0.obs;
+
   var statusFormPencarian = false.obs;
 
   var jumlahCuti = 0.obs;
@@ -232,6 +239,7 @@ class CutiController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
+        print("data tipe cuti ${data}");
         for (var element in data) {
           allTipeFormCutiDropdown.value.add(element['name']);
           var data = {
@@ -239,6 +247,9 @@ class CutiController extends GetxController {
             'name': element['name'],
             'status': element['status'],
             'leave_day': element['leave_day'],
+            'select_date': element['select_date'],
+              'cut_leave': element['cut_leave'],
+            
             'active': false,
           };
           allTipe.value.add(data);
@@ -246,10 +257,18 @@ class CutiController extends GetxController {
         if (statusForm.value == false) {
           var getFirst = allTipe.value.first;
           selectedTypeCuti.value = getFirst['name'];
+          dateSelected=getFirst['select_date'];
         } else {
           var getFirst = allTipe.value
               .firstWhere((element) => element['id'] == typeIdEdit.value);
           selectedTypeCuti.value = getFirst['name'];
+          
+          
+          
+        dateSelected=getFirst['select_date'];
+
+       
+
         }
         this.allTipe.refresh();
         this.selectedTypeCuti.refresh();
@@ -429,10 +448,19 @@ class CutiController extends GetxController {
     });
   }
 
+
+
+
   void loadCutiUser() {
+    
+    
     print("load cuti user");
+
     var dataUser = AppData.informasiUser;
+    
     var getEmid = dataUser![0].em_id;
+    
+    
     Map<String, dynamic> body = {
       'val': 'em_id',
       'cari': getEmid,
@@ -450,6 +478,7 @@ class CutiController extends GetxController {
             this.statusHitungCuti.refresh();
           } else {
             jumlahCuti.value = totalDay;
+            cutLeave.value=1;
             cutiTerpakai.value = terpakai;
             this.jumlahCuti.refresh();
             this.cutiTerpakai.refresh();
@@ -464,6 +493,9 @@ class CutiController extends GetxController {
       }
     });
   }
+
+
+
 
   void hitungCuti(totalDay, terpakai) {
     var hitung1 = (terpakai / totalDay) * 100;

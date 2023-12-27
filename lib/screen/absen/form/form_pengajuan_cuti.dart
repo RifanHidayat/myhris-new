@@ -64,14 +64,11 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
       print("data cuti new ${data}");
 
       if (data.isNotEmpty) {
-        controller.jumlahCuti.value = data[0]['leave_day'];
+        // controller.jumlahCuti.value = data[0]['leave_day'];
         controller.selectedTypeCuti.value = data[0]['name'];
       }
-      if (controller.selectedTypeCuti.value
-          .toString()
-          .toLowerCase()
-          .toLowerCase()
-          .contains("Cuti Melahirkan".toLowerCase())) {
+      if (controller.dateSelected.value == "2" ||
+          controller.dateSelected.value == "2") {
       } else {
         for (var element in listDateTerpilih) {
           var convertDate = DateTime.parse(element);
@@ -217,68 +214,42 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                 padding: EdgeInsets.only(left: 16, right: 16),
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
-                  child: !controller.statusHitungCuti.value
-                      ? Container(
-                          width: MediaQuery.of(Get.context!).size.width,
-                          height: MediaQuery.of(Get.context!).size.height,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/amico.png",
-                                height: 250,
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Text("Anda belum memiliki hak cuti"),
-                            ],
-                          ),
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16),
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                            border: Border.all(color: Constanst.fgBorder)),
+                        child: controller.cutLeave.value == 0 ||
+                                controller.cutLeave.value.toString() == "0"
+                            ? informasiSisaCutiMelahirkan()
+                            : informasiSisaCuti(),
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                            border: Border.all(color: Constanst.fgBorder)),
+                        child: Column(
                           children: [
-                            const SizedBox(height: 16),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(12)),
-                                  border:
-                                      Border.all(color: Constanst.fgBorder)),
-                              child: controller.selectedTypeCuti.value
-                                      .toString()
-                                      .toLowerCase()
-                                      .toLowerCase()
-                                      .contains("Cuti Melahirkan".toLowerCase())
-                                  ? informasiSisaCutiMelahirkan()
-                                  : informasiSisaCuti(),
-                            ),
-                            const SizedBox(height: 16),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(12)),
-                                  border:
-                                      Border.all(color: Constanst.fgBorder)),
-                              child: Column(
-                                children: [
-                                  formTipe(),
-                                  controller.selectedTypeCuti.value
-                                          .toString()
-                                          .toLowerCase()
-                                          .toLowerCase()
-                                          .contains(
-                                              "Cuti Melahirkan".toLowerCase())
-                                      ? formTanggalCutiMelahirkan()
-                                      : formTanggalCuti(),
-                                  formDelegasiKepada(),
-                                  formUploadFile(),
-                                  formAlasan(),
-                                ],
-                              ),
-                            ),
+                            formTipe(),
+                            controller.dateSelected.value == 2 ||
+                                    controller.dateSelected.value.toString() ==
+                                        '2'
+                                ? formTanggalCutiMelahirkan()
+                                : formTanggalCuti(),
+                            formDelegasiKepada(),
+                            formUploadFile(),
+                            formAlasan(),
                           ],
                         ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -303,11 +274,10 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                     : TextButtonWidget(
                         title: "Kirim",
                         onTap: () {
-                          if (controller.selectedTypeCuti.value
-                              .toString()
-                              .toLowerCase()
-                              .toLowerCase()
-                              .contains("Cuti Melahirkan".toLowerCase())) {
+                          if (controller.dateSelected.value == 2 ||
+                              controller.dateSelected.value.toString() == "2") {
+                            //--------------------menggunakan range---------------------------
+
                             DateTime tempStartDate = DateTime.parse(
                                 DateFormat('yyyy-MM-dd')
                                     .format(DateFormat('yyyy-MM-dd')
@@ -337,12 +307,38 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                             controller.durasiCutiMelahirkan.value =
                                 difference.inDays + 1;
 
-                            if (difference.inDays + 1 >
-                                controller.jumlahCuti.value) {
-                              UtilsAlert.showToast(
-                                  "Total hari melewati batas limit");
-                              return;
+                            // if (difference.inDays + 1 >
+                            //     controller.jumlahCuti.value) {
+                            //   UtilsAlert.showToast(
+                            //       "Total hari melewati batas limit");
+                            //   return;
+                            // }
+
+                            if (controller.cutLeave.value == 1 ||
+                                controller.cutLeave.value == 1) {
+
+                              if (difference.inDays + 1 >
+                                  controller.jumlahCuti.value) {
+                                UtilsAlert.showToast(
+                                    "Total hari melewati sisa cuti");
+                                return;
+                              }
+
+                            } else {
+                              
+
+
+                              if (difference.inDays + 1 >
+                                  controller.limitCuti.value) {
+                                UtilsAlert.showToast(
+                                    "Total hari melewati batas limit");
+                                return;
+                              }
+
+
+
                             }
+
                             controller.tanggalSelected.clear();
                             controller.tanggalSelected.value.add(
                                 DateTime.parse(controller.startDate.value));
@@ -353,17 +349,36 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
 
                             // Print the result
                           } else {
+                            //mengugunakan multiple date
+
                             if (controller.statusForm.value == true) {
-                              if ((controller.jumlahCuti.value -
-                                      controller.cutiTerpakai.value) <
-                                  controller.tanggalSelectedEdit.value.length) {
-                                UtilsAlert.showToast(
-                                    "Tanggal yang dipilih melebihi sisa cuti");
+                              if (controller.cutLeave.value == 1) {
+
+                                
+                                if ((controller.jumlahCuti.value -
+                                        controller.cutiTerpakai.value) <
+                                    controller
+                                        .tanggalSelectedEdit.value.length) {
+                                  UtilsAlert.showToast(
+                                      "Tanggal yang dipilih melebihi sisa cuti");
+                                } else {
+                                  controller.validasiKirimPengajuan();
+                                }
+
+                                
                               } else {
-                                controller.validasiKirimPengajuan();
+                                if ((controller.limitCuti.value) <
+                                    controller
+                                        .tanggalSelectedEdit.value.length) {
+                                  UtilsAlert.showToast(
+                                      "Tanggal yang dipilih melebihi sisa cuti");
+                                } else {
+                                  controller.validasiKirimPengajuan();
+                                }
                               }
                             } else {
-                              if ((controller.jumlahCuti.value -
+                              if (controller.cutLeave.value == 1) {
+                                 if ((controller.jumlahCuti.value -
                                       controller.cutiTerpakai.value) <
                                   controller.tanggalSelected.value.length) {
                                 UtilsAlert.showToast(
@@ -371,6 +386,19 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                               } else {
                                 controller.validasiKirimPengajuan();
                               }
+
+                              }else{
+                                 if ((controller.limitCuti.value) <
+                                  controller.tanggalSelected.value.length) {
+                                UtilsAlert.showToast(
+                                    "Tanggal yang dipilih melebihi sisa cuti");
+                              } else {
+                                controller.validasiKirimPengajuan();
+                              }
+
+
+                              }
+                             
                             }
                           }
 
@@ -406,7 +434,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      "Cuti Pribadi",
+                      "CUTI PRIBADI ",
                       style: GoogleFonts.inter(
                           fontWeight: FontWeight.w500,
                           color: Constanst.fgPrimary,
@@ -483,7 +511,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      "Cuti Melahirkan",
+                      "${controller.selectedTypeCuti.value}",
                       style: GoogleFonts.inter(
                           fontWeight: FontWeight.w500,
                           color: Constanst.fgPrimary,
@@ -492,7 +520,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                   ],
                 ),
                 Text(
-                  "${controller.jumlahCuti.value} Total",
+                  "${controller.limitCuti.value} Total",
                   textAlign: TextAlign.right,
                   style: GoogleFonts.inter(
                       fontWeight: FontWeight.w500,
@@ -509,7 +537,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                   barRadius: const Radius.circular(100.0),
                   lineHeight: 8.0,
                   padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                  percent: controller.persenCuti.value,
+                  percent: 0.0,
                   progressColor: Constanst.infoLight,
                   backgroundColor: Constanst.colorNeutralBgTertiary,
                 ),
@@ -520,14 +548,16 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "${controller.jumlahCuti.value - controller.cutiTerpakai.value} Tersisa",
+                  // "${controller.jumlahCuti.value - controller.cutiTerpakai.value} Tersisa",
+                  "",
                   style: GoogleFonts.inter(
                       fontWeight: FontWeight.w500,
                       color: Constanst.infoLight,
                       fontSize: 12),
                 ),
                 Text(
-                  "${controller.cutiTerpakai.value} Terpakai",
+                  // "${controller.cutiTerpakai.value} Terpakai",
+                  "",
                   style: GoogleFonts.inter(
                       fontWeight: FontWeight.w500,
                       color: Constanst.color4,
@@ -557,7 +587,31 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             return PopupMenuItem<String>(
               value: value,
               padding: EdgeInsets.zero,
-              onTap: () => controller.selectedTypeCuti.value = value,
+              // onTap: () => controller.selectedTypeCuti.value = value,
+
+              onTap: () {
+                var data = controller.allTipe
+                    .where((p0) =>
+                        p0['name'].toString().toLowerCase() ==
+                        value.toString().toLowerCase())
+                    .toList();
+                controller.loadCutiUserMelahirkan();
+
+                print(data.toString());
+
+                if (data.isNotEmpty) {
+                  controller.limitCuti.value = data[0]['leave_day'];
+
+                  controller.dateSelected.value = data[0]['select_date'];
+                }
+
+                // var data=controller.allTipe.value.whe
+                controller.selectedTypeCuti.value = value!;
+                controller.cutLeave.value = data[0]['cut_leave'];
+
+                print("data cuti ${controller.selectedTypeCuti.value}");
+                // controller.selectedTypeCuti.value = selectedValue!;
+              },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
                 child: Text(
@@ -584,30 +638,35 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                const Icon(
-                  Iconsax.note_2,
-                  size: 26,
+                Expanded(
+                  flex: 10,
+                  child: const Icon(
+                    Iconsax.note_2,
+                    size: 26,
+                  ),
                 ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Tipe Cuti*",
-                      style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Constanst.fgPrimary),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      controller.selectedTypeCuti.value,
-                      style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Constanst.fgPrimary),
-                    ),
-                  ],
+                Expanded(
+                  flex: 80,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Tipe Cuti *",
+                        style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Constanst.fgPrimary),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        controller.selectedTypeCuti.value,
+                        style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Constanst.fgPrimary),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -1406,7 +1465,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Unggah File*",
+                      "Unggah File",
                       style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
