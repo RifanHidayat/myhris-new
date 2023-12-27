@@ -55,7 +55,6 @@ class CutiController extends GetxController {
   var durasiIzin = 0.obs;
   var jumlahData = 0.obs;
 
-  var tempKodeStatus1 = "".obs;
   var tempNamaStatus1 = "Semua Status".obs;
 
   var namaFileUpload = "".obs;
@@ -72,7 +71,7 @@ class CutiController extends GetxController {
   var namaDepartemenTerpilih = "".obs;
   var valuePolaPersetujuan = "".obs;
 
-  var stringLoading = "Sedang memuat...".obs;
+  var stringLoading = "Memuat Data...".obs;
 
   var statusForm = false.obs;
   var statusHitungCuti = false.obs;
@@ -106,11 +105,6 @@ class CutiController extends GetxController {
     loadDataAjuanCuti();
     getDepartemen(1, "");
     super.onReady();
-  }
-
-  void toggleSearch() {
-    statusFormPencarian.value = false;
-    this.statusFormPencarian.refresh();
   }
 
   void showInputCari() {
@@ -267,7 +261,7 @@ class CutiController extends GetxController {
   void loadDataAjuanCuti() {
     AlllistHistoryAjuan.value.clear();
     listHistoryAjuan.value.clear();
-    stringLoading.value = "Sedang memuat...";
+    stringLoading.value = "Memuat Data...";
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {
@@ -289,7 +283,7 @@ class CutiController extends GetxController {
           if (listHistoryAjuan.value.isEmpty) {
             stringLoading.value = "Tidak ada pengajuan";
           } else {
-            stringLoading.value = "Sedang memuat...";
+            stringLoading.value = "Memuat Data...";
           }
           this.listHistoryAjuan.refresh();
           this.AlllistHistoryAjuan.refresh();
@@ -354,7 +348,7 @@ class CutiController extends GetxController {
     if (dataFilter.isEmpty) {
       stringLoading.value = "Anda tidak memiliki\nRiwayat Pengajuan Cuti";
     } else {
-      stringLoading.value = "Sedang memuat...";
+      stringLoading.value = "Memuat Data...";
     }
   }
 

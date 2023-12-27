@@ -582,30 +582,45 @@ class _LaporanCutiDetailState extends State<LaporanCutiDetail> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                get2StringNomor == "DL"
-                    ? Text("DINAS LUAR",
-                        style: GoogleFonts.inter(
-                            color: Constanst.fgPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500))
-                    : Text("$namaTypeAjuan",
-                        style: GoogleFonts.inter(
-                            color: Constanst.fgPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500)),
-                const SizedBox(height: 4),
-                Text("NO.$nomorAjuan",
-                    textAlign: TextAlign.justify,
-                    style: GoogleFonts.inter(
-                        color: Constanst.fgSecondary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400)),
-                const SizedBox(height: 4),
-                Text(Constanst.convertDate("$tanggalMasukAjuan"),
-                    style: GoogleFonts.inter(
-                        color: Constanst.fgSecondary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        get2StringNomor == "DL"
+                            ? Text("DINAS LUAR",
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500))
+                            : Text("$namaTypeAjuan",
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500)),
+                        const SizedBox(height: 4),
+                        Text("NO.$nomorAjuan",
+                            textAlign: TextAlign.justify,
+                            style: GoogleFonts.inter(
+                                color: Constanst.fgSecondary,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400)),
+                        const SizedBox(height: 4),
+                        Text(Constanst.convertDate("$tanggalMasukAjuan"),
+                            style: GoogleFonts.inter(
+                                color: Constanst.fgSecondary,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400)),
+                      ],
+                    ),
+                    Icon(
+                      Iconsax.arrow_right_34,
+                      color: Constanst.fgSecondary,
+                      size: 18,
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 12),
                 Divider(height: 0, thickness: 1, color: Constanst.border),
                 const SizedBox(height: 8),
@@ -786,600 +801,600 @@ class _LaporanCutiDetailState extends State<LaporanCutiDetail> {
     );
   }
 
-  Widget viewLemburTugasLuar(index) {
-    var nomorAjuan = index['nomor_ajuan'];
-    var dariJam = index['dari_jam'];
-    var sampaiJam = index['sampai_jam'];
-    var tanggalPengajuan = index['atten_date'];
-    var status;
-    if (controller.valuePolaPersetujuan.value == "1") {
-      status = index['status'];
-    } else {
-      status = index['status'] == "Approve"
-          ? "Approve 1"
-          : index['status'] == "Approve2"
-              ? "Approve 2"
-              : index['status'];
-    }
-    var alasanReject = index['alasan_reject'];
-    var approveDate = index['approve_date'];
-    var uraian = index['uraian'];
-    var approve;
-    if (index['approve2_by'] == "" ||
-        index['approve2_by'] == "null" ||
-        index['approve2_by'] == null) {
-      approve = index['approve_by'];
-    } else {
-      approve = index['approve2_by'];
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 10,
-        ),
-        Container(
-          margin: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: Constanst.borderStyle1,
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromARGB(255, 190, 190, 190).withOpacity(0.4),
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: Offset(1, 1), // changes position of shadow
-              ),
-            ],
-          ),
-          child: Padding(
-            padding:
-                const EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Text(
-                          Constanst.convertDate('$tanggalPengajuan'),
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 40,
-                      child: Container(
-                        margin: EdgeInsets.only(right: 8),
-                        decoration: BoxDecoration(
-                          color: status == 'Approve'
-                              ? Constanst.colorBGApprove
-                              : status == 'Approve 1'
-                                  ? Constanst.colorBGApprove
-                                  : status == 'Approve 2'
-                                      ? Constanst.colorBGApprove
-                                      : status == 'Rejected'
-                                          ? Constanst.colorBGRejected
-                                          : status == 'Pending'
-                                              ? Constanst.colorBGPending
-                                              : Colors.grey,
-                          borderRadius: Constanst.borderStyle1,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              left: 3, right: 3, top: 5, bottom: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              status == 'Approve'
-                                  ? Icon(
-                                      Iconsax.tick_square,
-                                      color: Constanst.color5,
-                                      size: 14,
-                                    )
-                                  : status == 'Approve 1'
-                                      ? Icon(
-                                          Iconsax.tick_square,
-                                          color: Constanst.color5,
-                                          size: 14,
-                                        )
-                                      : status == 'Approve 2'
-                                          ? Icon(
-                                              Iconsax.tick_square,
-                                              color: Constanst.color5,
-                                              size: 14,
-                                            )
-                                          : status == 'Rejected'
-                                              ? Icon(
-                                                  Iconsax.close_square,
-                                                  color: Constanst.color4,
-                                                  size: 14,
-                                                )
-                                              : status == 'Pending'
-                                                  ? Icon(
-                                                      Iconsax.timer,
-                                                      color: Constanst.color3,
-                                                      size: 14,
-                                                    )
-                                                  : SizedBox(),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 3),
-                                child: Text(
-                                  '$status',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.bold,
-                                      color: status == 'Approve'
-                                          ? Colors.green
-                                          : status == 'Approve 1'
-                                              ? Colors.green
-                                              : status == 'Approve 2'
-                                                  ? Colors.green
-                                                  : status == 'Rejected'
-                                                      ? Colors.red
-                                                      : status == 'Pending'
-                                                          ? Constanst.color3
-                                                          : Colors.black),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  "NO.$nomorAjuan",
-                  textAlign: TextAlign.justify,
-                  style: GoogleFonts.inter(
-                      fontSize: 14,
-                      color: Constanst.colorText1,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  '${dariJam} sd ${sampaiJam}',
-                  textAlign: TextAlign.justify,
-                  style: GoogleFonts.inter(
-                      fontSize: 14, color: Constanst.colorText2),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  '$uraian',
-                  textAlign: TextAlign.justify,
-                  style: GoogleFonts.inter(
-                      fontSize: 14, color: Constanst.colorText2),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Divider(
-                  height: 5,
-                  color: Constanst.colorText2,
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                status == "Rejected"
-                    ? SizedBox(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Alasan Reject",
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Text(
-                              alasanReject,
-                              style: GoogleFonts.inter(
-                                  fontSize: 14, color: Constanst.colorText2),
-                            )
-                          ],
-                        ),
-                      )
-                    : Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: status == "Approve" ||
-                                    status == "Approve 1" ||
-                                    status == "Approve 2"
-                                ? Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Iconsax.tick_circle,
-                                        color: Colors.green,
-                                      ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.only(left: 5, top: 3),
-                                        child: Text("Approved by $approve"),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.only(left: 5, top: 3),
-                                        child: Text(""),
-                                      )
-                                    ],
-                                  )
-                                : Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Pending Approval",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.colorText2),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text("")
-                                    ],
-                                  ),
-                          ),
-                        ],
-                      )
-              ],
-            ),
-          ),
-        )
-      ],
-    );
-  }
+  // Widget viewLemburTugasLuar(index) {
+  //   var nomorAjuan = index['nomor_ajuan'];
+  //   var dariJam = index['dari_jam'];
+  //   var sampaiJam = index['sampai_jam'];
+  //   var tanggalPengajuan = index['atten_date'];
+  //   var status;
+  //   if (controller.valuePolaPersetujuan.value == "1") {
+  //     status = index['status'];
+  //   } else {
+  //     status = index['status'] == "Approve"
+  //         ? "Approve 1"
+  //         : index['status'] == "Approve2"
+  //             ? "Approve 2"
+  //             : index['status'];
+  //   }
+  //   var alasanReject = index['alasan_reject'];
+  //   var approveDate = index['approve_date'];
+  //   var uraian = index['uraian'];
+  //   var approve;
+  //   if (index['approve2_by'] == "" ||
+  //       index['approve2_by'] == "null" ||
+  //       index['approve2_by'] == null) {
+  //     approve = index['approve_by'];
+  //   } else {
+  //     approve = index['approve2_by'];
+  //   }
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     mainAxisAlignment: MainAxisAlignment.start,
+  //     children: [
+  //       SizedBox(
+  //         height: 10,
+  //       ),
+  //       Container(
+  //         margin: const EdgeInsets.all(3),
+  //         decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           borderRadius: Constanst.borderStyle1,
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Color.fromARGB(255, 190, 190, 190).withOpacity(0.4),
+  //               spreadRadius: 1,
+  //               blurRadius: 1,
+  //               offset: Offset(1, 1), // changes position of shadow
+  //             ),
+  //           ],
+  //         ),
+  //         child: Padding(
+  //           padding:
+  //               const EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 10),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Row(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 mainAxisAlignment: MainAxisAlignment.start,
+  //                 children: [
+  //                   Expanded(
+  //                     flex: 60,
+  //                     child: Padding(
+  //                       padding: const EdgeInsets.only(top: 5),
+  //                       child: Text(
+  //                         Constanst.convertDate('$tanggalPengajuan'),
+  //                         style: GoogleFonts.inter(
+  //                             fontWeight: FontWeight.bold, fontSize: 16),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   Expanded(
+  //                     flex: 40,
+  //                     child: Container(
+  //                       margin: EdgeInsets.only(right: 8),
+  //                       decoration: BoxDecoration(
+  //                         color: status == 'Approve'
+  //                             ? Constanst.colorBGApprove
+  //                             : status == 'Approve 1'
+  //                                 ? Constanst.colorBGApprove
+  //                                 : status == 'Approve 2'
+  //                                     ? Constanst.colorBGApprove
+  //                                     : status == 'Rejected'
+  //                                         ? Constanst.colorBGRejected
+  //                                         : status == 'Pending'
+  //                                             ? Constanst.colorBGPending
+  //                                             : Colors.grey,
+  //                         borderRadius: Constanst.borderStyle1,
+  //                       ),
+  //                       child: Padding(
+  //                         padding: EdgeInsets.only(
+  //                             left: 3, right: 3, top: 5, bottom: 5),
+  //                         child: Row(
+  //                           mainAxisAlignment: MainAxisAlignment.center,
+  //                           children: [
+  //                             status == 'Approve'
+  //                                 ? Icon(
+  //                                     Iconsax.tick_square,
+  //                                     color: Constanst.color5,
+  //                                     size: 14,
+  //                                   )
+  //                                 : status == 'Approve 1'
+  //                                     ? Icon(
+  //                                         Iconsax.tick_square,
+  //                                         color: Constanst.color5,
+  //                                         size: 14,
+  //                                       )
+  //                                     : status == 'Approve 2'
+  //                                         ? Icon(
+  //                                             Iconsax.tick_square,
+  //                                             color: Constanst.color5,
+  //                                             size: 14,
+  //                                           )
+  //                                         : status == 'Rejected'
+  //                                             ? Icon(
+  //                                                 Iconsax.close_square,
+  //                                                 color: Constanst.color4,
+  //                                                 size: 14,
+  //                                               )
+  //                                             : status == 'Pending'
+  //                                                 ? Icon(
+  //                                                     Iconsax.timer,
+  //                                                     color: Constanst.color3,
+  //                                                     size: 14,
+  //                                                   )
+  //                                                 : SizedBox(),
+  //                             Padding(
+  //                               padding: const EdgeInsets.only(left: 3),
+  //                               child: Text(
+  //                                 '$status',
+  //                                 textAlign: TextAlign.center,
+  //                                 style: GoogleFonts.inter(
+  //                                     fontWeight: FontWeight.bold,
+  //                                     color: status == 'Approve'
+  //                                         ? Colors.green
+  //                                         : status == 'Approve 1'
+  //                                             ? Colors.green
+  //                                             : status == 'Approve 2'
+  //                                                 ? Colors.green
+  //                                                 : status == 'Rejected'
+  //                                                     ? Colors.red
+  //                                                     : status == 'Pending'
+  //                                                         ? Constanst.color3
+  //                                                         : Colors.black),
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   )
+  //                 ],
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               Text(
+  //                 "NO.$nomorAjuan",
+  //                 textAlign: TextAlign.justify,
+  //                 style: GoogleFonts.inter(
+  //                     fontSize: 14,
+  //                     color: Constanst.colorText1,
+  //                     fontWeight: FontWeight.bold),
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               Text(
+  //                 '${dariJam} sd ${sampaiJam}',
+  //                 textAlign: TextAlign.justify,
+  //                 style: GoogleFonts.inter(
+  //                     fontSize: 14, color: Constanst.colorText2),
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               Text(
+  //                 '$uraian',
+  //                 textAlign: TextAlign.justify,
+  //                 style: GoogleFonts.inter(
+  //                     fontSize: 14, color: Constanst.colorText2),
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               Divider(
+  //                 height: 5,
+  //                 color: Constanst.colorText2,
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               status == "Rejected"
+  //                   ? SizedBox(
+  //                       child: Column(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Text(
+  //                             "Alasan Reject",
+  //                             style: GoogleFonts.inter(
+  //                                 fontWeight: FontWeight.bold),
+  //                           ),
+  //                           SizedBox(
+  //                             height: 6,
+  //                           ),
+  //                           Text(
+  //                             alasanReject,
+  //                             style: GoogleFonts.inter(
+  //                                 fontSize: 14, color: Constanst.colorText2),
+  //                           )
+  //                         ],
+  //                       ),
+  //                     )
+  //                   : Row(
+  //                       crossAxisAlignment: CrossAxisAlignment.center,
+  //                       children: [
+  //                         Expanded(
+  //                           child: status == "Approve" ||
+  //                                   status == "Approve 1" ||
+  //                                   status == "Approve 2"
+  //                               ? Row(
+  //                                   crossAxisAlignment:
+  //                                       CrossAxisAlignment.start,
+  //                                   children: [
+  //                                     Icon(
+  //                                       Iconsax.tick_circle,
+  //                                       color: Colors.green,
+  //                                     ),
+  //                                     Padding(
+  //                                       padding:
+  //                                           EdgeInsets.only(left: 5, top: 3),
+  //                                       child: Text("Approved by $approve"),
+  //                                     ),
+  //                                     Padding(
+  //                                       padding:
+  //                                           EdgeInsets.only(left: 5, top: 3),
+  //                                       child: Text(""),
+  //                                     )
+  //                                   ],
+  //                                 )
+  //                               : Column(
+  //                                   crossAxisAlignment:
+  //                                       CrossAxisAlignment.start,
+  //                                   children: [
+  //                                     Text(
+  //                                       "Pending Approval",
+  //                                       style: GoogleFonts.inter(
+  //                                           color: Constanst.colorText2),
+  //                                     ),
+  //                                     SizedBox(
+  //                                       height: 5,
+  //                                     ),
+  //                                     Text("")
+  //                                   ],
+  //                                 ),
+  //                         ),
+  //                       ],
+  //                     )
+  //             ],
+  //           ),
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
-  Widget viewKlaim(valueList) {
-    var nomorAjuan = valueList['nomor_ajuan'];
-    var tanggalPengajuan = valueList['created_on'];
-    var status;
-    if (controller.valuePolaPersetujuan.value == "1") {
-      status = valueList['status'];
-    } else {
-      status = valueList['status'] == "Approve"
-          ? "Approve 1"
-          : valueList['status'] == "Approve2"
-              ? "Approve 2"
-              : valueList['status'];
-    }
-    DateTime fltr1 = DateTime.parse("${valueList['tgl_ajuan']}");
-    var tanggalAjuan = "${DateFormat('dd MMMM yyyy').format(fltr1)}";
-    var totalKlaim = valueList['total_claim'];
-    var rupiah = controller.convertToIdr(totalKlaim, 0);
-    var alasanReject = valueList['alasan_reject'];
-    var approveDate = valueList['approve_date'];
-    var uraian = valueList['description'];
-    var approve;
-    if (valueList['approve2_by'] == "" ||
-        valueList['approve2_by'] == "null" ||
-        valueList['approve2_by'] == null) {
-      approve = valueList['approve_by'];
-    } else {
-      approve = valueList['approve2_by'];
-    }
-    var namaFile = valueList['nama_file'];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 10,
-        ),
-        Container(
-          margin: const EdgeInsets.all(3.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: Constanst.borderStyle1,
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromARGB(255, 190, 190, 190).withOpacity(0.4),
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: Offset(1, 1), // changes position of shadow
-              ),
-            ],
-          ),
-          child: Padding(
-            padding:
-                const EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Text(
-                          Constanst.convertDate('$tanggalPengajuan'),
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 40,
-                      child: Container(
-                        margin: EdgeInsets.only(right: 8),
-                        decoration: BoxDecoration(
-                          color: status == 'Approve'
-                              ? Constanst.colorBGApprove
-                              : status == 'Approve 1'
-                                  ? Constanst.colorBGApprove
-                                  : status == 'Approve 2'
-                                      ? Constanst.colorBGApprove
-                                      : status == 'Rejected'
-                                          ? Constanst.colorBGRejected
-                                          : status == 'Pending'
-                                              ? Constanst.colorBGPending
-                                              : Colors.grey,
-                          borderRadius: Constanst.borderStyle1,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              left: 3, right: 3, top: 5, bottom: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              status == 'Approve'
-                                  ? Icon(
-                                      Iconsax.tick_square,
-                                      color: Constanst.color5,
-                                      size: 14,
-                                    )
-                                  : status == 'Approve 1'
-                                      ? Icon(
-                                          Iconsax.tick_square,
-                                          color: Constanst.color5,
-                                          size: 14,
-                                        )
-                                      : status == 'Approve 2'
-                                          ? Icon(
-                                              Iconsax.tick_square,
-                                              color: Constanst.color5,
-                                              size: 14,
-                                            )
-                                          : status == 'Rejected'
-                                              ? Icon(
-                                                  Iconsax.close_square,
-                                                  color: Constanst.color4,
-                                                  size: 14,
-                                                )
-                                              : status == 'Pending'
-                                                  ? Icon(
-                                                      Iconsax.timer,
-                                                      color: Constanst.color3,
-                                                      size: 14,
-                                                    )
-                                                  : SizedBox(),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 3),
-                                child: Text(
-                                  '$status',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.bold,
-                                      color: status == 'Approve'
-                                          ? Colors.green
-                                          : status == 'Approve 1'
-                                              ? Colors.green
-                                              : status == 'Approve 2'
-                                                  ? Colors.green
-                                                  : status == 'Rejected'
-                                                      ? Colors.red
-                                                      : status == 'Pending'
-                                                          ? Constanst.color3
-                                                          : Colors.black),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  "NO.$nomorAjuan",
-                  textAlign: TextAlign.justify,
-                  style: GoogleFonts.inter(
-                      fontSize: 14,
-                      color: Constanst.colorText1,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  'Pengajuan : $tanggalAjuan',
-                  textAlign: TextAlign.justify,
-                  style: GoogleFonts.inter(
-                      fontSize: 14, color: Constanst.colorText2),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  'Total Klaim : $rupiah',
-                  textAlign: TextAlign.justify,
-                  style: GoogleFonts.inter(
-                      fontSize: 14, color: Constanst.colorText2),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  '$uraian',
-                  textAlign: TextAlign.justify,
-                  style: GoogleFonts.inter(
-                      fontSize: 14, color: Constanst.colorText2),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                namaFile == "" || namaFile == "NULL" || namaFile == null
-                    ? SizedBox()
-                    : Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 60,
-                            child: Text(
-                              "$namaFile",
-                              style: GoogleFonts.inter(
-                                  fontSize: 14, color: Constanst.colorText2),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 40,
-                            child: InkWell(
-                                onTap: () {
-                                  controller.viewLampiranAjuan(namaFile);
-                                },
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "Lihat File",
-                                      style: GoogleFonts.inter(
-                                        color: Constanst.colorPrimary,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 3),
-                                      child: Icon(
-                                        Iconsax.arrow_right_1,
-                                        size: 20,
-                                      ),
-                                    )
-                                  ],
-                                )),
-                          )
-                        ],
-                      ),
-                SizedBox(
-                  height: 5,
-                ),
-                Divider(
-                  height: 5,
-                  color: Constanst.colorText2,
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                status == "Rejected"
-                    ? SizedBox(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Iconsax.close_circle,
-                                  color: Colors.red,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 5, top: 3),
-                                  child: Text("Rejected by $approve"),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 5, top: 3),
-                                  child: Text(""),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Text(
-                              "$alasanReject",
-                              style: GoogleFonts.inter(
-                                  fontSize: 14, color: Constanst.colorText2),
-                            ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                          ],
-                        ),
-                      )
-                    : Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: status == "Approve" ||
-                                    status == "Approve 1" ||
-                                    status == "Approve 2"
-                                ? Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Iconsax.tick_circle,
-                                        color: Colors.green,
-                                      ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.only(left: 5, top: 3),
-                                        child: Text("Approved by $approve"),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.only(left: 5, top: 3),
-                                        child: Text(""),
-                                      )
-                                    ],
-                                  )
-                                : Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Pending Approval",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.colorText2),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                    ],
-                                  ),
-                          ),
-                        ],
-                      )
-              ],
-            ),
-          ),
-        )
-      ],
-    );
-  }
+  // Widget viewKlaim(valueList) {
+  //   var nomorAjuan = valueList['nomor_ajuan'];
+  //   var tanggalPengajuan = valueList['created_on'];
+  //   var status;
+  //   if (controller.valuePolaPersetujuan.value == "1") {
+  //     status = valueList['status'];
+  //   } else {
+  //     status = valueList['status'] == "Approve"
+  //         ? "Approve 1"
+  //         : valueList['status'] == "Approve2"
+  //             ? "Approve 2"
+  //             : valueList['status'];
+  //   }
+  //   DateTime fltr1 = DateTime.parse("${valueList['tgl_ajuan']}");
+  //   var tanggalAjuan = "${DateFormat('dd MMMM yyyy').format(fltr1)}";
+  //   var totalKlaim = valueList['total_claim'];
+  //   var rupiah = controller.convertToIdr(totalKlaim, 0);
+  //   var alasanReject = valueList['alasan_reject'];
+  //   var approveDate = valueList['approve_date'];
+  //   var uraian = valueList['description'];
+  //   var approve;
+  //   if (valueList['approve2_by'] == "" ||
+  //       valueList['approve2_by'] == "null" ||
+  //       valueList['approve2_by'] == null) {
+  //     approve = valueList['approve_by'];
+  //   } else {
+  //     approve = valueList['approve2_by'];
+  //   }
+  //   var namaFile = valueList['nama_file'];
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     mainAxisAlignment: MainAxisAlignment.start,
+  //     children: [
+  //       SizedBox(
+  //         height: 10,
+  //       ),
+  //       Container(
+  //         margin: const EdgeInsets.all(3.0),
+  //         decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           borderRadius: Constanst.borderStyle1,
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Color.fromARGB(255, 190, 190, 190).withOpacity(0.4),
+  //               spreadRadius: 1,
+  //               blurRadius: 1,
+  //               offset: Offset(1, 1), // changes position of shadow
+  //             ),
+  //           ],
+  //         ),
+  //         child: Padding(
+  //           padding:
+  //               const EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 10),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Row(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 mainAxisAlignment: MainAxisAlignment.start,
+  //                 children: [
+  //                   Expanded(
+  //                     flex: 60,
+  //                     child: Padding(
+  //                       padding: const EdgeInsets.only(top: 5),
+  //                       child: Text(
+  //                         Constanst.convertDate('$tanggalPengajuan'),
+  //                         style: GoogleFonts.inter(
+  //                             fontWeight: FontWeight.bold, fontSize: 16),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   Expanded(
+  //                     flex: 40,
+  //                     child: Container(
+  //                       margin: EdgeInsets.only(right: 8),
+  //                       decoration: BoxDecoration(
+  //                         color: status == 'Approve'
+  //                             ? Constanst.colorBGApprove
+  //                             : status == 'Approve 1'
+  //                                 ? Constanst.colorBGApprove
+  //                                 : status == 'Approve 2'
+  //                                     ? Constanst.colorBGApprove
+  //                                     : status == 'Rejected'
+  //                                         ? Constanst.colorBGRejected
+  //                                         : status == 'Pending'
+  //                                             ? Constanst.colorBGPending
+  //                                             : Colors.grey,
+  //                         borderRadius: Constanst.borderStyle1,
+  //                       ),
+  //                       child: Padding(
+  //                         padding: EdgeInsets.only(
+  //                             left: 3, right: 3, top: 5, bottom: 5),
+  //                         child: Row(
+  //                           mainAxisAlignment: MainAxisAlignment.center,
+  //                           children: [
+  //                             status == 'Approve'
+  //                                 ? Icon(
+  //                                     Iconsax.tick_square,
+  //                                     color: Constanst.color5,
+  //                                     size: 14,
+  //                                   )
+  //                                 : status == 'Approve 1'
+  //                                     ? Icon(
+  //                                         Iconsax.tick_square,
+  //                                         color: Constanst.color5,
+  //                                         size: 14,
+  //                                       )
+  //                                     : status == 'Approve 2'
+  //                                         ? Icon(
+  //                                             Iconsax.tick_square,
+  //                                             color: Constanst.color5,
+  //                                             size: 14,
+  //                                           )
+  //                                         : status == 'Rejected'
+  //                                             ? Icon(
+  //                                                 Iconsax.close_square,
+  //                                                 color: Constanst.color4,
+  //                                                 size: 14,
+  //                                               )
+  //                                             : status == 'Pending'
+  //                                                 ? Icon(
+  //                                                     Iconsax.timer,
+  //                                                     color: Constanst.color3,
+  //                                                     size: 14,
+  //                                                   )
+  //                                                 : SizedBox(),
+  //                             Padding(
+  //                               padding: const EdgeInsets.only(left: 3),
+  //                               child: Text(
+  //                                 '$status',
+  //                                 textAlign: TextAlign.center,
+  //                                 style: GoogleFonts.inter(
+  //                                     fontWeight: FontWeight.bold,
+  //                                     color: status == 'Approve'
+  //                                         ? Colors.green
+  //                                         : status == 'Approve 1'
+  //                                             ? Colors.green
+  //                                             : status == 'Approve 2'
+  //                                                 ? Colors.green
+  //                                                 : status == 'Rejected'
+  //                                                     ? Colors.red
+  //                                                     : status == 'Pending'
+  //                                                         ? Constanst.color3
+  //                                                         : Colors.black),
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   )
+  //                 ],
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               Text(
+  //                 "NO.$nomorAjuan",
+  //                 textAlign: TextAlign.justify,
+  //                 style: GoogleFonts.inter(
+  //                     fontSize: 14,
+  //                     color: Constanst.colorText1,
+  //                     fontWeight: FontWeight.bold),
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               Text(
+  //                 'Pengajuan : $tanggalAjuan',
+  //                 textAlign: TextAlign.justify,
+  //                 style: GoogleFonts.inter(
+  //                     fontSize: 14, color: Constanst.colorText2),
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               Text(
+  //                 'Total Klaim : $rupiah',
+  //                 textAlign: TextAlign.justify,
+  //                 style: GoogleFonts.inter(
+  //                     fontSize: 14, color: Constanst.colorText2),
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               Text(
+  //                 '$uraian',
+  //                 textAlign: TextAlign.justify,
+  //                 style: GoogleFonts.inter(
+  //                     fontSize: 14, color: Constanst.colorText2),
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               namaFile == "" || namaFile == "NULL" || namaFile == null
+  //                   ? SizedBox()
+  //                   : Row(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Expanded(
+  //                           flex: 60,
+  //                           child: Text(
+  //                             "$namaFile",
+  //                             style: GoogleFonts.inter(
+  //                                 fontSize: 14, color: Constanst.colorText2),
+  //                           ),
+  //                         ),
+  //                         Expanded(
+  //                           flex: 40,
+  //                           child: InkWell(
+  //                               onTap: () {
+  //                                 controller.viewLampiranAjuan(namaFile);
+  //                               },
+  //                               child: Row(
+  //                                 crossAxisAlignment: CrossAxisAlignment.end,
+  //                                 mainAxisAlignment: MainAxisAlignment.end,
+  //                                 children: [
+  //                                   Text(
+  //                                     "Lihat File",
+  //                                     style: GoogleFonts.inter(
+  //                                       color: Constanst.colorPrimary,
+  //                                       decoration: TextDecoration.underline,
+  //                                     ),
+  //                                   ),
+  //                                   Padding(
+  //                                     padding: EdgeInsets.only(left: 3),
+  //                                     child: Icon(
+  //                                       Iconsax.arrow_right_1,
+  //                                       size: 20,
+  //                                     ),
+  //                                   )
+  //                                 ],
+  //                               )),
+  //                         )
+  //                       ],
+  //                     ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               Divider(
+  //                 height: 5,
+  //                 color: Constanst.colorText2,
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               status == "Rejected"
+  //                   ? SizedBox(
+  //                       child: Column(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Row(
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               Icon(
+  //                                 Iconsax.close_circle,
+  //                                 color: Colors.red,
+  //                               ),
+  //                               Padding(
+  //                                 padding: EdgeInsets.only(left: 5, top: 3),
+  //                                 child: Text("Rejected by $approve"),
+  //                               ),
+  //                               Padding(
+  //                                 padding: EdgeInsets.only(left: 5, top: 3),
+  //                                 child: Text(""),
+  //                               )
+  //                             ],
+  //                           ),
+  //                           SizedBox(
+  //                             height: 6,
+  //                           ),
+  //                           Text(
+  //                             "$alasanReject",
+  //                             style: GoogleFonts.inter(
+  //                                 fontSize: 14, color: Constanst.colorText2),
+  //                           ),
+  //                           SizedBox(
+  //                             height: 6,
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     )
+  //                   : Row(
+  //                       crossAxisAlignment: CrossAxisAlignment.center,
+  //                       children: [
+  //                         Expanded(
+  //                           child: status == "Approve" ||
+  //                                   status == "Approve 1" ||
+  //                                   status == "Approve 2"
+  //                               ? Row(
+  //                                   crossAxisAlignment:
+  //                                       CrossAxisAlignment.start,
+  //                                   children: [
+  //                                     Icon(
+  //                                       Iconsax.tick_circle,
+  //                                       color: Colors.green,
+  //                                     ),
+  //                                     Padding(
+  //                                       padding:
+  //                                           EdgeInsets.only(left: 5, top: 3),
+  //                                       child: Text("Approved by $approve"),
+  //                                     ),
+  //                                     Padding(
+  //                                       padding:
+  //                                           EdgeInsets.only(left: 5, top: 3),
+  //                                       child: Text(""),
+  //                                     )
+  //                                   ],
+  //                                 )
+  //                               : Column(
+  //                                   crossAxisAlignment:
+  //                                       CrossAxisAlignment.start,
+  //                                   children: [
+  //                                     Text(
+  //                                       "Pending Approval",
+  //                                       style: GoogleFonts.inter(
+  //                                           color: Constanst.colorText2),
+  //                                     ),
+  //                                     SizedBox(
+  //                                       height: 5,
+  //                                     ),
+  //                                   ],
+  //                                 ),
+  //                         ),
+  //                       ],
+  //                     )
+  //             ],
+  //           ),
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 }

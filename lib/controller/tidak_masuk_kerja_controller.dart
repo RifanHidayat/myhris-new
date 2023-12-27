@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -32,12 +33,12 @@ class TidakMasukKerjaController extends GetxController {
   var sampaiJamAjuan = TextEditingController().obs;
   var alasan = TextEditingController().obs;
   var departemen = TextEditingController().obs;
-    var izinTerpakai=0.obs;
-  var jumlahIzin=0.obs;
-  var percentIzin=0.0.obs;
-  var showDurationIzin=false.obs;
+  var izinTerpakai = 0.obs;
+  var jumlahIzin = 0.obs;
+  var percentIzin = 0.0.obs;
+  var showDurationIzin = false.obs;
 
-  var typeTap=0.obs;
+  var typeTap = 0.obs;
 
   var filePengajuan = File("").obs;
 
@@ -56,8 +57,13 @@ class TidakMasukKerjaController extends GetxController {
 
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
   Rx<List<String>> allTipeFormTidakMasukKerja = Rx<List<String>>([]);
-  var izinCategory=[].obs;
+  var izinCategory = [].obs;
   Rx<List<String>> allTipeFormTidakMasukKerja1 = Rx<List<String>>([]);
+
+  var statusFormPencarian = false.obs;
+
+  var tempNamaStatus1 = "Semua Status".obs;
+  var tempNamaTipe1 = "Semua Tipe".obs;
 
   var bulanSelectedSearchHistory = "".obs;
   var tahunSelectedSearchHistory = "".obs;
@@ -73,7 +79,7 @@ class TidakMasukKerjaController extends GetxController {
   var stringSelectedTanggal = "".obs;
   var valuePolaPersetujuan = "".obs;
 
-  var selectedTypeAjuan = "Semua".obs;
+  var selectedTypeAjuan = "Semua Status".obs;
 
   var selectedDropdownFormTidakMasukKerjaTipe = "".obs;
   var selectedDropdownFormTidakMasukKerjaDelegasi = "".obs;
@@ -90,9 +96,9 @@ class TidakMasukKerjaController extends GetxController {
   var statusLoadingSubmitLaporan = false.obs;
   var viewFormWaktu = false.obs;
 
-  var dataTypeAjuanDummy1 = ["Semua", "Approve", "Rejected", "Pending"];
+  var dataTypeAjuanDummy1 = ["Semua Status", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
-    "Semua",
+    "Semua Status",
     "Approve 1",
     "Approve 2",
     "Rejected",
@@ -112,8 +118,11 @@ class TidakMasukKerjaController extends GetxController {
     loadTypeSakit();
     loadDataAjuanIzin();
     getDepartemen(1, "");
-    
     super.onInit();
+  }
+
+  void showInputCari() {
+    statusFormPencarian.value = !statusFormPencarian.value;
   }
 
   void getDepartemen(status, tanggal) {
@@ -213,8 +222,8 @@ class TidakMasukKerjaController extends GetxController {
         var data = {'nama': element, 'status': false};
         dataTypeAjuan.value.add(data);
       }
-      dataTypeAjuan.value
-          .firstWhere((element) => element['nama'] == 'Semua')['status'] = true;
+      dataTypeAjuan.value.firstWhere(
+          (element) => element['nama'] == 'Semua Status')['status'] = true;
       this.dataTypeAjuan.refresh();
     } else {
       dataTypeAjuan.value.clear();
@@ -222,8 +231,8 @@ class TidakMasukKerjaController extends GetxController {
         var data = {'nama': element, 'status': false};
         dataTypeAjuan.value.add(data);
       }
-      dataTypeAjuan.value
-          .firstWhere((element) => element['nama'] == 'Semua')['status'] = true;
+      dataTypeAjuan.value.firstWhere(
+          (element) => element['nama'] == 'Semua Status')['status'] = true;
       this.dataTypeAjuan.refresh();
     }
   }
@@ -243,17 +252,17 @@ class TidakMasukKerjaController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         if (valueBody['status'] == false) {
-          loadingString.value = "Tidak ada pengajuan";
+          loadingString.value = "Anda tidak memiliki\nRiwayat Pengajuan Izin";
           this.loadingString.refresh();
         } else {
           AlllistHistoryAjuan.value = valueBody['data'];
           for (var element in valueBody['data']) {
-            if (element['category'] == 'FULLDAY') {
-              listHistoryAjuan.value.add(element);
-            }
+            // if (element['category'] == 'FULLDAY') {
+            listHistoryAjuan.value.add(element);
+            // }
           }
           if (listHistoryAjuan.value.length == 0) {
-            loadingString.value = "Tidak ada pengajuan";
+            loadingString.value = "Anda tidak memiliki\nRiwayat Pengajuan Izin";
           } else {
             loadingString.value = "Sedang memuat data...";
           }
@@ -264,8 +273,9 @@ class TidakMasukKerjaController extends GetxController {
       }
     });
   }
-    Future<bool> loadDataAjuanIzinCategori({id}) async {
-      print("masuk sini");
+
+  Future<bool> loadDataAjuanIzinCategori({id}) async {
+    print("masuk sini");
     AlllistHistoryAjuan.value.clear();
     listHistoryAjuan.value.clear();
     var dataUser = AppData.informasiUser;
@@ -274,49 +284,62 @@ class TidakMasukKerjaController extends GetxController {
       'em_id': getEmid,
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
-      'type_id':id.toString()
+      'type_id': id.toString()
     };
-    var connect = Api.connectionApi("post", body, "emp_leave_load_izin_Kategori");
-   await connect.then((dynamic res) {
+    var connect =
+        Api.connectionApi("post", body, "emp_leave_load_izin_Kategori");
+    await connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-      print("data value body ${valueBody}");
+        print("data value body ${valueBody}");
         if (valueBody['status'] == false) {
-          // loadingString.value = "Tidak ada pengajuan";
-          izinCategory.value=[];
+          // loadingString.value =  "Anda tidak memiliki\nRiwayat Pengajuan Izin";
+          izinCategory.value = [];
           this.loadingString.refresh();
-          izinTerpakai.value=0;
+          izinTerpakai.value = 0;
           return true;
-         } else {
-          izinTerpakai.value=valueBody['jumlah_data'];
-          izinCategory.value=valueBody['data'];
-           return true;
-          
+        } else {
+          izinTerpakai.value = valueBody['jumlah_data'];
+          izinCategory.value = valueBody['data'];
+          return true;
         }
       }
     });
-  return true;
+    return true;
   }
 
   void cariData(value) {
     var text = value.toLowerCase();
-    var data = [];
-    for (var element in AlllistHistoryAjuan) {
-      var nomorAjuan = element['nomor_ajuan'].toLowerCase();
-      if (nomorAjuan == text) {
-        data.add(element);
-      }
-    }
-    if (data.isEmpty) {
-      loadingString.value = "Tidak ada pengajuan";
+    var filter = AlllistHistoryAjuan.where((ajuan) {
+      var getAjuan = ajuan['nomor_ajuan'].toLowerCase();
+      return getAjuan.contains(text);
+    }).toList();
+    listHistoryAjuan.value = filter;
+    statusCari.value = true;
+    this.listHistoryAjuan.refresh();
+    this.statusCari.refresh();
+    // var data = [];
+    // for (var element in AlllistHistoryAjuan) {
+    //   var nomorAjuan = element['nomor_ajuan'].toLowerCase();
+    //   if (nomorAjuan == text) {
+    //     data.add(element);
+    //   }
+    // }
+    // if (data.isEmpty) {
+    //   loadingString.value =  "Anda tidak memiliki\nRiwayat Pengajuan Izin";
+    // } else {
+    //   loadingString.value = "Memuat data...";
+    // }
+    // listHistoryAjuan.value = data;
+    // statusCari.value = true;
+
+    if (listHistoryAjuan.value.isEmpty) {
+      loadingString.value = "Anda tidak memiliki\nRiwayat Pengajuan Izin";
     } else {
       loadingString.value = "Memuat data...";
     }
-    listHistoryAjuan.value = data;
-    statusCari.value = true;
-    this.listHistoryAjuan.refresh();
+
     this.loadingString.refresh();
-    this.statusCari.refresh();
   }
 
   void loadAllEmployeeDelegasi() {
@@ -391,7 +414,7 @@ class TidakMasukKerjaController extends GetxController {
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
         for (var element in data) {
-           allTipeFormTidakMasukKerja1.value
+          allTipeFormTidakMasukKerja1.value
               .add("${element['name']} - ${element['category']}");
           allTipeFormTidakMasukKerja.value
               .add("${element['name']} - ${element['category']}");
@@ -400,7 +423,7 @@ class TidakMasukKerjaController extends GetxController {
             'name': element['name'],
             'status': element['status'],
             'category': element['category'],
-            'leave_day':element['leave_day'],
+            'leave_day': element['leave_day'],
             'ajuan': 2,
             'active': false,
           };
@@ -423,12 +446,12 @@ class TidakMasukKerjaController extends GetxController {
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
         for (var element in data) {
-            allTipeFormTidakMasukKerja1.value
+          allTipeFormTidakMasukKerja1.value
               .add("${element['name']} - ${element['category']}");
           allTipeFormTidakMasukKerja.value
               .add("${element['name']} - ${element['category']}");
           var data = {
-             'leave_day':element['leave_day'],
+            'leave_day': element['leave_day'],
             'type_id': element['id'],
             'name': element['name'],
             'status': element['status'],
@@ -461,23 +484,28 @@ class TidakMasukKerjaController extends GetxController {
   }
 
   void changeTypeSelected(index) {
-
-    typeTap.value=index;
+    typeTap.value = index;
     listHistoryAjuan.value.clear();
     if (index == 0) {
-       allTipeFormTidakMasukKerja.value=  allTipeFormTidakMasukKerja1.value.where((element) {
+      allTipeFormTidakMasukKerja.value =
+          allTipeFormTidakMasukKerja1.value.where((element) {
         return element.toString().contains("FULLDAY");
-
       }).toList();
       AlllistHistoryAjuan.value.forEach((element) {
         if (element['category'] == "FULLDAY") {
           listHistoryAjuan.value.add(element);
         }
       });
+    } else if (index == 2) {
+      allTipeFormTidakMasukKerja.value =
+          allTipeFormTidakMasukKerja1.value.toList();
+      AlllistHistoryAjuan.value.forEach((element) {
+        listHistoryAjuan.value.add(element);
+      });
     } else {
-    allTipeFormTidakMasukKerja.value=   allTipeFormTidakMasukKerja1.value.where((element) {
+      allTipeFormTidakMasukKerja.value =
+          allTipeFormTidakMasukKerja1.value.where((element) {
         return element.toString().contains("HALFDAY");
-
       }).toList();
       AlllistHistoryAjuan.value.forEach((element) {
         if (element['category'] == "HALFDAY") {
@@ -493,14 +521,13 @@ class TidakMasukKerjaController extends GetxController {
       this.selectedDropdownFormTidakMasukKerjaTipe.refresh();
     }
     loadingString.value = listHistoryAjuan.value.length == 0
-        ? "Tidak ada pengajuan"
+        ? "Anda tidak memiliki\nRiwayat Pengajuan Izin"
         : "Memuat data...";
     selectedType.value = index;
     this.loadingString.refresh();
     this.listHistoryAjuan.refresh();
     this.selectedType.refresh();
-    typeAjuanRefresh("Semua");
-  
+    typeAjuanRefresh("Semua Status");
   }
 
   void typeAjuanRefresh(name) {
@@ -548,7 +575,7 @@ class TidakMasukKerjaController extends GetxController {
         element['status'] = false;
       }
     }
-    if (name == "Semua") {
+    if (name == "Semua Status") {
       var type = selectedType.value == 0 ? "FULLDAY" : "HALFDAY";
       listHistoryAjuan.value.clear();
       for (var element in AlllistHistoryAjuan) {
@@ -573,7 +600,7 @@ class TidakMasukKerjaController extends GetxController {
     }
     loadingString.value = listHistoryAjuan.value.length != 0
         ? "Memuat data..."
-        : "Tidak ada pengajuan";
+        : "Anda tidak memiliki\nRiwayat Pengajuan Izin";
     this.loadingString.refresh();
   }
 
@@ -845,7 +872,6 @@ class TidakMasukKerjaController extends GetxController {
       'ajuan': getAjuanType,
     };
     if (status == false) {
-      
       body['created_by'] = getEmid;
       body['menu_name'] = "Tidak Hadir";
       body['activity_name'] =
@@ -1062,142 +1088,133 @@ class TidakMasukKerjaController extends GetxController {
   void showModalBatalPengajuan(index) {
     showModalBottomSheet(
       context: Get.context!,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(10.0),
+          top: Radius.circular(20.0),
         ),
       ),
       builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 90,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: Constanst.colorBGRejected,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Iconsax.minus_cirlce,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 6),
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 6),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Batalkan Pengajuan",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
-                                    ),
-                                    Text(
-                                      index['name'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                          color: Constanst.colorText2),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Iconsax.info_circle5,
+                          color: Constanst.color4,
+                          size: 30,
                         ),
+                        const SizedBox(width: 12),
+                        Text(
+                          "Batalkan Pengajuan",
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              color: Constanst.fgPrimary),
+                        ),
+                      ],
+                    ),
+                    InkWell(
+                      onTap: () => Get.back(),
+                      customBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      child: Icon(
+                        Icons.close,
+                        color: Constanst.fgSecondary,
+                        size: 26,
                       ),
-                      Expanded(
-                          flex: 10,
-                          child: InkWell(
-                            onTap: () => Navigator.pop(Get.context!),
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 6),
-                              child: Icon(Iconsax.close_circle),
-                            ),
-                          ))
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    "Data pengajuan yang telah kamu buat akan di hapus. Yakin ingin membatalkan pengajuan?",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(color: Constanst.colorText2),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: TextButtonWidget(
-                            title: "Ya, Batalkan",
-                            onTap: () async {
-                              batalkanPengajuan(index);
-                            },
-                            colorButton: Constanst.colorButton1,
-                            colortext: Constanst.colorWhite,
-                            border: BorderRadius.circular(10.0),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "Data pengajuan yang telah kamu buat akan di hapus. Yakin ingin membatalkan pengajuan?",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      color: Constanst.fgPrimary),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 40,
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Constanst
+                                .border, // Set the desired border color
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            batalkanPengajuan(index);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              foregroundColor: Constanst.color4,
+                              backgroundColor: Constanst.colorWhite,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              elevation: 0,
+                              // padding: EdgeInsets.zero,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                          child: Text(
+                            'Ya, Batalkan',
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.color4,
+                                fontSize: 14),
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: InkWell(
-                          onTap: () => Navigator.pop(Get.context!),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: Constanst.borderStyle2,
-                                  border: Border.all(
-                                      color: Constanst.colorPrimary)),
-                              child: Center(
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 12, bottom: 12),
-                                  child: Text(
-                                    "Urungkan",
-                                    style: TextStyle(
-                                        color: Constanst.colorPrimary),
-                                  ),
-                                ),
-                              )),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: SizedBox(
+                        height: 40,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.colorWhite,
+                            backgroundColor: Constanst.colorPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 0,
+                            // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                          ),
+                          child: Text(
+                            'Kembali',
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.colorWhite,
+                                fontSize: 14),
+                          ),
                         ),
-                      )
-                    ],
-                  )
-                ],
-              ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
-            SizedBox(
-              height: 16,
-            )
-          ],
+          ),
         );
       },
     );
@@ -1242,7 +1259,7 @@ class TidakMasukKerjaController extends GetxController {
     this.statusCari.refresh();
   }
 
-  void showDetailRiwayat(detailData) {
+  void showDetailRiwayat(detailData, approve_by, alasanReject) {
     var nomorAjuan = detailData['nomor_ajuan'];
     var tanggalMasukAjuan = detailData['atten_date'];
     var namaTypeAjuan = detailData['name'];
@@ -1250,7 +1267,6 @@ class TidakMasukKerjaController extends GetxController {
     var tanggalAjuanSampai = detailData['end_date'];
     var alasan = detailData['reason'];
     var durasi = detailData['leave_duration'];
-    // var typeAjuan = detailData['leave_status'];
     var typeAjuan;
     if (valuePolaPersetujuan.value == "1") {
       typeAjuan = detailData['leave_status'];
@@ -1276,314 +1292,475 @@ class TidakMasukKerjaController extends GetxController {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20.0),
+          top: Radius.circular(16.0),
         ),
       ),
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 16,
-              ),
-              IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 60,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "$namaTypeAjuan",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                              "${Constanst.convertDate("$tanggalMasukAjuan")}"),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 40,
-                      child: Center(
-                        child: Container(
-                          margin: EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            color: typeAjuan == 'Approve'
-                                ? Constanst.colorBGApprove
-                                : typeAjuan == 'Approve 1'
-                                    ? Constanst.colorBGApprove
-                                    : typeAjuan == 'Approve 2'
-                                        ? Constanst.colorBGApprove
-                                        : typeAjuan == 'Rejected'
-                                            ? Constanst.colorBGRejected
-                                            : typeAjuan == 'Pending'
-                                                ? Constanst.colorBGPending
-                                                : Colors.grey,
-                            borderRadius: Constanst.borderStyle1,
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                left: 3, right: 3, top: 5, bottom: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                typeAjuan == 'Approve'
-                                    ? Icon(
-                                        Iconsax.tick_square,
-                                        color: Constanst.color5,
-                                        size: 14,
-                                      )
-                                    : typeAjuan == 'Approve 1'
-                                        ? Icon(
-                                            Iconsax.tick_square,
-                                            color: Constanst.color5,
-                                            size: 14,
-                                          )
-                                        : typeAjuan == 'Approve 2'
-                                            ? Icon(
-                                                Iconsax.tick_square,
-                                                color: Constanst.color5,
-                                                size: 14,
-                                              )
-                                            : typeAjuan == 'Rejected'
-                                                ? Icon(
-                                                    Iconsax.close_square,
-                                                    color: Constanst.color4,
-                                                    size: 14,
-                                                  )
-                                                : typeAjuan == 'Pending'
-                                                    ? Icon(
-                                                        Iconsax.timer,
-                                                        color: Constanst.color3,
-                                                        size: 14,
-                                                      )
-                                                    : SizedBox(),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 3),
-                                  child: Text(
-                                    '$typeAjuan',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: typeAjuan == 'Approve'
-                                            ? Colors.green
-                                            : typeAjuan == 'Approve 1'
-                                                ? Colors.green
-                                                : typeAjuan == 'Approve 2'
-                                                    ? Colors.green
-                                                    : typeAjuan == 'Rejected'
-                                                        ? Colors.red
-                                                        : typeAjuan == 'Pending'
-                                                            ? Constanst.color3
-                                                            : Colors.black),
-                                  ),
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 12),
+                Center(
+                  child: Container(
+                      height: 6,
+                      width: 34,
+                      decoration: BoxDecoration(
+                          color: Constanst.colorNeutralBgTertiary,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(20.0),
+                          ))),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Constanst.colorNonAktif)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "No. Pengajuan",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Constanst.fgSecondary,
                                 ),
-                              ],
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                nomorAjuan,
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Tanggal Pengajuan",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Constanst.fgSecondary,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                Constanst.convertDate("$tanggalMasukAjuan"),
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Constanst.colorNonAktif)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Nama Pengajuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$namaTypeAjuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Tanggal Cuti",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        detailData['date_selected'] == null ||
+                                detailData['date_selected'] == "" ||
+                                detailData['date_selected'] == "null"
+                            ? Text(
+                                "${Constanst.convertDate(tanggalAjuanDari)} - ${Constanst.convertDate(tanggalAjuanSampai)}",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
+                                ),
+                              )
+                            : Container(),
+                        // listTanggalTerpilih.length == 1
+                        //     ? Text(
+                        //         "${Constanst.convertDate("$tanggalAjuanDari")}")
+                        //     : listTanggalTerpilih.length == 2
+                        //         ? Text(
+                        //             "${Constanst.convertDate("$tanggalAjuanDari")}  dan  ${Constanst.convertDate("$tanggalAjuanSampai")}")
+                        //         : Text(
+                        //             "${Constanst.convertDate("$tanggalAjuanDari")}  sd  ${Constanst.convertDate("$tanggalAjuanSampai")}"),
+                        detailData['date_selected'] == null ||
+                                detailData['date_selected'] == "" ||
+                                detailData['date_selected'] == "null"
+                            ? Container()
+                            : Row(
+                                children: List.generate(
+                                    listTanggalTerpilih.length, (index) {
+                                  var nomor = index + 1;
+                                  var tanggalConvert = Constanst.convertDate7(
+                                      listTanggalTerpilih[index]);
+                                  var tanggalConvert2 = Constanst.convertDate5(
+                                      listTanggalTerpilih[index]);
+                                  return Row(
+                                    children: [
+                                      Text(
+                                        index == listTanggalTerpilih.length - 1
+                                            ? tanggalConvert2
+                                            : '$tanggalConvert, ',
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Constanst.fgPrimary,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }),
+                              ),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Durasi Cuti",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$durasi Hari",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        //         jamAjuan == "" ||
+                        //     jamAjuan == "NULL" ||
+                        //     jamAjuan == null ||
+                        //     jamAjuan == "00:00:00"
+                        // ? SizedBox()
+                        // : Row(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: [
+                        //       Expanded(
+                        //         flex: 30,
+                        //         child: Text("Jam"),
+                        //       ),
+                        //       Expanded(
+                        //         flex: 2,
+                        //         child: Text(":"),
+                        //       ),
+                        //       Expanded(
+                        //         flex: 68,
+                        //         child: Text("$jamAjuan sd $sampaiJamAjuan"),
+                        //       )
+                        //     ],
+                        //   ),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Catatan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$alasan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        leave_files == "" ||
+                                leave_files == "NULL" ||
+                                leave_files == null
+                            ? const SizedBox()
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                    color: Constanst.border,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    "File disematkan",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Constanst.fgSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  InkWell(
+                                      onTap: () {
+                                        viewLampiranAjuan(leave_files);
+                                      },
+                                      child: Text(
+                                        "$leave_files",
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Constanst.fgPrimary,
+                                        ),
+                                      )),
+                                  const SizedBox(height: 12),
+                                ],
+                              ),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        typeAjuan == 'Rejected'
+                            ? Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Iconsax.close_circle,
+                                    color: Constanst.color4,
+                                    size: 22,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Rejected by $approve_by",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14)),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        alasanReject,
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : typeAjuan == "Approve" ||
+                                    typeAjuan == "Approve 1" ||
+                                    typeAjuan == "Approve 2"
+                                ? Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Iconsax.tick_circle,
+                                        color: Colors.green,
+                                        size: 22,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text("Approved by $approve_by",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14)),
+                                    ],
+                                  )
+                                : Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Iconsax.timer,
+                                        color: Constanst.color3,
+                                        size: 22,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Pending Approval",
+                                              style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Constanst.fgPrimary,
+                                                  fontSize: 14)),
+                                          const SizedBox(height: 4),
+                                          InkWell(
+                                              onTap: () {
+                                                var dataEmployee = {
+                                                  'nameType': '$namaTypeAjuan',
+                                                  'nomor_ajuan': '$nomorAjuan',
+                                                };
+                                                globalCt.showDataPilihAtasan(
+                                                    dataEmployee);
+                                              },
+                                              child: Text(
+                                                  "Konfirmasi via Whatsapp",
+                                                  style: GoogleFonts.inter(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color:
+                                                          Constanst.infoLight,
+                                                      fontSize: 14))),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                      ],
+                    ),
+                  ),
+                ),
+                typeAjuan == "Approve" ||
+                        typeAjuan == "Approve 1" ||
+                        typeAjuan == "Approve 2"
+                    ? Container()
+                    : const SizedBox(height: 16),
+                typeAjuan == "Approve" ||
+                        typeAjuan == "Approve 1" ||
+                        typeAjuan == "Approve 2"
+                    ? Container()
+                    : Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Constanst
+                                      .border, // Set the desired border color
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  // Get.back();
+                                  showModalBatalPengajuan(detailData);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    foregroundColor: Constanst.color4,
+                                    backgroundColor: Constanst.colorWhite,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 0,
+                                    // padding: EdgeInsets.zero,
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                                child: Text(
+                                  'Batalkan',
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.color4,
+                                      fontSize: 14),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              Divider(
-                height: 5,
-                color: Constanst.colorText2,
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Text("Nomor Ajuan"),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(":"),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Text("$nomorAjuan"),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Text("Tanggal izin"),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(":"),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: listTanggalTerpilih.length == 1
-                        ? Text("${Constanst.convertDate("$tanggalAjuanDari")}")
-                        : listTanggalTerpilih.length == 2
-                            ? Text(
-                                "${Constanst.convertDate("$tanggalAjuanDari")}  dan  ${Constanst.convertDate("$tanggalAjuanSampai")}")
-                            : Text(
-                                "${Constanst.convertDate("$tanggalAjuanDari")}  sd  ${Constanst.convertDate("$tanggalAjuanSampai")}"),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Text("Durasi Izin"),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(":"),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Text("$durasi Hari"),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Text("Alasan"),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(":"),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Text("$alasan"),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              jamAjuan == "" ||
-                      jamAjuan == "NULL" ||
-                      jamAjuan == null ||
-                      jamAjuan == "00:00:00"
-                  ? SizedBox()
-                  : Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 30,
-                          child: Text("Jam"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(":"),
-                        ),
-                        Expanded(
-                          flex: 68,
-                          child: Text("$jamAjuan sd $sampaiJamAjuan"),
-                        )
-                      ],
-                    ),
-              jamAjuan == "" ||
-                      jamAjuan == "NULL" ||
-                      jamAjuan == null ||
-                      jamAjuan == "00:00:00"
-                  ? SizedBox()
-                  : SizedBox(
-                      height: 8,
-                    ),
-              leave_files == "" || leave_files == "NULL" || leave_files == null
-                  ? SizedBox()
-                  : Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 30,
-                          child: Text("File Ajuan"),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(":"),
-                        ),
-                        Expanded(
-                          flex: 68,
-                          child: InkWell(
-                              onTap: () {
-                                viewLampiranAjuan(leave_files);
-                              },
-                              child: Text(
-                                "$leave_files",
-                                style: TextStyle(
-                                  color: Constanst.colorPrimary,
-                                  decoration: TextDecoration.underline,
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: SizedBox(
+                              height: 40,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  print(detailData.toString());
+                                  Get.to(FormTidakMasukKerja(
+                                    dataForm: [detailData, true],
+                                  ));
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Constanst.colorWhite,
+                                  backgroundColor: Constanst.colorPrimary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                  // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
                                 ),
-                              )),
-                        )
-                      ],
-                    ),
-              leave_files == "" || leave_files == "NULL" || leave_files == null
-                  ? SizedBox()
-                  : SizedBox(
-                      height: 8,
-                    ),
-              Text("Tanggal Terpilih"),
-              SizedBox(
-                height: 8,
-              ),
-              ListView.builder(
-                  itemCount: listTanggalTerpilih.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    var nomor = index + 1;
-                    var tanggalConvert =
-                        Constanst.convertDate1(listTanggalTerpilih[index]);
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$nomor."),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8),
-                          child: Text(tanggalConvert),
-                        )
-                      ],
-                    );
-                  }),
-              SizedBox(
-                height: 16,
-              ),
-            ],
+                                child: Text(
+                                  'Edit',
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.colorWhite,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+              ],
+            ),
           ),
         );
       },

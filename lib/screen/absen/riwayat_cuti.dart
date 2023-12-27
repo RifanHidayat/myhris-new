@@ -12,7 +12,6 @@ import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
-import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -247,10 +246,13 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              SvgPicture.asset(
-                                                'assets/empty_screen.svg',
-                                                height: 228,
-                                              ),
+                                              controller.stringLoading.value ==
+                                                      "Memuat Data..."
+                                                  ? Container()
+                                                  : SvgPicture.asset(
+                                                      'assets/empty_screen.svg',
+                                                      height: 228,
+                                                    ),
                                               const SizedBox(height: 16),
                                               Text(
                                                 controller.stringLoading.value,
@@ -258,6 +260,7 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                                                 style: GoogleFonts.inter(
                                                   fontWeight: FontWeight.w500,
                                                   fontSize: 16,
+                                                  height: 1.4,
                                                   color: Constanst.fgPrimary,
                                                 ),
                                               ),
@@ -509,7 +512,7 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                             onTap: () {
                               controller.changeTypeAjuan(controller
                                   .dataTypeAjuan.value[index]['nama']);
-                              controller.tempKodeStatus1.value = namaType;
+
                               controller.tempNamaStatus1.value = namaType;
                               Get.back();
                             },
@@ -558,8 +561,6 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                                         )
                                       : InkWell(
                                           onTap: () {
-                                            controller.tempKodeStatus1.value =
-                                                namaType;
                                             controller.tempNamaStatus1.value =
                                                 namaType;
                                             Get.back();

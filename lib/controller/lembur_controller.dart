@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
@@ -12,6 +13,7 @@ import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LemburController extends GetxController {
   var nomorAjuan = TextEditingController().obs;
@@ -25,15 +27,20 @@ class LemburController extends GetxController {
   Rx<List<String>> typeLembur = Rx<List<String>>([]);
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
 
+  var statusFormPencarian = false.obs;
+
+  var tempNamaStatus1 = "Semua Status".obs;
+
   var bulanSelectedSearchHistory = "".obs;
   var tahunSelectedSearchHistory = "".obs;
   var bulanDanTahunNow = "".obs;
   var selectedDropdownDelegasi = "".obs;
+  var selectedDropdownDelegasiTemp = "".obs;
   var idpengajuanLembur = "".obs;
   var emIdDelegasi = "".obs;
   var valuePolaPersetujuan = "".obs;
   var selectedTypeLembur = "".obs;
-  var loadingString = "Sedang Memuat...".obs;
+  var loadingString = "Memuat Data...".obs;
 
   var statusForm = false.obs;
   var directStatus = false.obs;
@@ -50,9 +57,9 @@ class LemburController extends GetxController {
 
   Rx<DateTime> initialDate = DateTime.now().obs;
 
-  var dataTypeAjuanDummy1 = ["Semua", "Approve", "Rejected", "Pending"];
+  var dataTypeAjuanDummy1 = ["Semua Status", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
-    "Semua",
+    "Semua Status",
     "Approve 1",
     "Approve 2",
     "Rejected",
@@ -71,6 +78,10 @@ class LemburController extends GetxController {
     loadAllEmployeeDelegasi();
     getTypeLembur();
     getDepartemen(1, "");
+  }
+
+  void showInputCari() {
+    statusFormPencarian.value = !statusFormPencarian.value;
   }
 
   void removeAll() {
@@ -157,8 +168,8 @@ class LemburController extends GetxController {
         var data = {'nama': element, 'status': false};
         dataTypeAjuan.value.add(data);
       }
-      dataTypeAjuan.value
-          .firstWhere((element) => element['nama'] == 'Semua')['status'] = true;
+      dataTypeAjuan.value.firstWhere(
+          (element) => element['nama'] == 'Semua Status')['status'] = true;
       this.dataTypeAjuan.refresh();
     } else {
       dataTypeAjuan.value.clear();
@@ -166,8 +177,8 @@ class LemburController extends GetxController {
         var data = {'nama': element, 'status': false};
         dataTypeAjuan.value.add(data);
       }
-      dataTypeAjuan.value
-          .firstWhere((element) => element['nama'] == 'Semua')['status'] = true;
+      dataTypeAjuan.value.firstWhere(
+          (element) => element['nama'] == 'Semua Status')['status'] = true;
       this.dataTypeAjuan.refresh();
     }
   }
@@ -195,9 +206,9 @@ class LemburController extends GetxController {
     var connect = Api.connectionApi("get", "", "overtime");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
-         var valueBody = jsonDecode(res.body);
+        var valueBody = jsonDecode(res.body);
         print(valueBody);
-       
+
         var data = valueBody['data'];
         List overtimeUser = overtimeData.split(',');
         List tampung = [];
@@ -263,7 +274,7 @@ class LemburController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         if (valueBody['status'] == false) {
-          loadingString.value = "Tidak ada pengajuan";
+          loadingString.value = "Anda tidak memiliki\nRiwayat Pengajuan Lembur";
           this.loadingString.refresh();
         } else {
           for (var element in valueBody['data']) {
@@ -273,9 +284,10 @@ class LemburController extends GetxController {
             }
           }
           if (listLembur.value.length == 0) {
-            loadingString.value = "Tidak ada pengajuan";
+            loadingString.value =
+                "Anda tidak memiliki\nRiwayat Pengajuan Lembur";
           } else {
-            loadingString.value = "Sedang Memuat...";
+            loadingString.value = "Memuat Data...";
           }
 
           this.listLembur.refresh();
@@ -326,14 +338,13 @@ class LemburController extends GetxController {
   //   });
   // }
 
-    void loadAllEmployeeDelegasi() {
-
+  void loadAllEmployeeDelegasi() {
     allEmployeeDelegasi.value.clear();
     allEmployee.value.clear();
     var dataUser = AppData.informasiUser;
     var getDepGroup = dataUser![0].dep_group;
     var full_name = dataUser[0].full_name;
-    var emid=dataUser[0].em_id;
+    var emid = dataUser[0].em_id;
     Map<String, dynamic> body = {'em_id': emid, 'dep_group_id': getDepGroup};
     var connect = Api.connectionApi("post", body, "employee-delegasi");
     connect.then((dynamic res) {
@@ -355,11 +366,14 @@ class LemburController extends GetxController {
             }
           }
           if (idpengajuanLembur.value == "") {
-            List data=valueBody['data'];
-            var listFirst =data.where((element) => element['full_name']!=full_name).toList().first;
+            List data = valueBody['data'];
+            var listFirst = data
+                .where((element) => element['full_name'] != full_name)
+                .toList()
+                .first;
             var fullName = listFirst['full_name'] ?? "";
             String namaUserPertama = "$fullName";
-             selectedDropdownDelegasi.value = namaUserPertama;
+            selectedDropdownDelegasi.value = namaUserPertama;
           }
 
           this.allEmployee.refresh();
@@ -432,7 +446,6 @@ class LemburController extends GetxController {
         } else {
           UtilsAlert.showToast(
               "Data periode $finalTanggalPengajuan belum tersedia, harap hubungi HRD");
-               
         }
       }
     });
@@ -456,7 +469,7 @@ class LemburController extends GetxController {
     var getEmid = dataUser![0].em_id;
     var getFullName = dataUser[0].full_name;
     var validasiDelegasiSelected = validasiSelectedDelegasi();
-     var validasiDelegasiSelectedToken= validasiSelectedDelegasiToken();
+    var validasiDelegasiSelectedToken = validasiSelectedDelegasiToken();
     var polaFormat = DateFormat('yyyy-MM-dd');
     var tanggalPengajuanInsert = polaFormat.format(initialDate.value);
     var finalTanggalPengajuan = statusForm.value == false
@@ -491,8 +504,13 @@ class LemburController extends GetxController {
           if (valueBody['status'] == true) {
             var stringWaktu =
                 "${dariJam.value.text} sd ${sampaiJam.value.text}";
-            kirimNotifikasiToDelegasi(getFullName, finalTanggalPengajuan,
-                validasiDelegasiSelected,validasiDelegasiSelectedToken, stringWaktu,typeNotifFcm);
+            kirimNotifikasiToDelegasi(
+                getFullName,
+                finalTanggalPengajuan,
+                validasiDelegasiSelected,
+                validasiDelegasiSelectedToken,
+                stringWaktu,
+                typeNotifFcm);
             kirimNotifikasiToReportTo(getFullName, finalTanggalPengajuan,
                 getEmid, "Lembur", stringWaktu);
             Navigator.pop(Get.context!);
@@ -504,7 +522,7 @@ class LemburController extends GetxController {
               'nameType': 'LEMBUR',
               'nomor_ajuan': '${getNomorAjuanTerakhir}',
             };
-               for (var item in globalCt.konfirmasiAtasan) {
+            for (var item in globalCt.konfirmasiAtasan) {
               print(item['token_notif']);
               var pesan;
               if (item['em_gender'] == "PRIA") {
@@ -521,8 +539,7 @@ class LemburController extends GetxController {
                     tokens: item['token_notif']);
               }
             }
-            
-                
+
             Get.offAll(BerhasilPengajuan(
               dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
             ));
@@ -531,11 +548,11 @@ class LemburController extends GetxController {
               var nomorAjuanTerakhirDalamAntrian =
                   valueBody['data'][0]['nomor_ajuan'];
               checkNomorAjuanDalamAntrian(nomorAjuanTerakhirDalamAntrian);
-            } if (valueBody['message'] == "date") {
-                       Navigator.pop(Get.context!);
-              UtilsAlert.showToast(
-                  valueBody['error'] );
-            }else {
+            }
+            if (valueBody['message'] == "date") {
+              Navigator.pop(Get.context!);
+              UtilsAlert.showToast(valueBody['error']);
+            } else {
               Navigator.pop(Get.context!);
               UtilsAlert.showToast(
                   "Data periode $finalTanggalPengajuan belum tersedia, harap hubungi HRD");
@@ -588,7 +605,7 @@ class LemburController extends GetxController {
     this.dataTypeAjuan.refresh();
     var dataFilter = [];
     listLemburAll.value.forEach((element) {
-      if (name == "Semua") {
+      if (name == "Semua Status") {
         dataFilter.add(element);
       } else {
         if (element['status'] == filter) {
@@ -599,9 +616,9 @@ class LemburController extends GetxController {
     listLembur.value = dataFilter;
     this.listLembur.refresh();
     if (dataFilter.isEmpty) {
-      loadingString.value = "Tidak ada Pengajuan";
+      loadingString.value = "Anda tidak memiliki\nRiwayat Pengajuan Lembur";
     } else {
-      loadingString.value = "Sedang memuat...";
+      loadingString.value = "Memuat Data...";
     }
   }
 
@@ -627,7 +644,7 @@ class LemburController extends GetxController {
     this.statusCari.refresh();
 
     if (listLembur.value.isEmpty) {
-      loadingString.value = "Tidak ada pengajuan";
+      loadingString.value = "Anda tidak memiliki\nRiwayat Pengajuan Lembur";
     } else {
       loadingString.value = "Memuat data...";
     }
@@ -635,15 +652,15 @@ class LemburController extends GetxController {
   }
 
   void kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
-      validasiDelegasiSelected,fcmTokenDelegasi, stringWaktu,typeNotifFcm) {
+      validasiDelegasiSelected, fcmTokenDelegasi, stringWaktu, typeNotifFcm) {
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
-    var description='Anda mendapatkan delegasi pekerjaan dari $getFullName untuk Pengajuan Lembur, waktu pengajuan $stringWaktu';
+    var description =
+        'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk Pengajuan Lembur, waktu pengajuan $stringWaktu';
     Map<String, dynamic> body = {
       'em_id': validasiDelegasiSelected,
       'title': 'Delegasi Pengajuan Lembur',
-      'deskripsi':
-          description,
+      'deskripsi': description,
       'url': '',
       'atten_date': convertTanggalBikinPengajuan,
       'jam': jamSekarang,
@@ -653,7 +670,7 @@ class LemburController extends GetxController {
     var connect = Api.connectionApi("post", body, "insert-notifikasi");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
-         globalCt.kirimNotifikasiFcm(
+        globalCt.kirimNotifikasiFcm(
             title: typeNotifFcm,
             message: description,
             tokens: fcmTokenDelegasi);
@@ -696,7 +713,8 @@ class LemburController extends GetxController {
     }
     return "${result[0]['em_id']}";
   }
- String validasiSelectedDelegasiToken() {
+
+  String validasiSelectedDelegasiToken() {
     var result = [];
     for (var element in allEmployee.value) {
       var fullName = element['full_name'] ?? "";
@@ -847,6 +865,500 @@ class LemburController extends GetxController {
         );
       },
     );
+  }
+
+  void showDetailLembur(detailData, approve, alasanReject) {
+    var nomorAjuan = detailData['nomor_ajuan'];
+    var tanggalMasukAjuan = detailData['atten_date'];
+    var namaTypeAjuan = detailData['type'];
+    var uraian = detailData['uraian'];
+    var durasi = detailData['leave_duration'];
+    var status;
+    if (valuePolaPersetujuan.value == "1") {
+      status = detailData['status'];
+    } else {
+      status = detailData['status'] == "Approve"
+          ? "Approve 1"
+          : detailData['status'] == "Approve2"
+              ? "Approve 2"
+              : detailData['status'];
+    }
+    var leave_files = detailData['leave_files'];
+    var dariJam = detailData['dari_jam'];
+    var sampaiJam = detailData['sampai_jam'];
+    // var listTanggalTerpilih = detailData['date_selected'].split(',');
+    showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 12),
+                Center(
+                  child: Container(
+                      height: 6,
+                      width: 34,
+                      decoration: BoxDecoration(
+                          color: Constanst.colorNeutralBgTertiary,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(20.0),
+                          ))),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Constanst.colorNonAktif)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Tanggal Pengajuan",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Constanst.fgSecondary,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                Constanst.convertDate("$tanggalMasukAjuan"),
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "No. Pengajuan",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Constanst.fgSecondary,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                nomorAjuan,
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Constanst.colorNonAktif)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Nama Pengajuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$namaTypeAjuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Tanggal Lembur",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          tanggalMasukAjuan,
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Dari Jam",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Constanst.fgSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    dariJam,
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                    color: Constanst.border,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 24),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Sampai Jam",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Constanst.fgSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    sampaiJam,
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                    color: Constanst.border,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Catatan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$uraian",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        leave_files == "" ||
+                                leave_files == "NULL" ||
+                                leave_files == null
+                            ? const SizedBox()
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                    color: Constanst.border,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    "File disematkan",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Constanst.fgSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  InkWell(
+                                      onTap: () {
+                                        viewLampiranAjuan(leave_files);
+                                      },
+                                      child: Text(
+                                        "$leave_files",
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Constanst.fgPrimary,
+                                        ),
+                                      )),
+                                  const SizedBox(height: 12),
+                                ],
+                              ),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        status == 'Rejected'
+                            ? Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Iconsax.close_circle,
+                                    color: Constanst.color4,
+                                    size: 22,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Rejected by $approve",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14)),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        alasanReject,
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : status == "Approve" ||
+                                    status == "Approve 1" ||
+                                    status == "Approve 2"
+                                ? Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Iconsax.tick_circle,
+                                        color: Colors.green,
+                                        size: 22,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text("Approved by $approve",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14)),
+                                    ],
+                                  )
+                                : Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Iconsax.timer,
+                                        color: Constanst.color3,
+                                        size: 22,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Pending Approval",
+                                              style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Constanst.fgPrimary,
+                                                  fontSize: 14)),
+                                          const SizedBox(height: 4),
+                                          InkWell(
+                                              onTap: () {
+                                                var dataEmployee = {
+                                                  'nameType': '$namaTypeAjuan',
+                                                  'nomor_ajuan': '$nomorAjuan',
+                                                };
+                                                globalCt.showDataPilihAtasan(
+                                                    dataEmployee);
+                                              },
+                                              child: Text(
+                                                  "Konfirmasi via Whatsapp",
+                                                  style: GoogleFonts.inter(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color:
+                                                          Constanst.infoLight,
+                                                      fontSize: 14))),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                      ],
+                    ),
+                  ),
+                ),
+                status == "Approve" ||
+                        status == "Approve 1" ||
+                        status == "Approve 2"
+                    ? Container()
+                    : const SizedBox(height: 16),
+                status == "Approve" ||
+                        status == "Approve 1" ||
+                        status == "Approve 2"
+                    ? Container()
+                    : Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Constanst
+                                      .border, // Set the desired border color
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  // Get.back();
+                                  batalkanPengajuan(detailData);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    foregroundColor: Constanst.color4,
+                                    backgroundColor: Constanst.colorWhite,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 0,
+                                    // padding: EdgeInsets.zero,
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                                child: Text(
+                                  'Batalkan',
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.color4,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: SizedBox(
+                              height: 40,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  print(detailData.toString());
+                                  Get.to(FormLembur(
+                                    dataForm: [detailData, true],
+                                  ));
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Constanst.colorWhite,
+                                  backgroundColor: Constanst.colorPrimary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                  // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                                ),
+                                child: Text(
+                                  'Edit',
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.colorWhite,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void viewLampiranAjuan(value) async {
+    var urlViewGambar = Api.UrlfileCuti + value;
+
+    final url = Uri.parse(urlViewGambar);
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      UtilsAlert.showToast('Tidak dapat membuka file');
+    }
   }
 
   void batalkanPengajuan(index) {

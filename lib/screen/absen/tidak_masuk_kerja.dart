@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
@@ -18,6 +19,8 @@ import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
+import 'package:siscom_operasional/utils/widget_utils.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class TidakMasukKerja extends StatefulWidget {
   @override
@@ -44,19 +47,161 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constanst.coloBackgroundScreen,
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          automaticallyImplyLeading: false,
-          elevation: 2,
-          flexibleSpace: AppbarMenu1(
-            title: "izin",
-            icon: 1,
-            colorTitle: Constanst.colorText3,
-            colorIcon: Constanst.colorText3,
-            onTap: () {
-              Get.offAll(InitScreen());
-            },
-          )),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
+        child: Obx(
+          () => Container(
+            decoration: const BoxDecoration(boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0, 2.0),
+                blurRadius: 4.0,
+              )
+            ]),
+            child: AppBar(
+              backgroundColor: Constanst.colorWhite,
+              elevation: 0,
+              // leadingWidth: controller.statusFormPencarian.value ? 50 : 16,
+              titleSpacing: 0,
+              centerTitle: false,
+              title: controller.statusFormPencarian.value
+                  ? SizedBox(
+                      height: 40,
+                      child: TextFormField(
+                        // controller: controller.searchController,
+                        controller: controller.cari.value,
+                        onFieldSubmitted: (value) {
+                          controller.cariData(value);
+                        },
+                        textAlignVertical: TextAlignVertical.center,
+                        style: GoogleFonts.inter(
+                            height: 1.5,
+                            fontWeight: FontWeight.w400,
+                            color: Constanst.fgPrimary,
+                            fontSize: 15),
+                        cursorColor: Constanst.onPrimary,
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Constanst.colorNeutralBgSecondary,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100),
+                              borderSide: const BorderSide(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100),
+                              borderSide: const BorderSide(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                            contentPadding:
+                                const EdgeInsets.only(left: 20, right: 20),
+                            hintText: "Cari data...",
+                            hintStyle: GoogleFonts.inter(
+                                height: 1.5,
+                                fontWeight: FontWeight.w400,
+                                color: Constanst.fgSecondary,
+                                fontSize: 14),
+                            prefixIconConstraints:
+                                BoxConstraints.tight(const Size(46, 46)),
+                            suffixIconConstraints:
+                                BoxConstraints.tight(const Size(46, 46)),
+                            suffixIcon: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 16.0, right: 8),
+                              child: IconButton(
+                                icon: Icon(
+                                  Iconsax.close_circle5,
+                                  color: Constanst.fgSecondary,
+                                  size: 24,
+                                ),
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  controller.statusCari.value = false;
+                                  controller.cari.value.text = "";
+                                  controller.loadDataAjuanIzin();
+                                },
+                              ),
+                            )),
+                      ),
+                    )
+                  : Text(
+                      "Riwayat Izin",
+                      style: GoogleFonts.inter(
+                          color: Constanst.fgPrimary,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20),
+                    ),
+              actions: [
+                controller.statusFormPencarian.value
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: Container(),
+                      )
+                    : Row(
+                        children: [
+                          SizedBox(
+                            width: 25,
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: Icon(
+                                Iconsax.search_normal_1,
+                                color: Constanst.fgPrimary,
+                                size: 24,
+                              ),
+                              onPressed: controller.showInputCari,
+                              // controller.toggleSearch,
+                            ),
+                          ),
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: Icon(
+                              Iconsax.document_text,
+                              color: Constanst.fgPrimary,
+                              size: 24,
+                            ),
+                            onPressed: () => Get.to(LaporanIzin(
+                              title: 'tidak_hadir',
+                            )),
+                            // controller.toggleSearch,
+                          ),
+                        ],
+                      ),
+              ],
+              leading: controller.statusFormPencarian.value
+                  ? IconButton(
+                      icon: Icon(
+                        Iconsax.arrow_left,
+                        color: Constanst.fgPrimary,
+                        size: 24,
+                      ),
+                      onPressed: controller.showInputCari,
+                      // onPressed: () {
+                      //   controller.cari.value.text = "";
+                      //   Get.back();
+                      // },
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        Iconsax.arrow_left,
+                        color: Constanst.fgPrimary,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        controller.cari.value.clear();
+                        controller.onClose();
+                        Get.offAll(InitScreen());
+                      },
+                      // onPressed: () {
+                      //   controller.cari.value.text = "";
+                      //   Get.back();
+                      // },
+                    ),
+            ),
+          ),
+        ),
+      ),
       body: WillPopScope(
         onWillPop: () async {
           Get.offAll(InitScreen());
@@ -68,65 +213,57 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
                   child: Text(controller.loadingString.value),
                 )
               : Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: 16,
-                      ),
                       controller.bulanDanTahunNow.value == ""
-                          ? SizedBox()
-                          : Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 60,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: pencarianData(),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 40,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: pickDate(),
-                                  ),
-                                )
-                              ],
+                          ? const SizedBox()
+                          : SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  pickDate(),
+                                  const SizedBox(width: 4),
+                                  status(),
+                                  const SizedBox(width: 4),
+                                  tipe(),
+                                ],
+                              ),
                             ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      listStatusAjuan(),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      listTypeTidakMasuk(),
-                      Divider(
-                        height: 5,
-                        color: Constanst.colorText2,
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Text(
-                        "Riwayat Pengajuan izin",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
+                      const SizedBox(height: 4),
                       Flexible(
                         child: RefreshIndicator(
                             color: Constanst.colorPrimary,
                             onRefresh: refreshData,
                             child: controller.listHistoryAjuan.value.isEmpty
                                 ? Center(
-                                    child: Text(
-                                        "${controller.loadingString.value}"),
+                                    child: SafeArea(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          controller.loadingString.value ==
+                                                  "Memuat Data..."
+                                              ? Container()
+                                              : SvgPicture.asset(
+                                                  'assets/empty_screen.svg',
+                                                  height: 228,
+                                                ),
+                                          const SizedBox(height: 16),
+                                          Text(
+                                            controller.loadingString.value,
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16,
+                                              color: Constanst.fgPrimary,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   )
                                 : listAjuanIzinTidakMasukKerja()),
                       )
@@ -175,41 +312,53 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
                 ],
               ),
       ),
-      bottomNavigationBar: Obx(
-        () => Padding(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 12),
-            child: controller.showButtonlaporan.value == true
-                ? SizedBox()
-                : TextButtonWidget2(
-                    title: "Buat Pengajuan Tidak Hadir",
-                    onTap: () {
-                      Get.to(FormTidakMasukKerja(
-                        dataForm: [[], false],
-                      ));
-                    },
-                    colorButton: Constanst.colorPrimary,
-                    colortext: Constanst.colorWhite,
-                    border: BorderRadius.circular(20.0),
-                    icon: Icon(
-                      Iconsax.add,
-                      color: Constanst.colorWhite,
-                    ))),
-      ),
+      // bottomNavigationBar: Obx(
+      //   () => Padding(
+      //       padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 12),
+      //       child: controller.showButtonlaporan.value == true
+      //           ? SizedBox()
+      //           : TextButtonWidget2(
+      //               title: "Buat Pengajuan Tidak Hadir",
+      //               onTap: () {
+      //                 Get.to(FormTidakMasukKerja(
+      //                   dataForm: [[], false],
+      //                 ));
+      //               },
+      //               colorButton: Constanst.colorPrimary,
+      //               colortext: Constanst.colorWhite,
+      //               border: BorderRadius.circular(20.0),
+      //               icon: Icon(
+      //                 Iconsax.add,
+      //                 color: Constanst.colorWhite,
+      //               ))),
+      // ),
     );
+  }
+
+  String getMonthName(int monthNumber) {
+    // Menggunakan pustaka intl untuk mengonversi angka bulan menjadi teks
+    final monthFormat = DateFormat.MMMM('id');
+    DateTime date = DateTime(2000, monthNumber,
+        1); // Tahun dan hari bebas, yang penting bulan sesuai
+    return monthFormat.format(date);
   }
 
   Widget pickDate() {
     return Container(
-      height: 42,
-      decoration: Constanst.styleBoxDecoration1,
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
+          border: Border.all(color: Constanst.fgBorder)),
       child: InkWell(
+        customBorder: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(100))),
         onTap: () {
           DatePicker.showPicker(
             Get.context!,
             pickerModel: CustomMonthPicker(
               minTime: DateTime(2020, 1, 1),
               maxTime: DateTime(2050, 1, 1),
-              currentTime: DateTime.now(),
+              currentTime: DateTime.parse(
+                  "${controller.tahunSelectedSearchHistory.value}-${controller.bulanSelectedSearchHistory.value}-01"),
             ),
             onConfirm: (time) {
               if (time != null) {
@@ -230,27 +379,23 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
           );
         },
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                flex: 20,
-                child: Icon(Iconsax.calendar_2),
-              ),
-              Expanded(
-                flex: 70,
-                child: Padding(
-                    padding: const EdgeInsets.only(left: 6, top: 3),
-                    child: Text(
-                        "${controller.bulanSelectedSearchHistory.value}-${controller.tahunSelectedSearchHistory.value}")),
-              ),
-              Expanded(
-                flex: 10,
-                child: Icon(
-                  Icons.arrow_drop_down_rounded,
-                  size: 24,
+              Text(
+                "${getMonthName(int.parse(controller.bulanSelectedSearchHistory.value))} ${controller.tahunSelectedSearchHistory.value}",
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Constanst.fgSecondary,
                 ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Iconsax.arrow_down_1,
+                size: 18,
+                color: Constanst.fgSecondary,
               ),
             ],
           ),
@@ -259,134 +404,568 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
     );
   }
 
-  Widget listTypeTidakMasuk() {
-    return SizedBox(
-      width: MediaQuery.of(Get.context!).size.width,
-      height: 50,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: () => controller.changeTypeSelected(0),
-              child: Center(
-                  child: Text(
-                "SEHARI PENUH",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: controller.selectedType.value == 0
-                        ? Constanst.colorPrimary
-                        : Constanst.colorText2),
-              )),
-            ),
+  // Widget listTypeTidakMasuk() {
+  //   return SizedBox(
+  //     width: MediaQuery.of(Get.context!).size.width,
+  //     height: 50,
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       crossAxisAlignment: CrossAxisAlignment.center,
+  //       children: [
+  //         Expanded(
+  //           child: InkWell(
+  //             onTap: () => controller.changeTypeSelected(0),
+  //             child: Center(
+  //                 child: Text(
+  //               "SEHARI PENUH",
+  //               style: TextStyle(
+  //                   fontWeight: FontWeight.bold,
+  //                   fontSize: 16,
+  //                   color: controller.selectedType.value == 0
+  //                       ? Constanst.colorPrimary
+  //                       : Constanst.colorText2),
+  //             )),
+  //           ),
+  //         ),
+  //         Expanded(
+  //           child: InkWell(
+  //             onTap: () => controller.changeTypeSelected(1),
+  //             child: Center(
+  //                 child: Text(
+  //               "SETENGAH HARI",
+  //               style: TextStyle(
+  //                   fontWeight: FontWeight.bold,
+  //                   fontSize: 16,
+  //                   color: controller.selectedType.value == 1
+  //                       ? Constanst.colorPrimary
+  //                       : Constanst.colorText2),
+  //             )),
+  //           ),
+  //         ),
+  //         Expanded(
+  //           child: InkWell(
+  //             onTap: () => controller.changeTypeSelected(2),
+  //             child: Center(
+  //                 child: Text(
+  //               "HARI",
+  //               style: TextStyle(
+  //                   fontWeight: FontWeight.bold,
+  //                   fontSize: 16,
+  //                   color: controller.selectedType.value == 1
+  //                       ? Constanst.colorPrimary
+  //                       : Constanst.colorText2),
+  //             )),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget status() {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
+          border: Border.all(color: Constanst.fgBorder)),
+      child: InkWell(
+        customBorder: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(100))),
+        onTap: () {
+          showBottomStatus(Get.context!);
+        },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                controller.tempNamaStatus1.value,
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Constanst.fgSecondary,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Iconsax.arrow_down_1,
+                size: 18,
+                color: Constanst.fgSecondary,
+              ),
+            ],
           ),
-          Expanded(
-            child: InkWell(
-              onTap: () => controller.changeTypeSelected(1),
-              child: Center(
-                  child: Text(
-                "SETENGAH HARI",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: controller.selectedType.value == 1
-                        ? Constanst.colorPrimary
-                        : Constanst.colorText2),
-              )),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget listStatusAjuan() {
-    return SizedBox(
-      height: 30,
-      child: ListView.builder(
-          itemCount: controller.dataTypeAjuan.value.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            var namaType = controller.dataTypeAjuan[index]['nama'];
-            var status = controller.dataTypeAjuan[index]['status'];
-            return InkWell(
-              highlightColor: Constanst.colorPrimary,
-              onTap: () => controller.changeTypeAjuan(
-                  controller.dataTypeAjuan.value[index]['nama']),
-              child: Container(
-                padding: EdgeInsets.only(left: 8, right: 8),
-                margin: EdgeInsets.only(left: 5, right: 5),
-                decoration: BoxDecoration(
-                  color: status == true
-                      ? Constanst.colorPrimary
-                      : Constanst.colorNonAktif,
-                  borderRadius: Constanst.borderStyle1,
-                ),
-                child: Center(
+  void showBottomStatus(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      namaType == "Approve"
-                          ? Icon(
-                              Iconsax.tick_square,
-                              size: 14,
-                              color: status == true
-                                  ? Colors.white
-                                  : Constanst.colorText2,
-                            )
-                          : namaType == "Approve 1"
-                              ? Icon(
-                                  Iconsax.tick_square,
-                                  size: 14,
-                                  color: status == true
-                                      ? Colors.white
-                                      : Constanst.colorText2,
-                                )
-                              : namaType == "Approve 2"
-                                  ? Icon(
-                                      Iconsax.tick_square,
-                                      size: 14,
-                                      color: status == true
-                                          ? Colors.white
-                                          : Constanst.colorText2,
-                                    )
-                                  : namaType == "Rejected"
-                                      ? Icon(
-                                          Iconsax.close_square,
-                                          size: 14,
-                                          color: status == true
-                                              ? Colors.white
-                                              : Constanst.colorText2,
-                                        )
-                                      : namaType == "Pending"
-                                          ? Icon(
-                                              Iconsax.timer,
-                                              size: 14,
-                                              color: status == true
-                                                  ? Colors.white
-                                                  : Constanst.colorText2,
-                                            )
-                                          : SizedBox(),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 6, right: 6),
-                        child: Text(
-                          namaType,
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: status == true
-                                  ? Colors.white
-                                  : Constanst.colorText2,
-                              fontWeight: FontWeight.bold),
+                      Text(
+                        "Pilih Status",
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                          color: Constanst.fgPrimary,
                         ),
                       ),
+                      InkWell(
+                          customBorder: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          onTap: () => Navigator.pop(Get.context!),
+                          child: Icon(
+                            Icons.close,
+                            size: 26,
+                            color: Constanst.fgSecondary,
+                          ))
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  child: Divider(
+                    thickness: 1,
+                    height: 0,
+                    color: Constanst.border,
+                  ),
+                ),
+                SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Obx(() => Column(
+                        children: List.generate(
+                            controller.dataTypeAjuan.value.length, (index) {
+                          var namaType =
+                              controller.dataTypeAjuan[index]['nama'];
+                          var status =
+                              controller.dataTypeAjuan[index]['status'];
+                          return InkWell(
+                            onTap: () {
+                              controller.changeTypeAjuan(controller
+                                  .dataTypeAjuan.value[index]['nama']);
+
+                              controller.tempNamaStatus1.value = namaType;
+                              Get.back();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const SizedBox(width: 16),
+                                      Text(
+                                        namaType,
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Constanst.fgPrimary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  controller.tempNamaStatus1.value == namaType
+                                      ? InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(3),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Constanst.onPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            controller.tempNamaStatus1.value =
+                                                namaType;
+                                            Get.back();
+                                          },
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      )),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ).then((value) {
+      print('Bottom sheet closed');
+    });
+  }
+
+  Widget tipe() {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
+          border: Border.all(color: Constanst.fgBorder)),
+      child: InkWell(
+        customBorder: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(100))),
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(16.0),
               ),
-            );
-          }),
+            ),
+            builder: (BuildContext context) {
+              return SafeArea(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Pilih Tipe Izin",
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                                color: Constanst.fgPrimary,
+                              ),
+                            ),
+                            InkWell(
+                                customBorder: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8))),
+                                onTap: () => Navigator.pop(Get.context!),
+                                child: Icon(
+                                  Icons.close,
+                                  size: 26,
+                                  color: Constanst.fgSecondary,
+                                ))
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        child: Divider(
+                          thickness: 1,
+                          height: 0,
+                          color: Constanst.border,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          controller.tempNamaTipe1.value = "Semua Tipe";
+                          Get.back();
+                          controller.changeTypeSelected(2);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 16, 16, 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const SizedBox(width: 16),
+                                  Text(
+                                    "Semua Tipe",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              controller.tempNamaTipe1.value == "Semua Tipe"
+                                  ? Container(
+                                      height: 20,
+                                      width: 20,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 2,
+                                              color: Constanst.onPrimary),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(3),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Constanst.onPrimary,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                    )
+                                  : InkWell(
+                                      onTap: () {
+                                        controller.tempNamaTipe1.value =
+                                            "Semua Tipe";
+                                        Get.back();
+                                        controller.changeTypeSelected(2);
+                                      },
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Constanst.onPrimary),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                            ],
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          controller.tempNamaTipe1.value = "FULLDAY";
+                          Get.back();
+                          controller.changeTypeSelected(0);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 16, 16, 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const SizedBox(width: 16),
+                                  Text(
+                                    "Sehari Penuh / Fullday",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              controller.tempNamaTipe1.value == "FULLDAY"
+                                  ? Container(
+                                      height: 20,
+                                      width: 20,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 2,
+                                              color: Constanst.onPrimary),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(3),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Constanst.onPrimary,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                    )
+                                  : InkWell(
+                                      onTap: () {
+                                        controller.tempNamaTipe1.value =
+                                            "FULLDAY";
+                                        Get.back();
+                                        controller.changeTypeSelected(0);
+                                      },
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Constanst.onPrimary),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                            ],
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          controller.tempNamaTipe1.value = "HALFDAY";
+                          Get.back();
+                          controller.changeTypeSelected(1);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 16, 16, 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const SizedBox(width: 16),
+                                  Text(
+                                    "Setengah Hari / Halfday",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              controller.tempNamaTipe1.value == "HALFDAY"
+                                  ? Container(
+                                      height: 20,
+                                      width: 20,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 2,
+                                              color: Constanst.onPrimary),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(3),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Constanst.onPrimary,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                    )
+                                  : InkWell(
+                                      onTap: () {
+                                        controller.tempNamaTipe1.value =
+                                            "HALFDAY";
+                                        Get.back();
+                                        controller.changeTypeSelected(1);
+                                      },
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Constanst.onPrimary),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+          ).then((value) {
+            print('Bottom sheet closed');
+          });
+        },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                controller.tempNamaTipe1.value,
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Constanst.fgSecondary,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Iconsax.arrow_down_1,
+                size: 18,
+                color: Constanst.fgSecondary,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -491,258 +1070,228 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
             approve_by = controller.listHistoryAjuan.value[index]['apply2_by'];
           }
 
-          return InkWell(
-            onTap: () => controller
-                .showDetailRiwayat(controller.listHistoryAjuan.value[index]),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 10,
-                ),
-                Text("${Constanst.convertDate("$tanggalMasukAjuan")}"),
-                SizedBox(
-                  height: 8,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: Constanst.borderStyle1,
-                    boxShadow: [
-                      BoxShadow(
-                        color:
-                            Color.fromARGB(255, 170, 170, 170).withOpacity(0.4),
-                        spreadRadius: 1,
-                        blurRadius: 1,
-                        offset: Offset(1, 1), // changes position of shadow
-                      ),
-                    ],
-                  ),
+          return Column(
+            children: [
+              const SizedBox(height: 16),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Constanst.colorNonAktif)),
+                child: InkWell(
+                  customBorder: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                  onTap: () => controller.showDetailRiwayat(
+                      controller.listHistoryAjuan.value[index],
+                      approve_by,
+                      alasanReject),
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.only(
+                        left: 16, right: 16, top: 12, bottom: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
+                        Text("$namaTypeAjuan",
+                            style: GoogleFonts.inter(
+                                color: Constanst.fgPrimary,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500)),
+                        const SizedBox(height: 4),
+                        Text("$nomorAjuan",
+                            textAlign: TextAlign.justify,
+                            style: GoogleFonts.inter(
+                                color: Constanst.fgSecondary,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400)),
+                        const SizedBox(height: 4),
+                        Text(Constanst.convertDate5("$tanggalMasukAjuan"),
+                            style: GoogleFonts.inter(
+                                color: Constanst.fgSecondary,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400)),
+                        const SizedBox(height: 12),
+                        Divider(
+                            height: 0, thickness: 1, color: Constanst.border),
+                        const SizedBox(height: 8),
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Expanded(
-                              flex: 60,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 5),
-                                child: Text(
-                                  namaTypeAjuan,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 40,
-                              child: Container(
-                                margin: EdgeInsets.only(right: 6),
-                                decoration: BoxDecoration(
-                                  color: typeAjuan == 'Approve'
-                                      ? Constanst.colorBGApprove
-                                      : typeAjuan == 'Approve 1'
-                                          ? Constanst.colorBGApprove
-                                          : typeAjuan == 'Approve 2'
-                                              ? Constanst.colorBGApprove
-                                              : typeAjuan == 'Rejected'
-                                                  ? Constanst.colorBGRejected
-                                                  : typeAjuan == 'Pending'
-                                                      ? Constanst.colorBGPending
-                                                      : Colors.grey,
-                                  borderRadius: Constanst.borderStyle1,
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 3, right: 3, top: 5, bottom: 5),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                            // Container(
+                            //   margin: EdgeInsets.only(right: 6),
+                            //   decoration: BoxDecoration(
+                            //     color: typeAjuan == 'Approve'
+                            //         ? Constanst.colorBGApprove
+                            //         : typeAjuan == 'Approve 1'
+                            //             ? Constanst.colorBGApprove
+                            //             : typeAjuan == 'Approve 2'
+                            //                 ? Constanst.colorBGApprove
+                            //                 : typeAjuan == 'Rejected'
+                            //                     ? Constanst
+                            //                         .colorBGRejected
+                            //                     : typeAjuan == 'Pending'
+                            //                         ? Constanst
+                            //                             .colorBGPending
+                            //                         : Colors.grey,
+                            //     borderRadius: Constanst.borderStyle1,
+                            //   ),
+                            //   child: Padding(
+                            //     padding: EdgeInsets.only(
+                            //         left: 3, right: 3, top: 5, bottom: 5),
+                            //     child: Row(
+                            //       mainAxisAlignment:
+                            //           MainAxisAlignment.center,
+                            //       children: [
+                            //         typeAjuan == 'Approve'
+                            //             ? Icon(
+                            //                 Iconsax.tick_square,
+                            //                 color: Constanst.color5,
+                            //                 size: 14,
+                            //               )
+                            //             : typeAjuan == 'Approve 1'
+                            //                 ? Icon(
+                            //                     Iconsax.tick_square,
+                            //                     color: Constanst.color5,
+                            //                     size: 14,
+                            //                   )
+                            //                 : typeAjuan == 'Approve 2'
+                            //                     ? Icon(
+                            //                         Iconsax.tick_square,
+                            //                         color:
+                            //                             Constanst.color5,
+                            //                         size: 14,
+                            //                       )
+                            //                     : typeAjuan == 'Rejected'
+                            //                         ? Icon(
+                            //                             Iconsax
+                            //                                 .close_square,
+                            //                             color: Constanst
+                            //                                 .color4,
+                            //                             size: 14,
+                            //                           )
+                            //                         : typeAjuan ==
+                            //                                 'Pending'
+                            //                             ? Icon(
+                            //                                 Iconsax.timer,
+                            //                                 color: Constanst
+                            //                                     .color3,
+                            //                                 size: 14,
+                            //                               )
+                            //                             : SizedBox(),
+                            //         Padding(
+                            //           padding:
+                            //               const EdgeInsets.only(left: 3),
+                            //           child: Text(
+                            //             '$typeAjuan',
+                            //             textAlign: TextAlign.center,
+                            //             style: TextStyle(
+                            //                 fontWeight: FontWeight.bold,
+                            //                 color: typeAjuan == 'Approve'
+                            //                     ? Colors.green
+                            //                     : typeAjuan == 'Approve 1'
+                            //                         ? Colors.green
+                            //                         : typeAjuan ==
+                            //                                 'Approve 2'
+                            //                             ? Colors.green
+                            //                             : typeAjuan ==
+                            //                                     'Rejected'
+                            //                                 ? Colors.red
+                            //                                 : typeAjuan ==
+                            //                                         'Pending'
+                            //                                     ? Constanst
+                            //                                         .color3
+                            //                                     : Colors
+                            //                                         .black),
+                            //           ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
+
+                            typeAjuan == 'Rejected'
+                                ? Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      typeAjuan == 'Approve'
-                                          ? Icon(
-                                              Iconsax.tick_square,
-                                              color: Constanst.color5,
-                                              size: 14,
-                                            )
-                                          : typeAjuan == 'Approve 1'
-                                              ? Icon(
-                                                  Iconsax.tick_square,
-                                                  color: Constanst.color5,
-                                                  size: 14,
-                                                )
-                                              : typeAjuan == 'Approve 2'
-                                                  ? Icon(
-                                                      Iconsax.tick_square,
-                                                      color: Constanst.color5,
-                                                      size: 14,
-                                                    )
-                                                  : typeAjuan == 'Rejected'
-                                                      ? Icon(
-                                                          Iconsax.close_square,
-                                                          color:
-                                                              Constanst.color4,
-                                                          size: 14,
-                                                        )
-                                                      : typeAjuan == 'Pending'
-                                                          ? Icon(
-                                                              Iconsax.timer,
-                                                              color: Constanst
-                                                                  .color3,
-                                                              size: 14,
-                                                            )
-                                                          : SizedBox(),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 3),
-                                        child: Text(
-                                          '$typeAjuan',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: typeAjuan == 'Approve'
-                                                  ? Colors.green
-                                                  : typeAjuan == 'Approve 1'
-                                                      ? Colors.green
-                                                      : typeAjuan == 'Approve 2'
-                                                          ? Colors.green
-                                                          : typeAjuan ==
-                                                                  'Rejected'
-                                                              ? Colors.red
-                                                              : typeAjuan ==
-                                                                      'Pending'
-                                                                  ? Constanst
-                                                                      .color3
-                                                                  : Colors
-                                                                      .black),
-                                        ),
+                                      Icon(
+                                        Iconsax.close_circle,
+                                        color: Constanst.color4,
+                                        size: 22,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Rejected by $approve_by",
+                                              style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Constanst.fgPrimary,
+                                                  fontSize: 14)),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            alasanReject,
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w400,
+                                                color: Constanst.fgSecondary,
+                                                fontSize: 14),
+                                          )
+                                        ],
                                       ),
                                     ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "NO.$nomorAjuan",
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Constanst.colorText1,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Divider(height: 5, color: Constanst.colorText2),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        typeAjuan == 'Rejected'
-                            ? SizedBox(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Icon(
-                                          Iconsax.close_circle,
-                                          color: Colors.red,
-                                        ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.only(left: 5, top: 3),
-                                          child:
-                                              Text("Rejected by $approve_by"),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.only(left: 5, top: 3),
-                                          child: Text(""),
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 6,
-                                    ),
-                                    Text(
-                                      alasanReject,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Constanst.colorText2),
-                                    )
-                                  ],
-                                ),
-                              )
-                            : Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: typeAjuan == "Approve 1" ||
-                                            typeAjuan == "Approve" ||
-                                            typeAjuan == "Approve 2"
-                                        ? Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Icon(
-                                                Iconsax.tick_circle,
-                                                color: Colors.green,
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 5, top: 3),
-                                                child: Text(
-                                                    "Approved by $approve_by"),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 5, top: 3),
-                                                child: Text(""),
+                                  )
+                                : Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: typeAjuan == "Approve 1" ||
+                                                typeAjuan == "Approve" ||
+                                                typeAjuan == "Approve 2"
+                                            ? Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  const Icon(
+                                                    Iconsax.tick_circle,
+                                                    color: Colors.green,
+                                                    size: 22,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                      "Approved by $approve_by",
+                                                      style: GoogleFonts.inter(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Constanst
+                                                              .fgPrimary,
+                                                          fontSize: 14)),
+                                                ],
                                               )
-                                            ],
-                                          )
-                                        : Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Pending Approval",
-                                                style: TextStyle(
-                                                    color:
-                                                        Constanst.colorText2),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Row(
+                                            : Row(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Image.asset(
-                                                    'assets/whatsapp.png',
-                                                    width: 25,
-                                                    height: 25,
+                                                  Icon(
+                                                    Iconsax.timer,
+                                                    color: Constanst.color3,
+                                                    size: 22,
                                                   ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 6),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 3),
-                                                      child: InkWell(
+                                                  const SizedBox(width: 8),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text("Pending Approval",
+                                                          style: GoogleFonts.inter(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color: Constanst
+                                                                  .fgPrimary,
+                                                              fontSize: 14)),
+                                                      const SizedBox(height: 4),
+                                                      InkWell(
                                                           onTap: () {
                                                             var dataEmployee = {
                                                               'nameType':
@@ -755,93 +1304,98 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
                                                                     dataEmployee);
                                                           },
                                                           child: Text(
-                                                            "Konfirmasi via WA",
-                                                            style: TextStyle(
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .underline,
-                                                            ),
-                                                          )),
-                                                    ),
+                                                              "Konfirmasi via Whatsapp",
+                                                              style: GoogleFonts.inter(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  color: Constanst
+                                                                      .infoLight,
+                                                                  fontSize:
+                                                                      14))),
+                                                    ],
                                                   ),
                                                 ],
-                                              )
-                                            ],
-                                          ),
-                                  ),
-                                  typeAjuan == "Approve 1" ||
-                                          typeAjuan == "Approve" ||
-                                          typeAjuan == "Approve 2"
-                                      ? SizedBox()
-                                      : Expanded(
-                                          child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                                child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 10),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  controller
-                                                      .showModalBatalPengajuan(
-                                                          controller
-                                                              .listHistoryAjuan
-                                                              .value[index]);
-                                                },
-                                                child: Text(
-                                                  "Batalkan",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      color: Colors.red),
-                                                ),
                                               ),
-                                            )),
-                                            Expanded(
-                                                child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 10),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        Constanst.borderStyle1,
-                                                    border: Border.all(
-                                                        color: Constanst
-                                                            .colorPrimary)),
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    Get.to(FormTidakMasukKerja(
-                                                      dataForm: [
-                                                        controller
-                                                            .listHistoryAjuan
-                                                            .value[index],
-                                                        true
-                                                      ],
-                                                    ));
-                                                  },
-                                                  child: Text(
-                                                    "Edit",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        color: Constanst
-                                                            .colorPrimary),
-                                                  ),
-                                                ),
-                                              ),
-                                            )),
-                                          ],
-                                        )),
-                                ],
-                              )
+                                      ),
+                                      // typeAjuan == "Approve 1" ||
+                                      //         typeAjuan == "Approve" ||
+                                      //         typeAjuan == "Approve 2"
+                                      //     ? SizedBox()
+                                      //     : Expanded(
+                                      //         child: Row(
+                                      //         crossAxisAlignment:
+                                      //             CrossAxisAlignment.center,
+                                      //         mainAxisAlignment:
+                                      //             MainAxisAlignment.center,
+                                      //         children: [
+                                      //           Expanded(
+                                      //               child: Padding(
+                                      //             padding: EdgeInsets.only(
+                                      //                 right: 10),
+                                      //             child: InkWell(
+                                      //               onTap: () {
+                                      //                 controller
+                                      //                     .showModalBatalPengajuan(
+                                      //                         controller
+                                      //                             .listHistoryAjuan
+                                      //                             .value[index]);
+                                      //               },
+                                      //               child: Text(
+                                      //                 "Batalkan",
+                                      //                 textAlign:
+                                      //                     TextAlign.center,
+                                      //                 style: TextStyle(
+                                      //                     color: Colors.red),
+                                      //               ),
+                                      //             ),
+                                      //           )),
+                                      //           Expanded(
+                                      //               child: Padding(
+                                      //             padding: EdgeInsets.only(
+                                      //                 right: 10),
+                                      //             child: Container(
+                                      //               decoration: BoxDecoration(
+                                      //                   borderRadius: Constanst
+                                      //                       .borderStyle1,
+                                      //                   border: Border.all(
+                                      //                       color: Constanst
+                                      //                           .colorPrimary)),
+                                      //               child: InkWell(
+                                      //                 onTap: () {
+                                      //                   Get.to(
+                                      //                       FormTidakMasukKerja(
+                                      //                     dataForm: [
+                                      //                       controller
+                                      //                           .listHistoryAjuan
+                                      //                           .value[index],
+                                      //                       true
+                                      //                     ],
+                                      //                   ));
+                                      //                 },
+                                      //                 child: Text(
+                                      //                   "Edit",
+                                      //                   textAlign:
+                                      //                       TextAlign.center,
+                                      //                   style: TextStyle(
+                                      //                       color: Constanst
+                                      //                           .colorPrimary),
+                                      //                 ),
+                                      //               ),
+                                      //             ),
+                                      //           )),
+                                      //         ],
+                                      //       )),
+                                    ],
+                                  )
+                          ],
+                        )
                       ],
                     ),
                   ),
-                )
-              ],
-            ),
+                ),
+              ),
+            ],
           );
         });
   }
