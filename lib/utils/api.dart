@@ -18,7 +18,7 @@ class Api {
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
-// static var basicUrl = "http://mobilehris.siscom.id:3000/";
+ //static var basicUrl = "http://mobilehris.siscom.id:3000/";
 
   static var urlImage = 'https://imagehris.siscom.id:4431';
 
@@ -31,7 +31,7 @@ class Api {
   static var wappin = 'https://api.wappin.id/v1';
 
   static var UrlfotoAbsen =
-      urlImage + "/${AppData.selectedDatabase}/foto_absen/";
+      urlImage + "/${AppData.selectedDatabase}/foto_absen                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     /";
   static var UrlfotoProfile =
       urlImage + "/${AppData.selectedDatabase}/foto_profile/";
   static var UrlgambarDashboard =

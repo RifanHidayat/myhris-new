@@ -732,8 +732,10 @@ class TidakMasukKerjaController extends GetxController {
   }
 
   void checkNomorAjuanDalamAntrian(status, nomorAjuanTerakhirDalamAntrian) {
-    var pola = selectedDropdownFormTidakMasukKerjaTipe.value ==
-            allTipe.value[0]['name']
+   // var pola = 
+    // selectedDropdownFormTidakMasukKerjaTipe.value ==
+    //         allTipe.value[0]['name']
+        var pola = selectedDropdownFormTidakMasukKerjaTipe.value.toString().trim().toLowerCase().contains(allTipe.value[0]['name'].toString().trim().toLowerCase())
         ? "SD"
         : "ST";
 
