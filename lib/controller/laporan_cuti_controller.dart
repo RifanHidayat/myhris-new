@@ -33,7 +33,7 @@ class LaporanCutiController extends GetxController {
   // var limitPages = <LimitPageModel>[].obs;
   // var statusFormPencarian = false.obs;
 
-  var loadingString = "Memuat data...".obs;
+  var loadingString = "Memuat Data...".obs;
   var idDepartemenTerpilih = "".obs;
   var namaDepartemenTerpilih = "".obs;
   var bulanSelectedSearchHistory = "".obs;
@@ -102,10 +102,10 @@ class LaporanCutiController extends GetxController {
         "${bulanSelectedSearchHistory.value}-${tahunSelectedSearchHistory.value}";
   }
 
-  void toggleSearch() {
-    statusCari.value = false;
-    this.statusCari.refresh();
-  }
+  // void toggleSearch() {
+  //   statusCari.value = false;
+  //   this.statusCari.refresh();
+  // }
 
   void showInputCari() {
     statusCari.value = !statusCari.value;
@@ -190,7 +190,7 @@ class LaporanCutiController extends GetxController {
         } else {
           var data = valueBody['data'];
           loadingString.value =
-              data.length == 0 ? "Data tidak tersedia" : "Memuat data...";
+              data.length == 0 ? "Data tidak tersedia" : "Memuat Data...";
           allNameLaporanTidakhadir.value = data;
           allNameLaporanTidakhadirCopy.value = data;
           this.allNameLaporanTidakhadir.refresh();
@@ -225,7 +225,7 @@ class LaporanCutiController extends GetxController {
           var data = valueBody['data'];
           loadingString.value = data.length == 0
               ? "Anda tidak memiliki\nLaporan Cuti"
-              : "Memuat data...";
+              : "Memuat Data...";
           allNameLaporanTidakhadir.value = data;
           allNameLaporanTidakhadirCopy.value = data;
           this.allNameLaporanTidakhadir.refresh();
@@ -295,7 +295,7 @@ class LaporanCutiController extends GetxController {
         this.alllistDetailLaporanEmployee.refresh();
         loadingString.value = listDetailLaporanEmployee.isEmpty
             ? "Data pengajuan tidak ada"
-            : "Memuat data...";
+            : "Memuat Data...";
         this.loadingString.refresh();
         typeAjuanRefresh("Semua");
       }
@@ -339,7 +339,7 @@ class LaporanCutiController extends GetxController {
       this.listDetailLaporanEmployee.refresh();
       this.selectedType.refresh();
       loadingString.value = listDetailLaporanEmployee.value.length != 0
-          ? "Memuat data..."
+          ? "Memuat Data..."
           : "Tidak ada pengajuan";
       this.loadingString.refresh();
     } else {
@@ -361,7 +361,7 @@ class LaporanCutiController extends GetxController {
       this.listDetailLaporanEmployee.refresh();
       this.selectedType.refresh();
       loadingString.value = listDetailLaporanEmployee.value.length != 0
-          ? "Memuat data..."
+          ? "Memuat Data..."
           : "Tidak ada pengajuan";
       this.loadingString.refresh();
     }
@@ -717,7 +717,7 @@ class LaporanCutiController extends GetxController {
     this.allNameLaporanTidakhadir.refresh();
     this.filterStatusAjuanTerpilih.refresh();
     loadingString.value = allNameLaporanTidakhadir.value.length != 0
-        ? "Memuat data..."
+        ? "Memuat Data..."
         : "Tidak ada pengajuan";
     Navigator.pop(Get.context!);
   }

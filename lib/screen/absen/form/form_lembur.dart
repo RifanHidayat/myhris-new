@@ -1,17 +1,11 @@
 // ignore_for_file: deprecated_member_use
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/lembur_controller.dart';
-import 'package:siscom_operasional/controller/pesan_controller.dart';
-import 'package:siscom_operasional/screen/absen/lembur.dart';
-import 'package:siscom_operasional/screen/init_screen.dart';
-import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
-import 'package:siscom_operasional/utils/widget_textButton.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class FormLembur extends StatefulWidget {
@@ -28,6 +22,7 @@ class _FormLemburState extends State<FormLembur> {
   void initState() {
     print(widget.dataForm![0]);
     if (widget.dataForm![1] == true) {
+      controller.selectedTypeLembur.value = widget.dataForm![0]['type'];
       controller.tanggalLembur.value.text =
           Constanst.convertDate("${widget.dataForm![0]['atten_date']}");
       var convertDariJam = widget.dataForm![0]['dari_jam'].split(":");
@@ -43,6 +38,11 @@ class _FormLemburState extends State<FormLembur> {
       controller.checkingDelegation(widget.dataForm![0]['em_delegation']);
       controller.nomorAjuan.value.text =
           "${widget.dataForm![0]['nomor_ajuan']}";
+    } else {
+      // controller.selectedTypeLembur.value = "";
+      // controller.tanggalLembur.value.text = "";
+      controller.getTypeLembur();
+      controller.removeAll();
     }
     super.initState();
   }
@@ -93,41 +93,25 @@ class _FormLemburState extends State<FormLembur> {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(12))),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         controller.viewTypeLembur.value == false
                             ? const SizedBox()
                             : formType(),
                         formHariDanTanggal(),
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 16.0, right: 16.0),
-                          child: formJam(),
-                        ),
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 16.0, right: 16.0),
-                          child: formDelegasiKepada(),
-                        ),
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 16.0, right: 16.0),
-                          child: formCatatan(),
-                        ),
+                        formJam(),
+                        formDelegasiKepada(),
+                        formCatatan(),
                       ],
                     ),
                   )),
             ),
           )),
-      bottomNavigationBar: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: TextButtonWidget(
-            title: "Simpan",
-            onTap: () {
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+          child: ElevatedButton(
+            onPressed: () {
               print("tes ${controller.dariJam.value.text.toString()}");
               TimeOfDay _startTime = TimeOfDay(
                   hour: int.parse(
@@ -159,10 +143,24 @@ class _FormLemburState extends State<FormLembur> {
 
               //
             },
-            colorButton: Constanst.colorPrimary,
-            colortext: Constanst.colorWhite,
-            border: BorderRadius.circular(20.0),
-          )),
+            style: ElevatedButton.styleFrom(
+                foregroundColor: Constanst.colorWhite,
+                backgroundColor: Constanst.onPrimary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                elevation: 0,
+                padding: const EdgeInsets.fromLTRB(0, 12, 0, 12)),
+            child: Text(
+              'Kirim',
+              style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: Constanst.colorWhite),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -208,32 +206,41 @@ class _FormLemburState extends State<FormLembur> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Icon(
-                  Iconsax.note_2,
-                  size: 26,
-                ),
-                const SizedBox(width: 12),
-                Column(
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Tipe Lembur*",
-                      style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Constanst.fgPrimary),
+                    const Icon(
+                      Iconsax.note_2,
+                      size: 26,
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      controller.selectedTypeLembur.value,
-                      style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Constanst.fgPrimary),
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Tipe Lembur*",
+                          style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Constanst.fgPrimary),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          controller.selectedTypeLembur.value,
+                          style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.fgPrimary),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+                Icon(Iconsax.arrow_down_1,
+                    size: 20, color: Constanst.fgPrimary),
               ],
             ),
           ),
@@ -357,32 +364,41 @@ class _FormLemburState extends State<FormLembur> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Icon(
-                  Iconsax.calendar_2,
-                  size: 26,
-                ),
-                const SizedBox(width: 12),
-                Column(
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Hari & Tanggal*",
-                      style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Constanst.fgPrimary),
+                    const Icon(
+                      Iconsax.calendar_2,
+                      size: 26,
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      controller.tanggalLembur.value.text,
-                      style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Constanst.fgPrimary),
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Hari & Tanggal*",
+                          style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Constanst.fgPrimary),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          controller.tanggalLembur.value.text,
+                          style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.fgPrimary),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+                Icon(Iconsax.arrow_down_1,
+                    size: 20, color: Constanst.fgPrimary),
               ],
             ),
           ),
@@ -400,248 +416,217 @@ class _FormLemburState extends State<FormLembur> {
   }
 
   Widget formJam() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Dari Jam *",
-                    style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Constanst.fgPrimary),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    height: 50,
-                    width: MediaQuery.of(Get.context!).size.width,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: Constanst.borderStyle1,
-                        border: Border.all(
-                            width: 0.5,
-                            color: Color.fromARGB(255, 211, 205, 205))),
-                    child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                            onTap: () {
-                              showTimePicker(
-                                context: Get.context!,
-                                initialTime: TimeOfDay.now(),
-                                initialEntryMode: TimePickerEntryMode.input,
-                                builder: (context, child) {
-                                  return MediaQuery(
-                                    data: MediaQuery.of(context)
-                                        .copyWith(alwaysUse24HourFormat: true),
-                                    child: Theme(
-                                      data: ThemeData(
-                                        colorScheme: ColorScheme.light(
-                                          primary: Constanst.onPrimary,
-                                        ),
-                                        // useMaterial3: settings.useMaterial3,
-                                        dialogTheme: const DialogTheme(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(16)))),
-                                        primaryColor: Constanst.fgPrimary,
-                                        textTheme: TextTheme(
-                                          titleMedium: GoogleFonts.inter(
-                                            color: Constanst.fgPrimary,
-                                          ),
-                                        ),
-                                        dialogBackgroundColor:
-                                            Constanst.colorWhite,
-                                        canvasColor: Colors.white,
-                                        hintColor: Constanst.onPrimary,
-                                        textButtonTheme: TextButtonThemeData(
-                                          style: TextButton.styleFrom(
-                                            foregroundColor:
-                                                Constanst.onPrimary,
-                                          ),
-                                        ),
-                                      ),
-                                      child: child!,
-                                    ),
-                                  );
-                                },
-                              ).then((value) {
-                                if (value == null) {
-                                  UtilsAlert.showToast('gagal pilih jam');
-                                } else {
-                                  var convertJam = value.hour <= 9
-                                      ? "0${value.hour}"
-                                      : "${value.hour}";
-                                  var convertMenit = value.minute <= 9
-                                      ? "0${value.minute}"
-                                      : "${value.minute}";
-                                  controller.dariJam.value.text =
-                                      "$convertJam:$convertMenit";
-                                  this.controller.dariJam.refresh();
-                                }
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8, top: 5),
-                              child: Text(
-                                controller.dariJam.value.text,
-                                style: GoogleFonts.inter(fontSize: 16),
-                              ),
-                            ))),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Sampai Jam ggg*",
-                    style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Constanst.fgPrimary),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    height: 50,
-                    width: MediaQuery.of(Get.context!).size.width,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: Constanst.borderStyle1,
-                        border: Border.all(
-                            width: 0.5,
-                            color: Color.fromARGB(255, 211, 205, 205))),
-                    child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                            onTap: () {
-                              showTimePicker(
-                                context: Get.context!,
-                                initialTime: TimeOfDay.now(),
-                                initialEntryMode: TimePickerEntryMode.input,
-                                builder: (context, child) {
-                                  return MediaQuery(
-                                    data: MediaQuery.of(context)
-                                        .copyWith(alwaysUse24HourFormat: true),
-                                    child: Theme(
-                                      data: ThemeData(
-                                        colorScheme: ColorScheme.light(
-                                          primary: Constanst.onPrimary,
-                                        ),
-                                        // useMaterial3: settings.useMaterial3,
-                                        dialogTheme: const DialogTheme(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(16)))),
-                                        primaryColor: Constanst.fgPrimary,
-                                        textTheme: TextTheme(
-                                          titleMedium: GoogleFonts.inter(
-                                            color: Constanst.fgPrimary,
-                                          ),
-                                        ),
-                                        dialogBackgroundColor:
-                                            Constanst.colorWhite,
-                                        canvasColor: Colors.white,
-                                        hintColor: Constanst.onPrimary,
-                                        textButtonTheme: TextButtonThemeData(
-                                          style: TextButton.styleFrom(
-                                            foregroundColor:
-                                                Constanst.onPrimary,
-                                          ),
-                                        ),
-                                      ),
-                                      child: child!,
-                                    ),
-                                  );
-                                },
-                              ).then((value) {
-                                if (value == null) {
-                                  UtilsAlert.showToast('gagal pilih jam');
-                                } else {
-                                  var convertJam = value.hour <= 9
-                                      ? "0${value.hour}"
-                                      : "${value.hour}";
-                                  var convertMenit = value.minute <= 9
-                                      ? "0${value.minute}"
-                                      : "${value.minute}";
-                                  controller.sampaiJam.value.text =
-                                      "$convertJam:$convertMenit";
-                                  this.controller.sampaiJam.refresh();
-                                }
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8, top: 5),
-                              child: Text(
-                                controller.sampaiJam.value.text,
-                                style: GoogleFonts.inter(fontSize: 16),
-                              ),
-                            ))),
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      )
-    ]);
-  }
-
-  Widget formDelegasiKepada() {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text(
-          "Pemberi Tugas",
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        Container(
-          height: 50,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: Constanst.borderStyle1,
-              border: Border.all(
-                  width: 0.5, color: Color.fromARGB(255, 211, 205, 205))),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                isDense: true,
-                items: controller.allEmployeeDelegasi.value
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: GoogleFonts.inter(fontSize: 14),
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              showTimePicker(
+                context: Get.context!,
+                initialTime: TimeOfDay.now(),
+                initialEntryMode: TimePickerEntryMode.input,
+                builder: (context, child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context)
+                        .copyWith(alwaysUse24HourFormat: true),
+                    child: Theme(
+                      data: ThemeData(
+                        colorScheme: ColorScheme.light(
+                          primary: Constanst.onPrimary,
+                        ),
+                        // useMaterial3: settings.useMaterial3,
+                        dialogTheme: const DialogTheme(
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(16)))),
+                        primaryColor: Constanst.fgPrimary,
+                        textTheme: TextTheme(
+                          titleMedium: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        dialogBackgroundColor: Constanst.colorWhite,
+                        canvasColor: Colors.white,
+                        hintColor: Constanst.onPrimary,
+                        textButtonTheme: TextButtonThemeData(
+                          style: TextButton.styleFrom(
+                            foregroundColor: Constanst.onPrimary,
+                          ),
+                        ),
+                      ),
+                      child: child!,
                     ),
                   );
-                }).toList(),
-                value: controller.selectedDropdownDelegasi.value,
-                onChanged: (selectedValue) {
-                  controller.selectedDropdownDelegasi.value = selectedValue!;
                 },
-                isExpanded: true,
-              ),
+              ).then((value) {
+                if (value == null) {
+                  UtilsAlert.showToast('gagal pilih jam');
+                } else {
+                  var convertJam =
+                      value.hour <= 9 ? "0${value.hour}" : "${value.hour}";
+                  var convertMenit = value.minute <= 9
+                      ? "0${value.minute}"
+                      : "${value.minute}";
+                  controller.dariJam.value.text = "$convertJam:$convertMenit";
+                  this.controller.dariJam.refresh();
+                }
+              });
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Iconsax.clock,
+                            size: 26,
+                          ),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Dari jam*",
+                                style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Constanst.fgPrimary),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                controller.dariJam.value.text,
+                                style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.fgPrimary),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Icon(Iconsax.arrow_down_1,
+                          size: 20, color: Constanst.fgPrimary),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Divider(
+                    height: 0,
+                    thickness: 1,
+                    color: Constanst.fgBorder,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              showTimePicker(
+                context: Get.context!,
+                initialTime: TimeOfDay.now(),
+                initialEntryMode: TimePickerEntryMode.input,
+                builder: (context, child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context)
+                        .copyWith(alwaysUse24HourFormat: true),
+                    child: Theme(
+                      data: ThemeData(
+                        colorScheme: ColorScheme.light(
+                          primary: Constanst.onPrimary,
+                        ),
+                        // useMaterial3: settings.useMaterial3,
+                        dialogTheme: const DialogTheme(
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(16)))),
+                        primaryColor: Constanst.fgPrimary,
+                        textTheme: TextTheme(
+                          titleMedium: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        dialogBackgroundColor: Constanst.colorWhite,
+                        canvasColor: Colors.white,
+                        hintColor: Constanst.onPrimary,
+                        textButtonTheme: TextButtonThemeData(
+                          style: TextButton.styleFrom(
+                            foregroundColor: Constanst.onPrimary,
+                          ),
+                        ),
+                      ),
+                      child: child!,
+                    ),
+                  );
+                },
+              ).then((value) {
+                if (value == null) {
+                  UtilsAlert.showToast('gagal pilih jam');
+                } else {
+                  var convertJam =
+                      value.hour <= 9 ? "0${value.hour}" : "${value.hour}";
+                  var convertMenit = value.minute <= 9
+                      ? "0${value.minute}"
+                      : "${value.minute}";
+                  controller.sampaiJam.value.text = "$convertJam:$convertMenit";
+                  this.controller.sampaiJam.refresh();
+                }
+              });
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Sampai jam*",
+                            style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Constanst.fgPrimary),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            controller.sampaiJam.value.text,
+                            style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.fgPrimary),
+                          ),
+                        ],
+                      ),
+                      Icon(Iconsax.arrow_down_1,
+                          size: 20, color: Constanst.fgPrimary),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Divider(
+                    height: 0,
+                    thickness: 1,
+                    color: Constanst.fgBorder,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -649,41 +634,248 @@ class _FormLemburState extends State<FormLembur> {
     );
   }
 
-  Widget formCatatan() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          "Catatan Tugas Lembur *",
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: Constanst.borderStyle1,
-              border: Border.all(
-                  width: 1.0, color: Color.fromARGB(255, 211, 205, 205))),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: TextField(
-              cursorColor: Colors.black,
-              controller: controller.catatan.value,
-              maxLines: null,
-              maxLength: 225,
-              decoration: new InputDecoration(
-                  border: InputBorder.none, hintText: "Tambahkan Uraian"),
-              keyboardType: TextInputType.multiline,
-              textInputAction: TextInputAction.done,
-              style: GoogleFonts.inter(
-                  fontSize: 12.0, height: 2.0, color: Colors.black),
-            ),
+  Widget formDelegasiKepada() {
+    return InkWell(
+      onTap: () => bottomSheetPengajuanAbsen(),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SizedBox(
+          width: double.infinity,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Iconsax.profile_add,
+                    size: 26,
+                    color: Constanst.fgPrimary,
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Pemberi Tugas*",
+                        style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Constanst.fgPrimary),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        controller.selectedDropdownDelegasi.value,
+                        style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Constanst.fgPrimary),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Icon(Iconsax.arrow_down_1, size: 20, color: Constanst.fgPrimary),
+            ],
           ),
         ),
-      ],
+      ),
+    );
+  }
+
+  void bottomSheetPengajuanAbsen() {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      builder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Lokasi Absen Checkin",
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18),
+                  ),
+                  InkWell(
+                      customBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      onTap: () {
+                        Navigator.pop(Get.context!);
+                      },
+                      child: Icon(
+                        Icons.close,
+                        opticalSize: 24,
+                        color: Constanst.fgSecondary,
+                      ))
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Divider(
+                thickness: 1,
+                height: 0,
+                color: Constanst.border,
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Obx(() => ListView.builder(
+                    itemCount: controller.allEmployeeDelegasi.value.length,
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context, index) {
+                      var data = controller.allEmployeeDelegasi.value[index];
+                      return Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              controller.selectedDropdownDelegasi.value = data;
+                              Get.back();
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(data,
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Constanst.fgPrimary)),
+                                  controller.selectedDropdownDelegasiTemp
+                                              .value ==
+                                          data
+                                      ? InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(3),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Constanst.onPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            controller.selectedDropdownDelegasi
+                                                .value = data;
+                                            Get.back();
+                                          },
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    })),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget formCatatan() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Divider(
+            height: 0,
+            thickness: 1,
+            color: Constanst.fgBorder,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Iconsax.textalign_justifyleft, size: 24),
+                const SizedBox(width: 12),
+                Expanded(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextLabell(
+                      text: "Catatan *",
+                      color: Constanst.fgPrimary,
+                      size: 14,
+                      weight: FontWeight.w400,
+                    ),
+                    TextFormField(
+                      controller: controller.catatan.value,
+                      decoration: const InputDecoration(
+                        hintText: 'Tulis catatan disini',
+                        border: InputBorder.none,
+                      ),
+                      style: GoogleFonts.inter(
+                          color: Constanst.fgPrimary,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16),
+                    )
+                  ],
+                ))
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

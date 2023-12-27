@@ -256,10 +256,13 @@ class _LaporanCutiState extends State<LaporanCuti> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              SvgPicture.asset(
-                                                'assets/empty_screen.svg',
-                                                height: 228,
-                                              ),
+                                              controller.loadingString.value ==
+                                                      "Memuat Data..."
+                                                  ? Container()
+                                                  : SvgPicture.asset(
+                                                      'assets/empty_screen.svg',
+                                                      height: 228,
+                                                    ),
                                               const SizedBox(height: 16),
                                               Text(
                                                 controller.loadingString.value,
@@ -282,14 +285,6 @@ class _LaporanCutiState extends State<LaporanCuti> {
                 ),
               ),
             )));
-  }
-
-  String getMonthName(int monthNumber) {
-    // Menggunakan pustaka intl untuk mengonversi angka bulan menjadi teks
-    final monthFormat = DateFormat.MMMM('id');
-    DateTime date = DateTime(2000, monthNumber,
-        1); // Tahun dan hari bebas, yang penting bulan sesuai
-    return monthFormat.format(date);
   }
 
   Widget filterData() {
@@ -446,6 +441,14 @@ class _LaporanCutiState extends State<LaporanCuti> {
         ),
       ),
     );
+  }
+
+  String getMonthName(int monthNumber) {
+    // Menggunakan pustaka intl untuk mengonversi angka bulan menjadi teks
+    final monthFormat = DateFormat.MMMM('id');
+    DateTime date = DateTime(2000, monthNumber,
+        1); // Tahun dan hari bebas, yang penting bulan sesuai
+    return monthFormat.format(date);
   }
 
   // Widget pencarianData() {
@@ -641,7 +644,7 @@ class _LaporanCutiState extends State<LaporanCuti> {
                                   // controller.statusFilterWaktu.value == 0
                                   //     ?
                                   Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(

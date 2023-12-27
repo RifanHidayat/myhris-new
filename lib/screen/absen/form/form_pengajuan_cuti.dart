@@ -1319,7 +1319,13 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
       onTap: () async {
         await showMenu(
           context: context,
-          position: const RelativeRect.fromLTRB(17, 235, 17, 0),
+          position: controller.selectedTypeCuti.value
+                  .toString()
+                  .toLowerCase()
+                  .toLowerCase()
+                  .contains("Cuti Melahirkan".toLowerCase())
+              ? const RelativeRect.fromLTRB(17, 388, 17, 0)
+              : const RelativeRect.fromLTRB(17, 665, 17, 0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
