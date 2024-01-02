@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/helper.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
@@ -116,25 +117,25 @@ class BpjsKesehatan extends StatelessWidget {
                     child: Center(child: CircularProgressIndicator()),
                   );
                 }
-                if (controller.bpjsKesehatan.isEmpty) {
-                  return Expanded(
-                    child: Container(
-                      height: double.maxFinite,
-                      child: const Center(
-                        child: TextLabell(
-                          text: "Data tidak ditemukan",
-                        ),
-                      ),
-                    ),
-                  );
-                }
+                // if (controller.bpjsKesehatan.isEmpty) {
+                //   return Expanded(
+                //     child: Container(
+                //       height: double.maxFinite,
+                //       child: const Center(
+                //         child: TextLabell(
+                //           text: "Data tidak ditemukan",
+                //         ),
+                //       ),
+                //     ),
+                //   );
+                // }
                 return Expanded(
                   child: SizedBox(
                     height: double.maxFinite,
                     child: SingleChildScrollView(
                       child: Column(
                         // children: List.generate(controller.bpjsKesehatan.length,
-                        children: List.generate(controller.bpjsKesehatan.length,
+                        children: List.generate(1,
                             (index) {
                           return _list(index);
                         }),
@@ -149,7 +150,7 @@ class BpjsKesehatan extends StatelessWidget {
   }
 
   Widget _list(index) {
-    var data = controller.bpjsKesehatan[index];
+    //var data = controller.bpjsKesehatan[index];
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Container(
@@ -234,7 +235,8 @@ class BpjsKesehatan extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextLabell(
-                        text: data.fullName,
+                        // text: data.fullName,
+                         text: AppData.informasiUser![0].full_name,
                         // text: "Nama Pengguna",
                         size: 16,
                         weight: FontWeight.w500,
@@ -242,7 +244,8 @@ class BpjsKesehatan extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       TextLabell(
-                        text: "No JKN. ${data.emBpjsKesehatan}",
+                        text: "No JKN. 123123123",
+                         // text: "No JKN. ${data.emBpjsKesehatan}",
                         // text: "No JKN. ",
                         size: 14,
                         weight: FontWeight.w400,
@@ -294,7 +297,7 @@ class BpjsKesehatan extends StatelessWidget {
                             const EdgeInsets.fromLTRB(16.0, 12.0, 0.0, 12.0),
                         child: TextGroupColumn(
                             title: "TK(1%)",
-                            subtitle: toCurrency(data.tk.toString())),
+                            subtitle: toCurrency(1)),
                       ))
                 ],
               ),

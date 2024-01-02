@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/helper.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
@@ -163,7 +164,7 @@ class BpjsKetenagakerjaan extends StatelessWidget {
   }
 
   Widget _list(index) {
-    var data = controller.bpjsKetenagakerjaan[index];
+  //  var data = controller.bpjsKetenagakerjaan[index];
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, right: 16.0),
       child: Container(
@@ -209,14 +210,15 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextLabell(
-                          text: data.fullName,
+                          text: AppData.informasiUser![0].full_name,
                           // text: "Nama Penggguna",
                           color: Constanst.colorWhite,
                           weight: FontWeight.w500,
                           size: 16),
                       const SizedBox(height: 4),
                       TextLabell(
-                          text: "No JKN. ${data.emBpjsTenagakerja}",
+                          text: "No JKN. 111",
+                         //  text: "No JKN. ${data.emBpjsTenagakerja}",
                           // text: "No JKN.  ",
                           color: Constanst.colorWhite,
                           weight: FontWeight.w400,
@@ -274,7 +276,8 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                         Expanded(
                             flex: 35,
                             child: TextGroupColumn2(
-                                title: toCurrency(data.jkk),
+                                // title: toCurrency(data.jkk),
+                                title: toCurrency(1),
                                 subtitle: "TK (1%)")),
                         const Expanded(
                           flex: 35, child: SizedBox(),
@@ -306,7 +309,8 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                         Expanded(
                             flex: 35,
                             child: TextGroupColumn2(
-                                title: toCurrency(data.jkm),
+                                //title: toCurrency(data.jkm),
+                                title: toCurrency(1),
                                 subtitle: "TK (4%)")),
                         Expanded(
                           flex: 35, child: Container(),
@@ -336,7 +340,8 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                         Expanded(
                             flex: 35,
                             child: TextGroupColumn2(
-                                title: toCurrency(data.jhtTk),
+                                // title: toCurrency(data.jhtTk),
+                                 title: toCurrency(1),
                                 subtitle: "PT(4%)")),
                         const Expanded(
                             flex: 35,
@@ -370,7 +375,8 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                         Expanded(
                             flex: 35,
                             child: TextGroupColumn2(
-                                title: toCurrency(data.jpTk),
+                                // title: toCurrency(data.jpTk),
+                                 title: toCurrency('1'),
                                 subtitle: "PT(2%)")),
                         const Expanded(
                             flex: 35,

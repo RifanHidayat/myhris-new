@@ -206,7 +206,7 @@ class _LaporanIzinDetailState extends State<LaporanIzinDetail> {
           physics: BouncingScrollPhysics(),
           itemCount: controller.listDetailLaporanEmployee.value.length,
           itemBuilder: (context, index) {
-            viewTidakHadir(controller.listDetailLaporanEmployee.value[index]);
+           return  viewTidakHadir(controller.listDetailLaporanEmployee.value[index]);
           }),
     );
   }
