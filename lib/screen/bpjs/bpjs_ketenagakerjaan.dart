@@ -183,7 +183,7 @@ class BpjsKetenagakerjaan extends StatelessWidget {
   }
 
   Widget _list(index) {
-    var data = controller.bpjsKetenagakerjaan[index];
+  //  var data = controller.bpjsKetenagakerjaan[index];
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, right: 16.0),
       child: Container(

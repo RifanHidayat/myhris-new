@@ -32,6 +32,7 @@ class BpjsController extends GetxController {
       'tahun': tahunKesehatan.value,
       'bulan': bulanKeseehatan.value,
     };
+ 
     print("data respon  ");
 
     var connect = Api.connectionApi("post", body, "bpjs-kesehatan");
@@ -54,6 +55,7 @@ class BpjsController extends GetxController {
       print("error ${e}");
       isLoadingBpjsKesehatan.value = false;
     }
+ 
   }
 
   Future<void> fetchBpjsKetenagakerjaam() async {
@@ -66,7 +68,7 @@ class BpjsController extends GetxController {
       // 'nomor_bpjs_tenega_kerja': BpjsKetenagakerjaanNumber.value
     };
     print("Isi body :${body}");
-
+ 
     var connect = Api.connectionApi("post", body, "bpjs-ketanagakerjaan");
     try {
       connect.then((value) {
@@ -86,6 +88,7 @@ class BpjsController extends GetxController {
     } catch (e) {
       isLoadingBpjsKetenagakerjaan.value = false;
     }
+ 
   }
 
   void employeDetaiBpjs() {

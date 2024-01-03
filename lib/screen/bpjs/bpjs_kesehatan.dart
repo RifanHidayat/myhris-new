@@ -124,6 +124,7 @@ class BpjsKesehatan extends StatelessWidget {
                 ],
               ),
               Obx(() {
+ 
                 if (controller.bpjsKesehatan.isEmpty) {
                   return Expanded(
                     child: Column(
@@ -154,13 +155,14 @@ class BpjsKesehatan extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   );
                 }
+ 
                 return Expanded(
                   child: SizedBox(
                     height: double.maxFinite,
                     child: SingleChildScrollView(
                       child: Column(
                         // children: List.generate(controller.bpjsKesehatan.length,
-                        children: List.generate(controller.bpjsKesehatan.length,
+                        children: List.generate(1,
                             (index) {
                           return _list(index);
                         }),
@@ -175,7 +177,7 @@ class BpjsKesehatan extends StatelessWidget {
   }
 
   Widget _list(index) {
-    var data = controller.bpjsKesehatan[index];
+    //var data = controller.bpjsKesehatan[index];
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Container(
@@ -248,7 +250,9 @@ class BpjsKesehatan extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextLabell(
+ 
                         text: "${AppData.informasiUser![0].full_name}",
+ 
                         size: 16,
                         weight: FontWeight.w500,
                         color: Constanst.colorWhite,
@@ -313,6 +317,7 @@ class BpjsKesehatan extends StatelessWidget {
                         child: TextGroupColumn(
                             title: "TK ${data.tk_percent}%",
                             subtitle: toCurrency(data.tk.toString())),
+ 
                       ))
                 ],
               ),
