@@ -52,42 +52,54 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
       length: 2,
       child: Scaffold(
           backgroundColor: Constanst.coloBackgroundScreen,
-          appBar: AppBar(
-            backgroundColor: Constanst.coloBackgroundScreen,
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            title: Text(
-              "Absensi",
-              style: GoogleFonts.inter(
-                  color: Constanst.fgPrimary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20),
-            ),
-            leading: IconButton(
-              icon: Icon(
-                Iconsax.arrow_left,
-                color: Constanst.fgPrimary,
-                size: 24,
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
+            child: Container(
+              decoration: const BoxDecoration(boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  offset: Offset(0, 2.0),
+                  blurRadius: 4.0,
+                )
+              ]),
+              child: AppBar(
+                backgroundColor: Constanst.coloBackgroundScreen,
+                automaticallyImplyLeading: false,
+                elevation: 0,
+                title: Text(
+                  "Riwayat Absensi",
+                  style: GoogleFonts.inter(
+                      color: Constanst.fgPrimary,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20),
+                ),
+                leading: IconButton(
+                  icon: Icon(
+                    Iconsax.arrow_left,
+                    color: Constanst.fgPrimary,
+                    size: 24,
+                  ),
+                  onPressed: () {
+                    controller.removeAll();
+                    Get.offAll(InitScreen());
+                  },
+                ),
+                // actions: [
+                //   IconButton(
+                //     icon: Icon(
+                //       Iconsax.document_text,
+                //       color: Constanst.fgPrimary,
+                //       size: 24,
+                //     ),
+                //     onPressed: () {
+                //       Get.to(LaporanAbsen(
+                //         dataForm: "",
+                //       ));
+                //     },
+                //   ),
+                // ],
               ),
-              onPressed: () {
-                controller.removeAll();
-                Get.offAll(InitScreen());
-              },
             ),
-            // actions: [
-            //   IconButton(
-            //     icon: Icon(
-            //       Iconsax.document_text,
-            //       color: Constanst.fgPrimary,
-            //       size: 24,
-            //     ),
-            //     onPressed: () {
-            //       Get.to(LaporanAbsen(
-            //         dataForm: "",
-            //       ));
-            //     },
-            //   ),
-            // ],
           ),
           body: WillPopScope(
             onWillPop: () async {
@@ -931,7 +943,6 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                       size: 20,
                                       color: Constanst.warning,
                                     ),
-                                    
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,

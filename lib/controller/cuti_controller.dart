@@ -46,12 +46,10 @@ class CutiController extends GetxController {
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
   Rx<List<String>> allTipeFormCutiDropdown = Rx<List<String>>([]);
 
+  var limitCuti = 0.obs;
+  var cutLeave = 1.obs;
 
-  var limitCuti=0.obs;
-  var cutLeave=1.obs;
-
-
-  var dateSelected=0.obs;
+  var dateSelected = 0.obs;
 
   var statusFormPencarian = false.obs;
 
@@ -99,8 +97,6 @@ class CutiController extends GetxController {
   ];
 
   GlobalController globalCt = Get.put(GlobalController());
-
-  var controllerGlobal = Get.put(GlobalController());
 
   @override
   void onReady() async {
@@ -248,8 +244,7 @@ class CutiController extends GetxController {
             'status': element['status'],
             'leave_day': element['leave_day'],
             'select_date': element['select_date'],
-              'cut_leave': element['cut_leave'],
-            
+            'cut_leave': element['cut_leave'],
             'active': false,
           };
           allTipe.value.add(data);
@@ -257,18 +252,13 @@ class CutiController extends GetxController {
         if (statusForm.value == false) {
           var getFirst = allTipe.value.first;
           selectedTypeCuti.value = getFirst['name'];
-          dateSelected=getFirst['select_date'];
+          dateSelected = getFirst['select_date'];
         } else {
           var getFirst = allTipe.value
               .firstWhere((element) => element['id'] == typeIdEdit.value);
           selectedTypeCuti.value = getFirst['name'];
-          
-          
-          
-        dateSelected=getFirst['select_date'];
 
-       
-
+          dateSelected = getFirst['select_date'];
         }
         this.allTipe.refresh();
         this.selectedTypeCuti.refresh();
@@ -448,19 +438,13 @@ class CutiController extends GetxController {
     });
   }
 
-
-
-
   void loadCutiUser() {
-    
-    
     print("load cuti user");
 
     var dataUser = AppData.informasiUser;
-    
+
     var getEmid = dataUser![0].em_id;
-    
-    
+
     Map<String, dynamic> body = {
       'val': 'em_id',
       'cari': getEmid,
@@ -478,7 +462,7 @@ class CutiController extends GetxController {
             this.statusHitungCuti.refresh();
           } else {
             jumlahCuti.value = totalDay;
-            cutLeave.value=1;
+            cutLeave.value = 1;
             cutiTerpakai.value = terpakai;
             this.jumlahCuti.refresh();
             this.cutiTerpakai.refresh();
@@ -493,9 +477,6 @@ class CutiController extends GetxController {
       }
     });
   }
-
-
-
 
   void hitungCuti(totalDay, terpakai) {
     var hitung1 = (terpakai / totalDay) * 100;
@@ -973,7 +954,7 @@ class CutiController extends GetxController {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20.0),
+          top: Radius.circular(16.0),
         ),
       ),
       builder: (context) {
@@ -1129,138 +1110,138 @@ class CutiController extends GetxController {
     });
   }
 
-  void showModalBatalPengajuan(index) {
-    showModalBottomSheet(
-      context: Get.context!,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(10.0),
-        ),
-      ),
-      builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 90,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: Constanst.colorBGRejected,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Iconsax.minus_cirlce,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 6),
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 6),
-                                child: Text(
-                                  "Batalkan Pengajuan Cuti",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                          flex: 10,
-                          child: InkWell(
-                            onTap: () => Navigator.pop(Get.context!),
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 6),
-                              child: Icon(Iconsax.close_circle),
-                            ),
-                          ))
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    "Data pengajuan yang telah kamu buat akan di hapus. Yakin ingin membatalkan pengajuan?",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(color: Constanst.colorText2),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: TextButtonWidget(
-                            title: "Ya, Batalkan",
-                            onTap: () async {
-                              print("dat ${index}");
-                              batalkanPengajuan(index);
-                            },
-                            colorButton: Constanst.colorButton1,
-                            colortext: Constanst.colorWhite,
-                            border: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: InkWell(
-                          onTap: () => Navigator.pop(Get.context!),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: Constanst.borderStyle2,
-                                  border: Border.all(
-                                      color: Constanst.colorPrimary)),
-                              child: Center(
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 12, bottom: 12),
-                                  child: Text(
-                                    "Urungkan",
-                                    style: TextStyle(
-                                        color: Constanst.colorPrimary),
-                                  ),
-                                ),
-                              )),
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 16,
-            )
-          ],
-        );
-      },
-    );
-  }
+  // void showModalBatalPengajuan(index) {
+  //   showModalBottomSheet(
+  //     context: Get.context!,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(
+  //         top: Radius.circular(10.0),
+  //       ),
+  //     ),
+  //     builder: (context) {
+  //       return Column(
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: [
+  //           SizedBox(
+  //             height: 16,
+  //           ),
+  //           Padding(
+  //             padding: const EdgeInsets.only(left: 16, right: 16),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Row(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Expanded(
+  //                       flex: 90,
+  //                       child: Row(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Container(
+  //                             height: 40,
+  //                             width: 40,
+  //                             decoration: BoxDecoration(
+  //                               color: Constanst.colorBGRejected,
+  //                               shape: BoxShape.circle,
+  //                             ),
+  //                             child: Center(
+  //                               child: Icon(
+  //                                 Iconsax.minus_cirlce,
+  //                                 color: Colors.red,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           Padding(
+  //                             padding: EdgeInsets.only(left: 6),
+  //                             child: Padding(
+  //                               padding: EdgeInsets.only(top: 6),
+  //                               child: Text(
+  //                                 "Batalkan Pengajuan Cuti",
+  //                                 style: TextStyle(
+  //                                     fontWeight: FontWeight.bold,
+  //                                     fontSize: 16),
+  //                               ),
+  //                             ),
+  //                           )
+  //                         ],
+  //                       ),
+  //                     ),
+  //                     Expanded(
+  //                         flex: 10,
+  //                         child: InkWell(
+  //                           onTap: () => Navigator.pop(Get.context!),
+  //                           child: Padding(
+  //                             padding: EdgeInsets.only(top: 6),
+  //                             child: Icon(Iconsax.close_circle),
+  //                           ),
+  //                         ))
+  //                   ],
+  //                 ),
+  //                 SizedBox(
+  //                   height: 16,
+  //                 ),
+  //                 Text(
+  //                   "Data pengajuan yang telah kamu buat akan di hapus. Yakin ingin membatalkan pengajuan?",
+  //                   textAlign: TextAlign.justify,
+  //                   style: TextStyle(color: Constanst.colorText2),
+  //                 ),
+  //                 SizedBox(
+  //                   height: 16,
+  //                 ),
+  //                 Row(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Expanded(
+  //                       child: Padding(
+  //                         padding: const EdgeInsets.only(right: 5),
+  //                         child: TextButtonWidget(
+  //                           title: "Ya, Batalkan",
+  //                           onTap: () async {
+  //                             print("dat ${index}");
+  //                             batalkanPengajuan(index);
+  //                           },
+  //                           colorButton: Constanst.colorButton1,
+  //                           colortext: Constanst.colorWhite,
+  //                           border: BorderRadius.circular(10.0),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     Expanded(
+  //                       child: InkWell(
+  //                         onTap: () => Navigator.pop(Get.context!),
+  //                         child: Container(
+  //                             decoration: BoxDecoration(
+  //                                 borderRadius: Constanst.borderStyle2,
+  //                                 border: Border.all(
+  //                                     color: Constanst.colorPrimary)),
+  //                             child: Center(
+  //                               child: Padding(
+  //                                 padding: EdgeInsets.only(top: 12, bottom: 12),
+  //                                 child: Text(
+  //                                   "Urungkan",
+  //                                   style: TextStyle(
+  //                                       color: Constanst.colorPrimary),
+  //                                 ),
+  //                               ),
+  //                             )),
+  //                       ),
+  //                     )
+  //                   ],
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+  //           SizedBox(
+  //             height: 16,
+  //           )
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   void showDetailRiwayat(detailData, apply_by, alasanReject) {
     var nomorAjuan = detailData['nomor_ajuan'];
@@ -1334,7 +1315,7 @@ class CutiController extends GetxController {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                Constanst.convertDate("$tanggalMasukAjuan"),
+                                Constanst.convertDate6("$tanggalMasukAjuan"),
                                 style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16,
@@ -1535,7 +1516,7 @@ class CutiController extends GetxController {
                                         style: GoogleFonts.inter(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16,
-                                          color: Constanst.fgPrimary,
+                                          color: Constanst.infoLight,
                                         ),
                                       )),
                                   const SizedBox(height: 12),
@@ -1624,9 +1605,8 @@ class CutiController extends GetxController {
                                                   'nameType': '$namaTypeAjuan',
                                                   'nomor_ajuan': '$nomorAjuan',
                                                 };
-                                                controllerGlobal
-                                                    .showDataPilihAtasan(
-                                                        dataEmployee);
+                                                globalCt.showDataPilihAtasan(
+                                                    dataEmployee);
                                               },
                                               child: Text(
                                                   "Konfirmasi via Whatsapp",

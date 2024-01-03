@@ -77,65 +77,71 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
       ),
       body: SafeArea(
         child: Obx(() {
-          return Container(
-            height: MediaQuery.of(context).size.height,
-            child: Container(
-              height: double.maxFinite,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(child: item()),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(child: item()),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(16.0),
                     ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (absenController.checkinAjuan.value != "") {
-                            if (absenController.placeCoordinateCheckout
-                                .where((p0) => p0['is_selected'] == true)
-                                .isEmpty) {
-                              UtilsAlert.showToast(
-                                  "Lokasi absen masuk belum diisi");
-                              return;
-                            }
+                    color: Constanst.colorWhite,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, 2.0),
+                        blurRadius: 12.0,
+                      )
+                    ]),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (absenController.checkinAjuan.value != "") {
+                          if (absenController.placeCoordinateCheckout
+                              .where((p0) => p0['is_selected'] == true)
+                              .isEmpty) {
+                            UtilsAlert.showToast(
+                                "Lokasi absen masuk belum diisi");
+                            return;
                           }
-                          if (absenController.checkoutAjuan2.value != "") {
-                            if (absenController.placeCoordinateCheckout
-                                .where((p0) => p0['is_selected'] == true)
-                                .isEmpty) {
-                              UtilsAlert.showToast(
-                                  "Lokasi absen keluar belum diisi");
-                              return;
-                            }
+                        }
+                        if (absenController.checkoutAjuan2.value != "") {
+                          if (absenController.placeCoordinateCheckout
+                              .where((p0) => p0['is_selected'] == true)
+                              .isEmpty) {
+                            UtilsAlert.showToast(
+                                "Lokasi absen keluar belum diisi");
+                            return;
                           }
-                          absenController.nextKirimPengajuan();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            foregroundColor: Constanst.colorWhite,
-                            backgroundColor: Constanst.onPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 0,
-                            padding: const EdgeInsets.fromLTRB(0, 12, 0, 12)),
-                        child: Text(
-                          'Kirim',
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: Constanst.colorWhite),
-                        ),
+                        }
+                        absenController.nextKirimPengajuan();
+                      },
+                      style: ElevatedButton.styleFrom(
+                          foregroundColor: Constanst.colorWhite,
+                          backgroundColor: Constanst.onPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 0,
+                          padding: const EdgeInsets.fromLTRB(0, 12, 0, 12)),
+                      child: Text(
+                        'Kirim',
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.colorWhite),
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           );
         }),
       ),

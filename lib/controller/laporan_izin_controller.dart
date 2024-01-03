@@ -385,107 +385,160 @@ class LaporanIzinController extends GetxController {
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20.0),
+            top: Radius.circular(16.0),
           ),
         ),
         builder: (context) {
-          // padding:
-          //       EdgeInsets.fromLTRB(0, AppBar().preferredSize.height, 0, 0),
-          return Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 90,
-                      child: Text(
-                        "Pilih Divisi",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                    ),
-                    Expanded(
-                        flex: 10,
-                        child: InkWell(
+          return SafeArea(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Pilih Divisi",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        InkWell(
+                            customBorder: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
                             onTap: () => Navigator.pop(Get.context!),
-                            child: Icon(Iconsax.close_circle)))
-                  ],
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Flexible(
-                  flex: 3,
-                  child: Padding(
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          physics: BouncingScrollPhysics(),
-                          itemCount: departementAkses.value.length,
-                          itemBuilder: (context, index) {
-                            var id = departementAkses.value[index]['id'];
-                            var dep_name =
-                                departementAkses.value[index]['name'];
-                            return InkWell(
-                              onTap: () {
-                                idDepartemenTerpilih.value = "$id";
-                                namaDepartemenTerpilih.value = dep_name;
-                                departemen.value.text =
-                                    departementAkses.value[index]['name'];
-                                this.departemen.refresh();
-                                Navigator.pop(context);
-                                if (selectedViewFilterPengajuan.value == 0) {
-                                  aksiCariLaporan();
-                                } else {
-                                  cariLaporanPengajuanTanggal(
-                                      pilihTanggalFilterAjuan.value);
-                                }
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 5, bottom: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: "$id" == idDepartemenTerpilih.value
-                                          ? Constanst.colorPrimary
-                                          : Colors.transparent,
-                                      borderRadius: Constanst
-                                          .styleBoxDecoration1.borderRadius,
-                                      border: Border.all(
-                                          color: Constanst.colorText2)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, bottom: 10),
-                                    child: Center(
-                                      child: Text(
-                                        dep_name,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: "$id" ==
-                                                    idDepartemenTerpilih.value
-                                                ? Colors.white
-                                                : Colors.black),
-                                      ),
+                            child: Icon(
+                              Icons.close,
+                              size: 26,
+                              color: Constanst.fgSecondary,
+                            ))
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                    child: Divider(
+                      thickness: 1,
+                      height: 0,
+                      color: Constanst.border,
+                    ),
+                  ),
+                  SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: List.generate(departementAkses.value.length,
+                            (index) {
+                          var id = departementAkses.value[index]['id'];
+                          var dep_name = departementAkses.value[index]['name'];
+                          return InkWell(
+                            onTap: () {
+                              idDepartemenTerpilih.value = "$id";
+                              namaDepartemenTerpilih.value = dep_name;
+                              departemen.value.text =
+                                  departementAkses.value[index]['name'];
+                              this.departemen.refresh();
+                              Navigator.pop(context);
+                              if (selectedViewFilterPengajuan.value == 0) {
+                                aksiCariLaporan();
+                              } else {
+                                cariLaporanPengajuanTanggal(
+                                    pilihTanggalFilterAjuan.value);
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    dep_name,
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
                                     ),
                                   ),
-                                ),
+                                  "$id" == idDepartemenTerpilih.value
+                                      ? InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(3),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Constanst.onPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            idDepartemenTerpilih.value = "$id";
+                                            namaDepartemenTerpilih.value =
+                                                dep_name;
+                                            departemen.value.text =
+                                                departementAkses.value[index]
+                                                    ['name'];
+                                            this.departemen.refresh();
+                                            Navigator.pop(context);
+                                            if (selectedViewFilterPengajuan
+                                                    .value ==
+                                                0) {
+                                              aksiCariLaporan();
+                                            } else {
+                                              cariLaporanPengajuanTanggal(
+                                                  pilihTanggalFilterAjuan
+                                                      .value);
+                                            }
+                                          },
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                ],
                               ),
-                            );
-                          })),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-              ],
+                            ),
+                          );
+                        }),
+                      )),
+                ],
+              ),
             ),
           );
         });
@@ -497,100 +550,143 @@ class LaporanIzinController extends GetxController {
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20.0),
+            top: Radius.circular(16.0),
           ),
         ),
         builder: (context) {
-          return Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 90,
-                      child: Text(
-                        "Pilih Status Ajuan",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                    ),
-                    Expanded(
-                        flex: 10,
-                        child: InkWell(
+          return SafeArea(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Pilih Status Ajuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        InkWell(
+                            customBorder: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
                             onTap: () => Navigator.pop(Get.context!),
-                            child: Icon(Iconsax.close_circle)))
-                  ],
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Flexible(
-                  flex: 3,
-                  child: Padding(
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          physics: BouncingScrollPhysics(),
-                          itemCount: valuePolaPersetujuan.value == "1"
-                              ? dataTypeAjuanDummy1.length
-                              : dataTypeAjuanDummy2.length,
-                          itemBuilder: (context, index) {
-                            var name = valuePolaPersetujuan.value == "1"
-                                ? dataTypeAjuanDummy1[index]
-                                : dataTypeAjuanDummy2[index];
-                            return InkWell(
-                              onTap: () {
-                                // if (selectedViewFilterPengajuan.value == 1) {
-                                filterStatusPengajuan(name);
-                                // }
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 5, bottom: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: "$name" ==
-                                              filterStatusAjuanTerpilih.value
-                                          ? Constanst.colorPrimary
-                                          : Colors.transparent,
-                                      borderRadius: Constanst
-                                          .styleBoxDecoration1.borderRadius,
-                                      border: Border.all(
-                                          color: Constanst.colorText2)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, bottom: 10),
-                                    child: Center(
-                                      child: Text(
-                                        name,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: "$name" ==
-                                                    filterStatusAjuanTerpilih
-                                                        .value
-                                                ? Colors.white
-                                                : Colors.black),
-                                      ),
+                            child: Icon(
+                              Icons.close,
+                              size: 26,
+                              color: Constanst.fgSecondary,
+                            ))
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                    child: Divider(
+                      thickness: 1,
+                      height: 0,
+                      color: Constanst.border,
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Obx(
+                      () => Column(
+                        children: List.generate(
+                            valuePolaPersetujuan.value == "1"
+                                ? dataTypeAjuanDummy1.length
+                                : dataTypeAjuanDummy2.length, (index) {
+                          var name = valuePolaPersetujuan.value == "1"
+                              ? dataTypeAjuanDummy1[index]
+                              : dataTypeAjuanDummy2[index];
+                          return InkWell(
+                            onTap: () {
+                              // if (selectedViewFilterPengajuan.value == 1) {
+                              filterStatusPengajuan(name);
+                              // }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    name,
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
                                     ),
                                   ),
-                                ),
+                                  name == filterStatusAjuanTerpilih.value
+                                      ? InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(3),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Constanst.onPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            // if (selectedViewFilterPengajuan.value == 1) {
+                                            filterStatusPengajuan(name);
+                                            // }
+                                          },
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                ],
                               ),
-                            );
-                          })),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-              ],
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         });
@@ -908,7 +1004,7 @@ class LaporanIzinController extends GetxController {
         ));
   }
 
-  void showDetailRiwayat(detailData) {
+  void showDetailRiwayat(detailData, apply_by, alasanReject) {
     var nomorAjuan = detailData['nomor_ajuan'];
     var get2StringNomor = '${nomorAjuan[0]}${nomorAjuan[1]}';
     var tanggalMasukAjuan = detailData['atten_date'];
@@ -944,357 +1040,410 @@ class LaporanIzinController extends GetxController {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20.0),
+          top: Radius.circular(16.0),
         ),
       ),
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 16,
-              ),
-              IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 60,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          get2StringNomor == "DL"
-                              ? Text(
-                                  "DINAS LUAR",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              : Text(
-                                  "$namaTypeAjuan",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 12),
+                Center(
+                  child: Container(
+                      height: 6,
+                      width: 34,
+                      decoration: BoxDecoration(
+                          color: Constanst.colorNeutralBgTertiary,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(20.0),
+                          ))),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Constanst.colorNonAktif)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Tanggal Pengajuan",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Constanst.fgSecondary,
                                 ),
-                          Text(
-                            "$categoryIzin",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                              "${Constanst.convertDate("$tanggalMasukAjuan")}"),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 40,
-                      child: Center(
-                        child: Container(
-                          margin: EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            color: typeAjuan == 'Approve'
-                                ? Constanst.colorBGApprove
-                                : typeAjuan == 'Approve 1'
-                                    ? Constanst.colorBGApprove
-                                    : typeAjuan == 'Approve 2'
-                                        ? Constanst.colorBGApprove
-                                        : typeAjuan == 'Rejected'
-                                            ? Constanst.colorBGRejected
-                                            : typeAjuan == 'Pending'
-                                                ? Constanst.colorBGPending
-                                                : Colors.grey,
-                            borderRadius: Constanst.borderStyle1,
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                left: 3, right: 3, top: 5, bottom: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                typeAjuan == 'Approve'
-                                    ? Icon(
-                                        Iconsax.tick_square,
-                                        color: Constanst.color5,
-                                        size: 14,
-                                      )
-                                    : typeAjuan == 'Approve 1'
-                                        ? Icon(
-                                            Iconsax.tick_square,
-                                            color: Constanst.color5,
-                                            size: 14,
-                                          )
-                                        : typeAjuan == 'Approve 2'
-                                            ? Icon(
-                                                Iconsax.tick_square,
-                                                color: Constanst.color5,
-                                                size: 14,
-                                              )
-                                            : typeAjuan == 'Rejected'
-                                                ? Icon(
-                                                    Iconsax.close_square,
-                                                    color: Constanst.color4,
-                                                    size: 14,
-                                                  )
-                                                : typeAjuan == 'Pending'
-                                                    ? Icon(
-                                                        Iconsax.timer,
-                                                        color: Constanst.color3,
-                                                        size: 14,
-                                                      )
-                                                    : SizedBox(),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 3),
-                                  child: Text(
-                                    '$typeAjuan',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: typeAjuan == 'Approve'
-                                            ? Colors.green
-                                            : typeAjuan == 'Approve 1'
-                                                ? Colors.green
-                                                : typeAjuan == 'Approve 2'
-                                                    ? Colors.green
-                                                    : typeAjuan == 'Rejected'
-                                                        ? Colors.red
-                                                        : typeAjuan == 'Pending'
-                                                            ? Constanst.color3
-                                                            : Colors.black),
-                                  ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                Constanst.convertDate6("$tanggalMasukAjuan"),
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    )
-                  ],
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "No. Pengajuan",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Constanst.fgSecondary,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                nomorAjuan,
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              Divider(
-                height: 5,
-                color: Constanst.colorText2,
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Nomor Ajuan"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$nomorAjuan"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Tanggal izin"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
+                const SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Constanst.colorNonAktif)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            "${Constanst.convertDate("$tanggalAjuanDari")}  SD  ${Constanst.convertDate("$tanggalAjuanSampai")}"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Durasi Izin"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$durasi Hari"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Alasan"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(":"),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 68,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$alasan"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              categoryIzin == "HALFDAY"
-                  ? SizedBox(
-                      height: 8,
-                    )
-                  : SizedBox(),
-              categoryIzin == "HALFDAY"
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 30,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Jam"),
-                            ],
+                          "Nama Pengajuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
                           ),
                         ),
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(":"),
-                            ],
+                        const SizedBox(height: 4),
+                        Text(
+                          "categoryIzin - $namaTypeAjuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
                           ),
                         ),
-                        Expanded(
-                          flex: 68,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("$jamAjuan sd $sampaiJamAjuan"),
-                            ],
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Tanggal Izin",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
                           ),
-                        )
+                        ),
+                        const SizedBox(height: 4),
+                        detailData['date_selected'] == null ||
+                                detailData['date_selected'] == "" ||
+                                detailData['date_selected'] == "null"
+                            ? Text(
+                                "${Constanst.convertDate6(tanggalAjuanDari)} - ${Constanst.convertDate6(tanggalAjuanSampai)}",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
+                                ),
+                              )
+                            : Container(),
+                        detailData['date_selected'] == null ||
+                                detailData['date_selected'] == "" ||
+                                detailData['date_selected'] == "null"
+                            ? Container()
+                            : Row(
+                                children: List.generate(
+                                    listTanggalTerpilih.length, (index) {
+                                  var nomor = index + 1;
+                                  var tanggalConvert = Constanst.convertDate7(
+                                      listTanggalTerpilih[index]);
+                                  var tanggalConvert2 = Constanst.convertDate5(
+                                      listTanggalTerpilih[index]);
+                                  return Row(
+                                    children: [
+                                      Text(
+                                        index == listTanggalTerpilih.length - 1
+                                            ? tanggalConvert2
+                                            : '$tanggalConvert, ',
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Constanst.fgPrimary,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }),
+                              ),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Durasi Izin",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$durasi Hari",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        categoryIzin == "HALFDAY"
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 12),
+                                  Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                    color: Constanst.border,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    "Jam Izin",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Constanst.fgSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "$jamAjuan sd $sampaiJamAjuan",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const SizedBox(),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Catatan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$alasan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        leave_files == "" ||
+                                leave_files == "NULL" ||
+                                leave_files == null
+                            ? const SizedBox()
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                    color: Constanst.border,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    "File disematkan",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Constanst.fgSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  InkWell(
+                                      onTap: () {
+                                        viewLampiranAjuanKlaim(leave_files);
+                                      },
+                                      child: Text(
+                                        "$leave_files",
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Constanst.infoLight,
+                                        ),
+                                      )),
+                                  const SizedBox(height: 12),
+                                ],
+                              ),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        typeAjuan == 'Rejected'
+                            ? Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Iconsax.close_circle,
+                                    color: Constanst.color4,
+                                    size: 22,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Rejected by $apply_by",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14)),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        alasanReject,
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : typeAjuan == "Approve" ||
+                                    typeAjuan == "Approve 1" ||
+                                    typeAjuan == "Approve 2"
+                                ? Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Iconsax.tick_circle,
+                                        color: Colors.green,
+                                        size: 22,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text("Approved by $apply_by",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14)),
+                                    ],
+                                  )
+                                : Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Iconsax.timer,
+                                        color: Constanst.color3,
+                                        size: 22,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Pending Approval",
+                                              style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Constanst.fgPrimary,
+                                                  fontSize: 14)),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                       ],
-                    )
-                  : SizedBox(),
-              SizedBox(
-                height: 8,
-              ),
-              Text("Tanggal Terpilih"),
-              SizedBox(
-                height: 8,
-              ),
-              ListView.builder(
-                  itemCount: listTanggalTerpilih.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    var nomor = index + 1;
-                    var tanggalConvert =
-                        Constanst.convertDate1(listTanggalTerpilih[index]);
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("$nomor."),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8),
-                          child: Text(tanggalConvert),
-                        )
-                      ],
-                    );
-                  }),
-              SizedBox(
-                height: 16,
-              ),
-            ],
+                    ),
+                  ),
+                ),
+                // Row(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   children: [
+                //     Expanded(
+                //       flex: 30,
+                //       child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           Text("Tanggal izin"),
+                //         ],
+                //       ),
+                //     ),
+                //     Expanded(
+                //       flex: 2,
+                //       child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           Text(":"),
+                //         ],
+                //       ),
+                //     ),
+                //     Expanded(
+                //       flex: 68,
+                //       child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           Text(
+                //               "${Constanst.convertDate("$tanggalAjuanDari")}  SD  ${Constanst.convertDate("$tanggalAjuanSampai")}"),
+                //         ],
+                //       ),
+                //     )
+                //   ],
+                // ),
+              ],
+            ),
           ),
         );
       },

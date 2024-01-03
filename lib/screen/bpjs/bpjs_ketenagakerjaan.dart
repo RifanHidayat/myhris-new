@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
@@ -5,13 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
+import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/helper.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
-import 'package:siscom_operasional/utils/widget/appbar.dart';
 import 'package:siscom_operasional/utils/widget/text_group_column.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class BpjsKetenagakerjaan extends StatelessWidget {
   BpjsKetenagakerjaan({super.key});
@@ -19,6 +21,8 @@ class BpjsKetenagakerjaan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.bulanKetenagakerjaan.value = DateTime.now().month.toString();
+    controller.tahunKetenagakerjaan.value = DateTime.now().year.toString();
     controller.fetchBpjsKetenagakerjaam();
     return Scaffold(
       backgroundColor: Constanst.colorWhite,
@@ -46,7 +50,7 @@ class BpjsKetenagakerjaan extends StatelessWidget {
           },
         ),
       ),
-      body: Container(
+      body: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
@@ -65,7 +69,12 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                             pickerModel: CustomMonthPicker(
                               minTime: DateTime(2020, 1, 1),
                               maxTime: DateTime(2050, 1, 1),
-                              currentTime: DateTime.now(),
+                              currentTime: DateTime(
+                                  int.parse(
+                                      controller.tahunKetenagakerjaan.value),
+                                  int.parse(
+                                      controller.bulanKetenagakerjaan.value),
+                                  1),
                             ),
                             onConfirm: (time) {
                               if (time != null) {
@@ -79,7 +88,6 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                                 controller.tahunKetenagakerjaan.value =
                                     tahun.toString();
                                 controller.fetchBpjsKetenagakerjaam();
-                                ;
                               }
                             },
                           );
@@ -95,13 +103,14 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "${Constanst.convertDateBulanDanTahun("${controller.bulanKetenagakerjaan.value}-${controller.tahunKetenagakerjaan.value}")}",
+                                  Constanst.convertDateBulanDanTahun(
+                                      "${controller.bulanKetenagakerjaan.value}-${controller.tahunKetenagakerjaan.value}"),
                                   style: GoogleFonts.inter(
                                       color: Constanst.fgSecondary,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 14),
                                 ),
-                                SizedBox(width: 4),
+                                const SizedBox(width: 4),
                                 const Icon(
                                   Iconsax.arrow_down_14,
                                   size: 16,
@@ -115,49 +124,59 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                   }),
                 ],
               ),
-              // Obx(() {
-              // if (controller.isLoadingBpjsKetenagakerjaan.value == true) {
-              //   return Expanded(
-              //     child: Container(
-              //       height: double.maxFinite,
-              //       child: Center(child: CircularProgressIndicator()),
-              //     ),
-              //   );
-              // }
-              // if (controller.bpjsKetenagakerjaan.isEmpty) {
-              //   return Expanded(
-              //     child: Container(
-              //       height: double.maxFinite,
-              //       child: const Center(
-              //         child: TextLabell(
-              //           text: "Data tidak ditemukan",
-              //         ),
-              //       ),
-              //     ),
-              //   );
-              // }
-              // return
-              SingleChildScrollView(
-                child: Column(
-                  // children: List.generate(   controller.bpjsKetenagakerjaan.length, (index) {
-                  children: List.generate(1, (index) {
-                    return _list(index);
-                  }),
-                ),
-              )
-              // return controller.isLoadingBpjsKetenagakerjaan.value == true
-              //     ? Container(
-              //         child: Center(child: CircularProgressIndicator()),
-              //       )
-              //     : SingleChildScrollView(
-              //         child: Column(
-              //           children: List.generate(
-              //               controller.bpjsKetenagakerjaan.length, (index) {
-              //             return _list(index);
-              //           }),
-              //         ),
-              //       );
-              // }),
+              Obx(() {
+                if (controller.bpjsKetenagakerjaan.isEmpty) {
+                  return Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/empty_screen.svg',
+                          height: 228,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          "Data tidak ditemukan",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 120),
+                      ],
+                    ),
+                  );
+                }
+                if (controller.isLoadingBpjsKetenagakerjaan.value == true) {
+                  return const Center(
+                    heightFactor: 17,
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(
+                        controller.bpjsKetenagakerjaan.length, (index) {
+                      // children: List.generate(1, (index) {
+                      return _list(index);
+                    }),
+                  ),
+                );
+                // return controller.isLoadingBpjsKetenagakerjaan.value == true
+                //     ? Container(
+                //         child: Center(child: CircularProgressIndicator()),
+                //       )
+                //     : SingleChildScrollView(
+                //         child: Column(
+                //           children: List.generate(
+                //               controller.bpjsKetenagakerjaan.length, (index) {
+                //             return _list(index);
+                //           }),
+                //         ),
+                //       );
+              })
             ],
           )),
     );
@@ -188,38 +207,60 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: Constanst.colorWhite,
                         borderRadius: BorderRadius.circular(100)),
-                    child:
-                        // image == ""
-                        //     ?
-                        //     SvgPicture.asset(
-                        //   'assets/avatar_default.svg',
-                        //   width: 40,
-                        //   height: 40,
-                        // )
-                        Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Iconsax.user,
-                        color: Constanst.fgSecondary,
-                        size: 26,
-                      ),
-                    ),
+                    child: AppData.informasiUser![0].em_image == null ||
+                            AppData.informasiUser![0].em_image == ""
+                        ? SvgPicture.asset(
+                            'assets/avatar_default.svg',
+                            width: 40,
+                            height: 40,
+                          )
+                        : CircleAvatar(
+                            radius: 20,
+                            child: ClipOval(
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      "${Api.UrlfotoProfile}${AppData.informasiUser![0].em_image}",
+                                  progressIndicatorBuilder:
+                                      (context, url, downloadProgress) =>
+                                          Container(
+                                    alignment: Alignment.center,
+                                    height: MediaQuery.of(context).size.height,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: CircularProgressIndicator(
+                                        value: downloadProgress.progress),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Container(
+                                    color: Colors.white,
+                                    child: SvgPicture.asset(
+                                      'assets/avatar_default.svg',
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                  ),
+                                  fit: BoxFit.cover,
+                                  width: 40,
+                                  height: 40,
+                                ),
+                              ),
+                            ),
+                          ),
                   ),
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextLabell(
-                          text: AppData.informasiUser![0].full_name,
+                          text: "${AppData.informasiUser![0].full_name}",
                           // text: "Nama Penggguna",
                           color: Constanst.colorWhite,
                           weight: FontWeight.w500,
                           size: 16),
                       const SizedBox(height: 4),
                       TextLabell(
-                          text: "No JKN. 111",
-                         //  text: "No JKN. ${data.emBpjsTenagakerja}",
-                          // text: "No JKN.  ",
+                          text:
+                              "No JKN. ${AppData.informasiUser![0].nomorBpjsTenagakerja}",
                           color: Constanst.colorWhite,
                           weight: FontWeight.w400,
                           size: 16)
@@ -276,9 +317,8 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                         Expanded(
                             flex: 35,
                             child: TextGroupColumn2(
-                                // title: toCurrency(data.jkk),
-                                title: toCurrency(1),
-                                subtitle: "TK (1%)")),
+                                title: toCurrency(data.jkkTk),
+                                subtitle: "TK (${data.jkkTkPercent}%)")),
                         const Expanded(
                           flex: 35, child: SizedBox(),
                           // child: TextGroupColumn2(
@@ -309,9 +349,8 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                         Expanded(
                             flex: 35,
                             child: TextGroupColumn2(
-                                //title: toCurrency(data.jkm),
-                                title: toCurrency(1),
-                                subtitle: "TK (4%)")),
+                                title: toCurrency(data.jkmTk),
+                                subtitle: "TK (${data.jkmTkPercent}%)")),
                         Expanded(
                           flex: 35, child: Container(),
                           // child: TextGroupColumn2(
@@ -340,13 +379,13 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                         Expanded(
                             flex: 35,
                             child: TextGroupColumn2(
-                                // title: toCurrency(data.jhtTk),
-                                 title: toCurrency(1),
-                                subtitle: "PT(4%)")),
-                        const Expanded(
+                                title: toCurrency(data.jhtPt),
+                                subtitle: "PT (${data.jhtPtPercent}%)")),
+                        Expanded(
                             flex: 35,
                             child: TextGroupColumn2(
-                                title: "Rp.2000m,00", subtitle: "TK(4%)")),
+                                title: toCurrency(data.jhtTk),
+                                subtitle: "TK (${data.jhtTkPercent}%)")),
                         // Expanded(
                         //     flex: 30,
                         //     child: TextGroupColumn2(
@@ -371,17 +410,16 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                               weight: FontWeight.w500,
                               size: 16),
                         ),
-
                         Expanded(
                             flex: 35,
                             child: TextGroupColumn2(
-                                // title: toCurrency(data.jpTk),
-                                 title: toCurrency('1'),
-                                subtitle: "PT(2%)")),
-                        const Expanded(
+                                title: toCurrency(data.jppPt),
+                                subtitle: "PT (${data.jppPtPercent}%)")),
+                        Expanded(
                             flex: 35,
                             child: TextGroupColumn2(
-                                title: "Rp.2000m,00", subtitle: "TK(4%)")),
+                                title: toCurrency(data.jppTk),
+                                subtitle: "TK (${data.jppTkPercent}%)")),
                         // Expanded(
                         //     flex: 30,
                         //     child: TextGroupColumn2(

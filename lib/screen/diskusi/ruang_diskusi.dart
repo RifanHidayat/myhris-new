@@ -5,7 +5,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
-import 'package:siscom_operasional/controller/Izin_controller.dart';
+import 'package:siscom_operasional/controller/Izin_controller2.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/lembur_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';

@@ -107,56 +107,72 @@ class _FormLemburState extends State<FormLembur> {
                   )),
             ),
           )),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-          child: ElevatedButton(
-            onPressed: () {
-              print("tes ${controller.dariJam.value.text.toString()}");
-              TimeOfDay _startTime = TimeOfDay(
-                  hour: int.parse(
-                      controller.dariJam.value.text.toString().split(":")[0]),
-                  minute: int.parse(
-                      controller.dariJam.value.text.toString().split(":")[1]));
-              TimeOfDay _endTime = TimeOfDay(
-                  hour: int.parse(
-                      controller.sampaiJam.value.text.toString().split(":")[0]),
-                  minute: int.parse(controller.sampaiJam.value.text
-                      .toString()
-                      .split(":")[1]));
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(16.0),
+            ),
+            color: Constanst.colorWhite,
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0, 2.0),
+                blurRadius: 12.0,
+              )
+            ]),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+            child: ElevatedButton(
+              onPressed: () {
+                print("tes ${controller.dariJam.value.text.toString()}");
+                TimeOfDay _startTime = TimeOfDay(
+                    hour: int.parse(
+                        controller.dariJam.value.text.toString().split(":")[0]),
+                    minute: int.parse(controller.dariJam.value.text
+                        .toString()
+                        .split(":")[1]));
+                TimeOfDay _endTime = TimeOfDay(
+                    hour: int.parse(controller.sampaiJam.value.text
+                        .toString()
+                        .split(":")[0]),
+                    minute: int.parse(controller.sampaiJam.value.text
+                        .toString()
+                        .split(":")[1]));
 
-              if (_endTime.hour >= _startTime.hour) {
-                if (_endTime.hour == _startTime.hour) {
-                  if (_endTime.minute < _startTime.minute) {
-                    UtilsAlert.showToast(
-                        "waktu yang dimasukan tidak valid, coba periksa lagi waktu lemburmu");
+                if (_endTime.hour >= _startTime.hour) {
+                  if (_endTime.hour == _startTime.hour) {
+                    if (_endTime.minute < _startTime.minute) {
+                      UtilsAlert.showToast(
+                          "waktu yang dimasukan tidak valid, coba periksa lagi waktu lemburmu");
 
-                    return;
+                      return;
+                    }
                   }
+                  print("masuk sini");
+                  controller.validasiKirimPengajuan();
+                } else {
+                  UtilsAlert.showToast(
+                      "waktu yang dimasukan tidak valid, coba periksa lagi waktu lemburmu");
                 }
-                print("masuk sini");
-                controller.validasiKirimPengajuan();
-              } else {
-                UtilsAlert.showToast(
-                    "waktu yang dimasukan tidak valid, coba periksa lagi waktu lemburmu");
-              }
 
-              //
-            },
-            style: ElevatedButton.styleFrom(
-                foregroundColor: Constanst.colorWhite,
-                backgroundColor: Constanst.onPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-                padding: const EdgeInsets.fromLTRB(0, 12, 0, 12)),
-            child: Text(
-              'Kirim',
-              style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  color: Constanst.colorWhite),
+                //
+              },
+              style: ElevatedButton.styleFrom(
+                  foregroundColor: Constanst.colorWhite,
+                  backgroundColor: Constanst.onPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 0,
+                  padding: const EdgeInsets.fromLTRB(0, 12, 0, 12)),
+              child: Text(
+                'Kirim',
+                style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Constanst.colorWhite),
+              ),
             ),
           ),
         ),

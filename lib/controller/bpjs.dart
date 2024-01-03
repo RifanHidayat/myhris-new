@@ -26,62 +26,69 @@ class BpjsController extends GetxController {
   var bpjsKetenagakerjaan = <BpjsKetenagakerjaanModel>[].obs;
 
   Future<void> fetchBpjsKesehatan() async {
+    isLoadingBpjsKesehatan.value = true;
     Map<String, dynamic> body = {
+      'em_id': AppData.informasiUser![0].em_id,
       'tahun': tahunKesehatan.value,
       'bulan': bulanKeseehatan.value,
-      'nomor_bpjs_kesehatan': bpjsKesehatanNumber.value
     };
-    print(body);
+ 
+    print("data respon  ");
+
+    var connect = Api.connectionApi("post", body, "bpjs-kesehatan");
+    try {
+      connect.then((dynamic value) {
+        var valueBody = jsonDecode(value.body);
+        if (valueBody['status'] == true) {
+          var data = valueBody['data'];
+          print("data respon :${data}");
+
+          bpjsKesehatan.value = BpjsKesehatanModel.fromJsonToList(data);
+          isLoadingBpjsKesehatan.value = false;
+        } else {
+          bpjsKesehatan.value = [];
+          isLoadingBpjsKesehatan.value = false;
+        }
+      });
+      bpjsKesehatan.value = [];
+    } catch (e) {
+      print("error ${e}");
       isLoadingBpjsKesehatan.value = false;
-
-    // try {
-    //   isLoadingBpjsKesehatan.value = true;
-    //   var connect = Api.connectionApi("post", body, "get_bpjs_kesehatan");
-    //   connect.then((dynamic value) {
-    //     var valueBody = jsonDecode(value.body);
-    //     if (valueBody['status'] == true) {
-    //       var data = valueBody['data'];
-    //       print(data);
-
-    //       bpjsKesehatan.value = BpjsKesehatanModel.fromJsonToList(data);
-    //       isLoadingBpjsKesehatan.value = false;
-    //     } else {
-    //       bpjsKesehatan.value = [];
-    //       isLoadingBpjsKesehatan.value = false;
-    //     }
-    //   });
-    // } catch (e) {
-    //   print("error ${e}");
-    //   isLoadingBpjsKesehatan.value = false;
-    // }
+    }
+ 
   }
 
   Future<void> fetchBpjsKetenagakerjaam() async {
     isLoadingBpjsKetenagakerjaan.value = true;
     Map<String, dynamic> body = {
+      'em_id': AppData.informasiUser![0].em_id,
       'tahun': tahunKetenagakerjaan.value,
       'bulan': bulanKetenagakerjaan.value,
-      'nomor_bpjs_tenega_kerja': BpjsKetenagakerjaanNumber.value
-    };
-    print(body);
 
-    // var connect = Api.connectionApi("post", body, "get_bpjs_tenaga_kerja");
-    // try {
-    //   connect.then((value) {
-    //     var valueBody = jsonDecode(value.body);
-    //     if (valueBody['status'] == true) {
-    //       var data = valueBody['data'];
-    //       bpjsKetenagakerjaan.value =
-    //           BpjsKetenagakerjaanModel.fromJsonToList(data);
-    //       isLoadingBpjsKetenagakerjaan.value = false;
-    //     } else {
-    //       bpjsKetenagakerjaan.value = [];
-    //       isLoadingBpjsKetenagakerjaan.value = false;
-    //     }
-    //   });
-    // } catch (e) {
-    //   isLoadingBpjsKetenagakerjaan.value = false;
-    // }
+      // 'nomor_bpjs_tenega_kerja': BpjsKetenagakerjaanNumber.value
+    };
+    print("Isi body :${body}");
+ 
+    var connect = Api.connectionApi("post", body, "bpjs-ketanagakerjaan");
+    try {
+      connect.then((value) {
+        var valueBody = jsonDecode(value.body);
+        print("Hasil ${valueBody}");
+        if (valueBody['status'] == true) {
+          var data = valueBody['data'];
+          bpjsKetenagakerjaan.value =
+              BpjsKetenagakerjaanModel.fromJsonToList(data);
+          isLoadingBpjsKetenagakerjaan.value = false;
+        } else {
+          bpjsKetenagakerjaan.value = [];
+          isLoadingBpjsKetenagakerjaan.value = false;
+        }
+      });
+      bpjsKetenagakerjaan.value = [];
+    } catch (e) {
+      isLoadingBpjsKetenagakerjaan.value = false;
+    }
+ 
   }
 
   void employeDetaiBpjs() {

@@ -1,34 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
-import 'package:siscom_operasional/controller/absen_controller.dart';
-import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
-import 'package:siscom_operasional/controller/tidak_masuk_kerja_controller.dart';
-import 'package:siscom_operasional/screen/absen/detail_absen.dart';
-import 'package:siscom_operasional/screen/absen/form/form_tidakMasukKerja.dart';
+import 'package:siscom_operasional/controller/izin_controller.dart';
+import 'package:siscom_operasional/screen/absen/form/form_pengajuan_izin.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_izin.dart';
-import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan.dart';
-import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
-import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
-import 'package:siscom_operasional/utils/widget_textButton.dart';
-import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class TidakMasukKerja extends StatefulWidget {
+class RiwayatIzin extends StatefulWidget {
   @override
-  _TidakMasukKerjaState createState() => _TidakMasukKerjaState();
+  _RiwayatIzinState createState() => _RiwayatIzinState();
 }
 
-class _TidakMasukKerjaState extends State<TidakMasukKerja> {
-  var controller = Get.put(TidakMasukKerjaController());
+class _RiwayatIzinState extends State<RiwayatIzin> {
+  var controller = Get.put(IzinController());
   var controllerGlobal = Get.put(GlobalController());
 
   @override
@@ -217,21 +208,22 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      controller.bulanDanTahunNow.value == ""
-                          ? const SizedBox()
-                          : SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  pickDate(),
-                                  const SizedBox(width: 4),
-                                  status(),
-                                  const SizedBox(width: 4),
-                                  tipe(),
-                                ],
-                              ),
-                            ),
+                      // controller.bulanDanTahunNow.value == ""
+                      //     ? const SizedBox()
+                      //     :
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            pickDate(),
+                            const SizedBox(width: 4),
+                            status(),
+                            const SizedBox(width: 4),
+                            tipe(),
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 4),
                       Flexible(
                         child: RefreshIndicator(
@@ -265,52 +257,65 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
                                       ),
                                     ),
                                   )
-                                : listAjuanIzinTidakMasukKerja()),
+                                : listAjuanIzin()),
                       )
                     ],
                   ),
                 ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: Obx(
-        () => controller.showButtonlaporan.value == false
-            ? SizedBox()
-            : SpeedDial(
-                icon: Iconsax.more,
-                activeIcon: Icons.close,
-                backgroundColor: Constanst.colorPrimary,
-                spacing: 3,
-                childPadding: const EdgeInsets.all(5),
-                spaceBetweenChildren: 4,
-                elevation: 8.0,
-                animationCurve: Curves.elasticInOut,
-                animationDuration: const Duration(milliseconds: 200),
-                children: [
-                  SpeedDialChild(
-                      child: Icon(Iconsax.minus_cirlce),
-                      backgroundColor: Color(0xff2F80ED),
-                      foregroundColor: Colors.white,
-                      label: 'Laporan Tidak Hadir',
-                      onTap: () {
-                        Get.to(LaporanIzin(
-                          title: 'tidak_hadir',
-                        ));
-                      }),
-                  SpeedDialChild(
-                      child: Icon(Iconsax.add_square),
-                      backgroundColor: Color(0xff14B156),
-                      foregroundColor: Colors.white,
-                      label: 'Buat Pengajuan Tidak Hadir',
-                      onTap: () {
-                        controller
-                            .changeTypeSelected(controller.selectedType.value);
-                        Get.to(FormTidakMasukKerja(
-                          dataForm: [[], false],
-                        ));
-                      }),
-                ],
-              ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      // floatingActionButton: Obx(
+      //   () => controller.showButtonlaporan.value == false
+      //       ? SizedBox()
+      //       : SpeedDial(
+      //           icon: Iconsax.more,
+      //           activeIcon: Icons.close,
+      //           backgroundColor: Constanst.colorPrimary,
+      //           spacing: 3,
+      //           childPadding: const EdgeInsets.all(5),
+      //           spaceBetweenChildren: 4,
+      //           elevation: 8.0,
+      //           animationCurve: Curves.elasticInOut,
+      //           animationDuration: const Duration(milliseconds: 200),
+      //           children: [
+      //             SpeedDialChild(
+      //                 child: Icon(Iconsax.minus_cirlce),
+      //                 backgroundColor: Color(0xff2F80ED),
+      //                 foregroundColor: Colors.white,
+      //                 label: 'Laporan Tidak Hadir',
+      //                 onTap: () {
+      //                   Get.to(LaporanIzin(
+      //                     title: 'tidak_hadir',
+      //                   ));
+      //                 }),
+      //             SpeedDialChild(
+      //                 child: Icon(Iconsax.add_square),
+      //                 backgroundColor: Color(0xff14B156),
+      //                 foregroundColor: Colors.white,
+      //                 label: 'Buat Pengajuan Tidak Hadir',
+      //                 onTap: () {
+      //                   controller
+      //                       .changeTypeSelected(controller.selectedType.value);
+      //                   Get.to(FormPengajuanIzin(
+      //                     dataForm: [[], false],
+      //                   ));
+      //                 }),
+      //           ],
+      //         ),
+      // ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Constanst.colorPrimary,
+        onPressed: () {
+          controller.changeTypeSelected(controller.selectedType.value);
+          Get.to(FormPengajuanIzin(
+            dataForm: [[], false],
+          ));
+        },
+        child: const Icon(
+          Iconsax.add,
+          size: 34,
+        ),
       ),
       // bottomNavigationBar: Obx(
       //   () => Padding(
@@ -320,7 +325,7 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
       //           : TextButtonWidget2(
       //               title: "Buat Pengajuan Tidak Hadir",
       //               onTap: () {
-      //                 Get.to(FormTidakMasukKerja(
+      //                 Get.to(FormPengajuanIzin(
       //                   dataForm: [[], false],
       //                 ));
       //               },
@@ -969,75 +974,75 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
     );
   }
 
-  Widget pencarianData() {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: Constanst.borderStyle5,
-          border: Border.all(color: Constanst.colorNonAktif)),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 15,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 7, left: 10),
-              child: Icon(Iconsax.search_normal_1),
-            ),
-          ),
-          Expanded(
-            flex: 85,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: SizedBox(
-                height: 40,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 85,
-                      child: TextField(
-                        controller: controller.cari.value,
-                        decoration: InputDecoration(
-                            border: InputBorder.none, hintText: "Cari"),
-                        style: TextStyle(
-                            fontSize: 14.0, height: 1.0, color: Colors.black),
-                        onSubmitted: (value) {
-                          controller.cariData(value);
-                        },
-                      ),
-                    ),
-                    !controller.statusCari.value
-                        ? SizedBox()
-                        : Expanded(
-                            flex: 15,
-                            child: IconButton(
-                              icon: Icon(
-                                Iconsax.close_circle,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                controller.statusCari.value = false;
-                                controller.cari.value.text = "";
-                                controller.onReady();
-                              },
-                            ),
-                          )
-                  ],
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
+  // Widget pencarianData() {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //         borderRadius: Constanst.borderStyle5,
+  //         border: Border.all(color: Constanst.colorNonAktif)),
+  //     child: Row(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       children: [
+  //         const Expanded(
+  //           flex: 15,
+  //           child: Padding(
+  //             padding: EdgeInsets.only(top: 7, left: 10),
+  //             child: Icon(Iconsax.search_normal_1),
+  //           ),
+  //         ),
+  //         Expanded(
+  //           flex: 85,
+  //           child: Padding(
+  //             padding: const EdgeInsets.only(left: 10),
+  //             child: SizedBox(
+  //               height: 40,
+  //               child: Row(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Expanded(
+  //                     flex: 85,
+  //                     child: TextField(
+  //                       controller: controller.cari.value,
+  //                       decoration: const InputDecoration(
+  //                           border: InputBorder.none, hintText: "Cari"),
+  //                       style: const TextStyle(
+  //                           fontSize: 14.0, height: 1.0, color: Colors.black),
+  //                       onSubmitted: (value) {
+  //                         controller.cariData(value);
+  //                       },
+  //                     ),
+  //                   ),
+  //                   !controller.statusCari.value
+  //                       ? SizedBox()
+  //                       : Expanded(
+  //                           flex: 15,
+  //                           child: IconButton(
+  //                             icon: Icon(
+  //                               Iconsax.close_circle,
+  //                               color: Colors.red,
+  //                             ),
+  //                             onPressed: () {
+  //                               controller.statusCari.value = false;
+  //                               controller.cari.value.text = "";
+  //                               controller.onReady();
+  //                             },
+  //                           ),
+  //                         )
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget listAjuanIzinTidakMasukKerja() {
+  Widget listAjuanIzin() {
     return ListView.builder(
         physics: controller.listHistoryAjuan.value.length <= 5
-            ? AlwaysScrollableScrollPhysics()
-            : BouncingScrollPhysics(),
+            ? const AlwaysScrollableScrollPhysics()
+            : const BouncingScrollPhysics(),
         itemCount: controller.listHistoryAjuan.value.length,
         itemBuilder: (context, index) {
           var nomorAjuan =
@@ -1045,6 +1050,8 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
           var tanggalMasukAjuan =
               controller.listHistoryAjuan.value[index]['atten_date'];
           var namaTypeAjuan = controller.listHistoryAjuan.value[index]['name'];
+          var categoryAjuan =
+              controller.listHistoryAjuan.value[index]['category'];
           var alasanReject =
               controller.listHistoryAjuan.value[index]['alasan_reject'];
           var typeAjuan;
@@ -1090,7 +1097,7 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("$namaTypeAjuan",
+                        Text("$categoryAjuan - $namaTypeAjuan",
                             style: GoogleFonts.inter(
                                 color: Constanst.fgPrimary,
                                 fontSize: 16,
@@ -1364,7 +1371,7 @@ class _TidakMasukKerjaState extends State<TidakMasukKerja> {
                                       //               child: InkWell(
                                       //                 onTap: () {
                                       //                   Get.to(
-                                      //                       FormTidakMasukKerja(
+                                      //                       FormPengajuanIzin(
                                       //                     dataForm: [
                                       //                       controller
                                       //                           .listHistoryAjuan

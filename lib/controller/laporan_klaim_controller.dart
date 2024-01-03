@@ -2,13 +2,22 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_absen.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_cuti.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_dinas_luar.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_izin.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_klaim.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_lembur.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_tugas_luar.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LaporanKlaimController extends GetxController {
   PageController? pageViewFilterWaktu;
@@ -18,7 +27,7 @@ class LaporanKlaimController extends GetxController {
 
   // // var limitPages = <LimitPageModel>[].obs;
 
-  var loadingString = "Memuat data...".obs;
+  var loadingString = "Memuat Data...".obs;
   var idDepartemenTerpilih = "".obs;
   var namaDepartemenTerpilih = "".obs;
   var bulanSelectedSearchHistory = "".obs;
@@ -34,11 +43,15 @@ class LaporanKlaimController extends GetxController {
   var statusFilterWaktu = 0.obs;
 
   var jumlahData = 0.obs;
-  // var selectedType = 0.obs;
+  var selectedType = 0.obs;
   var selectedViewFilterPengajuan = 0.obs;
 
-  // var listDetailLaporanEmployee = [].obs;
-  // var alllistDetailLaporanEmployee = [].obs;
+  var tempKodeStatus1 = "".obs;
+  var tempNamaStatus1 = "Semua".obs;
+  var tempNamaLaporan1 = "Semua".obs;
+
+  var listDetailLaporanEmployee = [].obs;
+  var alllistDetailLaporanEmployee = [].obs;
   var dataTypeAjuan = [].obs;
   var departementAkses = [].obs;
   var allNameLaporanTidakhadir = [].obs;
@@ -80,6 +93,10 @@ class LaporanKlaimController extends GetxController {
     tahunSelectedSearchHistory.value = outputFormat2.format(dt);
     bulanDanTahunNow.value =
         "${bulanSelectedSearchHistory.value}-${tahunSelectedSearchHistory.value}";
+  }
+
+  void showInputCari() {
+    statusCari.value = !statusCari.value;
   }
 
   void getDepartemen(status, tanggal) {
@@ -245,97 +262,97 @@ class LaporanKlaimController extends GetxController {
     }
   }
 
-  // void loadDataTidakHadirEmployee(emId, bulan, tahun, title) {
-  //   listDetailLaporanEmployee.value.clear();
-  //   Map<String, dynamic> body = {
-  //     'em_id': emId,
-  //     'bulan': bulan,
-  //     'tahun': tahun,
-  //     'type': title,
-  //   };
-  //   var connect =
-  //       Api.connectionApi("post", body, "load_detail_laporan_pengajuan");
-  //   connect.then((dynamic res) {
-  //     if (res.statusCode == 200) {
-  //       var valueBody = jsonDecode(res.body);
-  //       var data = valueBody['data'];
-  //       listDetailLaporanEmployee.value = data;
-  //       alllistDetailLaporanEmployee.value = data;
-  //       this.listDetailLaporanEmployee.refresh();
-  //       this.alllistDetailLaporanEmployee.refresh();
-  //       loadingString.value = listDetailLaporanEmployee.isEmpty
-  //           ? "Data pengajuan tidak ada"
-  //           : "Memuat data...";
-  //       this.loadingString.refresh();
-  //       typeAjuanRefresh("Semua");
-  //     }
-  //   });
-  // }
+  void loadDataTidakHadirEmployee(emId, bulan, tahun, title) {
+    listDetailLaporanEmployee.value.clear();
+    Map<String, dynamic> body = {
+      'em_id': emId,
+      'bulan': bulan,
+      'tahun': tahun,
+      'type': title,
+    };
+    var connect =
+        Api.connectionApi("post", body, "load_detail_laporan_pengajuan");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        var data = valueBody['data'];
+        listDetailLaporanEmployee.value = data;
+        alllistDetailLaporanEmployee.value = data;
+        this.listDetailLaporanEmployee.refresh();
+        this.alllistDetailLaporanEmployee.refresh();
+        loadingString.value = listDetailLaporanEmployee.isEmpty
+            ? "Data pengajuan tidak ada"
+            : "Memuat data...";
+        this.loadingString.refresh();
+        typeAjuanRefresh("Semua");
+      }
+    });
+  }
 
-  // void typeAjuanRefresh(name) {
-  //   for (var element in dataTypeAjuan.value) {
-  //     if (element['nama'] == name) {
-  //       element['status'] = true;
-  //     } else {
-  //       element['status'] = false;
-  //     }
-  //   }
-  //   this.dataTypeAjuan.refresh();
-  // }
+  void typeAjuanRefresh(name) {
+    for (var element in dataTypeAjuan.value) {
+      if (element['nama'] == name) {
+        element['status'] = true;
+      } else {
+        element['status'] = false;
+      }
+    }
+    this.dataTypeAjuan.refresh();
+  }
 
-  // void changeTypeAjuanLaporan(name, title) {
-  //   var statusFilter = name == "Approve 1"
-  //       ? "Approve"
-  //       : name == "Approve 2"
-  //           ? "Approve2"
-  //           : name == "Rejected"
-  //               ? "Rejected"
-  //               : name == "Pending"
-  //                   ? "Pending"
-  //                   : "Approve";
-  //   for (var element in dataTypeAjuan.value) {
-  //     if (element['nama'] == name) {
-  //       element['status'] = true;
-  //     } else {
-  //       element['status'] = false;
-  //     }
-  //   }
-  //   if (name == "Semua") {
-  //     List data = [];
-  //     for (var element in alllistDetailLaporanEmployee.value) {
-  //       data.add(element);
-  //     }
-  //     listDetailLaporanEmployee.value = data;
-  //     this.listDetailLaporanEmployee.refresh();
-  //     this.selectedType.refresh();
-  //     loadingString.value = listDetailLaporanEmployee.value.length != 0
-  //         ? "Memuat data..."
-  //         : "Tidak ada pengajuan";
-  //     this.loadingString.refresh();
-  //   } else {
-  //     List data = [];
-  //     for (var element in alllistDetailLaporanEmployee.value) {
-  //       if (title == "tidak_hadir" ||
-  //           title == "cuti" ||
-  //           title == "dinas_luar") {
-  //         if (element['leave_status'] == statusFilter) {
-  //           data.add(element);
-  //         }
-  //       } else {
-  //         if (element['status'] == statusFilter) {
-  //           data.add(element);
-  //         }
-  //       }
-  //     }
-  //     listDetailLaporanEmployee.value = data;
-  //     this.listDetailLaporanEmployee.refresh();
-  //     this.selectedType.refresh();
-  //     loadingString.value = listDetailLaporanEmployee.value.length != 0
-  //         ? "Memuat data..."
-  //         : "Tidak ada pengajuan";
-  //     this.loadingString.refresh();
-  //   }
-  // }
+  void changeTypeAjuanLaporan(name, title) {
+    var statusFilter = name == "Approve 1"
+        ? "Approve"
+        : name == "Approve 2"
+            ? "Approve2"
+            : name == "Rejected"
+                ? "Rejected"
+                : name == "Pending"
+                    ? "Pending"
+                    : "Approve";
+    for (var element in dataTypeAjuan.value) {
+      if (element['nama'] == name) {
+        element['status'] = true;
+      } else {
+        element['status'] = false;
+      }
+    }
+    if (name == "Semua") {
+      List data = [];
+      for (var element in alllistDetailLaporanEmployee.value) {
+        data.add(element);
+      }
+      listDetailLaporanEmployee.value = data;
+      this.listDetailLaporanEmployee.refresh();
+      this.selectedType.refresh();
+      loadingString.value = listDetailLaporanEmployee.value.length != 0
+          ? "Memuat data..."
+          : "Tidak ada pengajuan";
+      this.loadingString.refresh();
+    } else {
+      List data = [];
+      for (var element in alllistDetailLaporanEmployee.value) {
+        if (title == "tidak_hadir" ||
+            title == "cuti" ||
+            title == "dinas_luar") {
+          if (element['leave_status'] == statusFilter) {
+            data.add(element);
+          }
+        } else {
+          if (element['status'] == statusFilter) {
+            data.add(element);
+          }
+        }
+      }
+      listDetailLaporanEmployee.value = data;
+      this.listDetailLaporanEmployee.refresh();
+      this.selectedType.refresh();
+      loadingString.value = listDetailLaporanEmployee.value.length != 0
+          ? "Memuat data..."
+          : "Tidak ada pengajuan";
+      this.loadingString.refresh();
+    }
+  }
 
   void pencarianNamaKaryawan(value) {
     var textCari = value.toLowerCase();
@@ -368,103 +385,155 @@ class LaporanKlaimController extends GetxController {
           ),
         ),
         builder: (context) {
-          // padding:
-          //       EdgeInsets.fromLTRB(0, AppBar().preferredSize.height, 0, 0),
-          return Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 90,
-                      child: Text(
-                        "Pilih Divisi",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                    ),
-                    Expanded(
-                        flex: 10,
-                        child: InkWell(
+          return SafeArea(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Pilih Divisi",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        InkWell(
+                            customBorder: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
                             onTap: () => Navigator.pop(Get.context!),
-                            child: Icon(Iconsax.close_circle)))
-                  ],
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Flexible(
-                  flex: 3,
-                  child: Padding(
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          physics: BouncingScrollPhysics(),
-                          itemCount: departementAkses.value.length,
-                          itemBuilder: (context, index) {
-                            var id = departementAkses.value[index]['id'];
-                            var dep_name =
+                            child: Icon(
+                              Icons.close,
+                              size: 26,
+                              color: Constanst.fgSecondary,
+                            )),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                    child: Divider(
+                      thickness: 1,
+                      height: 0,
+                      color: Constanst.border,
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children:
+                          List.generate(departementAkses.value.length, (index) {
+                        var id = departementAkses.value[index]['id'];
+                        var dep_name = departementAkses.value[index]['name'];
+                        return InkWell(
+                          onTap: () {
+                            idDepartemenTerpilih.value = "$id";
+                            namaDepartemenTerpilih.value = dep_name;
+                            departemen.value.text =
                                 departementAkses.value[index]['name'];
-                            return InkWell(
-                              onTap: () {
-                                idDepartemenTerpilih.value = "$id";
-                                namaDepartemenTerpilih.value = dep_name;
-                                departemen.value.text =
-                                    departementAkses.value[index]['name'];
-                                this.departemen.refresh();
-                                Navigator.pop(context);
-                                if (selectedViewFilterPengajuan.value == 0) {
-                                  aksiCariLaporan();
-                                } else {
-                                  cariLaporanPengajuanTanggal(
-                                      pilihTanggalFilterAjuan.value);
-                                }
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 5, bottom: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: "$id" == idDepartemenTerpilih.value
-                                          ? Constanst.colorPrimary
-                                          : Colors.transparent,
-                                      borderRadius: Constanst
-                                          .styleBoxDecoration1.borderRadius,
-                                      border: Border.all(
-                                          color: Constanst.colorText2)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, bottom: 10),
-                                    child: Center(
-                                      child: Text(
-                                        dep_name,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: "$id" ==
-                                                    idDepartemenTerpilih.value
-                                                ? Colors.white
-                                                : Colors.black),
-                                      ),
-                                    ),
+                            this.departemen.refresh();
+                            Navigator.pop(context);
+                            if (selectedViewFilterPengajuan.value == 0) {
+                              aksiCariLaporan();
+                            } else {
+                              cariLaporanPengajuanTanggal(
+                                  pilihTanggalFilterAjuan.value);
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  dep_name,
+                                  style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: Constanst.fgPrimary,
                                   ),
                                 ),
-                              ),
-                            );
-                          })),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-              ],
+                                "$id" == idDepartemenTerpilih.value
+                                    ? InkWell(
+                                        onTap: () {},
+                                        child: Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 2,
+                                                  color: Constanst.onPrimary),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: Constanst.onPrimary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : InkWell(
+                                        onTap: () {
+                                          idDepartemenTerpilih.value = "$id";
+                                          namaDepartemenTerpilih.value =
+                                              dep_name;
+                                          departemen.value.text =
+                                              departementAkses.value[index]
+                                                  ['name'];
+                                          this.departemen.refresh();
+                                          Navigator.pop(context);
+                                          if (selectedViewFilterPengajuan
+                                                  .value ==
+                                              0) {
+                                            aksiCariLaporan();
+                                          } else {
+                                            cariLaporanPengajuanTanggal(
+                                                pilihTanggalFilterAjuan.value);
+                                          }
+                                        },
+                                        child: Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Constanst.onPrimary),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         });
@@ -480,96 +549,142 @@ class LaporanKlaimController extends GetxController {
           ),
         ),
         builder: (context) {
-          return Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 90,
-                      child: Text(
-                        "Pilih Status Ajuan",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                    ),
-                    Expanded(
-                        flex: 10,
-                        child: InkWell(
+          return SafeArea(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Pilih Status Ajuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        InkWell(
+                            customBorder: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
                             onTap: () => Navigator.pop(Get.context!),
-                            child: Icon(Iconsax.close_circle)))
-                  ],
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Flexible(
-                  flex: 3,
-                  child: Padding(
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          physics: BouncingScrollPhysics(),
-                          itemCount: valuePolaPersetujuan.value == "1"
-                              ? dataTypeAjuanDummy1.length
-                              : dataTypeAjuanDummy2.length,
-                          itemBuilder: (context, index) {
-                            var name = valuePolaPersetujuan.value == "1"
-                                ? dataTypeAjuanDummy1[index]
-                                : dataTypeAjuanDummy2[index];
-                            return InkWell(
-                              onTap: () {
-                                if (selectedViewFilterPengajuan.value == 1) {
-                                  filterStatusPengajuan(name);
-                                }
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 5, bottom: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: "$name" ==
-                                              filterStatusAjuanTerpilih.value
-                                          ? Constanst.colorPrimary
-                                          : Colors.transparent,
-                                      borderRadius: Constanst
-                                          .styleBoxDecoration1.borderRadius,
-                                      border: Border.all(
-                                          color: Constanst.colorText2)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, bottom: 10),
-                                    child: Center(
-                                      child: Text(
-                                        name,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: "$name" ==
-                                                    filterStatusAjuanTerpilih
-                                                        .value
-                                                ? Colors.white
-                                                : Colors.black),
-                                      ),
+                            child: Icon(
+                              Icons.close,
+                              size: 26,
+                              color: Constanst.fgSecondary,
+                            ))
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                    child: Divider(
+                      thickness: 1,
+                      height: 0,
+                      color: Constanst.border,
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Obx(
+                      () => Column(
+                        children: List.generate(
+                            valuePolaPersetujuan.value == "1"
+                                ? dataTypeAjuanDummy1.length
+                                : dataTypeAjuanDummy2.length, (index) {
+                          var name = valuePolaPersetujuan.value == "1"
+                              ? dataTypeAjuanDummy1[index]
+                              : dataTypeAjuanDummy2[index];
+                          return InkWell(
+                            onTap: () {
+                              // if (selectedViewFilterPengajuan.value == 1) {
+                              filterStatusPengajuan(name);
+                              // }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    name,
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
                                     ),
                                   ),
-                                ),
+                                  name == filterStatusAjuanTerpilih.value
+                                      ? InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(3),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Constanst.onPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            // if (selectedViewFilterPengajuan.value == 1) {
+                                            filterStatusPengajuan(name);
+                                            // }
+                                          },
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                ],
                               ),
-                            );
-                          })),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-              ],
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                ],
+              ),
             ),
           );
         });
@@ -1300,4 +1415,581 @@ class LaporanKlaimController extends GetxController {
   //   );
   //   return currencyFormatter.format(number);
   // }
+  void widgetButtomSheetFormLaporan() {
+    showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      backgroundColor: Constanst.colorWhite,
+      builder: (context) {
+        return SafeArea(
+          child: Obx(
+            () => Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Iconsax.document_text5,
+                            color: Constanst.infoLight,
+                            size: 26,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: Text(
+                              "Cek Laporan",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      InkWell(
+                          onTap: () {
+                            Navigator.pop(Get.context!);
+                          },
+                          child: Icon(
+                            Icons.close,
+                            size: 24,
+                            color: Constanst.fgSecondary,
+                          ))
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  child: Divider(
+                    height: 0,
+                    thickness: 1,
+                    color: Constanst.fgBorder,
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanAbsen(
+                      dataForm: "",
+                    ));
+                    tempNamaLaporan1.value = "";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/2_absen.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Absensi',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanAbsen(
+                              dataForm: "",
+                            ));
+                            tempNamaLaporan1.value = "";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: tempNamaLaporan1.value == "" ? 2 : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == ""
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanIzin(
+                      title: 'tidak_hadir',
+                    ));
+                    tempNamaLaporan1.value = "tidak_hadir";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/3_izin.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Izin',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanIzin(
+                              title: 'tidak_hadir',
+                            ));
+                            tempNamaLaporan1.value = "tidak_hadir";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width:
+                                        tempNamaLaporan1.value == "tidak_hadir"
+                                            ? 2
+                                            : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "tidak_hadir"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanLembur(
+                      title: 'lembur',
+                    ));
+                    tempNamaLaporan1.value = "lembur";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/4_lembur.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Lembur',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanLembur(
+                              title: 'lembur',
+                            ));
+                            tempNamaLaporan1.value = "lembur";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: tempNamaLaporan1.value == "lembur"
+                                        ? 2
+                                        : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "lembur"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanCuti(
+                      title: 'cuti',
+                    ));
+                    tempNamaLaporan1.value = "cuti";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/5_cuti.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Cuti',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanCuti(
+                              title: 'cuti',
+                            ));
+                            tempNamaLaporan1.value = "cuti";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: tempNamaLaporan1.value == "cuti"
+                                        ? 2
+                                        : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "cuti"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanTugasLuar(
+                      title: 'tugas_luar',
+                    ));
+                    tempNamaLaporan1.value = "tugas_luar";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/6_tugas_luar.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Tugas Luar',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanTugasLuar(
+                              title: 'tugas_luar',
+                            ));
+                            tempNamaLaporan1.value = "tugas_luar";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width:
+                                        tempNamaLaporan1.value == "tugas_luar"
+                                            ? 2
+                                            : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "tugas_luar"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanDinasLuar(
+                      title: 'dinas_luar',
+                    ));
+                    tempNamaLaporan1.value = "dinas_luar";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/6_tugas_luar.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Dinas Luar',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanDinasLuar(
+                              title: 'dinas_luar',
+                            ));
+                            tempNamaLaporan1.value = "dinas_luar";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width:
+                                        tempNamaLaporan1.value == "dinas_luar"
+                                            ? 2
+                                            : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "dinas_luar"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanKlaim(
+                      title: 'klaim',
+                    ));
+                    tempNamaLaporan1.value = "klaim";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/7_klaim.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Klaim',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanKlaim(
+                              title: 'klaim',
+                            ));
+                            tempNamaLaporan1.value = "klaim";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: tempNamaLaporan1.value == "klaim"
+                                        ? 2
+                                        : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "klaim"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

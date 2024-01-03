@@ -1093,7 +1093,7 @@ class LaporanLemburController extends GetxController {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                Constanst.convertDate("$tanggalMasukAjuan"),
+                                Constanst.convertDate6("$tanggalMasukAjuan"),
                                 style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16,
