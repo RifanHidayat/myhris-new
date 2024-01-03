@@ -66,13 +66,11 @@ class _DashboardState extends State<Dashboard> {
       controller.onInit();
 
       controllerAbsensi.userShift();
- controller.initData();
+      controller.initData();
       Future.delayed(const Duration(milliseconds: 500), () {
-       
-
         absenControllre.absenStatus.value = AppData.statusAbsen;
-        authController.signinTime.value=controller.signinTime.value;
-            authController.signoutTime.value=controller.signoutTime.value;
+        authController.signinTime.value = controller.signinTime.value;
+        authController.signoutTime.value = controller.signoutTime.value;
         // absenControllre.absenStatus.value =
         //     controller.dashboardStatusAbsen.value;
       });
@@ -1191,24 +1189,31 @@ class _DashboardState extends State<Dashboard> {
                                                                   .fromARGB(168,
                                                               166, 167, 158)),
                                                 ),
-                                                Obx(() => Text(
-                                                  controller.signinTime.value ==
-                                                          "00:00:00"
-                                                      ? "_ _:_ _:_ _"
-                                                         
-                                                      : controller
-                                                          .signinTime.value,
-                                                  style: GoogleFonts.inter(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 16,
-                                                      color: !controllerAbsensi
-                                                              .absenStatus.value
-                                                          ? Constanst.fgPrimary
-                                                          : const Color
-                                                                  .fromARGB(168,
-                                                              166, 167, 158)),
-                                                ),)
+                                                Obx(
+                                                  () => Text(
+                                                    controller.signinTime
+                                                                .value ==
+                                                            "00:00:00"
+                                                        ? "_ _:_ _:_ _"
+                                                        : controller
+                                                            .signinTime.value,
+                                                    style: GoogleFonts.inter(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 16,
+                                                        color: !controllerAbsensi
+                                                                .absenStatus
+                                                                .value
+                                                            ? Constanst
+                                                                .fgPrimary
+                                                            : const Color
+                                                                    .fromARGB(
+                                                                168,
+                                                                166,
+                                                                167,
+                                                                158)),
+                                                  ),
+                                                )
                                               ],
                                             ),
                                           ],
@@ -1387,26 +1392,31 @@ class _DashboardState extends State<Dashboard> {
                                                                   .fromARGB(168,
                                                               166, 167, 158)),
                                                 ),
-                                           Obx(() =>      Text(
-                                                  controller.signoutTime
-                                                              .value ==
-                                                          "00:00:00"
-                                                      
-                                                          ? "_ _:_ _:_ _"
-                                                          
-                                                      : controller
-                                                          .signoutTime.value,
-                                                  style: GoogleFonts.inter(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 16,
-                                                      color: controllerAbsensi
-                                                              .absenStatus.value
-                                                          ? Constanst.fgPrimary
-                                                          : const Color
-                                                                  .fromARGB(168,
-                                                              166, 167, 158)),
-                                                ),)
+                                                Obx(
+                                                  () => Text(
+                                                    controller.signoutTime
+                                                                .value ==
+                                                            "00:00:00"
+                                                        ? "_ _:_ _:_ _"
+                                                        : controller
+                                                            .signoutTime.value,
+                                                    style: GoogleFonts.inter(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 16,
+                                                        color: controllerAbsensi
+                                                                .absenStatus
+                                                                .value
+                                                            ? Constanst
+                                                                .fgPrimary
+                                                            : const Color
+                                                                    .fromARGB(
+                                                                168,
+                                                                166,
+                                                                167,
+                                                                158)),
+                                                  ),
+                                                )
                                               ],
                                             ),
                                           ],
@@ -2505,7 +2515,6 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     controller.updateInformasiUser();
 
-
     controller.initData();
     absenControllre.getTimeNow();
 
@@ -2516,13 +2525,13 @@ class _DashboardState extends State<Dashboard> {
     controllerAbsensi.employeDetail();
 
     absenControllre.absenStatus.value = AppData.statusAbsen;
- authController.signinTime.value=controller.signinTime.value;
-            authController.signoutTime.value=controller.signoutTime.value;
+    authController.signinTime.value = controller.signinTime.value;
+    authController.signoutTime.value = controller.signoutTime.value;
     Future.delayed(const Duration(milliseconds: 500), () {
       controller.initData();
       absenControllre.absenStatus.value = AppData.statusAbsen;
-              authController.signinTime.value=controller.signinTime.value;
-            authController.signoutTime.value=controller.signoutTime.value;
+      authController.signinTime.value = controller.signinTime.value;
+      authController.signoutTime.value = controller.signoutTime.value;
       // absenControllre.absenStatus.value =
       //     controller.dashboardStatusAbsen.value;
     });
@@ -2530,7 +2539,7 @@ class _DashboardState extends State<Dashboard> {
     // Api().checkLogin();
     // Add a listener to the scroll controller
     _scrollController.addListener(_scrollListener);
-        // controller.loadMenuShowInMain();
+    // controller.loadMenuShowInMain();
   }
 
   void _checkversion() async {

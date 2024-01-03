@@ -16,12 +16,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
+import 'package:siscom_operasional/controller/izin_controller.dart';
 import 'package:siscom_operasional/model/menu.dart';
 import 'package:siscom_operasional/model/menu_dashboard_model.dart';
 import 'package:google_maps_utils/google_maps_utils.dart' as maps;
 import 'package:siscom_operasional/model/user_model.dart';
 import 'package:siscom_operasional/screen/absen/form/form_lembur.dart';
-import 'package:siscom_operasional/screen/absen/form/form_tidakMasukKerja.dart';
+import 'package:siscom_operasional/screen/absen/form/form_pengajuan_izin.dart';
 import 'package:siscom_operasional/screen/absen/form/form_tugas_luar.dart';
 import 'package:siscom_operasional/screen/absen/history_absen.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_absen.dart';
@@ -33,7 +34,7 @@ import 'package:siscom_operasional/screen/absen/laporan/laporan_lembur.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_tugas_luar.dart';
 import 'package:siscom_operasional/screen/absen/lembur.dart';
-import 'package:siscom_operasional/screen/absen/tidak_masuk_kerja.dart';
+import 'package:siscom_operasional/screen/absen/riwayat_izin.dart';
 import 'package:siscom_operasional/screen/absen/tugas_luar.dart';
 import 'package:siscom_operasional/screen/absen/form/form_pengajuan_cuti.dart';
 import 'package:siscom_operasional/screen/absen/riwayat_cuti.dart';
@@ -64,12 +65,14 @@ class DashboardController extends GetxController {
   PageController menuController = PageController(initialPage: 0);
   PageController informasiController = PageController(initialPage: 0);
 
+  var controller = Get.put(BpjsController());
+
   RxString signoutTime = "".obs;
   RxString signinTime = "".obs;
 
   RxBool isSearching = false.obs;
   var searchController = TextEditingController();
-
+  var controllerIzin = Get.put(IzinController());
   var bpjsController = Get.put(BpjsController());
 
   var controllerAbsensi = Get.put(AbsenController());
@@ -140,7 +143,7 @@ class DashboardController extends GetxController {
     dashboardStatusAbsen.value = AppData.statusAbsen;
     // DateTime startDate = await NTP.now();
 
-      DateTime startDate = DateTime.now();
+    DateTime startDate = DateTime.now();
     getBannerDashboard();
     updateInformasiUser();
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
@@ -161,7 +164,6 @@ class DashboardController extends GetxController {
   }
 
   void checkAbsenUser(convert, getEmid) {
-  
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
     var startTime = "";
     var endTime = "";
@@ -746,7 +748,9 @@ class DashboardController extends GetxController {
               'em_hak_akses': element.em_hak_akses,
               'branch_name': element.branchName,
               'begin_payroll': element.beginPayroll,
-              'end_payroll': element.endPayroll
+              'end_payroll': element.endPayroll,
+              'nomor_bpjs_kesehatan': element.nomorBpjsKesehatan,
+              'nomor_bpjs_tenagakerja': element.nomorBpjsTenagakerja
             })
         .toList();
     user.value = userTampung;
@@ -825,7 +829,9 @@ class DashboardController extends GetxController {
               endPayroll: element['end_payroll'],
               startTime: element['time_attendance'].toString().split(',')[0],
               endTime: element['time_attendance'].toString().split(',')[1],
-              branchName: element['branch_name']);
+              branchName: element['branch_name'],
+              nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'],
+              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja']);
           print(element['posisi']);
           getData.add(data);
         }
@@ -904,7 +910,7 @@ class DashboardController extends GetxController {
     }
   }
 
-  void    loadMenuShowInMain() {
+  void loadMenuShowInMain() {
     menuShowInMain.value.clear();
     var connect = Api.connectionApi("get", {}, "menu_dashboard",
         params: "&em_id=${AppData.informasiUser![0].em_id}");
@@ -1228,7 +1234,7 @@ class DashboardController extends GetxController {
     if (url == "HistoryAbsen") {
       Get.offAll(HistoryAbsen());
     } else if (url == "TidakMasukKerja") {
-      Get.offAll(TidakMasukKerja());
+      Get.offAll(RiwayatIzin());
     } else if (url == "Lembur") {
       Get.offAll(Lembur());
     } else if (url == "FormPengajuanCuti") {
@@ -1237,8 +1243,8 @@ class DashboardController extends GetxController {
       ));
     } else if (url == "RiwayatCuti") {
       Get.offAll(RiwayatCuti());
-    } else if (url == "Izin") {
-      Get.offAll(Izin());
+      // } else if (url == "Izin") {
+      //   Get.offAll(Izin());
     } else if (url == "TugasLuar") {
       Get.offAll(TugasLuar());
     } else if (url == "Klaim") {
@@ -1279,8 +1285,8 @@ class DashboardController extends GetxController {
       //   titlepage: "slip_gaji",
       // ));
     } else if (url == "BpjsKesehatan") {
-      if (bpjsController.bpjsKesehatanNumber.value == "" ||
-          bpjsController.bpjsKesehatanNumber.value == null) {
+      if (AppData.informasiUser![0].nomorBpjsKesehatan == "" ||
+          AppData.informasiUser![0].nomorBpjsKesehatan == null) {
         UtilsAlert.showToast(
             "Nomor BPJS anda belum tersedia,harap hubungi HRD");
       } else {
@@ -1291,8 +1297,8 @@ class DashboardController extends GetxController {
         // ));
       }
     } else if (url == "BpjsTenagaKerja") {
-      if (bpjsController.BpjsKetenagakerjaanNumber.value == "" ||
-          bpjsController.BpjsKetenagakerjaanNumber.value == null) {
+      if (AppData.informasiUser![0].nomorBpjsTenagakerja == "" ||
+          AppData.informasiUser![0].nomorBpjsTenagakerja == null) {
         UtilsAlert.showToast("\ anda belum tersedia,harap hubungi HRD");
       } else {
         Get.to(BpjsKetenagakerjaan());
@@ -1323,7 +1329,8 @@ class DashboardController extends GetxController {
         dataForm: [[], false],
       ));
     } else if (id == 4) {
-      Get.to(FormTidakMasukKerja(
+      controllerIzin.changeTypeSelected(controllerIzin.selectedType.value);
+      Get.to(FormPengajuanIzin(
         dataForm: [[], false],
       ));
     } else if (id == 5) {

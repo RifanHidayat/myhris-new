@@ -6,10 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
+import 'package:siscom_operasional/utils/api.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/helper.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
-import 'package:siscom_operasional/utils/widget/appbar.dart';
 import 'package:siscom_operasional/utils/widget/text_group_column.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,6 +22,8 @@ class BpjsKesehatan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.bulanKeseehatan.value = DateTime.now().month.toString();
+    controller.tahunKesehatan.value = DateTime.now().year.toString();
     controller.fetchBpjsKesehatan();
     return Scaffold(
       backgroundColor: Constanst.colorWhite,
@@ -48,84 +51,107 @@ class BpjsKesehatan extends StatelessWidget {
           },
         ),
       ),
-      body: Container(
+      body: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
-              // Obx(() {
-              // return
-              // Padding(
-              //   padding: const EdgeInsets.only(
-              //       left: 16, right: 16, top: 10, bottom: 10),
-              //   child: InkWell(
-              //     onTap: () {
-              //       DatePicker.showPicker(
-              //         Get.context!,
-              //         pickerModel: CustomMonthPicker(
-              //           minTime: DateTime(2020, 1, 1),
-              //           maxTime: DateTime(2050, 1, 1),
-              //           currentTime: DateTime.now(),
-              //         ),
-              //         onConfirm: (time) {
-              //           if (time != null) {
-              //             print("$time");
-              //             var filter = DateFormat('yyyy-MM').format(time);
-              //             var array = filter.split('-');
-              //             var bulan = array[1];
-              //             var tahun = array[0];
-              //             // controller.bulanKeseehatan.value = bulan.toString();
-              //             // controller.tahunKesehatan.value = tahun.toString();
-              //             // controller.fetchBpjsKesehatan();
-              //             ;
-              //           }
-              //         },
-              //       );
-              //     },
-              //     child: Container(
-              //       decoration: BoxDecoration(
-              //           borderRadius: Constanst.borderStyle2,
-              //           border: Border.all(color: Constanst.colorText2)),
-              //       child: Padding(
-              //         padding: EdgeInsets.all(8.0),
-              //         child: Row(
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             const Icon(
-              //               Iconsax.calendar_1,
-              //               size: 16,
-              //             ),
-              //             Flexible(
-              //               child: Padding(
-              //                 padding: EdgeInsets.only(left: 8),
-              //                 // child: Text(
-              //                 //   "${Constanst.convertDateBulanDanTahun("${controller.bulanKeseehatan.value}-${controller.tahunKesehatan.value}")}",
-              //                 //   overflow: TextOverflow.ellipsis,
-              //                 // ),
-              //               ),
-              //             )
-              //           ],
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              // }),
-              Obx(() {
-                if (controller.isLoadingBpjsKesehatan.value == true) {
-                  return Container(
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-                if (controller.bpjsKesehatan.isEmpty) {
-                  return Expanded(
-                    child: Container(
-                      height: double.maxFinite,
-                      child: const Center(
-                        child: TextLabell(
-                          text: "Data tidak ditemukan",
+              Row(
+                children: [
+                  Obx(() {
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: InkWell(
+                        customBorder: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100))),
+                        onTap: () {
+                          DatePicker.showPicker(
+                            Get.context!,
+                            pickerModel: CustomMonthPicker(
+                              minTime: DateTime(2020, 1, 1),
+                              maxTime: DateTime(2050, 1, 1),
+                              currentTime: DateTime(
+                                  int.parse(controller.tahunKesehatan.value),
+                                  int.parse(controller.bulanKeseehatan.value),
+                                  1),
+                            ),
+                            onConfirm: (time) {
+                              if (time != null) {
+                                print("$time");
+                                var filter = DateFormat('yyyy-MM').format(time);
+                                var array = filter.split('-');
+                                var bulan = array[1];
+                                var tahun = array[0];
+                                controller.bulanKeseehatan.value =
+                                    bulan.toString();
+                                controller.tahunKesehatan.value =
+                                    tahun.toString();
+                                controller.fetchBpjsKesehatan();
+                              }
+                            },
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              border: Border.all(color: Constanst.border)),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  Constanst.convertDateBulanDanTahun(
+                                      "${controller.bulanKeseehatan.value}-${controller.tahunKesehatan.value}"),
+                                  style: GoogleFonts.inter(
+                                      color: Constanst.fgSecondary,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14),
+                                ),
+                                const SizedBox(width: 4),
+                                const Icon(
+                                  Iconsax.arrow_down_14,
+                                  size: 16,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
+                    );
+                  }),
+                ],
+              ),
+              Obx(() {
+                if (controller.bpjsKesehatan.isEmpty) {
+                  return Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/empty_screen.svg',
+                          height: 228,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          "Data tidak ditemukan",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 120),
+                      ],
                     ),
+                  );
+                }
+                if (controller.isLoadingBpjsKesehatan.value == true) {
+                  return const Center(
+                    heightFactor: 17,
+                    child: CircularProgressIndicator(),
                   );
                 }
                 return Expanded(
@@ -175,57 +201,45 @@ class BpjsKesehatan extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: Constanst.colorWhite,
                         borderRadius: BorderRadius.circular(100)),
-                    child:
-                        // image == ""
-                        //     ?
-                        //     SvgPicture.asset(
-                        //   'assets/avatar_default.svg',
-                        //   width: 40,
-                        //   height: 40,
-                        // )
-                        Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Iconsax.user,
-                        color: Constanst.fgSecondary,
-                        size: 24,
-                      ),
-                    ),
-                    // : Center(
-                    //     child: CircleAvatar(
-                    //       radius: 20,
-                    //       child: ClipOval(
-                    //         child: ClipOval(
-                    //           child: CachedNetworkImage(
-                    //             imageUrl: "${Api.UrlfotoProfile}$image",
-                    //             progressIndicatorBuilder:
-                    //                 (context, url, downloadProgress) =>
-                    //                     Container(
-                    //               alignment: Alignment.center,
-                    //               height:
-                    //                   MediaQuery.of(context).size.height *
-                    //                       0.5,
-                    //               width: MediaQuery.of(context).size.width,
-                    //               child: CircularProgressIndicator(
-                    //                   value: downloadProgress.progress),
-                    //             ),
-                    //             errorWidget: (context, url, error) =>
-                    //                 Container(
-                    //               color: Colors.white,
-                    //               child: SvgPicture.asset(
-                    //                 'assets/avatar_default.svg',
-                    //                 width: 40,
-                    //                 height: 40,
-                    //               ),
-                    //             ),
-                    //             fit: BoxFit.cover,
-                    //             width: 40,
-                    //             height: 40,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
+                    child: AppData.informasiUser![0].em_image == null ||
+                            AppData.informasiUser![0].em_image == ""
+                        ? SvgPicture.asset(
+                            'assets/avatar_default.svg',
+                            width: 40,
+                            height: 40,
+                          )
+                        : CircleAvatar(
+                            radius: 20,
+                            child: ClipOval(
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      "${Api.UrlfotoProfile}${AppData.informasiUser![0].em_image}",
+                                  progressIndicatorBuilder:
+                                      (context, url, downloadProgress) =>
+                                          Container(
+                                    alignment: Alignment.center,
+                                    height: MediaQuery.of(context).size.height,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: CircularProgressIndicator(
+                                        value: downloadProgress.progress),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Container(
+                                    color: Colors.white,
+                                    child: SvgPicture.asset(
+                                      'assets/avatar_default.svg',
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                  ),
+                                  fit: BoxFit.cover,
+                                  width: 40,
+                                  height: 40,
+                                ),
+                              ),
+                            ),
+                          ),
                   ),
                   const SizedBox(
                     width: 10,
@@ -234,15 +248,15 @@ class BpjsKesehatan extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextLabell(
-                        text: data.fullName,
-                        // text: "Nama Pengguna",
+                        text: "${AppData.informasiUser![0].full_name}",
                         size: 16,
                         weight: FontWeight.w500,
                         color: Constanst.colorWhite,
                       ),
                       const SizedBox(height: 4),
                       TextLabell(
-                        text: "No JKN. ${data.emBpjsKesehatan}",
+                        text:
+                            "No JKN. ${AppData.informasiUser![0].nomorBpjsKesehatan}",
                         // text: "No JKN. ",
                         size: 14,
                         weight: FontWeight.w400,
@@ -263,24 +277,14 @@ class BpjsKesehatan extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Expanded(
+                  Expanded(
                       flex: 30,
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(16.0, 12.0, 0.0, 12.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(16.0, 12.0, 0.0, 12.0),
                         child: TextGroupColumn(
-                            title: "premi 5%", subtitle: "Rp.2000m,00"),
-                      )),
-                  Container(
-                    color: Constanst.fgBorder,
-                    width: 1,
-                    height: 64,
-                  ),
-                  const Expanded(
-                      flex: 30,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(16.0, 12.0, 0.0, 12.0),
-                        child: TextGroupColumn(
-                            title: "PT  (4%)", subtitle: "Rp.2000m,00"),
+                            title: "Premi ${data.premi_percent}%",
+                            subtitle: toCurrency(data.premit.toString())),
                       )),
                   Container(
                     color: Constanst.fgBorder,
@@ -293,7 +297,21 @@ class BpjsKesehatan extends StatelessWidget {
                         padding:
                             const EdgeInsets.fromLTRB(16.0, 12.0, 0.0, 12.0),
                         child: TextGroupColumn(
-                            title: "TK(1%)",
+                            title: "PT ${data.pt_percent}%",
+                            subtitle: toCurrency(data.pt.toString())),
+                      )),
+                  Container(
+                    color: Constanst.fgBorder,
+                    width: 1,
+                    height: 64,
+                  ),
+                  Expanded(
+                      flex: 30,
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(16.0, 12.0, 0.0, 12.0),
+                        child: TextGroupColumn(
+                            title: "TK ${data.tk_percent}%",
                             subtitle: toCurrency(data.tk.toString())),
                       ))
                 ],

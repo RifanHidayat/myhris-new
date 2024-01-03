@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'dart:async';
@@ -24,9 +25,16 @@ import 'package:siscom_operasional/screen/absen/berhasil_absen.dart';
 import 'package:siscom_operasional/screen/absen/berhasil_registrasi.dart';
 import 'package:siscom_operasional/screen/absen/detail_absen.dart';
 import 'package:siscom_operasional/screen/absen/face_id_registration.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_absen.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_cuti.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_dinas_luar.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_izin.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_klaim.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_lembur.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_tugas_luar.dart';
 import 'package:siscom_operasional/screen/absen/loading_absen.dart';
 import 'package:siscom_operasional/screen/absen/pengajuan%20absen_berhasil.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -45,6 +53,8 @@ class AbsenController extends GetxController {
 
   RxBool isChecked = false.obs;
   RxBool isChecked2 = false.obs;
+  RxBool selengkapnyaMasuk = false.obs;
+  RxBool selengkapnyaKeluar = false.obs;
 
   Rx<DateTime> selectedDate = DateTime.now().obs;
 
@@ -74,6 +84,11 @@ class AbsenController extends GetxController {
   var selectedType = "".obs;
 
   var pauseCamera = false.obs;
+
+  var tempKodeStatus1 = "".obs;
+  var tempNamaStatus1 = "Semua".obs;
+  var tempNamaLaporan1 = "Semua".obs;
+  var tempNamaTipe1 = "".obs;
 
   var historyAbsen = <AbsenModel>[].obs;
   var historyAbsenShow = [].obs;
@@ -191,6 +206,10 @@ class AbsenController extends GetxController {
     tanggalLaporan.value.text = convert;
     absenStatus.value = AppData.statusAbsen;
     // this.absenStatus.refresh();
+  }
+
+  void showInputCari() {
+    statusCari.value = !statusCari.value;
   }
 
   void getDepartemen(status, tanggal) {
@@ -2097,25 +2116,21 @@ class AbsenController extends GetxController {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 6),
-                          child: Icon(Iconsax.calendar_2),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 6),
+                        child: Icon(Iconsax.calendar_2),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 3),
+                        child: Text(
+                          "${Constanst.convertDateBulanDanTahun(bulanDanTahunNow.value)}",
+                          style: TextStyle(fontSize: 16),
                         ),
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 3),
-                            child: Text(
-                              "${Constanst.convertDateBulanDanTahun(bulanDanTahunNow.value)}",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -2673,5 +2688,583 @@ class AbsenController extends GetxController {
     } else {
       kirimPengajuan();
     }
+  }
+
+  void widgetButtomSheetFormLaporan() {
+    showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      backgroundColor: Constanst.colorWhite,
+      builder: (context) {
+        return SafeArea(
+          child: Obx(
+            () => Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Iconsax.document_text5,
+                            color: Constanst.infoLight,
+                            size: 26,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: Text(
+                              "Cek Laporan",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      InkWell(
+                          onTap: () {
+                            Navigator.pop(Get.context!);
+                          },
+                          child: Icon(
+                            Icons.close,
+                            size: 24,
+                            color: Constanst.fgSecondary,
+                          ))
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  child: Divider(
+                    height: 0,
+                    thickness: 1,
+                    color: Constanst.fgBorder,
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanAbsen(
+                      dataForm: "",
+                    ));
+                    tempNamaLaporan1.value = "";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/2_absen.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Absensi',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanAbsen(
+                              dataForm: "",
+                            ));
+                            tempNamaLaporan1.value = "";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: tempNamaLaporan1.value == "" ? 2 : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == ""
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanIzin(
+                      title: 'tidak_hadir',
+                    ));
+                    tempNamaLaporan1.value = "tidak_hadir";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/3_izin.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Izin',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanIzin(
+                              title: 'tidak_hadir',
+                            ));
+                            tempNamaLaporan1.value = "tidak_hadir";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width:
+                                        tempNamaLaporan1.value == "tidak_hadir"
+                                            ? 2
+                                            : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "tidak_hadir"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanLembur(
+                      title: 'lembur',
+                    ));
+                    tempNamaLaporan1.value = "lembur";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/4_lembur.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Lembur',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanLembur(
+                              title: 'lembur',
+                            ));
+                            tempNamaLaporan1.value = "lembur";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: tempNamaLaporan1.value == "lembur"
+                                        ? 2
+                                        : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "lembur"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanCuti(
+                      title: 'cuti',
+                    ));
+                    tempNamaLaporan1.value = "cuti";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/5_cuti.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Cuti',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanCuti(
+                              title: 'cuti',
+                            ));
+                            tempNamaLaporan1.value = "cuti";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: tempNamaLaporan1.value == "cuti"
+                                        ? 2
+                                        : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "cuti"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanTugasLuar(
+                      title: 'tugas_luar',
+                    ));
+                    tempNamaLaporan1.value = "tugas_luar";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/6_tugas_luar.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Tugas Luar',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanTugasLuar(
+                              title: 'tugas_luar',
+                            ));
+                            tempNamaLaporan1.value = "tugas_luar";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width:
+                                        tempNamaLaporan1.value == "tugas_luar"
+                                            ? 2
+                                            : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "tugas_luar"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanDinasLuar(
+                      title: 'dinas_luar',
+                    ));
+                    tempNamaLaporan1.value = "dinas_luar";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/6_tugas_luar.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Dinas Luar',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanDinasLuar(
+                              title: 'dinas_luar',
+                            ));
+                            tempNamaLaporan1.value = "dinas_luar";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width:
+                                        tempNamaLaporan1.value == "dinas_luar"
+                                            ? 2
+                                            : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "dinas_luar"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanKlaim(
+                      title: 'klaim',
+                    ));
+                    tempNamaLaporan1.value = "klaim";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/7_klaim.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Klaim',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanKlaim(
+                              title: 'klaim',
+                            ));
+                            tempNamaLaporan1.value = "klaim";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: tempNamaLaporan1.value == "klaim"
+                                        ? 2
+                                        : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "klaim"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

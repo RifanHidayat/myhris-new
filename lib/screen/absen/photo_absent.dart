@@ -1,9 +1,10 @@
 import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:siscom_operasional/utils/appbar_widget.dart';
+import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
 class PhotoAbsen extends StatelessWidget {
@@ -11,30 +12,57 @@ class PhotoAbsen extends StatelessWidget {
   PhotoAbsen(
       {super.key, this.image, this.time, this.alamat, this.type, this.note});
 
+  final controller = Get.put(AbsenController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Constanst.coloBackgroundScreen,
-          automaticallyImplyLeading: false,
-          elevation: 2,
-          flexibleSpace: AppbarMenu1(
-            title: "Detail Absen",
-            icon: 1,
-            colorTitle: Colors.black,
-            onTap: () {
-              Get.back();
-            },
-          )),
+      backgroundColor: Constanst.coloBackgroundScreen,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
+        child: Container(
+          decoration: const BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              offset: Offset(0, 2.0),
+              blurRadius: 4.0,
+            )
+          ]),
+          child: AppBar(
+            backgroundColor: Constanst.coloBackgroundScreen,
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            title: Text(
+              "Foto",
+              style: GoogleFonts.inter(
+                  color: Constanst.fgPrimary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20),
+            ),
+            centerTitle: false,
+            leading: IconButton(
+              icon: Icon(
+                Iconsax.arrow_left,
+                color: Constanst.fgPrimary,
+                size: 24,
+              ),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+          ),
+        ),
+      ),
       body: DraggableBottomSheet(
-        minExtent: 30,
         useSafeArea: true,
         curve: Curves.easeIn,
+        // minExtent: 50.0,
+        collapsed: true,
         previewWidget: _previewWidget(),
         expandedWidget: _expandedWidget(),
         backgroundWidget: _backgroundWidget(),
         duration: const Duration(milliseconds: 10),
-        maxExtent: MediaQuery.of(context).size.height * 0.5,
+        // expansionExtent: 50.0,
+        maxExtent: MediaQuery.of(context).size.height * 0.4,
         barrierColor: Colors.transparent,
         onDragging: (pos) {},
       ),
@@ -42,52 +70,33 @@ class PhotoAbsen extends StatelessWidget {
   }
 
   Widget _backgroundWidget() {
-    return Container(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Foto"),
-                InkWell(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: Icon(Icons.close))
-              ],
-            ),
-          ),
-          Expanded(
-            child: Container(
-              color: HexColor('#035446'),
-              width: MediaQuery.of(Get.context!).size.width,
-              height: double.maxFinite,
-              child: Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: image != ''
-                      ? Image.network(
-                          image,
-                          fit: BoxFit.fill,
-                          errorBuilder: (context, exception, stackTrace) {
-                            return ClipRRect(
-                              child: Container(
-                                  child: Image.asset(
-                                'assets/Foto.png',
-                                fit: BoxFit.fill,
-                              )),
-                            );
-                          },
-                        )
-                      : Image.asset(
+    return Column(
+      children: [
+        Expanded(
+          child: Container(
+            color: HexColor('#035446'),
+            width: MediaQuery.of(Get.context!).size.width,
+            height: double.maxFinite,
+            child: image != ''
+                ? Image.network(
+                    image,
+                    fit: BoxFit.fill,
+                    errorBuilder: (context, exception, stackTrace) {
+                      return ClipRRect(
+                        child: Image.asset(
                           'assets/Foto.png',
-                          fit: BoxFit.fill,
-                        )),
-            ),
-          )
-        ],
-      ),
+                          fit: BoxFit.fitHeight,
+                        ),
+                      );
+                    },
+                  )
+                : Image.asset(
+                    'assets/Foto.png',
+                    fit: BoxFit.fill,
+                  ),
+          ),
+        )
+      ],
     );
   }
 
@@ -95,173 +104,210 @@ class PhotoAbsen extends StatelessWidget {
     return MediaQuery.removePadding(
         context: Get.context!,
         removeTop: true,
-        child: Container(
-          color: HexColor('#11151E').withOpacity(0.25),
-          child: ListView(
-            children: <Widget>[
-              Container(
-                color: HexColor('#11151E').withOpacity(0.25),
-                child: Container(
-                  padding: EdgeInsets.all(10),
+        child: Obx(
+          () => Container(
+            width: MediaQuery.of(Get.context!).size.width,
+            height: 60,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16.0),
+              ),
+              color: Constanst.colorWhite,
+            ),
+            child: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(
-                        child: Container(
-                          width: MediaQuery.of(Get.context!).size.width / 4,
-                          height: 5,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(2),
-                              color: Colors.white),
+                        child: Icon(
+                          Iconsax.arrow_down_1,
+                          size: 26,
+                          color: Constanst.fgSecondary,
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              type == 'keluar'
-                                  ? Icon(
-                                      Iconsax.logout,
-                                      color: Colors.red,
-                                      size: 24,
-                                    )
-                                  : Icon(
-                                      Iconsax.login,
-                                      color: Colors.green,
-                                      size: 24,
-                                    ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8),
-                                child: Text(
-                                  time ?? '',
-                                  style: TextStyle(
-                                      fontSize: 12, color: Colors.white),
-                                ),
-                              )
-                            ],
-                          ),
-                          Container(
-                            decoration:
-                                Constanst.styleBoxDecoration2(Colors.white),
-                            margin: EdgeInsets.only(left: 10, right: 10),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10, right: 10),
-                              child: Text(
-                                type == 'keluar'
-                                    ? "Absen Keluar"
-                                    : "Absen Masuk",
-                                textAlign: TextAlign.center,
-                                style: type == "keluar"
-                                    ? Constanst.colorRedBold
-                                    : Constanst.colorGreenBold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.location_tick,
-                            size: 24,
-                            color: Colors.white,
-                          ),
-                          Column(
+                      const SizedBox(height: 12),
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Constanst.border)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                  padding:
-                                      const EdgeInsets.only(top: 3, left: 3),
-                                  child: Text(
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    time ?? '',
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    type == 'keluar'
+                                        ? "Absen Keluar"
+                                        : "Absen Masuk",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.inter(
+                                        color: type == "keluar"
+                                            ? Constanst.color4
+                                            : Constanst.color5,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Divider(
+                                thickness: 1,
+                                height: 0,
+                                color: Constanst.fgBorder,
+                              ),
+                              const SizedBox(height: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Tipe Absen",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Text(
+                                        'Foto',
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
                                     "Lokasi",
-                                    style: TextStyle(color: Colors.white),
-                                  )),
-                              Container(
-                                width: MediaQuery.of(Get.context!).size.width -
-                                    100,
-                                child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(top: 3, left: 3),
-                                    child: Text(
-                                      "$alamat",
-                                      style: TextStyle(
-                                          fontSize: 10, color: Colors.white),
-                                    )),
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    // width: gambarKeluar != ''
+                                    //     ? MediaQuery.of(Get.context!).size.width / 2
+                                    //     : MediaQuery.of(Get.context!).size.width - 80,
+                                    child: Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Text(
+                                          "$alamat",
+                                          textAlign: TextAlign.justify,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines:
+                                              controller.selengkapnyaMasuk.value
+                                                  ? 100
+                                                  : 2,
+                                          style: GoogleFonts.inter(
+                                              color: Constanst.fgSecondary,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14),
+                                        )),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: InkWell(
+                                      onTap: () => controller
+                                              .selengkapnyaMasuk.value
+                                          ? controller.selengkapnyaMasuk.value =
+                                              false
+                                          : controller.selengkapnyaMasuk.value =
+                                              true,
+                                      child: Text(
+                                        controller.selengkapnyaMasuk.value
+                                            ? "Tutup"
+                                            : "Selengkapnya",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgPrimary,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Catatan",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    // width: gambarMasuk != ''
+                                    //     ? MediaQuery.of(Get.context!).size.width / 2
+                                    //     : MediaQuery.of(Get.context!).size.width - 80,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Text(
+                                        note == "" ? '-' : note,
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14),
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
                             ],
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 10, right: 10, bottom: 20),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Iconsax.note_text,
-                              size: 24,
-                              color: Colors.white,
-                            ),
-                            Container(
-                              width:
-                                  MediaQuery.of(Get.context!).size.width - 100,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 3, left: 3),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Catatan",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    Text(
-                                      note ?? '-',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 10),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ));
   }
 
   Widget _previewWidget() {
-    return Container(
-      width: MediaQuery.of(Get.context!).size.width,
-      height: 50,
-      color: HexColor('#11151E').withOpacity(0.25),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Container(
-              width: MediaQuery.of(Get.context!).size.width / 4,
-              height: 5,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2), color: Colors.white),
-            ),
+    return InkWell(
+      onTap: () {
+        print('object');
+        _expandedWidget();
+      },
+      child: Container(
+        width: MediaQuery.of(Get.context!).size.width,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: const Color.fromARGB(127, 0, 0, 0),
+        ),
+        child: const Center(
+          child: Icon(
+            Iconsax.arrow_up_2,
+            size: 26,
+            color: Colors.white,
           ),
-        ],
+        ),
       ),
     );
   }

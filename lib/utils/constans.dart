@@ -181,7 +181,7 @@ class Constanst {
   static String convertDate6(String date) {
     DateTime convert = DateTime.parse(date);
     var hari = DateFormat('EEEE');
-    var tanggal = DateFormat('dd MMM yyyy');
+    var tanggal = DateFormat('dd MMM yyyy', 'id');
     var convertHari = hari.format(convert);
     var hasilConvertHari = hariIndo(convertHari);
     var valid2 = tanggal.format(convert);

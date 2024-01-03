@@ -596,7 +596,7 @@ class _LaporanLemburDetailState extends State<LaporanLemburDetail> {
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400)),
                         const SizedBox(height: 4),
-                        Text(Constanst.convertDate('$tanggalPengajuan'),
+                        Text(Constanst.convertDate5('$tanggalPengajuan'),
                             style: GoogleFonts.inter(
                                 color: Constanst.fgSecondary,
                                 fontSize: 14,

@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hexcolor/hexcolor.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
-import 'package:siscom_operasional/controller/dashboard_controller.dart';
-import 'package:siscom_operasional/model/absen_model.dart';
-import 'package:siscom_operasional/screen/absen/history_absen.dart';
 import 'package:siscom_operasional/screen/absen/photo_absent.dart';
-import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/utils/api.dart';
-import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
-import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class DetailAbsen extends StatelessWidget {
   List<dynamic>? absenSelected;
@@ -41,18 +35,41 @@ class DetailAbsen extends StatelessWidget {
 
     return Scaffold(
         backgroundColor: Constanst.coloBackgroundScreen,
-        appBar: AppBar(
-            backgroundColor: Constanst.coloBackgroundScreen,
-            automaticallyImplyLeading: false,
-            elevation: 2,
-            flexibleSpace: AppbarMenu1(
-              title: "Detail Absen",
-              icon: 1,
-              colorTitle: Colors.black,
-              onTap: () {
-                Get.back();
-              },
-            )),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
+          child: Container(
+            decoration: const BoxDecoration(boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0, 2.0),
+                blurRadius: 4.0,
+              )
+            ]),
+            child: AppBar(
+              backgroundColor: Constanst.coloBackgroundScreen,
+              automaticallyImplyLeading: false,
+              elevation: 0,
+              title: Text(
+                "Detail Riwayat Absensi",
+                style: GoogleFonts.inter(
+                    color: Constanst.fgPrimary,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20),
+              ),
+              centerTitle: false,
+              leading: IconButton(
+                icon: Icon(
+                  Iconsax.arrow_left,
+                  color: Constanst.fgPrimary,
+                  size: 24,
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+            ),
+          ),
+        ),
         body: WillPopScope(
           onWillPop: () async {
             Get.back();
@@ -60,41 +77,47 @@ class DetailAbsen extends StatelessWidget {
           },
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 30,
-                  ),
-                  status == true
-                      ? Center(
-                          child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "$namaKaryawan",
-                            style: TextStyle(
+                  // status == true
+                  //     ? Center(
+                  //         child: Padding(
+                  //         padding: const EdgeInsets.all(8.0),
+                  //         child: Text(
+                  //           "$namaKaryawan",
+                  //           style: GoogleFonts.inter(
+                  //               fontSize: 16,
+                  //               fontWeight: FontWeight.bold,
+                  //               color: Constanst.colorPrimary),
+                  //         ),
+                  //       ))
+                  //     : SizedBox(),
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Constanst.border)),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            Constanst.convertDate6("$tanggal"),
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
                                 fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Constanst.colorPrimary),
+                                color: Constanst.fgPrimary),
                           ),
-                        ))
-                      : SizedBox(),
-                  SizedBox(
-                    height: 15,
+                        ],
+                      ),
+                    ),
                   ),
-                  Text(
-                    Constanst.convertDate("$tanggal"),
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  longlatMasuk == "" ? SizedBox() : descMasuk(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  longlatKeluar == "" ? SizedBox() : descKeluar(),
+                  const SizedBox(height: 16),
+                  longlatMasuk == "" ? const SizedBox() : descMasuk(),
+                  const SizedBox(height: 16),
+                  longlatKeluar == "" ? const SizedBox() : descKeluar(),
                 ],
               ),
             ),
@@ -144,7 +167,7 @@ class DetailAbsen extends StatelessWidget {
   //                       padding: EdgeInsets.only(left: 8),
   //                       child: Text(
   //                         jamMasuk ?? '',
-  //                         style: TextStyle(fontSize: 16),
+  //                         style: GoogleFonts.inter(fontSize: 16),
   //                       ),
   //                     )
   //                   ],
@@ -220,7 +243,7 @@ class DetailAbsen extends StatelessWidget {
   //                                     },
   //                                     child: Text(
   //                                       "Lihat Foto",
-  //                                       style: TextStyle(
+  //                                       style: GoogleFonts.inter(
   //                                         color: Constanst.colorPrimary,
   //                                         decoration: TextDecoration.underline,
   //                                       ),
@@ -320,172 +343,237 @@ class DetailAbsen extends StatelessWidget {
         ? absenSelected![0].place_in ?? ""
         : absenSelected![0]['place_in'] ?? "";
     // var alamat = (alamatMasuk + placeIn).toString().substring(0, 50) + "...";
-    return Container(
-      decoration: Constanst.styleBoxDecoration1,
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            gambarMasuk != ''
-                ? Expanded(
-                    flex: 30,
-                    child: Center(
-                      child: InkWell(
-                        onTap: () {
-                          Get.to(PhotoAbsen(
-                            image: Api.UrlfotoAbsen + gambarMasuk,
-                            type: "masuk",
-                            time: jamMasuk,
-                            alamat: alamatMasuk + placeIn,
-                            note: catatanMasuk,
-                          ));
-                        },
-                        child: gambarMasuk != ''
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(6.0),
-                                child: SizedBox(
-                                    width:
-                                        MediaQuery.of(Get.context!).size.width /
-                                            3,
-                                    child: Image.network(
-                                      Api.UrlfotoAbsen + gambarMasuk,
-                                      errorBuilder:
-                                          (context, exception, stackTrace) {
-                                        return ClipRRect(
-                                          child: SizedBox(
-                                              child: Image.asset(
-                                            'assets/Foto.png',
-                                            fit: BoxFit.fill,
-                                          )),
-                                        );
-                                      },
-                                      fit: BoxFit.fill,
-                                    )),
-                              )
-                            : ClipRRect(
-                                child: SizedBox(
-                                    width:
-                                        MediaQuery.of(Get.context!).size.width /
-                                            3,
-                                    child: Image.asset(
-                                      'assets/Foto.png',
-                                    )),
-                              ),
+    return Obx(
+      () => Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Constanst.border)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Iconsax.login_1,
+                        color: Constanst.color5,
+                        size: 26,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: Text(
+                          jamMasuk ?? '',
+                          style: GoogleFonts.inter(
+                              color: Constanst.fgPrimary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16),
+                        ),
+                      )
+                    ],
+                  ),
+                  Text(
+                    "Absen Masuk",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                        color: Constanst.color5,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Divider(
+                thickness: 1,
+                height: 0,
+                color: Constanst.fgBorder,
+              ),
+              const SizedBox(height: 16),
+              //gambarMasuk != ''
+              // ? Expanded(
+              //     flex: 30,
+              //     child: Center(
+              //       child: InkWell(
+              //         onTap: () {
+              //           Get.to(PhotoAbsen(
+              //             image: Api.UrlfotoAbsen + gambarMasuk,
+              //             type: "masuk",
+              //             time: jamMasuk,
+              //             alamat: alamatMasuk + placeIn,
+              //             note: catatanMasuk,
+              //           ));
+              //         },
+              //         child: gambarMasuk != ''
+              //             ? ClipRRect(
+              //                 borderRadius: BorderRadius.circular(6.0),
+              //                 child: SizedBox(
+              //                     width: MediaQuery.of(Get.context!)
+              //                             .size
+              //                             .width /
+              //                         3,
+              //                     child: Image.network(
+              //                       Api.UrlfotoAbsen + gambarMasuk,
+              //                       errorBuilder:
+              //                           (context, exception, stackTrace) {
+              //                         return ClipRRect(
+              //                           child: SizedBox(
+              //                               child: Image.asset(
+              //                             'assets/Foto.png',
+              //                             fit: BoxFit.fill,
+              //                           )),
+              //                         );
+              //                       },
+              //                       fit: BoxFit.fill,
+              //                     )),
+              //               )
+              //             : ClipRRect(
+              //                 child: SizedBox(
+              //                     width: MediaQuery.of(Get.context!)
+              //                             .size
+              //                             .width /
+              //                         3,
+              //                     child: Image.asset(
+              //                       'assets/Foto.png',
+              //                     )),
+              //               ),
+              //       ),
+              //     ),
+              //   )
+              // : Expanded(
+              //     flex: 00,
+              //     child: Container(),
+              //   ),
+
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           "Tipe Absen",
+              //           style: GoogleFonts.inter(
+              //               color: Constanst.fgPrimary,
+              //               fontWeight: FontWeight.w500,
+              //               fontSize: 16),
+              //         ),
+              //         SizedBox(
+              //           child: Padding(
+              //             padding: const EdgeInsets.only(top: 4),
+              //             child: Text(
+              //               'Foto',
+              //               style: GoogleFonts.inter(
+              //                   color: Constanst.fgSecondary,
+              //                   fontWeight: FontWeight.w400,
+              //                   fontSize: 14),
+              //             ),
+              //           ),
+              //         )
+              //       ],
+              //     ),
+              //     InkWell(
+              //       onTap: () {
+              //         Get.to(PhotoAbsen(
+              //           image: Api.UrlfotoAbsen + gambarMasuk,
+              //           type: "masuk",
+              //           time: jamMasuk,
+              //           alamat: alamatMasuk + "({$placeIn})",
+              //           note: catatanMasuk,
+              //         ));
+              //       },
+              //       child: Text(
+              //         "Lihat Foto",
+              //         style: GoogleFonts.inter(
+              //             color: Constanst.infoLight,
+              //             fontWeight: FontWeight.w400,
+              //             fontSize: 14),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // const SizedBox(height: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Lokasi",
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                  SizedBox(
+                    // width: gambarKeluar != ''
+                    //     ? MediaQuery.of(Get.context!).size.width / 2
+                    //     : MediaQuery.of(Get.context!).size.width - 80,
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          "$alamatMasuk ($placeIn)",
+                          textAlign: TextAlign.justify,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines:
+                              controller.selengkapnyaMasuk.value ? 100 : 2,
+                          style: GoogleFonts.inter(
+                              color: Constanst.fgSecondary,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14),
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: InkWell(
+                      onTap: () => controller.selengkapnyaMasuk.value
+                          ? controller.selengkapnyaMasuk.value = false
+                          : controller.selengkapnyaMasuk.value = true,
+                      child: Text(
+                        controller.selengkapnyaMasuk.value
+                            ? "Tutup"
+                            : "Selengkapnya",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Catatan",
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                  SizedBox(
+                    // width: gambarMasuk != ''
+                    //     ? MediaQuery.of(Get.context!).size.width / 2
+                    //     : MediaQuery.of(Get.context!).size.width - 80,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        catatanMasuk == "" ? '-' : catatanMasuk,
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgSecondary,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14),
                       ),
                     ),
                   )
-                : Expanded(
-                    flex: 00,
-                    child: Container(),
-                  ),
-            Expanded(
-              flex: 70,
-              child: SizedBox(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Iconsax.login,
-                                color: Colors.green,
-                                size: 24,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8),
-                                child: Text(
-                                  jamMasuk ?? '',
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              )
-                            ],
-                          ),
-                          Container(
-                            decoration: Constanst.styleBoxDecoration2(
-                                Color.fromARGB(156, 223, 253, 223)),
-                            margin: EdgeInsets.only(left: 10, right: 10),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10, right: 10),
-                              child: Text(
-                                "Absen Masuk",
-                                textAlign: TextAlign.center,
-                                style: Constanst.colorGreenBold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.location_tick,
-                            size: 24,
-                            color: Constanst.colorPrimary,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                  padding:
-                                      const EdgeInsets.only(top: 3, left: 3),
-                                  child: Text(
-                                    "Lokasi",
-                                  )),
-                              Container(
-                                width: gambarMasuk != ''
-                                    ? MediaQuery.of(Get.context!).size.width / 2
-                                    : MediaQuery.of(Get.context!).size.width -
-                                        80,
-                                child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(top: 3, left: 3),
-                                    child: Text(
-                                      "$alamatMasuk ( $placeIn )",
-                                      style: TextStyle(fontSize: 10),
-                                    )),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.note_text,
-                            size: 24,
-                            color: Constanst.colorPrimary,
-                          ),
-                          Container(
-                            width: gambarMasuk != ''
-                                ? MediaQuery.of(Get.context!).size.width / 2
-                                : MediaQuery.of(Get.context!).size.width - 80,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 3, left: 3),
-                              child: Text(catatanMasuk ?? '-'),
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                ],
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -508,165 +596,228 @@ class DetailAbsen extends StatelessWidget {
         ? absenSelected![0].place_out ?? ""
         : absenSelected![0]['place_out'] ?? "";
     // var alamat = (alamatKeluar + placeOut).toString().substring(0, 50) + "...";
-    return Container(
-      decoration: Constanst.styleBoxDecoration1,
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            gambarKeluar != ''
-                ? Expanded(
-                    flex: 30,
-                    child: Center(
-                      child: InkWell(
-                        onTap: () {
-                          Get.to(PhotoAbsen(
-                            image: Api.UrlfotoAbsen + gambarKeluar,
-                            type: "keluar",
-                            time: jamKeluar,
-                            alamat: alamatKeluar + placeOut,
-                            note: catatanKeluar,
-                          ));
-                        },
-                        child: gambarKeluar != ''
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(6.0),
-                                child: SizedBox(
-                                    // width: MediaQuery.of(Get.context!).size.width / 3,
-                                    child: Image.network(
-                                  Api.UrlfotoAbsen + gambarKeluar,
-                                  errorBuilder:
-                                      (context, exception, stackTrace) {
-                                    return ClipRRect(
-                                      child: SizedBox(
-                                          child: Image.asset(
-                                        'assets/Foto.png',
-                                        fit: BoxFit.fitHeight,
-                                      )),
-                                    );
-                                  },
-                                  fit: BoxFit.fitHeight,
-                                )),
-                              )
-                            : ClipRRect(
-                                child: SizedBox(
-                                    // width: MediaQuery.of(Get.context!).size.width / 3,
-                                    child: Image.asset(
-                                  'assets/Foto.png',
-                                )),
-                              ),
+    return Obx(
+      () => Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Constanst.border)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Iconsax.logout_1,
+                        color: Constanst.color4,
+                        size: 26,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: Text(
+                          jamKeluar ?? '',
+                          style: GoogleFonts.inter(
+                              color: Constanst.fgPrimary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16),
+                        ),
+                      )
+                    ],
+                  ),
+                  Text(
+                    "Absen Keluar",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                        color: Constanst.color4,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Divider(
+                thickness: 1,
+                height: 0,
+                color: Constanst.fgBorder,
+              ),
+              const SizedBox(height: 16),
+              // gambarKeluar != ''
+              //     ? Expanded(
+              //         flex: 30,
+              //         child: Center(
+              //           child: InkWell(
+              //             onTap: () {
+              //               Get.to(PhotoAbsen(
+              //                 image: Api.UrlfotoAbsen + gambarKeluar,
+              //                 type: "keluar",
+              //                 time: jamKeluar,
+              //                 alamat: alamatKeluar + placeOut,
+              //                 note: catatanKeluar,
+              //               ));
+              //             },
+              //             child: gambarKeluar != ''
+              //                 ? ClipRRect(
+              //                     borderRadius: BorderRadius.circular(6.0),
+              //                     child: SizedBox(
+              //                         // width: MediaQuery.of(Get.context!).size.width / 3,
+              //                         child: Image.network(
+              //                       Api.UrlfotoAbsen + gambarKeluar,
+              //                       errorBuilder:
+              //                           (context, exception, stackTrace) {
+              //                         return ClipRRect(
+              //                           child: SizedBox(
+              //                               child: Image.asset(
+              //                             'assets/Foto.png',
+              //                             fit: BoxFit.fitHeight,
+              //                           )),
+              //                         );
+              //                       },
+              //                       fit: BoxFit.fitHeight,
+              //                     )),
+              //                   )
+              //                 : ClipRRect(
+              //                     child: SizedBox(
+              //                         // width: MediaQuery.of(Get.context!).size.width / 3,
+              //                         child: Image.asset(
+              //                       'assets/Foto.png',
+              //                     )),
+              //                   ),
+              //           ),
+              //         ),
+              //       )
+              //     : Expanded(flex: 0, child: Container()),
+
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           "Tipe Absen",
+              //           style: GoogleFonts.inter(
+              //               color: Constanst.fgPrimary,
+              //               fontWeight: FontWeight.w500,
+              //               fontSize: 16),
+              //         ),
+              //         SizedBox(
+              //           child: Padding(
+              //             padding: const EdgeInsets.only(top: 4),
+              //             child: Text(
+              //               'Foto',
+              //               style: GoogleFonts.inter(
+              //                   color: Constanst.fgSecondary,
+              //                   fontWeight: FontWeight.w400,
+              //                   fontSize: 14),
+              //             ),
+              //           ),
+              //         )
+              //       ],
+              //     ),
+              //     InkWell(
+              //       onTap: () {
+              //         Get.to(PhotoAbsen(
+              //           image: Api.UrlfotoAbsen + gambarKeluar,
+              //           type: "keluar",
+              //           time: jamKeluar,
+              //           alamat: alamatKeluar + placeOut,
+              //           note: catatanKeluar,
+              //         ));
+              //       },
+              //       child: Text(
+              //         "Lihat Foto",
+              //         style: GoogleFonts.inter(
+              //             color: Constanst.infoLight,
+              //             fontWeight: FontWeight.w400,
+              //             fontSize: 14),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // const SizedBox(height: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Lokasi",
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                  SizedBox(
+                    // width: gambarKeluar != ''
+                    //     ? MediaQuery.of(Get.context!).size.width / 2
+                    //     : MediaQuery.of(Get.context!).size.width - 80,
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          "$alamatKeluar ($placeOut)",
+                          textAlign: TextAlign.justify,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines:
+                              controller.selengkapnyaKeluar.value ? 100 : 2,
+                          style: GoogleFonts.inter(
+                              color: Constanst.fgSecondary,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14),
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: InkWell(
+                      onTap: () => controller.selengkapnyaKeluar.value
+                          ? controller.selengkapnyaKeluar.value = false
+                          : controller.selengkapnyaKeluar.value = true,
+                      child: Text(
+                        controller.selengkapnyaKeluar.value
+                            ? "Tutup"
+                            : "Selengkapnya",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Catatan",
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                  SizedBox(
+                    // width: gambarKeluar != ''
+                    //     ? MediaQuery.of(Get.context!).size.width / 2
+                    //     : MediaQuery.of(Get.context!).size.width - 80,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        catatanKeluar == "" ? '-' : catatanKeluar,
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgSecondary,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14),
                       ),
                     ),
                   )
-                : Expanded(flex: 0, child: Container()),
-            Expanded(
-              flex: 70,
-              child: SizedBox(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Iconsax.logout,
-                                color: Colors.red,
-                                size: 24,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8),
-                                child: Text(
-                                  jamKeluar ?? '',
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              )
-                            ],
-                          ),
-                          Container(
-                            decoration: Constanst.styleBoxDecoration2(
-                                HexColor('#FFF2EB')),
-                            margin: EdgeInsets.only(left: 10, right: 10),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10, right: 10),
-                              child: Text(
-                                "Absen Keluar",
-                                textAlign: TextAlign.center,
-                                style: Constanst.colorRedBold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.location_tick,
-                            size: 24,
-                            color: Constanst.colorPrimary,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                  padding:
-                                      const EdgeInsets.only(top: 3, left: 3),
-                                  child: Text(
-                                    "Lokasi",
-                                  )),
-                              SizedBox(
-                                width: gambarKeluar != ''
-                                    ? MediaQuery.of(Get.context!).size.width / 2
-                                    : MediaQuery.of(Get.context!).size.width -
-                                        80,
-                                child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(top: 3, left: 3),
-                                    child: Text(
-                                      "$alamatKeluar ( $placeOut )",
-                                      style: TextStyle(fontSize: 10),
-                                    )),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.note_text,
-                            size: 24,
-                            color: Constanst.colorPrimary,
-                          ),
-                          Container(
-                            width: gambarKeluar != ''
-                                ? MediaQuery.of(Get.context!).size.width / 2
-                                : MediaQuery.of(Get.context!).size.width - 80,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 3, left: 3),
-                              child: Text(catatanKeluar ?? '-'),
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                ],
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -696,7 +847,7 @@ class DetailAbsen extends StatelessWidget {
     //                     padding: EdgeInsets.only(left: 8),
     //                     child: Text(
     //                       jamKeluar ?? '',
-    //                       style: TextStyle(fontSize: 16),
+    //                       style: GoogleFonts.inter(fontSize: 16),
     //                     ),
     //                   )
     //                 ],
@@ -772,7 +923,7 @@ class DetailAbsen extends StatelessWidget {
     //                                   },
     //                                   child: Text(
     //                                     "Lihat Foto",
-    //                                     style: TextStyle(
+    //                                     style: GoogleFonts.inter(
     //                                       color: Constanst.colorPrimary,
     //                                       decoration: TextDecoration.underline,
     //                                     ),

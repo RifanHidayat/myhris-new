@@ -180,7 +180,7 @@ class _LaporanCutiDetailState extends State<LaporanCutiDetail> {
                       const SizedBox(height: 16),
                       status(),
                       const SizedBox(height: 16),
-                      Text("Riwayat Pengajuan Izin",
+                      Text("Riwayat Pengajuan Cuti",
                           style: GoogleFonts.inter(
                               fontWeight: FontWeight.w500,
                               color: Constanst.fgPrimary,
@@ -607,7 +607,7 @@ class _LaporanCutiDetailState extends State<LaporanCutiDetail> {
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400)),
                         const SizedBox(height: 4),
-                        Text(Constanst.convertDate("$tanggalMasukAjuan"),
+                        Text(Constanst.convertDate5("$tanggalMasukAjuan"),
                             style: GoogleFonts.inter(
                                 color: Constanst.fgSecondary,
                                 fontSize: 14,
@@ -710,7 +710,7 @@ class _LaporanCutiDetailState extends State<LaporanCutiDetail> {
                 //       ),
                 typeAjuan == 'Rejected'
                     ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Icon(
                             Iconsax.close_circle,
@@ -758,7 +758,7 @@ class _LaporanCutiDetailState extends State<LaporanCutiDetail> {
                             ],
                           )
                         : Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Icon(
                                 Iconsax.timer,

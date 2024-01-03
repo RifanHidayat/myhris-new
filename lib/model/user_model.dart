@@ -2,24 +2,24 @@ import 'dart:convert';
 
 class UserModel {
   var em_id;
-var des_id;
+  var des_id;
   var dep_id;
   var dep_group;
   var full_name;
-var em_email;
- var  em_phone;
-var em_birthday;
+  var em_email;
+  var em_phone;
+  var em_birthday;
   var em_gender;
   var em_image;
   var em_joining_date;
-var  em_status;
-  var  em_blood_group;
-  var  posisi;
-  var  emp_jobTitle;
-  var  emp_departmen;
-  var  em_control;
-  var  em_control_acess;
-  var  emp_att_working;
+  var em_status;
+  var em_blood_group;
+  var posisi;
+  var emp_jobTitle;
+  var emp_departmen;
+  var em_control;
+  var em_control_acess;
+  var emp_att_working;
   var em_hak_akses;
   var face_recog;
   var branchName;
@@ -29,6 +29,8 @@ var  em_status;
   var endDay;
   var startTime;
   var endTime;
+  var nomorBpjsKesehatan;
+  var nomorBpjsTenagakerja;
 
   UserModel(
       {this.em_id,
@@ -57,7 +59,9 @@ var  em_status;
       this.endPayroll,
       this.startTime,
       this.endTime,
-      this.em_hak_akses});
+      this.em_hak_akses,
+      this.nomorBpjsKesehatan,
+      this.nomorBpjsTenagakerja});
 
   Map<String, dynamic> toMap() {
     return {
@@ -82,12 +86,13 @@ var  em_status;
       'emp_att_working': emp_att_working,
       'em_hak_akses': em_hak_akses,
       'face_recog': face_recog,
-      'branch_name':branchName,
-      'begin_payroll':beginPayroll,
-      'end_payroll':endPayroll,
-      'start_time':startTime,
-      'end_time':endTime
-      
+      'branch_name': branchName,
+      'begin_payroll': beginPayroll,
+      'end_payroll': endPayroll,
+      'start_time': startTime,
+      'end_time': endTime,
+      'nomor_bpjs_kesehatan': nomorBpjsKesehatan,
+      'nomor_bpjs_tenagakerja': nomorBpjsTenagakerja
     };
   }
 
@@ -118,8 +123,9 @@ var  em_status;
         startTime: map['start_time'],
         endTime: map['end_time'],
         beginPayroll: map['begin_payroll'],
-        
-        em_hak_akses: map['em_hak_akses']);
+        em_hak_akses: map['em_hak_akses'],
+        nomorBpjsKesehatan: map['nomor_bpjs_kesehatan'],
+        nomorBpjsTenagakerja: map['nomor_bpjs_tenagakerja']);
   }
 
   String toJson() => json.encode(toMap());

@@ -58,6 +58,8 @@ class KandidatController extends GetxController {
 
   Rx<List<String>> permintaanKandidatUntuk = Rx<List<String>>([]);
 
+  var statusFormPencarian = false.obs;
+
   var selectType = 0.obs;
   var selectedInformasiView = 0.obs;
 
@@ -109,6 +111,10 @@ class KandidatController extends GetxController {
     this.bulanSelectedSearchHistory.refresh();
     this.tahunSelectedSearchHistory.refresh();
     this.bulanDanTahunNow.refresh();
+  }
+
+  void showInputCari() {
+    statusFormPencarian.value = !statusFormPencarian.value;
   }
 
   void getDepartemen() {
@@ -829,8 +835,8 @@ class KandidatController extends GetxController {
             "upload_file_permintaan_kandidat", filePengajuan.value);
         var valueBody = jsonDecode(connectUpload);
         if (valueBody['status'] == true) {
-       //   UtilsAlert.showToast("Berhasil upload file");
-         // Navigator.pop(Get.context!);
+          //   UtilsAlert.showToast("Berhasil upload file");
+          // Navigator.pop(Get.context!);
           checkNomorAjuan(status);
         } else {
           UtilsAlert.showToast("Gagal kirim file");
@@ -852,10 +858,9 @@ class KandidatController extends GetxController {
     Map<String, dynamic> body = {'pola': "PK"};
     var connect = Api.connectionApi("post", body, "emp_request_lastrow");
     connect.then((dynamic res) {
-   
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-        if (valueBody['status'] == true) {                     
+        if (valueBody['status'] == true) {
           if (valueBody['data'].isEmpty) {
             var now = DateTime.now();
             var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
@@ -872,7 +877,7 @@ class KandidatController extends GetxController {
           UtilsAlert.showToast("");
         }
       }
-    }).catchError((e){
+    }).catchError((e) {
       print("error");
       print(e);
     });
@@ -893,7 +898,6 @@ class KandidatController extends GetxController {
     var getEmid = "${dataUser![0].em_id}";
     var getFullName = "${dataUser[0].full_name}";
 
-    
     Map<String, dynamic> body = {
       'em_id': '$getEmid',
       'nomor_ajuan': '$nomorAjuanTerakhir',
@@ -912,7 +916,6 @@ class KandidatController extends GetxController {
 
     print("body permintaan ${body}");
 
-
     var connect = Api.connectionApi("post", body, "insert-employee_request");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -924,7 +927,7 @@ class KandidatController extends GetxController {
           var pesan3 = "";
 
           var pesan4 = "";
-             print("data global ${globalCt.konfirmasiAtasan.toString()}");
+          print("data global ${globalCt.konfirmasiAtasan.toString()}");
           List data = globalCt.konfirmasiAtasan;
 
           var newList = [];

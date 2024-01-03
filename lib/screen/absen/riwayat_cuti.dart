@@ -364,8 +364,10 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
             pickerModel: CustomMonthPicker(
               minTime: DateTime(2020, 1, 1),
               maxTime: DateTime(2050, 1, 1),
-              currentTime: DateTime.parse(
-                  "${controller.tahunSelectedSearchHistory.value}-${controller.bulanSelectedSearchHistory.value}-01"),
+              currentTime: DateTime(
+                  int.parse(controller.tahunSelectedSearchHistory.value),
+                  int.parse(controller.bulanSelectedSearchHistory.value),
+                  1),
             ),
             onConfirm: (time) {
               if (time != null) {

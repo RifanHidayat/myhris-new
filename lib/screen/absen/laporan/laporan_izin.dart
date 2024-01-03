@@ -7,9 +7,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/laporan_izin_controller.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_izin_detail.dart';
-import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan_detail.dart';
 import 'package:siscom_operasional/utils/api.dart';
-import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -241,7 +239,7 @@ class _LaporanIzinState extends State<LaporanIzin> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
                     Flexible(
                       child: RefreshIndicator(
                         onRefresh: refreshData,
@@ -565,205 +563,207 @@ class _LaporanIzinState extends State<LaporanIzin> {
           return InkWell(
             onTap: () {
               Get.to(LaporanIzinDetail(
-                emId: emId,
-                bulan: controller.bulanSelectedSearchHistory.value,
-                tahun: controller.tahunSelectedSearchHistory.value,
-                full_name: namaKaryawan,
-                title: widget.title,
-              ));
+                  emId: emId,
+                  bulan: controller.bulanSelectedSearchHistory.value,
+                  tahun: controller.tahunSelectedSearchHistory.value,
+                  full_name: namaKaryawan,
+                  title: widget.title,
+                  jobTitle: jobTitle,
+                  image: image));
             },
             child: Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 10),
-                  IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        image == ""
-                            ? SvgPicture.asset(
-                                'assets/avatar_default.svg',
-                                width: 48,
-                                height: 48,
-                              )
-                            : Center(
-                                child: CircleAvatar(
-                                  radius: 24,
+                  const SizedBox(height: 12),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      image == ""
+                          ? SvgPicture.asset(
+                              'assets/avatar_default.svg',
+                              width: 48,
+                              height: 48,
+                            )
+                          : Center(
+                              child: CircleAvatar(
+                                radius: 24,
+                                child: ClipOval(
                                   child: ClipOval(
-                                    child: ClipOval(
-                                      child: CachedNetworkImage(
-                                        imageUrl: "${Api.UrlfotoProfile}$image",
-                                        progressIndicatorBuilder:
-                                            (context, url, downloadProgress) =>
-                                                Container(
-                                          alignment: Alignment.center,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.5,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: CircularProgressIndicator(
-                                              value: downloadProgress.progress),
-                                        ),
-                                        errorWidget: (context, url, error) =>
-                                            Container(
-                                          color: Colors.white,
-                                          child: SvgPicture.asset(
-                                            'assets/avatar_default.svg',
-                                            width: 48,
-                                            height: 48,
-                                          ),
-                                        ),
-                                        fit: BoxFit.cover,
-                                        width: 48,
-                                        height: 48,
+                                    child: CachedNetworkImage(
+                                      imageUrl: "${Api.UrlfotoProfile}$image",
+                                      progressIndicatorBuilder:
+                                          (context, url, downloadProgress) =>
+                                              Container(
+                                        alignment: Alignment.center,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.5,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: CircularProgressIndicator(
+                                            value: downloadProgress.progress),
                                       ),
+                                      errorWidget: (context, url, error) =>
+                                          Container(
+                                        color: Colors.white,
+                                        child: SvgPicture.asset(
+                                          'assets/avatar_default.svg',
+                                          width: 48,
+                                          height: 48,
+                                        ),
+                                      ),
+                                      fit: BoxFit.cover,
+                                      width: 48,
+                                      height: 48,
                                     ),
                                   ),
                                 ),
                               ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          flex: 60,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                namaKaryawan,
-                                style: GoogleFonts.inter(
-                                    color: Constanst.fgPrimary,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                jobTitle,
-                                style: GoogleFonts.inter(
-                                    color: Constanst.fgSecondary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 35,
-                          child: Center(
-                            child: controller.statusFilterWaktu.value == 0
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "$jumlahPengajuan Pengajuan",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Constanst.colorText2),
-                                      ),
-                                      Text(
-                                        "${Constanst.convertDateBulanDanTahun('${controller.bulanDanTahunNow.value}')}",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Constanst.colorText2),
-                                      ),
-                                    ],
-                                  )
-                                : Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 3, right: 3, top: 5, bottom: 5),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        statusAjuan == 'Approve'
-                                            ? Icon(
-                                                Iconsax.tick_square,
-                                                color: Constanst.color5,
-                                                size: 14,
-                                              )
-                                            : statusAjuan == 'Approve 1'
-                                                ? Icon(
-                                                    Iconsax.tick_square,
-                                                    color: Constanst.color5,
-                                                    size: 14,
-                                                  )
-                                                : statusAjuan == 'Approve 2'
-                                                    ? Icon(
-                                                        Iconsax.tick_square,
-                                                        color: Constanst.color5,
-                                                        size: 14,
-                                                      )
-                                                    : statusAjuan == 'Rejected'
-                                                        ? Icon(
-                                                            Iconsax
-                                                                .close_square,
-                                                            color: Constanst
-                                                                .color4,
-                                                            size: 14,
-                                                          )
-                                                        : statusAjuan ==
-                                                                'Pending'
-                                                            ? Icon(
-                                                                Iconsax.timer,
-                                                                color: Constanst
-                                                                    .color3,
-                                                                size: 14,
-                                                              )
-                                                            : SizedBox(),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 3),
-                                          child: Text(
-                                            '$statusAjuan',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: statusAjuan == 'Approve'
-                                                    ? Colors.green
-                                                    : statusAjuan == 'Approve 1'
-                                                        ? Colors.green
-                                                        : statusAjuan ==
-                                                                'Approve 2'
-                                                            ? Colors.green
-                                                            : statusAjuan ==
-                                                                    'Rejected'
-                                                                ? Colors.red
-                                                                : statusAjuan ==
-                                                                        'Pending'
-                                                                    ? Constanst
-                                                                        .color3
-                                                                    : Colors
-                                                                        .black),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 10,
-                          child: Center(
-                            child: Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 14,
                             ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        flex: 60,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              namaKaryawan,
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              jobTitle,
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 35,
+                        child: Center(
+                            child:
+                                //  controller.statusFilterWaktu.value == 0
+                                //     ?
+                                Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "$jumlahPengajuan Pengajuan",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            Text(
+                              Constanst.convertDateBulanDanTahun(
+                                  controller.bulanDanTahunNow.value),
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ],
+                        )
+                            // : Padding(
+                            //     padding: EdgeInsets.only(
+                            //         left: 3, right: 3, top: 5, bottom: 5),
+                            //     child: Row(
+                            //       mainAxisAlignment:
+                            //           MainAxisAlignment.center,
+                            //       children: [
+                            //         statusAjuan == 'Approve'
+                            //             ? Icon(
+                            //                 Iconsax.tick_square,
+                            //                 color: Constanst.color5,
+                            //                 size: 14,
+                            //               )
+                            //             : statusAjuan == 'Approve 1'
+                            //                 ? Icon(
+                            //                     Iconsax.tick_square,
+                            //                     color: Constanst.color5,
+                            //                     size: 14,
+                            //                   )
+                            //                 : statusAjuan == 'Approve 2'
+                            //                     ? Icon(
+                            //                         Iconsax.tick_square,
+                            //                         color: Constanst.color5,
+                            //                         size: 14,
+                            //                       )
+                            //                     : statusAjuan == 'Rejected'
+                            //                         ? Icon(
+                            //                             Iconsax
+                            //                                 .close_square,
+                            //                             color: Constanst
+                            //                                 .color4,
+                            //                             size: 14,
+                            //                           )
+                            //                         : statusAjuan ==
+                            //                                 'Pending'
+                            //                             ? Icon(
+                            //                                 Iconsax.timer,
+                            //                                 color: Constanst
+                            //                                     .color3,
+                            //                                 size: 14,
+                            //                               )
+                            //                             : SizedBox(),
+                            //         Padding(
+                            //           padding:
+                            //               const EdgeInsets.only(left: 3),
+                            //           child: Text(
+                            //             '$statusAjuan',
+                            //             textAlign: TextAlign.center,
+                            //             style: TextStyle(
+                            //                 fontWeight: FontWeight.bold,
+                            //                 color: statusAjuan == 'Approve'
+                            //                     ? Colors.green
+                            //                     : statusAjuan == 'Approve 1'
+                            //                         ? Colors.green
+                            //                         : statusAjuan ==
+                            //                                 'Approve 2'
+                            //                             ? Colors.green
+                            //                             : statusAjuan ==
+                            //                                     'Rejected'
+                            //                                 ? Colors.red
+                            //                                 : statusAjuan ==
+                            //                                         'Pending'
+                            //                                     ? Constanst
+                            //                                         .color3
+                            //                                     : Colors
+                            //                                         .black),
+                            //           ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            ),
+                      ),
+                      const Expanded(
+                        flex: 5,
+                        child: Center(
+                          child: Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 18,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 8,
-                  ),
+                  const SizedBox(height: 12),
                   Divider(
-                    height: 3,
-                    color: Colors.grey,
+                    height: 0,
+                    thickness: 1,
+                    color: Constanst.border,
                   ),
                 ],
               ),
@@ -772,41 +772,41 @@ class _LaporanIzinState extends State<LaporanIzin> {
         });
   }
 
-  Widget textSubmit() {
-    return controller.statusLoadingSubmitLaporan.value == false
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Iconsax.search_normal_1,
-                size: 18,
-                color: Constanst.colorWhite,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Submit Data",
-                  style: TextStyle(color: Constanst.colorWhite),
-                ),
-              ),
-            ],
-          )
-        : Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 5, bottom: 5),
-                child: Center(
-                  child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 3,
-                        color: Colors.white,
-                      )),
-                ),
-              )
-            ],
-          );
-  }
+  // Widget textSubmit() {
+  //   return controller.statusLoadingSubmitLaporan.value == false
+  //       ? Row(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Icon(
+  //               Iconsax.search_normal_1,
+  //               size: 18,
+  //               color: Constanst.colorWhite,
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.all(8.0),
+  //               child: Text(
+  //                 "Submit Data",
+  //                 style: TextStyle(color: Constanst.colorWhite),
+  //               ),
+  //             ),
+  //           ],
+  //         )
+  //       : Row(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Padding(
+  //               padding: const EdgeInsets.only(top: 5, bottom: 5),
+  //               child: Center(
+  //                 child: SizedBox(
+  //                     width: 30,
+  //                     height: 30,
+  //                     child: CircularProgressIndicator(
+  //                       strokeWidth: 3,
+  //                       color: Colors.white,
+  //                     )),
+  //               ),
+  //             )
+  //           ],
+  //         );
+  // }
 }
