@@ -750,7 +750,9 @@ class DashboardController extends GetxController {
               'begin_payroll': element.beginPayroll,
               'end_payroll': element.endPayroll,
               'nomor_bpjs_kesehatan': element.nomorBpjsKesehatan,
-              'nomor_bpjs_tenagakerja': element.nomorBpjsTenagakerja
+              'nomor_bpjs_tenagakerja': element.nomorBpjsTenagakerja,
+              'time_in': element.timeIn,
+              'time_out': element.timeOut
             })
         .toList();
     user.value = userTampung;
@@ -831,7 +833,9 @@ class DashboardController extends GetxController {
               endTime: element['time_attendance'].toString().split(',')[1],
               branchName: element['branch_name'],
               nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'],
-              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja']);
+              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'],
+              timeIn: element['time_in'],
+              timeOut: element['time_out']);
           print(element['posisi']);
           getData.add(data);
         }

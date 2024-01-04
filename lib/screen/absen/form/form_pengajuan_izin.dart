@@ -1,18 +1,11 @@
 // ignore_for_file: deprecated_member_use
-import 'dart:io';
 
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/controller/izin_controller.dart';
-import 'package:siscom_operasional/screen/absen/riwayat_izin.dart';
-import 'package:siscom_operasional/utils/app_data.dart';
-import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
@@ -182,10 +175,9 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                                   children: [
                                     formTipe(),
                                     formAjuanTanggal(),
-
                                     // Text(AppData.informasiUser![0].dep_group.toString()),
                                     controller.viewFormWaktu.value == false
-                                        ? SizedBox()
+                                        ? const SizedBox()
                                         : formAjuanWaktu(),
                                     formDelegasiKepada(),
                                     formUploadFile(),
@@ -472,30 +464,37 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
           //         widget.dataForm![1] == false
           //     ?
           const SizedBox(height: 8),
-          Card(
-              margin: EdgeInsets.zero,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              child: SfDateRangePicker(
-                selectionMode: DateRangePickerSelectionMode.multiple,
-                initialSelectedDates: controller.tanggalSelectedEdit.value,
-                monthCellStyle: const DateRangePickerMonthCellStyle(
-                  weekendTextStyle: TextStyle(color: Colors.red),
-                  blackoutDateTextStyle: TextStyle(
-                      color: Colors.red,
-                      decoration: TextDecoration.lineThrough),
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                border: Border.all(color: Constanst.fgBorder)),
+            child: Card(
+                margin: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0),
                 ),
-                onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-                  if (controller.idEditFormTidakMasukKerja.value != "") {
-                    controller.tanggalSelectedEdit.value = args.value;
-                    this.controller.tanggalSelectedEdit.refresh();
-                  } else {
-                    controller.tanggalSelected.value = args.value;
-                    this.controller.tanggalSelected.refresh();
-                  }
-                },
-              ))
+                elevation: 0,
+                child: SfDateRangePicker(
+                  selectionMode: DateRangePickerSelectionMode.multiple,
+                  initialSelectedDates: controller.tanggalSelectedEdit.value,
+                  monthCellStyle: const DateRangePickerMonthCellStyle(
+                    weekendTextStyle: TextStyle(color: Colors.red),
+                    blackoutDateTextStyle: TextStyle(
+                        color: Colors.red,
+                        decoration: TextDecoration.lineThrough),
+                  ),
+                  onSelectionChanged:
+                      (DateRangePickerSelectionChangedArgs args) {
+                    if (controller.idEditFormTidakMasukKerja.value != "") {
+                      controller.tanggalSelectedEdit.value = args.value;
+                      this.controller.tanggalSelectedEdit.refresh();
+                    } else {
+                      controller.tanggalSelected.value = args.value;
+                      this.controller.tanggalSelected.refresh();
+                    }
+                  },
+                )),
+          )
           // : SizedBox(),
         ],
       ),

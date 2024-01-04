@@ -8,19 +8,13 @@ import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/tugas_luar_controller.dart';
-import 'package:siscom_operasional/screen/absen/form/form_lembur.dart';
 import 'package:siscom_operasional/screen/absen/form/form_tugas_luar.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_dinas_luar.dart';
-import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_tugas_luar.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
-import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
-import 'package:siscom_operasional/utils/widget/text_labe.dart';
-import 'package:siscom_operasional/utils/widget_textButton.dart';
-import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class TugasLuar extends StatefulWidget {
@@ -165,7 +159,7 @@ class _TugasLuarState extends State<TugasLuar> {
                               size: 24,
                             ),
                             onPressed: () => Get.to(LaporanTugasLuar(
-                              title: 'tidak_hadir',
+                              title: 'tugas_luar',
                             )),
                             // controller.toggleSearch,
                           ),

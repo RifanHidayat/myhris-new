@@ -927,7 +927,7 @@ class _DashboardState extends State<Dashboard> {
                             Row(
                               children: [
                                 Text(
-                                  "Jadwal 08:30 - 18:00",
+                                  "Jadwal ${AppData.informasiUser![0].timeIn}  - ${AppData.informasiUser![0].timeOut}",
                                   style: GoogleFonts.inter(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
@@ -2552,10 +2552,8 @@ class _DashboardState extends State<Dashboard> {
         context: context,
         versionStatus: status!,
         dialogTitle: "Update SISCOM HRIS",
-        dialogText: "Update versi SISCOM HRIS dari versi" +
-            status.localVersion +
-            " ke versi " +
-            status.storeVersion,
+        dialogText:
+            "Update versi SISCOM HRIS dari versi${status.localVersion} ke versi ${status.storeVersion}",
         dismissAction: () {
           Get.back();
         },

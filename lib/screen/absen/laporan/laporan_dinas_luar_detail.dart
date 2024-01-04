@@ -238,7 +238,7 @@ class _LaporanDinasLuarDetailState extends State<LaporanDinasLuarDetail> {
       approve_by = index['apply_by'];
     }
     return InkWell(
-      onTap: () => controller.showDetailRiwayat(index),
+      // onTap: () => controller.showDetailRiwayat(index),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
