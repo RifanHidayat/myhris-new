@@ -1078,137 +1078,134 @@ class TugasLuarController extends GetxController {
   void showModalBatalPengajuan(index) {
     showModalBottomSheet(
       context: Get.context!,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(10.0),
+          top: Radius.circular(20.0),
         ),
       ),
       builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 90,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: Constanst.colorBGRejected,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Iconsax.minus_cirlce,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 6),
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 6),
-                                child: viewTugasLuar.value
-                                    ? Text(
-                                        "Batalkan Pengajuan Tugas Luar",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                      )
-                                    : Text(
-                                        "Batalkan Pengajuan Dinas Luar",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                      ),
-                              ),
-                            )
-                          ],
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Iconsax.info_circle5,
+                          color: Constanst.color4,
+                          size: 30,
                         ),
+                        const SizedBox(width: 12),
+                        Text(
+                          "Batalkan Pengajuan",
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              color: Constanst.fgPrimary),
+                        ),
+                      ],
+                    ),
+                    InkWell(
+                      onTap: () => Get.back(),
+                      customBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      child: Icon(
+                        Icons.close,
+                        color: Constanst.fgSecondary,
+                        size: 26,
                       ),
-                      Expanded(
-                          flex: 10,
-                          child: InkWell(
-                            onTap: () => Navigator.pop(Get.context!),
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 6),
-                              child: Icon(Iconsax.close_circle),
-                            ),
-                          ))
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    "Data pengajuan yang telah kamu buat akan di hapus. Yakin ingin membatalkan pengajuan?",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(color: Constanst.colorText2),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: TextButtonWidget(
-                            title: "Ya, Batalkan",
-                            onTap: () async {
-                              batalkanPengajuan(index);
-                            },
-                            colorButton: Constanst.colorButton1,
-                            colortext: Constanst.colorWhite,
-                            border: BorderRadius.circular(10.0),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "Data pengajuan yang telah kamu buat akan di hapus. Yakin ingin membatalkan pengajuan?",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      color: Constanst.fgPrimary),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 40,
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Constanst
+                                .border, // Set the desired border color
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Get.back();
+                            batalkanPengajuan(index);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              foregroundColor: Constanst.color4,
+                              backgroundColor: Constanst.colorWhite,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              elevation: 0,
+                              // padding: EdgeInsets.zero,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                          child: Text(
+                            'Ya, Batalkan',
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.color4,
+                                fontSize: 14),
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: InkWell(
-                          onTap: () => Navigator.pop(Get.context!),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: Constanst.borderStyle2,
-                                  border: Border.all(
-                                      color: Constanst.colorPrimary)),
-                              child: Center(
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 12, bottom: 12),
-                                  child: Text(
-                                    "Urungkan",
-                                    style: TextStyle(
-                                        color: Constanst.colorPrimary),
-                                  ),
-                                ),
-                              )),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: SizedBox(
+                        height: 40,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.colorWhite,
+                            backgroundColor: Constanst.colorPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 0,
+                            // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                          ),
+                          child: Text(
+                            'Kembali',
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.colorWhite,
+                                fontSize: 14),
+                          ),
                         ),
-                      )
-                    ],
-                  )
-                ],
-              ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
-            SizedBox(
-              height: 16,
-            )
-          ],
+          ),
         );
       },
     );

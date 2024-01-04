@@ -31,6 +31,8 @@ class UserModel {
   var endTime;
   var nomorBpjsKesehatan;
   var nomorBpjsTenagakerja;
+  var timeIn;
+  var timeOut;
 
   UserModel(
       {this.em_id,
@@ -61,7 +63,9 @@ class UserModel {
       this.endTime,
       this.em_hak_akses,
       this.nomorBpjsKesehatan,
-      this.nomorBpjsTenagakerja});
+      this.nomorBpjsTenagakerja,
+      this.timeIn,
+      this.timeOut});
 
   Map<String, dynamic> toMap() {
     return {
@@ -92,7 +96,9 @@ class UserModel {
       'start_time': startTime,
       'end_time': endTime,
       'nomor_bpjs_kesehatan': nomorBpjsKesehatan,
-      'nomor_bpjs_tenagakerja': nomorBpjsTenagakerja
+      'nomor_bpjs_tenagakerja': nomorBpjsTenagakerja,
+      'time_in': timeIn,
+      'time_out': timeOut
     };
   }
 
@@ -125,7 +131,9 @@ class UserModel {
         beginPayroll: map['begin_payroll'],
         em_hak_akses: map['em_hak_akses'],
         nomorBpjsKesehatan: map['nomor_bpjs_kesehatan'],
-        nomorBpjsTenagakerja: map['nomor_bpjs_tenagakerja']);
+        nomorBpjsTenagakerja: map['nomor_bpjs_tenagakerja'],
+        timeIn: map['time_in'],
+        timeOut: map['time_out']);
   }
 
   String toJson() => json.encode(toMap());

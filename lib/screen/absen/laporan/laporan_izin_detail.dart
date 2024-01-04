@@ -383,6 +383,10 @@ class _LaporanIzinDetailState extends State<LaporanIzinDetail> {
                                         )
                                       : InkWell(
                                           onTap: () {
+                                            controller.changeTypeAjuanLaporan(
+                                                controller.dataTypeAjuan
+                                                    .value[index]['nama'],
+                                                widget.title);
                                             controller.tempKodeStatus1.value =
                                                 namaType;
                                             controller.tempNamaStatus1.value =
@@ -446,10 +450,8 @@ class _LaporanIzinDetailState extends State<LaporanIzinDetail> {
           physics: const BouncingScrollPhysics(),
           itemCount: controller.listDetailLaporanEmployee.value.length,
           itemBuilder: (context, index) {
- 
             return viewTidakHadir(
                 controller.listDetailLaporanEmployee.value[index]);
- 
           }),
     );
   }

@@ -158,6 +158,8 @@ class AuthController extends GetxController {
             endTime: element['time_attendance'].toString().split(',')[1],
             nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
             nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
+            timeIn: element['time_in'] ?? "",
+            timeOut: element['time_out'] ?? "",
             //   startTime: "00:01",
             // endTime: "23:59",
           );
@@ -271,6 +273,8 @@ class AuthController extends GetxController {
             endTime: element['time_attendance'].toString().split(',')[1],
             nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
             nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
+            timeIn: element['time_in'] ?? "",
+            timeOut: element['time_out'] ?? "",
             // startTime: "00:01",
             // endTime: "23:59",
           );

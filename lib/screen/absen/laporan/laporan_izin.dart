@@ -62,16 +62,6 @@ class _LaporanIzinState extends State<LaporanIzin> {
                         height: 40,
                         child: TextFormField(
                           controller: controller.cari.value,
-                          // onFieldSubmitted: (value) {
-                          //   if (controller.cari.value.text == "") {
-                          //     UtilsAlert.showToast(
-                          //         "Isi form cari terlebih dahulu");
-                          //   } else {
-                          //     // UtilsAlert.loadingSimpanData(
-                          //     //     Get.context!, "Mencari Data...");
-                          //     controller.pencarianNamaKaryawan(value);
-                          //   }
-                          // },
                           onChanged: (value) {
                             controller.pencarianNamaKaryawan(value);
                           },
@@ -665,6 +655,7 @@ class _LaporanIzinState extends State<LaporanIzin> {
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400),
                             ),
+                            const SizedBox(height: 4),
                             Text(
                               Constanst.convertDateBulanDanTahun(
                                   controller.bulanDanTahunNow.value),
