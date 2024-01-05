@@ -402,9 +402,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           floatingActionButton: Obx(
-            () => controller.showButtonlaporan.value == false
-                ? SizedBox()
-                : SpeedDial(
+            () => SpeedDial(
                     icon: Iconsax.more,
                     activeIcon: Icons.close,
                     backgroundColor: Constanst.colorPrimary,
