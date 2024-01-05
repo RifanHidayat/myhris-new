@@ -153,18 +153,20 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                               // controller.toggleSearch,
                             ),
                           ),
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            icon: Icon(
-                              Iconsax.document_text,
-                              color: Constanst.fgPrimary,
-                              size: 24,
-                            ),
-                            onPressed: () => Get.to(LaporanCuti(
-                              title: 'cuti',
-                            )),
-                            // controller.toggleSearch,
-                          ),
+                          controller.showButtonlaporan.value == false
+                              ? const SizedBox()
+                              : IconButton(
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(
+                                    Iconsax.document_text,
+                                    color: Constanst.fgPrimary,
+                                    size: 24,
+                                  ),
+                                  onPressed: () => Get.to(LaporanCuti(
+                                    title: 'cuti',
+                                  )),
+                                  // controller.toggleSearch,
+                                ),
                         ],
                       ),
               ],

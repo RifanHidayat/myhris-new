@@ -84,16 +84,27 @@ class TugasLuarController extends GetxController {
 
   GlobalController globalCt = Get.put(GlobalController());
 
+  // @override
+  // void onReady() async {
+  //   super.onReady();
+  //   getTimeNow();
+  //   getLoadsysData();
+  //   loadTipePengajuan();
+  //   loadDataTugasLuar();
+  //   loadDataDinasLuar();
+  //   loadAllEmployeeDelegasi();
+  //   getDepartemen(1, "");
+  // }
+
   @override
-  void onReady() async {
-    super.onReady();
+  void onInit() {
     getTimeNow();
     getLoadsysData();
     loadTipePengajuan();
     loadDataTugasLuar();
     loadDataDinasLuar();
-    loadAllEmployeeDelegasi();
     getDepartemen(1, "");
+    super.onInit();
   }
 
   void removeAll() {

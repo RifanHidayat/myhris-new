@@ -1910,6 +1910,20 @@ class AbsenController extends GetxController {
     this.statusCari.refresh();
   }
 
+  void clearPencarian() {
+    statusCari.value = false;
+    cari.value.text = "";
+
+    listLaporanFilter.value = allListLaporanFilter.value;
+    this.listLaporanFilter.refresh();
+
+    listLaporanBelumAbsen.value = allListLaporanBelumAbsen.value;
+    this.listLaporanBelumAbsen.refresh();
+
+    listEmployeeTelat.value = alllistEmployeeTelat.value;
+    this.listEmployeeTelat.refresh();
+  }
+
   void widgetButtomSheetFilterData() {
     showModalBottomSheet(
       context: Get.context!,
