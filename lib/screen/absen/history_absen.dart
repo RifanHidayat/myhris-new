@@ -401,6 +401,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
               ],
             ),
           ),
+ 
         ),
         // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         // floatingActionButton: Obx(
@@ -469,6 +470,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
           ),
         ),
       ),
+ 
     );
   }
 

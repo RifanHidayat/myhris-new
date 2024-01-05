@@ -14,7 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/model/atasan_model.dart';
 import 'package:siscom_operasional/screen/absen/form/berhasil_pengajuan.dart';
-import 'package:siscom_operasional/screen/absen/form/form_pengajuan_izin.dart';
+import 'package:siscom_operasional/screen/absen/form/form_tidakMasukKerja.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -24,7 +24,7 @@ import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class IzinController extends GetxController {
+class TidakMasukKerjaController extends GetxController {
   var cari = TextEditingController().obs;
   var nomorAjuan = TextEditingController().obs;
   var dariTanggal = TextEditingController().obs;
@@ -759,14 +759,10 @@ class IzinController extends GetxController {
   }
 
   void checkNomorAjuanDalamAntrian(status, nomorAjuanTerakhirDalamAntrian) {
-    // var pola =
+   // var pola = 
     // selectedDropdownFormTidakMasukKerjaTipe.value ==
     //         allTipe.value[0]['name']
-    var pola = selectedDropdownFormTidakMasukKerjaTipe.value
-            .toString()
-            .trim()
-            .toLowerCase()
-            .contains(allTipe.value[0]['name'].toString().trim().toLowerCase())
+        var pola = selectedDropdownFormTidakMasukKerjaTipe.value.toString().trim().toLowerCase().contains(allTipe.value[0]['name'].toString().trim().toLowerCase())
         ? "SD"
         : "ST";
 
@@ -950,10 +946,6 @@ class IzinController extends GetxController {
                   "Data periode $convertTanggalBikinPengajuan belum tersedia, harap hubungi HRD");
             }
           }
-        } else {
-          var valueBody = jsonDecode(res.body);
-          UtilsAlert.showToast(valueBody['message']);
-          Get.back();
         }
       });
     } else {
@@ -1172,7 +1164,6 @@ class IzinController extends GetxController {
                         ),
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.back();
                             batalkanPengajuan(index);
                           },
                           style: ElevatedButton.styleFrom(
@@ -1274,7 +1265,6 @@ class IzinController extends GetxController {
     var nomorAjuan = detailData['nomor_ajuan'];
     var tanggalMasukAjuan = detailData['atten_date'];
     var namaTypeAjuan = detailData['name'];
-    var categoryAjuan = detailData['category'];
     var tanggalAjuanDari = detailData['start_date'];
     var tanggalAjuanSampai = detailData['end_date'];
     var alasan = detailData['reason'];
@@ -1375,7 +1365,7 @@ class IzinController extends GetxController {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                Constanst.convertDate6("$tanggalMasukAjuan"),
+                                Constanst.convertDate("$tanggalMasukAjuan"),
                                 style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16,
@@ -1409,7 +1399,7 @@ class IzinController extends GetxController {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "$categoryAjuan - $namaTypeAjuan",
+                          "$namaTypeAjuan",
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
@@ -1424,7 +1414,7 @@ class IzinController extends GetxController {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          "Tanggal Izin",
+                          "Tanggal Cuti",
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w400,
                             fontSize: 14,
@@ -1488,7 +1478,7 @@ class IzinController extends GetxController {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          "Durasi Izin",
+                          "Durasi Cuti",
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w400,
                             fontSize: 14,
@@ -1582,7 +1572,7 @@ class IzinController extends GetxController {
                                         style: GoogleFonts.inter(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16,
-                                          color: Constanst.infoLight,
+                                          color: Constanst.fgPrimary,
                                         ),
                                       )),
                                   const SizedBox(height: 12),
@@ -1746,7 +1736,7 @@ class IzinController extends GetxController {
                               child: ElevatedButton(
                                 onPressed: () {
                                   print(detailData.toString());
-                                  Get.to(FormPengajuanIzin(
+                                  Get.to(FormTidakMasukKerja(
                                     dataForm: [detailData, true],
                                   ));
                                 },
