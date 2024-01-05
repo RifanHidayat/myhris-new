@@ -262,333 +262,279 @@ class _LaporanTugasLuarState extends State<LaporanTugasLuar> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // InkWell(
-            //   customBorder: const RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.all(Radius.circular(100))),
-            //   onTap: () {
-            //     showModalBottomSheet(
-            //       context: context,
-            //       shape: const RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.vertical(
-            //           top: Radius.circular(16.0),
-            //         ),
-            //       ),
-            //       builder: (BuildContext context) {
-            //         return SafeArea(
-            //           child: ClipRRect(
-            //             borderRadius: BorderRadius.circular(16.0),
-            //             child: Column(
-            //               crossAxisAlignment: CrossAxisAlignment.start,
-            //               mainAxisSize: MainAxisSize.min,
-            //               children: [
-            //                 Padding(
-            //                   padding:
-            //                       const EdgeInsets.fromLTRB(16, 18, 16, 18),
-            //                   child: Row(
-            //                     crossAxisAlignment: CrossAxisAlignment.center,
-            //                     mainAxisAlignment:
-            //                         MainAxisAlignment.spaceBetween,
-            //                     children: [
-            //                       Text(
-            //                         "Pilih Tipe",
-            //                         style: GoogleFonts.inter(
-            //                           fontWeight: FontWeight.w500,
-            //                           fontSize: 18,
-            //                           color: Constanst.fgPrimary,
-            //                         ),
-            //                       ),
-            //                       InkWell(
-            //                           customBorder:
-            //                               const RoundedRectangleBorder(
-            //                                   borderRadius: BorderRadius.all(
-            //                                       Radius.circular(8))),
-            //                           onTap: () => Navigator.pop(Get.context!),
-            //                           child: Icon(
-            //                             Icons.close,
-            //                             size: 26,
-            //                             color: Constanst.fgSecondary,
-            //                           ))
-            //                     ],
-            //                   ),
-            //                 ),
-            //                 Padding(
-            //                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-            //                   child: Divider(
-            //                     thickness: 1,
-            //                     height: 0,
-            //                     color: Constanst.border,
-            //                   ),
-            //                 ),
-            //                 // InkWell(
-            //                 //   onTap: () {
-            //                 //     controller.tempNamaTipe1.value = "Semua Tipe";
-            //                 //     Get.back();
-            //                 //     controller.changeTypeSelected(2);
-            //                 //   },
-            //                 //   child: Padding(
-            //                 //     padding: const EdgeInsets.fromLTRB(0, 16, 16, 16),
-            //                 //     child: Row(
-            //                 //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //                 //       children: [
-            //                 //         Row(
-            //                 //           children: [
-            //                 //             const SizedBox(width: 16),
-            //                 //             Text(
-            //                 //               "Semua Tipe",
-            //                 //               style: GoogleFonts.inter(
-            //                 //                 fontWeight: FontWeight.w500,
-            //                 //                 fontSize: 16,
-            //                 //                 color: Constanst.fgPrimary,
-            //                 //               ),
-            //                 //             ),
-            //                 //           ],
-            //                 //         ),
-            //                 //         controller.tempNamaTipe1.value == "Semua Tipe"
-            //                 //             ? Container(
-            //                 //                 height: 20,
-            //                 //                 width: 20,
-            //                 //                 decoration: BoxDecoration(
-            //                 //                     border: Border.all(
-            //                 //                         width: 2,
-            //                 //                         color: Constanst.onPrimary),
-            //                 //                     borderRadius:
-            //                 //                         BorderRadius.circular(10)),
-            //                 //                 child: Padding(
-            //                 //                   padding: const EdgeInsets.all(3),
-            //                 //                   child: Container(
-            //                 //                     decoration: BoxDecoration(
-            //                 //                         color: Constanst.onPrimary,
-            //                 //                         borderRadius:
-            //                 //                             BorderRadius.circular(10)),
-            //                 //                   ),
-            //                 //                 ),
-            //                 //               )
-            //                 //             : InkWell(
-            //                 //                 onTap: () {
-            //                 //                   controller.tempNamaTipe1.value =
-            //                 //                       "Semua Tipe";
-            //                 //                   Get.back();
-            //                 //                   controller.changeTypeSelected(2);
-            //                 //                 },
-            //                 //                 child: Container(
-            //                 //                   height: 20,
-            //                 //                   width: 20,
-            //                 //                   decoration: BoxDecoration(
-            //                 //                       border: Border.all(
-            //                 //                           width: 1,
-            //                 //                           color: Constanst.onPrimary),
-            //                 //                       borderRadius:
-            //                 //                           BorderRadius.circular(10)),
-            //                 //                   child: Padding(
-            //                 //                     padding: const EdgeInsets.all(2),
-            //                 //                     child: Container(
-            //                 //                       decoration: BoxDecoration(
-            //                 //                           borderRadius:
-            //                 //                               BorderRadius.circular(10)),
-            //                 //                     ),
-            //                 //                   ),
-            //                 //                 ),
-            //                 //               )
-            //                 //       ],
-            //                 //     ),
-            //                 //   ),
-            //                 // ),
-            //                 InkWell(
-            //                   onTap: () {
-            //                     controller.tempNamaTipe1.value = "Tugas Luar";
-            //                     Get.back();
-            //                     controller.changeTypeSelected(0);
-            //                   },
-            //                   child: Padding(
-            //                     padding:
-            //                         const EdgeInsets.fromLTRB(0, 16, 16, 16),
-            //                     child: Row(
-            //                       mainAxisAlignment:
-            //                           MainAxisAlignment.spaceBetween,
-            //                       children: [
-            //                         Row(
-            //                           children: [
-            //                             const SizedBox(width: 16),
-            //                             Text(
-            //                               "Tugas Luar",
-            //                               style: GoogleFonts.inter(
-            //                                 fontWeight: FontWeight.w500,
-            //                                 fontSize: 16,
-            //                                 color: Constanst.fgPrimary,
-            //                               ),
-            //                             ),
-            //                           ],
-            //                         ),
-            //                         controller.tempNamaTipe1.value ==
-            //                                 "Tugas Luar"
-            //                             ? Container(
-            //                                 height: 20,
-            //                                 width: 20,
-            //                                 decoration: BoxDecoration(
-            //                                     border: Border.all(
-            //                                         width: 2,
-            //                                         color: Constanst.onPrimary),
-            //                                     borderRadius:
-            //                                         BorderRadius.circular(10)),
-            //                                 child: Padding(
-            //                                   padding: const EdgeInsets.all(3),
-            //                                   child: Container(
-            //                                     decoration: BoxDecoration(
-            //                                         color: Constanst.onPrimary,
-            //                                         borderRadius:
-            //                                             BorderRadius.circular(
-            //                                                 10)),
-            //                                   ),
-            //                                 ),
-            //                               )
-            //                             : InkWell(
-            //                                 onTap: () {
-            //                                   controller.tempNamaTipe1.value =
-            //                                       "Tugas Luar";
-            //                                   Get.back();
-            //                                   controller.changeTypeSelected(0);
-            //                                 },
-            //                                 child: Container(
-            //                                   height: 20,
-            //                                   width: 20,
-            //                                   decoration: BoxDecoration(
-            //                                       border: Border.all(
-            //                                           width: 1,
-            //                                           color:
-            //                                               Constanst.onPrimary),
-            //                                       borderRadius:
-            //                                           BorderRadius.circular(
-            //                                               10)),
-            //                                   child: Padding(
-            //                                     padding:
-            //                                         const EdgeInsets.all(2),
-            //                                     child: Container(
-            //                                       decoration: BoxDecoration(
-            //                                           borderRadius:
-            //                                               BorderRadius.circular(
-            //                                                   10)),
-            //                                     ),
-            //                                   ),
-            //                                 ),
-            //                               )
-            //                       ],
-            //                     ),
-            //                   ),
-            //                 ),
-            //                 InkWell(
-            //                   onTap: () {
-            //                     controller.tempNamaTipe1.value = "Dinas Luar";
-            //                     Get.back();
-            //                     controller.changeTypeSelected(1);
-            //                   },
-            //                   child: Padding(
-            //                     padding:
-            //                         const EdgeInsets.fromLTRB(0, 16, 16, 16),
-            //                     child: Row(
-            //                       mainAxisAlignment:
-            //                           MainAxisAlignment.spaceBetween,
-            //                       children: [
-            //                         Row(
-            //                           children: [
-            //                             const SizedBox(width: 16),
-            //                             Text(
-            //                               "Dinas Luar",
-            //                               style: GoogleFonts.inter(
-            //                                 fontWeight: FontWeight.w500,
-            //                                 fontSize: 16,
-            //                                 color: Constanst.fgPrimary,
-            //                               ),
-            //                             ),
-            //                           ],
-            //                         ),
-            //                         controller.tempNamaTipe1.value ==
-            //                                 "Dinas Luar"
-            //                             ? Container(
-            //                                 height: 20,
-            //                                 width: 20,
-            //                                 decoration: BoxDecoration(
-            //                                     border: Border.all(
-            //                                         width: 2,
-            //                                         color: Constanst.onPrimary),
-            //                                     borderRadius:
-            //                                         BorderRadius.circular(10)),
-            //                                 child: Padding(
-            //                                   padding: const EdgeInsets.all(3),
-            //                                   child: Container(
-            //                                     decoration: BoxDecoration(
-            //                                         color: Constanst.onPrimary,
-            //                                         borderRadius:
-            //                                             BorderRadius.circular(
-            //                                                 10)),
-            //                                   ),
-            //                                 ),
-            //                               )
-            //                             : InkWell(
-            //                                 onTap: () {
-            //                                   controller.tempNamaTipe1.value =
-            //                                       "Dinas Luar";
-            //                                   Get.back();
-            //                                   controller.changeTypeSelected(1);
-            //                                 },
-            //                                 child: Container(
-            //                                   height: 20,
-            //                                   width: 20,
-            //                                   decoration: BoxDecoration(
-            //                                       border: Border.all(
-            //                                           width: 1,
-            //                                           color:
-            //                                               Constanst.onPrimary),
-            //                                       borderRadius:
-            //                                           BorderRadius.circular(
-            //                                               10)),
-            //                                   child: Padding(
-            //                                     padding:
-            //                                         const EdgeInsets.all(2),
-            //                                     child: Container(
-            //                                       decoration: BoxDecoration(
-            //                                           borderRadius:
-            //                                               BorderRadius.circular(
-            //                                                   10)),
-            //                                     ),
-            //                                   ),
-            //                                 ),
-            //                               )
-            //                       ],
-            //                     ),
-            //                   ),
-            //                 )
-            //               ],
-            //             ),
-            //           ),
-            //         );
-            //       },
-            //     ).then((value) {
-            //       print('Bottom sheet closed');
-            //     });
-            //   },
-            //   child: Padding(
-            //     padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-            //     child: Row(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: [
-            //         Text(
-            //           controller.tempNamaTipe1.value,
-            //           style: GoogleFonts.inter(
-            //             fontWeight: FontWeight.w500,
-            //             fontSize: 14,
-            //             color: Constanst.fgSecondary,
-            //           ),
-            //         ),
-            //         const SizedBox(width: 4),
-            //         Icon(
-            //           Iconsax.arrow_down_1,
-            //           size: 18,
-            //           color: Constanst.fgSecondary,
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
+            InkWell(
+              customBorder: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(100))),
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(16.0),
+                    ),
+                  ),
+                  builder: (BuildContext context) {
+                    return SafeArea(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Pilih Tipe",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 18,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                  ),
+                                  InkWell(
+                                      customBorder:
+                                          const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(8))),
+                                      onTap: () => Navigator.pop(Get.context!),
+                                      child: Icon(
+                                        Icons.close,
+                                        size: 26,
+                                        color: Constanst.fgSecondary,
+                                      ))
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                              child: Divider(
+                                thickness: 1,
+                                height: 0,
+                                color: Constanst.border,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                Get.back();
+                                controller.getDepartemen(1, "");
+                                controller.title.value = 'tugas_luar';
+                                controller.tempNamaTipe1.value = "Tugas Luar";
+                                controller.tempNamaLaporan1.value =
+                                    "tugas_luar";
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(0, 16, 16, 16),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const SizedBox(width: 16),
+                                        Text(
+                                          "Tugas Luar",
+                                          style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                            color: Constanst.fgPrimary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    controller.tempNamaTipe1.value ==
+                                            "Tugas Luar"
+                                        ? Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(3),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Constanst.onPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          )
+                                        : InkWell(
+                                            onTap: () async {
+                                              Get.back();
+                                              controller.getDepartemen(1, "");
+                                              controller.title.value =
+                                                  'tugas_luar';
+                                              controller.tempNamaTipe1.value =
+                                                  "Tugas Luar";
+                                              controller.tempNamaLaporan1
+                                                  .value = "tugas_luar";
+                                            },
+                                            child: Container(
+                                              height: 20,
+                                              width: 20,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color:
+                                                          Constanst.onPrimary),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                Get.back();
+                                controller.getDepartemen(1, "");
+                                controller.title.value = 'dinas_luar';
+                                controller.tempNamaTipe1.value = "Dinas Luar";
+                                controller.tempNamaLaporan1.value =
+                                    "dinas_luar";
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(0, 16, 16, 16),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const SizedBox(width: 16),
+                                        Text(
+                                          "Dinas Luar",
+                                          style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                            color: Constanst.fgPrimary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    controller.tempNamaTipe1.value ==
+                                            "Dinas Luar"
+                                        ? Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(3),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Constanst.onPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          )
+                                        : InkWell(
+                                            onTap: () async {
+                                              Get.back();
+                                              controller.getDepartemen(1, "");
+                                              controller.title.value =
+                                                  'dinas_luar';
+                                              controller.tempNamaTipe1.value =
+                                                  "Dinas Luar";
+                                              controller.tempNamaLaporan1
+                                                  .value = "dinas_luar";
+                                            },
+                                            child: Container(
+                                              height: 20,
+                                              width: 20,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color:
+                                                          Constanst.onPrimary),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ).then((value) {
+                  print('Bottom sheet closed');
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(color: Constanst.border)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        controller.tempNamaTipe1.value,
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: Constanst.fgSecondary,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Iconsax.arrow_down_1,
+                        size: 18,
+                        color: Constanst.fgSecondary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
             InkWell(
               customBorder: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(100))),
@@ -774,7 +720,7 @@ class _LaporanTugasLuarState extends State<LaporanTugasLuar> {
                   bulan: controller.bulanSelectedSearchHistory.value,
                   tahun: controller.tahunSelectedSearchHistory.value,
                   full_name: namaKaryawan,
-                  title: widget.title,
+                  title: controller.title.value,
                   jobTitle: jobTitle,
                   image: image));
             },

@@ -151,18 +151,20 @@ class _TugasLuarState extends State<TugasLuar> {
                               // controller.toggleSearch,
                             ),
                           ),
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            icon: Icon(
-                              Iconsax.document_text,
-                              color: Constanst.fgPrimary,
-                              size: 24,
-                            ),
-                            onPressed: () => Get.to(LaporanTugasLuar(
-                              title: 'tugas_luar',
-                            )),
-                            // controller.toggleSearch,
-                          ),
+                          controller.showButtonlaporan.value == false
+                              ? const SizedBox()
+                              : IconButton(
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(
+                                    Iconsax.document_text,
+                                    color: Constanst.fgPrimary,
+                                    size: 24,
+                                  ),
+                                  onPressed: () => Get.to(LaporanTugasLuar(
+                                    title: 'tugas_luar',
+                                  )),
+                                  // controller.toggleSearch,
+                                ),
                         ],
                       ),
               ],
@@ -1168,7 +1170,7 @@ class _TugasLuarState extends State<TugasLuar> {
                     : controller.listTugasLuar.value[index]['status'];
           }
           var alasanReject =
-              controller.listDinasLuar.value[index]['alasan_reject'] ?? "";
+              controller.listTugasLuar.value[index]['alasan_reject'] ?? "";
           var approveDate =
               controller.listTugasLuar.value[index]['approve_date'];
           var uraian = controller.listTugasLuar.value[index]['uraian'];

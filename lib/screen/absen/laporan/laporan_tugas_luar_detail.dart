@@ -59,7 +59,7 @@ class _LaporanTugasLuarDetailState extends State<LaporanTugasLuarDetail> {
               titleSpacing: 0,
               centerTitle: false,
               title: Text(
-                "Detail Laporan Tugas Luar",
+                "Detail Laporan ${widget.title == "dinas_luar" ? "Dinas Luar" : "Tugas Luar"}",
                 style: GoogleFonts.inter(
                     color: Constanst.fgPrimary,
                     fontWeight: FontWeight.w500,
@@ -177,7 +177,8 @@ class _LaporanTugasLuarDetailState extends State<LaporanTugasLuarDetail> {
                       const SizedBox(height: 16),
                       status(),
                       const SizedBox(height: 16),
-                      Text("Riwayat Pengajuan Tugas Luar",
+                      Text(
+                          "Riwayat Pengajuan ${widget.title == "dinas_luar" ? "Dinas Luar" : "Tugas Luar"}",
                           style: GoogleFonts.inter(
                               fontWeight: FontWeight.w500,
                               color: Constanst.fgPrimary,
@@ -577,8 +578,8 @@ class _LaporanTugasLuarDetailState extends State<LaporanTugasLuarDetail> {
         child: InkWell(
           customBorder: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(12))),
-          onTap: () =>
-              controller.showDetailRiwayat(index, approve, alasanReject),
+          onTap: () => controller.showDetailRiwayat(
+              widget.title, index, approve, alasanReject),
           child: Padding(
             padding:
                 const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 8),
@@ -593,9 +594,9 @@ class _LaporanTugasLuarDetailState extends State<LaporanTugasLuarDetail> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                              controllerTugasLuar.viewTugasLuar.value
-                                  ? "Tugas Luar"
-                                  : "Dinas Luar",
+                              widget.title == "dinas_luar"
+                                  ? "Dinas Luar"
+                                  : "Tugas Luar",
                               style: GoogleFonts.inter(
                                   color: Constanst.fgPrimary,
                                   fontSize: 16,
@@ -613,12 +614,18 @@ class _LaporanTugasLuarDetailState extends State<LaporanTugasLuarDetail> {
                                   color: Constanst.fgSecondary,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400)),
-                          const SizedBox(height: 4),
-                          Text('$dariJam sd $sampaiJam',
-                              style: GoogleFonts.inter(
-                                  color: Constanst.fgSecondary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400)),
+                          widget.title == "dinas_luar"
+                              ? Container()
+                              : Column(
+                                  children: [
+                                    const SizedBox(height: 4),
+                                    Text('$dariJam sd $sampaiJam',
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400)),
+                                  ],
+                                ),
                         ],
                       ),
                     ),

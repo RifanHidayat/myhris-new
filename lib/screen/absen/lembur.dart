@@ -156,18 +156,20 @@ class _LemburState extends State<Lembur> {
                               // controller.toggleSearch,
                             ),
                           ),
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            icon: Icon(
-                              Iconsax.document_text,
-                              color: Constanst.fgPrimary,
-                              size: 24,
-                            ),
-                            onPressed: () => Get.to(LaporanLembur(
-                              title: 'lembur',
-                            )),
-                            // controller.toggleSearch,
-                          ),
+                          controller.showButtonlaporan.value == false
+                              ? const SizedBox()
+                              : IconButton(
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(
+                                    Iconsax.document_text,
+                                    color: Constanst.fgPrimary,
+                                    size: 24,
+                                  ),
+                                  onPressed: () => Get.to(LaporanLembur(
+                                    title: 'lembur',
+                                  )),
+                                  // controller.toggleSearch,
+                                ),
                         ],
                       ),
               ],

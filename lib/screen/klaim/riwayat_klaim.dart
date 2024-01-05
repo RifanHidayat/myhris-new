@@ -157,18 +157,20 @@ class _KlaimState extends State<Klaim> {
                               // controller.toggleSearch,
                             ),
                           ),
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            icon: Icon(
-                              Iconsax.document_text,
-                              color: Constanst.fgPrimary,
-                              size: 24,
-                            ),
-                            onPressed: () => Get.to(LaporanKlaim(
-                              title: 'cuti',
-                            )),
-                            // controller.toggleSearch,
-                          ),
+                          controller.showButtonlaporan.value == false
+                              ? const SizedBox()
+                              : IconButton(
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(
+                                    Iconsax.document_text,
+                                    color: Constanst.fgPrimary,
+                                    size: 24,
+                                  ),
+                                  onPressed: () => Get.to(LaporanKlaim(
+                                    title: 'cuti',
+                                  )),
+                                  // controller.toggleSearch,
+                                ),
                         ],
                       ),
               ],

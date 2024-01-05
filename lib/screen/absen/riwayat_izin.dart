@@ -145,18 +145,20 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
                               // controller.toggleSearch,
                             ),
                           ),
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            icon: Icon(
-                              Iconsax.document_text,
-                              color: Constanst.fgPrimary,
-                              size: 24,
-                            ),
-                            onPressed: () => Get.to(LaporanIzin(
-                              title: 'tidak_hadir',
-                            )),
-                            // controller.toggleSearch,
-                          ),
+                          controller.showButtonlaporan.value == false
+                              ? const SizedBox()
+                              : IconButton(
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(
+                                    Iconsax.document_text,
+                                    color: Constanst.fgPrimary,
+                                    size: 24,
+                                  ),
+                                  onPressed: () => Get.to(LaporanIzin(
+                                    title: 'tidak_hadir',
+                                  )),
+                                  // controller.toggleSearch,
+                                ),
                         ],
                       ),
               ],

@@ -370,9 +370,8 @@ class _LaporanAbsenTelatState extends State<LaporanAbsenTelat> {
           var emId = controller.listEmployeeTelat.value[index]['em_id'];
           var jamMasuk =
               controller.listEmployeeTelat.value[index]['signin_time'];
-               var status =
-              controller.listEmployeeTelat.value[index]['status'];
-              
+          var status = controller.listEmployeeTelat.value[index]['status'];
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -401,15 +400,17 @@ class _LaporanAbsenTelatState extends State<LaporanAbsenTelat> {
                     ),
                     Expanded(
                       flex: 30,
-                      child: status==1? Center(
-                          child: Text(
-                        "$jamMasuk",
-                        style: TextStyle( color: Colors.red),
-                      )):Center(
-                          child: Text(
-                        "$jamMasuk",
-                        style: TextStyle( color: Colors.black),
-                      )),
+                      child: status == 1
+                          ? Center(
+                              child: Text(
+                              "$jamMasuk",
+                              style: TextStyle(color: Colors.red),
+                            ))
+                          : Center(
+                              child: Text(
+                              "$jamMasuk",
+                              style: TextStyle(color: Colors.black),
+                            )),
                     ),
                   ],
                 ),
