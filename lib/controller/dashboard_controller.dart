@@ -15,8 +15,12 @@ import 'package:ntp/ntp.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
+import 'package:siscom_operasional/controller/cuti_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/izin_controller.dart';
+import 'package:siscom_operasional/controller/klaim_controller.dart';
+import 'package:siscom_operasional/controller/lembur_controller.dart';
+import 'package:siscom_operasional/controller/tugas_luar_controller.dart';
 import 'package:siscom_operasional/model/menu.dart';
 import 'package:siscom_operasional/model/menu_dashboard_model.dart';
 import 'package:google_maps_utils/google_maps_utils.dart' as maps;
@@ -72,10 +76,15 @@ class DashboardController extends GetxController {
 
   RxBool isSearching = false.obs;
   var searchController = TextEditingController();
-  var controllerIzin = Get.put(IzinController());
   var bpjsController = Get.put(BpjsController());
 
   var controllerAbsensi = Get.put(AbsenController());
+  var controllerIzin = Get.put(IzinController());
+  var controllerLembur = Get.put(LemburController());
+  var controllerCuti = Get.put(CutiController());
+  var controllerTugasLuar = Get.put(TugasLuarController());
+  var controllerKlaim = Get.put(KlaimController());
+
   var menu = <MenuDashboardModel>[].obs;
   var globalCtr = Get.put(GlobalController());
   var dashboardStatusAbsen = false.obs;
@@ -1657,382 +1666,350 @@ class DashboardController extends GetxController {
       ),
       backgroundColor: Constanst.colorWhite,
       builder: (context) {
-        return SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Iconsax.document_text5,
-                          color: Constanst.infoLight,
-                          size: 26,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12),
-                          child: Text(
-                            "Cek Laporan",
-                            style: GoogleFonts.inter(
-                                color: Constanst.fgPrimary,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500),
+        return Obx(
+          () => SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Iconsax.document_text5,
+                            color: Constanst.infoLight,
+                            size: 26,
                           ),
-                        ),
-                      ],
-                    ),
-                    InkWell(
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: Text(
+                              "Cek Laporan",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                      InkWell(
+                          onTap: () {
+                            Navigator.pop(Get.context!);
+                          },
+                          child: Icon(
+                            Icons.close,
+                            size: 24,
+                            color: Constanst.fgSecondary,
+                          ))
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  child: Divider(
+                    height: 0,
+                    thickness: 1,
+                    color: Constanst.fgBorder,
+                  ),
+                ),
+                controllerAbsensi.showButtonlaporan.value == false
+                    ? const SizedBox()
+                    : InkWell(
+                        // highlightColor: Colors.white,
                         onTap: () {
-                          Navigator.pop(Get.context!);
+                          Get.back();
+                          Get.to(LaporanAbsen(
+                            dataForm: "",
+                          ));
                         },
-                        child: Icon(
-                          Icons.close,
-                          size: 24,
-                          color: Constanst.fgSecondary,
-                        ))
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Divider(
-                  height: 0,
-                  thickness: 1,
-                  color: Constanst.fgBorder,
-                ),
-              ),
-              InkWell(
-                // highlightColor: Colors.white,
-                onTap: () {
-                  Get.back();
-                  Get.to(LaporanAbsen(
-                    dataForm: "",
-                  ));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 12, bottom: 12, left: 16, right: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/2_absen.svg',
-                            height: 35,
-                            width: 35,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 12, bottom: 12, left: 16, right: 16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/2_absen.svg',
+                                    height: 35,
+                                    width: 35,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 12.0),
+                                    child: Text(
+                                      'Laporan Absensi',
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgPrimary,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 18,
+                                  color: Constanst.fgSecondary,
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: Text(
-                              'Laporan Absensi',
-                              style: GoogleFonts.inter(
-                                  color: Constanst.fgPrimary,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 18,
-                          color: Constanst.fgSecondary,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                // highlightColor: Colors.white,
-                onTap: () {
-                  Get.back();
-                  Get.to(LaporanIzin(
-                    title: 'tidak_hadir',
-                  ));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 12, bottom: 12, left: 16, right: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/3_izin.svg',
-                            height: 35,
-                            width: 35,
+                controllerIzin.showButtonlaporan.value == false
+                    ? const SizedBox()
+                    : InkWell(
+                        // highlightColor: Colors.white,
+                        onTap: () {
+                          Get.back();
+                          Get.to(LaporanIzin(
+                            title: 'tidak_hadir',
+                          ));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 12, bottom: 12, left: 16, right: 16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/3_izin.svg',
+                                    height: 35,
+                                    width: 35,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 12.0),
+                                    child: Text(
+                                      'Laporan Izin',
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgPrimary,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 18,
+                                  color: Constanst.fgSecondary,
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: Text(
-                              'Laporan Izin',
-                              style: GoogleFonts.inter(
-                                  color: Constanst.fgPrimary,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 18,
-                          color: Constanst.fgSecondary,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                // highlightColor: Colors.white,
-                onTap: () {
-                  Get.back();
-                  Get.to(LaporanLembur(
-                    title: 'lembur',
-                  ));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 12, bottom: 12, left: 16, right: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/4_lembur.svg',
-                            height: 35,
-                            width: 35,
+                controllerLembur.showButtonlaporan.value == false
+                    ? const SizedBox()
+                    : InkWell(
+                        // highlightColor: Colors.white,
+                        onTap: () {
+                          Get.back();
+                          Get.to(LaporanLembur(
+                            title: 'lembur',
+                          ));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 12, bottom: 12, left: 16, right: 16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/4_lembur.svg',
+                                    height: 35,
+                                    width: 35,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 12.0),
+                                    child: Text(
+                                      'Laporan Lembur',
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgPrimary,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 18,
+                                  color: Constanst.fgSecondary,
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: Text(
-                              'Laporan Lembur',
-                              style: GoogleFonts.inter(
-                                  color: Constanst.fgPrimary,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 18,
-                          color: Constanst.fgSecondary,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                // highlightColor: Colors.white,
-                onTap: () {
-                  Get.back();
-                  Get.to(LaporanCuti(
-                    title: 'cuti',
-                  ));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 12, bottom: 12, left: 16, right: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/5_cuti.svg',
-                            height: 35,
-                            width: 35,
+                controllerCuti.showButtonlaporan.value == false
+                    ? const SizedBox()
+                    : InkWell(
+                        // highlightColor: Colors.white,
+                        onTap: () {
+                          Get.back();
+                          Get.to(LaporanCuti(
+                            title: 'cuti',
+                          ));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 12, bottom: 12, left: 16, right: 16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/5_cuti.svg',
+                                    height: 35,
+                                    width: 35,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 12.0),
+                                    child: Text(
+                                      'Laporan Cuti',
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgPrimary,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 18,
+                                  color: Constanst.fgSecondary,
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: Text(
-                              'Laporan Cuti',
-                              style: GoogleFonts.inter(
-                                  color: Constanst.fgPrimary,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 18,
-                          color: Constanst.fgSecondary,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                // highlightColor: Colors.white,
-                onTap: () {
-                  Get.back();
-                  Get.to(LaporanTugasLuar(
-                    title: 'tugas_luar',
-                  ));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 12, bottom: 12, left: 16, right: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/6_tugas_luar.svg',
-                            height: 35,
-                            width: 35,
+                controllerTugasLuar.showButtonlaporan.value == false
+                    ? const SizedBox()
+                    : InkWell(
+                        // highlightColor: Colors.white,
+                        onTap: () {
+                          Get.back();
+                          Get.to(LaporanTugasLuar(
+                            title: 'tugas_luar',
+                          ));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 12, bottom: 12, left: 16, right: 16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/6_tugas_luar.svg',
+                                    height: 35,
+                                    width: 35,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 12.0),
+                                    child: Text(
+                                      'Laporan Tugas Luar',
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgPrimary,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 18,
+                                  color: Constanst.fgSecondary,
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: Text(
-                              'Laporan Tugas Luar',
-                              style: GoogleFonts.inter(
-                                  color: Constanst.fgPrimary,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 18,
-                          color: Constanst.fgSecondary,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                // highlightColor: Colors.white,
-                onTap: () {
-                  Get.back();
-                  Get.to(LaporanDinasLuar(
-                    title: 'dinas_luar',
-                  ));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 12, bottom: 12, left: 16, right: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/6_tugas_luar.svg',
-                            height: 35,
-                            width: 35,
+                controllerKlaim.showButtonlaporan.value == false
+                    ? const SizedBox()
+                    : InkWell(
+                        // highlightColor: Colors.white,
+                        onTap: () {
+                          Get.back();
+                          Get.to(LaporanKlaim(
+                            title: 'klaim',
+                          ));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 12, bottom: 12, left: 16, right: 16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/7_klaim.svg',
+                                    height: 35,
+                                    width: 35,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 12.0),
+                                    child: Text(
+                                      'Laporan Klaim',
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgPrimary,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 18,
+                                  color: Constanst.fgSecondary,
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: Text(
-                              'Laporan Dinas Luar',
-                              style: GoogleFonts.inter(
-                                  color: Constanst.fgPrimary,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 18,
-                          color: Constanst.fgSecondary,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                // highlightColor: Colors.white,
-                onTap: () {
-                  Get.back();
-                  Get.to(LaporanKlaim(
-                    title: 'klaim',
-                  ));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 12, bottom: 12, left: 16, right: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/7_klaim.svg',
-                            height: 35,
-                            width: 35,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: Text(
-                              'Laporan Klaim',
-                              style: GoogleFonts.inter(
-                                  color: Constanst.fgPrimary,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 18,
-                          color: Constanst.fgSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

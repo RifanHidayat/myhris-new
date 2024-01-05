@@ -4,19 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/screen/absen/camera_view.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_absen.dart';
-import 'package:siscom_operasional/screen/absen/laporan/laporan_absen_telat.dart';
-import 'package:siscom_operasional/screen/absen/laporan/laporan_belum_absen.dart';
 import 'package:siscom_operasional/screen/absen/pengajuan%20absen.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
-import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
-
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
@@ -401,7 +396,6 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
               ],
             ),
           ),
- 
         ),
         // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         // floatingActionButton: Obx(
@@ -470,7 +464,6 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
           ),
         ),
       ),
- 
     );
   }
 

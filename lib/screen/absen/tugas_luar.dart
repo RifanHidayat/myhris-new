@@ -151,20 +151,22 @@ class _TugasLuarState extends State<TugasLuar> {
                               // controller.toggleSearch,
                             ),
                           ),
-                          controller.showButtonlaporan.value == false
-                              ? const SizedBox()
-                              : IconButton(
-                                  padding: EdgeInsets.zero,
-                                  icon: Icon(
-                                    Iconsax.document_text,
-                                    color: Constanst.fgPrimary,
-                                    size: 24,
+                          Obx(
+                            () => controller.showButtonlaporan.value == false
+                                ? const SizedBox()
+                                : IconButton(
+                                    padding: EdgeInsets.zero,
+                                    icon: Icon(
+                                      Iconsax.document_text,
+                                      color: Constanst.fgPrimary,
+                                      size: 24,
+                                    ),
+                                    onPressed: () => Get.to(LaporanTugasLuar(
+                                      title: 'tugas_luar',
+                                    )),
+                                    // controller.toggleSearch,
                                   ),
-                                  onPressed: () => Get.to(LaporanTugasLuar(
-                                    title: 'tugas_luar',
-                                  )),
-                                  // controller.toggleSearch,
-                                ),
+                          ),
                         ],
                       ),
               ],

@@ -19,7 +19,6 @@ import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/controller/tab_controller.dart';
-import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 import 'package:siscom_operasional/screen/absen/absesi_location.dart';
 import 'package:siscom_operasional/screen/absen/camera_view.dart';
 import 'package:siscom_operasional/screen/absen/face_id_registration.dart';
@@ -49,6 +48,12 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   final controller = Get.put(DashboardController());
   final controllerAbsensi = Get.put(AbsenController());
+  // final controllerIzin = Get.put(IzinController());
+  // var controllerLembur = Get.put(LemburController());
+  // var controllerCuti = Get.put(CutiController());
+  // var controllerTugasLuar = Get.put(TugasLuarController());
+  // var controllerKlaim = Get.put(KlaimController());
+
   final controllerPesan = Get.put(PesanController());
   var controllerGlobal = Get.put(GlobalController());
   var controllerBpj = Get.put(BpjsController());
@@ -1786,73 +1791,78 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           const SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Constanst.colorStateInfoBorder,
-                    width: 1.0,
-                  ),
-                  // color: Constanst.colorButton3,
-                  borderRadius: Constanst.borderStyle2),
-              child: Material(
-                borderRadius: Constanst.borderStyle2,
-                color: Constanst.infoLight1,
-                child: InkWell(
-                  customBorder: RoundedRectangleBorder(
-                    borderRadius: Constanst.borderStyle2,
-                  ),
-                  onTap: () {
-                    controller.widgetButtomSheetFormLaporan();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Iconsax.document_text5,
-                              color: Constanst.infoLight,
-                              size: 26,
-                            ),
-                            const SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Laporan",
-                                  style: GoogleFonts.inter(
-                                      color: Constanst.fgPrimary,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  "Cek laporan disini!",
-                                  style: GoogleFonts.inter(
-                                      color: Constanst.fgPrimary,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                          ],
+          controllerAbsensi.showButtonlaporan.value == false &&
+                  controllerAbsensi.showButtonlaporan.value == false
+              ? const SizedBox()
+              : Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Constanst.colorStateInfoBorder,
+                          width: 1.0,
                         ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: Constanst.fgSecondary,
-                          size: 18,
+                        // color: Constanst.colorButton3,
+                        borderRadius: Constanst.borderStyle2),
+                    child: Material(
+                      borderRadius: Constanst.borderStyle2,
+                      color: Constanst.infoLight1,
+                      child: InkWell(
+                        customBorder: RoundedRectangleBorder(
+                          borderRadius: Constanst.borderStyle2,
                         ),
-                      ],
+                        onTap: () {
+                          controller.widgetButtomSheetFormLaporan();
+                        },
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Iconsax.document_text5,
+                                    color: Constanst.infoLight,
+                                    size: 26,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Laporan",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgPrimary,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        "Cek laporan disini!",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgPrimary,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: Constanst.fgSecondary,
+                                size: 18,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
         ],
       ),
     );
