@@ -882,7 +882,7 @@ class IzinController extends GetxController {
       body['menu_name'] = "Tidak Hadir";
       body['activity_name'] =
           "Membuat Pengajuan tidak hadir. alasan = ${alasan.value.text}";
-      var connect = Api.connectionApi("post", body, "kirimPengajuanTMK");
+      var connect = Api.connectionApi("post", body, "izin");
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
           var typeNotifFcm = "Pengajuan Izin";
@@ -1424,7 +1424,7 @@ class IzinController extends GetxController {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          "Tanggal Cuti",
+                          "Tanggal Izin",
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w400,
                             fontSize: 14,
@@ -1488,7 +1488,7 @@ class IzinController extends GetxController {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          "Durasi Cuti",
+                          "Durasi Izin",
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w400,
                             fontSize: 14,
