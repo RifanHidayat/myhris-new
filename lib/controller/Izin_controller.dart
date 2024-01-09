@@ -882,6 +882,7 @@ class IzinController extends GetxController {
       'leave_files': namaFileUpload.value,
       'ajuan': getAjuanType,
     };
+    print(body);
     if (status == false) {
       body['created_by'] = getEmid;
       body['menu_name'] = "Tidak Hadir";
