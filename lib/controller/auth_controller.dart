@@ -94,13 +94,13 @@ class AuthController extends GetxController {
 
   Future<void> loginUser() async {
     final box = GetStorage();
-    //  var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+      var fcm_registration_token = await FirebaseMessaging.instance.getToken();
 
     UtilsAlert.showLoadingIndicator(Get.context!);
     Map<String, dynamic> body = {
       'email': email.value.text,
       'password': password.value.text,
-      'token_notif': "1",
+      'token_notif': fcm_registration_token ,
       'database': selectedDb.value
     };
     var connect = Api.connectionApi("post", body, "login");
@@ -178,7 +178,7 @@ class AuthController extends GetxController {
           getAktif = "${element['status_aktif']}";
 
           AppData.isLogin = true;
-          AppData.setFcmToken = "1";
+          AppData.setFcmToken =fcm_registration_token!;
           print(element.toString());
         }
 
@@ -224,7 +224,7 @@ class AuthController extends GetxController {
     Map<String, dynamic> body = {
       'email': email.value.text,
       'password': password.value.text,
-      'token_notif': "1",
+        'token_notif': fcm_registration_token ,
       'database': selectedDb.value
     };
     var connect = Api.connectionApi("post", body, "login");
@@ -292,6 +292,7 @@ class AuthController extends GetxController {
 
           AppData.isLogin = true;
           print(element.toString());
+                AppData.setFcmToken =fcm_registration_token!;
         }
 
         if (getAktif == "ACTIVE") {
