@@ -94,25 +94,67 @@ Future showNotification(message) async {
   );
   RemoteNotification notification = message.notification;
   AndroidNotification android = message.notification?.android;
-
-  flutterLocalNotificationsPlugin.show(
+    flutterLocalNotificationsPlugin.show(
       0,
       notification.title,
       notification.body,
-      NotificationDetails(
+      const NotificationDetails(
         android: AndroidNotificationDetails(
-            DateTime.now().millisecondsSinceEpoch.toString(), "",
-            playSound: true,
-            priority: Priority.high,
-            importance: Importance.high,
-            icon: '@mipmap/ic_launcher'
-
-            // TODO add a proper drawable resource to android, for now using
-            //      one that already exists in example app.
+            // DateTime.now().millisecondsSinceEpoch.toString(),
+            'channelId',
+            'channelName',
+            // playSound: true,
+            // setAsGroupSummary: true,
+            // ongoing: true,
+            // groupAlertBehavior: GroupAlertBehavior.children,
+            // when: 5,
+            // maxProgress: 5,
+            // progress: 5,
+            // // timeoutAfter: 5,
+            // channelAction: AndroidNotificationChannelAction.update,
+            // visibility: NotificationVisibility.public,
+            // onlyAlertOnce: true,
+            // showWhen: false,
+            // usesChronometer: true,
+            // // category: AndroidNotificationCategory.alarm,
+            // chronometerCountDown: true,
+            // channelShowBadge: false,
+            // showProgress: true,
+            // indeterminate: true,
+            // enableLights: true,
+            // fullScreenIntent: true,
+            visibility: NotificationVisibility.public,
+            styleInformation: BigTextStyleInformation(
+              "",
+              htmlFormatBigText: true,
+              // contentTitle: "",
+              // htmlFormatContentTitle: true,
             ),
-        iOS: iosNotificationDetails,
+            priority: Priority.max,
+            importance: Importance.max,
+            icon: '@mipmap/ic_launcher'),
+        // iOS: DarwinNotificationDetails(),
       ),
-      payload: "${message}");
+      payload: message.data.toString());
+
+  // flutterLocalNotificationsPlugin.show(
+  //     0,
+  //     notification.title,
+  //     notification.body,
+  //     NotificationDetails(
+  //       android: AndroidNotificationDetails(
+  //           DateTime.now().millisecondsSinceEpoch.toString(), "",
+  //           playSound: true,
+  //           priority: Priority.high,
+  //           importance: Importance.high,
+  //           icon: '@mipmap/ic_launcher'
+
+  //           // TODO add a proper drawable resource to android, for now using
+  //           //      one that already exists in example app.
+  //           ),
+  //       iOS: iosNotificationDetails,
+  //     ),
+  //     payload: "${message}");
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
