@@ -660,7 +660,7 @@ class PersonalInfo extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                         child: Column(
                           children: [
-                              Padding(
+                            Padding(
                               padding: const EdgeInsets.only(
                                   top: 12.0, bottom: 12.0),
                               child: Row(
@@ -688,9 +688,8 @@ class PersonalInfo extends StatelessWidget {
                                               fontWeight: FontWeight.w400),
                                         ),
                                         const SizedBox(height: 4),
-                                       
                                         Text(
-                                          "${ AppData.selectedPerusahan}",
+                                          "${AppData.selectedPerusahan}",
                                           style: GoogleFonts.inter(
                                               fontSize: 16,
                                               color: Constanst.fgPrimary,
@@ -707,7 +706,7 @@ class PersonalInfo extends StatelessWidget {
                               thickness: 1,
                               color: Constanst.fgBorder,
                             ),
-                              Padding(
+                            Padding(
                               padding: const EdgeInsets.only(
                                   top: 12.0, bottom: 12.0),
                               child: Row(
@@ -735,9 +734,9 @@ class PersonalInfo extends StatelessWidget {
                                               fontWeight: FontWeight.w400),
                                         ),
                                         const SizedBox(height: 4),
-                                 
                                         Text(
-                                               AppData.informasiUser![0].branchName.toString(),
+                                          AppData.informasiUser![0].branchName
+                                              .toString(),
                                           style: GoogleFonts.inter(
                                               fontSize: 16,
                                               color: Constanst.fgPrimary,

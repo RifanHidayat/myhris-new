@@ -252,117 +252,296 @@ class UtilsAlert {
       width: MediaQuery.of(context).size.width,
       height: controller.heightPageView.value / 2,
       child: Shimmer.fromColors(
-          baseColor: Colors.grey.shade300,
-          highlightColor: Colors.grey.shade100,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
             children: [
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: SizedBox(
-                        height: 30,
-                        width: 100,
-                        child: Card(child: ListTile(title: Text('')))),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: SizedBox(
-                        height: 30,
-                        width: 100,
-                        child: Card(child: ListTile(title: Text('')))),
-                  ),
-                ],
-              ),
-              Row(children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, bottom: 10, top: 10),
-                    child: SizedBox(
-                        height: 50,
-                        child: Card(child: ListTile(title: Text('')))),
-                  ),
+              const SizedBox(width: 16),
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 42,
+                      width: 42,
+                      decoration: BoxDecoration(
+                          color: Constanst.infoLight1,
+                          borderRadius: BorderRadius.circular(100.0)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                        top: 8,
+                      ),
+                      child: Container(
+                        height: 42,
+                        width: 42,
+                        decoration: BoxDecoration(
+                            color: Constanst.infoLight1,
+                            borderRadius: BorderRadius.circular(12.0)),
+                      ),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, bottom: 10, top: 10),
-                    child: SizedBox(
-                        height: 50,
-                        child: Card(child: ListTile(title: Text('')))),
-                  ),
+                const SizedBox(height: 4),
+                Container(
+                  height: 14,
+                  width: 55,
+                  decoration: BoxDecoration(
+                      color: Constanst.infoLight1,
+                      borderRadius: BorderRadius.circular(4.0)),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, bottom: 10, top: 10),
-                    child: SizedBox(
-                        height: 50,
-                        child: Card(child: ListTile(title: Text('')))),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, bottom: 10, top: 10),
-                    child: SizedBox(
-                        height: 50,
-                        child: Card(child: ListTile(title: Text('')))),
-                  ),
-                )
               ]),
-              Row(children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, bottom: 5, top: 5),
-                    child: SizedBox(
-                        height: 50,
-                        child: Card(child: ListTile(title: Text('')))),
-                  ),
+              const SizedBox(width: 28),
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 42,
+                      width: 42,
+                      decoration: BoxDecoration(
+                          color: Constanst.infoLight1,
+                          borderRadius: BorderRadius.circular(100.0)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                        top: 8,
+                      ),
+                      child: Container(
+                        height: 42,
+                        width: 42,
+                        decoration: BoxDecoration(
+                            color: Constanst.infoLight1,
+                            borderRadius: BorderRadius.circular(12.0)),
+                      ),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, bottom: 5, top: 5),
-                    child: SizedBox(
-                        height: 50,
-                        child: Card(child: ListTile(title: Text('')))),
-                  ),
+                const SizedBox(height: 4),
+                Container(
+                  height: 14,
+                  width: 55,
+                  decoration: BoxDecoration(
+                      color: Constanst.infoLight1,
+                      borderRadius: BorderRadius.circular(4.0)),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, bottom: 5, top: 5),
-                    child: SizedBox(
-                        height: 50,
-                        child: Card(child: ListTile(title: Text('')))),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, bottom: 5, top: 5),
-                    child: SizedBox(
-                        height: 50,
-                        child: Card(child: ListTile(title: Text('')))),
-                  ),
-                )
               ]),
-              // SizedBox(
-              //   height: 10,
-              // ),
-              // SizedBox(
-              //   height: 100,
-              //   child: Padding(
-              //     padding: const EdgeInsets.only(left: 16, right: 16),
-              //     child: Card(child: ListTile(title: Text(''))),
-              //   ),
-              // )
+              const SizedBox(width: 28),
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 42,
+                      width: 42,
+                      decoration: BoxDecoration(
+                          color: Constanst.infoLight1,
+                          borderRadius: BorderRadius.circular(100.0)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                        top: 8,
+                      ),
+                      child: Container(
+                        height: 42,
+                        width: 42,
+                        decoration: BoxDecoration(
+                            color: Constanst.infoLight1,
+                            borderRadius: BorderRadius.circular(12.0)),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  height: 14,
+                  width: 55,
+                  decoration: BoxDecoration(
+                      color: Constanst.infoLight1,
+                      borderRadius: BorderRadius.circular(4.0)),
+                ),
+              ]),
+              const SizedBox(width: 28),
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 42,
+                      width: 42,
+                      decoration: BoxDecoration(
+                          color: Constanst.infoLight1,
+                          borderRadius: BorderRadius.circular(100.0)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                        top: 8,
+                      ),
+                      child: Container(
+                        height: 42,
+                        width: 42,
+                        decoration: BoxDecoration(
+                            color: Constanst.infoLight1,
+                            borderRadius: BorderRadius.circular(12.0)),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  height: 14,
+                  width: 55,
+                  decoration: BoxDecoration(
+                      color: Constanst.infoLight1,
+                      borderRadius: BorderRadius.circular(4.0)),
+                ),
+              ]),
+              const SizedBox(width: 28),
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 42,
+                      width: 42,
+                      decoration: BoxDecoration(
+                          color: Constanst.infoLight1,
+                          borderRadius: BorderRadius.circular(100.0)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                        top: 8,
+                      ),
+                      child: Container(
+                        height: 42,
+                        width: 42,
+                        decoration: BoxDecoration(
+                            color: Constanst.infoLight1,
+                            borderRadius: BorderRadius.circular(12.0)),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  height: 14,
+                  width: 55,
+                  decoration: BoxDecoration(
+                      color: Constanst.infoLight1,
+                      borderRadius: BorderRadius.circular(4.0)),
+                ),
+              ]),
+              const SizedBox(width: 28),
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 42,
+                      width: 42,
+                      decoration: BoxDecoration(
+                          color: Constanst.infoLight1,
+                          borderRadius: BorderRadius.circular(100.0)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                        top: 8,
+                      ),
+                      child: Container(
+                        height: 42,
+                        width: 42,
+                        decoration: BoxDecoration(
+                            color: Constanst.infoLight1,
+                            borderRadius: BorderRadius.circular(12.0)),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  height: 14,
+                  width: 55,
+                  decoration: BoxDecoration(
+                      color: Constanst.infoLight1,
+                      borderRadius: BorderRadius.circular(4.0)),
+                ),
+              ]),
+              const SizedBox(width: 28),
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 42,
+                      width: 42,
+                      decoration: BoxDecoration(
+                          color: Constanst.infoLight1,
+                          borderRadius: BorderRadius.circular(100.0)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                        top: 8,
+                      ),
+                      child: Container(
+                        height: 42,
+                        width: 42,
+                        decoration: BoxDecoration(
+                            color: Constanst.infoLight1,
+                            borderRadius: BorderRadius.circular(12.0)),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  height: 14,
+                  width: 55,
+                  decoration: BoxDecoration(
+                      color: Constanst.infoLight1,
+                      borderRadius: BorderRadius.circular(4.0)),
+                ),
+              ]),
+              const SizedBox(width: 28),
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 42,
+                      width: 42,
+                      decoration: BoxDecoration(
+                          color: Constanst.infoLight1,
+                          borderRadius: BorderRadius.circular(100.0)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                        top: 8,
+                      ),
+                      child: Container(
+                        height: 42,
+                        width: 42,
+                        decoration: BoxDecoration(
+                            color: Constanst.infoLight1,
+                            borderRadius: BorderRadius.circular(12.0)),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  height: 14,
+                  width: 55,
+                  decoration: BoxDecoration(
+                      color: Constanst.infoLight1,
+                      borderRadius: BorderRadius.circular(4.0)),
+                ),
+              ]),
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 
