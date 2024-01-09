@@ -6,14 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/kandidat_controller.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
-import 'package:siscom_operasional/screen/kandidat/detail_permintaan.dart';
 import 'package:siscom_operasional/screen/kandidat/form_kandidat.dart';
-import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
-import 'package:siscom_operasional/utils/widget_textButton.dart';
 
 class Kandidat extends StatefulWidget {
   @override
@@ -37,150 +34,151 @@ class _KandidatState extends State<Kandidat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Constanst.coloBackgroundScreen,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
-          child: Obx(
-            () => Container(
-              decoration: const BoxDecoration(boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  offset: Offset(0, 2.0),
-                  blurRadius: 4.0,
-                )
-              ]),
-              child: AppBar(
-                backgroundColor: Constanst.colorWhite,
-                elevation: 0,
-                // leadingWidth: controller.statusFormPencarian.value ? 50 : 16,
-                titleSpacing: 0,
-                centerTitle: false,
-                title: controller.statusFormPencarian.value
-                    ? SizedBox(
-                        height: 40,
-                        child: TextFormField(
-                          controller: controller.cari.value,
-                          // onFieldSubmitted: (value) {
-                          //   controller.cariData(value);
-                          // },
-                          onChanged: (value) {
-                            controller.cariData(value);
-                          },
-                          textAlignVertical: TextAlignVertical.center,
-                          style: GoogleFonts.inter(
-                              height: 1.5,
-                              fontWeight: FontWeight.w400,
-                              color: Constanst.fgPrimary,
-                              fontSize: 15),
-                          cursorColor: Constanst.onPrimary,
-                          decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Constanst.colorNeutralBgSecondary,
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(100),
-                                borderSide: const BorderSide(
-                                  color: Colors.transparent,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(100),
-                                borderSide: const BorderSide(
-                                  color: Colors.transparent,
-                                ),
-                              ),
-                              contentPadding:
-                                  const EdgeInsets.only(left: 20, right: 20),
-                              hintText: "Cari data...",
-                              hintStyle: GoogleFonts.inter(
-                                  height: 1.5,
-                                  fontWeight: FontWeight.w400,
-                                  color: Constanst.fgSecondary,
-                                  fontSize: 14),
-                              prefixIconConstraints:
-                                  BoxConstraints.tight(const Size(46, 46)),
-                              suffixIconConstraints:
-                                  BoxConstraints.tight(const Size(46, 46)),
-                              suffixIcon: Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 16.0, right: 8),
-                                child: IconButton(
-                                  icon: Icon(
-                                    Iconsax.close_circle5,
-                                    color: Constanst.fgSecondary,
-                                    size: 24,
-                                  ),
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {
-                                    controller.statusCari.value = false;
-                                    controller.cari.value.text = "";
-                                    controller.startData();
-                                  },
-                                ),
-                              )),
-                        ),
-                      )
-                    : Text(
-                        "Permintaan Kandidat",
+      backgroundColor: Constanst.coloBackgroundScreen,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
+        child: Obx(
+          () => Container(
+            decoration: const BoxDecoration(boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0, 2.0),
+                blurRadius: 4.0,
+              )
+            ]),
+            child: AppBar(
+              backgroundColor: Constanst.colorWhite,
+              elevation: 0,
+              // leadingWidth: controller.statusFormPencarian.value ? 50 : 16,
+              titleSpacing: 0,
+              centerTitle: false,
+              title: controller.statusFormPencarian.value
+                  ? SizedBox(
+                      height: 40,
+                      child: TextFormField(
+                        controller: controller.cari.value,
+                        // onFieldSubmitted: (value) {
+                        //   controller.cariData(value);
+                        // },
+                        onChanged: (value) {
+                          controller.cariData(value);
+                        },
+                        textAlignVertical: TextAlignVertical.center,
                         style: GoogleFonts.inter(
+                            height: 1.5,
+                            fontWeight: FontWeight.w400,
                             color: Constanst.fgPrimary,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 20),
+                            fontSize: 15),
+                        cursorColor: Constanst.onPrimary,
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Constanst.colorNeutralBgSecondary,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100),
+                              borderSide: const BorderSide(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100),
+                              borderSide: const BorderSide(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                            contentPadding:
+                                const EdgeInsets.only(left: 20, right: 20),
+                            hintText: "Cari data...",
+                            hintStyle: GoogleFonts.inter(
+                                height: 1.5,
+                                fontWeight: FontWeight.w400,
+                                color: Constanst.fgSecondary,
+                                fontSize: 14),
+                            prefixIconConstraints:
+                                BoxConstraints.tight(const Size(46, 46)),
+                            suffixIconConstraints:
+                                BoxConstraints.tight(const Size(46, 46)),
+                            suffixIcon: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 16.0, right: 8),
+                              child: IconButton(
+                                icon: Icon(
+                                  Iconsax.close_circle5,
+                                  color: Constanst.fgSecondary,
+                                  size: 24,
+                                ),
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  controller.statusCari.value = false;
+                                  controller.cari.value.text = "";
+                                  controller.startData();
+                                },
+                              ),
+                            )),
                       ),
-                actions: [
-                  controller.statusFormPencarian.value
-                      ? Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: Container(),
-                        )
-                      : IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: Icon(
-                            Iconsax.search_normal_1,
-                            color: Constanst.fgPrimary,
-                            size: 24,
-                          ),
-                          onPressed: controller.showInputCari,
-                          // controller.toggleSearch,
-                        ),
-                ],
-                leading: controller.statusFormPencarian.value
-                    ? IconButton(
+                    )
+                  : Text(
+                      "Permintaan Kandidat",
+                      style: GoogleFonts.inter(
+                          color: Constanst.fgPrimary,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20),
+                    ),
+              actions: [
+                controller.statusFormPencarian.value
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: Container(),
+                      )
+                    : IconButton(
+                        padding: EdgeInsets.zero,
                         icon: Icon(
-                          Iconsax.arrow_left,
+                          Iconsax.search_normal_1,
                           color: Constanst.fgPrimary,
                           size: 24,
                         ),
                         onPressed: controller.showInputCari,
-                        // onPressed: () {
-                        //   controller.cari.value.text = "";
-                        //   Get.back();
-                        // },
-                      )
-                    : IconButton(
-                        icon: Icon(
-                          Iconsax.arrow_left,
-                          color: Constanst.fgPrimary,
-                          size: 24,
-                        ),
-                        onPressed: () {
-                          controller.cari.value.clear();
-                          controller.onClose();
-                          Get.offAll(InitScreen());
-                        },
-                        // onPressed: () {
-                        //   controller.cari.value.text = "";
-                        //   Get.back();
-                        // },
+                        // controller.toggleSearch,
                       ),
-              ),
+              ],
+              leading: controller.statusFormPencarian.value
+                  ? IconButton(
+                      icon: Icon(
+                        Iconsax.arrow_left,
+                        color: Constanst.fgPrimary,
+                        size: 24,
+                      ),
+                      onPressed: controller.showInputCari,
+                      // onPressed: () {
+                      //   controller.cari.value.text = "";
+                      //   Get.back();
+                      // },
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        Iconsax.arrow_left,
+                        color: Constanst.fgPrimary,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        controller.cari.value.clear();
+                        controller.onClose();
+                        Get.offAll(InitScreen());
+                      },
+                      // onPressed: () {
+                      //   controller.cari.value.text = "";
+                      //   Get.back();
+                      // },
+                    ),
             ),
           ),
         ),
-        body: WillPopScope(
-          onWillPop: () async {
-            Get.offAll(InitScreen());
-            return true;
-          },
+      ),
+      body: WillPopScope(
+        onWillPop: () async {
+          Get.offAll(InitScreen());
+          return true;
+        },
+        child: SafeArea(
           child: Obx(
             () => Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
@@ -199,36 +197,96 @@ class _KandidatState extends State<Kandidat> {
                       // typeStatus(),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // controller.selectedViewFilterPengajuan
+                      //             .value ==
+                      //         0
+                      //     ? Text(
+                      //         "${controller.namaDepartemenTerpilih.value}  (${Constanst.convertDateBulanDanTahun('${controller.bulanDanTahunNow}')})",
+                      //         style: TextStyle(
+                      //             fontWeight: FontWeight.bold,
+                      //             fontSize: 14),
+                      //       )
+                      //     : Text(
+                      //         "${controller.namaDepartemenTerpilih.value}  (${Constanst.convertDate('${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalFilterAjuan.value)}')})",
+                      //         style: TextStyle(
+                      //             fontWeight: FontWeight.bold,
+                      //             fontSize: 14),
+                      //       ),
+                      Text(
+                        "${controller.listPermintaanKandidat.value.length} Permintaan",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgSecondary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 8),
                   Flexible(
                       child: RefreshIndicator(
                     color: Constanst.colorPrimary,
                     onRefresh: refreshData,
-                    child: controller.listPermintaanKandidat.value.isEmpty
+                    child: controller.loadingUpdateData.value
                         ? Center(
-                            child: Text(controller.loadingString.value),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 3,
+                              color: Constanst.colorPrimary,
+                            ),
                           )
-                        : riwayatPermintaanKandidat(),
+                        : controller.listPermintaanKandidat.value.isEmpty
+                            ? Center(
+                                child: SafeArea(
+                                  child: controller.loadingString.value ==
+                                          "Memuat Data..."
+                                      ? Container()
+                                      : Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SvgPicture.asset(
+                                              'assets/empty_screen.svg',
+                                              height: 228,
+                                            ),
+                                            const SizedBox(height: 16),
+                                            Text(
+                                              controller.loadingString.value,
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16,
+                                                color: Constanst.fgPrimary,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 80),
+                                          ],
+                                        ),
+                                ),
+                              )
+                            : riwayatPermintaanKandidat(),
                   ))
                 ],
               ),
             ),
           ),
         ),
-        bottomNavigationBar: Padding(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 12),
-            child: TextButtonWidget2(
-                title: "Buat Permintaan Kandidat",
-                onTap: () => Get.to(FormKandidat(
-                      dataForm: [[], false],
-                    )),
-                colorButton: Constanst.colorPrimary,
-                colortext: Constanst.colorWhite,
-                border: BorderRadius.circular(20.0),
-                icon: Icon(
-                  Iconsax.add,
-                  color: Constanst.colorWhite,
-                ))));
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Constanst.colorPrimary,
+        onPressed: () {
+          Get.to(FormKandidat(
+            dataForm: [[], false],
+          ));
+        },
+        child: const Icon(
+          Iconsax.add,
+          size: 34,
+        ),
+      ),
+    );
   }
 
   Widget cariDepartement() {
@@ -459,8 +517,8 @@ class _KandidatState extends State<Kandidat> {
   Widget riwayatPermintaanKandidat() {
     return ListView.builder(
         physics: controller.listPermintaanKandidat.value.length <= 10
-            ? AlwaysScrollableScrollPhysics()
-            : BouncingScrollPhysics(),
+            ? const AlwaysScrollableScrollPhysics()
+            : const BouncingScrollPhysics(),
         itemCount: controller.listPermintaanKandidat.value.length,
         itemBuilder: (context, index) {
           var id = controller.listPermintaanKandidat.value[index]['id'];
@@ -478,139 +536,121 @@ class _KandidatState extends State<Kandidat> {
               ['status_transaksi'];
 
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                "${Constanst.convertDate('$tanggalAjuan')}",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 8,
-              ),
               InkWell(
+                customBorder: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
                 onTap: () {
                   controller.getDetail(id);
                 },
                 child: Container(
-                  margin: EdgeInsets.only(left: 6, right: 6),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: Constanst.borderStyle1,
-                    boxShadow: [
-                      BoxShadow(
-                        color:
-                            Color.fromARGB(255, 190, 190, 190).withOpacity(0.3),
-                        spreadRadius: 1,
-                        blurRadius: 1,
-                        offset: Offset(1, 1), // changes position of shadow
-                      ),
-                    ],
-                  ),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Constanst.colorNonAktif)),
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
+                    padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Expanded(
-                          flex: 70,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "$posisi",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
-                              Text(
-                                "$nomorAjuan",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: Constanst.colorText2),
-                              ),
-                              Text(
-                                "$pengaju",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: Constanst.colorText2),
-                              ),
-                              Text(
-                                "$namaDepartement",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: Constanst.colorText2),
-                              )
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 30,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Expanded(
-                                  flex: 80,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: status == 1
-                                          ? Colors.blue
-                                          : Colors.grey,
-                                      borderRadius: Constanst.borderStyle1,
+                                Text("$namaDepartement",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 4),
+                                Text(nomorAjuan,
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_today,
+                                      size: 18,
+                                      color: Constanst.fgSecondary,
                                     ),
-                                    child: Center(
-                                      child: status == 1
-                                          ? Padding(
-                                              padding: const EdgeInsets.all(6),
-                                              child: Text(
-                                                "Aktif",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 12,
-                                                    color: Colors.white),
-                                              ),
-                                            )
-                                          : Padding(
-                                              padding: const EdgeInsets.all(6),
-                                              child: Text(
-                                                "Tidak Aktif",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 12,
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                    ),
-                                  ),
+                                    const SizedBox(width: 4),
+                                    Text(Constanst.convertDate('$tanggalAjuan'),
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400)),
+                                  ],
                                 ),
-                                Expanded(
-                                  flex: 20,
-                                  child: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Constanst.colorText2,
-                                    size: 16,
-                                  ),
-                                )
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.person,
+                                      size: 18,
+                                      color: Constanst.fgSecondary,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(posisi + ' Applied',
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400)),
+                                  ],
+                                ),
                               ],
                             ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: status == 1
+                                    ? Constanst.colorButton3
+                                    : Constanst.colorNeutralBgSecondary,
+                                borderRadius: Constanst.borderStyle1,
+                              ),
+                              child: Center(
+                                  child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    8.0, 4.0, 8.0, 4.0),
+                                child: Text(
+                                  status == 1 ? "Aktif" : "Nonaktif",
+                                  style: GoogleFonts.inter(
+                                      color: status == 1
+                                          ? Constanst.colotStateInfoBg
+                                          : Constanst.fgPrimary,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              )),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12, bottom: 12),
+                          child: Divider(
+                            thickness: 1,
+                            height: 0,
+                            color: Constanst.border,
                           ),
-                        )
+                        ),
+                        Text(
+                          "Requested by $pengaju",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: Constanst.fgPrimary),
+                        ),
                       ],
                     ),
                   ),
                 ),
               ),
-              SizedBox(
-                height: 16,
-              )
+              const SizedBox(height: 16),
             ],
           );
         });

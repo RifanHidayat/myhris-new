@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 // import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -51,7 +52,7 @@ class KandidatController extends GetxController {
   var typeProsesTerpilih = "".obs;
   var selectedKandidatUntuk = "BARU".obs;
   var departemen = "".obs;
-  var loadingString = "Sedang memuat...".obs;
+  var loadingString = "Memuat Data...".obs;
 
   Rx<DateTime> pilihTanggalSchedule1 = DateTime.now().obs;
   Rx<DateTime> pilihTanggalSchedule2 = DateTime.now().obs;
@@ -266,7 +267,7 @@ class KandidatController extends GetxController {
         }
       }
       loadingString.value =
-          tampung.isEmpty ? "Tidak ada permintaan" : "Sedang memuat...";
+          tampung.isEmpty ? "Tidak ada permintaan" : "Memuat Data...";
       listPermintaanKandidat.value = tampung;
       this.loadingString.refresh();
       this.listPermintaanKandidat.refresh();
@@ -297,7 +298,7 @@ class KandidatController extends GetxController {
           listPermintaanKandidatAll.value = valueBody['data'];
           loadingString.value = listPermintaanKandidat.value.isEmpty
               ? "Tidak ada permintaan"
-              : "Sedang memuat...";
+              : "Memuat Data...";
           loadingUpdateData.value = false;
 
           this.loadingUpdateData.refresh();
@@ -343,7 +344,7 @@ class KandidatController extends GetxController {
         }
         loadingString.value = listKandidatProses.value.isEmpty
             ? "Belum ada kandidat yang tersedia"
-            : "Memuat data...";
+            : "Memuat Data...";
 
         listKandidatProsesAll.value = valueBody['data'];
         this.loadingString.refresh();
@@ -399,7 +400,7 @@ class KandidatController extends GetxController {
       }
     }
     loadingString.value =
-        tampung.isEmpty ? "Tidak ada kandidat" : "Sedang memuat...";
+        tampung.isEmpty ? "Tidak ada kandidat" : "Memuat Data...";
     listKandidatProses.value = tampung;
     this.loadingString.refresh();
     this.listKandidatProses.refresh();
@@ -969,102 +970,152 @@ class KandidatController extends GetxController {
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20.0),
+            top: Radius.circular(16.0),
           ),
         ),
         builder: (context) {
-          return Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 90,
-                      child: Text(
-                        "Pilih Divisi",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                    ),
-                    Expanded(
-                        flex: 10,
-                        child: InkWell(
+          return SafeArea(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Pilih Divisi",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        InkWell(
+                            customBorder: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
                             onTap: () => Navigator.pop(Get.context!),
-                            child: Icon(Iconsax.close_circle)))
-                  ],
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Flexible(
-                  flex: 3,
-                  child: Padding(
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          physics: BouncingScrollPhysics(),
-                          itemCount: departementAkses.value.length,
-                          itemBuilder: (context, index) {
-                            var id = departementAkses.value[index]['id'];
-                            var dep_name =
-                                departementAkses.value[index]['name'];
-                            return InkWell(
-                              onTap: () {
-                                idDepartemenTerpilih.value = "$id";
-                                namaDepartemenTerpilih.value = dep_name;
-                                departemen.value =
-                                    departementAkses.value[index]['name'];
-                                this.idDepartemenTerpilih.refresh();
-                                this.namaDepartemenTerpilih.refresh();
-                                this.departemen.refresh();
-                                Navigator.pop(context);
-                                loadPermintaanKandidat();
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 5, bottom: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: "$id" == idDepartemenTerpilih.value
-                                          ? Constanst.colorPrimary
-                                          : Colors.transparent,
-                                      borderRadius: Constanst
-                                          .styleBoxDecoration1.borderRadius,
-                                      border: Border.all(
-                                          color: Constanst.colorText2)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, bottom: 10),
-                                    child: Center(
-                                      child: Text(
-                                        dep_name,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: "$id" ==
-                                                    idDepartemenTerpilih.value
-                                                ? Colors.white
-                                                : Colors.black),
-                                      ),
+                            child: Icon(
+                              Icons.close,
+                              size: 26,
+                              color: Constanst.fgSecondary,
+                            ))
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                    child: Divider(
+                      thickness: 1,
+                      height: 0,
+                      color: Constanst.border,
+                    ),
+                  ),
+                  SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: List.generate(departementAkses.value.length,
+                            (index) {
+                          var id = departementAkses.value[index]['id'];
+                          var dep_name = departementAkses.value[index]['name'];
+                          return InkWell(
+                            onTap: () {
+                              idDepartemenTerpilih.value = "$id";
+                              namaDepartemenTerpilih.value = dep_name;
+                              departemen.value =
+                                  departementAkses.value[index]['name'];
+                              this.idDepartemenTerpilih.refresh();
+                              this.namaDepartemenTerpilih.refresh();
+                              this.departemen.refresh();
+                              Navigator.pop(context);
+                              loadPermintaanKandidat();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    dep_name,
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
                                     ),
                                   ),
-                                ),
+                                  "$id" == idDepartemenTerpilih.value
+                                      ? InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(3),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Constanst.onPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            idDepartemenTerpilih.value = "$id";
+                                            namaDepartemenTerpilih.value =
+                                                dep_name;
+                                            departemen.value = departementAkses
+                                                .value[index]['name'];
+                                            this.idDepartemenTerpilih.refresh();
+                                            this
+                                                .namaDepartemenTerpilih
+                                                .refresh();
+                                            this.departemen.refresh();
+                                            Navigator.pop(context);
+                                            loadPermintaanKandidat();
+                                          },
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                ],
                               ),
-                            );
-                          })),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-              ],
+                            ),
+                          );
+                        }),
+                      )),
+                ],
+              ),
             ),
           );
         });

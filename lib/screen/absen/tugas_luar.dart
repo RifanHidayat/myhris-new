@@ -299,55 +299,67 @@ class _TugasLuarState extends State<TugasLuar> {
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: Obx(
-        () => controller.showButtonlaporan.value == false
-            ? SizedBox()
-            : SpeedDial(
-                icon: Iconsax.more,
-                activeIcon: Icons.close,
-                backgroundColor: Constanst.colorPrimary,
-                spacing: 3,
-                childPadding: const EdgeInsets.all(5),
-                spaceBetweenChildren: 4,
-                elevation: 8.0,
-                animationCurve: Curves.elasticInOut,
-                animationDuration: const Duration(milliseconds: 200),
-                children: [
-                  SpeedDialChild(
-                      child: Icon(Iconsax.minus_cirlce),
-                      backgroundColor: Color(0xff2F80ED),
-                      foregroundColor: Colors.white,
-                      label: 'Laporan Tugas Luar',
-                      onTap: () {
-                        Get.to(LaporanTugasLuar(
-                          title: 'tugas_luar',
-                        ));
-                      }),
-                  SpeedDialChild(
-                      child: Icon(Iconsax.minus_cirlce),
-                      backgroundColor: Color(0xff2F80ED),
-                      foregroundColor: Colors.white,
-                      label: 'Laporan Dinas Luar',
-                      onTap: () {
-                        Get.to(LaporanDinasLuar(
-                          title: 'dinas_luar',
-                        ));
-                      }),
-                  SpeedDialChild(
-                      child: Icon(Iconsax.add_square),
-                      backgroundColor: Color(0xff14B156),
-                      foregroundColor: Colors.white,
-                      label: controller.viewTugasLuar.value
-                          ? 'Buat Pengajuan Tugas Luar'
-                          : "Buat Pengajuan Dinas Luar",
-                      onTap: () {
-                        Get.to(FormTugasLuar(
-                          dataForm: [[], false],
-                        ));
-                      }),
-                ],
-              ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      // floatingActionButton: Obx(
+      //   () => controller.showButtonlaporan.value == false
+      //       ? SizedBox()
+      //       : SpeedDial(
+      //           icon: Iconsax.more,
+      //           activeIcon: Icons.close,
+      //           backgroundColor: Constanst.colorPrimary,
+      //           spacing: 3,
+      //           childPadding: const EdgeInsets.all(5),
+      //           spaceBetweenChildren: 4,
+      //           elevation: 8.0,
+      //           animationCurve: Curves.elasticInOut,
+      //           animationDuration: const Duration(milliseconds: 200),
+      //           children: [
+      //             SpeedDialChild(
+      //                 child: Icon(Iconsax.minus_cirlce),
+      //                 backgroundColor: Color(0xff2F80ED),
+      //                 foregroundColor: Colors.white,
+      //                 label: 'Laporan Tugas Luar',
+      //                 onTap: () {
+      //                   Get.to(LaporanTugasLuar(
+      //                     title: 'tugas_luar',
+      //                   ));
+      //                 }),
+      //             SpeedDialChild(
+      //                 child: Icon(Iconsax.minus_cirlce),
+      //                 backgroundColor: Color(0xff2F80ED),
+      //                 foregroundColor: Colors.white,
+      //                 label: 'Laporan Dinas Luar',
+      //                 onTap: () {
+      //                   Get.to(LaporanDinasLuar(
+      //                     title: 'dinas_luar',
+      //                   ));
+      //                 }),
+      //             SpeedDialChild(
+      //                 child: Icon(Iconsax.add_square),
+      //                 backgroundColor: Color(0xff14B156),
+      //                 foregroundColor: Colors.white,
+      //                 label: controller.viewTugasLuar.value
+      //                     ? 'Buat Pengajuan Tugas Luar'
+      //                     : "Buat Pengajuan Dinas Luar",
+      //                 onTap: () {
+      //                   Get.to(FormTugasLuar(
+      //                     dataForm: [[], false],
+      //                   ));
+      //                 }),
+      //           ],
+      //         ),
+      // ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Constanst.colorPrimary,
+        onPressed: () {
+          Get.to(FormTugasLuar(
+            dataForm: [[], false],
+          ));
+        },
+        child: const Icon(
+          Iconsax.add,
+          size: 34,
+        ),
       ),
       // bottomNavigationBar: Obx(
       //   () => Padding(

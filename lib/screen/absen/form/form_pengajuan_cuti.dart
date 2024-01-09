@@ -196,129 +196,125 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
               )
             ]),
         child: SafeArea(
-          child:Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-                child: TextButtonWidget(
-                  title: "Kirim",
-                  onTap: () {
-                    if (controller.dateSelected.value == 2 ||
-                        controller.dateSelected.value.toString() == "2") {
-                      //--------------------menggunakan range---------------------------
+          child: Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+              child: TextButtonWidget(
+                title: "Kirim",
+                onTap: () {
+                  if (controller.dateSelected.value == 2 ||
+                      controller.dateSelected.value.toString() == "2") {
+                    //--------------------menggunakan range---------------------------
 
-                      DateTime tempStartDate = DateTime.parse(
-                          DateFormat('yyyy-MM-dd')
-                              .format(DateFormat('yyyy-MM-dd')
-                                  .parse(controller.startDate.value))
-                              .toString());
-                      DateTime tempEndDate = DateTime.parse(
-                          DateFormat('yyyy-MM-dd')
-                              .format(DateTime.parse(
-                                  controller.endDate.value.toString()))
-                              .toString());
+                    DateTime tempStartDate = DateTime.parse(
+                        DateFormat('yyyy-MM-dd')
+                            .format(DateFormat('yyyy-MM-dd')
+                                .parse(controller.startDate.value))
+                            .toString());
+                    DateTime tempEndDate = DateTime.parse(DateFormat(
+                            'yyyy-MM-dd')
+                        .format(
+                            DateTime.parse(controller.endDate.value.toString()))
+                        .toString());
 
-                      if (tempEndDate.isBefore(tempStartDate)) {
-                        UtilsAlert.showToast(
-                            "Tanggal mulai lebih besar dari tanggal selesai");
+                    if (tempEndDate.isBefore(tempStartDate)) {
+                      UtilsAlert.showToast(
+                          "Tanggal mulai lebih besar dari tanggal selesai");
+                      return;
+                    }
+
+                    // Define two DateTime objects representing the two dates
+                    DateTime date1 = DateTime(tempStartDate.year,
+                        tempStartDate.month, tempStartDate.day);
+                    DateTime date2 = DateTime(
+                        tempEndDate.year, tempEndDate.month, tempEndDate.day);
+
+                    // Calculate the difference between the two dates
+                    Duration difference = date2.difference(date1);
+                    controller.durasiIzin.value = difference.inDays + 1;
+                    controller.durasiCutiMelahirkan.value =
+                        difference.inDays + 1;
+
+                    // if (difference.inDays + 1 >
+                    //     controller.jumlahCuti.value) {
+                    //   UtilsAlert.showToast(
+                    //       "Total hari melewati batas limit");
+                    //   return;
+                    // }
+
+                    if (controller.cutLeave.value == 1 ||
+                        controller.cutLeave.value == 1) {
+                      if (difference.inDays + 1 > controller.jumlahCuti.value) {
+                        UtilsAlert.showToast("Total hari melewati sisa cuti");
                         return;
                       }
-
-                      // Define two DateTime objects representing the two dates
-                      DateTime date1 = DateTime(tempStartDate.year,
-                          tempStartDate.month, tempStartDate.day);
-                      DateTime date2 = DateTime(
-                          tempEndDate.year, tempEndDate.month, tempEndDate.day);
-
-                      // Calculate the difference between the two dates
-                      Duration difference = date2.difference(date1);
-                      controller.durasiIzin.value = difference.inDays + 1;
-                      controller.durasiCutiMelahirkan.value =
-                          difference.inDays + 1;
-
-                      // if (difference.inDays + 1 >
-                      //     controller.jumlahCuti.value) {
-                      //   UtilsAlert.showToast(
-                      //       "Total hari melewati batas limit");
-                      //   return;
-                      // }
-
-                      if (controller.cutLeave.value == 1 ||
-                          controller.cutLeave.value == 1) {
-                        if (difference.inDays + 1 >
-                            controller.jumlahCuti.value) {
-                          UtilsAlert.showToast("Total hari melewati sisa cuti");
-                          return;
-                        }
-                      } else {
-                        if (difference.inDays + 1 >
-                            controller.limitCuti.value) {
-                          UtilsAlert.showToast(
-                              "Total hari melewati batas limit");
-                          return;
-                        }
-                      }
-
-                      controller.tanggalSelected.clear();
-                      controller.tanggalSelected.value
-                          .add(DateTime.parse(controller.startDate.value));
-                      controller.tanggalSelected.value
-                          .add(DateTime.parse(controller.endDate.value));
-
-                      controller.validasiKirimPengajuan();
-
-                      // Print the result
                     } else {
-                      //mengugunakan multiple date
-
-                      if (controller.statusForm.value == true) {
-                        if (controller.cutLeave.value == 1) {
-                          if ((controller.jumlahCuti.value -
-                                  controller.cutiTerpakai.value) <
-                              controller.tanggalSelectedEdit.value.length) {
-                            UtilsAlert.showToast(
-                                "Tanggal yang dipilih melebihi sisa cuti");
-                          } else {
-                            controller.validasiKirimPengajuan();
-                          }
-                        } else {
-                          if ((controller.limitCuti.value) <
-                              controller.tanggalSelectedEdit.value.length) {
-                            UtilsAlert.showToast(
-                                "Tanggal yang dipilih melebihi sisa cuti");
-                          } else {
-                            controller.validasiKirimPengajuan();
-                          }
-                        }
-                      } else {
-                        if (controller.cutLeave.value == 1) {
-                          if ((controller.jumlahCuti.value -
-                                  controller.cutiTerpakai.value) <
-                              controller.tanggalSelected.value.length) {
-                            UtilsAlert.showToast(
-                                "Tanggal yang dipilih melebihi sisa cuti");
-                          } else {
-                            controller.validasiKirimPengajuan();
-                          }
-                        } else {
-                          if ((controller.limitCuti.value) <
-                              controller.tanggalSelected.value.length) {
-                            UtilsAlert.showToast(
-                                "Tanggal yang dipilih melebihi sisa cuti");
-                          } else {
-                            controller.validasiKirimPengajuan();
-                          }
-                        }
+                      if (difference.inDays + 1 > controller.limitCuti.value) {
+                        UtilsAlert.showToast("Total hari melewati batas limit");
+                        return;
                       }
                     }
 
-                    // controller.validasiKirimPengajuan();
-                  },
-                  colorButton: Constanst.colorPrimary,
-                  colortext: Constanst.colorWhite,
-                  border: BorderRadius.circular(8.0),
-                )),
-          ),
+                    controller.tanggalSelected.clear();
+                    controller.tanggalSelected.value
+                        .add(DateTime.parse(controller.startDate.value));
+                    controller.tanggalSelected.value
+                        .add(DateTime.parse(controller.endDate.value));
+
+                    controller.validasiKirimPengajuan();
+
+                    // Print the result
+                  } else {
+                    //mengugunakan multiple date
+
+                    if (controller.statusForm.value == true) {
+                      if (controller.cutLeave.value == 1) {
+                        if ((controller.jumlahCuti.value -
+                                controller.cutiTerpakai.value) <
+                            controller.tanggalSelectedEdit.value.length) {
+                          UtilsAlert.showToast(
+                              "Tanggal yang dipilih melebihi sisa cuti");
+                        } else {
+                          controller.validasiKirimPengajuan();
+                        }
+                      } else {
+                        if ((controller.limitCuti.value) <
+                            controller.tanggalSelectedEdit.value.length) {
+                          UtilsAlert.showToast(
+                              "Tanggal yang dipilih melebihi sisa cuti");
+                        } else {
+                          controller.validasiKirimPengajuan();
+                        }
+                      }
+                    } else {
+                      if (controller.cutLeave.value == 1) {
+                        if ((controller.jumlahCuti.value -
+                                controller.cutiTerpakai.value) <
+                            controller.tanggalSelected.value.length) {
+                          UtilsAlert.showToast(
+                              "Tanggal yang dipilih melebihi sisa cuti");
+                        } else {
+                          controller.validasiKirimPengajuan();
+                        }
+                      } else {
+                        if ((controller.limitCuti.value) <
+                            controller.tanggalSelected.value.length) {
+                          UtilsAlert.showToast(
+                              "Tanggal yang dipilih melebihi sisa cuti");
+                        } else {
+                          controller.validasiKirimPengajuan();
+                        }
+                      }
+                    }
+                  }
+
+                  // controller.validasiKirimPengajuan();
+                },
+                colorButton: Constanst.colorPrimary,
+                colortext: Constanst.colorWhite,
+                border: BorderRadius.circular(8.0),
+              )),
         ),
-      
+      ),
     );
   }
 
@@ -846,17 +842,19 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             ),
           ],
         ),
-        SizedBox(height: 4,),
-        Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-          child: TextLabell(
-            text: " ${controller.durasiIzin.value} Hari",
-            color: Constanst.fgSecondary,
-          ),
-        ),
-        SizedBox(
-          height: 4,
-        ),
+        // SizedBox(
+        //   height: 4,
+        // ),
+        // Padding(
+        //   padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+        //   child: TextLabell(
+        //     text: " ${controller.durasiIzin.value} Hari",
+        //     color: Constanst.fgSecondary,
+        //   ),
+        // ),
+        // SizedBox(
+        //   height: 4,
+        // ),
 
         Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 16.0),
@@ -1091,8 +1089,9 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0),
             child: TextLabell(
-              text: "${controller.statusForm.value ==false?controller.tanggalSelected.value.length :controller.tanggalSelectedEdit.value.length } Hari",
-                   color: Constanst.fgSecondary,
+              text:
+                  "${controller.statusForm.value == false ? controller.tanggalSelected.value.length : controller.tanggalSelectedEdit.value.length} Hari",
+              color: Constanst.fgSecondary,
             ),
           ),
         ],
@@ -1300,7 +1299,10 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             return PopupMenuItem<String>(
               value: value,
               padding: EdgeInsets.zero,
-              onTap: () => controller.selectedDelegasi.value = value,
+              onTap: () {
+                controller.selectedDelegasi.value = value;
+                print(controller.selectedDelegasi.value);
+              },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
                 child: Text(
@@ -1479,9 +1481,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                         SizedBox(width: 8),
                         Text(
                           controller.namaFileUpload.value.length > 20
-                              ? controller.namaFileUpload.value
-                                      .substring(0, 15) +
-                                  '...'
+                              ? '${controller.namaFileUpload.value.substring(0, 15)}...'
                               : controller.namaFileUpload.value,
                           overflow: TextOverflow.ellipsis,
                         ),

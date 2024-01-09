@@ -358,6 +358,7 @@ class IzinController extends GetxController {
       'dep_id': getDepId
     };
     var connect = Api.connectionApi("post", body, "employee-divisi");
+    allEmployeeDelegasi.value.insert(0, "NONE");
     connect.then((dynamic res) {
       if (res == false) {
         UtilsAlert.koneksiBuruk();
@@ -369,6 +370,7 @@ class IzinController extends GetxController {
             if (element['status'] == 'ACTIVE') {
               var fullName = element['full_name'] ?? "";
               String namaUser = "$fullName";
+
               if (namaUser != full_name) {
                 allEmployeeDelegasi.value.add(namaUser);
               }
@@ -381,7 +383,8 @@ class IzinController extends GetxController {
                 .where((element) => element['full_name'] != full_name)
                 .toList()
                 .first;
-            var fullName = listFirst['full_name'] ?? "";
+            // var fullName = listFirst['full_name'] ?? "";
+            var fullName = allEmployeeDelegasi.value[0];
             String namaUserPertama = "$fullName";
             selectedDropdownFormTidakMasukKerjaDelegasi.value = namaUserPertama;
           }
@@ -636,29 +639,31 @@ class IzinController extends GetxController {
     print("tanggal selecetd ${tanggalSelected.value.isEmpty}");
     print(viewFormWaktu.value);
     if (viewFormWaktu.value == true) {
-      if (jamAjuan.value.text == "" ||
-          sampaiJamAjuan.value.text == "" ||
-          alasan.value.text == "") {
-        UtilsAlert.showToast("Form * harus di isi");
-      } else {
-        if (status == true) {
-          if (tanggalSelectedEdit.value.isEmpty) {
-            UtilsAlert.showToast("Pilih tanggal terlebih dahulu");
-          } else {
-            nextKirimPengajuan(status);
-          }
+      // if (jamAjuan.value.text == "" ||
+      //     sampaiJamAjuan.value.text == "" ||
+      //     alasan.value.text == "") {
+      //   UtilsAlert.showToast("Form * harus di isi");
+      // } else {
+      if (status == true) {
+        if (tanggalSelectedEdit.value.isEmpty) {
+          UtilsAlert.showToast("Pilih tanggal terlebih dahulu");
         } else {
-          if (tanggalSelected.value.isEmpty) {
-            UtilsAlert.showToast("Pilih tanggal terlebih dahulu");
-          } else {
-            nextKirimPengajuan(status);
-          }
+          nextKirimPengajuan(status);
+        }
+      } else {
+        if (tanggalSelected.value.isEmpty) {
+          UtilsAlert.showToast("Pilih tanggal terlebih dahulu");
+        } else {
+          nextKirimPengajuan(status);
         }
       }
+      // }
     } else {
-      if (alasan.value.text == "") {
-        UtilsAlert.showToast("Form * harus di isi");
-      } else if (tanggalSelectedEdit.value.isNotEmpty) {
+      // if (alasan.value.text == "") {
+      //   UtilsAlert.showToast("Form * harus di isi");
+      // } else
+
+      if (tanggalSelectedEdit.value.isNotEmpty) {
         nextKirimPengajuan(status);
 
         // if (tanggalSelectedEdit.value.isNotEmpty){
@@ -1073,7 +1078,11 @@ class IzinController extends GetxController {
         result.add(element);
       }
     }
-    return "${result[0]['em_id']}";
+    if (result.isEmpty) {
+      return "";
+    } else {
+      return "${result[0]['em_id']}";
+    }
   }
 
   String validasiSelectedDelegasiToken() {
@@ -1085,7 +1094,11 @@ class IzinController extends GetxController {
         result.add(element);
       }
     }
-    return "${result[0]['token_notif']}";
+    if (result.isEmpty) {
+      return "";
+    } else {
+      return "${result[0]['token_notif']}";
+    }
   }
 
   String validasiHitungIzin() {

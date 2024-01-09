@@ -379,6 +379,7 @@ class CutiController extends GetxController {
       'dep_id': getDepId
     };
     var connect = Api.connectionApi("post", body, "employee-divisi");
+    allEmployeeDelegasi.value.insert(0, "NONE");
     connect.then((dynamic res) {
       if (res == false) {
         UtilsAlert.koneksiBuruk();
@@ -881,7 +882,11 @@ class CutiController extends GetxController {
         result.add(element);
       }
     }
-    return "${result[0]['em_id']}";
+    if (result.isEmpty) {
+      return "";
+    } else {
+      return "${result[0]['em_id']}";
+    }
   }
 
   String validasiSelectedDelegasiToken() {
@@ -893,7 +898,11 @@ class CutiController extends GetxController {
         result.add(element);
       }
     }
-    return "${result[0]['token_notif']}";
+    if (result.isEmpty) {
+      return "";
+    } else {
+      return "${result[0]['token_notif']}";
+    }
   }
 
   String validasiHitungIzin() {

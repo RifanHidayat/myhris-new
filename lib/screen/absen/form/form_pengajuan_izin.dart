@@ -708,8 +708,12 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
             return PopupMenuItem<String>(
               value: value,
               padding: EdgeInsets.zero,
-              onTap: () => controller
-                  .selectedDropdownFormTidakMasukKerjaDelegasi.value = value,
+              onTap: () {
+                controller.selectedDropdownFormTidakMasukKerjaDelegasi.value =
+                    value;
+                print(controller
+                    .selectedDropdownFormTidakMasukKerjaDelegasi.value);
+              },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
                 child: Text(

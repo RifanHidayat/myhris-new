@@ -600,7 +600,7 @@ class _LaporanCutiDetailState extends State<LaporanCutiDetail> {
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500)),
                         const SizedBox(height: 4),
-                        Text("NO.$nomorAjuan",
+                        Text("$nomorAjuan",
                             textAlign: TextAlign.justify,
                             style: GoogleFonts.inter(
                                 color: Constanst.fgSecondary,

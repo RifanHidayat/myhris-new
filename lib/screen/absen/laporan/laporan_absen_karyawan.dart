@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/laporan_absen_karyawan_controller.dart';
 import 'package:siscom_operasional/screen/absen/detail_absen.dart';
@@ -27,18 +28,42 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Constanst.coloBackgroundScreen,
-        appBar: AppBar(
-            backgroundColor: Colors.white,
-            automaticallyImplyLeading: false,
-            elevation: 2,
-            flexibleSpace: AppbarMenu1(
-              title: "Laporan Absen Karyawan",
-              colorTitle: Colors.black,
-              icon: 1,
-              onTap: () {
-                Get.back();
-              },
-            )),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
+          child: Container(
+            decoration: const BoxDecoration(boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0, 2.0),
+                blurRadius: 4.0,
+              )
+            ]),
+            child: AppBar(
+              backgroundColor: Constanst.colorWhite,
+              elevation: 0,
+              // leadingWidth: controller.statusFormPencarian.value ? 50 : 16,
+              titleSpacing: 0,
+              centerTitle: true,
+              title: Text(
+                "Laporan Absensi Karyawan",
+                style: GoogleFonts.inter(
+                    color: Constanst.fgPrimary,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20),
+              ),
+              leading: IconButton(
+                icon: Icon(
+                  Iconsax.arrow_left,
+                  color: Constanst.fgPrimary,
+                  size: 24,
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+            ),
+          ),
+        ),
         body: WillPopScope(
           onWillPop: () async {
             Get.back();
@@ -47,13 +72,10 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
           child: SafeArea(
             child: Obx(
               () => Padding(
-                padding: EdgeInsets.only(left: 16, right: 16),
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 16,
-                    ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
