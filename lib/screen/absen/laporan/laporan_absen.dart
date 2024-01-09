@@ -815,7 +815,12 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
                     pickerModel: CustomMonthPicker(
                       minTime: DateTime(2000, 1, 1),
                       maxTime: DateTime(2100, 1, 1),
-                      currentTime: DateTime.now(),
+                      currentTime: DateTime(
+                          int.parse(
+                              controller.tahunSelectedSearchHistory.value),
+                          int.parse(
+                              controller.bulanSelectedSearchHistory.value),
+                          1),
                     ),
                     onConfirm: (time) {
                       if (time != null) {

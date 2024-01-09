@@ -5,10 +5,13 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
+
+final controller = Get.put(DashboardController());
 
 class UtilsAlert {
   static showToast(message) {
@@ -247,6 +250,7 @@ class UtilsAlert {
   static shimmerMenuDashboard(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
+      height: controller.heightPageView.value / 2,
       child: Shimmer.fromColors(
           baseColor: Colors.grey.shade300,
           highlightColor: Colors.grey.shade100,

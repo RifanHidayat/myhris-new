@@ -1386,303 +1386,283 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
             controller.historySelected(index['id'], 'history');
           }
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            statusView == false
-                ? Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border:
-                            Border.all(width: 1, color: Constanst.fgBorder)),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 15,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Constanst.colorNeutralBgSecondary,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(8.0),
-                                  bottomLeft: Radius.circular(8.0),
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, bottom: 5.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                        DateFormat('d').format(
-                                            DateFormat('yyyy-MM-dd')
-                                                .parse(index['atten_date'])),
-                                        style: GoogleFonts.inter(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500,
-                                          color: Constanst.fgPrimary,
-                                        )),
-                                    Text(
-                                        DateFormat('EEEE', 'id').format(
-                                            DateFormat('yyyy-MM-dd')
-                                                .parse(index['atten_date'])),
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          color: Constanst.fgSecondary,
-                                        )),
-                                  ],
-                                ),
-                              ),
+        child: statusView == false
+            ? Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(width: 1, color: Constanst.fgBorder)),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 15,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Constanst.colorNeutralBgSecondary,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(8.0),
+                              bottomLeft: Radius.circular(8.0),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 38,
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                            padding:
+                                const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                            child: Column(
                               children: [
-                                Icon(
-                                  Iconsax.login_1,
-                                  color: Constanst.color5,
-                                  size: 16,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 4),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "$jamMasuk",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.fgPrimary,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        regType == 0
-                                            ? "Face Recognition"
-                                            : "Photo",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.fgSecondary,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 10),
-                                      ),
-                                    ],
-                                  ),
-                                )
+                                Text(
+                                    DateFormat('d').format(
+                                        DateFormat('yyyy-MM-dd')
+                                            .parse(index['atten_date'])),
+                                    style: GoogleFonts.inter(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.fgPrimary,
+                                    )),
+                                Text(
+                                    DateFormat('EEEE', 'id').format(
+                                        DateFormat('yyyy-MM-dd')
+                                            .parse(index['atten_date'])),
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: Constanst.fgSecondary,
+                                    )),
                               ],
                             ),
                           ),
                         ),
-                        Expanded(
-                          flex: 38,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Iconsax.logout_14,
-                                  color: Constanst.color4,
-                                  size: 16,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 4),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "$jamKeluar",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.fgPrimary,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        regType == 0
-                                            ? "Face Recognition"
-                                            : "Photo",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.fgSecondary,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 10),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 9,
-                          child: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 16,
-                            color: Constanst.colorNeutralFgTertiary,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  )
-                : Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border:
-                            Border.all(width: 1, color: Constanst.fgBorder)),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 15,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Constanst.colorNeutralBgSecondary,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(8.0),
-                                  bottomLeft: Radius.circular(8.0),
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, bottom: 5.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                        DateFormat('d').format(
-                                            DateFormat('yyyy-MM-dd')
-                                                .parse(index['atten_date'])),
-                                        style: GoogleFonts.inter(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500,
-                                          color: Constanst.fgPrimary,
-                                        )),
-                                    Text(
-                                        DateFormat('EEEE', 'id').format(
-                                            DateFormat('yyyy-MM-dd')
-                                                .parse(index['atten_date'])),
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          color: Constanst.fgSecondary,
-                                        )),
-                                  ],
-                                ),
-                              ),
+                    Expanded(
+                      flex: 38,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Iconsax.login_1,
+                              color: Constanst.color5,
+                              size: 16,
                             ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 38,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Iconsax.login_1,
-                                  color: Constanst.color5,
-                                  size: 16,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 4),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "$jamMasuk",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.fgPrimary,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        regType == 0
-                                            ? "Face Recognition"
-                                            : "Photo",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.fgSecondary,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 10),
-                                      ),
-                                    ],
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "$jamMasuk",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
                                   ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 38,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Iconsax.logout_14,
-                                  color: Constanst.color4,
-                                  size: 16,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 4),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "$jamKeluar",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.fgPrimary,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        regType == 0
-                                            ? "Face Recognition"
-                                            : "Photo",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.fgSecondary,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 10),
-                                      ),
-                                    ],
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    regType == 0 ? "Face Recognition" : "Photo",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 10),
                                   ),
-                                )
-                              ],
-                            ),
-                          ),
+                                ],
+                              ),
+                            )
+                          ],
                         ),
-                        Expanded(
-                          flex: 9,
-                          child: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 16,
-                            color: Constanst.colorNeutralFgTertiary,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-          ],
-        ),
+                    Expanded(
+                      flex: 38,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Iconsax.logout_14,
+                              color: Constanst.color4,
+                              size: 16,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "$jamKeluar",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    regType == 0 ? "Face Recognition" : "Photo",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 10),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 9,
+                      child: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 16,
+                        color: Constanst.colorNeutralFgTertiary,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(width: 1, color: Constanst.fgBorder)),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 15,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Constanst.colorNeutralBgSecondary,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(8.0),
+                              bottomLeft: Radius.circular(8.0),
+                            ),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                    DateFormat('d').format(
+                                        DateFormat('yyyy-MM-dd')
+                                            .parse(index['atten_date'])),
+                                    style: GoogleFonts.inter(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.fgPrimary,
+                                    )),
+                                Text(
+                                    DateFormat('EEEE', 'id').format(
+                                        DateFormat('yyyy-MM-dd')
+                                            .parse(index['atten_date'])),
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: Constanst.fgSecondary,
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 38,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Iconsax.login_1,
+                              color: Constanst.color5,
+                              size: 16,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "$jamMasuk",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    regType == 0 ? "Face Recognition" : "Photo",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 10),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 38,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Iconsax.logout_14,
+                              color: Constanst.color4,
+                              size: 16,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "$jamKeluar",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    regType == 0 ? "Face Recognition" : "Photo",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 10),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 9,
+                      child: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 16,
+                        color: Constanst.colorNeutralFgTertiary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
       ),
     );
   }
