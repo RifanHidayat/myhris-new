@@ -242,7 +242,7 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
       onTap: () async {
         await showMenu(
           context: context,
-          position: const RelativeRect.fromLTRB(17, 148, 17, 0),
+          position: const RelativeRect.fromLTRB(17, 235, 17, 0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
@@ -593,7 +593,7 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                               showTimePicker(
                                 context: Get.context!,
                                 initialTime: TimeOfDay.now(),
-                                initialEntryMode: TimePickerEntryMode.dial,
+                                // initialEntryMode: TimePickerEntryMode.dial,
                               ).then((value) {
                                 if (value == null) {
                                   UtilsAlert.showToast('gagal pilih jam');
@@ -657,7 +657,7 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                               showTimePicker(
                                 context: Get.context!,
                                 initialTime: TimeOfDay.now(),
-                                initialEntryMode: TimePickerEntryMode.dial,
+                                // initialEntryMode: TimePickerEntryMode.dial,
                               ).then((value) {
                                 if (value == null) {
                                   UtilsAlert.showToast('gagal pilih jam');

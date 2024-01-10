@@ -442,7 +442,7 @@ class _FormLemburState extends State<FormLembur> {
               showTimePicker(
                 context: Get.context!,
                 initialTime: TimeOfDay.now(),
-                initialEntryMode: TimePickerEntryMode.input,
+                // initialEntryMode: TimePickerEntryMode.input,
                 builder: (context, child) {
                   return MediaQuery(
                     data: MediaQuery.of(context)
@@ -552,7 +552,7 @@ class _FormLemburState extends State<FormLembur> {
               showTimePicker(
                 context: Get.context!,
                 initialTime: TimeOfDay.now(),
-                initialEntryMode: TimePickerEntryMode.input,
+                // initialEntryMode: TimePickerEntryMode.input,
                 builder: (context, child) {
                   return MediaQuery(
                     data: MediaQuery.of(context)

@@ -2490,142 +2490,118 @@ class AbsenController extends GetxController {
       context: Get.context!,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(5.0),
+          top: Radius.circular(12.0),
         ),
       ),
       builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 30,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Tambahkan Data Wajah",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      InkWell(
-                          onTap: () {
-                            Get.back();
-                          },
-                          child: Icon(Icons.close))
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "Pastikan wajah Kamu tidak tertutup dan terlihat jelas. Kamu juga harus berada di ruangan dengan penerangan yang cukup.",
-                    style: TextStyle(fontSize: 11),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Image.asset(
-                    "assets/face-recognition-icon.png",
-                    width: 50,
-                    height: 50,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Constanst.colorPrimaryLight.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          width: 1,
-                          color: Constanst.colorPrimary,
-                        )),
-                    padding:
-                        EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-                    child: Row(
+        return SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(
-                          flex: 5,
-                          child: Icon(
-                            Icons.info_outline,
-                            color: Constanst.colorPrimary,
-                          ),
+                        Text(
+                          "Tambahkan Data Wajah",
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.fgPrimary,
+                              fontSize: 16),
                         ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Expanded(
-                          flex: 60,
-                          child: Text(
-                            "Data wajah ini akan digunakan setiap kali Kamu melakukan Absen Masuk dan Keluar.",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ),
+                        InkWell(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Icon(Icons.close))
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextButtonWidget(
-                    title: "Mulai",
-                    onTap: () async {
-                      //begin image picker
-                      // final getFoto = await ImagePicker().pickImage(
-                      //     source: ImageSource.camera,
-                      //     preferredCameraDevice: CameraDevice.front,
-                      //     imageQuality: 100,
-                      //     maxHeight: 350,
-                      //     maxWidth: 350);
-                      // if (getFoto == null) {
-                      //   UtilsAlert.showToast("Gagal mengambil gambar");
-                      // } else {
-                      //   facedDetection(
-                      //       status: "registration",
-                      //       absenStatus: "Absen Masuk",
-                      //       img: getFoto.path,
-                      //       type: "1");
-                      // }
-                      //end image picker
-
-                      //begin face recogniton
-                      Get.to(FaceidRegistration(
-                        status: "registration",
-                      ));
-                      //end face recognition
-
-                      // facedDetection(status: "registration");
-                      // Get.to(FaceRecognitionView());
-                      // if (type == "checkTracking") {
-                      //   print('kesini');
-                      //   controllerAbsensi.kirimDataAbsensi();
-                      // } else {
-                      //   Navigator.pop(context);
-                      //   await Permission.camera.request();
-                      //   await Permission.location.request();
-                      // }
-                    },
-                    colorButton: Constanst.colorButton1,
-                    colortext: Constanst.colorWhite,
-                    border: BorderRadius.circular(15.0),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    Text(
+                      "Pastikan wajah Kamu tidak tertutup dan terlihat jelas. Kamu juga harus berada di ruangan dengan penerangan yang cukup.",
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w400,
+                          color: Constanst.fgSecondary,
+                          fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    Image.asset(
+                      "assets/emoji_happy_tick.png",
+                      width: 64,
+                      height: 64,
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Constanst.infoLight1,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Iconsax.info_circle5,
+                            color: Constanst.colorPrimary,
+                            size: 26,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              "Data wajah ini akan digunakan setiap kali Kamu melakukan Absen Masuk dan Keluar.",
+                              textAlign: TextAlign.left,
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  color: Constanst.fgSecondary,
+                                  fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.to(FaceidRegistration(
+                            status: "registration",
+                          ));
+                        },
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.colorWhite,
+                            backgroundColor: Constanst.colorPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 0,
+                            // padding: EdgeInsets.zero,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                          child: Text(
+                            'Selanjutnya',
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.colorWhite,
+                                fontSize: 15),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 30,
-            )
-          ],
+            ],
+          ),
         );
       },
     );
