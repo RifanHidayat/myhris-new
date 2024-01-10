@@ -161,7 +161,7 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                                       Radius.circular(12)),
                                   border:
                                       Border.all(color: Constanst.fgBorder)),
-                              child: informasiSisaCuti(),
+                              child: controller.showDurationIzin.value ? informasiSisaCuti():SizedBox(),
                             ),
                             // : const SizedBox()),
                             const SizedBox(height: 16),

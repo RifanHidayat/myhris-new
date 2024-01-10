@@ -493,13 +493,14 @@ class GlobalController extends GetxController {
     }
   }
 
-  void kirimNotifikasiFcm({title, message, tokens, bulan, tahun}) {
+  void kirimNotifikasiFcm({title, message, tokens}) {
     // print()
     Map<String, dynamic> body = {
       'title': title,
       'message': message,
       'token_notif': tokens.toString(),
     };
+    print("body notif ${body}");
     try {
       var connect = Api.connectionApi("post", body, "push_notification");
       connect.then((dynamic res) {

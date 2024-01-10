@@ -469,6 +469,7 @@ class IzinController extends GetxController {
         this.allTipe.refresh();
         this.allTipeFormTidakMasukKerja.refresh();
         this.allTipeFormTidakMasukKerja1.refresh();
+        changeTypeSelected(2);
       }
     });
   }
@@ -918,8 +919,10 @@ class IzinController extends GetxController {
               'nomor_ajuan': '${getNomorAjuanTerakhir}',
             };
 
+       
+
             for (var item in globalCt.konfirmasiAtasan) {
-              print(item['token_notif']);
+              print("Token notif ${item['token_notif']}");
               var pesan;
               if (item['em_gender'] == "PRIA") {
                 pesan =
@@ -932,7 +935,7 @@ class IzinController extends GetxController {
                 globalCt.kirimNotifikasiFcm(
                     title: typeNotifFcm,
                     message: pesan,
-                    tokens: item['token_notif']);
+                    tokens:  item['token_notif']);
               }
             }
 

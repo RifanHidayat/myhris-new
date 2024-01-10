@@ -93,11 +93,9 @@ class AuthController extends GetxController {
   }
 
   Future<void> loginUser() async {
-    
     final box = GetStorage();
       var fcm_registration_token = await FirebaseMessaging.instance.getToken();
-       print("fcm token ${fcm_registration_token}");
-
+  print("fcmtoken ${fcm_registration_token}");
     UtilsAlert.showLoadingIndicator(Get.context!);
     Map<String, dynamic> body = {
       'email': email.value.text,
@@ -222,7 +220,7 @@ class AuthController extends GetxController {
     final box = GetStorage();
     var fcm_registration_token = await FirebaseMessaging.instance.getToken();
 
-    print("fcm token ${fcm_registration_token}");
+    print("fcmtoken ${fcm_registration_token}");
 
     UtilsAlert.showLoadingIndicator(Get.context!);
     Map<String, dynamic> body = {
