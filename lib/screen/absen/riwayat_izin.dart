@@ -24,7 +24,12 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
 
   @override
   void initState() {
+            
     super.initState();
+
+     controller.tempNamaTipe1.value == "Semua Tipe";
+    // controller.changeTypeSelected(2);
+           
   }
 
   Future<void> refreshData() async {
