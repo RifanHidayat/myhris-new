@@ -4,11 +4,14 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'dart:math' as math;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:siscom_operasional/utils/constans.dart';
 
 class FaceRecognitionPhotoPage extends StatelessWidget {
   const FaceRecognitionPhotoPage({super.key});
@@ -19,17 +22,42 @@ class FaceRecognitionPhotoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     _deleteImageFromCache();
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        elevation: 2,
-        flexibleSpace: AppbarMenu1(
-          title: "Foto Data Wajah",
-          icon: 1,
-          colorTitle: Colors.black,
-          onTap: () {
-            Get.back();
-          },
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
+        child: Container(
+          decoration: const BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              offset: Offset(0, 2.0),
+              blurRadius: 4.0,
+            )
+          ]),
+          child: AppBar(
+            backgroundColor: Constanst.colorWhite,
+            elevation: 0,
+            leadingWidth: 50,
+            titleSpacing: 0,
+            centerTitle: false,
+            title: Text(
+              "Foto Data Wajah",
+              style: GoogleFonts.inter(
+                  color: Constanst.fgPrimary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20),
+            ),
+            leading: IconButton(
+              icon: Icon(
+                Iconsax.arrow_left,
+                color: Constanst.fgPrimary,
+                size: 24,
+              ),
+              onPressed: Get.back,
+              // onPressed: () {
+              //   controller.cari.value.text = "";
+              //   Get.back();
+              // },
+            ),
+          ),
         ),
       ),
       body: InkWell(

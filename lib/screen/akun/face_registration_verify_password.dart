@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/auth_controller.dart';
@@ -26,149 +27,132 @@ class _FaceRegistrationVerifyPasswordState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Constanst.colorWhite,
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          flexibleSpace: AppbarMenu1(
-            title: "",
-            colorTitle: Colors.black,
-            colorIcon: Colors.black,
-            icon: 1,
-            onTap: () {
-              Get.back();
-            },
-          )),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
+        child: Container(
+          decoration: const BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              offset: Offset(0, 2.0),
+              blurRadius: 4.0,
+            )
+          ]),
+          child: AppBar(
+            backgroundColor: Constanst.colorWhite,
+            elevation: 0,
+            leadingWidth: 50,
+            titleSpacing: 0,
+            centerTitle: false,
+            title: Text(
+              "Konfirmasi Password",
+              style: GoogleFonts.inter(
+                  color: Constanst.fgPrimary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20),
+            ),
+            leading: IconButton(
+              icon: Icon(
+                Iconsax.arrow_left,
+                color: Constanst.fgPrimary,
+                size: 24,
+              ),
+              onPressed: Get.back,
+              // onPressed: () {
+              //   controller.cari.value.text = "";
+              //   Get.back();
+              // },
+            ),
+          ),
+        ),
+      ),
       body: Container(
         color: Colors.white,
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Padding(
-          padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+          padding:
+              const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
           child: Column(
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: 5),
-                child: Text(
-                  "Konfirmasi Password",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
               Container(
                 height: 50,
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                        bottomLeft: Radius.circular(15),
-                        bottomRight: Radius.circular(15)),
-                    border: Border.all(
-                        width: 0.5, color: Color.fromARGB(255, 211, 205, 205))),
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        topRight: Radius.circular(8),
+                        bottomLeft: Radius.circular(8),
+                        bottomRight: Radius.circular(8)),
+                    border: Border.all(width: 0.5, color: Constanst.fgBorder)),
                 child: Obx(
-                  () => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      obscureText: !this.controller.showpassword.value,
-                      controller: passwordCtr,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          prefixIcon: const Icon(Iconsax.lock),
-                          // ignore: unnecessary_this
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              controller.showpassword.value
-                                  ? Iconsax.eye
-                                  : Iconsax.eye_slash,
-                              color: this.controller.showpassword.value
-                                  ? Constanst.colorPrimary
-                                  : Colors.grey,
-                            ),
-                            onPressed: () {
-                              this.controller.showpassword.value =
-                                  !this.controller.showpassword.value;
-                            },
-                          )),
-                      style: TextStyle(
-                          fontSize: 14.0, height: 2.0, color: Colors.black),
+                  () => TextField(
+                    obscureText: !this.controller.showpassword.value,
+                    controller: passwordCtr,
+                    textAlignVertical: TextAlignVertical.center,
+                    cursorColor: Constanst.fgPrimary,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        prefixIconColor: Constanst.fgSecondary,
+                        prefixIcon: const Icon(Iconsax.lock_1),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.showpassword.value
+                                ? Iconsax.eye
+                                : Iconsax.eye_slash,
+                            color: Constanst.fgSecondary,
+                          ),
+                          onPressed: () {
+                            this.controller.showpassword.value =
+                                !this.controller.showpassword.value;
+                          },
+                        )),
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    UtilsAlert.showLoadingIndicator(context);
+                    Future.delayed(const Duration(milliseconds: 500), () {
+                      Get.back();
+                      print(controller.password.value.toString());
+
+                      if (passwordCtr.text.toString() ==
+                          controller.password.value.text) {
+                        UtilsAlert.showToast("Konfirmasi password berhasil");
+                        return absensiController
+                            .widgetButtomSheetFaceRegistrattion();
+                      }
+                      return UtilsAlert.showToast("Konfirmasi password gagal");
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                      foregroundColor: Constanst.colorWhite,
+                      backgroundColor: Constanst.colorPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0,
+                      // padding: EdgeInsets.zero,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                    child: Text(
+                      'Selanjutnya',
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          color: Constanst.colorWhite,
+                          fontSize: 15),
                     ),
                   ),
                 ),
               ),
-              SizedBox(
-                height: 5,
-              ),
-              Expanded(
-                child: Container(
-                  height: double.maxFinite,
-                  width: MediaQuery.of(context).size.width - 40,
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Expanded(
-                            flex: 50,
-                            child: InkWell(
-                              onTap: () {
-                                Get.back();
-                              },
-                              child: Container(
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(width: 1, color: Colors.black),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                alignment: Alignment.center,
-                                child: Text("Batal"),
-                              ),
-                            )),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                            flex: 50,
-                            child: InkWell(
-                              onTap: () {
-                                UtilsAlert.showLoadingIndicator(context);
-                                Future.delayed(
-                                    const Duration(milliseconds: 500), () {
-                                  Get.back();
-                                  print(controller.password.value.toString());
-
-                                  if (passwordCtr.text.toString() ==
-                                      controller.password.value.text) {
-                                    UtilsAlert.showToast(
-                                        "Konfirmasi password berhasil");
-                                    return absensiController
-                                        .widgetButtomSheetFaceRegistrattion();
-                                  }
-                                  return UtilsAlert.showToast(
-                                      "Konfirmasi password gagal");
-                                });
-                              },
-                              child: Container(
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Constanst.colorPrimary,
-                                  border: Border.all(
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Selanjutnya",
-                                  style: TextStyle(color: Constanst.colorWhite),
-                                ),
-                              ),
-                            )),
-                      ]),
-                ),
-              )
             ],
           ),
         ),

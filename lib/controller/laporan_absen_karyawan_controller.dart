@@ -16,6 +16,8 @@ class LaporanAbsenKaryawanController extends GetxController {
 
   var prosesLoad = false.obs;
 
+  var tempNamaStatus1 = "Semua Riwayat".obs;
+
   void loadData(emId, bulan, fullName) {
     emIdKaryawan.value = emId;
     bulanSelected.value = bulan;

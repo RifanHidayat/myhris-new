@@ -440,7 +440,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                             showTimePicker(
                               context: Get.context!,
                               initialTime: TimeOfDay.now(),
-                              initialEntryMode: TimePickerEntryMode.input,
+                              // initialEntryMode: TimePickerEntryMode.input,
                               cancelText: 'Batal',
                               confirmText: 'Simpan',
                               builder: (context, child) {
@@ -671,7 +671,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                             showTimePicker(
                               context: Get.context!,
                               initialTime: TimeOfDay.now(),
-                              initialEntryMode: TimePickerEntryMode.input,
+                              // initialEntryMode: TimePickerEntryMode.input,
                               cancelText: 'Batal',
                               confirmText: 'Simpan',
                               builder: (context, child) {
