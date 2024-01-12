@@ -30,6 +30,8 @@ class _TugasLuarState extends State<TugasLuar> {
   void initState() {
     super.initState();
     Api().checkLogin();
+      controller.loadDataTugasLuar();
+    controller.loadDataDinasLuar();
   }
 
   Future<void> refreshData() async {

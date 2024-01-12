@@ -30,12 +30,14 @@ class _KlaimState extends State<Klaim> {
 
   @override
   void initState() {
+        controller.loadDataKlaim();
     super.initState();
   }
 
   Future<void> refreshData() async {
+         controller.loadDataKlaim();
     await Future.delayed(Duration(seconds: 2));
-    controller.loadDataKlaim();
+
   }
 
   @override

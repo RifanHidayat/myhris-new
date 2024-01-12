@@ -559,7 +559,7 @@ class _LaporanIzinState extends State<LaporanIzin> {
                   full_name: namaKaryawan,
                   title: widget.title,
                   jobTitle: jobTitle,
-                  image: image));
+                  image: image.toString()));
             },
             child: Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),

@@ -30,12 +30,13 @@ class _LemburState extends State<Lembur> {
   @override
   void initState() {
     Api().checkLogin();
+      controller.loadDataLembur();
     super.initState();
   }
 
   Future<void> refreshData() async {
     await Future.delayed(Duration(seconds: 2));
-    controller.loadDataLembur();
+  
   }
 
   @override
@@ -841,7 +842,7 @@ class _LemburState extends State<Lembur> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("$namaTypeAjuan",
+                        Text("Lembur",
                             style: GoogleFonts.inter(
                                 color: Constanst.fgPrimary,
                                 fontSize: 16,

@@ -550,13 +550,13 @@ class _LaporanCutiState extends State<LaporanCuti> {
             onTap: () {
               print(image);
               Get.to(LaporanCutiDetail(
-                  emId: emId,
-                  bulan: controller.bulanSelectedSearchHistory.value,
-                  tahun: controller.tahunSelectedSearchHistory.value,
-                  full_name: namaKaryawan,
-                  title: widget.title,
-                  jobTitle: jobTitle,
-                  image: image));
+                  emId: emId.toString(),
+                  bulan: controller.bulanSelectedSearchHistory.value.toString(),
+                  tahun: controller.tahunSelectedSearchHistory.value.toString(),
+                  full_name: namaKaryawan.toString(),
+                  title: widget.title.toString(),
+                  jobTitle: jobTitle.toString(),
+                  image: image.toString()));
             },
             child: Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),

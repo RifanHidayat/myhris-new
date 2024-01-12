@@ -27,12 +27,13 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
   @override
   void initState() {
     Api().checkLogin();
+        controller.loadDataAjuanCuti();
     super.initState();
   }
 
   Future<void> refreshData() async {
     await Future.delayed(Duration(seconds: 2));
-    controller.loadDataAjuanCuti();
+
   }
 
   @override

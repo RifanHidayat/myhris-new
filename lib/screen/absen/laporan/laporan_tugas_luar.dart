@@ -722,7 +722,7 @@ class _LaporanTugasLuarState extends State<LaporanTugasLuar> {
                   full_name: namaKaryawan,
                   title: controller.title.value,
                   jobTitle: jobTitle,
-                  image: image));
+                  image: image.toString()));
             },
             child: Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
