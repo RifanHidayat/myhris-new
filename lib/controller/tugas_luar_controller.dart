@@ -104,6 +104,7 @@ class TugasLuarController extends GetxController {
     loadDataTugasLuar();
     loadDataDinasLuar();
     getDepartemen(1, "");
+    loadAllEmployeeDelegasi();
     super.onInit();
   }
 
@@ -357,6 +358,7 @@ class TugasLuarController extends GetxController {
   // }
 
   void loadAllEmployeeDelegasi() {
+    print("-----------data employeee delegasi-------------");
     allEmployeeDelegasi.value.clear();
     allEmployee.value.clear();
     var dataUser = AppData.informasiUser;
@@ -374,8 +376,9 @@ class TugasLuarController extends GetxController {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
           var data = valueBody['data'];
-          print("data delegasi ${data}");
+          print("data delegasi new ${data}");
           for (var element in data) {
+            print("data status ${element['status']}");
             if (element['status'] == 'ACTIVE') {
               var fullName = element['full_name'] ?? "";
               String namaUser = "$fullName";
@@ -385,6 +388,7 @@ class TugasLuarController extends GetxController {
               allEmployee.value.add(element);
             }
           }
+          print("data delegasi setelah di sharing ${allEmployeeDelegasi}");
           if (idpengajuanTugasLuar.value == "") {
             List data = valueBody['data'];
             var listFirst = data

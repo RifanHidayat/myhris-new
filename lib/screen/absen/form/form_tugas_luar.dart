@@ -795,6 +795,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
   }
 
   Widget formDelegasiKepada() {
+    print("data employee ${controller.allEmployeeDelegasi.value}");
     return InkWell(
       onTap: () async {
         await showMenu(

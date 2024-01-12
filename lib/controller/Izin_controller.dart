@@ -960,6 +960,7 @@ class IzinController extends GetxController {
             }
           }
         } else {
+         
           var valueBody = jsonDecode(res.body);
           UtilsAlert.showToast(valueBody['message']);
           Get.back();

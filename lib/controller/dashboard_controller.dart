@@ -806,7 +806,11 @@ class DashboardController extends GetxController {
     Map<String, dynamic> body = {'em_id': getEmid};
     var connect = Api.connectionApi("post", body, "refresh_employee");
     connect.then((dynamic res) {
+
+    
       var valueBody = jsonDecode(res.body);
+        print("data ${valueBody}");
+
       if (valueBody['status'] == false) {
         UtilsAlert.showToast(valueBody['message']);
         Navigator.pop(Get.context!);
