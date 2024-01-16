@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,12 +9,9 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:siscom_operasional/controller/aktifitas_controller.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
-import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
-import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
-import 'package:scroll_navigation/scroll_navigation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Aktifitas extends StatelessWidget {

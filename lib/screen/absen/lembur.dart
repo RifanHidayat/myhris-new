@@ -197,7 +197,8 @@ class _LemburState extends State<Lembur> {
                       onPressed: () {
                         controller.cari.value.clear();
                         controller.onClose();
-                        Get.offAll(InitScreen());
+                        // Get.offAll(InitScreen());
+                        Get.back();
                       },
                       // onPressed: () {
                       //   controller.cari.value.text = "";

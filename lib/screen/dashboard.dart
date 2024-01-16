@@ -479,7 +479,7 @@ class _DashboardState extends State<Dashboard> {
                                                           .borderStyle5,
                                                     ),
                                                     onTap: () =>
-                                                        Get.offAll(Informasi(
+                                                        Get.to(Informasi(
                                                       index: 0,
                                                     )),
                                                     child: Padding(
@@ -555,7 +555,7 @@ class _DashboardState extends State<Dashboard> {
                                                           .borderStyle5,
                                                     ),
                                                     onTap: () =>
-                                                        Get.offAll(Informasi(
+                                                        Get.to(Informasi(
                                                       index: 3,
                                                     )),
                                                     child: Padding(
@@ -633,7 +633,7 @@ class _DashboardState extends State<Dashboard> {
                                                       borderRadius: Constanst
                                                           .borderStyle5,
                                                     ),
-                                                    onTap: () => Get.offAll(
+                                                    onTap: () => Get.to(
                                                       Informasi(index: 1),
                                                     ),
                                                     child: Padding(

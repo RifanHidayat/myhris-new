@@ -76,7 +76,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                 ),
                 onPressed: () {
                   controller.removeAll();
-                  Get.offAll(InitScreen());
+                  Get.back();
                 },
               ),
               actions: [

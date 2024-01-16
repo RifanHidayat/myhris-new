@@ -7,6 +7,12 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/screen/pesan/approval.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_absensi.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_cuti.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_izin.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_klaim.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_payroll.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_tugas_luar.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -35,7 +41,7 @@ class PesanController extends GetxController {
   var jumlahApproveKlaim = 0.obs;
   var jumlahApprovePayroll = 0.obs;
   var jumlahNotifikasiBelumDibaca = 0.obs;
-   var jumlahCheckin= 0.obs;
+  var jumlahCheckin = 0.obs;
   var jumlahPersetujuan = 0.obs;
 
   var jumlahRiwayat = 0.obs;
@@ -59,7 +65,7 @@ class PesanController extends GetxController {
     "Dinas Luar",
     "Klaim",
     "Payroll",
-    "Absensi" 
+    "Absensi"
   ];
 
   @override
@@ -103,7 +109,6 @@ class PesanController extends GetxController {
   }
 
   void loadApproveInfo() {
-
     print("load approval info");
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "load_approve_info"
@@ -122,7 +127,7 @@ class PesanController extends GetxController {
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-       
+
         if (valueBody['status'] == true) {
           jumlahApproveCuti.value = valueBody['jumlah_cuti'];
           jumlahApproveLembur.value = valueBody['jumlah_lembur'];
@@ -132,16 +137,14 @@ class PesanController extends GetxController {
           jumlahApproveKlaim.value = valueBody['jumlah_klaim'];
           jumlahApprovePayroll.value = valueBody['jumlah_payroll'];
           jumlahCheckin.value = valueBody['jumlah_checkin'];
-        
-        
-          jumlahPersetujuan.value = jumlahApproveCuti.value +
-          jumlahApproveLembur.value +
-          jumlahApproveTidakHadir.value +
-          jumlahApproveTugasLuar.value +
-          jumlahApproveDinasLuar.value +
-          jumlahApproveKlaim.value  +
-          jumlahCheckin.value;
 
+          jumlahPersetujuan.value = jumlahApproveCuti.value +
+              jumlahApproveLembur.value +
+              jumlahApproveTidakHadir.value +
+              jumlahApproveTugasLuar.value +
+              jumlahApproveDinasLuar.value +
+              jumlahApproveKlaim.value +
+              jumlahCheckin.value;
 
           this.jumlahApproveCuti.refresh();
           this.jumlahApproveLembur.refresh();
@@ -154,7 +157,7 @@ class PesanController extends GetxController {
           jumlahApprovePayroll.refresh();
 
           print("Jumlah Approval payroll ${jumlahApprovePayroll}");
-           print("Jumlah Approval payroll ${valueBody}");
+          print("Jumlah Approval payroll ${valueBody}");
           loadScreenPersetujuan();
         } else {
           statusScreenInfoApproval.value = false;
@@ -546,7 +549,7 @@ class PesanController extends GetxController {
 
         dataScreenPersetujuan.value.add(data);
         this.dataScreenPersetujuan.refresh();
-      }else if (element == "Absensi") {
+      } else if (element == "Absensi") {
         var data = {
           'title': element,
           'jumlah_approve': "${jumlahCheckin.value}",
@@ -554,7 +557,7 @@ class PesanController extends GetxController {
 
         dataScreenPersetujuan.value.add(data);
         this.dataScreenPersetujuan.refresh();
-      }else if (element == "Absensi") {
+      } else if (element == "Absensi") {
         var data = {
           'title': element,
           'jumlah_approve': "${jumlahCheckin.value}",
@@ -568,15 +571,67 @@ class PesanController extends GetxController {
   }
 
   void routeApproval(index) {
-    print(index);
+    print("Judul : ${index['title']}");
     if (index['jumlah_approve'] == "0") {
       UtilsAlert.showToast("Tidak ada data yang harus di approve");
     } else {
-      Get.to(Approval(
-        title: index['title'],
-        bulan: bulanSelectedSearchHistory.value,
-        tahun: tahunSelectedSearchHistory.value,
-      ));
+      index['title'] == "Cuti"
+          ? Get.to(PersetujuanCuti(
+              title: index['title'],
+              bulan: bulanSelectedSearchHistory.value,
+              tahun: tahunSelectedSearchHistory.value,
+            ))
+          : index['title'] == "Lembur"
+              ? Get.to(Approval(
+                  title: index['title'],
+                  bulan: bulanSelectedSearchHistory.value,
+                  tahun: tahunSelectedSearchHistory.value,
+                ))
+              : index['title'] == "Tidak Hadir"
+                  ? Get.to(PersetujuanIzin(
+                      title: index['title'],
+                      bulan: bulanSelectedSearchHistory.value,
+                      tahun: tahunSelectedSearchHistory.value,
+                    ))
+                  : index['title'] == "Tugas Luar"
+                      ? Get.to(PersetujuanTugasLuar(
+                          title: index['title'],
+                          bulan: bulanSelectedSearchHistory.value,
+                          tahun: tahunSelectedSearchHistory.value,
+                        ))
+                      : index['title'] == "Dinas Luar"
+                          ? Get.to(Approval(
+                              title: index['title'],
+                              bulan: bulanSelectedSearchHistory.value,
+                              tahun: tahunSelectedSearchHistory.value,
+                            ))
+                          : index['title'] == "Klaim"
+                              ? Get.to(PersetujuanKlaim(
+                                  title: index['title'],
+                                  bulan: bulanSelectedSearchHistory.value,
+                                  tahun: tahunSelectedSearchHistory.value,
+                                ))
+                              : index['title'] == "Payroll"
+                                  ? Get.to(PersetujuanPayroll(
+                                      title: index['title'],
+                                      bulan: bulanSelectedSearchHistory.value,
+                                      tahun: tahunSelectedSearchHistory.value,
+                                    ))
+                                  : index['title'] == "Absensi"
+                                      ? Get.to(PersetujuanAbsensi(
+                                          title: index['title'],
+                                          bulan:
+                                              bulanSelectedSearchHistory.value,
+                                          tahun:
+                                              tahunSelectedSearchHistory.value,
+                                        ))
+                                      : Get.to(Approval(
+                                          title: index['title'],
+                                          bulan:
+                                              bulanSelectedSearchHistory.value,
+                                          tahun:
+                                              tahunSelectedSearchHistory.value,
+                                        ));
     }
   }
 
@@ -942,34 +997,34 @@ class PesanController extends GetxController {
                 height: 5,
               ),
               Container(
-              
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                 
-                     namaTipe=="" || namaTipe=="null" || namaTipe==null? Text(
-                      "${dataDetail[0]['type']} ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ):Text(
-                      "${dataDetail[0]['type']} $namaTipe",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                 
-                    dataDetail[0]['nama_tipe'] == "" || dataDetail[0]['nama_tipe'] ==null || dataDetail[0]['nama_tipe'] =='null'
+                    namaTipe == "" || namaTipe == "null" || namaTipe == null
+                        ? Text(
+                            "${dataDetail[0]['type']} ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        : Text(
+                            "${dataDetail[0]['type']} $namaTipe",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                    dataDetail[0]['nama_tipe'] == "" ||
+                            dataDetail[0]['nama_tipe'] == null ||
+                            dataDetail[0]['nama_tipe'] == 'null'
                         ? SizedBox()
                         : Expanded(
-                        
-                          child: Container(
-                            width: double.maxFinite,
-                            child: Padding(
+                            child: Container(
+                              width: double.maxFinite,
+                              child: Padding(
                                 padding: EdgeInsets.only(left: 8),
                                 child: Text(
-                                  "( ${dataDetail[0]['nama_tipe']}  ${dataDetail[0]['category']=="" || dataDetail[0]['category']==null?"":" - ${dataDetail[0]['category'] }"})",
+                                  "( ${dataDetail[0]['nama_tipe']}  ${dataDetail[0]['category'] == "" || dataDetail[0]['category'] == null ? "" : " - ${dataDetail[0]['category']}"})",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
-                          ),
-                        )
+                            ),
+                          )
                   ],
                 ),
               ),
@@ -1030,16 +1085,19 @@ class PesanController extends GetxController {
               SizedBox(
                 height: 5,
               ),
-            dataDetail[0]['apply_by']==null || dataDetail[0]['apply_by']==""?SizedBox():  Text(
-                "${dataDetail[0]['status']} oleh ${dataDetail[0]['apply_by']}",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: dataDetail[0]['status'] == 'Approve'
-                        ? Constanst.color5
-                        : dataDetail[0]['status'] == 'Approve2'
-                            ? Constanst.color5
-                            : Constanst.color4),
-              ),
+              dataDetail[0]['apply_by'] == null ||
+                      dataDetail[0]['apply_by'] == ""
+                  ? SizedBox()
+                  : Text(
+                      "${dataDetail[0]['status']} oleh ${dataDetail[0]['apply_by']}",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: dataDetail[0]['status'] == 'Approve'
+                              ? Constanst.color5
+                              : dataDetail[0]['status'] == 'Approve2'
+                                  ? Constanst.color5
+                                  : Constanst.color4),
+                    ),
               SizedBox(
                 height: 10,
               ),

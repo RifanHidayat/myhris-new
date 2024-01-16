@@ -1,4 +1,3 @@
-
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -199,7 +198,8 @@ class _KlaimState extends State<Klaim> {
                       onPressed: () {
                         controller.cari.value.clear();
                         controller.onClose();
-                        Get.offAll(InitScreen());
+                        // Get.offAll(InitScreen());
+                        Get.back();
                       },
                       // onPressed: () {
                       //   controller.cari.value.text = "";

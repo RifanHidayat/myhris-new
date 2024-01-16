@@ -345,10 +345,11 @@ class _ApprovalState extends State<Approval> {
                                     ),
                                     Expanded(
                                       flex: controller.valuePolaPersetujuan ==
-                                                              1 ||
-                                                          controller
-                                                                  .valuePolaPersetujuan ==
-                                                              "1"? 30:55,
+                                                  1 ||
+                                              controller.valuePolaPersetujuan ==
+                                                  "1"
+                                          ? 30
+                                          : 55,
                                       child: Container(
                                         margin: EdgeInsets.only(right: 8),
                                         decoration: BoxDecoration(
@@ -365,16 +366,16 @@ class _ApprovalState extends State<Approval> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                               Icon(
-                                                      Iconsax.timer,
-                                                      color: Constanst.color3,
-                                                      size: 14,
-                                                    ),
+                                              Icon(
+                                                Iconsax.timer,
+                                                color: Constanst.color3,
+                                                size: 14,
+                                              ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     left: 3),
                                                 child: Text(
-                                                   controller.valuePolaPersetujuan ==
+                                                  controller.valuePolaPersetujuan ==
                                                               1 ||
                                                           controller
                                                                   .valuePolaPersetujuan ==
@@ -516,10 +517,11 @@ class _ApprovalState extends State<Approval> {
                                     ),
                                     Expanded(
                                       flex: controller.valuePolaPersetujuan ==
-                                                              1 ||
-                                                          controller
-                                                                  .valuePolaPersetujuan ==
-                                                              "1"? 30:55,
+                                                  1 ||
+                                              controller.valuePolaPersetujuan ==
+                                                  "1"
+                                          ? 30
+                                          : 55,
                                       child: Container(
                                         margin: EdgeInsets.only(right: 8),
                                         decoration: BoxDecoration(
@@ -537,10 +539,10 @@ class _ApprovalState extends State<Approval> {
                                                 MainAxisAlignment.center,
                                             children: [
                                               Icon(
-                                                      Iconsax.timer,
-                                                      color: Constanst.color3,
-                                                      size: 14,
-                                                    ),
+                                                Iconsax.timer,
+                                                color: Constanst.color3,
+                                                size: 14,
+                                              ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     left: 3),

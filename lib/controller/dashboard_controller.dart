@@ -1245,23 +1245,23 @@ class DashboardController extends GetxController {
   void routePageDashboard(url) {
     print(url);
     if (url == "HistoryAbsen") {
-      Get.offAll(HistoryAbsen());
+      Get.to(HistoryAbsen());
     } else if (url == "TidakMasukKerja") {
-      Get.offAll(RiwayatIzin());
+      Get.to(RiwayatIzin());
     } else if (url == "Lembur") {
-      Get.offAll(Lembur());
+      Get.to(Lembur());
     } else if (url == "FormPengajuanCuti") {
       Get.to(FormPengajuanCuti(
         dataForm: [[], false],
       ));
     } else if (url == "RiwayatCuti") {
-      Get.offAll(RiwayatCuti());
+      Get.to(RiwayatCuti());
       // } else if (url == "Izin") {
-      //   Get.offAll(Izin());
+      //   Get.to(Izin());
     } else if (url == "TugasLuar") {
-      Get.offAll(TugasLuar());
+      Get.to(TugasLuar());
     } else if (url == "Klaim") {
-      Get.offAll(Klaim());
+      Get.to(Klaim());
     } else if (url == "FormKlaim") {
       Get.to(FormKlaim(
         dataForm: [[], false],
@@ -1272,7 +1272,7 @@ class DashboardController extends GetxController {
       if (getHakAkses == "" || getHakAkses == null || getHakAkses == "null") {
         UtilsAlert.showToast('Maaf anda tidak memiliki akses menu ini');
       } else {
-        Get.offAll(Kandidat());
+        Get.to(Kandidat());
       }
     } else if (url == "SlipGaji") {
       //  Get.to(PPh21page());
