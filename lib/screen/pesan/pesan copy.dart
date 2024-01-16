@@ -6,8 +6,12 @@ import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
+import 'package:siscom_operasional/screen/init_screen.dart';
+import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:io';
+import 'dart:math';
+
 import 'package:siscom_operasional/utils/month_year_picker.dart';
 
 class Pesan extends StatefulWidget {
@@ -38,13 +42,13 @@ class _PesanState extends State<Pesan> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
         child: Container(
-          // decoration: const BoxDecoration(boxShadow: [
-          //   BoxShadow(
-          //     color: Colors.black12,
-          //     offset: Offset(0, 2.0),
-          //     blurRadius: 4.0,
-          //   )
-          // ]),
+          decoration: const BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              offset: Offset(0, 2.0),
+              blurRadius: 4.0,
+            )
+          ]),
           child: AppBar(
             backgroundColor: Constanst.colorWhite,
             elevation: 0,
@@ -70,9 +74,14 @@ class _PesanState extends State<Pesan> {
               () => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // lineTitle(),
+                  const SizedBox(height: 16),
+                  lineTitle(),
                   Flexible(
-                    child: pageViewPesan(),
+                    flex: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      child: pageViewPesan(),
+                    ),
                   )
                 ],
               ),
@@ -81,370 +90,218 @@ class _PesanState extends State<Pesan> {
     );
   }
 
-  // Widget lineTitle() {
-  //   return Row(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Expanded(
-  //         child: InkWell(
-  //           onTap: () {
-  //             if (widget.status == false) {
-  //               controller.selectedView.value = 0;
-  //               controller.menuController.jumpToPage(0);
-  //             }
-  //           },
-  //           child: Container(
-  //             decoration: BoxDecoration(
-  //               border: Border(
-  //                 bottom: BorderSide(
-  //                   color: controller.selectedView.value == 0
-  //                       ? Constanst.colorPrimary
-  //                       : Constanst.color6,
-  //                   width: 2.0,
-  //                 ),
-  //               ),
-  //             ),
-  //             child: Padding(
-  //               padding: const EdgeInsets.only(bottom: 8),
-  //               child: Row(
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   Text(
-  //                     "Notifikasi",
-  //                     style: TextStyle(
-  //                         color: controller.selectedView.value == 0
-  //                             ? Constanst.colorPrimary
-  //                             : Constanst.colorText2,
-  //                         fontWeight: FontWeight.bold),
-  //                   ),
-  //                   controller.jumlahNotifikasiBelumDibaca.value == 0
-  //                       ? SizedBox()
-  //                       : Obx(
-  //                           () => Container(
-  //                               margin: EdgeInsets.only(left: 6),
-  //                               decoration: BoxDecoration(
-  //                                 color: Constanst.colorButton2,
-  //                                 borderRadius: Constanst.borderStyle3,
-  //                               ),
-  //                               child: Padding(
-  //                                 padding:
-  //                                     const EdgeInsets.only(left: 8, right: 8),
-  //                                 child: Text(
-  //                                   "${controller.jumlahNotifikasiBelumDibaca.value}"
-  //                                               .length >
-  //                                           2
-  //                                       ? "${controller.jumlahNotifikasiBelumDibaca.value}"
-  //                                               .substring(0, 2) +
-  //                                           '+'
-  //                                       : "${controller.jumlahNotifikasiBelumDibaca.value}",
-  //                                 ),
-  //                               )),
-  //                         ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       Expanded(
-  //         child: InkWell(
-  //           onTap: () {
-  //             if (widget.status == false) {
-  //               controller.selectedView.value = 1;
-  //               controller.menuController.jumpToPage(1);
-  //             }
-  //           },
-  //           child: Container(
-  //             decoration: BoxDecoration(
-  //               border: Border(
-  //                 bottom: BorderSide(
-  //                   color: controller.selectedView.value == 1
-  //                       ? Constanst.colorPrimary
-  //                       : Constanst.color6,
-  //                   width: 2.0,
-  //                 ),
-  //               ),
-  //             ),
-  //             child: Padding(
-  //               padding: const EdgeInsets.only(bottom: 8),
-  //               child: Row(
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   Text(
-  //                     "Persetujuan",
-  //                     style: TextStyle(
-  //                         color: controller.selectedView.value == 1
-  //                             ? Constanst.colorPrimary
-  //                             : Constanst.colorText2,
-  //                         fontWeight: FontWeight.bold),
-  //                   ),
-  //                   controller.jumlahPersetujuan.value == 0
-  //                       ? SizedBox()
-  //                       : Obx(
-  //                           () => Container(
-  //                               margin: EdgeInsets.only(left: 6),
-  //                               decoration: BoxDecoration(
-  //                                 color: Constanst.colorButton2,
-  //                                 borderRadius: Constanst.borderStyle3,
-  //                               ),
-  //                               child: Padding(
-  //                                 padding:
-  //                                     const EdgeInsets.only(left: 8, right: 8),
-  //                                 child: Text(
-  //                                   "${controller.jumlahPersetujuan.value}"
-  //                                               .length >
-  //                                           2
-  //                                       ? "${controller.jumlahPersetujuan.value}"
-  //                                               .substring(0, 2) +
-  //                                           '+'
-  //                                       : "${controller.jumlahPersetujuan.value}",
-  //                                 ),
-  //                               )),
-  //                         ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       Expanded(
-  //         child: InkWell(
-  //           onTap: () {
-  //             if (widget.status == false) {
-  //               controller.selectedView.value = 2;
-  //               controller.menuController.jumpToPage(2);
-  //             }
-  //           },
-  //           child: Container(
-  //             decoration: BoxDecoration(
-  //               border: Border(
-  //                 bottom: BorderSide(
-  //                   color: controller.selectedView.value == 2
-  //                       ? Constanst.colorPrimary
-  //                       : Constanst.color6,
-  //                   width: 2.0,
-  //                 ),
-  //               ),
-  //             ),
-  //             child: Padding(
-  //               padding: const EdgeInsets.only(bottom: 8),
-  //               child: Row(
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   Text(
-  //                     "Riwayat",
-  //                     style: TextStyle(
-  //                         color: controller.selectedView.value == 2
-  //                             ? Constanst.colorPrimary
-  //                             : Constanst.colorText2,
-  //                         fontWeight: FontWeight.bold),
-  //                   ),
-  //                   controller.jumlahRiwayat.value == 0
-  //                       ? SizedBox()
-  //                       : Obx(
-  //                           () => Container(
-  //                               margin: EdgeInsets.only(left: 6),
-  //                               decoration: BoxDecoration(
-  //                                 color: Constanst.colorButton2,
-  //                                 borderRadius: Constanst.borderStyle3,
-  //                               ),
-  //                               child: Padding(
-  //                                 padding:
-  //                                     const EdgeInsets.only(left: 8, right: 8),
-  //                                 child: Text(
-  //                                   "${controller.jumlahRiwayat.value}".length >
-  //                                           2
-  //                                       ? "${controller.jumlahRiwayat.value}"
-  //                                               .substring(0, 2) +
-  //                                           '+'
-  //                                       : "${controller.jumlahRiwayat.value}",
-  //                                 ),
-  //                               )),
-  //                         ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       )
-  //     ],
-  //   );
-  // }
-
-  Widget pageViewPesan() {
-    return DefaultTabController(
-      length: 2,
-      child: Column(
-        children: [
-          TabBar(
-            indicatorColor: Constanst.onPrimary,
-            indicatorWeight: 4.0,
-            labelPadding: const EdgeInsets.fromLTRB(0, 0, 0, 14),
-            indicatorSize: TabBarIndicatorSize.label,
-            physics: const BouncingScrollPhysics(),
-            labelColor: Constanst.onPrimary,
-            unselectedLabelColor: Constanst.fgSecondary,
-            tabs: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    height: 22,
-                    width: 22,
-                    decoration: BoxDecoration(
-                        color: Constanst.colorStateDangerBg,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(100.0),
-                        ),
-                        border: Border.all(
-                          width: 1.0,
-                          color: Constanst.colorStateDangerBorder,
-                        )),
-                    child: Center(
-                      child: Obx(
-                        () => Text(
-                          "${controller.jumlahNotifikasiBelumDibaca.value}"
-                                      .length >
-                                  2
-                              ? '${"${controller.jumlahNotifikasiBelumDibaca.value}".substring(0, 2)}+'
-                              : "${controller.jumlahNotifikasiBelumDibaca.value}",
-                          style: GoogleFonts.inter(
-                              color: Constanst.colorStateOnDangerBg,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ),
+  Widget lineTitle() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              if (widget.status == false) {
+                controller.selectedView.value = 0;
+                controller.menuController.jumpToPage(0);
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: controller.selectedView.value == 0
+                        ? Constanst.colorPrimary
+                        : Constanst.color6,
+                    width: 2.0,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                    child: Text(
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
                       "Notifikasi",
-                      style: GoogleFonts.inter(
-                          fontSize: 16, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          color: controller.selectedView.value == 0
+                              ? Constanst.colorPrimary
+                              : Constanst.colorText2,
+                          fontWeight: FontWeight.bold),
                     ),
-                  ),
-                ],
+                    controller.jumlahNotifikasiBelumDibaca.value == 0
+                        ? SizedBox()
+                        : Obx(
+                            () => Container(
+                                margin: EdgeInsets.only(left: 6),
+                                decoration: BoxDecoration(
+                                  color: Constanst.colorButton2,
+                                  borderRadius: Constanst.borderStyle3,
+                                ),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 8, right: 8),
+                                  child: Text(
+                                    "${controller.jumlahNotifikasiBelumDibaca.value}"
+                                                .length >
+                                            2
+                                        ? "${controller.jumlahNotifikasiBelumDibaca.value}"
+                                                .substring(0, 2) +
+                                            '+'
+                                        : "${controller.jumlahNotifikasiBelumDibaca.value}",
+                                  ),
+                                )),
+                          ),
+                  ],
+                ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    height: 22,
-                    width: 22,
-                    decoration: BoxDecoration(
-                        color: Constanst.colorStateDangerBg,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(100.0),
-                        ),
-                        border: Border.all(
-                          width: 1.0,
-                          color: Constanst.colorStateDangerBorder,
-                        )),
-                    child: Center(
-                      child: Obx(
-                        () => Text(
-                          "${controller.jumlahPersetujuan.value}".length > 2
-                              ? '${"${controller.jumlahPersetujuan.value}".substring(0, 2)}+'
-                              : "${controller.jumlahPersetujuan.value}",
-                          style: GoogleFonts.inter(
-                              color: Constanst.colorStateOnDangerBg,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                    child: Text(
-                      "Persetujuan",
-                      style: GoogleFonts.inter(
-                          fontSize: 16, fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ],
-              ),
-              // Column(
-              //   crossAxisAlignment: CrossAxisAlignment.end,
-              //   children: [
-              //     Container(
-              //       height: 22,
-              //       width: 22,
-              //       decoration: BoxDecoration(
-              //           color: Constanst.colorStateDangerBg,
-              //           borderRadius: const BorderRadius.all(
-              //             Radius.circular(100.0),
-              //           ),
-              //           border: Border.all(
-              //             width: 1.0,
-              //             color: Constanst.colorStateDangerBorder,
-              //           )),
-              //       child: Center(
-              //         child: Obx(
-              //           () => Text(
-              //             "${controller.jumlahRiwayat.value}".length > 2
-              //                 ? '${"${controller.jumlahRiwayat.value}".substring(0, 2)}+'
-              //                 : "${controller.jumlahRiwayat.value}",
-              //             style: GoogleFonts.inter(
-              //                 color: Constanst.colorStateOnDangerBg,
-              //                 fontSize: 12,
-              //                 fontWeight: FontWeight.w500),
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //     Padding(
-              //       padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-              //       child: Text(
-              //         "Riwayat",
-              //         style: GoogleFonts.inter(
-              //             fontSize: 16, fontWeight: FontWeight.w500),
-              //       ),
-              //     ),
-              //   ],
-              // ),
-            ],
-          ),
-          Divider(
-            thickness: 1,
-            height: 1,
-            color: Constanst.fgBorder,
-          ),
-          Expanded(
-            child: TabBarView(
-              physics: const BouncingScrollPhysics(),
-              children: [
-                screenNotifikasi(),
-                screenPersetujuan(),
-                // screenRiwayat(),
-              ],
             ),
           ),
-          // PageView.builder(
-          //     physics: BouncingScrollPhysics(),
-          //     controller: controller.menuController,
-          //     onPageChanged: (index) {
-          //       controller.selectedView.value = index;
-          //     },
-          //     itemCount: 3,
-          //     itemBuilder: (context, index) {
-          //       return Padding(
-          //           padding: EdgeInsets.all(0),
-          //           child: index == 0
-          //               ? screenNotifikasi()
-          //               : index == 1
-          //                   ? screenPersetujuan()
-          //                   : index == 2
-          //                       ? screenRiwayat()
-          //                       : SizedBox());
-          //     }),
-        ],
-      ),
+        ),
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              if (widget.status == false) {
+                controller.selectedView.value = 1;
+                controller.menuController.jumpToPage(1);
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: controller.selectedView.value == 1
+                        ? Constanst.colorPrimary
+                        : Constanst.color6,
+                    width: 2.0,
+                  ),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Persetujuan",
+                      style: TextStyle(
+                          color: controller.selectedView.value == 1
+                              ? Constanst.colorPrimary
+                              : Constanst.colorText2,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    controller.jumlahPersetujuan.value == 0
+                        ? SizedBox()
+                        : Obx(
+                            () => Container(
+                                margin: EdgeInsets.only(left: 6),
+                                decoration: BoxDecoration(
+                                  color: Constanst.colorButton2,
+                                  borderRadius: Constanst.borderStyle3,
+                                ),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 8, right: 8),
+                                  child: Text(
+                                    "${controller.jumlahPersetujuan.value}"
+                                                .length >
+                                            2
+                                        ? "${controller.jumlahPersetujuan.value}"
+                                                .substring(0, 2) +
+                                            '+'
+                                        : "${controller.jumlahPersetujuan.value}",
+                                  ),
+                                )),
+                          ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              if (widget.status == false) {
+                controller.selectedView.value = 2;
+                controller.menuController.jumpToPage(2);
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: controller.selectedView.value == 2
+                        ? Constanst.colorPrimary
+                        : Constanst.color6,
+                    width: 2.0,
+                  ),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Riwayat",
+                      style: TextStyle(
+                          color: controller.selectedView.value == 2
+                              ? Constanst.colorPrimary
+                              : Constanst.colorText2,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    controller.jumlahRiwayat.value == 0
+                        ? SizedBox()
+                        : Obx(
+                            () => Container(
+                                margin: EdgeInsets.only(left: 6),
+                                decoration: BoxDecoration(
+                                  color: Constanst.colorButton2,
+                                  borderRadius: Constanst.borderStyle3,
+                                ),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 8, right: 8),
+                                  child: Text(
+                                    "${controller.jumlahRiwayat.value}".length >
+                                            2
+                                        ? "${controller.jumlahRiwayat.value}"
+                                                .substring(0, 2) +
+                                            '+'
+                                        : "${controller.jumlahRiwayat.value}",
+                                  ),
+                                )),
+                          ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        )
+      ],
     );
+  }
+
+  Widget pageViewPesan() {
+    return PageView.builder(
+        physics: BouncingScrollPhysics(),
+        controller: controller.menuController,
+        onPageChanged: (index) {
+          controller.selectedView.value = index;
+        },
+        itemCount: 3,
+        itemBuilder: (context, index) {
+          return Padding(
+              padding: EdgeInsets.all(0),
+              child: index == 0
+                  ? screenNotifikasi()
+                  : index == 1
+                      ? screenPersetujuan()
+                      : index == 2
+                          ? screenRiwayat()
+                          : SizedBox());
+        });
   }
 
   Widget screenNotifikasi() {
@@ -454,20 +311,14 @@ class _PesanState extends State<Pesan> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(
-                  'assets/amico.svg',
+                Image.asset(
+                  "assets/amico.png",
                   height: 250,
-                  width: 250,
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  "Anda tidak memiliki Notifikasi",
-                  style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w500,
-                      color: Constanst.fgPrimary,
-                      fontSize: 16),
+                SizedBox(
+                  height: 10,
                 ),
-                const SizedBox(height: 32),
+                Text("Kamu belum memiliki Notifikasi")
               ],
             ),
           )
@@ -476,167 +327,170 @@ class _PesanState extends State<Pesan> {
             child: ListView.builder(
                 itemCount: controller.listNotifikasi.value.length,
                 physics: controller.listNotifikasi.value.length <= 10
-                    ? const AlwaysScrollableScrollPhysics()
-                    : const BouncingScrollPhysics(),
+                    ? AlwaysScrollableScrollPhysics()
+                    : BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   var tanggalNotif =
                       controller.listNotifikasi.value[index]['tanggal'];
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(16.0, 24.0, 0.0, 4.0),
-                        child: Text(
-                          // Constanst.convertDate(tanggalNotif.toString()),
-                          // tanggalNotif,
-                          tanggalNotif == "Hari ini"
-                              ? tanggalNotif
-                              : Constanst.convertDate6(DateFormat('dd-MM-yyyy')
-                                  .parseStrict(tanggalNotif)
-                                  .toString()),
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              color: Constanst.fgSecondary,
-                              fontSize: 14),
-                        ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(tanggalNotif),
+                      SizedBox(
+                        height: 10,
                       ),
                       Obx(
-                        () => ListView.builder(
-                            itemCount: controller.listNotifikasi
-                                .value[index]['notifikasi'].length,
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (context, idx) {
-                              var idNotif = controller.listNotifikasi
-                                  .value[index]['notifikasi'][idx]['id'];
-                              var titleNotif = controller.listNotifikasi
-                                  .value[index]['notifikasi'][idx]['title'];
-                              var deskripsiNotif = controller.listNotifikasi
-                                  .value[index]['notifikasi'][idx]['deskripsi'];
-                              var urlRoute = controller.listNotifikasi
-                                  .value[index]['notifikasi'][idx]['url'];
-                              var jam = controller.listNotifikasi.value[index]
-                                  ['notifikasi'][idx]['jam'];
-                              var statusNotif = controller.listNotifikasi
-                                  .value[index]['notifikasi'][idx]['status'];
-                              var view = controller.listNotifikasi.value[index]
-                                  ['notifikasi'][idx]['view'];
-                              return Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: view == 0
-                                          ? Constanst.colorButton2
-                                          : Colors.transparent,
-                                      borderRadius: Constanst.borderStyle1,
-                                    ),
-                                    child: InkWell(
-                                      onTap: () {
-                                        if (view == 0) {
-                                          controller.aksilihatNotif(idNotif);
-                                        } else {
-                                          controller.redirectToPage(urlRoute);
-                                        }
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            16.0, 12.0, 16.0, 12.0),
-                                        child: IntrinsicHeight(
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              statusNotif == 1
-                                                  ? Icon(
-                                                      Iconsax.tick_circle,
-                                                      color: Constanst.color5,
-                                                      size: 24,
-                                                    )
-                                                  : statusNotif == 2
-                                                      ? Icon(
-                                                          Iconsax.sms5,
-                                                          color: Constanst
-                                                              .fgSecondary,
-                                                          size: 24,
-                                                        )
-                                                      : statusNotif == 0
+                        () => Padding(
+                          padding: EdgeInsets.only(left: 8, right: 8),
+                          child: ListView.builder(
+                              itemCount: controller.listNotifikasi
+                                  .value[index]['notifikasi'].length,
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, idx) {
+                                var idNotif = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['id'];
+                                var titleNotif = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['title'];
+                                var deskripsiNotif =
+                                    controller.listNotifikasi.value[index]
+                                        ['notifikasi'][idx]['deskripsi'];
+                                var urlRoute = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['url'];
+                                var jam = controller.listNotifikasi.value[index]
+                                    ['notifikasi'][idx]['jam'];
+                                var statusNotif = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['status'];
+                                var view = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['view'];
+                                return Column(
+                                  children: [
+                                    SizedBox(height: 8),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: view == 0
+                                            ? Constanst.colorButton2
+                                            : Colors.transparent,
+                                        borderRadius: Constanst.borderStyle1,
+                                      ),
+                                      child: InkWell(
+                                        onTap: () {
+                                          if (view == 0) {
+                                            controller.aksilihatNotif(idNotif);
+                                          } else {
+                                            controller.redirectToPage(urlRoute);
+                                          }
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6),
+                                          child: IntrinsicHeight(
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.stretch,
+                                              children: [
+                                                Expanded(
+                                                    flex: 10,
+                                                    child: Center(
+                                                      child: statusNotif == 1
                                                           ? Icon(
                                                               Iconsax
-                                                                  .close_circle,
-                                                              color: Constanst
-                                                                  .color4,
-                                                              size: 24,
+                                                                  .tick_circle,
+                                                              color:
+                                                                  Colors.green,
                                                             )
-                                                          : const SizedBox(),
-                                              const SizedBox(width: 12),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 5),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            titleNotif,
-                                                            style: GoogleFonts.inter(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Constanst
-                                                                    .fgPrimary,
-                                                                fontSize: 16),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(height: 4),
-                                                      Text(
-                                                        deskripsiNotif,
-                                                        style: GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            color: Constanst
-                                                                .fgSecondary,
-                                                            fontSize: 14),
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Text(
-                                                        "$jam WIB",
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                        style: GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            color: Constanst
-                                                                .fgSecondary,
-                                                            fontSize: 14),
-                                                      ),
-                                                    ],
+                                                          : statusNotif == 2
+                                                              ? Icon(
+                                                                  Iconsax.sms,
+                                                                  color: Constanst
+                                                                      .colorPrimary,
+                                                                )
+                                                              : statusNotif == 0
+                                                                  ? Icon(
+                                                                      Iconsax
+                                                                          .close_circle,
+                                                                      color: Colors
+                                                                          .red,
+                                                                    )
+                                                                  : SizedBox(),
+                                                    )),
+                                                Expanded(
+                                                  flex: 90,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 5),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Expanded(
+                                                              flex: 75,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        right:
+                                                                            5),
+                                                                child: Text(
+                                                                  titleNotif,
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              flex: 25,
+                                                              child: Text(
+                                                                "$jam WIB",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .right,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        12),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Text(
+                                                          deskripsiNotif,
+                                                          style: TextStyle(
+                                                              color: Constanst
+                                                                  .colorText2),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Divider(
-                                    thickness: 1,
-                                    height: 0,
-                                    color: Constanst.fgBorder,
-                                  ),
-                                ],
-                              );
-                            }),
+                                    SizedBox(height: 8),
+                                    Divider(
+                                      height: 5,
+                                      color: Constanst.colorText2,
+                                    ),
+                                  ],
+                                );
+                              }),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 16,
                       ),
                     ],
                   );
@@ -645,80 +499,82 @@ class _PesanState extends State<Pesan> {
   }
 
   Widget pickDate() {
-    return Row(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(100.0),
+    return Container(
+      decoration: Constanst.styleBoxDecoration1,
+      margin: EdgeInsets.only(left: 5, right: 5),
+      child: Padding(
+        padding: EdgeInsets.only(top: 15, bottom: 10),
+        child: InkWell(
+          onTap: () {
+            DatePicker.showPicker(
+              Get.context!,
+              pickerModel: CustomMonthPicker(
+                minTime: DateTime(2020, 1, 1),
+                maxTime: DateTime(2050, 1, 1),
+                currentTime: DateTime.now(),
               ),
-              border: Border.all(
-                width: 1.0,
-                color: Constanst.border,
-              )),
-          margin: const EdgeInsets.only(left: 16, right: 16),
-          child: InkWell(
-            customBorder: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(100))),
-            onTap: () {
-              DatePicker.showPicker(
-                Get.context!,
-                pickerModel: CustomMonthPicker(
-                  minTime: DateTime(2020, 1, 1),
-                  maxTime: DateTime(2050, 1, 1),
-                  currentTime: DateTime(
-                      int.parse(controller.tahunSelectedSearchHistory.value),
-                      int.parse(controller.bulanSelectedSearchHistory.value),
-                      1),
+              onConfirm: (time) {
+                if (time != null) {
+                  print("$time");
+                  var filter = DateFormat('yyyy-MM').format(time);
+                  var array = filter.split('-');
+                  var bulan = array[1];
+                  var tahun = array[0];
+                  controller.bulanSelectedSearchHistory.value = bulan;
+                  controller.tahunSelectedSearchHistory.value = tahun;
+                  controller.bulanDanTahunNow.value = "$bulan-$tahun";
+                  this.controller.bulanSelectedSearchHistory.refresh();
+                  this.controller.tahunSelectedSearchHistory.refresh();
+                  this.controller.bulanDanTahunNow.refresh();
+                  controller.loadApproveInfo();
+                  controller.loadApproveHistory();
+                }
+              },
+            );
+          },
+          child: Obx(
+            () => Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 90,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Icon(Iconsax.calendar_2),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text(
+                          "${Constanst.convertDateBulanDanTahun(controller.bulanDanTahunNow.value)}",
+                          style:
+                              TextStyle(fontSize: 16, color: Constanst.color2),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                onConfirm: (time) {
-                  if (time != null) {
-                    print("$time");
-                    var filter = DateFormat('yyyy-MM').format(time);
-                    var array = filter.split('-');
-                    var bulan = array[1];
-                    var tahun = array[0];
-                    controller.bulanSelectedSearchHistory.value = bulan;
-                    controller.tahunSelectedSearchHistory.value = tahun;
-                    controller.bulanDanTahunNow.value = "$bulan-$tahun";
-                    this.controller.bulanSelectedSearchHistory.refresh();
-                    this.controller.tahunSelectedSearchHistory.refresh();
-                    this.controller.bulanDanTahunNow.refresh();
-                    controller.loadApproveInfo();
-                    controller.loadApproveHistory();
-                  }
-                },
-              );
-            },
-            child: Obx(
-              () => Padding(
-                padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Icon(Iconsax.calendar_2),
-                    const SizedBox(width: 4),
-                    Text(
-                      Constanst.convertDateBulanDanTahun(
-                          controller.bulanDanTahunNow.value),
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w500,
-                          color: Constanst.fgPrimary,
-                          fontSize: 14),
+                Expanded(
+                  flex: 10,
+                  child: Container(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Icon(
+                        Iconsax.arrow_down_14,
+                        size: 24,
+                        color: Constanst.colorText2,
+                      ),
                     ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      Iconsax.arrow_down_14,
-                      size: 22,
-                      color: Constanst.fgSecondary,
-                    )
-                  ],
-                ),
-              ),
+                  ),
+                )
+              ],
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -726,206 +582,169 @@ class _PesanState extends State<Pesan> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 24),
+        SizedBox(
+          height: 8,
+        ),
         pickDate(),
-        const SizedBox(height: 8),
+        SizedBox(
+          height: 16,
+        ),
         Obx(
-          () => controller.statusScreenInfoApproval.value == true
-              ? Center(
-                  child: Column(
-                    children: [
-                      const CircularProgressIndicator(strokeWidth: 3),
-                      const SizedBox(height: 8),
-                      Text(controller.stringLoading.value),
-                    ],
-                  ),
-                )
-              : RefreshIndicator(
-                  onRefresh: refreshData,
-                  child: ListView.builder(
-                      itemCount: controller.dataScreenPersetujuan.value.length,
-                      shrinkWrap: true,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        var title = controller
-                            .dataScreenPersetujuan.value[index]['title'];
-                        var jumlah = controller.dataScreenPersetujuan
-                            .value[index]['jumlah_approve'];
-                        return
-                            // title == 'Dinas Luar'
-                            //     ? Container() :
-                            InkWell(
-                          // highlightColor: Colors.white,
-                          onTap: () => controller.routeApproval(
-                              controller.dataScreenPersetujuan.value[index]),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    12.0, 12.0, 19.0, 12.0),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+          () => Padding(
+            padding: EdgeInsets.only(left: 8, right: 8),
+            child: controller.statusScreenInfoApproval.value == true
+                ? Center(
+                    child: Column(
+                      children: [
+                        CircularProgressIndicator(strokeWidth: 3),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text(controller.stringLoading.value),
+                      ],
+                    ),
+                  )
+                : RefreshIndicator(
+                    onRefresh: refreshData,
+                    child: ListView.builder(
+                        itemCount:
+                            controller.dataScreenPersetujuan.value.length,
+                        shrinkWrap: true,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          var title = controller
+                              .dataScreenPersetujuan.value[index]['title'];
+                          var jumlah = controller.dataScreenPersetujuan
+                              .value[index]['jumlah_approve'];
+                          return InkWell(
+                            highlightColor: Colors.white,
+                            onTap: () => controller.routeApproval(
+                                controller.dataScreenPersetujuan.value[index]),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          title == 'Cuti'
-                                              ? 'assets/5_cuti.svg'
-                                              : title == 'Lembur'
-                                                  ? 'assets/4_lembur.svg'
-                                                  : title == 'Tidak Hadir'
-                                                      ? 'assets/3_izin.svg'
-                                                      : title == 'Tugas Luar'
-                                                          ? 'assets/6_tugas_luar.svg'
-                                                          : title ==
-                                                                  'Dinas Luar'
-                                                              ? 'assets/6_tugas_luar.svg'
-                                                              : title == 'Klaim'
-                                                                  ? 'assets/7_klaim.svg'
+                                    Expanded(
+                                      flex: 10,
+                                      child: title == 'Cuti'
+                                          ? Icon(
+                                              Iconsax.calendar_remove,
+                                              color: Constanst.colorPrimary,
+                                            )
+                                          : title == 'Lembur'
+                                              ? Icon(
+                                                  Iconsax.clock,
+                                                  color: Constanst.colorPrimary,
+                                                )
+                                              : title == 'Tidak Hadir'
+                                                  ? Icon(
+                                                      Iconsax.clipboard_close,
+                                                      color: Constanst
+                                                          .colorPrimary,
+                                                    )
+                                                  : title == 'Tugas Luar'
+                                                      ? Icon(
+                                                          Iconsax.send_2,
+                                                          color: Constanst
+                                                              .colorPrimary,
+                                                        )
+                                                      : title == 'Dinas Luar'
+                                                          ? Icon(
+                                                              Iconsax.airplane,
+                                                              color: Constanst
+                                                                  .colorPrimary,
+                                                            )
+                                                          : title == 'Klaim'
+                                                              ? Icon(
+                                                                  Iconsax
+                                                                      .receipt,
+                                                                  color: Constanst
+                                                                      .colorPrimary,
+                                                                )
+                                                              : title ==
+                                                                      'Payroll'
+                                                                  ? Icon(
+                                                                      Iconsax
+                                                                          .receipt,
+                                                                      color: Constanst
+                                                                          .colorPrimary,
+                                                                    )
                                                                   : title ==
-                                                                          'Payroll'
-                                                                      ? 'assets/3_izin.svg'
-                                                                      : title ==
-                                                                              'Absensi'
-                                                                          ? 'assets/2_absen.svg'
-                                                                          : 'assets/3_izin.svg',
-                                          height: 35,
-                                          width: 35,
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 12),
-                                          child: Text(
-                                            title == 'Cuti'
-                                                ? 'Persetujuan Cuti'
-                                                : title == 'Lembur'
-                                                    ? 'Persetujuan Lembur'
-                                                    : title == 'Tidak Hadir'
-                                                        ? 'Persetujuan Izin'
-                                                        : title == 'Tugas Luar'
-                                                            ? 'Persetujuan Tugas Luar'
-                                                            : title ==
-                                                                    'Dinas Luar'
-                                                                ? 'Persetujuan Dinas Luar'
-                                                                : title ==
-                                                                        'Klaim'
-                                                                    ? 'Persetujuan Klaim'
-                                                                    : title ==
-                                                                            'Payroll'
-                                                                        ? 'Persetujuan Payroll'
-                                                                        : title ==
-                                                                                'Absensi'
-                                                                            ? 'Persetujuan Absensi'
-                                                                            : '',
-                                            style: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w500,
-                                                color: Constanst.fgPrimary,
-                                                fontSize: 16),
-                                          ),
-                                        ),
-                                      ],
+                                                                          'Absensi'
+                                                                      ? Icon(
+                                                                          Iconsax
+                                                                              .receipt,
+                                                                          color:
+                                                                              Constanst.colorPrimary,
+                                                                        )
+                                                                      : SizedBox(),
                                     ),
-                                    // title == 'Cuti'
-                                    //     ? Icon(
-                                    //         Iconsax.calendar_remove,
-                                    //         color: Constanst.colorPrimary,
-                                    //       )
-                                    //     : title == 'Lembur'
-                                    //         ? Icon(
-                                    //             Iconsax.clock,
-                                    //             color: Constanst.colorPrimary,
-                                    //           )
-                                    //         : title == 'Tidak Hadir'
-                                    //             ? Icon(
-                                    //                 Iconsax.clipboard_close,
-                                    //                 color:
-                                    //                     Constanst.colorPrimary,
-                                    //               )
-                                    //             : title == 'Tugas Luar'
-                                    //                 ? Icon(
-                                    //                     Iconsax.send_2,
-                                    //                     color: Constanst
-                                    //                         .colorPrimary,
-                                    //                   )
-                                    //                 : title == 'Dinas Luar'
-                                    //                     ? Icon(
-                                    //                         Iconsax.airplane,
-                                    //                         color: Constanst
-                                    //                             .colorPrimary,
-                                    //                       )
-                                    //                     : title == 'Klaim'
-                                    //                         ? Icon(
-                                    //                             Iconsax.receipt,
-                                    //                             color: Constanst
-                                    //                                 .colorPrimary,
-                                    //                           )
-                                    //                         : title == 'Payroll'
-                                    //                             ? Icon(
-                                    //                                 Iconsax
-                                    //                                     .receipt,
-                                    //                                 color: Constanst
-                                    //                                     .colorPrimary,
-                                    //                               )
-                                    //                             : title ==
-                                    //                                     'Absensi'
-                                    //                                 ? Icon(
-                                    //                                     Iconsax
-                                    //                                         .receipt,
-                                    //                                     color: Constanst
-                                    //                                         .colorPrimary,
-                                    //                                   )
-                                    //                                 : const SizedBox(),
-
-                                    Row(
-                                      children: [
-                                        Container(
-                                          height: 22,
-                                          width: 22,
-                                          decoration: BoxDecoration(
-                                              color:
-                                                  Constanst.colorStateDangerBg,
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                Radius.circular(100.0),
-                                              ),
-                                              border: Border.all(
-                                                width: 1.0,
-                                                color: Constanst
-                                                    .colorStateDangerBorder,
-                                              )),
+                                    Expanded(
+                                      flex: 60,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 3, left: 8),
+                                        child: Text(
+                                          title,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Constanst.colorText3),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 20,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Constanst.colorBGRejected,
+                                          borderRadius: Constanst.borderStyle1,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 8, right: 8),
                                           child: Center(
                                             child: Text(
                                               jumlah,
-                                              style: GoogleFonts.inter(
-                                                  color: Constanst
-                                                      .colorStateOnDangerBg,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500),
+                                              style:
+                                                  TextStyle(color: Colors.red),
                                             ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: Icon(
-                                            Icons.arrow_forward_ios,
-                                            color: Constanst.colorText2,
-                                            size: 18,
-                                          ),
-                                        )
-                                      ],
+                                      ),
                                     ),
+                                    Expanded(
+                                      flex: 10,
+                                      child: Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: Constanst.colorText2,
+                                      ),
+                                    )
                                   ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Divider(
+                                  height: 5,
+                                  color: Constanst.colorText2,
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                  ),
+          ),
+        ),
+        SizedBox(
+          height: 16,
         ),
       ],
     );

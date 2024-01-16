@@ -83,7 +83,8 @@ class _DetailApprovalState extends State<DetailApproval> {
       }
     }
 
-    if (controller.detailData[0]['type'].toString().toLowerCase() == "Lembur".toString().toLowerCase()) {
+    if (controller.detailData[0]['type'].toString().toLowerCase() ==
+        "Lembur".toString().toLowerCase()) {
       DateTime start = DateTime.parse(
           "${controller.detailData[0]['waktu_pengajuan']} ${controller.detailData[0]['waktu_dari']}");
       DateTime end = DateTime.parse(
@@ -251,7 +252,8 @@ class _DetailApprovalState extends State<DetailApproval> {
                                       SizedBox(
                                         height: 3,
                                       ),
-                                      Text("${hours} Jam ${minutes} Menit ${second} Detik",
+                                      Text(
+                                          "${hours} Jam ${minutes} Menit ${second} Detik",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold))
                                     ],

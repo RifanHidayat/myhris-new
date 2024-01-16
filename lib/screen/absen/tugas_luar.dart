@@ -194,7 +194,8 @@ class _TugasLuarState extends State<TugasLuar> {
                       onPressed: () {
                         controller.cari.value.clear();
                         controller.onClose();
-                        Get.offAll(InitScreen());
+                        // Get.offAll(InitScreen());
+                        Get.back();
                       },
                       // onPressed: () {
                       //   controller.cari.value.text = "";

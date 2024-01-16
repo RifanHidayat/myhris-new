@@ -15,7 +15,7 @@ import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ApprovalController extends GetxController {
+class PersetujuanCutiController extends GetxController {
   var cari = TextEditingController().obs;
   var alasanReject = TextEditingController().obs;
 
@@ -40,13 +40,7 @@ class ApprovalController extends GetxController {
   var persenCuti = 0.0.obs;
   var durasiIzin = 0.obs;
 
-  var tempNamaTipe1 = "Tugas Luar".obs;
-
   var statusHitungCuti = false.obs;
-
-  void showInputCari() {
-    statusCari.value = !statusCari.value;
-  }
 
   void startLoadData(title, bulan, tahun) {
     getLoadsysData(title, bulan, tahun);
@@ -138,10 +132,7 @@ class ApprovalController extends GetxController {
             'em_report2_to': element['em_report2_to'],
             'lainnya': "",
             'nama_pengajuan': element['nama_pengajuan'],
-            'file': element['leave_files'],
-            'nama_divisi': element['nama_divisi'],
-            'nomor_ajuan': element['nomor_ajuan'],
-            'image': element['image'],
+            'file': element['leave_files']
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -262,8 +253,6 @@ class ApprovalController extends GetxController {
             'em_email': element['em_email'],
             'em_report_to': element['em_report_to'],
             'em_report2_to': element['em_report2_to'],
-            'nomor_ajuan': element['nomor_ajuan'],
-            'image': element['image'],
           };
           listData.value.sort(
               (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
@@ -335,7 +324,6 @@ class ApprovalController extends GetxController {
             'nomor_ajuan': element['nomor_ajuan'],
             'em_report_to': element['em_report_to'],
             'em_report2_to': element['em_report2_to'],
-            'nama_divisi': element['nama_divisi'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -397,13 +385,9 @@ class ApprovalController extends GetxController {
             'jamAjuan': element['time_plan'],
             'sampaiJamAjaun': element['time_plan_to'],
             'lainnya': "",
-            'nama_pengajuan': element['nama_pengajuan'],
             'file': element['leave_files'],
             'em_report_to': element['em_report_to'],
             'em_report2_to': element['em_report2_to'],
-            'nama_divisi': element['nama_divisi'],
-            'nomor_ajuan': element['nomor_ajuan'],
-            'image': element['image'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -459,14 +443,11 @@ class ApprovalController extends GetxController {
             'waktu_pengajuan': element['atten_date'],
             'catatan': element['uraian'],
             'type': 'Tugas Luar',
-            'category': element['category'],
+            'category': "",
             'lainnya': "",
             'file': '',
             'em_report_to': element['em_report_to'],
             'em_report2_to': element['em_report2_to'],
-            'nama_divisi': element['nama_divisi'],
-            'nomor_ajuan': element['nomor_ajuan'],
-            'image': element['image'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -531,9 +512,6 @@ class ApprovalController extends GetxController {
             'file': element['leave_files'],
             'em_report_to': element['em_report_to'],
             'em_report2_to': element['em_report2_to'],
-            'nama_divisi': element['nama_divisi'],
-            'nomor_ajuan': element['nomor_ajuan'],
-            'image': element['image'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -592,14 +570,11 @@ class ApprovalController extends GetxController {
             'waktu_pengajuan': tanggalPembuatan,
             'catatan': element['description'],
             'type': "Klaim",
-            'category': element['category'],
+            'category': "",
             'lainnya': element,
             'file': element['nama_file'],
             'em_report_to': element['em_report_to'],
             'em_report2_to': element['em_report2_to'],
-            'nama_divisi': element['nama_divisi'],
-            'nomor_ajuan': element['nomor_ajuan'],
-            'image': element['image'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);

@@ -16,6 +16,9 @@ class Constanst {
   static Color colorStateInfoBorder = HexColor('#81BFF9');
   static Color secondary = HexColor('#68778D');
   static Color colotStateInfoBg = HexColor('#092371');
+  static Color colorStateOnDangerBg = HexColor('#7A0B2B');
+  static Color colorStateDangerBorder = HexColor('#FFA38A');
+  static Color colorStateDangerBg = HexColor('#FFF2EB');
 
   static double defaultMarginPadding = 16.0;
   static double sizeTitle = 16.0;
