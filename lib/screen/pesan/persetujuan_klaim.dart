@@ -489,8 +489,8 @@ class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
                                         controller.valuePolaPersetujuan == "1"
                                     ? '$leave_status'
                                     : leave_status == "Pending"
-                                        ? "Pending Approve1"
-                                        : "Pending Approve2",
+                                        ? "Pending Approval 1"
+                                        : "Pending Approval 2",
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.inter(
                                     fontWeight: FontWeight.w500,

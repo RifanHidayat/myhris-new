@@ -513,4 +513,42 @@ class GlobalController extends GetxController {
       print("errpr ${e}");
     }
   }
+
+  void kirimNotifikasi(
+      {title,
+      status,
+      pola,
+      statusApproval,
+      emId,
+      nomor,
+      emIdApproval1,
+      emIdApproval2}) {
+    // print()
+    Map<String, dynamic> body = {
+      'title': title,
+      'status': status,
+      'pola': pola,
+      'status_approval': statusApproval,
+      'em_id': emId,
+      'nomor': nomor,
+      'nama_user': AppData.informasiUser![0].full_name,
+      'em_id_user': AppData.informasiUser![0].em_id,
+      'em_id_approval1': emIdApproval1,
+      'em_id_approval2': emIdApproval2
+    };
+    print(body);
+    try {
+      var connect =
+          Api.connectionApi("post", body, "push_notification_approval");
+      connect.then((dynamic res) {
+        if (res.statusCode == 200) {
+          // print()
+          var valueBody = jsonDecode(res.body);
+          print("response notif ${valueBody.toString()}");
+        }
+      });
+    } catch (e) {
+      print("errpr ${e}");
+    }
+  }
 }

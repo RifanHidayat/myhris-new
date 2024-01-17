@@ -12,6 +12,8 @@ import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:siscom_operasional/utils/custom_dialog.dart';
+import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -29,6 +31,200 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
   var controller = Get.put(ApprovalController());
   var controllerGlobal = Get.put(GlobalController());
   int hours = 0, minutes = 0, second = 0;
+
+  void showBottomAlasanReject(em_id) {
+    showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Iconsax.close_circle,
+                        color: Colors.red,
+                        size: 24,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 8, top: 2),
+                        child: Text(
+                          "Alasan Tolak Pengajuan",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: Constanst.borderStyle1,
+                        border: Border.all(
+                            width: 1.0,
+                            color: Color.fromARGB(255, 211, 205, 205))),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          left: 8,
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      child: TextField(
+                        cursorColor: Colors.black,
+                        controller: controller.alasanReject.value,
+                        maxLines: null,
+                        maxLength: 225,
+                        autofocus: true,
+                        decoration: new InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Alasan Menolak"),
+                        keyboardType: TextInputType.multiline,
+                        textInputAction: TextInputAction.done,
+                        style: TextStyle(
+                            fontSize: 12.0, height: 2.0, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextButtonWidget(
+                          title: "Kembali",
+                          onTap: () => Navigator.pop(Get.context!),
+                          colorButton: Colors.red,
+                          colortext: Colors.white,
+                          border: BorderRadius.circular(8.0),
+                        ),
+                      )),
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextButtonWidget(
+                          title: "Tolak",
+                          onTap: () {
+                            if (controller.alasanReject.value.text != "") {
+                              Navigator.pop(Get.context!);
+                              validasiMenyetujui(false, em_id);
+                            } else {
+                              UtilsAlert.showToast(
+                                  "Harap isi alasan terlebih dahulu");
+                            }
+                          },
+                          colorButton: Constanst.colorPrimary,
+                          colortext: Colors.white,
+                          border: BorderRadius.circular(8.0),
+                        ),
+                      ))
+                    ],
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void validasiMenyetujui(pilihan, em_id) {
+    int styleChose = pilihan == false ? 1 : 2;
+    var stringPilihan = pilihan == false ? 'Tolak' : 'Menyetujui';
+    showGeneralDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      barrierColor: Colors.black54, // space around dialog
+      transitionDuration: Duration(milliseconds: 200),
+      transitionBuilder: (context, a1, a2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+              parent: a1,
+              curve: Curves.elasticOut,
+              reverseCurve: Curves.easeOutCubic),
+          child: CustomDialog(
+            // our custom dialog
+            title: "Peringatan",
+            content: "Yakin $stringPilihan Pengajuan ini ?",
+            positiveBtnText: "Lanjutkan",
+            negativeBtnText: "Kembali",
+            style: styleChose,
+            buttonStatus: 1,
+            positiveBtnPressed: () {
+              print(controller.detailData[0]);
+              if (controller.detailData[0]['type'] == 'absensi') {
+                print("masuk sini ${controller.detailData[0]['type']}");
+                controller.approvalAbsensi(
+                    pilihan: pilihan,
+                    date:
+                        controller.detailData[0]['waktu_pengajuan'].toString(),
+                    status: styleChose.toString(),
+                    checkin: controller.detailData[0]['dari_jam'].toString(),
+                    checkout: controller.detailData[0]['sampai_jam'].toString(),
+                    image: controller.detailData[0]['file'].toString(),
+                    note: controller.detailData[0]['deskripsi'].toString(),
+                    ajuanEmid: controller.detailData[0]['em_id'].toString(),
+                    id: controller.detailData[0]['id'].toString());
+              } else {
+                UtilsAlert.loadingSimpanData(
+                    Get.context!, "Proses $stringPilihan pengajuan");
+                controller.aksiMenyetujui(pilihan);
+              }
+              controllerGlobal.kirimNotifikasi(
+                  title: 'Klaim',
+                  status: 'approve',
+                  pola: controllerGlobal.valuePolaPersetujuan.value.toString(),
+                  statusApproval: controller.valuePolaPersetujuan == 1 ||
+                          controller.valuePolaPersetujuan == "1"
+                      ? "1"
+                      : controller.valuePolaPersetujuan == 2 ||
+                              controller.valuePolaPersetujuan == "2"
+                          ? controller.detailData[0]['nama_approve1'] == "" ||
+                                  controller.detailData[0]['nama_approve1'] ==
+                                      "null" ||
+                                  controller.detailData[0]['nama_approve1'] ==
+                                      null
+                              ? "1"
+                              : "2"
+                          : "1",
+                  emId: em_id,
+                  nomor: controller.detailData[0]['nomor_ajuan']);
+            },
+          ),
+        );
+      },
+      pageBuilder: (BuildContext context, Animation animation,
+          Animation secondaryAnimation) {
+        return null!;
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -109,6 +305,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
         : "";
     var image = controller.detailData[0]['image'];
     var typeAjuan = controller.detailData[0]['leave_status'];
+    var em_id = controller.detailData[0]['emId_pengaju'];
     return Scaffold(
       backgroundColor: Constanst.coloBackgroundScreen,
       // appBar: AppBar(
@@ -204,7 +401,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                             print(controller.detailData[0]['em_report_to']);
                             print(controller.detailData[0]['em_report2_to']);
                             // print("tes");
-                            controller.showBottomAlasanReject();
+                            showBottomAlasanReject(em_id);
                           },
                           style: ElevatedButton.styleFrom(
                               foregroundColor: Constanst.color4,
@@ -231,7 +428,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                         height: 40,
                         child: ElevatedButton(
                           onPressed: () {
-                            controller.validasiMenyetujui(true);
+                            validasiMenyetujui(true, em_id);
                           },
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Constanst.colorWhite,

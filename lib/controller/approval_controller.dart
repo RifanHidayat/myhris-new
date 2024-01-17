@@ -44,6 +44,8 @@ class ApprovalController extends GetxController {
 
   var statusHitungCuti = false.obs;
 
+  var controllerGlobal = Get.put(GlobalController());
+
   void showInputCari() {
     statusCari.value = !statusCari.value;
   }
@@ -866,6 +868,22 @@ class ApprovalController extends GetxController {
                     Get.context!, "Proses $stringPilihan pengajuan");
                 aksiMenyetujui(pilihan);
               }
+              controllerGlobal.kirimNotifikasi(
+                  title: 'Izin',
+                  status: 'approve',
+                  pola: controllerGlobal.valuePolaPersetujuan.value.toString(),
+                  statusApproval: valuePolaPersetujuan == 1 ||
+                          valuePolaPersetujuan == "1"
+                      ? "1"
+                      : valuePolaPersetujuan == 2 || valuePolaPersetujuan == "2"
+                          ? detailData[0]['nama_approve1'] == "" ||
+                                  detailData[0]['nama_approve1'] == "null" ||
+                                  detailData[0]['nama_approve1'] == null
+                              ? "1"
+                              : "2"
+                          : "1",
+                  emId: AppData.informasiUser![0].em_id,
+                  nomor: detailData[0]['nomor_ajuan']);
             },
           ),
         );
