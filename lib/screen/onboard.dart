@@ -89,11 +89,11 @@ class Onboard extends StatelessWidget {
   Future<void> setupInteractedMessage() async {
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
-    var iOS = const IOSInitializationSettings(
-      requestSoundPermission: true,
-      requestBadgePermission: true,
-      requestAlertPermission: true,
-    );
+    var iOS = DarwinInitializationSettings(
+        requestSoundPermission: true,
+        requestBadgePermission: true,
+        requestAlertPermission: true,
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     var initSetttings = new InitializationSettings(android: android, iOS: iOS);
     flutterLocalNotificationsPlugin.initialize(
       initSetttings,
@@ -375,64 +375,60 @@ class Onboard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0),
                     ))),
                 onPressed: () async {
-                
-                  if (AppData.informasiUser==null || AppData.informasiUser=="null" || AppData.informasiUser=="" || AppData.informasiUser!.isEmpty ){
-                    AppData.isLogin=false;
+                  if (AppData.informasiUser == null ||
+                      AppData.informasiUser == "null" ||
+                      AppData.informasiUser == "" ||
+                      AppData.informasiUser!.isEmpty) {
+                    AppData.isLogin = false;
                   }
 
-                
                   controller.validasiToNextRoute();
-                 
-                  if (AppData.isLogin==true){
-                        String checkUserKontrol =
-                      await controllerBerhasil.checkUserKontrol();
-                  print(checkUserKontrol);
 
-                  if (1 == 1) {
-                    if (checkUserKontrol == 0) {
-                      _startForegroundTask();
-                      AbsenController().removeAll();
-                      // Get.offAll(InitScreen());
+                  if (AppData.isLogin == true) {
+                    String checkUserKontrol =
+                        await controllerBerhasil.checkUserKontrol();
+                    print(checkUserKontrol);
+
+                    if (1 == 1) {
+                      if (checkUserKontrol == 0) {
+                        _startForegroundTask();
+                        AbsenController().removeAll();
+                        // Get.offAll(InitScreen());
+                      } else {
+                        AbsenController().removeAll();
+                        // Get.offAll(InitScreen());
+                      }
                     } else {
-                      AbsenController().removeAll();
-                      // Get.offAll(InitScreen());
-                    }
-                  } else {
-                    if (checkUserKontrol != '0') {
-                      _stopForegroundTask();
-                      Location location = new Location();
-                      location.enableBackgroundMode(enable: false);
-                      AbsenController().removeAll();
-                      // Get.offAll(InitScreen());
-                    } else {
-                      AbsenController().removeAll();
-                      // Get.offAll(InitScreen());
+                      if (checkUserKontrol != '0') {
+                        _stopForegroundTask();
+                        Location location = new Location();
+                        location.enableBackgroundMode(enable: false);
+                        AbsenController().removeAll();
+                        // Get.offAll(InitScreen());
+                      } else {
+                        AbsenController().removeAll();
+                        // Get.offAll(InitScreen());
+                      }
                     }
                   }
-
-
-
-                  }
-
-              
 
                   // print("tes");
                   try {
-                    const NotificationDetails platformChannelSpecifics =
-                        NotificationDetails(
-                            iOS: IOSNotificationDetails(
-                      presentAlert:
-                          true, // Present an alert when the notification is displayed and the application is in the foreground (only from iOS 10 onwards)
-                      presentBadge:
-                          true, // Present the badge number when the notification is displayed and the application is in the foreground (only from iOS 10 onwards)
-                      presentSound:
-                          true, // Play a sound when the notification is displayed and the application is in the foreground (only from iOS 10 onwards)
-                      // Specifics the file path to play (only from iOS 10 onwards)
-                      badgeNumber: 1, // The application's icon badge number
+                    // const NotificationDetails platformChannelSpecifics =
+                    //     NotificationDetails(
+                    //         iOS: IOSNotificationDetails(
+                    //   presentAlert:
+                    //       true, // Present an alert when the notification is displayed and the application is in the foreground (only from iOS 10 onwards)
+                    //   presentBadge:
+                    //       true, // Present the badge number when the notification is displayed and the application is in the foreground (only from iOS 10 onwards)
+                    //   presentSound:
+                    //       true, // Play a sound when the notification is displayed and the application is in the foreground (only from iOS 10 onwards)
+                    //   // Specifics the file path to play (only from iOS 10 onwards)
+                    //   badgeNumber: 1, // The application's icon badge number
 
-                      subtitle:
-                          "ios", //Secondary description  (only from iOS 10 onwards)
-                    ));
+                    //   subtitle:
+                    //       "ios", //Secondary description  (only from iOS 10 onwards)
+                    // ));
 
                     // await flutterLocalNotificationsPlugin.show(
                     //     12345,

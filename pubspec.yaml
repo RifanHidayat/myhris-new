@@ -65,7 +65,8 @@ dependencies:
   date_field: ^3.0.2
   url_launcher: ^6.0.18
   double_back_to_close_app: ^2.1.0
-  flutter_local_notifications: ^9.3.2
+  # flutter_local_notifications: ^9.3.2
+  flutter_local_notifications: ^12.0.4
   flutter_ringtone_player: ^3.2.0
   grouped_list: ^5.1.2
   hexcolor: ^3.0.1
@@ -110,6 +111,7 @@ dependencies:
   scanning_effect: ^1.0.4
   draggable_home: ^1.0.4
   draggable_bottom_sheet: ^1.0.2
+  # ffi: ^1.0.0
   open_file_safe: ^3.2.3
   # native_screenshot: ^1.0.0
   # screen_capture_event: ^1.1.1

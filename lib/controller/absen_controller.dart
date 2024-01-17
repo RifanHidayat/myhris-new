@@ -2711,7 +2711,9 @@ class AbsenController extends GetxController {
       'status': "pending",
       'catatan': catataanAjuan.text,
       'checkin': checkinAjuan2.value.toString(),
-      'checkout': checkoutAjuan2.value.toString(),
+      'checkout': checkoutAjuan2.value == ""
+          ? "00:00"
+          : checkoutAjuan2.value.toString(),
       'lokasi_masuk_id': placeCoordinateCheckin
               .where((p0) => p0['is_selected'] == true)
               .toList()
@@ -2759,10 +2761,10 @@ class AbsenController extends GetxController {
       return;
     }
 
-    if (checkoutAjuan2.value == "") {
-      UtilsAlert.showToast("Waktu Checkout belum dipilih");
-      return;
-    }
+    // if (checkoutAjuan2.value == "") {
+    //   UtilsAlert.showToast("Waktu Checkout belum dipilih");
+    //   return;
+    // }
 
     if (catataanAjuan.text == "") {
       UtilsAlert.showToast("catatan belum diisi");

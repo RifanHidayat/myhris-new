@@ -486,8 +486,8 @@ class _PersetujuanPayrollState extends State<PersetujuanPayroll> {
                                         controller.valuePolaPersetujuan == "1"
                                     ? 'Pending'
                                     : leave_status == "Pending"
-                                        ? "Pending Approve1"
-                                        : "Pending Approve2",
+                                        ? "Pending Approval 1"
+                                        : "Pending Approval 2",
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.inter(
                                     fontWeight: FontWeight.w500,
