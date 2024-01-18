@@ -213,7 +213,16 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
                               : "2"
                           : "1",
                   emId: em_id,
-                  nomor: controller.detailData[0]['nomor_ajuan']);
+                  nomor: controller.detailData[0]['nomor_ajuan'],
+                  emIdApproval1: controller.detailData[0]['em_report_to'],
+                  emIdApproval2: controller.detailData[0]['em_report2_to'] ==
+                              "" ||
+                          controller.detailData[0]['em_report2_to'] == "null" ||
+                          controller.detailData[0]['em_report2_to'] == null
+                      ? controller.detailData[0]['em_report_to']
+                      : controller.detailData[0]['em_report2_to'],
+                  delegasi: widget.delegasi,
+                  id: widget.idxDetail);
             },
           ),
         );
@@ -341,7 +350,7 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
               titleSpacing: 0,
               centerTitle: true,
               title: Text(
-                "Detail Persetujuan Izin ${widget.title}",
+                "Detail Persetujuan Izin ${widget.delegasi}",
                 style: GoogleFonts.inter(
                     color: Constanst.fgPrimary,
                     fontWeight: FontWeight.w500,

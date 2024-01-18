@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
@@ -16,18 +17,18 @@ import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DetailPersetujuanPayroll extends StatefulWidget {
+class DetailPersetujuanLembur extends StatefulWidget {
   String? title, idxDetail, emId, delegasi;
 
-  DetailPersetujuanPayroll(
+  DetailPersetujuanLembur(
       {Key? key, this.title, this.idxDetail, this.emId, this.delegasi})
       : super(key: key);
   @override
-  _DetailPersetujuanPayrollState createState() =>
-      _DetailPersetujuanPayrollState();
+  _DetailPersetujuanLemburState createState() =>
+      _DetailPersetujuanLemburState();
 }
 
-class _DetailPersetujuanPayrollState extends State<DetailPersetujuanPayroll> {
+class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
   var controller = Get.put(ApprovalController());
   var controllerGlobal = Get.put(GlobalController());
   int hours = 0, minutes = 0, second = 0;
@@ -197,7 +198,7 @@ class _DetailPersetujuanPayrollState extends State<DetailPersetujuanPayroll> {
                 controller.aksiMenyetujui(pilihan);
               }
               controllerGlobal.kirimNotifikasi(
-                  title: 'Payroll',
+                  title: 'Klaim',
                   status: 'approve',
                   pola: controllerGlobal.valuePolaPersetujuan.value.toString(),
                   statusApproval: controller.valuePolaPersetujuan == 1 ||
@@ -351,7 +352,7 @@ class _DetailPersetujuanPayrollState extends State<DetailPersetujuanPayroll> {
               titleSpacing: 0,
               centerTitle: true,
               title: Text(
-                "Detail Persetujuan Payroll",
+                "Detail Persetujuan Lembur",
                 style: GoogleFonts.inter(
                     color: Constanst.fgPrimary,
                     fontWeight: FontWeight.w500,
@@ -662,14 +663,6 @@ class _DetailPersetujuanPayrollState extends State<DetailPersetujuanPayroll> {
                                   fontSize: 14),
                             ),
                             const SizedBox(height: 4),
-                            Text(
-                              // "${controller.detailData[0]['type']}",
-                              "Pengajuan Payroll",
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w500,
-                                  color: Constanst.fgPrimary,
-                                  fontSize: 16),
-                            ),
                             // controller.detailData[0]['type']
                             //                 .toString()
                             //                 .toLowerCase() ==
@@ -692,51 +685,108 @@ class _DetailPersetujuanPayrollState extends State<DetailPersetujuanPayroll> {
                             //             fontWeight: FontWeight.w500,
                             //             fontSize: 16),
                             //       ),
-
-                            // Padding(
-                            //   padding: const EdgeInsets.only(
-                            //       top: 12.0, bottom: 12.0),
-                            //   child: Divider(
-                            //     thickness: 1,
-                            //     height: 0,
-                            //     color: Constanst.border,
-                            //   ),
-                            // ),
-                            // Text(
-                            //   "Tanggal Payroll",
-                            //   style: GoogleFonts.inter(
-                            //       color: Constanst.fgSecondary,
-                            //       fontWeight: FontWeight.w400,
-                            //       fontSize: 14),
-                            // ),
-                            // const SizedBox(height: 4),
-                            // controller.detailData[0]['type'] == "Klaim"
-                            //     ? const SizedBox()
-                            //     : Text(
-                            //         "${"${controller.detailData[0]['waktu_dari']}"} - ${"${controller.detailData[0]['waktu_sampai']}"}",
-                            //         style: GoogleFonts.inter(
-                            //             color: Constanst.fgPrimary,
-                            //             fontWeight: FontWeight.w500,
-                            //             fontSize: 16),
-                            //       ),
-                            // Padding(
-                            //   padding: const EdgeInsets.only(
-                            //       top: 12.0, bottom: 12.0),
-                            //   child: Divider(
-                            //     thickness: 1,
-                            //     height: 0,
-                            //     color: Constanst.border,
-                            //   ),
-                            // ),
-                            controller.detailData[0]['durasi'] == "" ||
-                                    controller.detailData[0]['durasi'] == null
-                                ? const SizedBox()
-                                : Column(
+                            Text(
+                              "Pengajuan ${controller.detailData[0]['type']} - ${controller.detailData[0]['nama_pengajuan']}",
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 16),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, bottom: 12.0),
+                              child: Divider(
+                                thickness: 1,
+                                height: 0,
+                                color: Constanst.border,
+                              ),
+                            ),
+                            Text(
+                              "Jam Lembur",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${controller.detailData[0]['waktu_dari']} ",
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.fgPrimary,
+                                      fontSize: 16),
+                                ),
+                                controller.detailData[0]['type'] == "Klaim"
+                                    ? const SizedBox()
+                                    : Text(
+                                        "s.d",
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            color: Constanst.fgPrimary,
+                                            fontSize: 16),
+                                      ),
+                                controller.detailData[0]['type'] == "Klaim"
+                                    ? const SizedBox()
+                                    : Text(
+                                        "${controller.detailData[0]['waktu_sampai']}",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            color: Constanst.fgPrimary,
+                                            fontSize: 16),
+                                      ),
+                                // Text(
+                                //   Constanst.convertDate6(
+                                //       DateFormat("dd-MM-yyyy")
+                                //           .parse(controller.detailData[0]
+                                //               ['waktu_dari'])
+                                //           .toString()),
+                                //   style: GoogleFonts.inter(
+                                //       fontWeight: FontWeight.w500,
+                                //       color: Constanst.fgPrimary,
+                                //       fontSize: 16),
+                                // ),
+                                // controller.detailData[0]['type'] == "Klaim"
+                                //     ? SizedBox()
+                                //     : Expanded(
+                                //         flex: 10,
+                                //         child: Text("s.d",
+                                //             style: TextStyle(
+                                //                 fontWeight: FontWeight.bold)),
+                                //       ),
+                                // controller.detailData[0]['type'] == "Klaim"
+                                //     ? SizedBox()
+                                //     : Expanded(
+                                //         flex: 45,
+                                //         child: Text(
+                                //           "${controller.detailData[0]['waktu_sampai']}",
+                                //           textAlign: TextAlign.center,
+                                //           style: TextStyle(
+                                //               fontWeight: FontWeight.bold),
+                                //         ),
+                                //       ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, bottom: 12.0),
+                              child: Divider(
+                                thickness: 1,
+                                height: 0,
+                                color: Constanst.border,
+                              ),
+                            ),
+                            controller.detailData[0]['type'] == "Lembur"
+                                ? Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Durasi",
+                                        "Durasi Lembur",
                                         style: GoogleFonts.inter(
                                             color: Constanst.fgSecondary,
                                             fontWeight: FontWeight.w400,
@@ -744,17 +794,15 @@ class _DetailPersetujuanPayrollState extends State<DetailPersetujuanPayroll> {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        controller.detailData[0]['category'] ==
-                                                "HALFDAY"
-                                            ? "${controller.detailData[0]['jamAjuan']} sd ${controller.detailData[0]['sampaiJamAjaun']}"
-                                            : "${controller.detailData[0]['durasi']} Hari",
+                                        "$hours Jam $minutes Menit $second Detik",
                                         style: GoogleFonts.inter(
                                             color: Constanst.fgPrimary,
                                             fontWeight: FontWeight.w500,
                                             fontSize: 16),
-                                      ),
+                                      )
                                     ],
-                                  ),
+                                  )
+                                : const SizedBox(),
                             Padding(
                               padding: const EdgeInsets.only(
                                   top: 12.0, bottom: 12.0),
@@ -785,35 +833,61 @@ class _DetailPersetujuanPayrollState extends State<DetailPersetujuanPayroll> {
                             //         "Pengajuan Tidak Hadir"
                             //     ? informasiIzinJam()
                             //     : const SizedBox(),
-
-                            // controller.detailData[0]['type']
-                            //             .toString()
-                            //             .toLowerCase() ==
-                            //         'absensi'.toLowerCase()
-                            //     ? SizedBox()
-                            //     : controller.detailData[0]['type'] ==
-                            //                 "Lembur" ||
-                            //             controller.detailData[0]['type'] ==
-                            //                 "Tugas Luar" ||
-                            //             controller.detailData[0]['type'] ==
-                            //                 "Dinas Luar"
-                            //         ? Text(
-                            //             "Pemberi Tugas",
-                            //             style: TextStyle(
-                            //                 color: Constanst.colorText2),
-                            //           )
-                            //         : controller.detailData[0]['type'] ==
-                            //                 "Klaim"
-                            //             ? Text(
-                            //                 "Total Klaim",
-                            //                 style: TextStyle(
-                            //                     color: Constanst.colorText2),
-                            //               )
-                            //             : Text(
-                            //                 "Delegasi Kepada",
-                            //                 style: TextStyle(
-                            //                     color: Constanst.colorText2),
-                            //               ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, bottom: 12.0),
+                              child: Divider(
+                                thickness: 1,
+                                height: 0,
+                                color: Constanst.border,
+                              ),
+                            ),
+                            controller.detailData[0]['type']
+                                        .toString()
+                                        .toLowerCase() ==
+                                    'absensi'.toLowerCase()
+                                ? const SizedBox()
+                                : controller.detailData[0]['type'] ==
+                                            "Lembur" ||
+                                        controller.detailData[0]['type'] ==
+                                            "Tugas Luar" ||
+                                        controller.detailData[0]['type'] ==
+                                            "Dinas Luar"
+                                    ? Text(
+                                        "Pemberi Tugas",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14),
+                                      )
+                                    : controller.detailData[0]['type'] ==
+                                            "Klaim"
+                                        ? Text(
+                                            "Total Klaim",
+                                            style: GoogleFonts.inter(
+                                                color: Constanst.fgSecondary,
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14),
+                                          )
+                                        : Text(
+                                            "Delegasi Kepada",
+                                            style: TextStyle(
+                                                color: Constanst.colorText2),
+                                          ),
+                            const SizedBox(height: 4),
+                            controller.detailData[0]['type'] == "Klaim"
+                                ? Text(
+                                    "$rupiah",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  )
+                                : Text(
+                                    "${controller.fullNameDelegasi.value}",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
 
                             controller.detailData[0]['file'] == "" ||
                                     controller.detailData[0]['file'] == null
