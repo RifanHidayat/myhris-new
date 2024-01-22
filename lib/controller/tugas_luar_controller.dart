@@ -1005,11 +1005,11 @@ class TugasLuarController extends GetxController {
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
 
     var title_ct = type == 1
-        ? "Delegasi Pengajuan Tugas Luar"
-        : "Delegasi Pengajuan Dinas Luar";
+        ? "Pemberi Tugas Tugas Luar"
+        : "Pemberi Tugas Dinas Luar";
     var desk_ct = type == 1
-        ? "Anda mendapatkan delegasi pekerjaan dari $getFullName untuk pengajuan Tugas Luar, tanggal pengajuan $stringWaktu"
-        : "Anda mendapatkan delegasi pekerjaan dari $getFullName untuk pengajuan Dinas Luar, tanggal pengajuan $stringWaktu";
+        ? "Anda mendapatkan pengajuan TUGAS LUAR dari  $getFullName dengan pemberi tugas anda, tanggal pengajuan $stringWaktu"
+        : "Anda mendapatkan pengajuan DINAS LUAR dari $getFullName dengan pemberi tugas anda, tanggal pengajuan $stringWaktu";
     Map<String, dynamic> body = {
       'em_id': validasiDelegasiSelected,
       'title': title_ct,

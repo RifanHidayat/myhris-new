@@ -651,15 +651,19 @@ class LemburController extends GetxController {
     this.loadingString.refresh();
   }
 
-  void kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
+  void 
+  kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
       validasiDelegasiSelected, fcmTokenDelegasi, stringWaktu, typeNotifFcm) {
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
-    var description =
-        'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk Pengajuan Lembur, waktu pengajuan $stringWaktu';
+    // var description =
+    //     'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk Pengajuan Lembur, waktu pengajuan $stringWaktu';
+
+     var description =
+        'Anda mendapatkan pengajuan lembur dari $getFullName dengan pemberi tugas anda, waktu pengajuan $stringWaktu';
     Map<String, dynamic> body = {
       'em_id': validasiDelegasiSelected,
-      'title': 'Delegasi Pengajuan Lembur',
+      'title': 'Pemberi Tugas Pengajuan Lembur',
       'deskripsi': description,
       'url': '',
       'atten_date': convertTanggalBikinPengajuan,
