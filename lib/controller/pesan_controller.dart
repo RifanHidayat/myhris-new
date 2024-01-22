@@ -11,6 +11,7 @@ import 'package:siscom_operasional/screen/pesan/persetujuan_absensi.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_cuti.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_izin.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_klaim.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_lembur.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_payroll.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_tugas_luar.dart';
 import 'package:siscom_operasional/utils/api.dart';
@@ -582,7 +583,7 @@ class PesanController extends GetxController {
               tahun: tahunSelectedSearchHistory.value,
             ))
           : index['title'] == "Lembur"
-              ? Get.to(Approval(
+              ? Get.to(PersetujuanLembur(
                   title: index['title'],
                   bulan: bulanSelectedSearchHistory.value,
                   tahun: tahunSelectedSearchHistory.value,

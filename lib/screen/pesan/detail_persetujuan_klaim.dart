@@ -214,7 +214,16 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                               : "2"
                           : "1",
                   emId: em_id,
-                  nomor: controller.detailData[0]['nomor_ajuan']);
+                  nomor: controller.detailData[0]['nomor_ajuan'],
+                  emIdApproval1: controller.detailData[0]['em_report_to'],
+                  emIdApproval2: controller.detailData[0]['em_report2_to'] ==
+                              "" ||
+                          controller.detailData[0]['em_report2_to'] == "null" ||
+                          controller.detailData[0]['em_report2_to'] == null
+                      ? controller.detailData[0]['em_report_to']
+                      : controller.detailData[0]['em_report2_to'],
+                  delegasi: widget.delegasi,
+                  id: widget.idxDetail);
             },
           ),
         );

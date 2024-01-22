@@ -222,7 +222,9 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                           controller.detailData[0]['em_report2_to'] == "null" ||
                           controller.detailData[0]['em_report2_to'] == null
                       ? controller.detailData[0]['em_report_to']
-                      : controller.detailData[0]['em_report2_to']);
+                      : controller.detailData[0]['em_report2_to'],
+                  delegasi: widget.delegasi,
+                  id: widget.idxDetail);
             },
           ),
         );

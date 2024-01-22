@@ -523,7 +523,9 @@ class GlobalController extends GetxController {
       emId,
       nomor,
       emIdApproval1,
-      emIdApproval2}) {
+      emIdApproval2,
+      delegasi,
+      id}) {
     // print()
     Map<String, dynamic> body = {
       'title': title,
@@ -535,7 +537,9 @@ class GlobalController extends GetxController {
       'nama_user': AppData.informasiUser![0].full_name,
       'em_id_user': AppData.informasiUser![0].em_id,
       'em_id_approval1': emIdApproval1,
-      'em_id_approval2': emIdApproval2
+      'em_id_approval2': emIdApproval2,
+      'delegasi': delegasi,
+      'id': id
     };
     print(body);
     try {

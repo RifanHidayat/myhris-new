@@ -15,11 +15,13 @@ import 'package:siscom_operasional/controller/init_controller.dart';
 import 'package:siscom_operasional/fireabase_option.dart';
 import 'package:siscom_operasional/model/notification.dart';
 import 'package:siscom_operasional/screen/absen/history_absen.dart';
+import 'package:siscom_operasional/screen/absen/lembur.dart';
 import 'package:siscom_operasional/screen/absen/riwayat_cuti.dart';
 import 'package:siscom_operasional/screen/absen/riwayat_izin.dart';
 import 'package:siscom_operasional/screen/absen/tugas_luar.dart';
 
 import 'package:siscom_operasional/screen/init_screen.dart';
+import 'package:siscom_operasional/screen/kandidat/list_kandidat.dart';
 import 'package:siscom_operasional/screen/klaim/riwayat_klaim.dart';
 import 'package:siscom_operasional/screen/pesan/detail_persetujuan_absensi.dart';
 import 'package:siscom_operasional/screen/pesan/detail_persetujuan_cuti.dart';
@@ -300,7 +302,11 @@ Future onSelectNotification(notificationResponse) async {
                         ? Get.to(Klaim())
                         : notificationsModel.route == "Absensi"
                             ? Get.to(HistoryAbsen())
-                            : Get.to(HistoryAbsen());
+                            : notificationsModel.route == "Lembur"
+                                ? Get.to(Lembur())
+                                : notificationsModel.route == "Kandidat"
+                                    ? Get.to(Kandidat())
+                                    : Get.to(HistoryAbsen());
   } else {
     notificationsModel.route == "Cuti"
         ? Get.to(DetailPersetujuanCuti(
