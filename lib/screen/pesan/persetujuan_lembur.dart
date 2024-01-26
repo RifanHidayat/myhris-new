@@ -282,11 +282,11 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
           var dariJam = controller.listData.value[index]['dari_jam'];
           var sampaiJam = controller.listData.value[index]['sampai_jam'];
           var nomor_ajuan = controller.listData.value[index]['nomor_ajuan'];
-          var tanggalPengajuan =
-              controller.listData.value[index]['waktu_pengajuan'];
+          var tanggalPengajuan = controller.listData.value[index]['waktu_pengajuan'];
           var categoryAjuan = controller.listData.value[index]['category'];
-          var nama_divisi = controller.listData.value[index]['nama_divisi'];
+          var nama_divisi = controller.listData.value[index]['nama_divisi']??"";
           var image = controller.listData.value[index]['em_image'];
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,

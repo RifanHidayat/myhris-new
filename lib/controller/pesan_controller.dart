@@ -128,6 +128,7 @@ class PesanController extends GetxController {
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+          print("data persetujuan ${valueBody}");
 
         if (valueBody['status'] == true) {
           jumlahApproveCuti.value = valueBody['jumlah_cuti'];
@@ -138,6 +139,7 @@ class PesanController extends GetxController {
           jumlahApproveKlaim.value = valueBody['jumlah_klaim'];
           jumlahApprovePayroll.value = valueBody['jumlah_payroll'];
           jumlahCheckin.value = valueBody['jumlah_checkin'];
+        
 
           jumlahPersetujuan.value = jumlahApproveCuti.value +
               jumlahApproveLembur.value +

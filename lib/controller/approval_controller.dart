@@ -188,6 +188,7 @@ class ApprovalController extends GetxController {
           var data = {
             'id': element['id'],
             'nama_pengaju': convertNama,
+           'date_selected': element['date_selected'],
             'title_ajuan': 'Pengajuan Lembur',
             'waktu_dari': element['dari_jam'],
             'waktu_sampai': element['sampai_jam'],
@@ -198,7 +199,7 @@ class ApprovalController extends GetxController {
             'waktu_pengajuan': element['atten_date'],
             'catatan': element['uraian'],
             'type': 'Lembur',
-            'category': "",
+            'category':element['nama_pengajuan'],
             'lainnya': "",
             'file': "",
             'em_report_to': element['em_report_to'],
@@ -409,6 +410,7 @@ class ApprovalController extends GetxController {
             'nama_divisi': element['nama_divisi'],
             'nomor_ajuan': element['nomor_ajuan'],
             'image': element['image'],
+            'date_selected': element['date_selected'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -703,7 +705,7 @@ class ApprovalController extends GetxController {
     var hitung1 = (terpakai / totalDay) * 100;
     // var convert1 = hitung1.toInt();
     var convert1 = hitung1;
-    var convertedValue = double.parse("${convert1}") / 100;
+    var convertedValue = double.parse("${convert1>100 || convert1<0 ?"100":convert1}") / 100;
     persenCuti.value = convertedValue;
     this.persenCuti.refresh();
   }

@@ -285,7 +285,7 @@ class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
           var tanggalPengajuan =
               controller.listData.value[index]['waktu_pengajuan'];
           var categoryAjuan = controller.listData.value[index]['category'];
-          var nama_divisi = controller.listData.value[index]['nama_divisi'];
+          var nama_divisi = controller.listData.value[index]['nama_divisi']??"";
           var image = controller.listData.value[index]['em_image'];
           var namaTipe = controller.listData[index]['type'] == "Klaim"
               ? controller.listData[index]['lainnya']['nama_tipe']

@@ -281,7 +281,7 @@ class _PersetujuanCutiState extends State<PersetujuanCuti> {
           var titleAjuan = controller.listData.value[index]['title_ajuan'];
           var namaTypeAjuan = controller.listData.value[index]['name'];
           var categoryAjuan = controller.listData.value[index]['category'];
-          var nama_divisi = controller.listData.value[index]['nama_divisi'];
+          var nama_divisi = controller.listData.value[index]['nama_divisi']??"";
           var image = controller.listData.value[index]['em_image'];
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

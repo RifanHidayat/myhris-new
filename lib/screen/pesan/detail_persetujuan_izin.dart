@@ -709,7 +709,7 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
                             controller.detailData[0]['type'] == "Klaim"
                                 ? const SizedBox()
                                 : Text(
-                                    "${"${controller.detailData[0]['waktu_dari']}"} - ${"${controller.detailData[0]['waktu_sampai']}"}",
+                                    "${"${controller.detailData[0]['date_selected']}" }",
                                     style: GoogleFonts.inter(
                                         color: Constanst.fgPrimary,
                                         fontWeight: FontWeight.w500,

@@ -848,6 +848,7 @@ class DashboardController extends GetxController {
               nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'],
               nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'],
               timeIn: element['time_in'],
+              interval: element['interval'],
               timeOut: element['time_out']);
           print(element['posisi']);
           getData.add(data);

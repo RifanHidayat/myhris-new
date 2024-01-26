@@ -120,17 +120,29 @@ class _DetailPersetujuanTugasLuarState
                           colorButton: Colors.red,
                           colortext: Colors.white,
                           border: BorderRadius.circular(8.0),
+
                         ),
+
                       )),
+
                       Expanded(
+
                           child: Padding(
+
                         padding: const EdgeInsets.all(8.0),
+
                         child: TextButtonWidget(
+
                           title: "Tolak",
+
                           onTap: () {
-                            if (controller.alasanReject.value.text != "") {
+
+                            if (controller.alasanReject.value.text 
+                            != "") {
                               Navigator.pop(Get.context!);
+
                               validasiMenyetujui(false, em_id);
+
                             } else {
                               UtilsAlert.showToast(
                                   "Harap isi alasan terlebih dahulu");
@@ -562,7 +574,7 @@ class _DetailPersetujuanTugasLuarState
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      controller.detailData[0]['nama_divisi']
+                                      controller.detailData[0]['nama_divisi']??""
                                           .toString(),
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgSecondary,
@@ -686,7 +698,7 @@ class _DetailPersetujuanTugasLuarState
                             //             fontSize: 16),
                             //       ),
                             Text(
-                              "${controller.detailData[0]['type']} - ${controller.detailData[0]['category']}",
+                              "${controller.detailData[0]['type']} ",
                               style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   color: Constanst.fgPrimary,
@@ -702,7 +714,7 @@ class _DetailPersetujuanTugasLuarState
                               ),
                             ),
                             Text(
-                              "Tanggal ${widget.title.toString()}",
+                              "Waktu ${widget.title.toString()}",
                               style: GoogleFonts.inter(
                                   color: Constanst.fgSecondary,
                                   fontWeight: FontWeight.w400,
@@ -718,6 +730,7 @@ class _DetailPersetujuanTugasLuarState
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16),
                                   ),
+                                  
                             Padding(
                               padding: const EdgeInsets.only(
                                   top: 12.0, bottom: 12.0),

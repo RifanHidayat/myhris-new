@@ -133,7 +133,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
       foregroundTaskOptions: ForegroundTaskOptions(
         // interval: 1800000,
         // interval: widget.dataBerhasil![3],
-        interval: 300000,
+        interval: AppData.informasiUser![0].interval,
         isOnceEvent: false,
         autoRunOnBoot: true,
         allowWakeLock: true,

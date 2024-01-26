@@ -800,11 +800,19 @@ class TugasLuarController extends GetxController {
               var pesan;
               if (item['em_gender'] == "PRIA") {
                 pesan =
-                    "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan TUGAS LUAR dengan nomor ajuan ${getNomorAjuanTerakhir}";
+                    "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan DINAS LUAR dengan nomor ajuan ${getNomorAjuanTerakhir}";
               } else {
                 pesan =
-                    "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan TUGAS LUAR dengan nomor ajuan ${getNomorAjuanTerakhir}";
+                    "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan DINAS LUAR dengan nomor ajuan ${getNomorAjuanTerakhir}";
               }
+              kirimNotifikasiToDelegasi1(
+                getFullName,
+                finalTanggalPengajuan,
+                validasiDelegasiSelected,
+                validasiDelegasiSelectedToken,
+                stringWaktu,
+                1,
+                typeNotifFcm,pesan);
               if (item['token_notif'] != null) {
                 globalCt.kirimNotifikasiFcm(
                     title: typeNotifFcm,
@@ -931,11 +939,20 @@ class TugasLuarController extends GetxController {
               var pesan;
               if (item['em_gender'] == "PRIA") {
                 pesan =
-                    "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan DINAS LUAR dengan nomor ajuan ${getNomorAjuanTerakhir}";
+                    "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan  TUGAS LUAR dengan nomor ajuan ${getNomorAjuanTerakhir}";
               } else {
                 pesan =
-                    "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan DINAS LUAR dengan nomor ajuan ${getNomorAjuanTerakhir}";
+                    "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan TUGAS LUAR dengan nomor ajuan ${getNomorAjuanTerakhir}";
               }
+               kirimNotifikasiToDelegasi1(
+                getFullName,
+                convertTanggalBikinPengajuan,
+               item['em_id'],
+                validasiDelegasiSelected,
+                stringWaktu,
+                2,
+                typeNotifFcm,pesan);
+
               if (item['token_notif'] != null) {
                 globalCt.kirimNotifikasiFcm(
                     title: typeNotifFcm,
@@ -1025,6 +1042,45 @@ class TugasLuarController extends GetxController {
       if (res.statusCode == 200) {
         globalCt.kirimNotifikasiFcm(
             title: typeNotifFcm, message: desk_ct, tokens: fcmTokenDelegasi);
+        UtilsAlert.showToast("Berhasil kirim delegasi");
+      }
+    });
+  }
+
+  
+  void kirimNotifikasiToDelegasi1(
+      getFullName,
+      convertTanggalBikinPengajuan,
+      validasiDelegasiSelected,
+      fcmTokenDelegasi,
+      stringWaktu,
+      type,
+      typeNotifFcm,pesan) {
+    var dt = DateTime.now();
+    var jamSekarang = DateFormat('HH:mm:ss').format(dt);
+
+    var title_ct = type == 1
+        ? "Approval Tugas Luar"
+        : "Approval Dinas Luar";
+    var desk_ct = type == 1
+        ? "Anda mendapatkan pengajuan TUGAS LUAR dari  $getFullName dengan pemberi tugas anda, tanggal pengajuan $stringWaktu"
+        : "Anda mendapatkan pengajuan DINAS LUAR dari $getFullName dengan pemberi tugas anda, tanggal pengajuan $stringWaktu";
+
+    Map<String, dynamic> body = {
+      'em_id': validasiDelegasiSelected,
+      'title': title_ct,
+      'deskripsi': pesan,
+      'url': '',
+      'atten_date': convertTanggalBikinPengajuan,
+      'jam': jamSekarang,
+      'status': '2',
+      'view': '0',
+    };
+    var connect = Api.connectionApi("post", body, "insert-notifikasi");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        // globalCt.kirimNotifikasiFcm(
+        //     title: typeNotifFcm, message: desk_ct, tokens: fcmTokenDelegasi);
         UtilsAlert.showToast("Berhasil kirim delegasi");
       }
     });
@@ -1199,6 +1255,7 @@ class TugasLuarController extends GetxController {
                           },
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Constanst.colorWhite,
+                            
                             backgroundColor: Constanst.colorPrimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -1287,7 +1344,7 @@ class TugasLuarController extends GetxController {
     var namaTypeAjuan = "Dinas Luar";
     var tanggalAjuanDari = detailData['start_date'];
     var tanggalAjuanSampai = detailData['end_date'];
-    var alasan = detailData['reason'];
+    var alasan = detailData['reason']??detailData['uraian'];
     var durasi = detailData['leave_duration'];
     // var typeAjuan = detailData['leave_status'];
     var typeAjuan;
@@ -1460,7 +1517,14 @@ class TugasLuarController extends GetxController {
                         detailData['date_selected'] == null ||
                                 detailData['date_selected'] == "" ||
                                 detailData['date_selected'] == "null"
-                            ? Container()
+                            ? Text(
+                                       detailData['atten_date'],
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Constanst.fgPrimary,
+                                        ),
+                                      )
                             : Row(
                                 children: List.generate(
                                     listTanggalTerpilih.length, (index) {
@@ -1502,7 +1566,7 @@ class TugasLuarController extends GetxController {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "$durasi Hari",
+                          "${tipe=="Tugas Luar"?"1":"${durasi}"} Hari",
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
@@ -1548,7 +1612,7 @@ class TugasLuarController extends GetxController {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "$alasan",
+                          "${alasan=="null" || alasan==null ?"":"$alasan"}",
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,

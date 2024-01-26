@@ -922,6 +922,8 @@ class IzinController extends GetxController {
        
 
             for (var item in globalCt.konfirmasiAtasan) {
+              
+              
               print("Token notif ${item['token_notif']}");
               var pesan;
               if (item['em_gender'] == "PRIA") {
@@ -931,6 +933,13 @@ class IzinController extends GetxController {
                 pesan =
                     "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan ${selectedDropdownFormTidakMasukKerjaTipe.value} dengan nomor ajuan ${getNomorAjuanTerakhir}";
               }
+                     kirimNotifikasiToDelegasi1(
+                getFullName,
+                convertTanggalBikinPengajuan,
+                item['em_id'],
+                validasiDelegasiSelectedToken,
+                stringTanggal,
+                typeNotifFcm,pesan);
               if (item['token_notif'] != null) {
                 globalCt.kirimNotifikasiFcm(
                     title: typeNotifFcm,
@@ -1024,6 +1033,35 @@ class IzinController extends GetxController {
     });
   }
 
+   void kirimNotifikasiToDelegasi1(getFullName, convertTanggalBikinPengajuan,
+      validasiDelegasiSelected, fcmTokenDelegasi, stringTanggal, typeNotifFcm,pesan) {
+    var dt = DateTime.now();
+    var jamSekarang = DateFormat('HH:mm:ss').format(dt);
+    // var description =
+    //     'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk pengajuan $selectedDropdownFormTidakMasukKerjaTipe, tanggal pengajuan $stringTanggal';
+    Map<String, dynamic> body = {
+      'em_id': validasiDelegasiSelected,
+      'title': 'Approval Izin',
+      'deskripsi': pesan,
+      'url': '',
+      'atten_date': convertTanggalBikinPengajuan,
+      'jam': jamSekarang,
+      'status': '2',
+      'view': '0',
+    };
+    var connect = Api.connectionApi("post", body, "insert-notifikasi");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        // globalCt.kirimNotifikasiFcm(
+        //     title: typeNotifFcm,
+        //     message: description,
+        //     tokens: fcmTokenDelegasi);
+        UtilsAlert.showToast("Berhasil kirim delegasi");
+      }
+    });
+  }
+
+
   void kirimNotifikasiToReportTo(
       getFullName, convertTanggalBikinPengajuan, getEmid, stringTanggal) {
     var dt = DateTime.now();
@@ -1047,6 +1085,8 @@ class IzinController extends GetxController {
       }
     });
   }
+
+  
 
   String validasiSelectedType() {
     var result = [];

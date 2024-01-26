@@ -33,6 +33,7 @@ class UserModel {
   var nomorBpjsTenagakerja;
   var timeIn;
   var timeOut;
+  var interval;
 
   UserModel(
       {this.em_id,
@@ -65,7 +66,7 @@ class UserModel {
       this.nomorBpjsKesehatan,
       this.nomorBpjsTenagakerja,
       this.timeIn,
-      this.timeOut});
+      this.timeOut,this.interval});
 
   Map<String, dynamic> toMap() {
     return {
@@ -98,7 +99,8 @@ class UserModel {
       'nomor_bpjs_kesehatan': nomorBpjsKesehatan,
       'nomor_bpjs_tenagakerja': nomorBpjsTenagakerja,
       'time_in': timeIn,
-      'time_out': timeOut
+      'time_out': timeOut,
+      'interval':interval??0
     };
   }
 
@@ -132,6 +134,7 @@ class UserModel {
         em_hak_akses: map['em_hak_akses'],
         nomorBpjsKesehatan: map['nomor_bpjs_kesehatan'],
         nomorBpjsTenagakerja: map['nomor_bpjs_tenagakerja'],
+        interval: map['interval'],
         timeIn: map['time_in'],
         timeOut: map['time_out']);
   }

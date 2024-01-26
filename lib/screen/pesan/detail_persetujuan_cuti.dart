@@ -128,12 +128,16 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                         child: TextButtonWidget(
                           title: "Tolak",
                           onTap: () {
+                            
                             if (controller.alasanReject.value.text != "") {
                               Navigator.pop(Get.context!);
                               validasiMenyetujui(false, em_id);
+                            
                             } else {
+                            
                               UtilsAlert.showToast(
                                   "Harap isi alasan terlebih dahulu");
+                            
                             }
                           },
                           colorButton: Constanst.colorPrimary,
@@ -562,7 +566,7 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      controller.detailData[0]['nama_divisi'],
+                                      controller.detailData[0]['nama_divisi']??"",
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgSecondary,
                                           fontWeight: FontWeight.w400,

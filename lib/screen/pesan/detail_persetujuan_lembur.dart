@@ -562,7 +562,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      controller.detailData[0]['nama_divisi']
+                                      controller.detailData[0]['nama_divisi']??''
                                           .toString(),
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgSecondary,

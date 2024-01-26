@@ -45,6 +45,7 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                 blurRadius: 4.0,
               )
             ]),
+            
             child: AppBar(
               backgroundColor: Constanst.colorWhite,
               elevation: 0,
@@ -123,6 +124,7 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                             )),
                       ),
                     )
+
                   : Text(
                       "Persetujuan ${controller.titleAppbar.value}",
                       style: GoogleFonts.inter(
@@ -131,6 +133,8 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                           fontSize: 20),
                     ),
               actions: [
+
+              
                 controller.statusCari.value
                     ? Padding(
                         padding: const EdgeInsets.only(right: 16.0),
@@ -145,6 +149,8 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                         onPressed: controller.showInputCari,
                         // controller.toggleSearch,
                       ),
+              
+              
               ],
               leading: controller.statusCari.value
                   ? IconButton(
@@ -162,7 +168,9 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                         size: 24,
                       ),
                       onPressed: () {
-                        print("tes tes");
+                      //
+                      //  print("tes tes");
+                        
                         var pesanController = Get.find<PesanController>();
                         pesanController.loadApproveInfo();
                         pesanController.loadApproveHistory();
@@ -542,8 +550,9 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
           var titleAjuan = controller.listData.value[index]['title_ajuan'];
           var namaTypeAjuan = controller.listData.value[index]['name'];
           var categoryAjuan = controller.listData.value[index]['category'];
-          var nama_divisi = controller.listData.value[index]['nama_divisi'];
+          var nama_divisi = controller.listData.value[index]['nama_divisi']??"";
           var image = controller.listData.value[index]['em_image'];
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -683,7 +692,7 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "$typeAjuan - $categoryAjuan",
+                                  "$typeAjuan ",
                                   style: GoogleFonts.inter(
                                       fontWeight: FontWeight.w500,
                                       color: Constanst.fgPrimary,
