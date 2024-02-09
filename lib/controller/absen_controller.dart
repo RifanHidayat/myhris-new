@@ -2808,7 +2808,7 @@ class AbsenController extends GetxController {
     var connect = Api.connectionApi("post", body, "save-employee-attendance");
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
-      print("data berhasil absensi ${valueBody}");
+     
 
       if (res.statusCode == 200) {
         Get.to(pengajuanAbsenBerhasil());

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +16,7 @@ import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
+import 'package:siscom_operasional/utils/helper.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -242,8 +244,11 @@ class KlaimController extends GetxController {
   
     var body={
       "em_id":AppData.informasiUser![0].em_id,
-      "cost_id":id
+      "cost_id":id,
+      "pola":globalCt.valuePolaPersetujuan.value.toString(),
+      'date':DateFormat('yyyy-MM-dd').format(DateTime.now())
     };
+    print("body ${body}");
     var connect = Api.connectionApi("post", body, "emp-claim-saldo");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -251,9 +256,8 @@ class KlaimController extends GetxController {
         print("value body ${valueBody}");
       
         saldo.value= int.parse(valueBody['saldo'].toString());
-        limitTransaksi.value=int.parse(valueBody['limit'].toString());
-
-        limitTransaksi.value=int.parse(valueBody['limit'].toString())-saldo.value;
+      
+        limitTransaksi.value=int.parse(valueBody['saldo'].toString())-int.parse(valueBody['total_klaim'].toString());
   
      
 
@@ -387,7 +391,7 @@ class KlaimController extends GetxController {
   void validasiKirimPengajuan() async {
     if (tanggalKlaim.value.text == "" ||
         catatan.value.text == "" ||
-        tanggalTerpilih.value == "") {
+        tanggalTerpilih.value == "" ) {
       UtilsAlert.showToast("Lengkapi form *");
     } else {
       if (uploadFile.value == true) {
@@ -491,7 +495,9 @@ class KlaimController extends GetxController {
       'created_on': "${DateTime.now()}",
       'atten_date': tanggalKlaim.value.text,
       'created_by': getEmid,
-      'menu_name': 'Klaim'
+      'menu_name': 'Klaim',
+      'saldo_claim':limitTransaksi.value.toString(),
+      'sisa_claim':(limitTransaksi.value-cv3).toString()
     };
     var typeNotifFcm = "Pengajuan Klaim";
     if (statusForm.value == false) {
@@ -835,16 +841,24 @@ class KlaimController extends GetxController {
     var alasan = detailData['reason'];
     var durasi = detailData['leave_duration'];
     var uraian = detailData['description'];
+
     var typeAjuan = detailData['leave_status'];
+    var sisaKlaim = detailData['sisa_claim'];
+    var saldo = detailData['saldo_claim'];
+
+    
     if (valuePolaPersetujuan.value == "1") {
       typeAjuan = detailData['status'];
+    
+    
     } else {
-      typeAjuan = detailData['leave_status'] == "Approve"
+      typeAjuan = detailData['status'] == "Approve"
           ? "Approve 1"
-          : detailData['leave_status'] == "Approve2"
+          : detailData['status'] == "Approve2"
               ? "Approve 2"
-              : detailData['leave_status'];
+              : detailData['status'];
     }
+    
     var nama_file = detailData['nama_file'];
     showModalBottomSheet(
       context: Get.context!,
@@ -994,6 +1008,31 @@ class KlaimController extends GetxController {
                           color: Constanst.border,
                         ),
                         const SizedBox(height: 12),
+                          Text(
+                          "Sisa Saldo",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          toCurrency(saldo.toString()),
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        
                         Text(
                           "Total Klaim",
                           style: GoogleFonts.inter(
@@ -1005,6 +1044,30 @@ class KlaimController extends GetxController {
                         const SizedBox(height: 4),
                         Text(
                           rupiah,
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                          Text(
+                          "Sisa Klaim",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          toCurrency(sisaKlaim.toString()),
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,

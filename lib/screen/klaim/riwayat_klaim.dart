@@ -387,6 +387,7 @@ class _KlaimState extends State<Klaim> {
                 this.controller.bulanSelectedSearchHistory.refresh();
                 this.controller.tahunSelectedSearchHistory.refresh();
                 this.controller.bulanDanTahunNow.refresh();
+                controller.loadDataKlaim();
               }
             },
           );
@@ -708,8 +709,11 @@ class _KlaimState extends State<Klaim> {
               controller.listKlaim.value[index]['created_on'];
           var status;
           if (controller.valuePolaPersetujuan.value == "1") {
+         
             status = controller.listKlaim.value[index]['status'];
+         
           } else {
+         
             status = controller.listKlaim.value[index]['status'] == "Approve"
                 ? "Approve 1"
                 : controller.listKlaim.value[index]['status'] == "Approve2"

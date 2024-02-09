@@ -273,6 +273,7 @@ class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
         itemBuilder: (context, index) {
           var data = controller.listData[index];
           var idx = controller.listData.value[index]['id'];
+           var idxAjuan = controller.listData.value[index]['id_ajuan'];
           var namaPengaju = controller.listData.value[index]['nama_pengaju'];
           var emIdPengaju = controller.listData.value[index]['emId_pengaju'];
           var delegasi = controller.listData.value[index]['delegasi'];
@@ -304,6 +305,7 @@ class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
                     title: typeAjuan,
                     idxDetail: "$idx",
                     delegasi: delegasi,
+                    idAjuan: idxAjuan,
                   ));
                 },
                 child: Container(
