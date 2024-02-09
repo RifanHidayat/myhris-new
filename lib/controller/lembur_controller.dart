@@ -203,6 +203,7 @@ class LemburController extends GetxController {
   }
 
   void loadDataTypeOvertime(overtimeData) {
+     typeLembur.value.clear();
     var connect = Api.connectionApi("get", "", "overtime");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {

@@ -53,9 +53,10 @@ class CutiController extends GetxController {
 
   var statusFormPencarian = false.obs;
 
-  var jumlahCuti = 0.obs;
+
+  var jumlahCuti = 0.0.obs;
   var typeIdEdit = 0.obs;
-  var cutiTerpakai = 0.obs;
+  var cutiTerpakai = 0.0.obs;
   var persenCuti = 0.0.obs;
   var durasiIzin = 0.obs;
   var jumlahData = 0.obs;
@@ -419,12 +420,21 @@ class CutiController extends GetxController {
   }
 
   void checkingDelegation(em_id) {
-    print("data employee ${em_id},${allEmployee.value}");
+    print(em_id);
 
+    // if (em_id=="null" || em_id == "" || em_id==null){
+
+    // }else{
+      
     var getData =
         allEmployee.value.firstWhere((element) => element["em_id"] == em_id);
     selectedDelegasi.value = getData["full_name"];
     this.selectedDelegasi.refresh();
+
+
+    //}
+    print("data employee ${em_id},${allEmployee.value}");
+
   }
 
   void loadCutiUserMelahirkan() {
@@ -462,8 +472,8 @@ class CutiController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         if (valueBody['data'].isNotEmpty) {
-          var totalDay = valueBody['data'][0]['total_day'];
-          var terpakai = valueBody['data'][0]['terpakai'];
+          var totalDay = double.parse(valueBody['data'][0]['total_day'].toString());
+          var terpakai = double.parse(valueBody['data'][0]['terpakai'].toString());
           print("ini data cuti user ${valueBody['data']}");
           if (totalDay == 0) {
             statusHitungCuti.value = false;
@@ -526,7 +536,7 @@ class CutiController extends GetxController {
     if (selectedTypeCuti == "" || alasan.value.text == "") {
       UtilsAlert.showToast("Form * harus di isi");
     } else {
-      int hitung = jumlahCuti.value - cutiTerpakai.value;
+      var hitung = jumlahCuti.value - cutiTerpakai.value;
 
       if (hitung <= 0 || hitung == 0) {
        if (allowMinus.value==0){

@@ -61,6 +61,8 @@ class KlaimController extends GetxController {
   var allType = [].obs;
   var dataTypeAjuan = [].obs;
   var departementAkses = [].obs;
+  var limitTransaksi=0.obs;
+  var saldo=0.obs;
 
   Rx<DateTime> initialDate = DateTime.now().obs;
 
@@ -206,6 +208,7 @@ class KlaimController extends GetxController {
 
   void getTypeKlaim() {
     allType.value.clear();
+    allTypeKlaim.value.clear();
     var connect = Api.connectionApi("get", "", "cost");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -217,14 +220,44 @@ class KlaimController extends GetxController {
           var data = {
             'type_id': element['id'],
             'name': element['name'],
+            'max_biaya': element['max_biaya'],
             'active': false,
           };
           allType.value.add(data);
         }
         if (idpengajuanKlaim == "") {
           var listFirst = allTypeKlaim.value.first;
-          selectedDropdownType.value = listFirst;
+          var t=allType.where((p0) => p0['name'].toString()==listFirst.toString()).toList();
+   selectedDropdownType.value = listFirst;
+    
+      getSaldo(id:t.first['type_id'] );
+          
         }
+        
+      }
+    });
+  }
+    void getSaldo({id}) {
+      print("saldo new ");
+  
+    var body={
+      "em_id":AppData.informasiUser![0].em_id,
+      "cost_id":id
+    };
+    var connect = Api.connectionApi("post", body, "emp-claim-saldo");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print("value body ${valueBody}");
+      
+        saldo.value= int.parse(valueBody['saldo'].toString());
+        limitTransaksi.value=int.parse(valueBody['limit'].toString());
+
+        limitTransaksi.value=int.parse(valueBody['limit'].toString())-saldo.value;
+  
+     
+
+      
       }
     });
   }
@@ -804,7 +837,7 @@ class KlaimController extends GetxController {
     var uraian = detailData['description'];
     var typeAjuan = detailData['leave_status'];
     if (valuePolaPersetujuan.value == "1") {
-      typeAjuan = detailData['leave_status'];
+      typeAjuan = detailData['status'];
     } else {
       typeAjuan = detailData['leave_status'] == "Approve"
           ? "Approve 1"

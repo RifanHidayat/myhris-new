@@ -15,6 +15,7 @@ import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/dashed_rect.dart';
+import 'package:siscom_operasional/utils/helper.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
@@ -31,7 +32,7 @@ class _FormKlaimState extends State<FormKlaim> {
 
   @override
   void initState() {
-    print(widget.dataForm![0]);
+    print("form pengajuan klaim ${widget.dataForm![0]}");
     if (widget.dataForm![1] == true) {
       // check id dan nomor ajuan
       controller.idpengajuanKlaim.value = "${widget.dataForm![0]['id']}";
@@ -59,6 +60,14 @@ class _FormKlaimState extends State<FormKlaim> {
       DateTime ftr1 = DateTime.parse(widget.dataForm![0]['created_on']);
       var filterTanggal = "${DateFormat('yyyy-MM-dd').format(ftr1)}";
       controller.tanggalKlaim.value.text = filterTanggal;
+    } else {
+      controller.getTypeKlaim();
+      controller.totalKlaim.value.clear();
+      controller.tanggalTerpilih.value =
+          "${DateFormat('yyyy-MM-dd').format(DateTime.now())}";
+      controller.tanggalShow.value =
+          "${DateFormat('dd MMMM yyyy').format(DateTime.now())}";
+      controller.namaFileUpload.value = "";
     }
     super.initState();
   }
@@ -160,6 +169,14 @@ class _FormKlaimState extends State<FormKlaim> {
             padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
             child: ElevatedButton(
               onPressed: () {
+                print(controller.totalKlaim.value.text);
+                 var cv1 = controller.totalKlaim.value.text.replaceAll('Rp', '');
+    var cv2 = cv1.replaceAll('.', '');
+    int cv3 = int.parse(cv2);
+    if (cv3>controller.limitTransaksi.value){
+      UtilsAlert.showToast("Total Klaim besar dari limit transaksi");
+    }
+                
                 controller.validasiKirimPengajuan();
               },
               style: ElevatedButton.styleFrom(
@@ -202,8 +219,15 @@ class _FormKlaimState extends State<FormKlaim> {
               // onTap: () => controller.selectedTypeCuti.value = value,
 
               onTap: () {
+                print(value);
+
+                var tempData=controller.allType.where((p0) => p0['name'].toString().toLowerCase()==value.toString().toLowerCase()).toList();
+                print(tempData[0]);
+               controller.getSaldo(id:tempData.first['type_id'] );
+
                 controller.selectedDropdownType.value = value;
                 this.controller.selectedDropdownType.refresh();
+
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
@@ -226,6 +250,7 @@ class _FormKlaimState extends State<FormKlaim> {
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -245,7 +270,7 @@ class _FormKlaimState extends State<FormKlaim> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Tipe Cuti *",
+                          "Jenis Biaya *",
                           style: GoogleFonts.inter(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
@@ -268,6 +293,29 @@ class _FormKlaimState extends State<FormKlaim> {
               ],
             ),
           ),
+     Obx(() =>      Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0,bottom: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Saldo  :${toCurrency(controller.saldo.value.toString())}",
+                  style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w300,
+                      color: Constanst.fgPrimary),
+                ),
+              
+                Text(
+                  "Sisa Limit :${toCurrency(controller.limitTransaksi.value.toString())}",
+                  style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w300,
+                      color: Constanst.fgPrimary),
+                ),
+              ],
+            ),
+          ),),
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0),
             child: Divider(

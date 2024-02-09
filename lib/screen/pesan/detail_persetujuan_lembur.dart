@@ -948,42 +948,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                 : typeAjuan == "Approve" ||
                                         typeAjuan == "Approve 1" ||
                                         typeAjuan == "Approve 2"
-                                    ? Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Icon(
-                                            Iconsax.tick_circle,
-                                            color: Colors.green,
-                                            size: 22,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Status Pengajuan",
-                                                style: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
-                                                  color: Constanst.fgSecondary,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                  "Approved by ${controller.detailData[0]['nama_approve1']} ",
-                                                  style: GoogleFonts.inter(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color:
-                                                          Constanst.fgPrimary,
-                                                      fontSize: 14)),
-                                            ],
-                                          ),
-                                        ],
-                                      )
-                                    : Row(
+                                    ?  Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
@@ -1006,13 +971,113 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                                 ),
                                               ),
                                               const SizedBox(height: 4),
-                                              Text("Pending Approval",
-                                                  style: GoogleFonts.inter(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color:
-                                                          Constanst.fgPrimary,
-                                                      fontSize: 14)),
+                                               Padding(
+                              padding: const EdgeInsets.only(left: 3),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    controller.valuePolaPersetujuan == 1 ||
+                                            controller.valuePolaPersetujuan ==
+                                                "1"
+                                        ? controller.detailData[0]['leave_status']
+                                        : controller.detailData[0]['leave_status']== "Pending"
+                                            ? "Pending Approval 1"
+                                            : "Pending Approval 2",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w500,
+                                        color: Constanst.fgPrimary,
+                                        fontSize: 14),
+                                  ),
+                                  controller.detailData[0]['nama_approve1']== "" ||
+                                         controller.detailData[0]['leave_status'] == "Pending"
+                                      ? const SizedBox()
+                                      : Text(
+                                          "Approve 1 by - ${ controller.detailData[0]['nama_approve1']}",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14),
+                                        ),
+                                ],
+                              ),
+                            ),
+                                              // const SizedBox(height: 4),
+                                              // InkWell(
+                                              //     onTap: () {
+                                              //       var dataEmployee = {
+                                              //         'nameType': '$namaTypeAjuan',
+                                              //         'nomor_ajuan': '$nomorAjuan',
+                                              //       };
+                                              //       controllerGlobal
+                                              //           .showDataPilihAtasan(dataEmployee);
+                                              //     },
+                                              //     child: Text("Konfirmasi via Whatsapp",
+                                              //         style: GoogleFonts.inter(
+                                              //             fontWeight: FontWeight.w400,
+                                              //             color: Constanst.infoLight,
+                                              //             fontSize: 14))),
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    : 
+                                    Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Iconsax.timer,
+                                            color: Constanst.color3,
+                                            size: 22,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Status Pengajuan",
+                                                style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14,
+                                                  color: Constanst.fgSecondary,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                               Padding(
+                              padding: const EdgeInsets.only(left: 3),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    controller.valuePolaPersetujuan == 1 ||
+                                            controller.valuePolaPersetujuan ==
+                                                "1"
+                                        ? controller.detailData[0]['leave_status']
+                                        : controller.detailData[0]['leave_status']== "Pending"
+                                            ? "Pending Approval 1"
+                                            : "Pending Approval 2",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w500,
+                                        color: Constanst.fgPrimary,
+                                        fontSize: 14),
+                                  ),
+                                  controller.detailData[0]['nama_approve1']== "" ||
+                                         controller.detailData[0]['leave_status'] == "Pending"
+                                      ? const SizedBox()
+                                      : Text(
+                                          "Approve 1 by - ${ controller.detailData[0]['nama_approve1']}",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14),
+                                        ),
+                                ],
+                              ),
+                            ),
                                               // const SizedBox(height: 4),
                                               // InkWell(
                                               //     onTap: () {

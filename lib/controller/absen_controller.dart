@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,14 +11,20 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'dart:async';
 import 'dart:convert';
+
 import 'dart:io';
+
 import 'dart:io' show Platform;
+
 import 'dart:math';
 import 'package:image_picker/image_picker.dart';
+
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
+
 import 'package:siscom_operasional/model/shift_model.dart';
 import 'package:siscom_operasional/screen/absen/berhasil_absen.dart';
 import 'package:siscom_operasional/screen/absen/berhasil_registrasi.dart';
@@ -140,6 +145,7 @@ class AbsenController extends GetxController {
   var namaFileUpload = "".obs;
   var filePengajuan = File("").obs;
   var uploadFile = false.obs;
+  var isLoaingAbsensi = false.obs;
 
   Rx<DateTime> pilihTanggalTelatAbsen = DateTime.now().obs;
 
@@ -284,8 +290,8 @@ class AbsenController extends GetxController {
   }
 
   void getPlaceCoordinate() {
-    print("place coodinates");
-    // placeCoordinate.clear();
+    placeCoordinate.clear();
+    placeCoordinateDropdown.value.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate",
         params: "&id=${AppData.informasiUser![0].em_id}");
     connect.then((dynamic res) {
@@ -308,13 +314,55 @@ class AbsenController extends GetxController {
           }
 
           print("data ${placeCoordinate.value}");
-          placeCoordinate.clear();
+          // placeCoordinate.clear();
           placeCoordinate.value = filter;
           placeCoordinate.refresh();
           placeCoordinate.refresh();
         } else {
           print("Place cordinate !=200" + res.body.toString());
           print(res.body.toString());
+        }
+      }
+    });
+  }
+
+  void getPlaceCoordinate1() {
+    print("place coodinates refresh");
+    UtilsAlert.showLoadingIndicator(Get.context!);
+    placeCoordinate.clear();
+    placeCoordinateDropdown.value.clear();
+    var connect = Api.connectionApi("get", {}, "places_coordinate",
+        params: "&id=${AppData.informasiUser![0].em_id}");
+    connect.then((dynamic res) {
+      if (res == false) {
+        print("errror");
+        UtilsAlert.koneksiBuruk();
+        Get.back();
+      } else {
+        if (res.statusCode == 200) {
+          print("Place cordinate 200 terbaru " + res.body.toString());
+          var valueBody = jsonDecode(res.body);
+          selectedType.value = valueBody['data'][0]['place'];
+          for (var element in valueBody['data']) {
+            placeCoordinateDropdown.value.add(element['place']);
+          }
+          List filter = [];
+          for (var element in valueBody['data']) {
+            if (element['isFilterView'] == 1) {
+              filter.add(element);
+            }
+          }
+
+          print("data ${placeCoordinate.value}");
+          // placeCoordinate.clear();
+          placeCoordinate.value = filter;
+          placeCoordinate.refresh();
+          placeCoordinate.refresh();
+          Get.back();
+        } else {
+          print("Place cordinate !=200" + res.body.toString());
+          print(res.body.toString());
+          Get.back();
         }
       }
     });
@@ -947,10 +995,12 @@ class AbsenController extends GetxController {
     // if (base64fotoUser.value == "") {
     //   UtilsAlert.showToast("Silahkan Absen");
     // } else {
+
     if (Platform.isAndroid) {
       TrustLocation.start(1);
       getCheckMock();
       if (!mockLocation.value) {
+      
         var statusPosisi = await validasiRadius();
         if (statusPosisi == true) {
           var latLangAbsen = "${latUser.value},${langUser.value}";
@@ -983,6 +1033,7 @@ class AbsenController extends GetxController {
             'kategori': "1"
           };
 
+          isLoaingAbsensi.value = true;
           var connect = Api.connectionApi("post", body, "kirimAbsen");
           connect.then((dynamic res) {
             if (res.statusCode == 200) {
@@ -993,7 +1044,9 @@ class AbsenController extends GetxController {
                   intervalControl.value = int.parse(element['name']);
                 }
               }
+              isLoaingAbsensi.value = false;
               this.intervalControl.refresh();
+
               print("dapat interval ${intervalControl.value}");
               // Navigator.pop(Get.context!);
               Get.to(BerhasilAbsensi(
@@ -1004,13 +1057,20 @@ class AbsenController extends GetxController {
                   intervalControl.value
                 ],
               ));
+            } else {
+               UtilsAlert.showToast("terjadi kesalhan");
+              isLoaingAbsensi.value = false;
+              Get.back();
+              //error
             }
           });
         }
       } else {
+        isLoaingAbsensi.value = false;
         UtilsAlert.showToast("Periksa GPS anda");
       }
     } else if (Platform.isIOS) {
+      
       var statusPosisi = await validasiRadius();
       if (statusPosisi == true) {
         var latLangAbsen = "${latUser.value},${langUser.value}";
@@ -1044,10 +1104,12 @@ class AbsenController extends GetxController {
           'place': selectedType.value,
           'kategori': "1"
         };
+           isLoaingAbsensi.value = true;
 
         var connect = Api.connectionApi("post", body, "kirimAbsen");
         connect.then((dynamic res) {
           if (res.statusCode == 200) {
+
             var valueBody = jsonDecode(res.body);
             print(res.body);
             for (var element in sysData.value) {
@@ -1055,7 +1117,9 @@ class AbsenController extends GetxController {
                 intervalControl.value = int.parse(element['name']);
               }
             }
+            isLoaingAbsensi.value = false;
             this.intervalControl.refresh();
+
             print("dapat interval ${intervalControl.value}");
             Get.back();
             Get.offAll(BerhasilAbsensi(
@@ -1066,6 +1130,13 @@ class AbsenController extends GetxController {
                 intervalControl.value
               ],
             ));
+          } else {
+          UtilsAlert.showToast("terjadi kesalhan");
+
+            isLoaingAbsensi.value = false;
+            Get.back();
+
+
           }
         });
       }

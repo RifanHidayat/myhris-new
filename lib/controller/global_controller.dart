@@ -541,7 +541,7 @@ class GlobalController extends GetxController {
       'delegasi': delegasi,
       'id': id
     };
-    print(body);
+    print("body notifikasi ${emIdApproval2}");
     try {
       var connect =
           Api.connectionApi("post", body, "push_notification_approval");

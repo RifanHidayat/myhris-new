@@ -560,7 +560,7 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      controller.detailData[0]['nama_divisi']
+                                      controller.detailData[0]['nama_divisi']??''
                                           .toString(),
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgSecondary,

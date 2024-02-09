@@ -162,7 +162,7 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> {
                         size: 24,
                       ),
                       onPressed: () {
-                        print("tes tes");
+                       
                         var pesanController = Get.find<PesanController>();
                         pesanController.loadApproveInfo();
                         pesanController.loadApproveHistory();
@@ -283,7 +283,7 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> {
           var namaTypeAjuan = controller.listData.value[index]['name'];
           var categoryAjuan = controller.listData.value[index]['category'];
           var jobTitle = controller.listData.value[index]['job_title'];
-          var nama_divisi = controller.listData.value[index]['nama_divisi'];
+          var nama_divisi = controller.listData.value[index]['nama_divisi']??"";
           var image = controller.listData.value[index]['em_image'];
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -468,18 +468,8 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> {
                             color: Constanst.border,
                           ),
                         ),
-                        namaApprove1 == "" || leave_status == "Pending"
-                            ? const SizedBox()
-                            : Center(
-                                child: Text(
-                                  "Approve 1 by - $namaApprove1",
-                                  style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w500,
-                                      color: Constanst.fgPrimary,
-                                      fontSize: 16),
-                                ),
-                              ),
-                        Row(
+                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(
@@ -489,22 +479,38 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 3),
-                              child: Text(
-                                controller.valuePolaPersetujuan == 1 ||
-                                        controller.valuePolaPersetujuan == "1"
-                                    ? '$leave_status'
-                                    : leave_status == "Pending"
-                                        ? "Pending Approval 1"
-                                        : "Pending Approval 2",
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    color: Constanst.fgPrimary,
-                                    fontSize: 14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    controller.valuePolaPersetujuan == 1 ||
+                                            controller.valuePolaPersetujuan ==
+                                                "1"
+                                        ? '$leave_status'
+                                        : leave_status == "Pending"
+                                            ? "Pending Approval 1"
+                                            : "Pending Approval 2",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w500,
+                                        color: Constanst.fgPrimary,
+                                        fontSize: 14),
+                                  ),
+                                  namaApprove1 == "" ||
+                                          leave_status == "Pending"
+                                      ? const SizedBox()
+                                      : Text(
+                                          "Approve 1 by - $namaApprove1",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14),
+                                        ),
+                                ],
                               ),
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),

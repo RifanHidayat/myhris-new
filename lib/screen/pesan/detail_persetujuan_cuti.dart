@@ -159,7 +159,7 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
     );
   }
 
-  void validasiMenyetujui(pilihan, em_id) {
+  void  validasiMenyetujui(pilihan, em_id) {
     int styleChose = pilihan == false ? 1 : 2;
     var stringPilihan = pilihan == false ? 'Tolak' : 'Menyetujui';
     showGeneralDialog(

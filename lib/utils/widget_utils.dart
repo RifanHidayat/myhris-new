@@ -559,32 +559,33 @@ class UtilsAlert {
   }
 
   static koneksiBuruk() {
-    showGeneralDialog(
-      context: Get.context!,
-      barrierColor: Colors.black54, // space around dialog
-      transitionDuration: Duration(milliseconds: 200),
-      transitionBuilder: (context, a1, a2, child) {
-        return ScaleTransition(
-            scale: CurvedAnimation(
-                parent: a1,
-                curve: Curves.elasticOut,
-                reverseCurve: Curves.easeOutCubic),
-            child: CustomDialog(
-              title: "Peringatan",
-              content: "Periksa koneksi internet anda",
-              positiveBtnText: "",
-              negativeBtnText: "",
-              style: 1,
-              buttonStatus: 1,
-              positiveBtnPressed: () {
-                Navigator.of(context).pop();
-              },
-            ));
-      },
-      pageBuilder: (BuildContext context, Animation animation,
-          Animation secondaryAnimation) {
-        return null!;
-      },
-    );
+    UtilsAlert.showToast("Periksa koneksi internet anda");
+    // showGeneralDialog(
+    //   context: Get.context!,
+    //   barrierColor: Colors.black54, // space around dialog
+    //   transitionDuration: Duration(milliseconds: 200),
+    //   transitionBuilder: (context, a1, a2, child) {
+    //     return ScaleTransition(
+    //         scale: CurvedAnimation(
+    //             parent: a1,
+    //             curve: Curves.elasticOut,
+    //             reverseCurve: Curves.easeOutCubic),
+    //         child: CustomDialog(
+    //           title: "Peringatan",
+    //           content: "Periksa koneksi internet anda",
+    //           positiveBtnText: "",
+    //           negativeBtnText: "",
+    //           style: 1,
+    //           buttonStatus: 1,
+    //           positiveBtnPressed: () {
+    //             Navigator.of(context).pop();
+    //           },
+    //         ));
+    //   },
+    //   pageBuilder: (BuildContext context, Animation animation,
+    //       Animation secondaryAnimation) {
+    //     return null!;
+    //   },
+    // );
   }
 }

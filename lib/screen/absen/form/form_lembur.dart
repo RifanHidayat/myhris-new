@@ -722,7 +722,7 @@ class _FormLemburState extends State<FormLembur> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Lokasi Absen Checkin",
+                    "Pemberi Tugas",
                     style: GoogleFonts.inter(
                         color: Constanst.fgPrimary,
                         fontWeight: FontWeight.w500,

@@ -39,6 +39,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'dart:io';
+import 'package:upgrader/upgrader.dart';
 
 import 'utils/app_data.dart';
 
@@ -397,7 +398,9 @@ class MyApp extends StatelessWidget {
           Locale('en'),
         ],
         debugShowCheckedModeBanner: false,
-        home: SplashScreen()
+        home: UpgradeAlert(
+          child: SplashScreen(),
+        )
         // home: SlipGaji(),
         );
   }
