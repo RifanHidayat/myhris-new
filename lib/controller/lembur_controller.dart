@@ -203,6 +203,7 @@ class LemburController extends GetxController {
   }
 
   void loadDataTypeOvertime(overtimeData) {
+     typeLembur.value.clear();
     var connect = Api.connectionApi("get", "", "overtime");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -532,6 +533,14 @@ class LemburController extends GetxController {
                 pesan =
                     "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan LEMBUR dengan nomor ajuan ${getNomorAjuanTerakhir}";
               }
+              kirimNotifikasiToDelegasi1(
+                getFullName,
+                finalTanggalPengajuan,
+               item['em_id'],
+                validasiDelegasiSelectedToken,
+                stringWaktu,
+                typeNotifFcm,pesan);
+
               if (item['token_notif'] != null) {
                 globalCt.kirimNotifikasiFcm(
                     title: typeNotifFcm,
@@ -655,11 +664,14 @@ class LemburController extends GetxController {
       validasiDelegasiSelected, fcmTokenDelegasi, stringWaktu, typeNotifFcm) {
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
-    var description =
-        'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk Pengajuan Lembur, waktu pengajuan $stringWaktu';
+    // var description =
+    //     'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk Pengajuan Lembur, waktu pengajuan $stringWaktu';
+
+     var description =
+        'Anda mendapatkan pengajuan lembur dari $getFullName dengan pemberi tugas anda, waktu pengajuan $stringWaktu';
     Map<String, dynamic> body = {
       'em_id': validasiDelegasiSelected,
-      'title': 'Delegasi Pengajuan Lembur',
+      'title': 'Pemberi Tugas Pengajuan Lembur',
       'deskripsi': description,
       'url': '',
       'atten_date': convertTanggalBikinPengajuan,
@@ -678,6 +690,38 @@ class LemburController extends GetxController {
       }
     });
   }
+  void 
+  kirimNotifikasiToDelegasi1(getFullName, convertTanggalBikinPengajuan,
+      validasiDelegasiSelected, fcmTokenDelegasi, stringWaktu, typeNotifFcm,pesan) {
+    var dt = DateTime.now();
+    var jamSekarang = DateFormat('HH:mm:ss').format(dt);
+    // var description =
+    //     'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk Pengajuan Lembur, waktu pengajuan $stringWaktu';
+
+     var description =
+        'Anda mendapatkan pengajuan lembur dari $getFullName dengan pemberi tugas anda, waktu pengajuan $stringWaktu';
+    Map<String, dynamic> body = {
+      'em_id': validasiDelegasiSelected,
+      'title': 'Approval Lembur',
+      'deskripsi': pesan,
+      'url': '',
+      'atten_date': convertTanggalBikinPengajuan,
+      'jam': jamSekarang,
+      'status': '2',
+      'view': '0',
+    };
+    var connect = Api.connectionApi("post", body, "insert-notifikasi");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        // globalCt.kirimNotifikasiFcm(
+        //     title: typeNotifFcm,
+        //     message: description,
+        //     tokens: fcmTokenDelegasi);
+        UtilsAlert.showToast("Berhasil kirim delegasi");
+      }
+    });
+  }
+
 
   void kirimNotifikasiToReportTo(
       getFullName, convertTanggalBikinPengajuan, getEmid, type, stringWaktu) {

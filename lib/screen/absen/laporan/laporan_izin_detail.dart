@@ -179,7 +179,7 @@ class _LaporanIzinDetailState extends State<LaporanIzinDetail> {
                       const SizedBox(height: 16),
                       status(),
                       const SizedBox(height: 16),
-                      Text("Riwayat Pengajuan Izin2",
+                      Text("Riwayat Pengajuan Izin",
                           style: GoogleFonts.inter(
                               fontWeight: FontWeight.w500,
                               color: Constanst.fgPrimary,

@@ -921,6 +921,9 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
   }
 
   Widget formCatatan() {
+
+
+    
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 4.0),
       child: Row(
@@ -933,7 +936,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Catatan",
+                  "Catatan *",
                   style: GoogleFonts.inter(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,

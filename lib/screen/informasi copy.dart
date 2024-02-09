@@ -868,10 +868,10 @@ class Informasi extends StatelessWidget {
 
                   var remainingText = "";
                   if (years > 0) {
-                    remainingText = "${years} Tahun ";
+                    remainingText = "${years} Tahun";
                   }
                   if (months > 0) {
-                    remainingText += "${months} Bulan";
+                    remainingText += " ${months} Bulan";
                   }
 
                   if (months > 0) {
@@ -900,60 +900,69 @@ class Informasi extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: image == ""
-                                      ? SvgPicture.asset(
-                                          'assets/avatar_default.svg',
-                                          width: 42,
-                                          height: 42,
-                                        )
-                                      : Center(
-                                          child: CircleAvatar(
-                                            radius: 21,
-                                            child: ClipOval(
+                                Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Constanst.infoLight,
+                                        width: 2.0,
+                                      ),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(100))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: image == ""
+                                        ? SvgPicture.asset(
+                                            'assets/avatar_default.svg',
+                                            width: 40,
+                                            height: 40,
+                                          )
+                                        : Center(
+                                            child: CircleAvatar(
+                                              radius: 20,
                                               child: ClipOval(
-                                                child: CachedNetworkImage(
-                                                  imageUrl:
-                                                      "${Api.UrlfotoProfile}$image",
-                                                  progressIndicatorBuilder:
-                                                      (context, url,
-                                                              downloadProgress) =>
-                                                          Container(
-                                                    alignment: Alignment.center,
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.5,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                            value:
-                                                                downloadProgress
-                                                                    .progress),
-                                                  ),
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          Container(
-                                                    color: Colors.white,
-                                                    child: SvgPicture.asset(
-                                                      'assets/avatar_default.svg',
-                                                      width: 40,
-                                                      height: 40,
+                                                child: ClipOval(
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        "${Api.UrlfotoProfile}$image",
+                                                    progressIndicatorBuilder:
+                                                        (context, url,
+                                                                downloadProgress) =>
+                                                            Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.5,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress),
                                                     ),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Container(
+                                                      color: Colors.white,
+                                                      child: SvgPicture.asset(
+                                                        'assets/avatar_default.svg',
+                                                        width: 40,
+                                                        height: 40,
+                                                      ),
+                                                    ),
+                                                    fit: BoxFit.cover,
+                                                    width: 40,
+                                                    height: 40,
                                                   ),
-                                                  fit: BoxFit.cover,
-                                                  width: 42,
-                                                  height: 42,
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
                                 Column(
@@ -998,221 +1007,244 @@ class Informasi extends StatelessWidget {
                                       Radius.circular(8))),
                               child: Padding(
                                 padding: const EdgeInsets.fromLTRB(
-                                    8.0, 4.0, 8.0, 4.0),
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/lama_bekerja.png',
-                                            width: 20,
-                                            height: 20,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                    8.0, 12.0, 0.0, 12.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        flex: 20,
+                                        child: Container(
+                                          child: Row(
                                             children: [
-                                              Text(
-                                                "Lama Bekerja",
-                                                style: GoogleFonts.inter(
-                                                    fontSize: 14,
-                                                    color:
-                                                        Constanst.fgSecondary,
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                              ),
-
-                                              // TextLabell(
-                                              //   text: "${remainingText} ",
-                                              //   weight: FontWeight.bold,
-                                              //   color:
-                                              //       Constanst.fgPrimary,
-                                              // ),
-                                              RichText(
-                                                overflow: TextOverflow
-                                                    .ellipsis, // Menambahkan elipsis jika teks melebihi satu baris
-                                                maxLines:
-                                                    1, // Memastikan hanya satu baris yang ditampilkan
-                                                text: TextSpan(
-                                                  text: remainingText,
-                                                  style: GoogleFonts.inter(
-                                                      fontSize: 14,
-                                                      color:
-                                                          Constanst.fgPrimary,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                  children: <TextSpan>[],
+                                              Expanded(
+                                                flex: 20,
+                                                child: Image.asset(
+                                                  'assets/lama_bekerja.png',
+                                                  width: 20,
+                                                  height: 20,
                                                 ),
                                               ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 12.0, right: 12),
-                                        child: Container(
-                                          color:
-                                              Constanst.colorNeutralBgTertiary,
-                                          width: 1,
-                                          height: 24,
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/waktu_tersisa.png',
-                                            width: 20,
-                                            height: 20,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Waktu Tersisa",
-                                                style: GoogleFonts.inter(
-                                                    fontSize: 14,
-                                                    color:
-                                                        Constanst.fgSecondary,
-                                                    fontWeight:
-                                                        FontWeight.w400),
+                                              SizedBox(
+                                                width: 5,
                                               ),
-                                              Text(
-                                                "$sisaCuti Hari",
-                                                style: GoogleFonts.inter(
-                                                    fontSize: 14,
-                                                    color: Constanst.fgPrimary,
-                                                    fontWeight:
-                                                        FontWeight.w500),
+                                              Expanded(
+                                                flex: 95,
+                                                child: Container(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      TextLabell(
+                                                        text: "Lama Bekerja",
+                                                        color: Constanst
+                                                            .fgSecondary,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      // TextLabell(
+                                                      //   text: "${remainingText} ",
+                                                      //   weight: FontWeight.bold,
+                                                      //   color:
+                                                      //       Constanst.fgPrimary,
+                                                      // ),
+                                                      Container(
+                                                        child: RichText(
+                                                          overflow: TextOverflow
+                                                              .ellipsis, // Menambahkan elipsis jika teks melebihi satu baris
+                                                          maxLines:
+                                                              1, // Memastikan hanya satu baris yang ditampilkan
+                                                          text: TextSpan(
+                                                            text:
+                                                                "${remainingText} ",
+                                                            style: TextStyle(
+                                                              fontSize: 11.0,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Constanst
+                                                                  .fgPrimary,
+                                                            ),
+                                                            children: <
+                                                                TextSpan>[],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                               )
                                             ],
-                                          )
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 12.0, right: 12),
-                                        child: Container(
-                                          color:
-                                              Constanst.colorNeutralBgTertiary,
-                                          width: 1,
-                                          height: 24,
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/tanggal_berakhir.png',
-                                            width: 20,
-                                            height: 20,
                                           ),
-                                          const SizedBox(width: 8),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                        )),
+                                    Expanded(
+                                        flex: 20,
+                                        child: Container(
+                                          child: Row(
                                             children: [
-                                              Text(
-                                                "Tanggal berakhir",
-                                                style: GoogleFonts.inter(
-                                                    fontSize: 14,
-                                                    color:
-                                                        Constanst.fgSecondary,
-                                                    fontWeight:
-                                                        FontWeight.w400),
+                                              Expanded(
+                                                flex: 20,
+                                                child: Image.asset(
+                                                  'assets/waktu_tersisa.png',
+                                                  width: 20,
+                                                  height: 20,
+                                                ),
                                               ),
-                                              Text(
-                                                Constanst.convertDate5(
-                                                    '$endDate'),
-                                                style: GoogleFonts.inter(
-                                                    fontSize: 14,
-                                                    color: Constanst.fgPrimary,
-                                                    fontWeight:
-                                                        FontWeight.w500),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Expanded(
+                                                flex: 80,
+                                                child: Container(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      TextLabell(
+                                                        text: "Waktu Tersisa",
+                                                        color: Constanst
+                                                            .fgSecondary,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      TextLabell(
+                                                        text:
+                                                            "${sisaCuti} Hari",
+                                                        weight: FontWeight.bold,
+                                                        color:
+                                                            Constanst.fgPrimary,
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
                                               )
                                             ],
-                                          )
-                                        ],
-                                      )
-                                      // Expanded(
-                                      //   flex: 5,
-                                      //   child: Row(
-                                      //     children: [
-                                      //       Icon(
-                                      //         Iconsax.calendar_tick5,
-                                      //         color: Constanst.infoLight,
-                                      //         size: 16,
-                                      //       ),
-                                      //       const SizedBox(width: 4),
-                                      //       Text(
-                                      //         Constanst.convertDate5(
-                                      //             '$beginDate'),
-                                      //         style: GoogleFonts.inter(
-                                      //             fontWeight: FontWeight.w400,
-                                      //             fontSize: 14,
-                                      //             color: Constanst.fgPrimary),
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // ),
+                                          ),
+                                        )),
+                                    Expanded(
+                                        flex: 20,
+                                        child: Container(
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 20,
+                                                child: Image.asset(
+                                                  'assets/tanggal_berakhir.png',
+                                                  width: 20,
+                                                  height: 20,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Expanded(
+                                                flex: 80,
+                                                child: Container(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      TextLabell(
+                                                        text:
+                                                            "Tanggal berakhir",
+                                                        color: Constanst
+                                                            .fgSecondary,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2,
+                                                      ),
+                                                      TextLabell(
+                                                        text: Constanst
+                                                            .convertDate5(
+                                                                '$endDate'),
+                                                        weight: FontWeight.bold,
+                                                        color:
+                                                            Constanst.fgPrimary,
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ))
+                                    // Expanded(
+                                    //   flex: 5,
+                                    //   child: Row(
+                                    //     children: [
+                                    //       Icon(
+                                    //         Iconsax.calendar_tick5,
+                                    //         color: Constanst.infoLight,
+                                    //         size: 16,
+                                    //       ),
+                                    //       const SizedBox(width: 4),
+                                    //       Text(
+                                    //         Constanst.convertDate5(
+                                    //             '$beginDate'),
+                                    //         style: GoogleFonts.inter(
+                                    //             fontWeight: FontWeight.w400,
+                                    //             fontSize: 14,
+                                    //             color: Constanst.fgPrimary),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
 
-                                      // Expanded(
-                                      //   flex: 5,
-                                      //   child: Row(
-                                      //     children: [
-                                      //       Icon(
-                                      //         Iconsax.calendar_tick5,
-                                      //         color: Constanst.infoLight,
-                                      //         size: 16,
-                                      //       ),
-                                      //       const SizedBox(width: 4),
-                                      //       Text(
-                                      //         Constanst.convertDate5(
-                                      //             '$beginDate'),
-                                      //         style: GoogleFonts.inter(
-                                      //             fontWeight: FontWeight.w400,
-                                      //             fontSize: 14,
-                                      //             color: Constanst.fgPrimary),
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // ),
-                                      // Icon(
-                                      //   Iconsax.arrow_right_1,
-                                      //   color: Constanst.colorNeutralFgTertiary,
-                                      //   size: 14,
-                                      // ),
-                                      // Expanded(
-                                      //   flex: 5,
-                                      //   child: Padding(
-                                      //     padding:
-                                      //         const EdgeInsets.only(left: 16.0),
-                                      //     child: Row(
-                                      //       children: [
-                                      //         Icon(
-                                      //           Iconsax.calendar_remove5,
-                                      //           color: Constanst.color4,
-                                      //           size: 16,
-                                      //         ),
-                                      //         const SizedBox(width: 4),
-                                      //         Text(
-                                      //           Constanst.convertDate5(
-                                      //               '$endDate'),
-                                      //           style: GoogleFonts.inter(
-                                      //               fontWeight: FontWeight.w400,
-                                      //               fontSize: 14,
-                                      //               color: Constanst.fgPrimary),
-                                      //         ),
-                                      //       ],
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                    ],
-                                  ),
+                                    // Expanded(
+                                    //   flex: 5,
+                                    //   child: Row(
+                                    //     children: [
+                                    //       Icon(
+                                    //         Iconsax.calendar_tick5,
+                                    //         color: Constanst.infoLight,
+                                    //         size: 16,
+                                    //       ),
+                                    //       const SizedBox(width: 4),
+                                    //       Text(
+                                    //         Constanst.convertDate5(
+                                    //             '$beginDate'),
+                                    //         style: GoogleFonts.inter(
+                                    //             fontWeight: FontWeight.w400,
+                                    //             fontSize: 14,
+                                    //             color: Constanst.fgPrimary),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
+                                    // Icon(
+                                    //   Iconsax.arrow_right_1,
+                                    //   color: Constanst.colorNeutralFgTertiary,
+                                    //   size: 14,
+                                    // ),
+                                    // Expanded(
+                                    //   flex: 5,
+                                    //   child: Padding(
+                                    //     padding:
+                                    //         const EdgeInsets.only(left: 16.0),
+                                    //     child: Row(
+                                    //       children: [
+                                    //         Icon(
+                                    //           Iconsax.calendar_remove5,
+                                    //           color: Constanst.color4,
+                                    //           size: 16,
+                                    //         ),
+                                    //         const SizedBox(width: 4),
+                                    //         Text(
+                                    //           Constanst.convertDate5(
+                                    //               '$endDate'),
+                                    //           style: GoogleFonts.inter(
+                                    //               fontWeight: FontWeight.w400,
+                                    //               fontSize: 14,
+                                    //               color: Constanst.fgPrimary),
+                                    //         ),
+                                    //       ],
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                  ],
                                 ),
                               ),
                             ),

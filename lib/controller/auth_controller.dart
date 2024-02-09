@@ -102,7 +102,7 @@ class AuthController extends GetxController {
       'password': password.value.text,
       'token_notif': fcm_registration_token ,
       'database': selectedDb.value
-    };
+    }; 
     var connect = Api.connectionApi("post", body, "login");
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
@@ -160,6 +160,7 @@ class AuthController extends GetxController {
             nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
             timeIn: element['time_in'] ?? "",
             timeOut: element['time_out'] ?? "",
+               interval: element['interval']
             //   startTime: "00:01",
             // endTime: "23:59",
           );
@@ -277,6 +278,7 @@ class AuthController extends GetxController {
             nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
             timeIn: element['time_in'] ?? "",
             timeOut: element['time_out'] ?? "",
+            interval: element['interval']
             // startTime: "00:01",
             // endTime: "23:59",
           );

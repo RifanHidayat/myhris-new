@@ -49,6 +49,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
 
   void initState() {
     Api().checkLogin();
+    controller.getPlaceCoordinate();
     // TODO: implement initState
     super.initState();
     controller.deskripsiAbsen.clear();
@@ -83,8 +84,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
         double.parse(controller.latUser.toString()),
         double.parse(controller.langUser.toString()),
       ),
-      radius: 10,
-      strokeColor: Constanst.radiusColor.withOpacity(0.25),
+      radius: 10,         strokeColor: Constanst.radiusColor.withOpacity(0.25),
       fillColor: Constanst.radiusColor.withOpacity(0.25),
       strokeWidth: 1,
     ));
@@ -130,6 +130,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                             .toSet()
                             .toList());
                         controller.getPosisition();
+                        controller.getPlaceCoordinate1();
                         mapController?.animateCamera(
                             CameraUpdate.newCameraPosition(
                                 CameraPosition(
@@ -572,30 +573,35 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                           right: 16,
                                           top: 8,
                                           bottom: 8),
-                                      child: DropdownButtonHideUnderline(
-                                        child: DropdownButton<String>(
-                                          isDense: true,
-                                          items: controller
-                                              .placeCoordinateDropdown.value
-                                              .toSet()
-                                              .toList()
-                                              .map<DropdownMenuItem<String>>(
-                                                  (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(
-                                                value,
-                                                style: TextStyle(fontSize: 10),
-                                              ),
-                                            );
-                                          }).toList(),
-                                          value: controller.selectedType.value,
-                                          onChanged: (selectedValue) {
-                                            controller.selectedType.value =
-                                                selectedValue!;
-                                          },
-                                          isExpanded: true,
-                                        ),
+                                      child: Obx(() {
+
+                                      
+                                          return DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              isDense: true,
+                                              items: controller
+                                                  .placeCoordinateDropdown.value
+                                                  .toSet()
+                                                  .toList()
+                                                  .map<DropdownMenuItem<String>>(
+                                                      (String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(
+                                                    value,
+                                                    style: TextStyle(fontSize: 10),
+                                                  ),
+                                                );
+                                              }).toList(),
+                                              value: controller.selectedType.value,
+                                              onChanged: (selectedValue) {
+                                                controller.selectedType.value =
+                                                    selectedValue!;
+                                              },
+                                              isExpanded: true,
+                                            ),
+                                          );
+                                        }
                                       ),
                                     ),
                                   ),
@@ -667,7 +673,34 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                               ),
                             ],
                           ),
-                          Container(
+                     Obx(() =>    controller.isLoaingAbsensi.value==true?  Container(
+                            width: MediaQuery.of(Get.context!).size.width,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Constanst.greyLight300),
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.white),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          side: BorderSide(
+                                              color: Colors.white)))),
+                              onPressed: () {
+                                // controllerDashboard
+                                //     .widgetButtomSheetAktifCamera(
+                                //         'checkTracking');
+                              },
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(color: Constanst.fgPrimary,)),
+                            ),
+                          ):Container(
                             width: MediaQuery.of(Get.context!).size.width,
                             child: ElevatedButton(
                               style: ButtonStyle(
@@ -695,7 +728,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                 child: Text('OK, Absen sekarang'),
                               ),
                             ),
-                          ),
+                          ),)
                         ],
                       ),
                     ),
@@ -940,7 +973,34 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                       // SizedBox(
                       //   height: 10,
                       // ),
-                      Container(
+                     Obx(() => controller.isLoaingAbsensi.value==true? Container(
+                            width: MediaQuery.of(Get.context!).size.width,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Constanst.greyLight300),
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.white),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          side: BorderSide(
+                                              color: Colors.white)))),
+                              onPressed: () {
+                                // controllerDashboard
+                                //     .widgetButtomSheetAktifCamera(
+                                //         'checkTracking');
+                              },
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(color: Constanst.fgPrimary,)),
+                            ),
+                          ): Container(
                         padding:
                             EdgeInsets.only(left: 20, right: 20, bottom: 10),
                         width: MediaQuery.of(Get.context!).size.width,
@@ -965,7 +1025,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                             child: Text('OK, Absen sekarang'),
                           ),
                         ),
-                      ),
+                      ),)
                     ],
                   ),
                 ),

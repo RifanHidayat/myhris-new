@@ -9,11 +9,26 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:siscom_operasional/controller/approval_controller.dart';
 import 'package:siscom_operasional/controller/init_controller.dart';
 
 import 'package:siscom_operasional/fireabase_option.dart';
+import 'package:siscom_operasional/model/notification.dart';
+import 'package:siscom_operasional/screen/absen/history_absen.dart';
+import 'package:siscom_operasional/screen/absen/lembur.dart';
+import 'package:siscom_operasional/screen/absen/riwayat_cuti.dart';
+import 'package:siscom_operasional/screen/absen/riwayat_izin.dart';
+import 'package:siscom_operasional/screen/absen/tugas_luar.dart';
 
 import 'package:siscom_operasional/screen/init_screen.dart';
+import 'package:siscom_operasional/screen/kandidat/list_kandidat.dart';
+import 'package:siscom_operasional/screen/klaim/riwayat_klaim.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_absensi.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_cuti.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_izin.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_klaim.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_payroll.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_tugas_luar.dart';
 
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/local_storage.dart';
@@ -24,6 +39,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'dart:io';
+import 'package:upgrader/upgrader.dart';
 
 import 'utils/app_data.dart';
 
@@ -89,12 +105,18 @@ void main() async {
 }
 
 Future showNotification(message) async {
-  IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails(
-    threadIdentifier: "thread1",
-  );
+  // IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails(
+  //   threadIdentifier: "thread1",
+  // );
   RemoteNotification notification = message.notification;
-  AndroidNotification android = message.notification?.android;
-    flutterLocalNotificationsPlugin.show(
+  // AndroidNotification android = message.notification?.android;
+  var bigTextStyleInformation = BigTextStyleInformation(
+    'Body text that will be displayed in full without any truncation. You can add as much text as you need.',
+    htmlFormatBigText: true,
+    contentTitle: 'Title',
+    htmlFormatContentTitle: true,
+  );
+  flutterLocalNotificationsPlugin.show(
       0,
       notification.title,
       notification.body,
@@ -133,7 +155,7 @@ Future showNotification(message) async {
             priority: Priority.max,
             importance: Importance.max,
             icon: '@mipmap/ic_launcher'),
-        // iOS: DarwinNotificationDetails(),
+        iOS: DarwinNotificationDetails(),
       ),
       payload: message.data.toString());
 
@@ -168,14 +190,14 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> setupInteractedMessage() async {
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
   var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
-  var iOS = const IOSInitializationSettings(
+  var iOS = const DarwinInitializationSettings(
       requestSoundPermission: true,
       requestBadgePermission: true,
       requestAlertPermission: true,
       onDidReceiveLocalNotification: onDidReceiveLocalNotification);
   var initSetttings = new InitializationSettings(android: android, iOS: iOS);
   flutterLocalNotificationsPlugin.initialize(initSetttings,
-      onSelectNotification: onSelectNotification);
+      onDidReceiveNotificationResponse: onSelectNotification);
 
   // Get any messages which caused the application to open from
   // a terminated state.
@@ -201,8 +223,153 @@ Future<void> setupInteractedMessage() async {
 
 void _handleMessage(RemoteMessage message) {}
 
-Future onSelectNotification(var payload) async {
-  Get.offAll(InitScreen());
+var controller = Get.put(ApprovalController());
+
+Future onSelectNotification(notificationResponse) async {
+  print(notificationResponse.payload);
+  print("payload $notificationResponse");
+
+  String jsonString = notificationResponse.payload.toString();
+  // Hapus kurung kurawal dari string
+  jsonString = jsonString.substring(1, jsonString.length - 1);
+
+  // Pisahkan pasangan key-value
+  List<String> keyValuePairs = jsonString.split(', ');
+
+  // Buat map dari pasangan key-value
+  Map<String, String> jsonMap = {};
+  for (String pair in keyValuePairs) {
+    List<String> parts = pair.split(': ');
+    String key = parts[0].trim();
+    String value = parts[1].trim();
+    jsonMap[key] = value;
+  }
+
+  // Gunakan map untuk membuat objek
+  NotificationsModel notificationsModel = NotificationsModel.fromJson(jsonMap);
+
+  // Cetak propertinya
+  print('Route: ${notificationsModel.route}');
+  print('Nomor: ${notificationsModel.nomor}');
+
+  // notificationsModel.route == "sales_order"
+  //     ? Get.toNamed('/salesOrder')
+  //     : notificationsModel.route == "transfer_sementara"
+  //         ? Get.toNamed('/temporaryTransfer')
+  //         : notificationsModel.route == "purchase_request"
+  //             ? Get.toNamed('/purchaseRequest')
+  //             : notificationsModel.route == "purchase_order"
+  //                 ? Get.toNamed('/purchaseOrder')
+  //                 : notificationsModel.route == "deploy_order"
+  //                     ? Get.toNamed('/deployOrder')
+  //                     : notificationsModel.route == "payment_request"
+  //                         ? Get.toNamed('/paymentRequest')
+  //                         : null;
+
+  // notificationsModel.route == "sales_order"
+  //     ? salesOrderController.detail(nomor: notificationsModel.nomor.toString())
+  //     : notificationsModel.route == "transfer_sementara"
+  //         ? temporaryTransferController.detail(
+  //             nomor: notificationsModel.nomor.toString())
+  //         : notificationsModel.route == "purchase_request"
+  //             ? purchaseRequestController.detail(
+  //                 nomor: notificationsModel.nomor.toString())
+  //             : notificationsModel.route == "purchase_order"
+  //                 ? purchaseOrderController.detail(
+  //                     nomor: notificationsModel.nomor.toString())
+  //                 : notificationsModel.route == "deploy_order"
+  //                     ? deployOrderController.detail(
+  //                         nomor: notificationsModel.nomor.toString())
+  //                     : notificationsModel.route == "payment_request"
+  //                         ? paymentRequestController.detail(
+  //                             nomor: notificationsModel.nomor.toString())
+  //                         : null;
+
+  // var emIdPengaju = controller.listData.value[index]['emId_pengaju'];
+  // var typeAjuan = controller.listData.value[index]['type'];
+  // var idx = controller.listData.value[index]['id'];
+  // var delegasi = controller.listData.value[index]['delegasi'];
+
+  if (notificationsModel.status == "pengajuan") {
+    notificationsModel.route == "Cuti"
+        ? Get.to(RiwayatCuti())
+        : notificationsModel.route == "Izin"
+            ? Get.to(RiwayatIzin())
+            : notificationsModel.route == "Tugas Luar"
+                ? Get.to(TugasLuar())
+                : notificationsModel.route == "Dinas Luar"
+                    ? Get.to(TugasLuar())
+                    : notificationsModel.route == "Klaim"
+                        ? Get.to(Klaim())
+                        : notificationsModel.route == "Absensi"
+                            ? Get.to(HistoryAbsen())
+                            : notificationsModel.route == "Lembur"
+                                ? Get.to(Lembur())
+                                : notificationsModel.route == "Kandidat"
+                                    ? Get.to(Kandidat())
+                                    : Get.to(HistoryAbsen());
+  } else {
+    notificationsModel.route == "Cuti"
+        ? Get.to(DetailPersetujuanCuti(
+            emId: notificationsModel.emIdPengaju.toString(),
+            title: "Cuti",
+            idxDetail: notificationsModel.id.toString(),
+            delegasi: notificationsModel.delegasi.toString(),
+          ))
+        : notificationsModel.route == "Izin"
+            ? Get.to(DetailPersetujuanIzin(
+                emId: notificationsModel.emIdPengaju.toString(),
+                title: "Izin",
+                idxDetail: notificationsModel.id.toString(),
+                delegasi: notificationsModel.delegasi.toString(),
+              ))
+            : notificationsModel.route == "Tugas Luar"
+                ? Get.to(DetailPersetujuanTugasLuar(
+                    emId: notificationsModel.emIdPengaju.toString(),
+                    title: "Tugas Luar",
+                    idxDetail: notificationsModel.id.toString(),
+                    delegasi: notificationsModel.delegasi.toString(),
+                  ))
+                : notificationsModel.route == "Dinas Luar"
+                    ? Get.to(DetailPersetujuanTugasLuar(
+                        emId: notificationsModel.emIdPengaju.toString(),
+                        title: "Dinas Luar",
+                        idxDetail: notificationsModel.id.toString(),
+                        delegasi: notificationsModel.delegasi.toString(),
+                      ))
+                    : notificationsModel.route == "Klaim"
+                        ? Get.to(DetailPersetujuanKlaim(
+                            emId: notificationsModel.emIdPengaju.toString(),
+                            title: "Klaim",
+                            idxDetail: notificationsModel.id.toString(),
+                            delegasi: notificationsModel.delegasi.toString(),
+                          ))
+                        : notificationsModel.route == "Payroll"
+                            ? Get.to(DetailPersetujuanPayroll(
+                                emId: notificationsModel.emIdPengaju.toString(),
+                                title: "Payroll",
+                                idxDetail: notificationsModel.id.toString(),
+                                delegasi:
+                                    notificationsModel.delegasi.toString(),
+                              ))
+                            : notificationsModel.route == "Absensi"
+                                ? Get.to(DetailPersetujuanAbsensi(
+                                    emId: notificationsModel.emIdPengaju
+                                        .toString(),
+                                    title: "Absensi",
+                                    idxDetail: notificationsModel.id.toString(),
+                                    delegasi:
+                                        notificationsModel.delegasi.toString(),
+                                  ))
+                                : Get.to(DetailPersetujuanAbsensi(
+                                    emId: notificationsModel.emIdPengaju
+                                        .toString(),
+                                    title: "Absensi",
+                                    idxDetail: notificationsModel.id.toString(),
+                                    delegasi:
+                                        notificationsModel.delegasi.toString(),
+                                  ));
+  }
 }
 
 void onDidReceiveLocalNotification(
@@ -231,7 +398,9 @@ class MyApp extends StatelessWidget {
           Locale('en'),
         ],
         debugShowCheckedModeBanner: false,
-        home: SplashScreen()
+        home: UpgradeAlert(
+          child: SplashScreen(),
+        )
         // home: SlipGaji(),
         );
   }

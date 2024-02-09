@@ -162,7 +162,8 @@ class _KandidatState extends State<Kandidat> {
                       onPressed: () {
                         controller.cari.value.clear();
                         controller.onClose();
-                        Get.offAll(InitScreen());
+                        // Get.offAll(InitScreen());
+                        Get.back();
                       },
                       // onPressed: () {
                       //   controller.cari.value.text = "";

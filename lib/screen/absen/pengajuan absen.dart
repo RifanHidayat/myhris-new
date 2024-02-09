@@ -216,8 +216,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                         },
                       );
 
-                      if (picked != null &&
-                          picked != absenController.selectedDate.value) {
+                      if (picked != null) {
                         print("$picked");
                         absenController.selectedDate.value = picked;
                         absenController.tglAjunan.value =
@@ -769,7 +768,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       TextLabell(
-                                        text: "Absen Keluar *",
+                                        text: "Absen Keluar",
                                         color: Constanst.fgPrimary,
                                         size: 14,
                                         weight: FontWeight.w400,
@@ -827,7 +826,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     TextLabell(
-                                      text: "Lokasi*",
+                                      text: "Lokasi",
                                       color: Constanst.fgPrimary,
                                       size: 14,
                                       weight: FontWeight.w400,

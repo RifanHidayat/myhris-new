@@ -192,7 +192,8 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
                       onPressed: () {
                         controller.cari.value.clear();
                         controller.onClose();
-                        Get.offAll(InitScreen());
+                        // Get.offAll(InitScreen());
+                        Get.back();
                       },
                       // onPressed: () {
                       //   controller.cari.value.text = "";

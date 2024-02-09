@@ -31,7 +31,9 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
 
   @override
   void initState() {
-    print(widget.dataForm![0]);
+    controller.loadCutiUser();
+      controller. loadDataTypeCuti();
+    print("data biaya ${widget.dataForm![0]}");
     if (widget.dataForm![1] == true) {
       controller.dariTanggal.value.text = widget.dataForm![0]['start_date'];
       controller.sampaiTanggal.value.text = widget.dataForm![0]['end_date'];
@@ -59,9 +61,6 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
               p0['id'].toString().toLowerCase() ==
               widget.dataForm![0]['typeid'].toString().toLowerCase())
           .toList();
-
-      print("data cuti new ${controller.allTipe}");
-      print("data cuti new ${data}");
 
       if (data.isNotEmpty) {
         // controller.jumlahCuti.value = data[0]['leave_day'];
@@ -243,9 +242,13 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
 
                     if (controller.cutLeave.value == 1 ||
                         controller.cutLeave.value == 1) {
+                          
                       if (difference.inDays + 1 > controller.jumlahCuti.value) {
-                        UtilsAlert.showToast("Total hari melewati sisa cuti");
-                        return;
+                        if (controller.allowMinus.value == 1) {
+                        } else {
+                          UtilsAlert.showToast("Total hari melewati sisa cuti");
+                          return;
+                        }
                       }
                     } else {
                       if (difference.inDays + 1 > controller.limitCuti.value) {
@@ -268,14 +271,22 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
 
                     if (controller.statusForm.value == true) {
                       if (controller.cutLeave.value == 1) {
-                        if ((controller.jumlahCuti.value -
-                                controller.cutiTerpakai.value) <
-                            controller.tanggalSelectedEdit.value.length) {
-                          UtilsAlert.showToast(
-                              "Tanggal yang dipilih melebihi sisa cuti");
+                        if (controller.allowMinus.value == 0) {
+                          
+                          if ((controller.jumlahCuti.value -
+                                  controller.cutiTerpakai.value) <
+                              controller.tanggalSelectedEdit.value.length) {
+                        
+                            UtilsAlert.showToast(
+                                "Tanggal yang dipilih melebihi sisa cuti ");
+                          } else {
+                            controller.validasiKirimPengajuan();
+                          }
                         } else {
                           controller.validasiKirimPengajuan();
                         }
+
+
                       } else {
                         if ((controller.limitCuti.value) <
                             controller.tanggalSelectedEdit.value.length) {
@@ -287,11 +298,15 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                       }
                     } else {
                       if (controller.cutLeave.value == 1) {
-                        if ((controller.jumlahCuti.value -
-                                controller.cutiTerpakai.value) <
-                            controller.tanggalSelected.value.length) {
-                          UtilsAlert.showToast(
-                              "Tanggal yang dipilih melebihi sisa cuti");
+                        if (controller.allowMinus.value == 0) {
+                          if ((controller.jumlahCuti.value -
+                                  controller.cutiTerpakai.value) <
+                              controller.tanggalSelected.value.length) {
+                            UtilsAlert.showToast(
+                                "Tanggal yang dipilih melebihi sisa cuti");
+                          } else {
+                            controller.validasiKirimPengajuan();
+                          }
                         } else {
                           controller.validasiKirimPengajuan();
                         }
@@ -505,9 +520,11 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
 
                 if (data.isNotEmpty) {
                   controller.limitCuti.value = data[0]['leave_day'];
-
                   controller.dateSelected.value = data[0]['select_date'];
+                  controller.allowMinus.value = data[0]['allow_minus'];
                 }
+
+                print("Allow minu ${data[0]['allow_minus']}");
 
                 // var data=controller.allTipe.value.whe
                 controller.selectedTypeCuti.value = value!;
@@ -1518,7 +1535,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextLabell(
-                text: "Catatan",
+                text: "Catatan *",
                 color: Constanst.fgPrimary,
                 size: 14,
                 weight: FontWeight.w400,
