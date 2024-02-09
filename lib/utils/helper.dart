@@ -19,7 +19,7 @@ int? toInt(dynamic value) {
 
 String toCurrency(dynamic value) {
   var noSimbolInUSFormat =
-      NumberFormat.currency(locale: "ID", symbol: "Rp", decimalDigits: 0);
+      NumberFormat.currency(locale: "ID", symbol: "Rp ", decimalDigits: 0);
 
   return noSimbolInUSFormat.format(double.parse(value.toString()));
 }

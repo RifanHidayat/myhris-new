@@ -13,15 +13,21 @@ import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
+import 'package:siscom_operasional/utils/helper.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailPersetujuanKlaim extends StatefulWidget {
-  String? title, idxDetail, emId, delegasi;
+  String? title, idxDetail, emId, delegasi, idAjuan;
 
   DetailPersetujuanKlaim(
-      {Key? key, this.title, this.idxDetail, this.emId, this.delegasi})
+      {Key? key,
+      this.title,
+      this.idxDetail,
+      this.emId,
+      this.delegasi,
+      this.idAjuan})
       : super(key: key);
   @override
   _DetailPersetujuanKlaimState createState() => _DetailPersetujuanKlaimState();
@@ -180,6 +186,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
               print(controller.detailData[0]);
               if (controller.detailData[0]['type'] == 'absensi') {
                 print("masuk sini ${controller.detailData[0]['type']}");
+
                 controller.approvalAbsensi(
                     pilihan: pilihan,
                     date:
@@ -196,6 +203,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                     Get.context!, "Proses $stringPilihan pengajuan");
                 controller.aksiMenyetujui(pilihan);
               }
+
               controllerGlobal.kirimNotifikasi(
                   title: 'Klaim',
                   status: 'approve',
@@ -239,6 +247,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
   void initState() {
     controller.getDetailData(
         widget.idxDetail, widget.emId, widget.title, widget.delegasi);
+    // controller.getSaldo(emId: widget.emId, id: widget.idxDetail);
     super.initState();
     var emId = AppData.informasiUser![0].em_id;
 
@@ -561,8 +570,8 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      controller.detailData[0]['nama_divisi']
-                                          ??"",
+                                      controller.detailData[0]['nama_divisi'] ??
+                                          "",
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgSecondary,
                                           fontWeight: FontWeight.w400,
@@ -753,6 +762,31 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                 color: Constanst.border,
                               ),
                             ),
+                               Text(
+                              "Saldo",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              toCurrency("${controller.detailData[0]['saldo_klaim']}"),
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, bottom: 12.0),
+                              child: Divider(
+                                thickness: 1,
+                                height: 0,
+                                color: Constanst.border,
+                              ),
+                            ),
                             Text(
                               "Total Klaim",
                               style: GoogleFonts.inter(
@@ -763,6 +797,32 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                             const SizedBox(height: 4),
                             Text(
                               rupiah,
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, bottom: 12.0),
+                              child: Divider(
+                                thickness: 1,
+                                height: 0,
+                                color: Constanst.border,
+                              ),
+                            ),
+                         
+                            Text(
+                              "Sisa Limit",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                             toCurrency( "${controller.detailData[0]['sisa_klaim']}"),
                               style: GoogleFonts.inter(
                                   color: Constanst.fgPrimary,
                                   fontWeight: FontWeight.w500,

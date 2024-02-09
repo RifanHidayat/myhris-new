@@ -47,12 +47,40 @@ class ApprovalController extends GetxController {
 
   var controllerGlobal = Get.put(GlobalController());
 
+  var saldo=0.obs;
+  var limitTransaksi=0.obs;
+
   void showInputCari() {
     statusCari.value = !statusCari.value;
   }
 
   void startLoadData(title, bulan, tahun) {
     getLoadsysData(title, bulan, tahun);
+  }
+
+    void getSaldo({emId,id}) {
+      print("saldo new ");
+  
+    var body={
+      "em_id":AppData.informasiUser![0].em_id,
+      "cost_id":id
+    };
+    var connect = Api.connectionApi("post", body, "emp-claim-saldo");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print("value body ${valueBody}");
+
+
+        saldo.value= int.parse(valueBody['saldo'].toString());
+        limitTransaksi.value=int.parse(valueBody['limit'].toString());
+        limitTransaksi.value=int.parse(valueBody['limit'].toString())-saldo.value;
+  
+     
+
+      
+      }
+    });
   }
 
   void getLoadsysData(title, bulan, tahun) {
@@ -614,6 +642,9 @@ class ApprovalController extends GetxController {
             'nama_divisi': element['nama_divisi'],
             'nomor_ajuan': element['nomor_ajuan'],
             'image': element['image'],
+            "id_ajuan":element["id_ajua"],
+            "saldo_klaim":element['saldo_claim'],
+            "sisa_klaim":element['sisa_claim']
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -1032,7 +1063,7 @@ class ApprovalController extends GetxController {
           statusPengajuan = pilihan == true ? 'Approve2' : 'Rejected';
           applyDate1 = dataEditFinal[0]['approve_date'];
           applyBy1 = dataEditFinal[0]['approve_by'];
-          applyId1 = dataEditFinal[0]['approve_id'];
+          applyId1 = dataEditFinal[0]['approve_id'].toString();
           applyDate2 = tanggalNow;
           applyBy2 = namaAtasanApprove;
           applyId2 = "$getEmpid";
@@ -1072,6 +1103,7 @@ class ApprovalController extends GetxController {
         'activity_name':
             "$statusPengajuan Pengajuan ${detailData[0]['type']} pada tanggal $tanggalNow. Pengajuan atas nama ${detailData[0]['nama_pengaju']} $alasanRejectShow"
       };
+      print(body.toString());
       var connect = Api.connectionApi("post", body, "edit-emp_leave");
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
@@ -1144,6 +1176,7 @@ class ApprovalController extends GetxController {
         'activity_name':
             "$statusPengajuan Pengajuan ${detailData[0]['type']} pada tanggal $tanggalNow. Pengajuan atas nama ${detailData[0]['nama_pengaju']} $alasanRejectShow"
       };
+      print("body ${body}");
       var connect = Api.connectionApi("post", body, 'edit-emp_claim');
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
