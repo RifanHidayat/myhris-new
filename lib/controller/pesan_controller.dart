@@ -128,7 +128,7 @@ class PesanController extends GetxController {
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-          print("data persetujuan ${valueBody}");
+        print("data persetujuan ${valueBody}");
 
         if (valueBody['status'] == true) {
           jumlahApproveCuti.value = valueBody['jumlah_cuti'];
@@ -139,7 +139,6 @@ class PesanController extends GetxController {
           jumlahApproveKlaim.value = valueBody['jumlah_klaim'];
           jumlahApprovePayroll.value = valueBody['jumlah_payroll'];
           jumlahCheckin.value = valueBody['jumlah_checkin'];
-        
 
           jumlahPersetujuan.value = jumlahApproveCuti.value +
               jumlahApproveLembur.value +
@@ -575,67 +574,63 @@ class PesanController extends GetxController {
 
   void routeApproval(index) {
     print("Judul : ${index['title']}");
-    if (index['jumlah_approve'] == "0") {
-      UtilsAlert.showToast("Tidak ada data yang harus di approve");
-    } else {
-      index['title'] == "Cuti"
-          ? Get.to(PersetujuanCuti(
-              title: index['title'],
-              bulan: bulanSelectedSearchHistory.value,
-              tahun: tahunSelectedSearchHistory.value,
-            ))
-          : index['title'] == "Lembur"
-              ? Get.to(PersetujuanLembur(
-                  title: index['title'],
-                  bulan: bulanSelectedSearchHistory.value,
-                  tahun: tahunSelectedSearchHistory.value,
-                ))
-              : index['title'] == "Tidak Hadir"
-                  ? Get.to(PersetujuanIzin(
-                      title: index['title'],
-                      bulan: bulanSelectedSearchHistory.value,
-                      tahun: tahunSelectedSearchHistory.value,
-                    ))
-                  : index['title'] == "Tugas Luar"
-                      ? Get.to(PersetujuanTugasLuar(
-                          title: index['title'],
-                          bulan: bulanSelectedSearchHistory.value,
-                          tahun: tahunSelectedSearchHistory.value,
-                        ))
-                      : index['title'] == "Dinas Luar"
-                          ? Get.to(Approval(
-                              title: index['title'],
-                              bulan: bulanSelectedSearchHistory.value,
-                              tahun: tahunSelectedSearchHistory.value,
-                            ))
-                          : index['title'] == "Klaim"
-                              ? Get.to(PersetujuanKlaim(
-                                  title: index['title'],
-                                  bulan: bulanSelectedSearchHistory.value,
-                                  tahun: tahunSelectedSearchHistory.value,
-                                ))
-                              : index['title'] == "Payroll"
-                                  ? Get.to(PersetujuanPayroll(
-                                      title: index['title'],
-                                      bulan: bulanSelectedSearchHistory.value,
-                                      tahun: tahunSelectedSearchHistory.value,
-                                    ))
-                                  : index['title'] == "Absensi"
-                                      ? Get.to(PersetujuanAbsensi(
-                                          title: index['title'],
-                                          bulan:
-                                              bulanSelectedSearchHistory.value,
-                                          tahun:
-                                              tahunSelectedSearchHistory.value,
-                                        ))
-                                      : Get.to(Approval(
-                                          title: index['title'],
-                                          bulan:
-                                              bulanSelectedSearchHistory.value,
-                                          tahun:
-                                              tahunSelectedSearchHistory.value,
-                                        ));
-    }
+    // if (index['jumlah_approve'] == "0") {
+    //   UtilsAlert.showToast("Tidak ada data yang harus di approve");
+    // } else {
+    index['title'] == "Cuti"
+        ? Get.to(PersetujuanCuti(
+            title: index['title'],
+            bulan: bulanSelectedSearchHistory.value,
+            tahun: tahunSelectedSearchHistory.value,
+          ))
+        : index['title'] == "Lembur"
+            ? Get.to(PersetujuanLembur(
+                title: index['title'],
+                bulan: bulanSelectedSearchHistory.value,
+                tahun: tahunSelectedSearchHistory.value,
+              ))
+            : index['title'] == "Tidak Hadir"
+                ? Get.to(PersetujuanIzin(
+                    title: index['title'],
+                    bulan: bulanSelectedSearchHistory.value,
+                    tahun: tahunSelectedSearchHistory.value,
+                  ))
+                : index['title'] == "Tugas Luar"
+                    ? Get.to(PersetujuanTugasLuar(
+                        title: index['title'],
+                        bulan: bulanSelectedSearchHistory.value,
+                        tahun: tahunSelectedSearchHistory.value,
+                      ))
+                    : index['title'] == "Dinas Luar"
+                        ? Get.to(Approval(
+                            title: index['title'],
+                            bulan: bulanSelectedSearchHistory.value,
+                            tahun: tahunSelectedSearchHistory.value,
+                          ))
+                        : index['title'] == "Klaim"
+                            ? Get.to(PersetujuanKlaim(
+                                title: index['title'],
+                                bulan: bulanSelectedSearchHistory.value,
+                                tahun: tahunSelectedSearchHistory.value,
+                              ))
+                            : index['title'] == "Payroll"
+                                ? Get.to(PersetujuanPayroll(
+                                    title: index['title'],
+                                    bulan: bulanSelectedSearchHistory.value,
+                                    tahun: tahunSelectedSearchHistory.value,
+                                  ))
+                                : index['title'] == "Absensi"
+                                    ? Get.to(PersetujuanAbsensi(
+                                        title: index['title'],
+                                        bulan: bulanSelectedSearchHistory.value,
+                                        tahun: tahunSelectedSearchHistory.value,
+                                      ))
+                                    : Get.to(Approval(
+                                        title: index['title'],
+                                        bulan: bulanSelectedSearchHistory.value,
+                                        tahun: tahunSelectedSearchHistory.value,
+                                      ));
+    // }
   }
 
   void loadNotifikasi() {

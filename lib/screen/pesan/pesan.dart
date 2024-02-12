@@ -585,15 +585,17 @@ class _PesanState extends State<Pesan> {
                                                             CrossAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          Text(
-                                                            titleNotif,
-                                                            style: GoogleFonts.inter(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Constanst
-                                                                    .fgPrimary,
-                                                                fontSize: 16),
+                                                          Expanded(
+                                                            child: Text(
+                                                              titleNotif,
+                                                              style: GoogleFonts.inter(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Constanst
+                                                                      .fgPrimary,
+                                                                  fontSize: 16),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),

@@ -183,6 +183,10 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                 print("masuk sini ${controller.detailData[0]['place_in']}");
                 print("masuk sini ${controller.detailData[0]['place_out']}");
                 print("pilihan ${pilihan}");
+                UtilsAlert.loadingSimpanData(
+                    Get.context!, "Proses $stringPilihan pengajuan");
+                controller.aksiMenyetujui(pilihan);
+
                 controller.approvalAbsensi(
                     pilihan: pilihan,
                     apBy1: controller.detailData[0]['approve_by'].toString(),
@@ -199,7 +203,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                     ajuanEmid: controller.detailData[0]['em_id'].toString(),
                     pola:
                         controllerGlobal.valuePolaPersetujuan.value.toString(),
-                        leaveStatus:  controller.detailData[0]['status'].toString(),
+                    leaveStatus: controller.detailData[0]['status'].toString(),
                     id: controller.detailData[0]['id'].toString());
                 return;
               } else {

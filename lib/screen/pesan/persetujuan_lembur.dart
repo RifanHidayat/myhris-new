@@ -182,20 +182,59 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
           },
           child: SafeArea(
             child: Obx(
-              () => Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+              () => Flexible(
+                  child: DefaultTabController(
+                length: 2,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                        child: controller.listData.value.isEmpty
+                    TabBar(
+                      indicatorColor: Constanst.onPrimary,
+                      indicatorWeight: 4.0,
+                      labelPadding: const EdgeInsets.fromLTRB(0, 14, 0, 14),
+                      indicatorSize: TabBarIndicatorSize.label,
+                      physics: const BouncingScrollPhysics(),
+                      labelColor: Constanst.onPrimary,
+                      unselectedLabelColor: Constanst.fgSecondary,
+                      tabs: [
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 12.0, right: 12.0),
+                          child: Text(
+                            "Perlu Persetujuan",
+                            style: GoogleFonts.inter(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 12.0, right: 12.0),
+                          child: Text(
+                            "Riwayat",
+                            style: GoogleFonts.inter(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                        child: TabBarView(
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        controller.listData.value.isEmpty
                             ? Center(
                                 child: Text(controller.loadingString.value),
                               )
-                            : listDataApproval())
+                            : listDataApproval(),
+                        controller.listData.value.isEmpty
+                            ? Center(
+                                child: Text(controller.loadingString.value),
+                              )
+                            : listDataApproval(),
+                      ],
+                    )),
                   ],
                 ),
-              ),
+              )),
             ),
           )),
     );
@@ -267,251 +306,258 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
   // }
 
   Widget listDataApproval() {
-    return ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemCount: controller.listData.value.length,
-        itemBuilder: (context, index) {
-          var data = controller.listData[index];
-          var idx = controller.listData.value[index]['id'];
-          var namaPengaju = controller.listData.value[index]['nama_pengaju'];
-          var emIdPengaju = controller.listData.value[index]['emId_pengaju'];
-          var delegasi = controller.listData.value[index]['delegasi'];
-          var typeAjuan = controller.listData.value[index]['type'];
-          var namaApprove1 = controller.listData.value[index]['nama_approve1'];
-          var leave_status = controller.listData.value[index]['leave_status'];
-          var dariJam = controller.listData.value[index]['dari_jam'];
-          var sampaiJam = controller.listData.value[index]['sampai_jam'];
-          var nomor_ajuan = controller.listData.value[index]['nomor_ajuan'];
-          var tanggalPengajuan = controller.listData.value[index]['waktu_pengajuan'];
-          var categoryAjuan = controller.listData.value[index]['category'];
-          var nama_divisi = controller.listData.value[index]['nama_divisi']??"";
-          var image = controller.listData.value[index]['em_image'];
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+      child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: controller.listData.value.length,
+          itemBuilder: (context, index) {
+            var data = controller.listData[index];
+            var idx = controller.listData.value[index]['id'];
+            var namaPengaju = controller.listData.value[index]['nama_pengaju'];
+            var emIdPengaju = controller.listData.value[index]['emId_pengaju'];
+            var delegasi = controller.listData.value[index]['delegasi'];
+            var typeAjuan = controller.listData.value[index]['type'];
+            var namaApprove1 =
+                controller.listData.value[index]['nama_approve1'];
+            var leave_status = controller.listData.value[index]['leave_status'];
+            var dariJam = controller.listData.value[index]['dari_jam'];
+            var sampaiJam = controller.listData.value[index]['sampai_jam'];
+            var nomor_ajuan = controller.listData.value[index]['nomor_ajuan'];
+            var tanggalPengajuan =
+                controller.listData.value[index]['waktu_pengajuan'];
+            var categoryAjuan = controller.listData.value[index]['category'];
+            var nama_divisi =
+                controller.listData.value[index]['nama_divisi'] ?? "";
+            var image = controller.listData.value[index]['em_image'];
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              InkWell(
-                customBorder: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                ),
-                onTap: () {
-                  Get.to(DetailPersetujuanLembur(
-                    emId: emIdPengaju,
-                    title: typeAjuan,
-                    idxDetail: "$idx",
-                    delegasi: delegasi,
-                  ));
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(12)),
-                      border: Border.all(
-                          width: 0.5,
-                          color: const Color.fromARGB(255, 211, 205, 205))),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16, top: 8, bottom: 8, right: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  image == ""
-                                      ? SvgPicture.asset(
-                                          'assets/avatar_default.svg',
-                                          width: 40,
-                                          height: 40,
-                                        )
-                                      : Center(
-                                          child: CircleAvatar(
-                                            radius: 20,
-                                            child: ClipOval(
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                InkWell(
+                  customBorder: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
+                  onTap: () {
+                    Get.to(DetailPersetujuanLembur(
+                      emId: emIdPengaju,
+                      title: typeAjuan,
+                      idxDetail: "$idx",
+                      delegasi: delegasi,
+                    ));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(12)),
+                        border: Border.all(
+                            width: 0.5,
+                            color: const Color.fromARGB(255, 211, 205, 205))),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16, top: 8, bottom: 8, right: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    image == ""
+                                        ? SvgPicture.asset(
+                                            'assets/avatar_default.svg',
+                                            width: 40,
+                                            height: 40,
+                                          )
+                                        : Center(
+                                            child: CircleAvatar(
+                                              radius: 20,
                                               child: ClipOval(
-                                                child: CachedNetworkImage(
-                                                  imageUrl:
-                                                      "${Api.UrlfotoProfile}$image",
-                                                  progressIndicatorBuilder:
-                                                      (context, url,
-                                                              downloadProgress) =>
-                                                          Container(
-                                                    alignment: Alignment.center,
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.5,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                            value:
-                                                                downloadProgress
-                                                                    .progress),
-                                                  ),
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          Container(
-                                                    color: Colors.white,
-                                                    child: SvgPicture.asset(
-                                                      'assets/avatar_default.svg',
-                                                      width: 40,
-                                                      height: 40,
+                                                child: ClipOval(
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        "${Api.UrlfotoProfile}$image",
+                                                    progressIndicatorBuilder:
+                                                        (context, url,
+                                                                downloadProgress) =>
+                                                            Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.5,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress),
                                                     ),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Container(
+                                                      color: Colors.white,
+                                                      child: SvgPicture.asset(
+                                                        'assets/avatar_default.svg',
+                                                        width: 40,
+                                                        height: 40,
+                                                      ),
+                                                    ),
+                                                    fit: BoxFit.cover,
+                                                    width: 40,
+                                                    height: 40,
                                                   ),
-                                                  fit: BoxFit.cover,
-                                                  width: 40,
-                                                  height: 40,
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          namaPengaju,
-                                          style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              color: Constanst.fgPrimary,
-                                              fontSize: 16),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          nama_divisi.toString(),
-                                          style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w400,
-                                              color: Constanst.fgSecondary,
-                                              fontSize: 14),
-                                        ),
-                                      ],
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            namaPengaju,
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                color: Constanst.fgPrimary,
+                                                fontSize: 16),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            nama_divisi.toString(),
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w400,
+                                                color: Constanst.fgSecondary,
+                                                fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            Text(
-                              Constanst.convertDate5("$tanggalPengajuan"),
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w400,
-                                  color: Constanst.fgSecondary,
-                                  fontSize: 14),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                          child: Divider(
-                            thickness: 1,
-                            height: 0,
-                            color: Constanst.border,
+                              Text(
+                                Constanst.convertDate5("$tanggalPengajuan"),
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w400,
+                                    color: Constanst.fgSecondary,
+                                    fontSize: 14),
+                              ),
+                            ],
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "$typeAjuan - $categoryAjuan",
-                                    style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w500,
-                                        color: Constanst.fgPrimary,
-                                        fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "$nomor_ajuan",
-                                    style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w400,
-                                        color: Constanst.fgSecondary,
-                                        fontSize: 16),
-                                  ),
-                                ],
-                              ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                            child: Divider(
+                              thickness: 1,
+                              height: 0,
+                              color: Constanst.border,
                             ),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              color: Constanst.fgSecondary,
-                              size: 18,
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                          child: Divider(
-                            thickness: 1,
-                            height: 0,
-                            color: Constanst.border,
                           ),
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Iconsax.timer,
-                              color: Constanst.color3,
-                              size: 20,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 3),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    controller.valuePolaPersetujuan == 1 ||
-                                            controller.valuePolaPersetujuan ==
-                                                "1"
-                                        ? '$leave_status'
-                                        : leave_status == "Pending"
-                                            ? "Pending Approval 1"
-                                            : "Pending Approval 2",
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w500,
-                                        color: Constanst.fgPrimary,
-                                        fontSize: 14),
-                                  ),
-                                  namaApprove1 == "" ||
-                                          leave_status == "Pending"
-                                      ? const SizedBox()
-                                      : Text(
-                                          "Approve 1 by - $namaApprove1",
-                                          style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              color: Constanst.fgPrimary,
-                                              fontSize: 14),
-                                        ),
-                                ],
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "$typeAjuan - $categoryAjuan",
+                                      style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          color: Constanst.fgPrimary,
+                                          fontSize: 16),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "$nomor_ajuan",
+                                      style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w400,
+                                          color: Constanst.fgSecondary,
+                                          fontSize: 16),
+                                    ),
+                                  ],
+                                ),
                               ),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                color: Constanst.fgSecondary,
+                                size: 18,
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                            child: Divider(
+                              thickness: 1,
+                              height: 0,
+                              color: Constanst.border,
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Iconsax.timer,
+                                color: Constanst.color3,
+                                size: 20,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 3),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      controller.valuePolaPersetujuan == 1 ||
+                                              controller.valuePolaPersetujuan ==
+                                                  "1"
+                                          ? '$leave_status'
+                                          : leave_status == "Pending"
+                                              ? "Pending Approval 1"
+                                              : "Pending Approval 2",
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          color: Constanst.fgPrimary,
+                                          fontSize: 14),
+                                    ),
+                                    namaApprove1 == "" ||
+                                            leave_status == "Pending"
+                                        ? const SizedBox()
+                                        : Text(
+                                            "Approve 1 by - $namaApprove1",
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                color: Constanst.fgPrimary,
+                                                fontSize: 14),
+                                          ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-            ],
-          );
-        });
+                const SizedBox(height: 16),
+              ],
+            );
+          }),
+    );
   }
 
   showDataDepartemenAkses({index}) {

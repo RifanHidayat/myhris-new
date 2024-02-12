@@ -23,6 +23,7 @@ import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
 
 import 'package:siscom_operasional/model/shift_model.dart';
@@ -54,6 +55,8 @@ import 'package:http_parser/http_parser.dart';
 import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 
 class AbsenController extends GetxController {
+  var globalCt = Get.put(GlobalController());
+
   PageController? pageViewFilterAbsen;
 
   RxBool isChecked = false.obs;
@@ -1000,7 +1003,6 @@ class AbsenController extends GetxController {
       TrustLocation.start(1);
       getCheckMock();
       if (!mockLocation.value) {
-      
         var statusPosisi = await validasiRadius();
         if (statusPosisi == true) {
           var latLangAbsen = "${latUser.value},${langUser.value}";
@@ -1058,7 +1060,7 @@ class AbsenController extends GetxController {
                 ],
               ));
             } else {
-               UtilsAlert.showToast("terjadi kesalhan");
+              UtilsAlert.showToast("terjadi kesalhan");
               isLoaingAbsensi.value = false;
               Get.back();
               //error
@@ -1070,7 +1072,6 @@ class AbsenController extends GetxController {
         UtilsAlert.showToast("Periksa GPS anda");
       }
     } else if (Platform.isIOS) {
-      
       var statusPosisi = await validasiRadius();
       if (statusPosisi == true) {
         var latLangAbsen = "${latUser.value},${langUser.value}";
@@ -1104,12 +1105,11 @@ class AbsenController extends GetxController {
           'place': selectedType.value,
           'kategori': "1"
         };
-           isLoaingAbsensi.value = true;
+        isLoaingAbsensi.value = true;
 
         var connect = Api.connectionApi("post", body, "kirimAbsen");
         connect.then((dynamic res) {
           if (res.statusCode == 200) {
-
             var valueBody = jsonDecode(res.body);
             print(res.body);
             for (var element in sysData.value) {
@@ -1131,12 +1131,10 @@ class AbsenController extends GetxController {
               ],
             ));
           } else {
-          UtilsAlert.showToast("terjadi kesalhan");
+            UtilsAlert.showToast("terjadi kesalhan");
 
             isLoaingAbsensi.value = false;
             Get.back();
-
-
           }
         });
       }
@@ -2770,7 +2768,7 @@ class AbsenController extends GetxController {
     imageAjuan = "".obs;
   }
 
-  void kirimPengajuan() {
+  void kirimPengajuan(getNomorAjuanTerakhir, status) {
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
       "em_id": emId,
@@ -2806,11 +2804,53 @@ class AbsenController extends GetxController {
     };
     print('body data ajuan ${body}');
     var connect = Api.connectionApi("post", body, "save-employee-attendance");
+    var dataUser = AppData.informasiUser;
+    var getFullName = "${dataUser![0].full_name}";
+    var convertTanggalBikinPengajuan = status == false
+        ? Constanst.convertDateSimpan(pilihTanggalTelatAbsen.value.toString())
+        : pilihTanggalTelatAbsen.value.toString();
+    var getEmid = "${dataUser![0].em_id}";
+    var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
+    var typeNotifFcm = "Pengajuan Absensi";
+    kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
+        getEmid, '', stringTanggal, typeNotifFcm);
+
+    kirimNotifikasiToReportTo(
+        getFullName, convertTanggalBikinPengajuan, getEmid, stringTanggal);
+
+    for (var item in globalCt.konfirmasiAtasan) {
+      print("Token notif ${item['token_notif']}");
+      var pesan;
+      if (item['em_gender'] == "PRIA") {
+        pesan =
+            "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absensi dengan nomor ajuan ${getNomorAjuanTerakhir}";
+      } else {
+        pesan =
+            "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absensi dengan nomor ajuan ${getNomorAjuanTerakhir}";
+      }
+
+      kirimNotifikasiToDelegasi1(
+        getFullName,
+        convertTanggalBikinPengajuan,
+        item['em_id'],
+        '',
+        stringTanggal,
+        typeNotifFcm,
+        pesan,
+      );
+
+      if (item['token_notif'] != null) {
+        globalCt.kirimNotifikasiFcm(
+          title: typeNotifFcm,
+          message: pesan,
+          tokens: item['token_notif'],
+        );
+      }
+    }
+
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
 
-      
-     
 
       if (res.statusCode == 200) {
         Get.to(pengajuanAbsenBerhasil());
@@ -2823,21 +2863,24 @@ class AbsenController extends GetxController {
     });
   }
 
-    void kirimNotifikasiToReportTo(
-      getFullName, convertTanggalBikinPengajuan, getEmid, type) {
+ 
+  void kirimNotifikasiToReportTo(
+      getFullName, convertTanggalBikinPengajuan, getEmid, stringTanggal) {
+ 
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
     Map<String, dynamic> body = {
       'emId_pengaju': getEmid,
-      'title': 'Pengajuan Lembur',
+      'title': 'Pengajuan Absensi',
       'deskripsi':
-          'Anda mendapatkan pengajuan $type dari $getFullName, waktu pengajuan $convertTanggalBikinPengajuan',
+          'Anda mendapatkan pengajuan Absensi dari $getFullName , tanggal pengajuan $stringTanggal',
       'url': '',
       'atten_date': convertTanggalBikinPengajuan,
       'jam': jamSekarang,
       'status': '2',
       'view': '0',
     };
+ 
     var connect = Api.connectionApi("post", body, "notifikasi_reportTo");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -2846,8 +2889,74 @@ class AbsenController extends GetxController {
     });
   }
 
+ 
+  void kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
+      validasiDelegasiSelected, fcmTokenDelegasi, stringWaktu, typeNotifFcm) {
+    var dt = DateTime.now();
+    var jamSekarang = DateFormat('HH:mm:ss').format(dt);
+    // var description =
+    //     'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk Pengajuan Lembur, waktu pengajuan $stringWaktu';
 
-  void nextKirimPengajuan() async {
+    var description =
+        'Anda mendapatkan pengajuan lembur dari $getFullName dengan pemberi tugas anda, waktu pengajuan $stringWaktu';
+    Map<String, dynamic> body = {
+      'em_id': validasiDelegasiSelected,
+      'title': 'Pemberi Tugas Pengajuan Lembur',
+      'deskripsi': description,
+      'url': '',
+      'atten_date': convertTanggalBikinPengajuan,
+      'jam': jamSekarang,
+      'status': '2',
+      'view': '0',
+    };
+    var connect = Api.connectionApi("post", body, "insert-notifikasi");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        globalCt.kirimNotifikasiFcm(
+            title: typeNotifFcm,
+            message: description,
+            tokens: fcmTokenDelegasi);
+        UtilsAlert.showToast("Berhasil kirim delegasi");
+      }
+    });
+  }
+
+  void kirimNotifikasiToDelegasi1(
+      getFullName,
+      convertTanggalBikinPengajuan,
+      fcmTokenDelegasi,
+      validasiDelegasiSelected,
+      stringTanggal,
+      typeNotifFcm,
+      pesan) {
+    var dt = DateTime.now();
+    var jamSekarang = DateFormat('HH:mm:ss').format(dt);
+    // var description =
+    //     'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk pengajuan $selectedDropdownFormTidakMasukKerjaTipe, tanggal pengajuan $stringTanggal';
+    Map<String, dynamic> body = {
+      'em_id': fcmTokenDelegasi,
+      'title': 'Approval Absensi',
+      'deskripsi': pesan,
+      'url': '',
+      'atten_date': convertTanggalBikinPengajuan,
+      'jam': jamSekarang,
+      'status': '2',
+      'view': '0',
+    };
+    var connect = Api.connectionApi("post", body, "insert-notifikasi");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        // globalCt.kirimNotifikasiFcm(
+        //     title: typeNotifFcm,
+        //     message: description,
+        //     tokens: fcmTokenDelegasi);
+        UtilsAlert.showToast("Berhasil kirim delegasi");
+      }
+    });
+  }
+
+  void nextKirimPengajuan(status) async {
+ 
     if (tglAjunan.value == "") {
       UtilsAlert.showToast("Tanggal belum dipilih");
       return;
@@ -2876,12 +2985,18 @@ class AbsenController extends GetxController {
       if (valueBody['status'] == true) {
         Navigator.pop(Get.context!);
         // checkNomorAjuan(status);
-        kirimPengajuan();
+        var now = DateTime.now();
+        var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
+        var finalNomor = "RQ${now.year}${convertBulan}0001";
+        kirimPengajuan(finalNomor, status);
       } else {
         UtilsAlert.showToast("Gagal kirim file");
       }
     } else {
-      kirimPengajuan();
+      var now = DateTime.now();
+      var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
+      var finalNomor = "RQ${now.year}${convertBulan}0001";
+      kirimPengajuan(finalNomor, status);
     }
   }
 
