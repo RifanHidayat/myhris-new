@@ -121,7 +121,7 @@ class _DashboardState extends State<Dashboard> {
                 borderRadius: BorderRadius.circular(100),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color.fromARGB(255, 155, 155, 155)
+                    color: const Color.fromARGB(255,  155, 155, 155)
                         .withOpacity(0.5),
                     spreadRadius: 1.0,
                     blurRadius: 3,
@@ -931,13 +931,13 @@ class _DashboardState extends State<Dashboard> {
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                                Text(
-                                  "Jadwal ${AppData.informasiUser![0].timeIn}  - ${AppData.informasiUser![0].timeOut}",
+                             Obx(() =>    Text(
+                                  "Jadwal ${controller.timeIn.value}  - ${controller.timeOut.value}",
                                   style: GoogleFonts.inter(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
                                       color: Constanst.fgSecondary),
-                                ),
+                                ),),
                                 const SizedBox(width: 8),
                                 InkWell(
                                   onTap: () => UtilsAlert.informasiDashboard(

@@ -121,6 +121,9 @@ class DashboardController extends GetxController {
   var refreshPagesStatus = false.obs;
   var viewInformasiSisaKontrak = false.obs;
 
+  var timeIn="".obs;
+  var timeOut="".obs;
+
   void toggleSearch() {
     isSearching.value = !isSearching.value;
   }
@@ -153,6 +156,7 @@ class DashboardController extends GetxController {
     // DateTime startDate = await NTP.now();
 
     DateTime startDate = DateTime.now();
+    updateWorkTime();
     getBannerDashboard();
     updateInformasiUser();
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
@@ -856,6 +860,32 @@ class DashboardController extends GetxController {
         AppData.informasiUser = getData;
 
         getUserInfo();
+      }
+      //   Api().validateAuth(res.statusCode );
+    });
+  }
+
+    void updateWorkTime() {
+    print("informasi hak akses work schdule");
+    var dataUser = AppData.informasiUser;
+    var getEmid = dataUser![0].em_id;
+    Map<String, dynamic> body = {'em_id': getEmid,'date':DateFormat('yyyy-MM-dd').format(DateTime.now())};
+    var connect = Api.connectionApi("post", body, "work-schedule");
+    connect.then((dynamic res) {
+      var valueBody = jsonDecode(res.body);
+        print("data error wrok ${valueBody}");
+        print("data body ${body}");
+
+      if (valueBody['status'] == false) {
+        UtilsAlert.showToast(valueBody['message']);
+        // Navigator.pop(Get.context!);
+      } else {
+         print("data work time ${valueBody['data']}");
+        timeIn.value=valueBody['data']['time_in'];
+        timeOut.value=valueBody['data']['time_out'];
+       
+
+
       }
       //   Api().validateAuth(res.statusCode );
     });

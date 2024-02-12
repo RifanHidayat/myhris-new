@@ -173,7 +173,7 @@ class AbsenController extends GetxController {
 
   @override
   void onReady() async {
-    print("Masulk ke controller absen");
+ 
     getTimeNow();
     getLoadsysData();
     loadHistoryAbsenUser();
@@ -2851,6 +2851,7 @@ class AbsenController extends GetxController {
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
 
+
       if (res.statusCode == 200) {
         Get.to(pengajuanAbsenBerhasil());
 
@@ -2862,13 +2863,15 @@ class AbsenController extends GetxController {
     });
   }
 
+ 
   void kirimNotifikasiToReportTo(
       getFullName, convertTanggalBikinPengajuan, getEmid, stringTanggal) {
+ 
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
     Map<String, dynamic> body = {
       'emId_pengaju': getEmid,
-      'title': 'Pengajuan Tidak Hadir',
+      'title': 'Pengajuan Absensi',
       'deskripsi':
           'Anda mendapatkan pengajuan Absensi dari $getFullName , tanggal pengajuan $stringTanggal',
       'url': '',
@@ -2877,7 +2880,7 @@ class AbsenController extends GetxController {
       'status': '2',
       'view': '0',
     };
-    print(body);
+ 
     var connect = Api.connectionApi("post", body, "notifikasi_reportTo");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -2886,6 +2889,7 @@ class AbsenController extends GetxController {
     });
   }
 
+ 
   void kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
       validasiDelegasiSelected, fcmTokenDelegasi, stringWaktu, typeNotifFcm) {
     var dt = DateTime.now();
@@ -2952,6 +2956,7 @@ class AbsenController extends GetxController {
   }
 
   void nextKirimPengajuan(status) async {
+ 
     if (tglAjunan.value == "") {
       UtilsAlert.showToast("Tanggal belum dipilih");
       return;
