@@ -170,7 +170,7 @@ class AbsenController extends GetxController {
 
   @override
   void onReady() async {
-    print("Masulk ke controller absen");
+ 
     getTimeNow();
     getLoadsysData();
     loadHistoryAbsenUser();
@@ -2808,6 +2808,8 @@ class AbsenController extends GetxController {
     var connect = Api.connectionApi("post", body, "save-employee-attendance");
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
+
+      
      
 
       if (res.statusCode == 200) {
@@ -2820,6 +2822,30 @@ class AbsenController extends GetxController {
       }
     });
   }
+
+    void kirimNotifikasiToReportTo(
+      getFullName, convertTanggalBikinPengajuan, getEmid, type) {
+    var dt = DateTime.now();
+    var jamSekarang = DateFormat('HH:mm:ss').format(dt);
+    Map<String, dynamic> body = {
+      'emId_pengaju': getEmid,
+      'title': 'Pengajuan Lembur',
+      'deskripsi':
+          'Anda mendapatkan pengajuan $type dari $getFullName, waktu pengajuan $convertTanggalBikinPengajuan',
+      'url': '',
+      'atten_date': convertTanggalBikinPengajuan,
+      'jam': jamSekarang,
+      'status': '2',
+      'view': '0',
+    };
+    var connect = Api.connectionApi("post", body, "notifikasi_reportTo");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        UtilsAlert.showToast("Pengajuan berhasil di kirim");
+      }
+    });
+  }
+
 
   void nextKirimPengajuan() async {
     if (tglAjunan.value == "") {
