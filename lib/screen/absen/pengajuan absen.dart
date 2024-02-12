@@ -120,7 +120,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                             return;
                           }
                         }
-                        absenController.nextKirimPengajuan();
+                        absenController.nextKirimPengajuan('Status');
                       },
                       style: ElevatedButton.styleFrom(
                           foregroundColor: Constanst.colorWhite,

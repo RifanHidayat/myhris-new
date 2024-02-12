@@ -919,11 +919,7 @@ class IzinController extends GetxController {
               'nomor_ajuan': '${getNomorAjuanTerakhir}',
             };
 
-       
-
             for (var item in globalCt.konfirmasiAtasan) {
-              
-              
               print("Token notif ${item['token_notif']}");
               var pesan;
               if (item['em_gender'] == "PRIA") {
@@ -933,18 +929,19 @@ class IzinController extends GetxController {
                 pesan =
                     "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan ${selectedDropdownFormTidakMasukKerjaTipe.value} dengan nomor ajuan ${getNomorAjuanTerakhir}";
               }
-                     kirimNotifikasiToDelegasi1(
-                getFullName,
-                convertTanggalBikinPengajuan,
-                item['em_id'],
-                validasiDelegasiSelectedToken,
-                stringTanggal,
-                typeNotifFcm,pesan);
+              kirimNotifikasiToDelegasi1(
+                  getFullName,
+                  convertTanggalBikinPengajuan,
+                  item['em_id'],
+                  validasiDelegasiSelectedToken,
+                  stringTanggal,
+                  typeNotifFcm,
+                  pesan);
               if (item['token_notif'] != null) {
                 globalCt.kirimNotifikasiFcm(
                     title: typeNotifFcm,
                     message: pesan,
-                    tokens:  item['token_notif']);
+                    tokens: item['token_notif']);
               }
             }
 
@@ -969,7 +966,6 @@ class IzinController extends GetxController {
             }
           }
         } else {
-         
           var valueBody = jsonDecode(res.body);
           UtilsAlert.showToast(valueBody['message']);
           Get.back();
@@ -1033,8 +1029,14 @@ class IzinController extends GetxController {
     });
   }
 
-   void kirimNotifikasiToDelegasi1(getFullName, convertTanggalBikinPengajuan,
-      validasiDelegasiSelected, fcmTokenDelegasi, stringTanggal, typeNotifFcm,pesan) {
+  void kirimNotifikasiToDelegasi1(
+      getFullName,
+      convertTanggalBikinPengajuan,
+      validasiDelegasiSelected,
+      fcmTokenDelegasi,
+      stringTanggal,
+      typeNotifFcm,
+      pesan) {
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
     // var description =
@@ -1061,7 +1063,6 @@ class IzinController extends GetxController {
     });
   }
 
-
   void kirimNotifikasiToReportTo(
       getFullName, convertTanggalBikinPengajuan, getEmid, stringTanggal) {
     var dt = DateTime.now();
@@ -1085,8 +1086,6 @@ class IzinController extends GetxController {
       }
     });
   }
-
-  
 
   String validasiSelectedType() {
     var result = [];

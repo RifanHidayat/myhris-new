@@ -203,7 +203,7 @@ class LemburController extends GetxController {
   }
 
   void loadDataTypeOvertime(overtimeData) {
-     typeLembur.value.clear();
+    typeLembur.value.clear();
     var connect = Api.connectionApi("get", "", "overtime");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -505,15 +505,15 @@ class LemburController extends GetxController {
           if (valueBody['status'] == true) {
             var stringWaktu =
                 "${dariJam.value.text} sd ${sampaiJam.value.text}";
-            kirimNotifikasiToDelegasi(
-                getFullName,
-                finalTanggalPengajuan,
-                validasiDelegasiSelected,
-                validasiDelegasiSelectedToken,
-                stringWaktu,
-                typeNotifFcm);
-            kirimNotifikasiToReportTo(getFullName, finalTanggalPengajuan,
-                getEmid, "Lembur", stringWaktu);
+            // kirimNotifikasiToDelegasi(
+            //     getFullName,
+            //     finalTanggalPengajuan,
+            //     validasiDelegasiSelected,
+            //     validasiDelegasiSelectedToken,
+            //     stringWaktu,
+            //     typeNotifFcm);
+            // kirimNotifikasiToReportTo(getFullName, finalTanggalPengajuan,
+            //     getEmid, "Lembur", stringWaktu);
             Navigator.pop(Get.context!);
             var pesan1 = "Pengajuan lembur berhasil dibuat";
             var pesan2 =
@@ -533,20 +533,21 @@ class LemburController extends GetxController {
                 pesan =
                     "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan LEMBUR dengan nomor ajuan ${getNomorAjuanTerakhir}";
               }
-              kirimNotifikasiToDelegasi1(
-                getFullName,
-                finalTanggalPengajuan,
-               item['em_id'],
-                validasiDelegasiSelectedToken,
-                stringWaktu,
-                typeNotifFcm,pesan);
+              // kirimNotifikasiToDelegasi1(
+              //     getFullName,
+              //     finalTanggalPengajuan,
+              //     item['em_id'],
+              //     validasiDelegasiSelectedToken,
+              //     stringWaktu,
+              //     typeNotifFcm,
+              //     pesan);
 
-              if (item['token_notif'] != null) {
-                globalCt.kirimNotifikasiFcm(
-                    title: typeNotifFcm,
-                    message: pesan,
-                    tokens: item['token_notif']);
-              }
+              // if (item['token_notif'] != null) {
+              //   globalCt.kirimNotifikasiFcm(
+              //       title: typeNotifFcm,
+              //       message: pesan,
+              //       tokens: item['token_notif']);
+              // }
             }
 
             Get.offAll(BerhasilPengajuan(
@@ -667,7 +668,7 @@ class LemburController extends GetxController {
     // var description =
     //     'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk Pengajuan Lembur, waktu pengajuan $stringWaktu';
 
-     var description =
+    var description =
         'Anda mendapatkan pengajuan lembur dari $getFullName dengan pemberi tugas anda, waktu pengajuan $stringWaktu';
     Map<String, dynamic> body = {
       'em_id': validasiDelegasiSelected,
@@ -690,15 +691,21 @@ class LemburController extends GetxController {
       }
     });
   }
-  void 
-  kirimNotifikasiToDelegasi1(getFullName, convertTanggalBikinPengajuan,
-      validasiDelegasiSelected, fcmTokenDelegasi, stringWaktu, typeNotifFcm,pesan) {
+
+  void kirimNotifikasiToDelegasi1(
+      getFullName,
+      convertTanggalBikinPengajuan,
+      validasiDelegasiSelected,
+      fcmTokenDelegasi,
+      stringWaktu,
+      typeNotifFcm,
+      pesan) {
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
     // var description =
     //     'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk Pengajuan Lembur, waktu pengajuan $stringWaktu';
 
-     var description =
+    var description =
         'Anda mendapatkan pengajuan lembur dari $getFullName dengan pemberi tugas anda, waktu pengajuan $stringWaktu';
     Map<String, dynamic> body = {
       'em_id': validasiDelegasiSelected,
@@ -721,7 +728,6 @@ class LemburController extends GetxController {
       }
     });
   }
-
 
   void kirimNotifikasiToReportTo(
       getFullName, convertTanggalBikinPengajuan, getEmid, type, stringWaktu) {
