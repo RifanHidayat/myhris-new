@@ -1181,8 +1181,8 @@ class ApprovalController extends GetxController {
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
           print('berhasil sampai sini klaim');
-          insertNotifikasi(dataEditFinal, statusPengajuan, tanggalNow, dt,
-              pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow);
+          insertNotifikasiClaim(dataEditFinal, statusPengajuan, tanggalNow, dt,
+              pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow,detailData[0]['em_id']);
         }
       });
     }
@@ -1438,6 +1438,60 @@ class ApprovalController extends GetxController {
     if (url_tujuan == 'edit-emp_leave') {
       body['em_id'] = dataEditFinal[0]['em_id'];
     } else if (url_tujuan == 'edit-emp_labor') {
+      body['em_id'] = dataEditFinal[0]['em_id'];
+    }else if (url_tujuan == 'edit-emp_claim') {
+      body['em_id'] = dataEditFinal[0]['em_id'];
+    }
+
+    var connect = Api.connectionApi("post", body, "insert-notifikasi");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        var pesanController = Get.find<PesanController>();
+        pesanController.loadApproveInfo();
+        startLoadData(
+            titleAppbar.value, bulanSelected.value, tahunSelected.value);
+        Navigator.pop(Get.context!);
+        Navigator.pop(Get.context!);
+        UtilsAlert.showToast(
+            "Pengajuan ${detailData[0]['type']} berhasil di $statusPengajuan");
+        Get.back();
+      }
+    });
+  }
+
+
+  
+  void insertNotifikasiClaim(dataEditFinal, statusPengajuan, tanggalNow, dt, pilihan,
+      namaAtasanApprove, url_tujuan, alasanRejectShow,emid) {
+    var statusNotif = pilihan == true ? 1 : 0;
+    var jamSekarang = DateFormat('HH:mm:ss').format(dt);
+    var url_notifikasi = detailData[0]['type'] == 'Cuti'
+        ? 'RiwayatCuti'
+        : detailData[0]['type'] == 'Izin' || detailData[0]['type'] == 'Sakit'
+            ? 'TidakMasukKerja'
+            : detailData[0]['type'] == 'Lembur'
+                ? 'Lembur'
+                : detailData[0]['type'] == 'Tugas Luar'
+                    ? 'TugasLuar'
+                    : '';
+    var title = "Pengajuan ${detailData[0]['type']} telah di $statusPengajuan";
+    var stringDeskripsi =
+        "Pengajuan ${detailData[0]['type']} kamu telah di $statusPengajuan oleh $namaAtasanApprove $alasanRejectShow";
+    Map<String, dynamic> body = {
+      'title': title,
+      'deskripsi': stringDeskripsi,
+      'url': url_notifikasi,
+      'atten_date': tanggalNow,
+      'jam': jamSekarang,
+      'status': statusNotif,
+      'view': '0',
+    };
+    if (url_tujuan == 'edit-emp_leave') {
+      body['em_id'] = dataEditFinal[0]['em_id'];
+    } else if (url_tujuan == 'edit-emp_labor') {
+      body['em_id'] = dataEditFinal[0]['em_id'];
+    }else if (url_tujuan == 'edit-emp_claim') {
       body['em_id'] = dataEditFinal[0]['em_id'];
     }
 

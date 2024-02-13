@@ -180,63 +180,7 @@ class _PersetujuanIzinState extends State<PersetujuanIzin> {
             Get.back();
             return true;
           },
-          child: SafeArea(
-            child: Obx(
-              () => Flexible(
-                  child: DefaultTabController(
-                length: 2,
-                child: Column(
-                  children: [
-                    TabBar(
-                      indicatorColor: Constanst.onPrimary,
-                      indicatorWeight: 4.0,
-                      labelPadding: const EdgeInsets.fromLTRB(0, 14, 0, 14),
-                      indicatorSize: TabBarIndicatorSize.label,
-                      physics: const BouncingScrollPhysics(),
-                      labelColor: Constanst.onPrimary,
-                      unselectedLabelColor: Constanst.fgSecondary,
-                      tabs: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 12.0, right: 12.0),
-                          child: Text(
-                            "Perlu Persetujuan",
-                            style: GoogleFonts.inter(
-                                fontSize: 16, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 12.0, right: 12.0),
-                          child: Text(
-                            "Riwayat",
-                            style: GoogleFonts.inter(
-                                fontSize: 16, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                        child: TabBarView(
-                      physics: const BouncingScrollPhysics(),
-                      children: [
-                        controller.listData.value.isEmpty
-                            ? Center(
-                                child: Text(controller.loadingString.value),
-                              )
-                            : listDataApproval(),
-                        controller.listData.value.isEmpty
-                            ? Center(
-                                child: Text(controller.loadingString.value),
-                              )
-                            : listDataApproval(),
-                      ],
-                    )),
-                  ],
-                ),
-              )),
-            ),
-          )),
+          child: Obx(() => listDataApproval())),
     );
   }
 

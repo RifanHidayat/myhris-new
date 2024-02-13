@@ -482,7 +482,9 @@ class KlaimController extends GetxController {
     } else {
       nameFile = namaFileUpload.value;
     }
+    print("data ${globalCt.konfirmasiAtasan}");
 
+   var convertTanggalBikinPengajuan = Constanst.convertDateSimpan(tanggalTerpilih.value);
     Map<String, dynamic> body = {
       'em_id': getEmid,
       'nomor_ajuan': getNomorAjuanTerakhir,
@@ -501,6 +503,7 @@ class KlaimController extends GetxController {
     };
     var typeNotifFcm = "Pengajuan Klaim";
     if (statusForm.value == false) {
+      
       body['activity_name'] =
           "Membuat Pengajuan Klaim. alasan = ${catatan.value.text}";
       var connect = Api.connectionApi("post", body, "insert-emp_claim");
@@ -529,6 +532,17 @@ class KlaimController extends GetxController {
                 pesan =
                     "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Klaim dengan nomor ajuan ${getNomorAjuanTerakhir}";
               }
+              kirimNotifikasiToDelegasi1(
+                  getFullName,
+                  convertTanggalBikinPengajuan,
+                  item['em_id'],
+                  "",
+                  "",
+                  typeNotifFcm,
+                  pesan);
+
+                 
+
               if (item['token_notif'] != null) {
                 globalCt.kirimNotifikasiFcm(
                     title: typeNotifFcm,
@@ -575,6 +589,43 @@ class KlaimController extends GetxController {
         }
       });
     }
+  }
+
+    void kirimNotifikasiToDelegasi1(
+      getFullName,
+      convertTanggalBikinPengajuan,
+      validasiDelegasiSelected,
+      fcmTokenDelegasi,
+      stringTanggal,
+      typeNotifFcm,
+      pesan) {
+         print("kirim notifikasin approval");
+    var dt = DateTime.now();
+    var jamSekarang = DateFormat('HH:mm:ss').format(dt);
+    // var description =
+    //     'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk pengajuan $selectedDropdownFormTidakMasukKerjaTipe, tanggal pengajuan $stringTanggal';
+    Map<String, dynamic> body = {
+      'em_id': validasiDelegasiSelected,
+      'title': 'Approval Klaim',
+      'deskripsi': pesan,
+      'url': '',
+      'atten_date': convertTanggalBikinPengajuan,
+      'jam': jamSekarang,
+      'status': '2',
+      'view': '0',
+    };
+    var connect = Api.connectionApi("post", body, "insert-notifikasi");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+
+        print(" berhasil mengajukan klaim notifikasi");
+        // globalCt.kirimNotifikasiFcm(
+        //     title: typeNotifFcm,
+        //     message: description,
+        //     tokens: fcmTokenDelegasi);
+        UtilsAlert.showToast("Berhasil kirim delegasi");
+      }
+    });
   }
 
   void changeTypeAjuan(name) {
@@ -639,7 +690,7 @@ class KlaimController extends GetxController {
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
     Map<String, dynamic> body = {
       'emId_pengaju': getEmid,
-      'title': 'Pengajuan Lembur',
+      'title': 'Pengajuan Klaim',
       'deskripsi':
           'Anda mendapatkan pengajuan $type dari $getFullName, waktu pengajuan $convertTanggalBikinPengajuan',
       'url': '',
@@ -651,7 +702,7 @@ class KlaimController extends GetxController {
     var connect = Api.connectionApi("post", body, "notifikasi_reportTo");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
-        UtilsAlert.showToast("Pengajuan berhasil di kirim");
+        UtilsAlert.showToast("re berhasil di kirim");
       }
     });
   }
@@ -818,11 +869,13 @@ class KlaimController extends GetxController {
       'status_transaksi': 0,
       'atten_date': filterTanggal,
     };
+    print("data body ${body}");
     var connect = Api.connectionApi("post", body, "edit-emp_claim");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         Navigator.pop(Get.context!);
         Navigator.pop(Get.context!);
+          Navigator.pop(Get.context!);
         UtilsAlert.showToast("Berhasil batalkan pengajuan");
         loadDataKlaim();
       }

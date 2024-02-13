@@ -2779,10 +2779,8 @@ class AbsenController extends GetxController {
           DateFormat('yyyy').format(DateTime.parse(tglAjunan.value.toString())),
       'status': "pending",
       'catatan': catataanAjuan.text,
-      'checkin': checkinAjuan2.value.toString(),
-      'checkout': checkoutAjuan2.value == ""
-          ? "00:00"
-          : checkoutAjuan2.value.toString(),
+      'checkin': checkinAjuan2.value.toString()==""?"00:00:00":checkinAjuan2.value.toString(),
+      'checkout':  checkoutAjuan2.value.toString()==""?"00:00:00": checkoutAjuan2.value.toString(),
       'lokasi_masuk_id': placeCoordinateCheckin
               .where((p0) => p0['is_selected'] == true)
               .toList()
@@ -2804,7 +2802,25 @@ class AbsenController extends GetxController {
     };
     print('body data ajuan ${body}');
     var connect = Api.connectionApi("post", body, "save-employee-attendance");
-    var dataUser = AppData.informasiUser;
+  
+    
+
+  
+
+
+  
+
+    connect.then((dynamic res) {
+      var valueBody = jsonDecode(res.body);
+
+
+      if (res.statusCode == 200) {
+        Get.to(pengajuanAbsenBerhasil());
+
+        dataPengajuanAbsensi();
+
+
+          var dataUser = AppData.informasiUser;
     var getFullName = "${dataUser![0].full_name}";
     var convertTanggalBikinPengajuan = status == false
         ? Constanst.convertDateSimpan(pilihTanggalTelatAbsen.value.toString())
@@ -2812,8 +2828,8 @@ class AbsenController extends GetxController {
     var getEmid = "${dataUser![0].em_id}";
     var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
     var typeNotifFcm = "Pengajuan Absensi";
-    kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
-        getEmid, '', stringTanggal, typeNotifFcm);
+    // kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
+    //     getEmid, '', stringTanggal, typeNotifFcm);
 
     kirimNotifikasiToReportTo(
         getFullName, convertTanggalBikinPengajuan, getEmid, stringTanggal);
@@ -2847,15 +2863,6 @@ class AbsenController extends GetxController {
         );
       }
     }
-
-    connect.then((dynamic res) {
-      var valueBody = jsonDecode(res.body);
-
-
-      if (res.statusCode == 200) {
-        Get.to(pengajuanAbsenBerhasil());
-
-        dataPengajuanAbsensi();
         UtilsAlert.showToast("${valueBody['message']}");
       } else {
         UtilsAlert.showToast("${valueBody['message']}");
@@ -2957,15 +2964,15 @@ class AbsenController extends GetxController {
 
   void nextKirimPengajuan(status) async {
  
-    if (tglAjunan.value == "") {
-      UtilsAlert.showToast("Tanggal belum dipilih");
-      return;
-    }
+    // if (tglAjunan.value == "") {
+    //   UtilsAlert.showToast("Tanggal belum dipilih");
+    //   return;
+    // }
 
-    if (checkinAjuan2.value == "") {
-      UtilsAlert.showToast("Waktu Checkin belum dipilih");
-      return;
-    }
+    // if (checkinAjuan2.value == "") {
+    //   UtilsAlert.showToast("Waktu Checkin belum dipilih");
+    //   return;
+    // }
 
     // if (checkoutAjuan2.value == "") {
     //   UtilsAlert.showToast("Waktu Checkout belum dipilih");

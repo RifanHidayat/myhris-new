@@ -170,7 +170,7 @@ class _KlaimState extends State<Klaim> {
                                       size: 24,
                                     ),
                                     onPressed: () => Get.to(LaporanKlaim(
-                                      title: 'cuti',
+                                      title: 'klaim',
                                     )),
                                     // controller.toggleSearch,
                                   ),

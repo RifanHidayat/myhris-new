@@ -169,14 +169,26 @@ class _FormKlaimState extends State<FormKlaim> {
             padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
             child: ElevatedButton(
               onPressed: () {
+                if (controller.totalKlaim.value.text==""){
+                   UtilsAlert.showToast(
+                      "Total Klaim belum di input");
+                  return;
+
+                }
                 print(controller.totalKlaim.value.text);
-                 var cv1 = controller.totalKlaim.value.text.replaceAll('Rp', '');
-    var cv2 = cv1.replaceAll('.', '');
-    int cv3 = int.parse(cv2);
-    if (cv3>controller.limitTransaksi.value){
-      UtilsAlert.showToast("Total Klaim besar dari limit transaksi");
-    }
-                
+                var cv1 = controller.totalKlaim.value.text.replaceAll('Rp', '');
+                var cv2 = cv1.replaceAll('.', '');
+                int cv3 = int.parse(cv2);
+                if (cv3 > controller.limitTransaksi.value) {
+                  UtilsAlert.showToast(
+                      "Total Klaim besar dari limit transaksi");
+                  return;
+                }
+                if (controller.namaFileUpload.value == "") {
+                  UtilsAlert.showToast("File belum di unggah");
+                  return;
+                }
+
                 controller.validasiKirimPengajuan();
               },
               style: ElevatedButton.styleFrom(
@@ -221,13 +233,16 @@ class _FormKlaimState extends State<FormKlaim> {
               onTap: () {
                 print(value);
 
-                var tempData=controller.allType.where((p0) => p0['name'].toString().toLowerCase()==value.toString().toLowerCase()).toList();
+                var tempData = controller.allType
+                    .where((p0) =>
+                        p0['name'].toString().toLowerCase() ==
+                        value.toString().toLowerCase())
+                    .toList();
                 print(tempData[0]);
-               controller.getSaldo(id:tempData.first['type_id'] );
+                controller.getSaldo(id: tempData.first['type_id']);
 
                 controller.selectedDropdownType.value = value;
                 this.controller.selectedDropdownType.refresh();
-
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
@@ -293,29 +308,31 @@ class _FormKlaimState extends State<FormKlaim> {
               ],
             ),
           ),
-     Obx(() =>      Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0,bottom: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Saldo  :${toCurrency(controller.saldo.value.toString())}",
-                  style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w300,
-                      color: Constanst.fgPrimary),
-                ),
-              
-                Text(
-                  "Sisa Limit :${toCurrency(controller.limitTransaksi.value.toString())}",
-                  style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w300,
-                      color: Constanst.fgPrimary),
-                ),
-              ],
+          Obx(
+            () => Padding(
+              padding:
+                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Saldo  :${toCurrency(controller.saldo.value.toString())}",
+                    style: GoogleFonts.inter(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w300,
+                        color: Constanst.fgPrimary),
+                  ),
+                  Text(
+                    "Sisa Limit :${toCurrency(controller.limitTransaksi.value.toString())}",
+                    style: GoogleFonts.inter(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w300,
+                        color: Constanst.fgPrimary),
+                  ),
+                ],
+              ),
             ),
-          ),),
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0),
             child: Divider(

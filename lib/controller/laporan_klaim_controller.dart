@@ -276,6 +276,8 @@ class LaporanKlaimController extends GetxController {
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+
+        print("data klaim ${valueBody}");
         var data = valueBody['data'];
         listDetailLaporanEmployee.value = data;
         alllistDetailLaporanEmployee.value = data;

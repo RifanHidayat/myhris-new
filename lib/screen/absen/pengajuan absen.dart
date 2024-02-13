@@ -102,8 +102,38 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        if (absenController.checkinAjuan.value != "") {
-                          if (absenController.placeCoordinateCheckout
+                        if (absenController.checkinAjuan.value=="" && absenController.checkinAjuan.value=="" ){
+                            if (absenController.checkinAjuan2.value != "") {
+                          if (absenController.placeCoordinateCheckin
+                              .where((p0) => p0['is_selected'] == true)
+                              .isEmpty) {
+                            UtilsAlert.showToast(
+                                "Lokasi absen masuk belum diisi");
+                            return;
+                          }
+                        }else{
+                             UtilsAlert.showToast(
+                                "Absensi masuk harus diisi");
+                                 return;
+                                
+
+                        }
+                            
+
+                        }
+
+                      if (absenController.checkinAjuan2.value=="" && absenController.checkoutAjuan.value==""){
+                        UtilsAlert.showToast(
+                                "Absen masuk atau Absen Keluar harus diisi");
+                                return;
+
+                      }
+
+                    
+                     
+
+                        if (absenController.checkinAjuan2.value != "") {
+                          if (absenController.placeCoordinateCheckin
                               .where((p0) => p0['is_selected'] == true)
                               .isEmpty) {
                             UtilsAlert.showToast(
@@ -111,6 +141,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                             return;
                           }
                         }
+
                         if (absenController.checkoutAjuan2.value != "") {
                           if (absenController.placeCoordinateCheckout
                               .where((p0) => p0['is_selected'] == true)
@@ -120,7 +151,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                             return;
                           }
                         }
-                        absenController.nextKirimPengajuan('Status');
+                         absenController.nextKirimPengajuan('Status');
                       },
                       style: ElevatedButton.styleFrom(
                           foregroundColor: Constanst.colorWhite,
@@ -166,7 +197,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(16))),
                   onTap: () {
-                    print("kesini");
+                 
 
                     Future<void> _selectDate(BuildContext context) async {
                       final DateTime? picked = await showDatePicker(
