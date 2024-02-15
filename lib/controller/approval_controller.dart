@@ -32,6 +32,7 @@ class ApprovalController extends GetxController {
   var listNotModif = [].obs;
   var listData = [].obs;
   var listDataAll = [].obs;
+  var listDataRiwayat = [].obs;
   var detailData = [].obs;
   var showButton = false.obs;
 
@@ -47,43 +48,36 @@ class ApprovalController extends GetxController {
 
   var controllerGlobal = Get.put(GlobalController());
 
-  var saldo=0.obs;
-  var limitTransaksi=0.obs;
+  var saldo = 0.obs;
+  var limitTransaksi = 0.obs;
 
   void showInputCari() {
     statusCari.value = !statusCari.value;
   }
 
-  void startLoadData(title, bulan, tahun) {
-    getLoadsysData(title, bulan, tahun);
+  void startLoadData(title, bulan, tahun, status) {
+    getLoadsysData(title, bulan, tahun, status);
   }
 
-    void getSaldo({emId,id}) {
-      print("saldo new ");
-  
-    var body={
-      "em_id":AppData.informasiUser![0].em_id,
-      "cost_id":id
-    };
+  void getSaldo({emId, id}) {
+    print("saldo new ");
+
+    var body = {"em_id": AppData.informasiUser![0].em_id, "cost_id": id};
     var connect = Api.connectionApi("post", body, "emp-claim-saldo");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         print("value body ${valueBody}");
 
-
-        saldo.value= int.parse(valueBody['saldo'].toString());
-        limitTransaksi.value=int.parse(valueBody['limit'].toString());
-        limitTransaksi.value=int.parse(valueBody['limit'].toString())-saldo.value;
-  
-     
-
-      
+        saldo.value = int.parse(valueBody['saldo'].toString());
+        limitTransaksi.value = int.parse(valueBody['limit'].toString());
+        limitTransaksi.value =
+            int.parse(valueBody['limit'].toString()) - saldo.value;
       }
     });
   }
 
-  void getLoadsysData(title, bulan, tahun) {
+  void getLoadsysData(title, bulan, tahun, status) {
     print(title);
     var connect = Api.connectionApi("get", "", "sysdata");
     connect.then((dynamic res) {
@@ -97,21 +91,21 @@ class ApprovalController extends GetxController {
             bulanSelected.value = bulan;
             tahunSelected.value = tahun;
             if (title == "Cuti") {
-              loadDataCuti();
+              loadDataCuti(status);
             } else if (title == "Lembur") {
-              loadDataLembur();
+              loadDataLembur(status);
             } else if (title == "Tidak Hadir") {
-              loadDataTidakHadir();
+              loadDataTidakHadir(status);
             } else if (title == "Tugas Luar") {
-              loadDataTugasLuar();
+              loadDataTugasLuar(status);
             } else if (title == "Dinas Luar") {
-              loadDataDinasLuar();
+              loadDataDinasLuar(status);
             } else if (title == "Klaim") {
-              loadDataKlaim();
+              loadDataKlaim(status);
             } else if (title == "Payroll") {
-              loadApprovePayroll();
+              loadApprovePayroll(status);
             } else if (title == "Absensi") {
-              loadAbsensi();
+              loadAbsensi(status);
             }
           }
         }
@@ -119,12 +113,13 @@ class ApprovalController extends GetxController {
     });
   }
 
-  void loadDataCuti() {
+  void loadDataCuti(status) {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
         : "spesifik_approval_multi";
     listNotModif.value.clear();
     listData.value.clear();
+    listDataRiwayat.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
     var getEmCode = dataUser![0].em_id;
@@ -133,7 +128,9 @@ class ApprovalController extends GetxController {
       'name_data': 'cuti',
       'bulan': bulanSelected.value,
       'tahun': tahunSelected.value,
+      'status': status == "riwayat" ? '' : 'pending',
     };
+    print("Parameter ${body}");
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -175,6 +172,7 @@ class ApprovalController extends GetxController {
             'image': element['image'],
           };
           listData.value.add(data);
+          listDataRiwayat.value.add(data);
           listDataAll.value.add(data);
         }
         listData.value.sort(
@@ -185,7 +183,7 @@ class ApprovalController extends GetxController {
     });
   }
 
-  void loadDataLembur() {
+  void loadDataLembur(status) {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
         : "spesifik_approval_multi";
@@ -199,6 +197,7 @@ class ApprovalController extends GetxController {
       'name_data': 'lembur',
       'bulan': bulanSelected.value,
       'tahun': tahunSelected.value,
+      'status': status == "riwayat" ? '' : 'pending',
     };
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) {
@@ -249,7 +248,7 @@ class ApprovalController extends GetxController {
     });
   }
 
-  void loadApprovePayroll() {
+  void loadApprovePayroll(status) {
     print("-------------------data payroll--------------------");
 
     listNotModif.value.clear();
@@ -262,7 +261,8 @@ class ApprovalController extends GetxController {
       'name_data': 'lembur',
       'bulan': bulanSelected.value,
       'tahun': tahunSelected.value,
-      'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
+      'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      'status': status == "riwayat" ? '' : 'pending',
     };
     var connect = Api.connectionApi("post", body, 'list_approve_payroll');
 
@@ -311,7 +311,7 @@ class ApprovalController extends GetxController {
     });
   }
 
-  void loadAbsensi() {
+  void loadAbsensi(status) {
     print("data absensi");
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
@@ -326,6 +326,7 @@ class ApprovalController extends GetxController {
       'name_data': 'absensi',
       'bulan': bulanSelected.value,
       'tahun': tahunSelected.value,
+      'status': status == "riwayat" ? '' : 'pending',
     };
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) {
@@ -373,10 +374,10 @@ class ApprovalController extends GetxController {
             'nama_divisi': element['nama_divisi'],
             'place_in': element['place_in'],
             'place_out': element['place_out'],
-            'approve_id':element['approve_id'],
-            'approve_by':element['approve_by'],
-            'approve_date':element['approve_date'],
-            'status':element['status']
+            'approve_id': element['approve_id'],
+            'approve_by': element['approve_by'],
+            'approve_date': element['approve_date'],
+            'status': element['status']
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -389,7 +390,7 @@ class ApprovalController extends GetxController {
     });
   }
 
-  void loadDataTidakHadir() {
+  void loadDataTidakHadir(status) {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
         : "spesifik_approval_multi";
@@ -403,6 +404,7 @@ class ApprovalController extends GetxController {
       'name_data': 'tidak_hadir',
       'bulan': bulanSelected.value,
       'tahun': tahunSelected.value,
+      'status': status == "riwayat" ? '' : 'pending',
     };
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) {
@@ -458,7 +460,7 @@ class ApprovalController extends GetxController {
     });
   }
 
-  void loadDataTugasLuar() {
+  void loadDataTugasLuar(status) {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
         : "spesifik_approval_multi";
@@ -472,6 +474,7 @@ class ApprovalController extends GetxController {
       'name_data': 'tugas_luar',
       'bulan': bulanSelected.value,
       'tahun': tahunSelected.value,
+      'status': status == "riwayat" ? '' : 'pending',
     };
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) {
@@ -523,7 +526,7 @@ class ApprovalController extends GetxController {
 
   void loadDataPayroll() {}
 
-  void loadDataDinasLuar() {
+  void loadDataDinasLuar(status) {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
         : "spesifik_approval_multi";
@@ -537,6 +540,7 @@ class ApprovalController extends GetxController {
       'name_data': 'dinas_luar',
       'bulan': bulanSelected.value,
       'tahun': tahunSelected.value,
+      'status': status == "riwayat" ? '' : 'pending',
     };
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) {
@@ -588,7 +592,7 @@ class ApprovalController extends GetxController {
     });
   }
 
-  void loadDataKlaim() {
+  void loadDataKlaim(status) {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
         : "spesifik_approval_multi";
@@ -602,6 +606,7 @@ class ApprovalController extends GetxController {
       'name_data': 'klaim',
       'bulan': bulanSelected.value,
       'tahun': tahunSelected.value,
+      'status': status == "riwayat" ? '' : 'pending',
     };
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) {
@@ -642,9 +647,9 @@ class ApprovalController extends GetxController {
             'nama_divisi': element['nama_divisi'],
             'nomor_ajuan': element['nomor_ajuan'],
             'image': element['image'],
-            "id_ajuan":element["id_ajua"],
-            "saldo_klaim":element['saldo_claim'],
-            "sisa_klaim":element['sisa_claim']
+            "id_ajuan": element["id_ajua"],
+            "saldo_klaim": element['saldo_claim'],
+            "sisa_klaim": element['sisa_claim']
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -1002,13 +1007,10 @@ class ApprovalController extends GetxController {
       }
     } else {
       if (pilihan == true && url_tujuan == "edit-emp_leave") {
-        
-        
         if (dataEditFinal[0]['leave_status'] == "Approve") {
           print("kesiniiii atuh");
           validasiPemakaianCuti(dataEditFinal);
         }
-
       }
     }
     var dataUser = AppData.informasiUser;
@@ -1181,8 +1183,16 @@ class ApprovalController extends GetxController {
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
           print('berhasil sampai sini klaim');
-          insertNotifikasiClaim(dataEditFinal, statusPengajuan, tanggalNow, dt,
-              pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow,detailData[0]['em_id']);
+          insertNotifikasiClaim(
+              dataEditFinal,
+              statusPengajuan,
+              tanggalNow,
+              dt,
+              pilihan,
+              namaAtasanApprove,
+              url_tujuan,
+              alasanRejectShow,
+              detailData[0]['em_id']);
         }
       });
     }
@@ -1254,7 +1264,7 @@ class ApprovalController extends GetxController {
       }
     });
   }
- 
+
   Future<bool>? approvalAbsensi(
       {required date,
       required status,
@@ -1270,49 +1280,50 @@ class ApprovalController extends GetxController {
       apdDate1,
       apId1,
       leaveStatus,
-       pola,
+      pola,
       pilihan}) {
     UtilsAlert.showLoadingIndicator(Get.context!);
     var emId = AppData.informasiUser![0].em_id;
     var name = AppData.informasiUser![0].full_name;
-  var statusPengajuan="";
-  var applyDate1="";
-  var applyBy1="";
-  var  applyId1="";
-  var applyDate2="";
-  var applyBy2="";
-  var applyId2="";
+    var statusPengajuan = "";
+    var applyDate1 = "";
+    var applyBy1 = "";
+    var applyId1 = "";
+    var applyDate2 = "";
+    var applyBy2 = "";
+    var applyId2 = "";
 
-
-    if (pola=="1" || pola==1){
-      
-   statusPengajuan = pilihan == true ? 'Approve' : 'Rejected';
-      applyDate1 =DateFormat('yyyy-MM-dd').format(DateTime.parse(date)).toString();
+    if (pola == "1" || pola == 1) {
+      statusPengajuan = pilihan == true ? 'Approve' : 'Rejected';
+      applyDate1 =
+          DateFormat('yyyy-MM-dd').format(DateTime.parse(date)).toString();
       applyBy1 = name;
       applyId1 = emId;
       applyDate2 = "";
       applyBy2 = "";
       applyId2 = "";
-    }else{
-      if (leaveStatus== "Pending") {
-          statusPengajuan = pilihan == true ? 'Approve' : 'Rejected';
-          applyDate1 = DateFormat('yyyy-MM-dd').format(DateTime.parse(date)).toString();
-          applyBy1 = name;
-          applyId1 = emId;
-          applyDate2 = "";
-          applyBy2 = "";
-          applyId2 = "";
-        } else if (leaveStatus == "Approve") {
-          statusPengajuan = pilihan == true ? 'Approve2' : 'Rejected';
-          applyDate1 = apdDate1;
-          applyBy1 = apBy1;
-          applyId1 = apId1;
-          applyDate2 = DateFormat('yyyy-MM-dd').format(DateTime.parse(date)).toString();
-          applyBy2 = name;
-          applyId2 = emId;
-        }
+    } else {
+      if (leaveStatus == "Pending") {
+        statusPengajuan = pilihan == true ? 'Approve' : 'Rejected';
+        applyDate1 =
+            DateFormat('yyyy-MM-dd').format(DateTime.parse(date)).toString();
+        applyBy1 = name;
+        applyId1 = emId;
+        applyDate2 = "";
+        applyBy2 = "";
+        applyId2 = "";
+      } else if (leaveStatus == "Approve") {
+        statusPengajuan = pilihan == true ? 'Approve2' : 'Rejected';
+        applyDate1 = apdDate1;
+        applyBy1 = apBy1;
+        applyId1 = apId1;
+        applyDate2 =
+            DateFormat('yyyy-MM-dd').format(DateTime.parse(date)).toString();
+        applyBy2 = name;
+        applyId2 = emId;
+      }
     }
- var alasanRejectShow = alasanReject.value.text != ""
+    var alasanRejectShow = alasanReject.value.text != ""
         ? ", Alasan pengajuan di tolak = ${alasanReject.value.text}"
         : "";
 
@@ -1331,24 +1342,20 @@ class ApprovalController extends GetxController {
           DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
       "image": image.toString(),
       "note": note.toString(),
-      
       "ajuan_em_id": ajuanEmid.toString(),
       'alasan_reject': alasanReject.value.text,
       'place_in': place_in,
       'place_out': place_out,
-      "pola":pola,
-      
-      "approve_id1":applyId1,
-      "approve_by1":applyBy1,
-      "approve_date1":applyDate1,
-      
-      "approve_id2":applyId2,
-      "approve_by2":applyBy2,
-      "approve_date2":applyDate2
+      "pola": pola,
+      "approve_id1": applyId1,
+      "approve_by1": applyBy1,
+      "approve_date1": applyDate1,
+      "approve_id2": applyId2,
+      "approve_by2": applyBy2,
+      "approve_date2": applyDate2
     };
-    print( " ${leaveStatus} body ${body}");
+    print(" ${leaveStatus} body ${body}");
 
-   
     var connect =
         Api.connectionApi("post", body, "approval-employee-attendance");
     connect.then((dynamic res) {
@@ -1359,7 +1366,7 @@ class ApprovalController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         if (valueBody['status'] == true) {
-          loadAbsensi();
+          loadAbsensi('persetujuan');
           Get.back();
           Get.back();
           Get.back();
@@ -1376,8 +1383,8 @@ class ApprovalController extends GetxController {
         UtilsAlert.showToast('gagal approved');
         Get.back();
         return false;
-     }
-   });
+      }
+    });
   }
 
   void cariEmployee(dataEditFinal) {
@@ -1439,7 +1446,7 @@ class ApprovalController extends GetxController {
       body['em_id'] = dataEditFinal[0]['em_id'];
     } else if (url_tujuan == 'edit-emp_labor') {
       body['em_id'] = dataEditFinal[0]['em_id'];
-    }else if (url_tujuan == 'edit-emp_claim') {
+    } else if (url_tujuan == 'edit-emp_claim') {
       body['em_id'] = dataEditFinal[0]['em_id'];
     }
 
@@ -1449,8 +1456,8 @@ class ApprovalController extends GetxController {
         var valueBody = jsonDecode(res.body);
         var pesanController = Get.find<PesanController>();
         pesanController.loadApproveInfo();
-        startLoadData(
-            titleAppbar.value, bulanSelected.value, tahunSelected.value);
+        startLoadData(titleAppbar.value, bulanSelected.value,
+            tahunSelected.value, 'persetujuan');
         Navigator.pop(Get.context!);
         Navigator.pop(Get.context!);
         UtilsAlert.showToast(
@@ -1460,10 +1467,8 @@ class ApprovalController extends GetxController {
     });
   }
 
-
-  
-  void insertNotifikasiClaim(dataEditFinal, statusPengajuan, tanggalNow, dt, pilihan,
-      namaAtasanApprove, url_tujuan, alasanRejectShow,emid) {
+  void insertNotifikasiClaim(dataEditFinal, statusPengajuan, tanggalNow, dt,
+      pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow, emid) {
     var statusNotif = pilihan == true ? 1 : 0;
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
     var url_notifikasi = detailData[0]['type'] == 'Cuti'
@@ -1491,7 +1496,7 @@ class ApprovalController extends GetxController {
       body['em_id'] = dataEditFinal[0]['em_id'];
     } else if (url_tujuan == 'edit-emp_labor') {
       body['em_id'] = dataEditFinal[0]['em_id'];
-    }else if (url_tujuan == 'edit-emp_claim') {
+    } else if (url_tujuan == 'edit-emp_claim') {
       body['em_id'] = dataEditFinal[0]['em_id'];
     }
 
@@ -1501,8 +1506,8 @@ class ApprovalController extends GetxController {
         var valueBody = jsonDecode(res.body);
         var pesanController = Get.find<PesanController>();
         pesanController.loadApproveInfo();
-        startLoadData(
-            titleAppbar.value, bulanSelected.value, tahunSelected.value);
+        startLoadData(titleAppbar.value, bulanSelected.value,
+            tahunSelected.value, 'persetujuan');
         Navigator.pop(Get.context!);
         Navigator.pop(Get.context!);
         UtilsAlert.showToast(

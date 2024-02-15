@@ -6,27 +6,28 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
-import 'package:siscom_operasional/screen/pesan/detail_persetujuan_klaim.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_dinas_luar.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class PersetujuanKlaim extends StatefulWidget {
+class PersetujuanDinasLuar extends StatefulWidget {
   String? title, bulan, tahun;
-  PersetujuanKlaim({Key? key, this.title, this.bulan, this.tahun})
+  PersetujuanDinasLuar({Key? key, this.title, this.bulan, this.tahun})
       : super(key: key);
   @override
-  _PersetujuanKlaimState createState() => _PersetujuanKlaimState();
+  _PersetujuanDinasLuarState createState() => _PersetujuanDinasLuarState();
 }
 
-class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
+class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar> {
   var controller = Get.put(ApprovalController());
 
   @override
   void initState() {
     controller.startLoadData(
         widget.title, widget.bulan, widget.tahun, 'persetujuan');
+    // controller.startLoadData("Dinas Luar", widget.bulan, widget.tahun);
     super.initState();
   }
 
@@ -127,7 +128,7 @@ class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
                       ),
                     )
                   : Text(
-                      "Persetujuan Klaim",
+                      "Persetujuan ${controller.titleAppbar.value}",
                       style: GoogleFonts.inter(
                           color: Constanst.fgPrimary,
                           fontWeight: FontWeight.w500,
@@ -165,7 +166,9 @@ class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
                         size: 24,
                       ),
                       onPressed: () {
-                        print("tes tes");
+                        //
+                        //  print("tes tes");
+
                         var pesanController = Get.find<PesanController>();
                         pesanController.loadApproveInfo();
                         pesanController.loadApproveHistory();
@@ -313,6 +316,262 @@ class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
   //   );
   // }
 
+  Widget tipe() {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
+          border: Border.all(color: Constanst.fgBorder)),
+      child: InkWell(
+        customBorder: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(100))),
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(16.0),
+              ),
+            ),
+            builder: (BuildContext context) {
+              return SafeArea(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Pilih Tipe Izin",
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                                color: Constanst.fgPrimary,
+                              ),
+                            ),
+                            InkWell(
+                                customBorder: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8))),
+                                onTap: () => Navigator.pop(Get.context!),
+                                child: Icon(
+                                  Icons.close,
+                                  size: 26,
+                                  color: Constanst.fgSecondary,
+                                ))
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        child: Divider(
+                          thickness: 1,
+                          height: 0,
+                          color: Constanst.border,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          controller.tempNamaTipe1.value = "Tugas Luar";
+                          widget.title = "Tugas Luar";
+                          controller.startLoadData(widget.title, widget.bulan,
+                              widget.tahun, 'persetujuan');
+                          Get.back();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 16, 16, 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const SizedBox(width: 16),
+                                  Text(
+                                    "Tugas Luar",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              controller.tempNamaTipe1.value == "Tugas Luar"
+                                  ? Container(
+                                      height: 20,
+                                      width: 20,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 2,
+                                              color: Constanst.onPrimary),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(3),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Constanst.onPrimary,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                    )
+                                  : InkWell(
+                                      onTap: () {
+                                        controller.tempNamaTipe1.value =
+                                            "Tugas Luar";
+                                        widget.title = "Tugas Luar";
+                                        controller.startLoadData(
+                                            widget.title,
+                                            widget.bulan,
+                                            widget.tahun,
+                                            'persetujuan');
+                                        Get.back();
+                                      },
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Constanst.onPrimary),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                            ],
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          controller.tempNamaTipe1.value = "Dinas Luar";
+                          widget.title = "Dinas Luar";
+                          controller.startLoadData(widget.title, widget.bulan,
+                              widget.tahun, 'persetujuan');
+                          Get.back();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 16, 16, 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const SizedBox(width: 16),
+                                  Text(
+                                    "Dinas Luar",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              controller.tempNamaTipe1.value == "Dinas Luar"
+                                  ? Container(
+                                      height: 20,
+                                      width: 20,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 2,
+                                              color: Constanst.onPrimary),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(3),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Constanst.onPrimary,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                    )
+                                  : InkWell(
+                                      onTap: () {
+                                        controller.tempNamaTipe1.value =
+                                            "Dinas Luar";
+                                        widget.title = "Dinas Luar";
+                                        controller.startLoadData(
+                                            widget.title,
+                                            widget.bulan,
+                                            widget.tahun,
+                                            'persetujuan');
+                                        Get.back();
+                                      },
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1,
+                                                color: Constanst.onPrimary),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ).then((value) {
+            print('Bottom sheet closed');
+          });
+        },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                controller.tempNamaTipe1.value,
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Constanst.fgSecondary,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Iconsax.arrow_down_1,
+                size: 18,
+                color: Constanst.fgSecondary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget listDataApproval() {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
@@ -322,7 +581,6 @@ class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
           itemBuilder: (context, index) {
             var data = controller.listData[index];
             var idx = controller.listData.value[index]['id'];
-            var idxAjuan = controller.listData.value[index]['id_ajuan'];
             var namaPengaju = controller.listData.value[index]['nama_pengaju'];
             var emIdPengaju = controller.listData.value[index]['emId_pengaju'];
             var delegasi = controller.listData.value[index]['delegasi'];
@@ -335,13 +593,13 @@ class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
             var nomor_ajuan = controller.listData.value[index]['nomor_ajuan'];
             var tanggalPengajuan =
                 controller.listData.value[index]['waktu_pengajuan'];
+            var titleAjuan = controller.listData.value[index]['title_ajuan'];
+            var namaTypeAjuan = controller.listData.value[index]['name'];
             var categoryAjuan = controller.listData.value[index]['category'];
             var nama_divisi =
                 controller.listData.value[index]['nama_divisi'] ?? "";
             var image = controller.listData.value[index]['em_image'];
-            var namaTipe = controller.listData[index]['type'] == "Klaim"
-                ? controller.listData[index]['lainnya']['nama_tipe']
-                : "";
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -351,12 +609,11 @@ class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   onTap: () {
-                    Get.to(DetailPersetujuanKlaim(
+                    Get.to(DetailPersetujuanDinasLuar(
                       emId: emIdPengaju,
                       title: typeAjuan,
                       idxDetail: "$idx",
                       delegasi: delegasi,
-                      idAjuan: idxAjuan,
                     ));
                   },
                   child: Container(
@@ -479,27 +736,25 @@ class _PersetujuanKlaimState extends State<PersetujuanKlaim> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Pengajuan ${controller.listData[index]['type']} $namaTipe",
-                                      style: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w500,
-                                          color: Constanst.fgPrimary,
-                                          fontSize: 16),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "$nomor_ajuan",
-                                      style: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w400,
-                                          color: Constanst.fgSecondary,
-                                          fontSize: 16),
-                                    ),
-                                  ],
-                                ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "$typeAjuan ",
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w500,
+                                        color: Constanst.fgPrimary,
+                                        fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "$nomor_ajuan",
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w400,
+                                        color: Constanst.fgSecondary,
+                                        fontSize: 16),
+                                  ),
+                                ],
                               ),
                               Icon(
                                 Icons.arrow_forward_ios,
