@@ -22,7 +22,8 @@ class _ApprovalState extends State<Approval> {
 
   @override
   void initState() {
-    controller.startLoadData(widget.title, widget.bulan, widget.tahun);
+    controller.startLoadData(
+        widget.title, widget.bulan, widget.tahun, 'persetujuan');
     super.initState();
   }
 
@@ -137,8 +138,8 @@ class _ApprovalState extends State<Approval> {
                               onPressed: () {
                                 controller.statusCari.value = false;
                                 controller.cari.value.text = "";
-                                controller.startLoadData(
-                                    widget.title, widget.bulan, widget.tahun);
+                                controller.startLoadData(widget.title,
+                                    widget.bulan, widget.tahun, 'persetujuan');
                               },
                             ),
                           )

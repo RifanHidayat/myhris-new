@@ -25,7 +25,8 @@ class _PersetujuanCutiState extends State<PersetujuanCuti> {
 
   @override
   void initState() {
-    controller.startLoadData(widget.title, widget.bulan, widget.tahun);
+    controller.startLoadData(
+        widget.title, widget.bulan, widget.tahun, 'persetujuan');
     super.initState();
   }
 
@@ -116,7 +117,10 @@ class _PersetujuanCutiState extends State<PersetujuanCuti> {
                                   // controller.statusCari.value = false;
                                   controller.cari.value.text = "";
                                   controller.startLoadData(
-                                      widget.title, widget.bulan, widget.tahun);
+                                      widget.title,
+                                      widget.bulan,
+                                      widget.tahun,
+                                      'persetujuan');
                                 },
                               ),
                             )),
@@ -180,7 +184,67 @@ class _PersetujuanCutiState extends State<PersetujuanCuti> {
             Get.back();
             return true;
           },
-          child: Obx(() => listDataApproval())),
+          child: SafeArea(
+              child: Obx(() => DefaultTabController(
+                    length: 2,
+                    child: Column(
+                      children: [
+                        TabBar(
+                          indicatorColor: Constanst.onPrimary,
+                          indicatorWeight: 4.0,
+                          labelPadding: const EdgeInsets.fromLTRB(0, 14, 0, 14),
+                          indicatorSize: TabBarIndicatorSize.label,
+                          physics: const BouncingScrollPhysics(),
+                          labelColor: Constanst.onPrimary,
+                          unselectedLabelColor: Constanst.fgSecondary,
+                          onTap: (value) {
+                            print(value);
+                            value == 0
+                                ? controller.startLoadData(widget.title,
+                                    widget.bulan, widget.tahun, 'persetujuan')
+                                : controller.startLoadData(widget.title,
+                                    widget.bulan, widget.tahun, 'riwayat');
+                          },
+                          tabs: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 12.0, right: 12.0),
+                              child: Text(
+                                "Perlu Persetujuan",
+                                style: GoogleFonts.inter(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 12.0, right: 12.0),
+                              child: Text(
+                                "Riwayat",
+                                style: GoogleFonts.inter(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Expanded(
+                            child: TabBarView(
+                          physics: const BouncingScrollPhysics(),
+                          children: [
+                            controller.listData.value.isEmpty
+                                ? Center(
+                                    child: Text(controller.loadingString.value),
+                                  )
+                                : listDataApproval(),
+                            controller.listData.value.isEmpty
+                                ? Center(
+                                    child: Text(controller.loadingString.value),
+                                  )
+                                : listDataApproval(),
+                          ],
+                        )),
+                      ],
+                    ),
+                  )))),
     );
   }
 

@@ -9,6 +9,7 @@ import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/screen/pesan/approval.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_absensi.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_cuti.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_dinas_luar.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_izin.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_klaim.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_lembur.dart';
@@ -602,7 +603,7 @@ class PesanController extends GetxController {
                         tahun: tahunSelectedSearchHistory.value,
                       ))
                     : index['title'] == "Dinas Luar"
-                        ? Get.to(Approval(
+                        ? Get.to(PersetujuanDinasLuar(
                             title: index['title'],
                             bulan: bulanSelectedSearchHistory.value,
                             tahun: tahunSelectedSearchHistory.value,
