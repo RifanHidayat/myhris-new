@@ -372,7 +372,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                     fontWeight: FontWeight.w500,
                     fontSize: 20),
               ),
-              leading: controller.statusCari.value || controller.detailData[0]['status'] || controller.detailData[0]['status']
+              leading: controller.statusCari.value || controller.detailData[0]['status']=="Approve" || controller.detailData[0]['status']
                   ? IconButton(
                       icon: Icon(
                         Iconsax.arrow_left,
