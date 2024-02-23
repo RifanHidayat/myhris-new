@@ -381,7 +381,7 @@ class _DetailPersetujuanPayrollState extends State<DetailPersetujuanPayroll> {
           ),
         ),
       ),
-      bottomNavigationBar: SafeArea(
+      bottomNavigationBar: typeAjuan=="Approve2"?SizedBox(): SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
             left: 16.0,

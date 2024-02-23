@@ -762,7 +762,8 @@ class TugasLuarController extends GetxController {
       'uraian': catatan.value.text,
       'ajuan': '2',
       'created_by': getEmid,
-      'menu_name': 'Tugas Luar'
+      'menu_name': 'Tugas Luar',
+      'approve_status': 'Pending'
     };
     if (statusForm.value == false) {
       body['activity_name'] =
@@ -900,6 +901,7 @@ class TugasLuarController extends GetxController {
       'em_delegation': validasiDelegasiSelected,
       'leave_files': "",
       'ajuan': "4",
+      'apply_status':"Pending"
     };
     var typeNotifFcm = "Pengajuan Dinas Luar";
     if (status == false) {

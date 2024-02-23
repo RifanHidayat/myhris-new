@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
+import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/screen/pesan/detail_persetujuan_tugas_luar.dart';
 import 'package:siscom_operasional/utils/api.dart';
@@ -22,6 +23,9 @@ class PersetujuanTugasLuar extends StatefulWidget {
 
 class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
   var controller = Get.put(ApprovalController());
+  
+  
+  var controllerGlobal = Get.put(GlobalController());
 
   @override
   void initState() {
@@ -772,43 +776,46 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                               color: Constanst.border,
                             ),
                           ),
-                          namaApprove1 == "" || leave_status == "Pending"
-                              ? const SizedBox()
-                              : Center(
-                                  child: Text(
-                                    "Approve 1 by - $namaApprove1",
-                                    style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w500,
-                                        color: Constanst.fgPrimary,
-                                        fontSize: 16),
-                                  ),
-                                ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Iconsax.timer,
-                                color: Constanst.color3,
-                                size: 20,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 3),
-                                child: Text(
-                                  controller.valuePolaPersetujuan == 1 ||
-                                          controller.valuePolaPersetujuan == "1"
-                                      ? '$leave_status'
-                                      : leave_status == "Pending"
-                                          ? "Pending Approval 1"
-                                          : "Pending Approval 2",
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w500,
-                                      color: Constanst.fgPrimary,
-                                      fontSize: 14),
-                                ),
-                              ),
-                            ],
-                          )
+                           _approval(index)
+                              
+
+                          // namaApprove1 == "" || leave_status == "Pending"
+                          //     ? const SizedBox()
+                          //     : Center(
+                          //         child: Text(
+                          //           "Approve 1 by - $namaApprove1",
+                          //           style: GoogleFonts.inter(
+                          //               fontWeight: FontWeight.w500,
+                          //               color: Constanst.fgPrimary,
+                          //               fontSize: 16),
+                          //         ),
+                          //       ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.start,
+                          //   children: [
+                          //     Icon(
+                          //       Iconsax.timer,
+                          //       color: Constanst.color3,
+                          //       size: 20,
+                          //     ),
+                          //     Padding(
+                          //       padding: const EdgeInsets.only(left: 3),
+                          //       child: Text(
+                          //         controller.valuePolaPersetujuan == 1 ||
+                          //                 controller.valuePolaPersetujuan == "1"
+                          //             ? '$leave_status'
+                          //             : leave_status == "Pending"
+                          //                 ? "Pending Approval 1"
+                          //                 : "Pending Approval 2",
+                          //         textAlign: TextAlign.center,
+                          //         style: GoogleFonts.inter(
+                          //             fontWeight: FontWeight.w500,
+                          //             color: Constanst.fgPrimary,
+                          //             fontSize: 14),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // )
                         ],
                       ),
                     ),
@@ -819,6 +826,166 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
             );
           }),
     );
+  }
+
+
+      
+  Widget _approval(index) {
+    var data = controller.listData[index];
+    var namaApprove1 = controller.listData.value[index]['nama_approve1']??"";
+    var namaApprove2 = controller.listData.value[index]['nama_approve2']??"";
+    var leave_status = controller.listData.value[index]['leave_status']??"";
+
+    if (leave_status == "Rejected") {
+      return Container(
+        child: namaApprove1 == ""
+            ? const SizedBox()
+            : Row(
+                children: [
+                  Icon(
+                    Iconsax.close_circle,
+                    color: Colors.red,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    "rejected by  - $namaApprove1",
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.fgPrimary,
+                        fontSize: 16),
+                  ),
+                ],
+              ),
+      );
+    }
+
+    if (leave_status == "Pending") {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Icon(
+            Iconsax.timer,
+            color: Constanst.color3,
+            size: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 3),
+            child: Text(
+              controller.valuePolaPersetujuan == 1 ||
+                      controller.valuePolaPersetujuan == "1"
+                  ? '$leave_status'
+                  : leave_status == "Pending"
+                      ? "Pending Approval 1"
+                      : "Pending Approval 2",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w500,
+                  color: Constanst.fgPrimary,
+                  fontSize: 14),
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (controllerGlobal.valuePolaPersetujuan.value.toString() == "1") {
+      return Container(
+        child: namaApprove1 == ""
+            ? const SizedBox()
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Iconsax.tick_circle,
+                    color: Colors.green,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    "Approved by  - $namaApprove1",
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.fgPrimary,
+                        fontSize: 16),
+                  ),
+                ],
+              ),
+      );
+    }
+
+    if (leave_status == "Rejected") {
+      return Container(
+        child: namaApprove1 == ""
+            ? const SizedBox()
+            : Text(
+                "Rejected by  - $namaApprove1",
+                style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w500,
+                    color: Constanst.fgPrimary,
+                    fontSize: 16),
+              ),
+      );
+    }
+
+    if (leave_status=="Approve2"){
+          return Container(
+        child: namaApprove1 == ""
+            ? const SizedBox()
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Iconsax.tick_circle,
+                    color: Colors.green,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    "Approved 2 by  - $namaApprove2",
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.fgPrimary,
+                        fontSize: 16),
+                  ),
+                ],
+              ),
+      );
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Icon(
+          Iconsax.timer,
+          color: Constanst.color3,
+          size: 20,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 3),
+          child: Text(
+            controller.valuePolaPersetujuan == 1 ||
+                    controller.valuePolaPersetujuan == "1"
+                ? '$leave_status'
+                : leave_status == "Pending"
+                    ? "Pending Approval 1"
+                    : "Pending Approval 2",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+                fontWeight: FontWeight.w500,
+                color: Constanst.fgPrimary,
+                fontSize: 14),
+          ),
+        ),
+      ],
+    );
+    // if (contr){
+
+    // }else{
+
+    // }
   }
 
   showDataDepartemenAkses({index}) {
@@ -992,5 +1159,232 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
             ),
           );
         });
+  }
+
+
+    Widget singgleApproval(data) {
+    var text = "";
+    if (data['approve_status'] == "Pending") {
+      text = "Pending Approval";
+    }
+    if (data['approve_status'] == "Rejected") {
+      text = "Rejected by - ${data['nama_approve1']}";
+    }
+    if (data['approve_status'] == "Approve") {
+      text = "Approved by - ${data['nama_approve1']}";
+    }
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Status Pengajuan",
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      color: Constanst.fgSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      data['approve_status'] == "Pending"
+                          ? Icon(
+                              Iconsax.timer,
+                              color: Constanst.warning,
+                              size: 22,
+                            )
+                          : data['approve_status'] == "Rejected"
+                              ? Icon(
+                                  Iconsax.tick_circle,
+                                  color: Colors.green,
+                                  size: 22,
+                                )
+                              : Icon(
+                                  Iconsax.tick_circle,
+                                  color: Colors.green,
+                                  size: 22,
+                                ),
+                      // Icon(
+                      //   Iconsax.close_circle,
+                      //   color: Constanst.color4,
+                      //   size: 22,
+                      // ),
+                      const SizedBox(width: 8),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${text} ",
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 14)),
+                          const SizedBox(height: 4),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget multipleApproval(data) {
+    var text = "";
+    var text2 = "";
+    if (data['approve_status'] == "Pending") {
+      text = "Pending Approval 1";
+    }
+    if (data['approve_status'] == "Rejected") {
+      text = "Rejected By - ${data['nama_approve1']}";
+    }
+   
+   
+   
+    if (data['approve_status'] == "Approve") {
+      text = "Approve 1 By - ${data['nama_approve1']}";
+
+      if (data['approve2_status'] == "Pending") {
+        text2 = "Pending Approval 2";
+      }
+      if (data['approve2_status'] == "Rejected") {
+        text2 = "Rejected 1 By - ${data['nama_approve1']}";
+      }
+
+      if (data['approve2_status'] == "Approve") {
+        text2 = "Approved 2 By - ${data['nama_approve2']} ${data['approve2_status'] }";
+      }
+    }
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Status Pengajuan",
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      color: Constanst.fgSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      data['approve_status'] == "Pending"
+                          ? Icon(
+                              Iconsax.timer,
+                              color: Constanst.warning,
+                              size: 22,
+                            )
+                          : data['approve_status'] == "Rejected"
+                              ? Icon(
+                                  Iconsax.close_circle,
+                                  color: Colors.red,
+                                  size: 22,
+                                )
+                              : Icon(
+                                  Iconsax.tick_circle,
+                                  color: Colors.green,
+                                  size: 22,
+                                ),
+                      // Icon(
+                      //   Iconsax.close_circle,
+                      //   color: Constanst.color4,
+                      //   size: 22,
+                      // ),
+                      const SizedBox(width: 8),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${text} ",
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 14)),
+                          const SizedBox(height: 4),
+                        ],
+                      ),
+                    ],
+                  ),
+                  
+                  data['approve_status'] == "Approve"
+                      ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                    padding: EdgeInsets.only(left:2.5,top: 2,bottom: 2),
+                    child: Container(
+                      height: 30,
+                      child:  VerticalDivider(color: Constanst.Secondary,),
+                    ),
+                  ),
+                          Padding(
+                              padding: EdgeInsets.only(top: 0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  data['approve2_status'] == "Pending"
+                                      ? Icon(
+                                          Iconsax.timer,
+                                          color: Constanst.warning,
+                                          size: 22,
+                                        )
+                                      : data['approve2_status'] == "Rejected"
+                                          ? Icon(
+                                              Iconsax.close_circle,
+                                              color: Colors.red,
+                                              size: 22,
+                                            )
+                                          : Icon(
+                                              Iconsax.tick_circle,
+                                              color: Colors.green,
+                                              size: 22,
+                                            ),
+                                  // Icon(
+                                  //   Iconsax.close_circle,
+                                  //   color: Constanst.color4,
+                                  //   size: 22,
+                                  // ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("${text2} ",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14)),
+                                      const SizedBox(height: 4),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      )
+                      : SizedBox(),
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }

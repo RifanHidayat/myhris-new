@@ -499,10 +499,11 @@ class KlaimController extends GetxController {
       'created_by': getEmid,
       'menu_name': 'Klaim',
       'saldo_claim':limitTransaksi.value.toString(),
-      'sisa_claim':(limitTransaksi.value-cv3).toString()
+      'sisa_claim':(limitTransaksi.value-cv3).toString(),
+      'approve_status':"Pending"
     };
     var typeNotifFcm = "Pengajuan Klaim";
-    if (statusForm.value == false) {
+    if (statusForm.value == false) { 
       
       body['activity_name'] =
           "Membuat Pengajuan Klaim. alasan = ${catatan.value.text}";

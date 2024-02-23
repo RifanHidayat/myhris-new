@@ -13,6 +13,7 @@ import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -382,88 +383,93 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
           ),
         ),
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-          ),
-          child: Obx(() => controller.showButton.value == true
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Constanst
-                                .border, // Set the desired border color
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            print(AppData.informasiUser![0].em_id);
-                            print(controller.detailData[0]['em_report_to']);
-                            print(controller.detailData[0]['em_report2_to']);
-                            // print("tes");
-                            showBottomAlasanReject(em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Constanst.color4,
-                              backgroundColor: Constanst.colorWhite,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+      bottomNavigationBar: typeAjuan == "Approve2"
+          ? SizedBox()
+          : SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                ),
+                child: Obx(() => controller.showButton.value == true
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Constanst
+                                      .border, // Set the desired border color
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
-                              elevation: 0,
-                              // padding: EdgeInsets.zero,
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                          child: Text(
-                            'Tolak',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.color4,
-                                fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SizedBox(
-                        height: 40,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            validasiMenyetujui(true, em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Constanst.colorWhite,
-                            backgroundColor: Constanst.colorPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  print(AppData.informasiUser![0].em_id);
+                                  print(
+                                      controller.detailData[0]['em_report_to']);
+                                  print(controller.detailData[0]
+                                      ['em_report2_to']);
+                                  // print("tes");
+                                  showBottomAlasanReject(em_id);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    foregroundColor: Constanst.color4,
+                                    backgroundColor: Constanst.colorWhite,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 0,
+                                    // padding: EdgeInsets.zero,
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                                child: Text(
+                                  'Tolak',
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.color4,
+                                      fontSize: 14),
+                                ),
+                              ),
                             ),
-                            elevation: 0,
-                            // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
                           ),
-                          child: Text(
-                            'Menyetujui',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.colorWhite,
-                                fontSize: 14),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: SizedBox(
+                              height: 40,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  validasiMenyetujui(true, em_id);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Constanst.colorWhite,
+                                  backgroundColor: Constanst.colorPrimary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                  // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                                ),
+                                child: Text(
+                                  'Menyetujui',
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.colorWhite,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              : const SizedBox()),
-        ),
-      ),
+                        ],
+                      )
+                    : const SizedBox()),
+              ),
+            ),
       body: WillPopScope(
           onWillPop: () async {
             controller.alasanReject.value.text = "";
@@ -903,239 +909,245 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                               ),
                             ),
 
-                            typeAjuan == 'Rejected'
-                                ? Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Iconsax.close_circle,
-                                        color: Constanst.color4,
-                                        size: 22,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Status Pengajuan",
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 14,
-                                              color: Constanst.fgSecondary,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                              "Rejected by ${controller.detailData[0]['nama_approve1']}",
-                                              style: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Constanst.fgPrimary,
-                                                  fontSize: 14)),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            controller.detailData[0]['catatan'],
-                                            style: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w400,
-                                                color: Constanst.fgSecondary,
-                                                fontSize: 14),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                : typeAjuan == "Approve" ||
-                                        typeAjuan == "Approve 1" ||
-                                        typeAjuan == "Approve 2"
-                                    ? Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Icon(
-                                            Iconsax.timer,
-                                            color: Constanst.color3,
-                                            size: 22,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Status Pengajuan",
-                                                style: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
-                                                  color: Constanst.fgSecondary,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 3),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      controller.valuePolaPersetujuan ==
-                                                                  1 ||
-                                                              controller
-                                                                      .valuePolaPersetujuan ==
-                                                                  "1"
-                                                          ? controller
-                                                                  .detailData[0]
-                                                              ['leave_status']
-                                                          : controller.detailData[
-                                                                          0][
-                                                                      'leave_status'] ==
-                                                                  "Pending"
-                                                              ? "Pending Approval 1"
-                                                              : "Pending Approval 2",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: Constanst
-                                                              .fgPrimary,
-                                                          fontSize: 14),
-                                                    ),
-                                                    controller.detailData[0][
-                                                                    'nama_approve1'] ==
-                                                                "" ||
-                                                            controller.detailData[
-                                                                        0][
-                                                                    'leave_status'] ==
-                                                                "Pending"
-                                                        ? const SizedBox()
-                                                        : Text(
-                                                            "Approve 1 by - ${controller.detailData[0]['nama_approve1']}",
-                                                            style: GoogleFonts.inter(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Constanst
-                                                                    .fgPrimary,
-                                                                fontSize: 14),
-                                                          ),
-                                                  ],
-                                                ),
-                                              ),
-                                              // const SizedBox(height: 4),
-                                              // InkWell(
-                                              //     onTap: () {
-                                              //       var dataEmployee = {
-                                              //         'nameType': '$namaTypeAjuan',
-                                              //         'nomor_ajuan': '$nomorAjuan',
-                                              //       };
-                                              //       controllerGlobal
-                                              //           .showDataPilihAtasan(dataEmployee);
-                                              //     },
-                                              //     child: Text("Konfirmasi via Whatsapp",
-                                              //         style: GoogleFonts.inter(
-                                              //             fontWeight: FontWeight.w400,
-                                              //             color: Constanst.infoLight,
-                                              //             fontSize: 14))),
-                                            ],
-                                          ),
-                                        ],
-                                      )
-                                    : Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Icon(
-                                            Iconsax.timer,
-                                            color: Constanst.color3,
-                                            size: 22,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Status Pengajuan",
-                                                style: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
-                                                  color: Constanst.fgSecondary,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 3),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      controller.valuePolaPersetujuan ==
-                                                                  1 ||
-                                                              controller
-                                                                      .valuePolaPersetujuan ==
-                                                                  "1"
-                                                          ? controller
-                                                                  .detailData[0]
-                                                              ['leave_status']
-                                                          : controller.detailData[
-                                                                          0][
-                                                                      'leave_status'] ==
-                                                                  "Pending"
-                                                              ? "Pending Approval 1"
-                                                              : "Pending Approval 2",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: Constanst
-                                                              .fgPrimary,
-                                                          fontSize: 14),
-                                                    ),
-                                                    controller.detailData[0][
-                                                                    'nama_approve1'] ==
-                                                                "" ||
-                                                            controller.detailData[
-                                                                        0][
-                                                                    'leave_status'] ==
-                                                                "Pending"
-                                                        ? const SizedBox()
-                                                        : Text(
-                                                            "Approve 1 by - ${controller.detailData[0]['nama_approve1']}",
-                                                            style: GoogleFonts.inter(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Constanst
-                                                                    .fgPrimary,
-                                                                fontSize: 14),
-                                                          ),
-                                                  ],
-                                                ),
-                                              ),
-                                              // const SizedBox(height: 4),
-                                              // InkWell(
-                                              //     onTap: () {
-                                              //       var dataEmployee = {
-                                              //         'nameType': '$namaTypeAjuan',
-                                              //         'nomor_ajuan': '$nomorAjuan',
-                                              //       };
-                                              //       controllerGlobal
-                                              //           .showDataPilihAtasan(dataEmployee);
-                                              //     },
-                                              //     child: Text("Konfirmasi via Whatsapp",
-                                              //         style: GoogleFonts.inter(
-                                              //             fontWeight: FontWeight.w400,
-                                              //             color: Constanst.infoLight,
-                                              //             fontSize: 14))),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                            //singgle approval
+                           controller.valuePolaPersetujuan == 1 ||
+                                    controller.valuePolaPersetujuan == "1"
+                                ? singgleApproval(controller.detailData[0])
+                                : multipleApproval(controller.detailData[0])
+
+                            // typeAjuan == 'Rejected'
+                            //     ? Row(
+                            //         crossAxisAlignment:
+                            //             CrossAxisAlignment.start,
+                            //         children: [
+                            //           Icon(
+                            //             Iconsax.close_circle,
+                            //             color: Constanst.color4,
+                            //             size: 22,
+                            //           ),
+                            //           const SizedBox(width: 8),
+                            //           Column(
+                            //             crossAxisAlignment:
+                            //                 CrossAxisAlignment.start,
+                            //             children: [
+                            //               Text(
+                            //                 "Status Pengajuan",
+                            //                 style: GoogleFonts.inter(
+                            //                   fontWeight: FontWeight.w400,
+                            //                   fontSize: 14,
+                            //                   color: Constanst.fgSecondary,
+                            //                 ),
+                            //               ),
+                            //               const SizedBox(height: 4),
+                            //               Text(
+                            //                   "Rejected by ${controller.detailData[0]['nama_approve1']}",
+                            //                   style: GoogleFonts.inter(
+                            //                       fontWeight: FontWeight.w500,
+                            //                       color: Constanst.fgPrimary,
+                            //                       fontSize: 14)),
+                            //               const SizedBox(height: 4),
+                            //               Text(
+                            //                 controller.detailData[0]['catatan'],
+                            //                 style: GoogleFonts.inter(
+                            //                     fontWeight: FontWeight.w400,
+                            //                     color: Constanst.fgSecondary,
+                            //                     fontSize: 14),
+                            //               )
+                            //             ],
+                            //           ),
+                            //         ],
+                            //       )
+                            //     : typeAjuan == "Approve" ||
+                            //             typeAjuan == "Approve1" ||
+                            //             typeAjuan == "Approve2"
+                            //         ? Row(
+                            //             crossAxisAlignment:
+                            //                 CrossAxisAlignment.start,
+                            //             children: [
+                            //               Icon(
+                            //                 Iconsax.timer,
+                            //                 color: Constanst.color3,
+                            //                 size: 22,
+                            //               ),
+                            //               const SizedBox(width: 8),
+                            //               Column(
+                            //                 crossAxisAlignment:
+                            //                     CrossAxisAlignment.start,
+                            //                 children: [
+                            //                   Text(
+                            //                     "Status Pengajuan",
+                            //                     style: GoogleFonts.inter(
+                            //                       fontWeight: FontWeight.w400,
+                            //                       fontSize: 14,
+                            //                       color: Constanst.fgSecondary,
+                            //                     ),
+                            //                   ),
+                            //                   const SizedBox(height: 4),
+                            //                   Padding(
+                            //                     padding: const EdgeInsets.only(
+                            //                         left: 3),
+                            //                     child: Column(
+                            //                       crossAxisAlignment:
+                            //                           CrossAxisAlignment.start,
+                            //                       children: [
+                            //                         Text(
+                            // controller.valuePolaPersetujuan ==
+                            //             1 ||
+                            //         controller
+                            //                 .valuePolaPersetujuan ==
+                            //             "1"
+                            //                               ? controller
+                            //                                       .detailData[0]
+                            //                                   ['leave_status']
+                            //                               : controller.detailData[
+                            //                                               0][
+                            //                                           'leave_status'] ==
+                            //                                       "Pending"
+                            //                                   ? "Pending Approval 1"
+                            //                                   : "Pending Approval 2",
+                            //                           textAlign:
+                            //                               TextAlign.center,
+                            //                           style: GoogleFonts.inter(
+                            //                               fontWeight:
+                            //                                   FontWeight.w500,
+                            //                               color: Constanst
+                            //                                   .fgPrimary,
+                            //                               fontSize: 14),
+                            //                         ),
+                            //                         controller.detailData[0][
+                            //                                         'nama_approve1'] ==
+                            //                                     "" ||
+                            //                                 controller.detailData[
+                            //                                             0][
+                            //                                         'leave_status'] ==
+                            //                                     "Pending"
+                            //                             ? const SizedBox()
+                            //                             : Text(
+                            //                                 "Approve 1 by - ${controller.detailData[0]['nama_approve1']}",
+                            //                                 style: GoogleFonts.inter(
+                            //                                     fontWeight:
+                            //                                         FontWeight
+                            //                                             .w500,
+                            //                                     color: Constanst
+                            //                                         .fgPrimary,
+                            //                                     fontSize: 14),
+                            //                               ),
+                            //                       ],
+                            //                     ),
+                            //                   ),
+                            //                   // const SizedBox(height: 4),
+                            //                   // InkWell(
+                            //                   //     onTap: () {
+                            //                   //       var dataEmployee = {
+                            //                   //         'nameType': '$namaTypeAjuan',
+                            //                   //         'nomor_ajuan': '$nomorAjuan',
+                            //                   //       };
+                            //                   //       controllerGlobal
+                            //                   //           .showDataPilihAtasan(dataEmployee);
+                            //                   //     },
+                            //                   //     child: Text("Konfirmasi via Whatsapp",
+                            //                   //         style: GoogleFonts.inter(
+                            //                   //             fontWeight: FontWeight.w400,
+                            //                   //             color: Constanst.infoLight,
+                            //                   //             fontSize: 14))),
+                            //                 ],
+                            //               ),
+                            //             ],
+                            //           )
+                            //         : Row(
+                            //             crossAxisAlignment:
+                            //                 CrossAxisAlignment.start,
+                            //             children: [
+                            //               Icon(
+                            //                 Iconsax.timer,
+                            //                 color: Constanst.color3,
+                            //                 size: 22,
+                            //               ),
+                            //               const SizedBox(width: 8),
+                            //               Column(
+                            //                 crossAxisAlignment:
+                            //                     CrossAxisAlignment.start,
+                            //                 children: [
+                            //                   Text(
+                            //                     "Status Pengajuan",
+                            //                     style: GoogleFonts.inter(
+                            //                       fontWeight: FontWeight.w400,
+                            //                       fontSize: 14,
+                            //                       color: Constanst.fgSecondary,
+                            //                     ),
+                            //                   ),
+                            //                   const SizedBox(height: 4),
+                            //                   Padding(
+                            //                     padding: const EdgeInsets.only(
+                            //                         left: 3),
+                            //                     child: Column(
+                            //                       crossAxisAlignment:
+                            //                           CrossAxisAlignment.start,
+                            //                       children: [
+                            //                         Text(
+                            //                           controller.valuePolaPersetujuan ==
+                            //                                       1 ||
+                            //                                   controller
+                            //                                           .valuePolaPersetujuan ==
+                            //                                       "1"
+                            //                               ? controller
+                            //                                       .detailData[0]
+                            //                                   ['leave_status']
+                            //                               : controller.detailData[
+                            //                                               0][
+                            //                                           'leave_status'] ==
+                            //                                       "Pending"
+                            //                                   ? "Pending Approval 1"
+                            //                                   : "Pending Approval 2",
+                            //                           textAlign:
+                            //                               TextAlign.center,
+                            //                           style: GoogleFonts.inter(
+                            //                               fontWeight:
+                            //                                   FontWeight.w500,
+                            //                               color: Constanst
+                            //                                   .fgPrimary,
+                            //                               fontSize: 14),
+                            //                         ),
+                            //                         controller.detailData[0][
+                            //                                         'nama_approve1'] ==
+                            //                                     "" ||
+                            //                                 controller.detailData[
+                            //                                             0][
+                            //                                         'leave_status'] ==
+                            //                                     "Pending"
+                            //                             ? const SizedBox()
+                            //                             : Text(
+                            //                                 "Approve 1 by - ${controller.detailData[0]['nama_approve1']}",
+                            //                                 style: GoogleFonts.inter(
+                            //                                     fontWeight:
+                            //                                         FontWeight
+                            //                                             .w500,
+                            //                                     color: Constanst
+                            //                                         .fgPrimary,
+                            //                                     fontSize: 14),
+                            //                               ),
+                            //                       ],
+                            //                     ),
+                            //                   ),
+                            //                   // const SizedBox(height: 4),
+                            //                   // InkWell(
+                            //                   //     onTap: () {
+                            //                   //       var dataEmployee = {
+                            //                   //         'nameType': '$namaTypeAjuan',
+                            //                   //         'nomor_ajuan': '$nomorAjuan',
+                            //                   //       };
+                            //                   //       controllerGlobal
+                            //                   //           .showDataPilihAtasan(dataEmployee);
+                            //                   //     },
+                            //                   //     child: Text("Konfirmasi via Whatsapp",
+                            //                   //         style: GoogleFonts.inter(
+                            //                   //             fontWeight: FontWeight.w400,
+                            //                   //             color: Constanst.infoLight,
+                            //                   //             fontSize: 14))),
+                            //                 ],
+                            //               ),
+                            //             ],
+                            //           ),
                             // controllerGlobal.valuePolaPersetujuan.value ==
                             //             "1" ||
                             //         controller.detailData[0]['nama_approve1'] ==
@@ -1155,6 +1167,232 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
               ),
             ),
           )),
+    );
+  }
+
+  Widget singgleApproval(data) {
+    var text = "";
+    if (data['approve_status'] == "Pending") {
+      text = "Pending Approval";
+    }
+    if (data['approve_status'] == "Rejected") {
+      text = "Rejected by - ${data['nama_approve1']}";
+    }
+    if (data['approve_status'] == "Approve") {
+      text = "Approved by - ${data['nama_approve1']}";
+    }
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Status Pengajuan",
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      color: Constanst.fgSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      data['approve_status'] == "Pending"
+                          ? Icon(
+                              Iconsax.timer,
+                              color: Constanst.warning,
+                              size: 22,
+                            )
+                          : data['approve_status'] == "Rejected"
+                              ? Icon(
+                                  Iconsax.tick_circle,
+                                  color: Colors.green,
+                                  size: 22,
+                                )
+                              : Icon(
+                                  Iconsax.tick_circle,
+                                  color: Colors.green,
+                                  size: 22,
+                                ),
+                      // Icon(
+                      //   Iconsax.close_circle,
+                      //   color: Constanst.color4,
+                      //   size: 22,
+                      // ),
+                      const SizedBox(width: 8),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${text} ",
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 14)),
+                          const SizedBox(height: 4),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget multipleApproval(data) {
+    var text = "";
+    var text2 = "";
+    if (data['approve_status'] == "Pending") {
+      text = "Pending Approval 1";
+    }
+    if (data['approve_status'] == "Rejected") {
+      text = "Rejected By - ${data['nama_approve1']}";
+    }
+   
+   
+   
+    if (data['approve_status'] == "Approve") {
+      text = "Approve 1 By - ${data['nama_approve1']}";
+
+      if (data['approve2_status'] == "Pending") {
+        text2 = "Pending Approval 2";
+      }
+      if (data['approve2_status'] == "Rejected") {
+        text2 = "Rejected 1 By - ${data['nama_approve1']}";
+      }
+
+      if (data['approve2_status'] == "Approve") {
+        text2 = "Approved 2 By - ${data['nama_approve2']} ${data['approve2_status'] }";
+      }
+    }
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Status Pengajuan",
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      color: Constanst.fgSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      data['approve_status'] == "Pending"
+                          ? Icon(
+                              Iconsax.timer,
+                              color: Constanst.warning,
+                              size: 22,
+                            )
+                          : data['approve_status'] == "Rejected"
+                              ? Icon(
+                                  Iconsax.close_circle,
+                                  color: Colors.red,
+                                  size: 22,
+                                )
+                              : Icon(
+                                  Iconsax.tick_circle,
+                                  color: Colors.green,
+                                  size: 22,
+                                ),
+                      // Icon(
+                      //   Iconsax.close_circle,
+                      //   color: Constanst.color4,
+                      //   size: 22,
+                      // ),
+                      const SizedBox(width: 8),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${text} ",
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 14)),
+                          const SizedBox(height: 4),
+                        ],
+                      ),
+                    ],
+                  ),
+                  
+                  data['approve_status'] == "Approve"
+                      ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                    padding: EdgeInsets.only(left:2.5,top: 2,bottom: 2),
+                    child: Container(
+                      height: 30,
+                      child:  VerticalDivider(color: Constanst.Secondary,),
+                    ),
+                  ),
+                          Padding(
+                              padding: EdgeInsets.only(top: 0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  data['approve2_status'] == "Pending"
+                                      ? Icon(
+                                          Iconsax.timer,
+                                          color: Constanst.warning,
+                                          size: 22,
+                                        )
+                                      : data['approve2_status'] == "Rejected"
+                                          ? Icon(
+                                              Iconsax.close_circle,
+                                              color: Colors.red,
+                                              size: 22,
+                                            )
+                                          : Icon(
+                                              Iconsax.tick_circle,
+                                              color: Colors.green,
+                                              size: 22,
+                                            ),
+                                  // Icon(
+                                  //   Iconsax.close_circle,
+                                  //   color: Constanst.color4,
+                                  //   size: 22,
+                                  // ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("${text2} ",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: Constanst.fgPrimary,
+                                              fontSize: 14)),
+                                      const SizedBox(height: 4),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      )
+                      : SizedBox(),
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 

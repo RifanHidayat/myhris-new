@@ -733,7 +733,8 @@ class CutiController extends GetxController {
         'leave_files': namaFileUpload.value,
         'ajuan': '1',
         'created_by': getEmid,
-        'menu_name': 'Cuti'
+        'menu_name': 'Cuti',
+           'apply_status':"Pending"
       };
     } else {
       body = {
@@ -753,7 +754,8 @@ class CutiController extends GetxController {
         'leave_files': namaFileUpload.value,
         'ajuan': '1',
         'created_by': getEmid,
-        'menu_name': 'Cuti'
+        'menu_name': 'Cuti',
+           'apply_status':"Pending"
       };
     }
 

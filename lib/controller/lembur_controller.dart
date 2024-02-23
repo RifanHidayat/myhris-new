@@ -491,7 +491,8 @@ class LemburController extends GetxController {
       'uraian': catatan.value.text,
       'ajuan': '1',
       'created_by': getEmid,
-      'menu_name': 'Lembur'
+      'menu_name': 'Lembur',
+      'approve_status':"pending"
     };
     var typeNotifFcm = "Pengajuan Lembur";
     if (statusForm.value == false) {

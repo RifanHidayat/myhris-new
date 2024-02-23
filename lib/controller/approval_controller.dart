@@ -158,6 +158,7 @@ class ApprovalController extends GetxController {
             'leave_status': filterStatus,
             'delegasi': element['em_delegation'],
             'nama_approve1': element['apply_by'],
+               'nama_approve2': element['apply2_by'],
             'waktu_pengajuan': element['atten_date'],
             'catatan': element['reason'],
             'type': 'Cuti',
@@ -170,6 +171,8 @@ class ApprovalController extends GetxController {
             'nama_divisi': element['nama_divisi'],
             'nomor_ajuan': element['nomor_ajuan'],
             'image': element['image'],
+            'apply_status': element['apply_status'],
+             'apply2_status': element['apply2_status'],
           };
           listData.value.add(data);
           listDataRiwayat.value.add(data);
@@ -224,6 +227,7 @@ class ApprovalController extends GetxController {
             'leave_status': filterStatus,
             'delegasi': element['em_delegation'],
             'nama_approve1': element['approve_by'],
+             'nama_approve2': element['approve2_by'],
             'waktu_pengajuan': element['atten_date'],
             'catatan': element['uraian'],
             'type': 'Lembur',
@@ -235,6 +239,8 @@ class ApprovalController extends GetxController {
             'nama_pengajuan': element['nama_pengajuan'],
             'nama_divisi': element['nama_divisi'],
             'nomor_ajuan': element['nomor_ajuan'],
+            'approve_status': element['approve_status'],
+            'approve2_status': element['approve2_status'],
             'image': element['image'],
           };
           listData.value.sort(
@@ -337,7 +343,7 @@ class ApprovalController extends GetxController {
         }
         listNotModif.value = valueBody['data'];
 
-        print("data body ${valueBody['data']}");
+        print("data body 2 ${valueBody['data']}");
         for (var element in valueBody['data']) {
           var fullName = element['full_name'] ?? "";
           var convertNama = "$fullName";
@@ -359,6 +365,7 @@ class ApprovalController extends GetxController {
             'leave_status': filterStatus,
             'delegasi': element['em_delegation'],
             'nama_approve1': element['approve_by'],
+               'nama_approve2': element['approve2_by'],
             'waktu_pengajuan': element['atten_date'],
             'catatan': element['reason'],
             'type': 'absensi',
@@ -377,7 +384,9 @@ class ApprovalController extends GetxController {
             'approve_id': element['approve_id'],
             'approve_by': element['approve_by'],
             'approve_date': element['approve_date'],
-            'status': element['status']
+            'status': element['status'],
+                'approve_status': element['approve_status'],
+                         'approve2_status': element['approve2_status']
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -433,6 +442,7 @@ class ApprovalController extends GetxController {
             'leave_status': filterStatus,
             'delegasi': element['em_delegation'],
             'nama_approve1': element['apply_by'],
+            'nama_approve2': element['apply2_by'],
             'waktu_pengajuan': element['atten_date'],
             'catatan': element['reason'],
             'type': element['nama_tipe'],
@@ -448,6 +458,8 @@ class ApprovalController extends GetxController {
             'nomor_ajuan': element['nomor_ajuan'],
             'image': element['image'],
             'date_selected': element['date_selected'],
+            'apply_status': element['apply_status'],
+            'apply2_status': element['apply2_status'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -501,6 +513,9 @@ class ApprovalController extends GetxController {
             'leave_status': filterStatus,
             'delegasi': element['em_delegation'],
             'nama_approve1': element['approve_by'],
+            'approve_status': element['approve_status'],
+              'approve2_status': element['approve2_status'],
+            'nama_approve2': element['approve2_by'],
             'waktu_pengajuan': element['atten_date'],
             'catatan': element['uraian'],
             'type': 'Tugas Luar',
@@ -546,6 +561,7 @@ class ApprovalController extends GetxController {
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+        print(valueBody);
         if (valueBody['data'].length == 0) {
           loadingString.value = 'Tidak ada pengajuan';
         }
@@ -569,6 +585,7 @@ class ApprovalController extends GetxController {
             'leave_status': filterStatus,
             'delegasi': element['em_delegation'],
             'nama_approve1': element['apply_by'],
+             'nama_approve2': element['apply2_by'],
             'waktu_pengajuan': element['atten_date'],
             'catatan': element['reason'],
             'type': "Dinas Luar",
@@ -580,6 +597,9 @@ class ApprovalController extends GetxController {
             'nama_divisi': element['nama_divisi'],
             'nomor_ajuan': element['nomor_ajuan'],
             'image': element['image'],
+             'apply_status': element['apply_status'],
+              'apply2_status': element['apply2_status'],
+
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -636,6 +656,7 @@ class ApprovalController extends GetxController {
             'leave_status': filterStatus,
             'delegasi': "",
             'nama_approve1': element['approve_by'],
+                'nama_approve2': element['approve2_by'],
             'waktu_pengajuan': tanggalPembuatan,
             'catatan': element['description'],
             'type': "Klaim",
@@ -900,9 +921,9 @@ class ApprovalController extends GetxController {
             style: styleChose,
             buttonStatus: 1,
             positiveBtnPressed: () {
-              print(detailData[0]);
-              if (detailData[0]['type'] == 'absensi') {
-                print("masuk sini ${detailData[0]['type']}");
+              print("data detail ${detailData[0]}");
+              if (detailData[0]['type'] == 'absensi' || detailData[0]['type'] == 'Absensi') {
+                print("masuk sini  ${detailData[0]['type']}");
                 approvalAbsensi(
                     pilihan: pilihan,
                     date: detailData[0]['waktu_pengajuan'].toString(),
@@ -914,6 +935,7 @@ class ApprovalController extends GetxController {
                     ajuanEmid: detailData[0]['em_id'].toString(),
                     id: detailData[0]['id'].toString());
               } else {
+                    print("Aksi menyetujui  ${detailData[0]['type']}");
                 UtilsAlert.loadingSimpanData(
                     Get.context!, "Proses $stringPilihan pengajuan");
                 aksiMenyetujui(pilihan);
@@ -1022,17 +1044,22 @@ class ApprovalController extends GetxController {
     var applyDate1 = "";
     var applyBy1 = "";
     var applyId1 = "";
+    var applyStatus = null;
+
     var applyDate2 = "";
     var applyBy2 = "";
     var applyId2 = "";
+    var apply2Status = null;
     if (valuePolaPersetujuan.value == "1") {
       statusPengajuan = pilihan == true ? 'Approve' : 'Rejected';
       applyDate1 = tanggalNow;
       applyBy1 = namaAtasanApprove;
       applyId1 = "$getEmpid";
+      applyStatus = statusPengajuan;
       applyDate2 = "";
       applyBy2 = "";
       applyId2 = "";
+      apply2Status = null;
     } else {
       if (url_tujuan == "edit-emp_leave") {
         if (dataEditFinal[0]['leave_status'] == "Pending") {
@@ -1040,17 +1067,23 @@ class ApprovalController extends GetxController {
           applyDate1 = tanggalNow;
           applyBy1 = namaAtasanApprove;
           applyId1 = "$getEmpid";
+          applyStatus = pilihan == true ? 'Approve' : 'Rejected';
           applyDate2 = "";
           applyBy2 = "";
           applyId2 = "";
+          apply2Status = "Pending";
         } else if (dataEditFinal[0]['leave_status'] == "Approve") {
           statusPengajuan = pilihan == true ? 'Approve2' : 'Rejected';
           applyDate1 = dataEditFinal[0]['apply_date'];
           applyBy1 = dataEditFinal[0]['apply_by'];
           applyId1 = dataEditFinal[0]['apply_id'];
+
+          applyStatus = dataEditFinal[0]['apply_status'];
+
           applyDate2 = tanggalNow;
           applyBy2 = namaAtasanApprove;
           applyId2 = "$getEmpid";
+          apply2Status = pilihan == true ? 'Approve' : 'Rejected';
         }
       } else {
         if (dataEditFinal[0]['status'] == "Pending") {
@@ -1061,11 +1094,15 @@ class ApprovalController extends GetxController {
           applyDate2 = "";
           applyBy2 = "";
           applyId2 = "";
+          applyStatus = pilihan == true ? 'Approve' : 'Rejected';
+          apply2Status='Pending';
         } else if (dataEditFinal[0]['status'] == "Approve") {
           statusPengajuan = pilihan == true ? 'Approve2' : 'Rejected';
           applyDate1 = dataEditFinal[0]['approve_date'];
           applyBy1 = dataEditFinal[0]['approve_by'];
           applyId1 = dataEditFinal[0]['approve_id'].toString();
+          applyStatus = dataEditFinal[0]['approve_status'].toString();
+          apply2Status = pilihan == true ? 'Approve' : 'Rejected';
           applyDate2 = tanggalNow;
           applyBy2 = namaAtasanApprove;
           applyId2 = "$getEmpid";
@@ -1103,9 +1140,11 @@ class ApprovalController extends GetxController {
         'val': 'id',
         'cari': dataEditFinal[0]['id'],
         'activity_name':
-            "$statusPengajuan Pengajuan ${detailData[0]['type']} pada tanggal $tanggalNow. Pengajuan atas nama ${detailData[0]['nama_pengaju']} $alasanRejectShow"
+            "$statusPengajuan Pengajuan ${detailData[0]['type']} pada tanggal $tanggalNow. Pengajuan atas nama ${detailData[0]['nama_pengaju']} $alasanRejectShow",
+        'apply_status': applyStatus,
+        'apply2_status': apply2Status
       };
-      print(body.toString());
+      print("body approval ${body.toString()}");
       var connect = Api.connectionApi("post", body, "edit-emp_leave");
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
@@ -1150,7 +1189,9 @@ class ApprovalController extends GetxController {
         'val': 'id',
         'cari': dataEditFinal[0]['id'],
         'activity_name':
-            "$statusPengajuan Pengajuan ${detailData[0]['type']} pada tanggal $tanggalNow. Pengajuan atas nama ${detailData[0]['nama_pengaju']} $alasanRejectShow"
+            "$statusPengajuan Pengajuan ${detailData[0]['type']} pada tanggal $tanggalNow. Pengajuan atas nama ${detailData[0]['nama_pengaju']} $alasanRejectShow",
+        "approve_status": applyStatus,
+        "approve2_status": apply2Status
       };
       var connect = Api.connectionApi("post", body, "edit-emp_labor");
       connect.then((dynamic res) {
@@ -1293,6 +1334,10 @@ class ApprovalController extends GetxController {
     var applyBy2 = "";
     var applyId2 = "";
 
+    var applyStatus=null;
+    var apply2Status=null;
+    
+
     if (pola == "1" || pola == 1) {
       statusPengajuan = pilihan == true ? 'Approve' : 'Rejected';
       applyDate1 =
@@ -1302,16 +1347,25 @@ class ApprovalController extends GetxController {
       applyDate2 = "";
       applyBy2 = "";
       applyId2 = "";
+      applyStatus= pilihan == true ? 'Approve' : 'Rejected';
     } else {
       if (leaveStatus == "Pending") {
         statusPengajuan = pilihan == true ? 'Approve' : 'Rejected';
+ 
         applyDate1 =
             DateFormat('yyyy-MM-dd').format(DateTime.parse(date)).toString();
         applyBy1 = name;
         applyId1 = emId;
+
         applyDate2 = "";
         applyBy2 = "";
         applyId2 = "";
+        applyStatus= pilihan == true ? 'Approve' : 'Rejected'; 
+        apply2Status= pilihan == true ? 'Pending' : 'Rejected';
+    
+
+  
+    
       } else if (leaveStatus == "Approve") {
         statusPengajuan = pilihan == true ? 'Approve2' : 'Rejected';
         applyDate1 = apdDate1;
@@ -1321,6 +1375,7 @@ class ApprovalController extends GetxController {
             DateFormat('yyyy-MM-dd').format(DateTime.parse(date)).toString();
         applyBy2 = name;
         applyId2 = emId;
+        apply2Status= pilihan == true ? 'Approve' : 'Rejected';
       }
     }
     var alasanRejectShow = alasanReject.value.text != ""
@@ -1352,9 +1407,11 @@ class ApprovalController extends GetxController {
       "approve_date1": applyDate1,
       "approve_id2": applyId2,
       "approve_by2": applyBy2,
-      "approve_date2": applyDate2
+      "approve_date2": applyDate2,
+      "approve_status":  applyStatus??"Pending",
+      "approve2_status":apply2Status
     };
-    print(" ${leaveStatus} body ${body}");
+   
 
     var connect =
         Api.connectionApi("post", body, "approval-employee-attendance");
@@ -1370,11 +1427,12 @@ class ApprovalController extends GetxController {
           Get.back();
           Get.back();
           Get.back();
+            Get.back();
           UtilsAlert.showToast('Berhasil menyetujui pengajuan employee');
 
           return true;
         } else {
-          UtilsAlert.showToast('gagal approved');
+        //  UtilsAlert.showToast('gagal approved');
 
           Get.back();
           return false;

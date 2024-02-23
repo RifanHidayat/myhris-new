@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
+import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/screen/pesan/detail_persetujuan_lembur.dart';
 import 'package:siscom_operasional/utils/api.dart';
@@ -22,6 +23,7 @@ class PersetujuanLembur extends StatefulWidget {
 
 class _PersetujuanLemburState extends State<PersetujuanLembur> {
   var controller = Get.put(ApprovalController());
+   var controllerGlobal = Get.put(GlobalController());
 
   @override
   void initState() {
@@ -186,7 +188,7 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
           },
           child: SafeArea(
               child: Obx(() => DefaultTabController(
-                    length: 2,
+                    length: 2, 
                     child: Column(
                       children: [
                         TabBar(
@@ -513,49 +515,50 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
                               color: Constanst.border,
                             ),
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Iconsax.timer,
-                                color: Constanst.color3,
-                                size: 20,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 3),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      controller.valuePolaPersetujuan == 1 ||
-                                              controller.valuePolaPersetujuan ==
-                                                  "1"
-                                          ? '$leave_status'
-                                          : leave_status == "Pending"
-                                              ? "Pending Approval 1"
-                                              : "Pending Approval 2",
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w500,
-                                          color: Constanst.fgPrimary,
-                                          fontSize: 14),
-                                    ),
-                                    namaApprove1 == "" ||
-                                            leave_status == "Pending"
-                                        ? const SizedBox()
-                                        : Text(
-                                            "Approve 1 by - $namaApprove1",
-                                            style: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w500,
-                                                color: Constanst.fgPrimary,
-                                                fontSize: 14),
-                                          ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                           _approval(index)
+                          // Row(
+                          //   crossAxisAlignment: CrossAxisAlignment.start,
+                          //   mainAxisAlignment: MainAxisAlignment.start,
+                          //   children: [
+                          //     Icon(
+                          //       Iconsax.timer,
+                          //       color: Constanst.color3,
+                          //       size: 20,
+                          //     ),
+                          //     Padding(
+                          //       padding: const EdgeInsets.only(left: 3),
+                          //       child: Column(
+                          //         crossAxisAlignment: CrossAxisAlignment.start,
+                          //         children: [
+                          //           Text(
+                          //             controller.valuePolaPersetujuan == 1 ||
+                          //                     controller.valuePolaPersetujuan ==
+                          //                         "1"
+                          //                 ? '$leave_status'
+                          //                 : leave_status == "Pending"
+                          //                     ? "Pending Approval 1"
+                          //                     : "Pending Approval 2",
+                          //             textAlign: TextAlign.center,
+                          //             style: GoogleFonts.inter(
+                          //                 fontWeight: FontWeight.w500,
+                          //                 color: Constanst.fgPrimary,
+                          //                 fontSize: 14),
+                          //           ),
+                          //           namaApprove1 == "" ||
+                          //                   leave_status == "Pending"
+                          //               ? const SizedBox()
+                          //               : Text(
+                          //                   "Approve 1 by - $namaApprove1",
+                          //                   style: GoogleFonts.inter(
+                          //                       fontWeight: FontWeight.w500,
+                          //                       color: Constanst.fgPrimary,
+                          //                       fontSize: 14),
+                          //                 ),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),
@@ -739,5 +742,165 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
             ),
           );
         });
+  }
+
+
+  
+  Widget _approval(index) {
+    var data = controller.listData[index];
+    var namaApprove1 = controller.listData.value[index]['nama_approve1']??"";
+    var namaApprove2 = controller.listData.value[index]['nama_approve2']??"";
+    var leave_status = controller.listData.value[index]['leave_status']??"";
+
+    if (leave_status == "Rejected") {
+      return Container(
+        child: namaApprove1 == ""
+            ? const SizedBox()
+            : Row(
+                children: [
+                  Icon(
+                    Iconsax.close_circle,
+                    color: Colors.red,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    "rejected by  - $namaApprove1",
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.fgPrimary,
+                        fontSize: 16),
+                  ),
+                ],
+              ),
+      );
+    }
+
+    if (leave_status == "Pending") {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Icon(
+            Iconsax.timer,
+            color: Constanst.color3,
+            size: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 3),
+            child: Text(
+              controller.valuePolaPersetujuan == 1 ||
+                      controller.valuePolaPersetujuan == "1"
+                  ? '$leave_status'
+                  : leave_status == "Pending"
+                      ? "Pending Approval 1"
+                      : "Pending Approval 2",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w500,
+                  color: Constanst.fgPrimary,
+                  fontSize: 14),
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (controllerGlobal.valuePolaPersetujuan.value.toString() == "1") {
+      return Container(
+        child: namaApprove1 == ""
+            ? const SizedBox()
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Iconsax.tick_circle,
+                    color: Colors.green,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    "Approved by  - $namaApprove1",
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.fgPrimary,
+                        fontSize: 16),
+                  ),
+                ],
+              ),
+      );
+    }
+
+    if (leave_status == "Rejected") {
+      return Container(
+        child: namaApprove1 == ""
+            ? const SizedBox()
+            : Text(
+                "Rejected by  - $namaApprove1",
+                style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w500,
+                    color: Constanst.fgPrimary,
+                    fontSize: 16),
+              ),
+      );
+    }
+
+    if (leave_status=="Approve2"){
+          return Container(
+        child: namaApprove1 == ""
+            ? const SizedBox()
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Iconsax.tick_circle,
+                    color: Colors.green,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    "Approved 2 by  - $namaApprove2",
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.fgPrimary,
+                        fontSize: 16),
+                  ),
+                ],
+              ),
+      );
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Icon(
+          Iconsax.timer,
+          color: Constanst.color3,
+          size: 20,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 3),
+          child: Text(
+            controller.valuePolaPersetujuan == 1 ||
+                    controller.valuePolaPersetujuan == "1"
+                ? '$leave_status'
+                : leave_status == "Pending"
+                    ? "Pending Approval 1"
+                    : "Pending Approval 2",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+                fontWeight: FontWeight.w500,
+                color: Constanst.fgPrimary,
+                fontSize: 14),
+          ),
+        ),
+      ],
+    );
+    // if (contr){
+
+    // }else{
+
+    // }
   }
 }

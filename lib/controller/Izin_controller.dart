@@ -882,6 +882,7 @@ class IzinController extends GetxController {
       'em_delegation': validasiDelegasiSelected,
       'leave_files': namaFileUpload.value,
       'ajuan': getAjuanType,
+      'apply_status':"Pending"
     };
     print(body);
     if (status == false) {

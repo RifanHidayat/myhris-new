@@ -343,7 +343,7 @@ class AbsenController extends GetxController {
         Get.back();
       } else {
         if (res.statusCode == 200) {
-          print("Place cordinate 200 terbaru " + res.body.toString());
+        
           var valueBody = jsonDecode(res.body);
           selectedType.value = valueBody['data'][0]['place'];
           for (var element in valueBody['data']) {
