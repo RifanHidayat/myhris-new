@@ -21,15 +21,34 @@ class PersetujuanLembur extends StatefulWidget {
   _PersetujuanLemburState createState() => _PersetujuanLemburState();
 }
 
-class _PersetujuanLemburState extends State<PersetujuanLembur> {
+class _PersetujuanLemburState extends State<PersetujuanLembur>
+    with SingleTickerProviderStateMixin {
   var controller = Get.put(ApprovalController());
-   var controllerGlobal = Get.put(GlobalController());
-
+  var controllerGlobal = Get.put(GlobalController());
+  TabController? _tabController;
   @override
   void initState() {
+    _tabController = TabController(length: 3, vsync: this);
     controller.startLoadData(
         widget.title, widget.bulan, widget.tahun, 'persetujuan');
+    _tabController!.addListener(_handleTabChange);
     super.initState();
+  }
+
+  void _handleTabChange() {
+    print("Tab changed: ${_tabController!.index}");
+
+    _tabController!.index == 0
+        ? controller.startLoadData(widget.title,
+            widget.bulan, widget.tahun, 'persetujuan')
+        : controller.startLoadData(widget.title,
+            widget.bulan, widget.tahun, 'riwayat');
+  }
+
+  @override
+  void dispose() {
+    _tabController!.dispose();
+    super.dispose();
   }
 
   @override
@@ -188,7 +207,7 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
           },
           child: SafeArea(
               child: Obx(() => DefaultTabController(
-                    length: 2, 
+                    length: 2,
                     child: Column(
                       children: [
                         TabBar(
@@ -199,14 +218,8 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
                           physics: const BouncingScrollPhysics(),
                           labelColor: Constanst.onPrimary,
                           unselectedLabelColor: Constanst.fgSecondary,
-                          onTap: (value) {
-                            print(value);
-                            value == 0
-                                ? controller.startLoadData(widget.title,
-                                    widget.bulan, widget.tahun, 'persetujuan')
-                                : controller.startLoadData(widget.title,
-                                    widget.bulan, widget.tahun, 'riwayat');
-                          },
+                          controller: _tabController,
+                          onTap: (value) {},
                           tabs: [
                             Padding(
                               padding: const EdgeInsets.only(
@@ -230,6 +243,7 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
                         ),
                         Expanded(
                             child: TabBarView(
+                          controller: _tabController,
                           physics: const BouncingScrollPhysics(),
                           children: [
                             controller.listData.value.isEmpty
@@ -515,7 +529,7 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
                               color: Constanst.border,
                             ),
                           ),
-                           _approval(index)
+                          _approval(index)
                           // Row(
                           //   crossAxisAlignment: CrossAxisAlignment.start,
                           //   mainAxisAlignment: MainAxisAlignment.start,
@@ -744,13 +758,11 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
         });
   }
 
-
-  
   Widget _approval(index) {
     var data = controller.listData[index];
-    var namaApprove1 = controller.listData.value[index]['nama_approve1']??"";
-    var namaApprove2 = controller.listData.value[index]['nama_approve2']??"";
-    var leave_status = controller.listData.value[index]['leave_status']??"";
+    var namaApprove1 = controller.listData.value[index]['nama_approve1'] ?? "";
+    var namaApprove2 = controller.listData.value[index]['nama_approve2'] ?? "";
+    var leave_status = controller.listData.value[index]['leave_status'] ?? "";
 
     if (leave_status == "Rejected") {
       return Container(
@@ -846,8 +858,8 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
       );
     }
 
-    if (leave_status=="Approve2"){
-          return Container(
+    if (leave_status == "Approve2") {
+      return Container(
         child: namaApprove1 == ""
             ? const SizedBox()
             : Row(
@@ -903,7 +915,4 @@ class _PersetujuanLemburState extends State<PersetujuanLembur> {
 
     // }
   }
-
-
-  
 }

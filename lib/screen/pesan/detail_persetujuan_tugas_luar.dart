@@ -33,6 +33,8 @@ class _DetailPersetujuanTugasLuarState
   var controllerGlobal = Get.put(GlobalController());
   int hours = 0, minutes = 0, second = 0;
 
+
+
   void showBottomAlasanReject(em_id) {
     showModalBottomSheet(
       context: Get.context!,
@@ -400,7 +402,7 @@ class _DetailPersetujuanTugasLuarState
             left: 16.0,
             right: 16.0,
           ),
-          child: Obx(() => controller.showButton.value == true
+          child: Obx(() => controller.showButton.value == true && (controller.detailData[0]['status']=="Pending" || controller.detailData[0]['approve_status']=="Pending" || (controller.detailData[0]['approve2_status']=="Pending" && controller.detailData[0]['approve_status']!="Rejected"  ) )
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1192,7 +1194,7 @@ class _DetailPersetujuanTugasLuarState
   
       Widget singgleApproval(data) {
     var text = "";
-    if (data['approve_status'] == "Pending") {
+    if (data['approve_status'] == "Pending" || data['status'] == "Pending") {
       text = "Pending Approval";
     }
     if (data['approve_status'] == "Rejected") {
@@ -1222,7 +1224,7 @@ class _DetailPersetujuanTugasLuarState
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['approve_status'] == "Pending"
+                      data['approve_status'] == "Pending" || data['status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,
@@ -1270,7 +1272,7 @@ class _DetailPersetujuanTugasLuarState
   Widget multipleApproval(data) {
     var text = "";
     var text2 = "";
-    if (data['approve_status'] == "Pending") {
+    if (data['approve_status'] == "Pending" || data['status'] == "Pending") {
       text = "Pending Approval 1";
     }
     if (data['approve_status'] == "Rejected") {
@@ -1286,7 +1288,7 @@ class _DetailPersetujuanTugasLuarState
         text2 = "Pending Approval 2";
       }
       if (data['approve2_status'] == "Rejected") {
-        text2 = "Rejected 1 By - ${data['nama_approve1']}";
+        text2 = "Rejected 2 By - ${data['nama_approve1']}";
       }
 
       if (data['approve2_status'] == "Approve") {

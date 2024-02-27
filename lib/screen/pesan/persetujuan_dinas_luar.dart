@@ -21,18 +21,30 @@ class PersetujuanDinasLuar extends StatefulWidget {
   _PersetujuanDinasLuarState createState() => _PersetujuanDinasLuarState();
 }
 
-class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar> {
+class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar> with SingleTickerProviderStateMixin  {
   var controller = Get.put(ApprovalController());
    var controllerGlobal = Get.put(GlobalController());
-
+    TabController? _tabController;
   @override
   void initState() {
+    _tabController = TabController(length: 3, vsync: this);
+       
     controller.startLoadData(
         widget.title, widget.bulan, widget.tahun, 'persetujuan');
-    // controller.startLoadData("Dinas Luar", widget.bulan, widget.tahun);
+          _tabController!.addListener(_handleTabChange);
     super.initState();
   }
+ 
 
+     void _handleTabChange() {
+    print("Tab changed: ${_tabController!.index}");
+
+    _tabController!.index == 0
+        ? controller.startLoadData(widget.title,
+            widget.bulan, widget.tahun, 'persetujuan')
+        : controller.startLoadData(widget.title,
+            widget.bulan, widget.tahun, 'riwayat');
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -202,13 +214,14 @@ class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar> {
                           physics: const BouncingScrollPhysics(),
                           labelColor: Constanst.onPrimary,
                           unselectedLabelColor: Constanst.fgSecondary,
+                          controller: _tabController,
                           onTap: (value) {
-                            print(value);
-                            value == 0
-                                ? controller.startLoadData(widget.title,
-                                    widget.bulan, widget.tahun, 'persetujuan')
-                                : controller.startLoadData(widget.title,
-                                    widget.bulan, widget.tahun, 'riwayat');
+                            // print(value);
+                            // value == 0
+                            //     ? controller.startLoadData(widget.title,
+                            //         widget.bulan, widget.tahun, 'persetujuan')
+                            //     : controller.startLoadData(widget.title,
+                            //         widget.bulan, widget.tahun, 'riwayat');
                           },
                           tabs: [
                             Padding(
@@ -234,6 +247,7 @@ class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar> {
                         Expanded(
                             child: TabBarView(
                           physics: const BouncingScrollPhysics(),
+                          controller: _tabController,
                           children: [
                             controller.listData.value.isEmpty
                                 ? Center(

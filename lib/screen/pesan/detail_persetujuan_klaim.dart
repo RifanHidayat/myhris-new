@@ -396,7 +396,9 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
             left: 16.0,
             right: 16.0,
           ),
-          child: Obx(() => controller.showButton.value == true
+          child: Obx(() =>  controller.showButton.value == true &&  ( controller.detailData[0]['leave_status']=="Pending"  && (controllerGlobal.valuePolaPersetujuan.value=="1"  || controllerGlobal.valuePolaPersetujuan.value=="1" ) ) || 
+          ( controller.detailData[0]['leave_status']=="Approve"  && (controllerGlobal.valuePolaPersetujuan.value=="2"  || controllerGlobal.valuePolaPersetujuan.value=="2" ) ) 
+                     
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

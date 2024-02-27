@@ -391,7 +391,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                   left: 16.0,
                   right: 16.0,
                 ),
-                child: Obx(() => controller.showButton.value == true
+                child: Obx(() => controller.showButton.value == true && ( controller.detailData[0]['status']=="Pending"|| controller.detailData[0]['approve_status']=="Pending" || (controller.detailData[0]['approve2_status']=="Pending" && controller.detailData[0]['approve_status']!="Rejected"  ) )
                     ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -1172,7 +1172,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
 
   Widget singgleApproval(data) {
     var text = "";
-    if (data['approve_status'] == "Pending") {
+    if (data['approve_status'] == "Pending" || data['status'] == "Pending") {
       text = "Pending Approval";
     }
     if (data['approve_status'] == "Rejected") {
@@ -1202,7 +1202,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['approve_status'] == "Pending"
+                      data['approve_status'] == "Pending" || data['status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,
@@ -1250,7 +1250,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
   Widget multipleApproval(data) {
     var text = "";
     var text2 = "";
-    if (data['approve_status'] == "Pending") {
+    if (data['approve_status'] == "Pending" || data['leave_status'] == "Pending") {
       text = "Pending Approval 1";
     }
     if (data['approve_status'] == "Rejected") {
@@ -1259,14 +1259,14 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
    
    
    
-    if (data['approve_status'] == "Approve") {
+    if (data['approve_status'] == "Approve" || data['leave_status'] == "Approve") {
       text = "Approve 1 By - ${data['nama_approve1']}";
 
       if (data['approve2_status'] == "Pending") {
         text2 = "Pending Approval 2";
       }
       if (data['approve2_status'] == "Rejected") {
-        text2 = "Rejected 1 By - ${data['nama_approve1']}";
+        text2 = "Rejected 2 By - ${data['nama_approve1']}";
       }
 
       if (data['approve2_status'] == "Approve") {

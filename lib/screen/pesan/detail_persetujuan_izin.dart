@@ -386,7 +386,8 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
           left: 16.0,
           right: 16.0,
         ),
-        child: Obx(() => controller.showButton.value == true
+        child: Obx(() => controller.showButton.value == true && (controller.detailData[0]['leave_status']=="Pending"|| controller.detailData[0]['apply_status']=="Pending" || (controller.detailData[0]['apply2_status']=="Pending" && controller.detailData[0]['apply_status']!="Rejected"  ) )
+                     
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1159,13 +1160,13 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
 
     Widget singgleApproval(data) {
     var text = "";
-    if (data['approve_status'] == "Pending") {
+    if (data['apply_status'] == "Pending" || data['leave_status'] == "Pending") {
       text = "Pending Approval";
     }
-    if (data['approve_status'] == "Rejected") {
+    if (data['apply_status'] == "Rejected") {
       text = "Rejected by - ${data['nama_approve1']}";
     }
-    if (data['approve_status'] == "Approve") {
+    if (data['apply_status'] == "Approve") {
       text = "Approved by - ${data['nama_approve1']}";
     }
     return Container(
@@ -1188,14 +1189,14 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
                   const SizedBox(height: 8),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      data['approve_status'] == "Pending"
+                    children: [ 
+                      data['apply_status'] == "Pending" || data['leave_status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,
                               size: 22,
                             )
-                          : data['approve_status'] == "Rejected"
+                          : data['apply_status'] == "Rejected"
                               ? Icon(
                                   Iconsax.tick_circle,
                                   color: Colors.green,
@@ -1237,7 +1238,7 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
   Widget multipleApproval(data) {
     var text = "";
     var text2 = "";
-    if (data['apply_status'] == "Pending") {
+    if (data['apply_status'] == "Pending" || data['apply_status'] == "Pending") {
       text = "Pending Approval 1";
     }
     if (data['apply_status'] == "Rejected") {
@@ -1253,7 +1254,7 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
         text2 = "Pending Approval 2";
       }
       if (data['apply2_status'] == "Rejected") {
-        text2 = "Rejected 1 By - ${data['nama_approve1']}";
+        text2 = "Rejected 2 By - ${data['nama_approve1']}";
       }
 
       if (data['apply2_status'] == "Approve") {

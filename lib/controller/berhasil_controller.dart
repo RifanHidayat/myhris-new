@@ -56,6 +56,9 @@ class BerhasilController extends GetxController {
   }
 
   Future<String> checkUserKontrol() {
+  
+  
+  
      print("check user kontrol");
     Map<String, dynamic> body = {
       'val': 'em_id',
@@ -69,4 +72,6 @@ class BerhasilController extends GetxController {
     });
     return kontrolString;
   }
+
+
 }

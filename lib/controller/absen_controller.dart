@@ -372,7 +372,7 @@ class AbsenController extends GetxController {
   }
 
   void getPlaceCoordinateCheckin() {
-    print("place coodinates");
+                                                               
     placeCoordinateCheckin.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate_pengajuan",
         params:

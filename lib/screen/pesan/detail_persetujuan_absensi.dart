@@ -372,7 +372,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                     fontWeight: FontWeight.w500,
                     fontSize: 20),
               ),
-              leading: controller.statusCari.value || controller.detailData[0]['status']=="Approve" || controller.detailData[0]['status']
+              leading: controller.statusCari.value
                   ? IconButton(
                       icon: Icon(
                         Iconsax.arrow_left,
@@ -402,7 +402,8 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
             left: 16.0,
             right: 16.0,
           ),
-          child: Obx(() => controller.showButton.value == true
+          child: Obx(() => controller.showButton.value == true ||  controller.showButton.value == true && (  controller.detailData[0]['status']=="Pending" || controller.detailData[0]['approve_status']=="Pending" ||  controller.detailData[0]['approve_status']=="Pending" || (controller.detailData[0]['approve2_status']=="Pending" && controller.detailData[0]['approve_status']!="Rejected"  ) )
+                    
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1553,7 +1554,7 @@ controller.valuePolaPersetujuan == 1 ||
     
       Widget singgleApproval(data) {
     var text = "";
-    if (data['approve_status'] == "Pending") {
+    if (data['approve_status'] == "Pending" || data['status'] == "Pending") {
       text = "Pending Approval";
     }
     if (data['approve_status'] == "Rejected") {
@@ -1583,7 +1584,7 @@ controller.valuePolaPersetujuan == 1 ||
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['approve_status'] == "Pending"
+                      data['approve_status'] == "Pending" || data['status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,
@@ -1631,7 +1632,7 @@ controller.valuePolaPersetujuan == 1 ||
   Widget multipleApproval(data) {
     var text = "";
     var text2 = "";
-    if (data['approve_status'] == "Pending") {
+    if (data['approve_status'] == "Pending" || data['status'] == "Pending") {
       text = "Pending Approval 1";
     }
     if (data['approve_status'] == "Rejected") {

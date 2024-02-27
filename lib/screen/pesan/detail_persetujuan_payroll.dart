@@ -387,7 +387,7 @@ class _DetailPersetujuanPayrollState extends State<DetailPersetujuanPayroll> {
             left: 16.0,
             right: 16.0,
           ),
-          child: Obx(() => controller.showButton.value == true
+          child: Obx(() => controller.showButton.value == true 
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

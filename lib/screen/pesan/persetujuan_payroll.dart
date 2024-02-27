@@ -21,17 +21,35 @@ class PersetujuanPayroll extends StatefulWidget {
   _PersetujuanPayrollState createState() => _PersetujuanPayrollState();
 }
 
-class _PersetujuanPayrollState extends State<PersetujuanPayroll> {
+class _PersetujuanPayrollState extends State<PersetujuanPayroll> with SingleTickerProviderStateMixin {
   var controller = Get.put(ApprovalController());
     var controllerGlobal = Get.put(GlobalController());
 
+   TabController? _tabController;
   @override
   void initState() {
+    _tabController = TabController(length: 3, vsync: this);
     controller.startLoadData(
         widget.title, widget.bulan, widget.tahun, 'persetujuan');
+    _tabController!.addListener(_handleTabChange);
     super.initState();
   }
 
+  void _handleTabChange() {
+    print("Tab changed: ${_tabController!.index}");
+
+    _tabController!.index == 0
+        ? controller.startLoadData(widget.title,
+            widget.bulan, widget.tahun, 'persetujuan')
+        : controller.startLoadData(widget.title,
+            widget.bulan, widget.tahun, 'riwayat');
+  }
+
+  @override
+  void dispose() {
+    _tabController!.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -199,13 +217,14 @@ class _PersetujuanPayrollState extends State<PersetujuanPayroll> {
                           physics: const BouncingScrollPhysics(),
                           labelColor: Constanst.onPrimary,
                           unselectedLabelColor: Constanst.fgSecondary,
+                          controller: _tabController,
                           onTap: (value) {
-                            print(value);
-                            value == 0
-                                ? controller.startLoadData(widget.title,
-                                    widget.bulan, widget.tahun, 'persetujuan')
-                                : controller.startLoadData(widget.title,
-                                    widget.bulan, widget.tahun, 'riwayat');
+                            // print(value);
+                            // value == 0
+                            //     ? controller.startLoadData(widget.title,
+                            //         widget.bulan, widget.tahun, 'persetujuan')
+                            //     : controller.startLoadData(widget.title,
+                            //         widget.bulan, widget.tahun, 'riwayat');
                           },
                           tabs: [
                             Padding(
@@ -231,6 +250,7 @@ class _PersetujuanPayrollState extends State<PersetujuanPayroll> {
                         Expanded(
                             child: TabBarView(
                           physics: const BouncingScrollPhysics(),
+                          controller: _tabController,
                           children: [
                             controller.listData.value.isEmpty
                                 ? Center(

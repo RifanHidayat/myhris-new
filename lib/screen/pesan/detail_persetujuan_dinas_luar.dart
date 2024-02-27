@@ -389,8 +389,8 @@ class _DetailPersetujuanDinasLuarState
             left: 16.0,
             right: 16.0,
           ),
-          child: Obx(() => controller.showButton.value == true
-              ? Row(
+          child: Obx(() =>  controller.showButton.value == true && ( controller.detailData[0]['leave_status']=="Pending"||  controller.detailData[0]['apply_status']=="Pending" || (controller.detailData[0]['apply2_status']=="Pending" && controller.detailData[0]['apply_status']!="Rejected"  ) )
+                    ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
@@ -1175,7 +1175,7 @@ class _DetailPersetujuanDinasLuarState
 
         Widget singgleApproval(data) {
     var text = "";
-    if (data['apply_status'] == "Pending") {
+    if (data['apply_status'] == "Pending" || data['leave_status'] == "Pending") {
       text = "Pending Approval";
     }
     if (data['apply_status'] == "Rejected") {
@@ -1205,7 +1205,7 @@ class _DetailPersetujuanDinasLuarState
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['apply_status'] == "Pending"
+                      data['apply_status'] == "Pending" || data['leave_status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,
@@ -1253,7 +1253,7 @@ class _DetailPersetujuanDinasLuarState
   Widget multipleApproval(data) {
     var text = "";
     var text2 = "";
-    if (data['apply_status'] == "Pending") {
+    if (data['apply_status'] == "Pending" || data['leave_status'] == "Pending") {
       text = "Pending Approval 1";
     }
     if (data['apply_status'] == "Rejected") {
@@ -1269,11 +1269,11 @@ class _DetailPersetujuanDinasLuarState
         text2 = "Pending Approval 2";
       }
       if (data['apply2_status'] == "Rejected") {
-        text2 = "Rejected 1 By - ${data['nama_approve1']}";
+        text2 = "Rejected 2 By - ${data['nama_approve1']}";
       }
 
       if (data['apply2_status'] == "Approve") {
-        text2 = "Approved 2 By - ${data['nama_approve2']} ${data['approve2_status'] }";
+        text2 = "Approved 2 By - ${data['nama_approve2']}";
       }
     }
     return Container(
@@ -1297,7 +1297,7 @@ class _DetailPersetujuanDinasLuarState
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['apply_status'] == "Pending"
+                      data['apply_status'] == "Pending" ||   data['leave_status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,

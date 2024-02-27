@@ -29,6 +29,8 @@
 	<key>IS_GCM_ENABLED</key>
 	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
+
+	
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:90235107077:ios:eac72270016c94b6ba296c</string>
