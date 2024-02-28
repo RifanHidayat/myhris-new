@@ -1652,7 +1652,7 @@ controller.valuePolaPersetujuan == 1 ||
       }
 
       if (data['approve2_status'] == "Approve") {
-        text2 = "Approved 2 By - ${data['nama_approve2']} ${data['approve2_status'] }";
+        text2 = "Approved 2 By - ${data['nama_approve2']} ";
       }
     }
     return Container(

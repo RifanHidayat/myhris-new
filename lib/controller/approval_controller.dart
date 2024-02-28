@@ -334,10 +334,11 @@ class ApprovalController extends GetxController {
       'tahun': tahunSelected.value,
       'status': status == "riwayat" ? '' : 'pending',
     };
-    var connect = Api.connectionApi("post", body, urlLoad);
+    var connect = Api.connectionApi("post", body, urlLoad); 
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+        print("value body ${valueBody}");
         if (valueBody['data'].length == 0) {
           loadingString.value = 'Tidak ada pengajuan';
         }
