@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file_safe/open_file_safe.dart';
+import 'package:open_file_safe_plus/open_file_safe_plus.dart';
 import 'package:siscom_operasional/model/compent_slip_gaji.dart';
 import 'package:siscom_operasional/model/slip_gaji.dart';
 import 'package:siscom_operasional/utils/api.dart';
@@ -94,9 +94,8 @@ class Pph21Controller extends GetxController {
               // var jumlahPemotong =
               //     pemotong.reduce((a, b) => a[element.toString()] + b);
 
-                 double pendapatanSum = pendapatanList.fold(
-                  0, (a, b) => a + double.parse(b[element.toString()].toString() ));
-
+              double pendapatanSum = pendapatanList.fold(0,
+                  (a, b) => a + double.parse(b[element.toString()].toString()));
 
               slipGaji.add(SlipGajiModel(
                   index: element,
@@ -139,7 +138,7 @@ class Pph21Controller extends GetxController {
           } else {
             isLoading.value = false;
           }
-        }else{
+        } else {
           print("tes");
         }
         isLoading.value = false;
@@ -229,7 +228,7 @@ class Pph21Controller extends GetxController {
         honarium.value +
         tantium.value +
         premiasuransi.value;
-        totalBuroto.value = gaji.value +
+    totalBuroto.value = gaji.value +
         tunjanganLainhya.value +
         tunjanganPph21.value +
         honarium.value +
@@ -261,7 +260,7 @@ class Pph21Controller extends GetxController {
         (DateTime.now().year.toString() == tahun.value.toString()
             ? (12 - fiscalMonth(month: month))
             : 12);
-    
+
     //ptkp
     tempData.value =
         data.pendapatan!.where((element) => element.initial == "G01").toList();
@@ -284,18 +283,15 @@ class Pph21Controller extends GetxController {
     tempData.value =
         data.pendapatan!.where((element) => element.initial == "G84").toList();
     if (tempData.isNotEmpty) {
-      pasal21Terutang.value =
-          fiscalAmount(month: month, data: tempData[0]);
+      pasal21Terutang.value = fiscalAmount(month: month, data: tempData[0]);
     }
-
 
     tempData.value =
         data.pendapatan!.where((element) => element.initial == "G85").toList();
     if (tempData.isNotEmpty) {
-     pphpasal21DanPasal26.value =
+      pphpasal21DanPasal26.value =
           fiscalAmount(month: month, data: tempData[0]);
     }
-
   }
 
   double fiscalAmount({required month, required ComponentSlipGajiModel? data}) {
@@ -354,27 +350,25 @@ class Pph21Controller extends GetxController {
                                                     : "12");
   }
 
-  
-Future<void> downloadFile(String fileUrl, String savePath) async {
-  print(fileUrl);
-  final dio = Dio();
-  try {
-    final response = await dio.download(
-      fileUrl,
-      savePath,
-      onReceiveProgress: (received, total) {
-        print("Downloaded: $total");
+  Future<void> downloadFile(String fileUrl, String savePath) async {
+    print(fileUrl);
+    final dio = Dio();
+    try {
+      final response = await dio.download(
+        fileUrl,
+        savePath,
+        onReceiveProgress: (received, total) {
+          print("Downloaded: $total");
 
           // Calculate the download percentage.
           final percentage = (received / total * 100).toStringAsFixed(2);
           print("Downloaded: $percentage%");
-        
-      },
-    );
-      await OpenFile.open(savePath);
-    print("Download complete. File saved to: $savePath");
-  } catch (e) {
-    print("Error downloading file: $e");
+        },
+      );
+      await OpenFileSafePlus.open(savePath);
+      print("Download complete. File saved to: $savePath");
+    } catch (e) {
+      print("Error downloading file: $e");
+    }
   }
-}
 }

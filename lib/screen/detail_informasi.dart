@@ -1,11 +1,12 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:html/parser.dart' as htmlParser;
+import 'package:html/dom.dart' as dom;
 
 class DetailInformasi extends StatelessWidget {
   final title;
@@ -14,6 +15,27 @@ class DetailInformasi extends StatelessWidget {
   DetailInformasi({this.title, this.create, this.desc});
   // final controller = Get.put(DashboardController());
   // var controllerGlobal = Get.put(GlobalController());
+
+  String parseHtmlString(String htmlString) {
+    dom.Document document = htmlParser.parse(htmlString);
+    String parsedString = parseNode(document.body!);
+    return parsedString;
+  }
+
+  String parseNode(dom.Node node) {
+    if (node.nodeType == dom.Node.TEXT_NODE) {
+      return node.text!;
+    } else if (node.nodeType == dom.Node.ELEMENT_NODE) {
+      dom.Element element = node as dom.Element;
+      StringBuffer buffer = StringBuffer();
+      for (var child in element.nodes) {
+        buffer.write(parseNode(child));
+      }
+      return buffer.toString();
+    } else {
+      return '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,17 +89,13 @@ class DetailInformasi extends StatelessWidget {
                       color: Constanst.fgSecondary),
                 ),
                 const SizedBox(height: 14),
-                Html(
-                  data: desc,
-                  style: {
-                    "body": Style(
-                      fontSize: const FontSize(16),
-                      margin: const EdgeInsets.all(0.0),
-                      fontWeight: FontWeight.w400,
-                      fontFamily: "GoogleFonts.inter",
-                      color: Constanst.fgSecondary,
-                    ),
-                  },
+                Text(
+                  parseHtmlString(desc.toString()),
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Constanst.fgSecondary,
+                  ),
                 ),
                 const SizedBox(height: 12),
               ],

@@ -1,9 +1,8 @@
 // ignore_for_file: deprecated_member_use
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/kandidat_controller.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
@@ -11,6 +10,8 @@ import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/dashed_rect.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
+import 'package:html/parser.dart' as htmlParser;
+import 'package:html/dom.dart' as dom;
 
 class DetailPermintaan extends StatelessWidget {
   final controller = Get.put(KandidatController());
@@ -195,6 +196,27 @@ class DetailPermintaan extends StatelessWidget {
         });
   }
 
+  String parseHtmlString(String htmlString) {
+    dom.Document document = htmlParser.parse(htmlString);
+    String parsedString = parseNode(document.body!);
+    return parsedString;
+  }
+
+  String parseNode(dom.Node node) {
+    if (node.nodeType == dom.Node.TEXT_NODE) {
+      return node.text!;
+    } else if (node.nodeType == dom.Node.ELEMENT_NODE) {
+      dom.Element element = node as dom.Element;
+      StringBuffer buffer = StringBuffer();
+      for (var child in element.nodes) {
+        buffer.write(parseNode(child));
+      }
+      return buffer.toString();
+    } else {
+      return '';
+    }
+  }
+
   Widget screenDetail() {
     return SingleChildScrollView(
       child: Column(
@@ -216,15 +238,27 @@ class DetailPermintaan extends StatelessWidget {
           SizedBox(
             height: 5,
           ),
-          Html(
-            data: controller.detailPermintaan[0]['requirements'],
-            style: {
-              "body": Style(
-                fontSize: FontSize(12),
-                color: Constanst.colorText2,
-              ),
-            },
+          Text(
+            parseHtmlString(
+                controller.detailPermintaan[0]['requirements'].toString()),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: Constanst.colorText2,
+            ),
           ),
+
+          // Html(
+          //   data: controller.detailPermintaan[0]['requirements'],
+          //   style: {
+          //     "body": Style(
+          //       fontSize: FontSize(12),
+          //       color: Constanst.colorText2,
+          //     ),
+          //   },
+          // ),
           SizedBox(
             height: 8,
           ),

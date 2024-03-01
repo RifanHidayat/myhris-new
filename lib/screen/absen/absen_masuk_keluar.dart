@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -84,7 +83,8 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
         double.parse(controller.latUser.toString()),
         double.parse(controller.langUser.toString()),
       ),
-      radius: 10,         strokeColor: Constanst.radiusColor.withOpacity(0.25),
+      radius: 10,
+      strokeColor: Constanst.radiusColor.withOpacity(0.25),
       fillColor: Constanst.radiusColor.withOpacity(0.25),
       strokeWidth: 1,
     ));
@@ -574,35 +574,34 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                           top: 8,
                                           bottom: 8),
                                       child: Obx(() {
-
-                                      
-                                          return DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                              isDense: true,
-                                              items: controller
-                                                  .placeCoordinateDropdown.value
-                                                  .toSet()
-                                                  .toList()
-                                                  .map<DropdownMenuItem<String>>(
-                                                      (String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(
-                                                    value,
-                                                    style: TextStyle(fontSize: 10),
-                                                  ),
-                                                );
-                                              }).toList(),
-                                              value: controller.selectedType.value,
-                                              onChanged: (selectedValue) {
-                                                controller.selectedType.value =
-                                                    selectedValue!;
-                                              },
-                                              isExpanded: true,
-                                            ),
-                                          );
-                                        }
-                                      ),
+                                        return DropdownButtonHideUnderline(
+                                          child: DropdownButton<String>(
+                                            isDense: true,
+                                            items: controller
+                                                .placeCoordinateDropdown.value
+                                                .toSet()
+                                                .toList()
+                                                .map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(
+                                                  value,
+                                                  style:
+                                                      TextStyle(fontSize: 10),
+                                                ),
+                                              );
+                                            }).toList(),
+                                            value:
+                                                controller.selectedType.value,
+                                            onChanged: (selectedValue) {
+                                              controller.selectedType.value =
+                                                  selectedValue!;
+                                            },
+                                            isExpanded: true,
+                                          ),
+                                        );
+                                      }),
                                     ),
                                   ),
                                 ),
@@ -673,62 +672,73 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                               ),
                             ],
                           ),
-                     Obx(() =>    controller.isLoaingAbsensi.value==true?  Container(
-                            width: MediaQuery.of(Get.context!).size.width,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Constanst.greyLight300),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                          side: BorderSide(
-                                              color: Colors.white)))),
-                              onPressed: () {
-                                // controllerDashboard
-                                //     .widgetButtomSheetAktifCamera(
-                                //         'checkTracking');
-                              },
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(color: Constanst.fgPrimary,)),
-                            ),
-                          ):Container(
-                            width: MediaQuery.of(Get.context!).size.width,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Constanst.colorPrimary),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                          side: BorderSide(
-                                              color: Colors.white)))),
-                              onPressed: () {
-                                controllerDashboard
-                                    .widgetButtomSheetAktifCamera(
-                                        'checkTracking');
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 12, bottom: 12, left: 20, right: 20),
-                                child: Text('OK, Absen sekarang'),
-                              ),
-                            ),
-                          ),)
+                          Obx(
+                            () => controller.isLoaingAbsensi.value == true
+                                ? Container(
+                                    width:
+                                        MediaQuery.of(Get.context!).size.width,
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Constanst.greyLight300),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.white),
+                                          shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                  side: BorderSide(color: Colors.white)))),
+                                      onPressed: () {
+                                        // controllerDashboard
+                                        //     .widgetButtomSheetAktifCamera(
+                                        //         'checkTracking');
+                                      },
+                                      child: Container(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Constanst.fgPrimary,
+                                          )),
+                                    ),
+                                  )
+                                : Container(
+                                    width:
+                                        MediaQuery.of(Get.context!).size.width,
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Constanst.colorPrimary),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.white),
+                                          shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                  side: BorderSide(color: Colors.white)))),
+                                      onPressed: () {
+                                        controllerDashboard
+                                            .widgetButtomSheetAktifCamera(
+                                                'checkTracking');
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 12,
+                                            bottom: 12,
+                                            left: 20,
+                                            right: 20),
+                                        child: Text('OK, Absen sekarang'),
+                                      ),
+                                    ),
+                                  ),
+                          )
                         ],
                       ),
                     ),
@@ -973,59 +983,73 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                       // SizedBox(
                       //   height: 10,
                       // ),
-                     Obx(() => controller.isLoaingAbsensi.value==true? Container(
-                            width: MediaQuery.of(Get.context!).size.width,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Constanst.greyLight300),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white),
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                          side: BorderSide(
-                                              color: Colors.white)))),
-                              onPressed: () {
-                                // controllerDashboard
-                                //     .widgetButtomSheetAktifCamera(
-                                //         'checkTracking');
-                              },
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(color: Constanst.fgPrimary,)),
-                            ),
-                          ): Container(
-                        padding:
-                            EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                        width: MediaQuery.of(Get.context!).size.width,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Constanst.colorPrimary),
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      side: BorderSide(color: Colors.white)))),
-                          onPressed: () {
-                            controllerDashboard
-                                .widgetButtomSheetAktifCamera('checkTracking');
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 12, bottom: 12, left: 20, right: 20),
-                            child: Text('OK, Absen sekarang'),
-                          ),
-                        ),
-                      ),)
+                      Obx(
+                        () => controller.isLoaingAbsensi.value == true
+                            ? Container(
+                                width: MediaQuery.of(Get.context!).size.width,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Constanst.greyLight300),
+                                      foregroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Colors.white),
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                              side: BorderSide(
+                                                  color: Colors.white)))),
+                                  onPressed: () {
+                                    // controllerDashboard
+                                    //     .widgetButtomSheetAktifCamera(
+                                    //         'checkTracking');
+                                  },
+                                  child: Container(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Constanst.fgPrimary,
+                                      )),
+                                ),
+                              )
+                            : Container(
+                                padding: EdgeInsets.only(
+                                    left: 20, right: 20, bottom: 10),
+                                width: MediaQuery.of(Get.context!).size.width,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Constanst.colorPrimary),
+                                      foregroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Colors.white),
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                              side: BorderSide(
+                                                  color: Colors.white)))),
+                                  onPressed: () {
+                                    controllerDashboard
+                                        .widgetButtomSheetAktifCamera(
+                                            'checkTracking');
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 12,
+                                        bottom: 12,
+                                        left: 20,
+                                        right: 20),
+                                    child: Text('OK, Absen sekarang'),
+                                  ),
+                                ),
+                              ),
+                      )
                     ],
                   ),
                 ),

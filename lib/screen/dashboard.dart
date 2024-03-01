@@ -35,9 +35,11 @@ import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:flutter_html/flutter_html.dart';
+// import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:html/parser.dart' as htmlParser;
+import 'package:html/dom.dart' as dom;
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -121,7 +123,7 @@ class _DashboardState extends State<Dashboard> {
                 borderRadius: BorderRadius.circular(100),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color.fromARGB(255,  155, 155, 155)
+                    color: const Color.fromARGB(255, 155, 155, 155)
                         .withOpacity(0.5),
                     spreadRadius: 1.0,
                     blurRadius: 3,
@@ -931,13 +933,15 @@ class _DashboardState extends State<Dashboard> {
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                             Obx(() =>    Text(
-                                  "Jadwal ${controller.timeIn.value}  - ${controller.timeOut.value}",
-                                  style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 12,
-                                      color: Constanst.fgSecondary),
-                                ),),
+                                Obx(
+                                  () => Text(
+                                    "Jadwal ${controller.timeIn.value}  - ${controller.timeOut.value}",
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                        color: Constanst.fgSecondary),
+                                  ),
+                                ),
                                 const SizedBox(width: 8),
                                 InkWell(
                                   onTap: () => UtilsAlert.informasiDashboard(
@@ -2262,6 +2266,27 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  String parseHtmlString(String htmlString) {
+    dom.Document document = htmlParser.parse(htmlString);
+    String parsedString = parseNode(document.body!);
+    return parsedString;
+  }
+
+  String parseNode(dom.Node node) {
+    if (node.nodeType == dom.Node.TEXT_NODE) {
+      return node.text!;
+    } else if (node.nodeType == dom.Node.ELEMENT_NODE) {
+      dom.Element element = node as dom.Element;
+      StringBuffer buffer = StringBuffer();
+      for (var child in element.nodes) {
+        buffer.write(parseNode(child));
+      }
+      return buffer.toString();
+    } else {
+      return '';
+    }
+  }
+
   Widget listInformasi() {
     return controller.informasiDashboard.value.isEmpty
         ? const Center(
@@ -2312,19 +2337,30 @@ class _DashboardState extends State<Dashboard> {
                               fontSize: 16,
                               fontWeight: FontWeight.w500),
                         ),
-                        Html(
-                          data: desc,
-                          style: {
-                            "body": Style(
-                                fontSize: const FontSize(14),
-                                maxLines: 2,
-                                textOverflow: TextOverflow.ellipsis,
-                                margin: const EdgeInsets.all(0.0),
-                                color: Constanst.fgPrimary,
-                                fontFamily: "GoogleFonts.inter",
-                                fontWeight: FontWeight.w400),
-                          },
+                        Text(
+                          parseHtmlString(desc.toString()),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Constanst.fgPrimary,
+                          ),
                         ),
+
+                        // Html(
+                        //   data: desc,
+                        //   style: {
+                        //     "body": Style(
+                        //         fontSize: const FontSize(14),
+                        //         maxLines: 2,
+                        //         textOverflow: TextOverflow.ellipsis,
+                        //         margin: const EdgeInsets.all(0.0),
+                        //         color: Constanst.fgPrimary,
+                        //         fontFamily: "GoogleFonts.inter",
+                        //         fontWeight: FontWeight.w400),
+                        //   },
+                        // ),
                         Text(
                           Constanst.convertDate("$create"),
                           textAlign: TextAlign.right,

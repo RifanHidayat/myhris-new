@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_html/style.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
@@ -24,7 +23,6 @@ class _AbsenVrifyPasswordState extends State<AbsenVrifyPassword> {
   final controller = Get.put(AuthController());
   final TextEditingController passwordCtr = TextEditingController();
   var absensiController = Get.put(AbsenController());
-
 
   @override
   Widget build(BuildContext context) {
