@@ -206,6 +206,7 @@ class ApprovalController extends GetxController {
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+        print("data lembur value ${valueBody}");
         if (valueBody['data'].length == 0) {
           loadingString.value = 'Tidak ada pengajuan';
         }
