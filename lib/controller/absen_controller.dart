@@ -49,7 +49,7 @@ import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:google_maps_utils/google_maps_utils.dart';
-import 'package:trust_location/trust_location.dart';
+// import 'package:trust_location/trust_location.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
@@ -173,7 +173,6 @@ class AbsenController extends GetxController {
 
   @override
   void onReady() async {
- 
     getTimeNow();
     getLoadsysData();
     loadHistoryAbsenUser();
@@ -343,7 +342,6 @@ class AbsenController extends GetxController {
         Get.back();
       } else {
         if (res.statusCode == 200) {
-        
           var valueBody = jsonDecode(res.body);
           selectedType.value = valueBody['data'][0]['place'];
           for (var element in valueBody['data']) {
@@ -372,7 +370,6 @@ class AbsenController extends GetxController {
   }
 
   void getPlaceCoordinateCheckin() {
-                                                               
     placeCoordinateCheckin.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate_pengajuan",
         params:
@@ -1000,7 +997,7 @@ class AbsenController extends GetxController {
     // } else {
 
     if (Platform.isAndroid) {
-      TrustLocation.start(1);
+      // TrustLocation.start(1);
       getCheckMock();
       if (!mockLocation.value) {
         var statusPosisi = await validasiRadius();
@@ -1145,7 +1142,7 @@ class AbsenController extends GetxController {
 
   void getCheckMock() async {
     try {
-      TrustLocation.onChange.listen((values) => getValMock(values));
+      // TrustLocation.onChange.listen((values) => getValMock(values));
     } on PlatformException catch (e) {
       print('PlatformException $e');
     }
@@ -1156,7 +1153,7 @@ class AbsenController extends GetxController {
     String _latitude = values.latitude;
     String _longitude = values.longitude;
     bool _isMockLocation = values.isMockLocation;
-    TrustLocation.stop();
+    // TrustLocation.stop();
     mockLocation.value = _isMockLocation;
     this.mockLocation.refresh();
   }
@@ -2779,8 +2776,12 @@ class AbsenController extends GetxController {
           DateFormat('yyyy').format(DateTime.parse(tglAjunan.value.toString())),
       'status': "pending",
       'catatan': catataanAjuan.text,
-      'checkin': checkinAjuan2.value.toString()==""?"00:00:00":checkinAjuan2.value.toString(),
-      'checkout':  checkoutAjuan2.value.toString()==""?"00:00:00": checkoutAjuan2.value.toString(),
+      'checkin': checkinAjuan2.value.toString() == ""
+          ? "00:00:00"
+          : checkinAjuan2.value.toString(),
+      'checkout': checkoutAjuan2.value.toString() == ""
+          ? "00:00:00"
+          : checkoutAjuan2.value.toString(),
       'lokasi_masuk_id': placeCoordinateCheckin
               .where((p0) => p0['is_selected'] == true)
               .toList()
@@ -2802,67 +2803,59 @@ class AbsenController extends GetxController {
     };
     print('body data ajuan ${body}');
     var connect = Api.connectionApi("post", body, "save-employee-attendance");
-  
-    
-
-  
-
-
-  
 
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
-
 
       if (res.statusCode == 200) {
         Get.to(pengajuanAbsenBerhasil());
 
         dataPengajuanAbsensi();
 
+        var dataUser = AppData.informasiUser;
+        var getFullName = "${dataUser![0].full_name}";
+        var convertTanggalBikinPengajuan = status == false
+            ? Constanst.convertDateSimpan(
+                pilihTanggalTelatAbsen.value.toString())
+            : pilihTanggalTelatAbsen.value.toString();
+        var getEmid = "${dataUser![0].em_id}";
+        var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
+        var typeNotifFcm = "Pengajuan Absensi";
+        // kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
+        //     getEmid, '', stringTanggal, typeNotifFcm);
 
-          var dataUser = AppData.informasiUser;
-    var getFullName = "${dataUser![0].full_name}";
-    var convertTanggalBikinPengajuan = status == false
-        ? Constanst.convertDateSimpan(pilihTanggalTelatAbsen.value.toString())
-        : pilihTanggalTelatAbsen.value.toString();
-    var getEmid = "${dataUser![0].em_id}";
-    var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
-    var typeNotifFcm = "Pengajuan Absensi";
-    // kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
-    //     getEmid, '', stringTanggal, typeNotifFcm);
+        kirimNotifikasiToReportTo(
+            getFullName, convertTanggalBikinPengajuan, getEmid, stringTanggal);
 
-    kirimNotifikasiToReportTo(
-        getFullName, convertTanggalBikinPengajuan, getEmid, stringTanggal);
+        for (var item in globalCt.konfirmasiAtasan) {
+          print("Token notif ${item['token_notif']}");
+          var pesan;
+          if (item['em_gender'] == "PRIA") {
+            pesan =
+                "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absensi dengan nomor ajuan ${getNomorAjuanTerakhir}";
+          } else {
+            pesan =
+                "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absensi dengan nomor ajuan ${getNomorAjuanTerakhir}";
+          }
 
-    for (var item in globalCt.konfirmasiAtasan) {
-      print("Token notif ${item['token_notif']}");
-      var pesan;
-      if (item['em_gender'] == "PRIA") {
-        pesan =
-            "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absensi dengan nomor ajuan ${getNomorAjuanTerakhir}";
-      } else {
-        pesan =
-            "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absensi dengan nomor ajuan ${getNomorAjuanTerakhir}";
-      }
+          kirimNotifikasiToDelegasi1(
+            getFullName,
+            convertTanggalBikinPengajuan,
+            item['em_id'],
+            '',
+            stringTanggal,
+            typeNotifFcm,
+            pesan,
+          );
 
-      kirimNotifikasiToDelegasi1(
-        getFullName,
-        convertTanggalBikinPengajuan,
-        item['em_id'],
-        '',
-        stringTanggal,
-        typeNotifFcm,
-        pesan,
-      );
-
-      if (item['token_notif'] != null) {
-        globalCt.kirimNotifikasiFcm(
-          title: typeNotifFcm,
-          message: pesan,
-          tokens: item['token_notif'],
-        );
-      }
-    }
+          if (item['token_notif'] != null) {
+            globalCt.kirimNotifikasiFcm(
+              title: typeNotifFcm,
+              message: pesan,
+              tokens: item['token_notif'],
+            );
+          }
+        }
         UtilsAlert.showToast("${valueBody['message']}");
       } else {
         UtilsAlert.showToast("${valueBody['message']}");
@@ -2870,10 +2863,8 @@ class AbsenController extends GetxController {
     });
   }
 
- 
   void kirimNotifikasiToReportTo(
       getFullName, convertTanggalBikinPengajuan, getEmid, stringTanggal) {
- 
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
     Map<String, dynamic> body = {
@@ -2887,7 +2878,7 @@ class AbsenController extends GetxController {
       'status': '2',
       'view': '0',
     };
- 
+
     var connect = Api.connectionApi("post", body, "notifikasi_reportTo");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -2896,7 +2887,6 @@ class AbsenController extends GetxController {
     });
   }
 
- 
   void kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
       validasiDelegasiSelected, fcmTokenDelegasi, stringWaktu, typeNotifFcm) {
     var dt = DateTime.now();
@@ -2963,7 +2953,6 @@ class AbsenController extends GetxController {
   }
 
   void nextKirimPengajuan(status) async {
- 
     // if (tglAjunan.value == "") {
     //   UtilsAlert.showToast("Tanggal belum dipilih");
     //   return;
