@@ -693,7 +693,7 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
                           ),
                         ),
                         Text(
-                          "Tanggal Izin",
+                          "Tanggal Izin ",
                           style: GoogleFonts.inter(
                               color: Constanst.fgSecondary,
                               fontWeight: FontWeight.w400,
@@ -703,7 +703,7 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
                         controller.detailData[0]['type'] == "Klaim"
                             ? const SizedBox()
                             : Text(
-                                "${"${controller.detailData[0]['date_selected']}" }",
+                                "${"${controller.detailData[0]['date_selected']}" } ",
                                 style: GoogleFonts.inter(
                                     color: Constanst.fgPrimary,
                                     fontWeight: FontWeight.w500,
