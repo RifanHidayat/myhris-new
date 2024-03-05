@@ -1273,7 +1273,7 @@ class _DetailPersetujuanTugasLuarState
     var text = "";
     var text2 = "";
     if (data['approve_status'] == "Pending" || data['status'] == "Pending") {
-      text = "Pending Approval 1";
+      text = "Pending Approval ${data['approve_status']}";
     }
     if (data['approve_status'] == "Rejected") {
       text = "Rejected By - ${data['nama_approve1']}";

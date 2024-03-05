@@ -263,19 +263,24 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
               // onTap: () => controller.selectedTypeCuti.value = value,
 
               onTap: () {
+                print(value);
+                print("tes");
+                print(controller.allTipe.value);
                 controller.percentIzin.value = 0;
                 controller.gantiTypeAjuan(value);
 
                 var data = controller.allTipe.value
                     .where((element) => value
                         .toString()
-                        .toLowerCase()
-                        .contains(element['name'].toString().toLowerCase()))
+                        .toLowerCase().trim()
+                        .contains("${element['name']} - ${element['category']}".toString().toLowerCase().trim()))
                     .toList();
+                    // controller.loadTypeSakit();
+                    print("new data ${data[0]['cut_leave']}");
 
                 if (data[0]['leave_day'] > 0) {
-                  print("data ${data[0]['id']}");
-                  print("data ${data[0]['leave_day'].toString()}");
+                  print("new data ${data[0]['id']}");
+                
                   controller
                       .loadDataAjuanIzinCategori(id: data[0]['type_id'])
                       .then((value) {

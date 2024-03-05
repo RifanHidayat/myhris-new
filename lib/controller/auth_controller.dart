@@ -278,7 +278,8 @@ class AuthController extends GetxController {
             nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
             timeIn: element['time_in'] ?? "",
             timeOut: element['time_out'] ?? "",
-            interval: element['interval']
+            interval: element['interval'],
+            
             // startTime: "00:01",
             // endTime: "23:59",
           );

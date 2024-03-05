@@ -378,7 +378,7 @@ class DetailAbsen extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    "Absen Masuk",
+                    "Absen Masukk",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
                         color: Constanst.color5,

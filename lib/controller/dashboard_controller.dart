@@ -804,7 +804,7 @@ class DashboardController extends GetxController {
   }
 
   void updateInformasiUser() {
-    print("informasi hak akses");
+    print("informasi hak akseesss");
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {'em_id': getEmid};
@@ -813,13 +813,13 @@ class DashboardController extends GetxController {
 
     
       var valueBody = jsonDecode(res.body);
-        print("data ${valueBody}");
+        print("data employee ${valueBody}");
 
       if (valueBody['status'] == false) {
         UtilsAlert.showToast(valueBody['message']);
         Navigator.pop(Get.context!);
       } else {
-        print("data ${valueBody['data']}");
+        print("data employee ${valueBody['data']}");
         AppData.informasiUser = null;
         List<UserModel> getData = [];
         for (var element in valueBody['data']) {
@@ -853,6 +853,7 @@ class DashboardController extends GetxController {
               nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'],
               timeIn: element['time_in'],
               interval: element['interval'],
+
               timeOut: element['time_out']);
           print(element['posisi']);
           getData.add(data);
@@ -866,7 +867,7 @@ class DashboardController extends GetxController {
   }
 
     void updateWorkTime() {
-    print("informasi hak akses work schdule");
+    print("informasi hak akses work schdule new");
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {'em_id': getEmid,'date':DateFormat('yyyy-MM-dd').format(DateTime.now())};
@@ -880,7 +881,7 @@ class DashboardController extends GetxController {
         
         // Navigator.pop(Get.context!);
       } else {
-         print("data work time ${valueBody['data']}");
+         print("data work time new ${valueBody['data']}");
         timeIn.value=valueBody['data']['time_in'];
         timeOut.value=valueBody['data']['time_out'];
        

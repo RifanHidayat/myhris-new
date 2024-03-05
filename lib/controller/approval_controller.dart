@@ -352,9 +352,7 @@ class ApprovalController extends GetxController {
           var tanggalDari = Constanst.convertDate1("${element['atten_date']}");
           var tanggalSampai =
               Constanst.convertDate1("${element['atten_date']}");
-          var filterStatus = element['leave_status'] == "Approve"
-              ? "Approve 1"
-              : element['leave_status'];
+          var filterStatus = element['leave_status'];
           var data = {
             'id': element['id'],
             'nama_pengaju': convertNama,
@@ -387,11 +385,12 @@ class ApprovalController extends GetxController {
             'approve_by': element['approve_by'],
             'approve_date': element['approve_date'],
             'status': element['status'],
-                'approve_status': element['approve_status'],
-                         'approve2_status': element['approve2_status']
+            'approve_status': element['approve_status'],
+             'approve2_status': element['approve2_status']
           };
           listData.value.add(data);
           listDataAll.value.add(data);
+            print("data body 2 ${valueBody['data']}");
         }
         listData.value.sort(
             (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
@@ -926,9 +925,12 @@ class ApprovalController extends GetxController {
               print("data detail ${detailData[0]}");
               if (detailData[0]['type'] == 'absensi' || detailData[0]['type'] == 'Absensi') {
                 print("masuk sini  ${detailData[0]['type']}");
+           
+
                 approvalAbsensi(
                     pilihan: pilihan,
                     date: detailData[0]['waktu_pengajuan'].toString(),
+                    leaveStatus: detailData[0]['leave_status'].toString(),
                     status: styleChose.toString(),
                     checkin: detailData[0]['dari_jam'].toString(),
                     checkout: detailData[0]['sampai_jam'].toString(),
@@ -1325,6 +1327,7 @@ class ApprovalController extends GetxController {
       leaveStatus,
       pola,
       pilihan}) {
+        print("status leave ${leaveStatus}");
     UtilsAlert.showLoadingIndicator(Get.context!);
     var emId = AppData.informasiUser![0].em_id;
     var name = AppData.informasiUser![0].full_name;
@@ -1413,7 +1416,7 @@ class ApprovalController extends GetxController {
       "approve_status":  applyStatus??"Pending",
       "approve2_status":apply2Status
     };
-   
+   print("body approve new 2 ${body}");
 
     var connect =
         Api.connectionApi("post", body, "approval-employee-attendance");

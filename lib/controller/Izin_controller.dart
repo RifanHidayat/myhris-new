@@ -416,21 +416,29 @@ class IzinController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
+
+           print("data type sakit new  ${data}");
         for (var element in data) {
-          allTipeFormTidakMasukKerja1.value
+          
+           allTipeFormTidakMasukKerja1.value
               .add("${element['name']} - ${element['category']}");
+          
           allTipeFormTidakMasukKerja.value
               .add("${element['name']} - ${element['category']}");
+
           var data = {
             'type_id': element['id'],
             'name': element['name'],
             'status': element['status'],
             'category': element['category'],
             'leave_day': element['leave_day'],
+            'cut_leave': element['cut_leave'],
             'ajuan': 2,
             'active': false,
           };
           allTipe.value.add(data);
+
+          print(data);
         }
         if (idEditFormTidakMasukKerja == "") {
           var listFirst = allTipeFormTidakMasukKerja.value.first;
@@ -448,6 +456,7 @@ class IzinController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
+     
         for (var element in data) {
           allTipeFormTidakMasukKerja1.value
               .add("${element['name']} - ${element['category']}");
@@ -459,6 +468,7 @@ class IzinController extends GetxController {
             'name': element['name'],
             'status': element['status'],
             'category': element['category'],
+               'cut_leave': element['cut_leave'],
             'ajuan': 3,
             'active': false,
           };
@@ -720,24 +730,60 @@ class IzinController extends GetxController {
     var convertTanggalBikinPengajuan = status == false
         ? Constanst.convertDateSimpan(tanggalBikinPengajuan.value)
         : tanggalBikinPengajuan.value;
-    print("tanggal bikin ajun" + convertTanggalBikinPengajuan);
-    print(
-        "new type  ${allTipe.value} ${selectedDropdownFormTidakMasukKerjaTipe.value}");
+    // print("tanggal bikin ajun" + convertTanggalBikinPengajuan);
+    // print(
+    //     "new type  ${allTipe.value} ${selectedDropdownFormTidakMasukKerjaTipe.value}");
 
-    var pola = selectedDropdownFormTidakMasukKerjaTipe.value
+    var data = allTipe.value
+        .where((element) => selectedDropdownFormTidakMasukKerjaTipe.value
             .toString()
-            .contains("SAKIT DENGAN")
-        ? "SD"
-        : selectedDropdownFormTidakMasukKerjaTipe.value
-                .toString()
-                .contains("SAKIT TANPA")
-            ? "ST"
-            : "IZ";
+            .toLowerCase().trim()
+                        .contains("${element['name']} - ${element['category']}".toString().toLowerCase().trim()))
+        .toList();
+
+    var statusA = data[0]['status'].toString();
+     var cutLeave = data[0]['cut_leave'].toString();
+     print("data izin  nwew");
+     print(statusA);
+     print(cutLeave);
+
+     var pola="";
+    if (statusA == "1") {
+    pola="CT";
+    
+    } else if (statusA == "3") {
+      pola="IZ";
+    } else if (statusA == "2") {
+      if (cutLeave=="0"){
+         pola="SD";
+
+      }else{
+
+           pola="ST";
+      }
+
+
+
+
+
+
+    }
+
+    // var pola = selectedDropdownFormTidakMasukKerjaTipe.value
+    //         .toString()
+    //         .contains("SAKIT DENGAN")
+    //     ? "SD"
+    //     : selectedDropdownFormTidakMasukKerjaTipe.value
+    //             .toString()
+    //             .contains("SAKIT TANPA")
+    //         ? "ST"
+    //         : "IZ";
 
     Map<String, dynamic> body = {
       'atten_date': convertTanggalBikinPengajuan,
       'pola': pola
     };
+    print("body pola new ${body}");
 
     var connect = Api.connectionApi("post", body, "emp_leave_lastrow");
     connect.then((dynamic res) {
@@ -882,7 +928,7 @@ class IzinController extends GetxController {
       'em_delegation': validasiDelegasiSelected,
       'leave_files': namaFileUpload.value,
       'ajuan': getAjuanType,
-      'apply_status':"Pending"
+      'apply_status': "Pending"
     };
     print(body);
     if (status == false) {
