@@ -5,6 +5,7 @@ import Firebase
 import FirebaseCore
 import flutter_local_notifications
 import FirebaseMessaging    
+import background_location_tracker
 
 // @UIApplicationMain
 // @objc class AppDelegate: FlutterAppDelegate {
@@ -34,6 +35,11 @@ if #available(iOS 10.0, *) {
 
 
     GeneratedPluginRegistrant.register(with: self)
+
+    // BackgroundLocationTrackerPlugin.setPluginRegistrantCallback { registry in
+    //     GeneratedPluginRegistrant.register(with: registry)
+    // }
+    
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
