@@ -8,6 +8,8 @@ import 'package:siscom_operasional/screen/aktifitas/aktifitas.dart';
 import 'package:siscom_operasional/screen/akun/setting.dart';
 import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/kontrol/kontrol_list.dart';
+import 'package:siscom_operasional/screen/kontrol/live_tracking.dart';
+import 'package:siscom_operasional/screen/kontrol/tracking_list.dart';
 import 'package:siscom_operasional/screen/pesan/pesan.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -24,7 +26,10 @@ class _InitScreenState extends State<InitScreen> {
 
   late final List<Widget> _buildScreens = [
     const Dashboard(),
-    KontrolList(),
+    // KontrolList(),
+    controller.kontrolAkses.value == true
+        ? TrackingList()
+        : LiveTracking(status: ''),
     Aktifitas(),
     const Pesan(
       status: false,
@@ -351,12 +356,16 @@ class _InitScreenState extends State<InitScreen> {
     return WillPopScope(
       onWillPop: controller.onWillPop,
       child: DefaultTabController(
-        length: controller.kontrolAkses.value == true ? 5 : 4,
+        length: controller.kontrolAkses.value == true ||
+                controller.kontrol.value == true
+            ? 5
+            : 4,
         initialIndex: controller.currentIndex.value,
         child: Scaffold(
           body: Center(
             child: Obx(
-              () => controller.kontrolAkses.value == true
+              () => controller.kontrolAkses.value == true ||
+                      controller.kontrol.value == true
                   ? _buildScreens.elementAt(controller.currentIndex.value)
                   : _buildScreens1.elementAt(controller.currentIndex.value),
             ),
@@ -381,7 +390,8 @@ class _InitScreenState extends State<InitScreen> {
                 // screens: controller.kontrolAkses.value == true
                 //     ? _buildScreens()
                 //     : _buildScreens1(),
-                items: controller.kontrolAkses.value == true
+                items: controller.kontrolAkses.value == true ||
+                        controller.kontrol.value == true
                     ? _navBarsItems()
                     : _navBarsItems1(),
                 // onWillPop: (s) async => await controller.onWillPop(),

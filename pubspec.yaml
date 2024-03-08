@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 2.0.0+1
 
 environment:
-  sdk: ">=2.17.6 <3.0.0"
+  sdk: '>=2.19.5 <3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -35,14 +35,13 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  upgrader: 
   #sliver_snap: ^1.2.0
   font_awesome_flutter: ^10.3.0
   intl_utils: ^2.6.1
   sign_in_with_apple: ^4.3.0
   flutter_gif: ^0.0.4
   google_maps_flutter:
-  sliding_up_panel: ^2.0.0+1
+  sliding_up_panel:
   flutter_otp_text_field: ^1.1.1
   onboarding: 
   intl: 
@@ -51,7 +50,7 @@ dependencies:
   shared_preferences: ^2.0.12
   move_to_background: ^1.0.2
   ntp: ^2.0.0
-
+  flutter_sequence_animation: ^4.0.0
   device_information: ^0.0.4
 
 
@@ -85,18 +84,18 @@ dependencies:
   geocoding: ^2.0.2
   google_mlkit_face_detection: ^0.5.0
   
-  geolocator: ^9.0.2
+  geolocator: ^11.0.0
 
   # camera: ^0.9.4+21
   camera: ^0.10.5+2
-  trust_location: ^2.0.13
+  # trust_location: ^2.0.13
   modal_bottom_sheet: ^2.0.0
   cached_network_image: ^3.2.1
   datetime_picker_formfield: ^2.0.1
   flutter_inappwebview: ^5.7.2+2
   flutter_datetime_picker: ^1.5.1
   bottom_picker: ^2.0.0
-  file_picker: ^5.2.3
+  file_picker: ^5.0.0
   percent_indicator: ^4.0.1
   animated_text_kit: ^4.2.2
   syncfusion_flutter_datepicker: ^20.2.50
@@ -114,13 +113,14 @@ dependencies:
   scanning_effect: ^1.0.4
   draggable_home: ^1.0.4
   draggable_bottom_sheet: ^1.0.2
-  # ffi: ^1.0.0
-  # open_file_safe: ^3.2.3
+  # ffi: ^2.0.1
   open_file_safe_plus: ^0.0.4
   # native_screenshot: ^1.0.0
   # screen_capture_event: ^1.1.1
   # screenshot:
   new_version_plus:
+  background_location_tracker: ^1.4.1
+  detect_fake_location_plus:
   # animations: ^2.0.10
  
   # system_alert_window: ^1.1.2

@@ -81,6 +81,7 @@ class _DashboardState extends State<Dashboard> {
         // absenControllre.absenStatus.value =
         //     controller.dashboardStatusAbsen.value;
       });
+      tabbController.checkuserinfo();
     });
   }
 
@@ -1747,7 +1748,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   onTap: () => controller.widgetButtomSheetFormPengajuan(),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                    padding: const EdgeInsets.fromLTRB(8.0, 10.0, 4.0, 10.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1759,7 +1760,7 @@ class _DashboardState extends State<Dashboard> {
                               color: Constanst.infoLight,
                               size: 26,
                             ),
-                            const SizedBox(width: 10),
+                            const SizedBox(width: 4),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -1819,7 +1820,7 @@ class _DashboardState extends State<Dashboard> {
                         },
                         child: Padding(
                           padding:
-                              const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                              const EdgeInsets.fromLTRB(8.0, 10.0, 4.0, 10.0),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1831,7 +1832,7 @@ class _DashboardState extends State<Dashboard> {
                                     color: Constanst.infoLight,
                                     size: 26,
                                   ),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 4),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,

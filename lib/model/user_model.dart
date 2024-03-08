@@ -34,6 +34,8 @@ class UserModel {
   var timeIn;
   var timeOut;
   var interval;
+  var interval_tracking;
+  var isViewTracking;
 
   UserModel(
       {this.em_id,
@@ -66,7 +68,10 @@ class UserModel {
       this.nomorBpjsKesehatan,
       this.nomorBpjsTenagakerja,
       this.timeIn,
-      this.timeOut,this.interval});
+      this.timeOut,
+      this.interval,
+      this.interval_tracking,
+      this.isViewTracking});
 
   Map<String, dynamic> toMap() {
     return {
@@ -100,7 +105,9 @@ class UserModel {
       'nomor_bpjs_tenagakerja': nomorBpjsTenagakerja,
       'time_in': timeIn,
       'time_out': timeOut,
-      'interval':interval??0
+      'interval': interval ?? 0,
+      'interval_tracking': interval_tracking,
+      'is_view_tracking': isViewTracking,
     };
   }
 
@@ -136,7 +143,9 @@ class UserModel {
         nomorBpjsTenagakerja: map['nomor_bpjs_tenagakerja'],
         interval: map['interval'],
         timeIn: map['time_in'],
-        timeOut: map['time_out']);
+        timeOut: map['time_out'],
+        interval_tracking: map['interval_tracking'],
+        isViewTracking: map['is_view_tracking']);
   }
 
   String toJson() => json.encode(toMap());

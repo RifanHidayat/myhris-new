@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:siscom_operasional/controller/api_controller.dart';
 import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
+import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/model/user_model.dart';
 import 'package:siscom_operasional/screen/akun/edit_personal_data.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
@@ -22,7 +24,7 @@ import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class SettingController extends GetxController {
   var fotoUser = File("").obs;
-
+  final controllerTracking = Get.put(TrackingController());
   Rx<List<String>> jenisKelaminDropdown = Rx<List<String>>([]);
   Rx<List<String>> golonganDarahDropdown = Rx<List<String>>([]);
 
@@ -106,10 +108,18 @@ class SettingController extends GetxController {
             negativeBtnText: "Kembali",
             style: 1,
             buttonStatus: 1,
-            positiveBtnPressed: () {
+            positiveBtnPressed: () async {
               AppData.isLogin = false;
               UtilsAlert.loadingSimpanData(context, "Tunggu Sebentar...");
               aksiEditLastLogin();
+              //fungsi stopTracking
+              controllerTracking.bagikanlokasi.value = "tidak aktif";
+              // await LocationDao().clear();
+              // await _getLocations();
+              await BackgroundLocationTrackerManager.stopTracking();
+              controllerTracking.isTrackingLokasi.value = false;
+              print(
+                  "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
             },
           ),
         );

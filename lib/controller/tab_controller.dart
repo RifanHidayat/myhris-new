@@ -32,6 +32,7 @@ class TabbController extends GetxController {
   DateTime? _currentBackPressTime;
 
   var kontrolAkses = false.obs;
+  var kontrol = false.obs;
   final Absensicontroller = Get.put(AbsenController());
 
   @override
@@ -43,12 +44,30 @@ class TabbController extends GetxController {
   void checkuserinfo() {
     var dataUser = AppData.informasiUser;
     var getKontrolAkses = "${dataUser![0].em_control_acess}";
-    print("dapatttt $getKontrolAkses");
-    if (getKontrolAkses == "0") {
+    var getKontrol = "${dataUser![0].em_control}";
+    var isViewTracking = "${AppData.informasiUser![0].isViewTracking}";
+    print("dapatttt isViewTracking $isViewTracking");
+    print("dapatttt getKontrolAkses $getKontrolAkses");
+    print("dapatttt getKontrol $getKontrol");
+    if (getKontrolAkses == "0" && getKontrol == "0") {
       kontrolAkses.value = false;
+      kontrol.value = false;
     } else {
-      kontrolAkses.value = true;
+      if (getKontrolAkses == "1") {
+        kontrolAkses.value = true;
+        kontrol.value = false;
+      } else {
+        if (isViewTracking.toString() == '0') {
+          kontrolAkses.value = false;
+          kontrol.value = false;
+        } else {
+          kontrolAkses.value = false;
+          kontrol.value = true;
+        }
+        kontrolAkses.value = false;
+      }
     }
+
     this.kontrolAkses.refresh();
   }
 
