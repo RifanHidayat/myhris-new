@@ -55,7 +55,8 @@ void main() async {
     statusBarBrightness: Brightness.dark,
   ));
   await GetStorage.init();
-  AppData.clearAllData();
+  // AppData.clearAllData();
+
 
 // Define a top-level callback function
 
@@ -100,8 +101,11 @@ void main() async {
     print(
         'User declined or has not accepted permission ${settings.authorizationStatus}');
   }
+  print("database selected main new ${AppData.selectedDatabase}");
+    print("em_id main new  ${AppData.informasiUser![0].em_id}");
+    runApp(MyApp());
 
-  runApp(const MyApp());
+
 }
 
 Future showNotification(message) async {
