@@ -337,7 +337,7 @@ class _SettingState extends State<Setting> {
                     ),
                     borderRadius: const BorderRadius.all(Radius.circular(12))),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                  padding: const EdgeInsets.fromLTRB(8.0, 8.0, 4.0, 8.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -401,7 +401,7 @@ class _SettingState extends State<Setting> {
                     color: Constanst.colorNonAktif,
                     borderRadius: const BorderRadius.all(Radius.circular(12))),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                  padding: const EdgeInsets.fromLTRB(8.0, 8.0, 4.0, 8.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

@@ -1,3 +1,4 @@
+import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +25,7 @@ import 'package:ntp/ntp.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
+import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
 
 import 'package:siscom_operasional/model/shift_model.dart';
@@ -56,6 +58,7 @@ import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 
 class AbsenController extends GetxController {
   var globalCt = Get.put(GlobalController());
+  final controllerTracking = Get.put(TrackingController());
 
   PageController? pageViewFilterAbsen;
 
@@ -1034,7 +1037,7 @@ class AbsenController extends GetxController {
 
           isLoaingAbsensi.value = true;
           var connect = Api.connectionApi("post", body, "kirimAbsen");
-          connect.then((dynamic res) {
+          connect.then((dynamic res) async {
             if (res.statusCode == 200) {
               var valueBody = jsonDecode(res.body);
               print(res.body);
@@ -1048,6 +1051,32 @@ class AbsenController extends GetxController {
 
               print("dapat interval ${intervalControl.value}");
               // Navigator.pop(Get.context!);
+              ;
+
+              print(
+                  "isViewTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
+              print("isViewTracking ${typeAbsen.value}");
+              if (AppData.informasiUser![0].isViewTracking.toString() == '0') {
+                controllerTracking.bagikanlokasi.value = "aktif";
+                await BackgroundLocationTrackerManager.startTracking();
+                controllerTracking.updateStatus('1');
+                controllerTracking.isTrackingLokasi.value = true;
+                // controllerTracking.detailTracking(emIdEmployee: '');
+                print(
+                    "startTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
+              }
+
+              if (typeAbsen.value == 2) {
+                controllerTracking.bagikanlokasi.value = "tidak aktif";
+                // await LocationDao().clear();
+                // await _getLocations();
+                await BackgroundLocationTrackerManager.stopTracking();
+                controllerTracking.updateStatus('2');
+                controllerTracking.isTrackingLokasi.value = false;
+                print(
+                    "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
+              }
+
               Get.to(BerhasilAbsensi(
                 dataBerhasil: [
                   titleAbsen.value,

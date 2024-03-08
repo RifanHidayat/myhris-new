@@ -19,14 +19,12 @@ class Api {
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
   // static var basicUrl = "http://mobilehris.siscom.id:3000/";
-      static var urlImage = 'https://imagehris.siscom.id:4431';
-static var basicUrl = "http://mobilehris.siscom.id:3000/";
-    //  static var basicUrl = "http://kantor.membersis.com:2629/";
- static var token = '9d590c04119a4433971a1dd622266d38';
- static var luxand = 'https://api.luxand.cloud/photo/similarity';
- static var wappin = 'https://api.wappin.id/v1';
-
-
+  static var urlImage = 'https://imagehris.siscom.id:4431';
+  static var basicUrl = "http://mobilehris.siscom.id:3000/";
+  //  static var basicUrl = "http://kantor.membersis.com:2629/";
+  static var token = '9d590c04119a4433971a1dd622266d38';
+  static var luxand = 'https://api.luxand.cloud/photo/similarity';
+  static var wappin = 'https://api.wappin.id/v1';
 
   static var UrlfotoAbsen = urlImage +
       "/${AppData.selectedDatabase}/foto_absen                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     /";
@@ -52,8 +50,9 @@ static var basicUrl = "http://mobilehris.siscom.id:3000/";
   static Future connectionApi(String typeConnect, valFormData, String url,
       {params = ""}) async {
     print("params" + params);
+    // var getUrl = basicUrl + url + '?database=demohr' + params;
     var getUrl =
-        basicUrl + url + '?database=${AppData.selectedDatabase}' + params;
+        basicUrl + url + "?database=${AppData.selectedDatabase}" + params;
     print("url ${getUrl}");
     Map<String, String> headers = {
       'Authorization': basicAuth,
@@ -67,6 +66,7 @@ static var basicUrl = "http://mobilehris.siscom.id:3000/";
           ? ""
           : AppData.informasiUser![0].em_id
     };
+
     if (typeConnect == "post") {
       try {
         final url = Uri.parse(getUrl);
@@ -121,9 +121,6 @@ static var basicUrl = "http://mobilehris.siscom.id:3000/";
           : AppData.informasiUser![0].em_id
     };
 
-
-
-
     try {
       final url = Uri.parse(getUrl);
       var request = http.MultipartRequest('POST', url);
@@ -163,5 +160,89 @@ static var basicUrl = "http://mobilehris.siscom.id:3000/";
 
   Future<bool> _stopForegroundTask() async {
     return await FlutterForegroundTask.stopService();
+  }
+}
+
+class ApiRequest {
+  late final String url;
+  late final dynamic body;
+  late final dynamic temParams;
+
+  static var basicAuth = 'Basic ' +
+      base64Encode(utf8
+          .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
+  static var basicUrl = "http://kantor.membersis.com:2629/";
+
+  Map<String, String> headers = {
+    'Authorization': basicAuth,
+    'Content-type': 'application/json',
+    'Accept': 'application/json',
+    // 'token': AppData.setFcmToken,
+    // 'em_id': 'SIS202305048'
+  };
+
+  var params = {
+    'database': AppData.selectedDatabase,
+    // 'database': 'demohr',
+  };
+
+  ApiRequest({required this.url, this.body, this.temParams});
+
+  Future<http.Response> get() async {
+    print("Hostname ${headers}");
+    if (temParams != null) {
+      headers.addAll(temParams);
+    }
+
+    print(basicUrl + url);
+    return await http
+        .get(Uri.parse(basicUrl + url).replace(queryParameters: headers),
+            headers: headers)
+        .timeout(Duration(minutes: 3));
+  }
+
+  Future<http.Response> post() async {
+    print(params);
+    print(temParams);
+    if (temParams != null) {
+      params.addAll(temParams);
+    }
+
+    print("basic ${basicUrl + url}");
+    return await http
+        .post(Uri.parse(basicUrl + url).replace(queryParameters: params),
+            body: jsonEncode(body), headers: headers)
+        .timeout(Duration(minutes: 2));
+  }
+
+  Future<http.Response> patch() async {
+    print(headers);
+    print(temParams);
+    if (temParams != null) {
+      headers.addAll(temParams);
+    }
+
+    print(basicUrl + url);
+    return await http
+        .patch(Uri.parse(basicUrl + url).replace(queryParameters: headers),
+            body: jsonEncode(body), headers: headers)
+        .timeout(Duration(minutes: 2));
+  }
+
+  Future<http.Response> delete() async {
+    // print("Hostname ${AppData.hostInformation![0].hostname}");
+    // print("Hostname ${AppData.hostInformation![0].port}");
+    // print("Hostname ${AppData.hostInformation![0].dbname}");
+    // print("periode ${AppData.periode}");
+    // print("Kode cabang ${AppData.kodeCabang}");
+    if (temParams != null) {
+      headers.addAll(temParams);
+    }
+
+    print(basicUrl + url);
+    return await http
+        .delete(Uri.parse(basicUrl + url).replace(queryParameters: headers),
+            body: jsonEncode(body), headers: headers)
+        .timeout(Duration(minutes: 3));
   }
 }

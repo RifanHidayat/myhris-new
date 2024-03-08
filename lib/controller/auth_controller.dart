@@ -94,15 +94,15 @@ class AuthController extends GetxController {
 
   Future<void> loginUser() async {
     final box = GetStorage();
-      var fcm_registration_token = await FirebaseMessaging.instance.getToken();
-  print("fcmtoken ${fcm_registration_token}");
+    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+    print("fcmtoken ${fcm_registration_token}");
     UtilsAlert.showLoadingIndicator(Get.context!);
     Map<String, dynamic> body = {
       'email': email.value.text,
       'password': password.value.text,
-      'token_notif': fcm_registration_token ,
+      'token_notif': fcm_registration_token,
       'database': selectedDb.value
-    }; 
+    };
     var connect = Api.connectionApi("post", body, "login");
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
@@ -131,39 +131,41 @@ class AuthController extends GetxController {
               "data att ${element['time_attendance'].toString().split(',')[1]}");
           print("tes ${element['time_attendance'].toString()}");
           var data = UserModel(
-            em_id: element['em_id'] ?? "",
-            des_id: element['des_id'] ?? 0,
-            dep_id: element['dep_id'] ?? 0,
-            dep_group: element['dep_group'] ?? 0,
-            full_name: element['full_name'] ?? "",
-            em_email: element['em_email'] ?? "",
-            em_phone: element['em_phone'] ?? "",
-            em_birthday: element['em_birthday'] ?? "1999-09-09",
-            em_gender: element['em_gender'] ?? "",
-            em_image: element['em_image'] ?? "",
-            em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-            em_status: element['em_status'] ?? "",
-            em_blood_group: element['em_blood_group'] ?? "",
-            posisi: element['posisi'] ?? "",
-            emp_jobTitle: element['emp_jobTitle'] ?? "",
-            emp_departmen: element['emp_departmen'] ?? "",
-            em_control: element['em_control'] ?? 0,
-            em_control_acess: element['em_control_access'] ?? 0,
-            emp_att_working: element['emp_att_working'] ?? 0,
-            em_hak_akses: element['em_hak_akses'] ?? "",
-            beginPayroll: element['begin_payroll'] ?? 1,
-            endPayroll: element['end_payroll'] ?? 31,
-            branchName: element['branch_name'] ?? "",
-            startTime: element['time_attendance'].toString().split(',')[0],
-            endTime: element['time_attendance'].toString().split(',')[1],
-            nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
-            nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
-            timeIn: element['time_in'] ?? "",
-            timeOut: element['time_out'] ?? "",
-               interval: element['interval']
-            //   startTime: "00:01",
-            // endTime: "23:59",
-          );
+              em_id: element['em_id'] ?? "",
+              des_id: element['des_id'] ?? 0,
+              dep_id: element['dep_id'] ?? 0,
+              dep_group: element['dep_group'] ?? 0,
+              full_name: element['full_name'] ?? "",
+              em_email: element['em_email'] ?? "",
+              em_phone: element['em_phone'] ?? "",
+              em_birthday: element['em_birthday'] ?? "1999-09-09",
+              em_gender: element['em_gender'] ?? "",
+              em_image: element['em_image'] ?? "",
+              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+              em_status: element['em_status'] ?? "",
+              em_blood_group: element['em_blood_group'] ?? "",
+              posisi: element['posisi'] ?? "",
+              emp_jobTitle: element['emp_jobTitle'] ?? "",
+              emp_departmen: element['emp_departmen'] ?? "",
+              em_control: element['em_control'] ?? 0,
+              em_control_acess: element['em_control_access'] ?? 0,
+              emp_att_working: element['emp_att_working'] ?? 0,
+              em_hak_akses: element['em_hak_akses'] ?? "",
+              beginPayroll: element['begin_payroll'] ?? 1,
+              endPayroll: element['end_payroll'] ?? 31,
+              branchName: element['branch_name'] ?? "",
+              startTime: element['time_attendance'].toString().split(',')[0],
+              endTime: element['time_attendance'].toString().split(',')[1],
+              nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
+              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
+              timeIn: element['time_in'] ?? "",
+              timeOut: element['time_out'] ?? "",
+              interval: element['interval'],
+              interval_tracking: element['interval_tracking'],
+              isViewTracking: element['is_view_tracking']
+              //   startTime: "00:01",
+              // endTime: "23:59",
+              );
 
           print("data element");
 
@@ -179,7 +181,7 @@ class AuthController extends GetxController {
           getAktif = "${element['status_aktif']}";
 
           AppData.isLogin = true;
-          AppData.setFcmToken =fcm_registration_token!;
+          AppData.setFcmToken = fcm_registration_token!;
           print(element.toString());
         }
 
@@ -227,7 +229,7 @@ class AuthController extends GetxController {
     Map<String, dynamic> body = {
       'email': email.value.text,
       'password': password.value.text,
-        'token_notif': fcm_registration_token ,
+      'token_notif': fcm_registration_token,
       'database': selectedDb.value
     };
     var connect = Api.connectionApi("post", body, "login");
@@ -249,40 +251,41 @@ class AuthController extends GetxController {
         var idMobile = "";
         for (var element in valueBody['data']) {
           var data = UserModel(
-            em_id: element['em_id'] ?? "",
-            des_id: element['des_id'] ?? 0,
-            dep_id: element['dep_id'] ?? 0,
-            dep_group: element['dep_group'] ?? 0,
-            full_name: element['full_name'] ?? "",
-            em_email: element['em_email'] ?? "",
-            em_phone: element['em_phone'] ?? "",
-            em_birthday: element['em_birthday'] ?? "1999-09-09",
-            em_gender: element['em_gender'] ?? "",
-            em_image: element['em_image'] ?? "",
-            em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-            em_status: element['em_status'] ?? "",
-            em_blood_group: element['em_blood_group'] ?? "",
-            posisi: element['posisi'] ?? "",
-            emp_jobTitle: element['emp_jobTitle'] ?? "",
-            emp_departmen: element['emp_departmen'] ?? "",
-            em_control: element['em_control'] ?? 0,
-            em_control_acess: element['em_control_access'] ?? 0,
-            emp_att_working: element['emp_att_working'] ?? 0,
-            em_hak_akses: element['em_hak_akses'] ?? "",
-            beginPayroll: element['begin_payroll'] ?? 1,
-            endPayroll: element['end_payroll'] ?? 31,
-            branchName: element['branch_name'] ?? "",
-            startTime: element['time_attendance'].toString().split(',')[0],
-            endTime: element['time_attendance'].toString().split(',')[1],
-            nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
-            nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
-            timeIn: element['time_in'] ?? "",
-            timeOut: element['time_out'] ?? "",
-            interval: element['interval'],
-            
-            // startTime: "00:01",
-            // endTime: "23:59",
-          );
+              em_id: element['em_id'] ?? "",
+              des_id: element['des_id'] ?? 0,
+              dep_id: element['dep_id'] ?? 0,
+              dep_group: element['dep_group'] ?? 0,
+              full_name: element['full_name'] ?? "",
+              em_email: element['em_email'] ?? "",
+              em_phone: element['em_phone'] ?? "",
+              em_birthday: element['em_birthday'] ?? "1999-09-09",
+              em_gender: element['em_gender'] ?? "",
+              em_image: element['em_image'] ?? "",
+              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+              em_status: element['em_status'] ?? "",
+              em_blood_group: element['em_blood_group'] ?? "",
+              posisi: element['posisi'] ?? "",
+              emp_jobTitle: element['emp_jobTitle'] ?? "",
+              emp_departmen: element['emp_departmen'] ?? "",
+              em_control: element['em_control'] ?? 0,
+              em_control_acess: element['em_control_access'] ?? 0,
+              emp_att_working: element['emp_att_working'] ?? 0,
+              em_hak_akses: element['em_hak_akses'] ?? "",
+              beginPayroll: element['begin_payroll'] ?? 1,
+              endPayroll: element['end_payroll'] ?? 31,
+              branchName: element['branch_name'] ?? "",
+              startTime: element['time_attendance'].toString().split(',')[0],
+              endTime: element['time_attendance'].toString().split(',')[1],
+              nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
+              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
+              timeIn: element['time_in'] ?? "",
+              timeOut: element['time_out'] ?? "",
+              interval: element['interval'],
+              interval_tracking: element['interval_tracking'],
+              isViewTracking: element['is_view_tracking']
+              // startTime: "00:01",
+              // endTime: "23:59",
+              );
 
           if (element['file_face'] == "" || element['file_face'] == null) {
             box.write("face_recog", false);
@@ -297,7 +300,7 @@ class AuthController extends GetxController {
 
           AppData.isLogin = true;
           print(element.toString());
-                AppData.setFcmToken =fcm_registration_token!;
+          AppData.setFcmToken = fcm_registration_token!;
         }
 
         if (getAktif == "ACTIVE") {

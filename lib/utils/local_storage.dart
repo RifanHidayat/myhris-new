@@ -5,7 +5,7 @@ class LocalStorage {
 
   /// Get dynamic value from all type preferences
   static dynamic getFromDisk(String key, {bool decrypt = false}) {
-    assert(prefs != null);
+    // assert(prefs != null);
     var value = prefs?.get(key);
     if (value is List) return value.cast<String>();
     return value;

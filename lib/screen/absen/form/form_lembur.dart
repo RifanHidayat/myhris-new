@@ -58,7 +58,7 @@ class _FormLemburState extends State<FormLembur> {
         titleSpacing: 0,
         centerTitle: true,
         title: Text(
-          "Pengajuan Lembur",
+          "Pengajuan Lembur2",
           style: GoogleFonts.inter(
               color: Constanst.fgPrimary,
               fontWeight: FontWeight.w500,

@@ -121,8 +121,8 @@ class DashboardController extends GetxController {
   var refreshPagesStatus = false.obs;
   var viewInformasiSisaKontrak = false.obs;
 
-  var timeIn="".obs;
-  var timeOut="".obs;
+  var timeIn = "".obs;
+  var timeOut = "".obs;
 
   void toggleSearch() {
     isSearching.value = !isSearching.value;
@@ -810,10 +810,8 @@ class DashboardController extends GetxController {
     Map<String, dynamic> body = {'em_id': getEmid};
     var connect = Api.connectionApi("post", body, "refresh_employee");
     connect.then((dynamic res) {
-
-    
       var valueBody = jsonDecode(res.body);
-        print("data employee ${valueBody}");
+      print("data ${valueBody}");
 
       if (valueBody['status'] == false) {
         UtilsAlert.showToast(valueBody['message']);
@@ -853,8 +851,9 @@ class DashboardController extends GetxController {
               nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'],
               timeIn: element['time_in'],
               interval: element['interval'],
-
-              timeOut: element['time_out']);
+              timeOut: element['time_out'],
+              interval_tracking: element['interval_tracking'],
+              isViewTracking: element['is_view_tracking']);
           print(element['posisi']);
           getData.add(data);
         }
@@ -866,27 +865,26 @@ class DashboardController extends GetxController {
     });
   }
 
-    void updateWorkTime() {
-    print("informasi hak akses work schdule new");
+  void updateWorkTime() {
+    print("informasi hak akses work schdule");
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
-    Map<String, dynamic> body = {'em_id': getEmid,'date':DateFormat('yyyy-MM-dd').format(DateTime.now())};
+    Map<String, dynamic> body = {
+      'em_id': getEmid,
+      'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
+    };
     var connect = Api.connectionApi("post", body, "work-schedule");
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
-        print("data error wrok ${valueBody}");
-        print("data body ${body}");
+      print("data error wrok ${valueBody}");
+      print("data body ${body}");
 
       if (valueBody['status'] == false) {
-        
         // Navigator.pop(Get.context!);
       } else {
-         print("data work time new ${valueBody['data']}");
-        timeIn.value=valueBody['data']['time_in'];
-        timeOut.value=valueBody['data']['time_out'];
-       
-
-
+        print("data work time ${valueBody['data']}");
+        timeIn.value = valueBody['data']['time_in'];
+        timeOut.value = valueBody['data']['time_out'];
       }
       //   Api().validateAuth(res.statusCode );
     });
