@@ -113,11 +113,11 @@ Future<void> main() async {
         ),
         distanceFilterMeters: null,
       ),
-      iOSConfig: IOSConfig(
-        activityType: ActivityType.FITNESS,
-        distanceFilterMeters: null,
-        restartAfterKill: true,
-      ),
+      // iOSConfig: const IOSConfig(
+      //   activityType: ActivityType.FITNESS,
+      //   distanceFilterMeters: null,
+      //   restartAfterKill: true,
+      // ),
     ),
   );
 
