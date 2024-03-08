@@ -65,7 +65,10 @@
 	<string>Hi ,We need user notification for approval permission</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<key>UIBackgroundModes</key>
+	<!-- <key>UIBackgroundModes</key> -->
+	<!-- <array>
+		<string>location</string>
+	</array> -->
 	<array>
 		<string>fetch</string>
 		<string>processing</string>
