@@ -101,8 +101,7 @@ void main() async {
     print(
         'User declined or has not accepted permission ${settings.authorizationStatus}');
   }
-  print("database selected main new ${AppData.selectedDatabase}");
-    print("em_id main new  ${AppData.informasiUser![0].em_id}");
+ 
     runApp(MyApp());
 
 
