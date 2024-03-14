@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
+import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/model/database.dart';
 import 'package:siscom_operasional/model/user_model.dart';
 import 'package:siscom_operasional/screen/absen/camera_view_register.dart';
@@ -38,6 +40,7 @@ class AuthController extends GetxController {
   var messageNewPassword = "".obs;
 
   var controllerAbsnsi = Get.put(AbsenController());
+  final controllerTracking = Get.put(TrackingController());
 
   @override
   void onReady() {
@@ -104,7 +107,7 @@ class AuthController extends GetxController {
       'database': selectedDb.value
     };
     var connect = Api.connectionApi("post", body, "login");
-    connect.then((dynamic res) {
+    connect.then((dynamic res) async {
       var valueBody = jsonDecode(res.body);
       print('data login ${valueBody}');
       if (valueBody['status'] == false) {
@@ -122,7 +125,7 @@ class AuthController extends GetxController {
         var getAktif = "";
         var idMobile = "";
 
-        print("data login ${valueBody['data']}");
+        print("data login 2 ${valueBody['data']}");
 
         for (var element in valueBody['data']) {
           print(
@@ -162,12 +165,13 @@ class AuthController extends GetxController {
               timeOut: element['time_out'] ?? "",
               interval: element['interval'],
               interval_tracking: element['interval_tracking'],
-              isViewTracking: element['is_view_tracking']
+              isViewTracking: element['is_view_tracking'],
+              is_tracking: element['is_tracking']
               //   startTime: "00:01",
               // endTime: "23:59",
               );
 
-          print("data element");
+          print('data login ${data}');
 
           if (element['file_face'] == "" || element['file_face'] == null) {
             box.write("face_recog", false);
@@ -183,6 +187,25 @@ class AuthController extends GetxController {
           AppData.isLogin = true;
           AppData.setFcmToken = fcm_registration_token!;
           print(element.toString());
+
+          if (AppData.informasiUser![0].is_tracking.toString() == '1') {
+            controllerTracking.bagikanlokasi.value = "aktif";
+            await BackgroundLocationTrackerManager.startTracking();
+            controllerTracking.updateStatus('1');
+            controllerTracking.isTrackingLokasi.value = true;
+            // controllerTracking.detailTracking(emIdEmployee: '');
+            print(
+                "startTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
+          } else {
+            controllerTracking.bagikanlokasi.value = "tidak aktif";
+            // await LocationDao().clear();
+            // await _getLocations();
+            await BackgroundLocationTrackerManager.stopTracking();
+            controllerTracking.updateStatus('0');
+            controllerTracking.isTrackingLokasi.value = false;
+            print(
+                "stopTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
+          }
         }
 
         if (getAktif == "ACTIVE") {
@@ -282,7 +305,8 @@ class AuthController extends GetxController {
               timeOut: element['time_out'] ?? "",
               interval: element['interval'],
               interval_tracking: element['interval_tracking'],
-              isViewTracking: element['is_view_tracking']
+              isViewTracking: element['is_view_tracking'],
+              is_tracking: element['is_tracking']
               // startTime: "00:01",
               // endTime: "23:59",
               );

@@ -65,15 +65,13 @@
 	<string>Hi ,We need user notification for approval permission</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<!-- <key>UIBackgroundModes</key> -->
-	<!-- <array>
-		<string>location</string>
-	</array> -->
+	<key>UIBackgroundModes</key>
 	<array>
+		<string>location</string>
 		<string>fetch</string>
 		<string>processing</string>
 		<string>remote-notification</string>
-	</array>
+	</array> 
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

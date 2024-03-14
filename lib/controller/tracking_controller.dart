@@ -1,3 +1,4 @@
+import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,6 +55,7 @@ import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 class TrackingController extends GetxController {
   // PageController? pageViewFilterAbsen;
   var em_id = "".obs;
+
   //  var em_id = AppData.informasiUser![0].em_id.toString().obs;
   var detailTrackings = <DetailTrackingModel>[].obs;
   var detailTrackings2 = <DetailTrackingModel>[].obs;
@@ -1119,11 +1121,12 @@ class TrackingController extends GetxController {
 
     Map<String, dynamic> body = {
       'tanggal': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
-      // 'em_id': AppData.informasiUser == null || AppData.informasiUser!.isEmpty
-      //     ? ''
-      //     : AppData.informasiUser![0].em_id,
+      'em_id': AppData.informasiUser == null || AppData.informasiUser!.isEmpty
+          ? ''
+          : AppData.informasiUser![0].em_id,
 
-      'em_id': AppData.informasiUser![0].em_id,
+      // 'em_id':
+      //     AppData.informasiUser!.isEmpty ? '' : AppData.informasiUser![0].em_id,
       'waktu': DateFormat('HH:mm').format(DateTime.now()).toString(),
       'longitude': longitude.toString(),
       "latitude": latitude.toString(),
@@ -1313,6 +1316,27 @@ class TrackingController extends GetxController {
     } catch (e) {
       print(e);
       // Get.back();
+    }
+  }
+
+  Future<void> isTracking() async {
+    if (AppData.informasiUser![0].is_tracking.toString() == '1') {
+      bagikanlokasi.value = "aktif";
+      // await BackgroundLocationTrackerManager.startTracking();
+      // updateStatus('1');
+      isTrackingLokasi.value = true;
+      // detailTracking(emIdEmployee: '');
+      print(
+          "startTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
+    } else {
+      bagikanlokasi.value = "tidak aktif";
+      // await LocationDao().clear();
+      // await _getLocations();
+      // await BackgroundLocationTrackerManager.stopTracking();
+      // updateStatus('0');
+      isTrackingLokasi.value = false;
+      print(
+          "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
     }
   }
   // Future<String> getAddressFromLatLng(double lat, double lng) async {

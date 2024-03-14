@@ -36,9 +36,9 @@ if #available(iOS 10.0, *) {
 
     GeneratedPluginRegistrant.register(with: self)
 
-    // BackgroundLocationTrackerPlugin.setPluginRegistrantCallback { registry in
-    //     GeneratedPluginRegistrant.register(with: registry)
-    // }
+    BackgroundLocationTrackerPlugin.setPluginRegistrantCallback { registry in
+        GeneratedPluginRegistrant.register(with: registry)
+    }
     
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

@@ -19,6 +19,7 @@ import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/controller/tab_controller.dart';
+import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/screen/absen/absesi_location.dart';
 import 'package:siscom_operasional/screen/absen/camera_view.dart';
 import 'package:siscom_operasional/screen/absen/face_id_registration.dart';
@@ -50,6 +51,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   final controller = Get.put(DashboardController());
   final controllerAbsensi = Get.put(AbsenController());
+  final controllerTracking = Get.put(TrackingController());
   // final controllerIzin = Get.put(IzinController());
   // var controllerLembur = Get.put(LemburController());
   // var controllerCuti = Get.put(CutiController());
@@ -2587,6 +2589,10 @@ class _DashboardState extends State<Dashboard> {
     // Add a listener to the scroll controller
     _scrollController.addListener(_scrollListener);
     // controller.loadMenuShowInMain();
+    // tabbController.checkuserinfo();
+    if (controllerTracking.bagikanlokasi.value == "aktif") {
+      controllerTracking.absenSelfie();
+    }
   }
 
   void _checkversion() async {

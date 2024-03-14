@@ -46,9 +46,16 @@ class TabbController extends GetxController {
     var getKontrolAkses = "${dataUser![0].em_control_acess}";
     var getKontrol = "${dataUser![0].em_control}";
     var isViewTracking = "${AppData.informasiUser![0].isViewTracking}";
+    var isTracking = "${AppData.informasiUser![0].is_tracking}";
+    // isViewTracking = int.parse('1').toString();
+    // getKontrolAkses = int.parse('0').toString();
+    // getKontrol = int.parse('1').toString();
+    // isTracking = int.parse('0').toString();
+
     print("dapatttt isViewTracking $isViewTracking");
     print("dapatttt getKontrolAkses $getKontrolAkses");
     print("dapatttt getKontrol $getKontrol");
+    print("dapatttt isTracking $isTracking");
     if (getKontrolAkses == "0" && getKontrol == "0") {
       kontrolAkses.value = false;
       kontrol.value = false;

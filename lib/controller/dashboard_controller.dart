@@ -20,6 +20,7 @@ import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/izin_controller.dart';
 import 'package:siscom_operasional/controller/klaim_controller.dart';
 import 'package:siscom_operasional/controller/lembur_controller.dart';
+import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/controller/tugas_luar_controller.dart';
 import 'package:siscom_operasional/model/menu.dart';
 import 'package:siscom_operasional/model/menu_dashboard_model.dart';
@@ -68,7 +69,7 @@ class DashboardController extends GetxController {
   CarouselController corouselDashboard = CarouselController();
   PageController menuController = PageController(initialPage: 0);
   PageController informasiController = PageController(initialPage: 0);
-
+  final controllerTracking = Get.put(TrackingController());
   var controller = Get.put(BpjsController());
 
   RxString signoutTime = "".obs;
@@ -804,6 +805,7 @@ class DashboardController extends GetxController {
   }
 
   void updateInformasiUser() {
+    controllerTracking.isLoadingDetailTracking.value = true;
     print("informasi hak akseesss");
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
@@ -853,13 +855,15 @@ class DashboardController extends GetxController {
               interval: element['interval'],
               timeOut: element['time_out'],
               interval_tracking: element['interval_tracking'],
-              isViewTracking: element['is_view_tracking']);
+              isViewTracking: element['is_view_tracking'],
+              is_tracking: element['is_tracking']);
           print(element['posisi']);
           getData.add(data);
         }
         AppData.informasiUser = getData;
 
         getUserInfo();
+        controllerTracking.isLoadingDetailTracking.value = false;
       }
       //   Api().validateAuth(res.statusCode );
     });
