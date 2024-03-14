@@ -778,7 +778,7 @@ class _LiveTrackingState extends State<LiveTracking> {
                       // await LocationDao().clear();
                       await _getLocations();
                       await BackgroundLocationTrackerManager.stopTracking();
-                      controllerTracking.updateStatus('2');
+                      controllerTracking.updateStatus('0');
                       setState(() =>
                           controllerTracking.isTrackingLokasi.value = false);
 

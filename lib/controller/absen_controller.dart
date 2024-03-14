@@ -1041,11 +1041,11 @@ class AbsenController extends GetxController {
             if (res.statusCode == 200) {
               var valueBody = jsonDecode(res.body);
               print(res.body);
-              for (var element in sysData.value) {
-                if (element['kode'] == '006') {
-                  intervalControl.value = int.parse(element['name']);
-                }
-              }
+              // for (var element in sysData.value) {
+              //   if (element['kode'] == '006') {
+              //     intervalControl.value = int.parse(element['name'].toString());
+              //   }
+              // }
               isLoaingAbsensi.value = false;
               this.intervalControl.refresh();
 
@@ -1071,7 +1071,7 @@ class AbsenController extends GetxController {
                 // await LocationDao().clear();
                 // await _getLocations();
                 await BackgroundLocationTrackerManager.stopTracking();
-                controllerTracking.updateStatus('2');
+                controllerTracking.updateStatus('0');
                 controllerTracking.isTrackingLokasi.value = false;
                 print(
                     "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
@@ -1573,8 +1573,8 @@ class AbsenController extends GetxController {
                     SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
                       child: Column(
-                        children:
-                            List.generate(departementAkses.value.length, (index) {
+                        children: List.generate(departementAkses.value.length,
+                            (index) {
                           var id = departementAkses.value[index]['id'];
                           var dep_name = departementAkses.value[index]['name'];
                           return InkWell(
@@ -1584,7 +1584,7 @@ class AbsenController extends GetxController {
                               selectedViewFilterAbsen.value = 0;
                               Rx<AbsenModel> absenModel = AbsenModel().obs;
                               var jumlahData = 0.obs;
-              
+
                               idDepartemenTerpilih.value = "$id";
                               namaDepartemenTerpilih.value = dep_name;
                               departemen.value.text =
@@ -1598,7 +1598,8 @@ class AbsenController extends GetxController {
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     dep_name,
@@ -1641,7 +1642,7 @@ class AbsenController extends GetxController {
                                             Rx<AbsenModel> absenModel =
                                                 AbsenModel().obs;
                                             var jumlahData = 0.obs;
-              
+
                                             idDepartemenTerpilih.value = "$id";
                                             namaDepartemenTerpilih.value =
                                                 dep_name;

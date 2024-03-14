@@ -62,7 +62,7 @@ void backgroundCallback() {
   BackgroundLocationTrackerManager.handleBackgroundUpdated(
     (data) async {
       LocalStorage.prefs = await SharedPreferences.getInstance();
-      print("informasiUser 1111 ${AppData.informasiUser![0].em_id}");
+      // print("informasiUser 1111 ${AppData.informasiUser![0].em_id}");
       // print("informasiUser ${AppData.informasiUser![0].em_id}");
       controllerTracking.tracking(data.lat.toString(), data.lon.toString());
       // Repo().tracking(data);
@@ -79,7 +79,6 @@ Future<void> main() async {
   ));
   await GetStorage.init();
   // AppData.clearAllData();
-
 
   cameras = await availableCameras();
   WidgetsFlutterBinding.ensureInitialized();
@@ -100,8 +99,8 @@ Future<void> main() async {
   //   ),
   // );
   LocalStorage.prefs = await SharedPreferences.getInstance();
-  controllerTracking.em_id.value = AppData.informasiUser![0].em_id;
-  print("em_id param ${controllerTracking.em_id.value}");
+  // controllerTracking.em_id.value = er![0].em_id;
+  // print("em_id param ${controllerTracking.em_id.value}");
   await BackgroundLocationTrackerManager.initialize(
     backgroundCallback,
     config: BackgroundLocationTrackerConfig(
@@ -109,16 +108,19 @@ Future<void> main() async {
       androidConfig: AndroidConfig(
         notificationIcon: 'explore',
         trackingInterval: Duration(
-          minutes: int.parse(AppData.informasiUser![0].interval.toString()),
-          // seconds: 60,
+          minutes: int.parse(
+              AppData.informasiUser == null || AppData.informasiUser!.isEmpty
+                  ? '1'
+                  : AppData.informasiUser![0].interval.toString()),
+          // seconds: 5,
         ),
         distanceFilterMeters: null,
       ),
-      // iOSConfig: const IOSConfig(
-      //   activityType: ActivityType.FITNESS,
-      //   distanceFilterMeters: null,
-      //   restartAfterKill: true,
-      // ),
+      iOSConfig: IOSConfig(
+        activityType: ActivityType.FITNESS,
+        distanceFilterMeters: null,
+        restartAfterKill: true,
+      ),
     ),
   );
 
@@ -159,10 +161,8 @@ Future<void> main() async {
     print(
         'User declined or has not accepted permission ${settings.authorizationStatus}');
   }
- 
-    runApp(MyApp());
 
-
+  runApp(MyApp());
 }
 
 Future showNotification(message) async {
@@ -445,48 +445,48 @@ class Repo {
 
   factory Repo() => _instance ??= Repo._();
 
-  Future<void> tracking(BackgroundLocationUpdateData data) async {
-    //  void tracking(String latitude, String longitude) async {
-    // print("informasiUser  ");
-    print("informasiUser 11 ${AppData.informasiUser![0].em_id}");
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(data.lat, data.lon);
+  // Future<void> tracking(BackgroundLocationUpdateData data) async {
+  //   //  void tracking(String latitude, String longitude) async {
+  //   // print("informasiUser  ");
+  //   print("informasiUser 11 ${AppData.informasiUser![0].em_id}");
+  //   List<Placemark> placemarks =
+  //       await placemarkFromCoordinates(data.lat, data.lon);
 
-    var address =
-        "${placemarks[0].street} ${placemarks[0].name}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].subAdministrativeArea}, ${placemarks[0].administrativeArea}, ${placemarks[0].postalCode}";
-    print("Alamat kirim ${address}");
+  //   var address =
+  //       "${placemarks[0].street} ${placemarks[0].name}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].subAdministrativeArea}, ${placemarks[0].administrativeArea}, ${placemarks[0].postalCode}";
+  //   print("Alamat kirim ${address}");
 
-    Map<String, dynamic> body = {
-      'tanggal': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
-      // 'em_id': AppData.informasiUser == null || AppData.informasiUser!.isEmpty
-      //     ? ''
-      //     : AppData.informasiUser![0].em_id,
+  //   Map<String, dynamic> body = {
+  //     'tanggal': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+  //     // 'em_id': AppData.informasiUser == null || AppData.informasiUser!.isEmpty
+  //     //     ? ''
+  //     //     : AppData.informasiUser![0].em_id,
 
-      'em_id': AppData.informasiUser![0].em_id,
-      'waktu': DateFormat('HH:mm').format(DateTime.now()).toString(),
-      'longitude': data.lon.toString(),
-      "latitude": data.lat.toString(),
-      'alamat': address.toString(),
-      'database': 'demohr',
-    };
-    print('parameter 2563 ${body}');
+  //     'em_id': AppData.informasiUser![0].em_id,
+  //     'waktu': DateFormat('HH:mm').format(DateTime.now()).toString(),
+  //     'longitude': data.lon.toString(),
+  //     "latitude": data.lat.toString(),
+  //     'alamat': address.toString(),
+  //     'database': 'demohr',
+  //   };
+  //   print('parameter 2563 ${body}');
 
-    try {
-      var response =
-          await ApiRequest(url: "employee-tracking-insert", body: body).post();
-      print('parameter ${response}');
-      var resp = jsonDecode(response.body);
+  //   try {
+  //     var response =
+  //         await ApiRequest(url: "employee-tracking-insert", body: body).post();
+  //     print('parameter ${response}');
+  //     var resp = jsonDecode(response.body);
 
-      print('parameter ${resp}');
+  //     print('parameter ${resp}');
 
-      if (response.statusCode == 200) {
-      } else {}
-      // Get.back();
-    } catch (e) {
-      print(e);
-      // Get.back();
-    }
-  }
+  //     if (response.statusCode == 200) {
+  //     } else {}
+  //     // Get.back();
+  //   } catch (e) {
+  //     print(e);
+  //     // Get.back();
+  //   }
+  // }
 
   Future<void> update(BackgroundLocationUpdateData data) async {
     final text = 'Data: ${data.lat} Lon: ${data.lon}';

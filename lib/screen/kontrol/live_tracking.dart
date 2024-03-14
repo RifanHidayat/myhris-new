@@ -9,8 +9,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/main.dart';
+import 'package:siscom_operasional/model/user_model.dart';
 import 'package:siscom_operasional/screen/kontrol/riwayat_live_tracking.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -28,6 +30,7 @@ class LiveTracking extends StatefulWidget {
 
 class _LiveTrackingState extends State<LiveTracking> {
   final controllerTracking = Get.put(TrackingController());
+  final controllerDashboard = Get.put(DashboardController());
 
   Timer? _timer;
   List<String> _locations = [];
@@ -141,6 +144,15 @@ class _LiveTrackingState extends State<LiveTracking> {
 
     String emId = userInfo['em_id'];
     print("informasiUser ${emId}");
+
+    controllerTracking.isTracking();
+
+    print(
+        "dapatttt isViewTracking ${AppData.informasiUser![0].isViewTracking}");
+    print(
+        "dapatttt getKontrolAkses ${AppData.informasiUser![0].em_control_acess}");
+    print("dapatttt getKontrol ${AppData.informasiUser![0].em_control}");
+    print("dapatttt isTracking ${AppData.informasiUser![0].is_tracking}");
   }
 
   @override
@@ -159,7 +171,8 @@ class _LiveTrackingState extends State<LiveTracking> {
         elevation: 0,
         centerTitle: false,
         title: Text(
-          AppData.informasiUser![0].isViewTracking.toString(),
+          // AppData.informasiUser![0].isViewTracking.toString(),
+          'Tracking',
           style: GoogleFonts.inter(
               color: Constanst.fgPrimary,
               fontWeight: FontWeight.w500,
@@ -460,318 +473,335 @@ class _LiveTrackingState extends State<LiveTracking> {
   }
 
   Widget _expandedWidget() {
-    return Container(
-      color: Colors.white,
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  color: Colors.white,
-                  border: Border.all(
-                      width: 1.0,
-                      color: controllerTracking.bagikanlokasi.value !=
-                                  "tidak aktif" &&
-                              controllerTracking.bagikanlokasi.value !=
-                                  "terputus"
-                          ? Constanst.infoLight
-                          : Constanst.greyLight300)),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: InkWell(
-                        onTap: () {
-                          controllerTracking.bagikanlokasi.value = "terputus";
+    return SingleChildScrollView(
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: Colors.white,
+                    border: Border.all(
+                        width: 1.0,
+                        color: controllerTracking.bagikanlokasi.value !=
+                                    "tidak aktif" &&
+                                controllerTracking.bagikanlokasi.value !=
+                                    "terputus"
+                            ? Constanst.infoLight
+                            : Constanst.greyLight300)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: InkWell(
+                          onTap: () {
+                            controllerTracking.bagikanlokasi.value = "terputus";
+                          },
+                          child: Image.asset(
+                            controllerTracking.bagikanlokasi.value == "terputus"
+                                ? "assets/no_connection.png"
+                                : controllerTracking.bagikanlokasi.value !=
+                                        "tidak aktif"
+                                    ? "assets/tracking.png"
+                                    : 'assets/tracking_slash.png',
+                            width: 64,
+                            height: 64,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        controllerTracking.bagikanlokasi.value == "terputus"
+                            ? "Live Tracking terputus."
+                            : controllerTracking.bagikanlokasi.value !=
+                                    "tidak aktif"
+                                ? "Live Tracking aktif."
+                                : "Live Tracking tidak aktif.",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        controllerTracking.bagikanlokasi.value == "terputus"
+                            ? "Klik Aktifkan ulang untuk membagikan lokasi."
+                            : controllerTracking.bagikanlokasi.value !=
+                                    "tidak aktif"
+                                ? "Live Tracking sedang aktif. Lokasi Anda dibagikan secara real-time."
+                                : "Anda belum mengaktifkan live tracking. Aktifkan sekarang untuk membagikan lokasi Anda secara real-time.",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgSecondary,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            controllerTracking.bagikanlokasi.value == "terputus"
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          controllerTracking.bagikanlokasi.value = "aktif";
                         },
-                        child: Image.asset(
-                          controllerTracking.bagikanlokasi.value == "terputus"
-                              ? "assets/no_connection.png"
-                              : controllerTracking.bagikanlokasi.value !=
-                                      "tidak aktif"
-                                  ? "assets/tracking.png"
-                                  : 'assets/tracking_slash.png',
-                          width: 64,
-                          height: 64,
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.colorWhite,
+                            backgroundColor: Constanst.colorPrimary,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                side: BorderSide(color: Constanst.border)),
+                            elevation: 0,
+                            // padding: EdgeInsets.zero,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                          child: Text(
+                            'Aktifkan ulang',
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.colorWhite,
+                                fontSize: 15),
+                          ),
                         ),
                       ),
                     ),
-                    Text(
-                      controllerTracking.bagikanlokasi.value == "terputus"
-                          ? "Live Tracking terputus."
-                          : controllerTracking.bagikanlokasi.value !=
-                                  "tidak aktif"
-                              ? "Live Tracking aktif."
-                              : "Live Tracking tidak aktif.",
-                      style: GoogleFonts.inter(
-                          color: Constanst.fgPrimary,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      controllerTracking.bagikanlokasi.value == "terputus"
-                          ? "Klik Aktifkan ulang untuk membagikan lokasi."
-                          : controllerTracking.bagikanlokasi.value !=
-                                  "tidak aktif"
-                              ? "Live Tracking sedang aktif. Lokasi Anda dibagikan secara real-time."
-                              : "Anda belum mengaktifkan live tracking. Aktifkan sekarang untuk membagikan lokasi Anda secara real-time.",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(
-                          color: Constanst.fgSecondary,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          controllerTracking.bagikanlokasi.value == "terputus"
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
+                  )
+                : Container(),
+            // MaterialButton(
+            //   child: const Text('Request location permission'),
+            //   onPressed: _requestLocationPermission,
+            // ),
+            // if (Platform.isAndroid) ...[
+            //   const Text(
+            //       'Permission on android is only needed starting from sdk 33.'),
+            // ],
+            // MaterialButton(
+            //   child: const Text('Request Notification permission'),
+            //   onPressed: _requestNotificationPermission,
+            // ),
+            // MaterialButton(
+            //   child: const Text('Send notification'),
+            //   onPressed: () => sendNotification('Hello from another world'),
+            // ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: Obx(
+                  () => ElevatedButton(
+                    onPressed: () async {
+                      if (controllerTracking.bagikanlokasi.value ==
+                          "tidak aktif") {
+                        print(controllerTracking.latUser.value);
+                        print(controllerTracking.langUser.value);
+                        // controllerTracking.bagikanlokasi.value = "tidak aktif";
+                        // Get.to(BagikanLokasi());
+                        // controllerTracking.absenSelfie();
                         controllerTracking.bagikanlokasi.value = "aktif";
-                      },
-                      style: ElevatedButton.styleFrom(
-                          foregroundColor: Constanst.colorWhite,
-                          backgroundColor: Constanst.colorPrimary,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              side: BorderSide(color: Constanst.border)),
-                          elevation: 0,
-                          // padding: EdgeInsets.zero,
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                        child: Text(
-                          'Aktifkan ulang',
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              color: Constanst.colorWhite,
-                              fontSize: 15),
-                        ),
+                        await BackgroundLocationTrackerManager.startTracking();
+                        controllerTracking.updateStatus('1');
+
+                        setState(() =>
+                            controllerTracking.isTrackingLokasi.value = true);
+
+                        controllerTracking.detailTracking(emIdEmployee: '');
+
+                        // AppData.informasiUser![0].is_tracking = "1";
+                        controllerDashboard.updateInformasiUser();
+                        print(
+                            "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
+                        print('hidup');
+                      } else {
+                        controllerTracking.bagikanlokasi.value = "tidak aktif";
+                        // await LocationDao().clear();
+                        await _getLocations();
+                        await BackgroundLocationTrackerManager.stopTracking();
+                        controllerTracking.updateStatus('0');
+
+                        setState(() =>
+                            controllerTracking.isTrackingLokasi.value = false);
+
+                        // AppData.informasiUser![0].is_tracking = "0";
+                        controllerDashboard.updateInformasiUser();
+                        print(
+                            "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
+
+                        // controllerTracking.latUser.value = 0.0;
+                        // controllerTracking.langUser.value = 0.0;
+                        // controllerTracking.alamatUserFoto.value = "";
+                      }
+
+                      // if (  controllerTracking.isTrackingLokasi.value) {
+                      //   controllerTracking.getPosisition();
+                      // } else {
+                      //   await BackgroundLocationTrackerManager
+                      //       .startTracking();
+                      //   setState(() =>   controllerTracking.isTrackingLokasi.value = true);
+                      // }
+                    },
+                    style: ElevatedButton.styleFrom(
+                        foregroundColor: Constanst.colorWhite,
+                        backgroundColor:
+                            controllerTracking.bagikanlokasi.value !=
+                                    "tidak aktif"
+                                ? Constanst.colorWhite
+                                : Constanst.colorPrimary,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: BorderSide(color: Constanst.border)),
+                        elevation: 0,
+                        // padding: EdgeInsets.zero,
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                      child: Text(
+                        controllerTracking.bagikanlokasi.value != "tidak aktif"
+                            ? 'Hentikan Live Tracking'
+                            : 'Mulai Live Tracking',
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            color: controllerTracking.bagikanlokasi.value !=
+                                    "tidak aktif"
+                                ? Constanst.color4
+                                : Constanst.colorWhite,
+                            fontSize: 15),
                       ),
-                    ),
-                  ),
-                )
-              : Container(),
-          // MaterialButton(
-          //   child: const Text('Request location permission'),
-          //   onPressed: _requestLocationPermission,
-          // ),
-          // if (Platform.isAndroid) ...[
-          //   const Text(
-          //       'Permission on android is only needed starting from sdk 33.'),
-          // ],
-          // MaterialButton(
-          //   child: const Text('Request Notification permission'),
-          //   onPressed: _requestNotificationPermission,
-          // ),
-          // MaterialButton(
-          //   child: const Text('Send notification'),
-          //   onPressed: () => sendNotification('Hello from another world'),
-          // ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: Obx(
-                () => ElevatedButton(
-                  onPressed: () async {
-                    if (controllerTracking.bagikanlokasi.value ==
-                        "tidak aktif") {
-                      print(controllerTracking.latUser.value);
-                      print(controllerTracking.langUser.value);
-                      // controllerTracking.bagikanlokasi.value = "tidak aktif";
-                      // Get.to(BagikanLokasi());
-                      // controllerTracking.absenSelfie();
-                      controllerTracking.bagikanlokasi.value = "aktif";
-                      await BackgroundLocationTrackerManager.startTracking();
-                      controllerTracking.updateStatus('1');
-
-                      setState(() =>
-                          controllerTracking.isTrackingLokasi.value = true);
-
-                      controllerTracking.detailTracking(emIdEmployee: '');
-
-                      print('hidup');
-                    } else {
-                      controllerTracking.bagikanlokasi.value = "tidak aktif";
-                      // await LocationDao().clear();
-                      await _getLocations();
-                      await BackgroundLocationTrackerManager.stopTracking();
-                      controllerTracking.updateStatus('2');
-
-                      setState(() =>
-                          controllerTracking.isTrackingLokasi.value = false);
-
-                      // controllerTracking.latUser.value = 0.0;
-                      // controllerTracking.langUser.value = 0.0;
-                      // controllerTracking.alamatUserFoto.value = "";
-                    }
-
-                    // if (  controllerTracking.isTrackingLokasi.value) {
-                    //   controllerTracking.getPosisition();
-                    // } else {
-                    //   await BackgroundLocationTrackerManager
-                    //       .startTracking();
-                    //   setState(() =>   controllerTracking.isTrackingLokasi.value = true);
-                    // }
-                  },
-                  style: ElevatedButton.styleFrom(
-                      foregroundColor: Constanst.colorWhite,
-                      backgroundColor: controllerTracking.bagikanlokasi.value !=
-                              "tidak aktif"
-                          ? Constanst.colorWhite
-                          : Constanst.colorPrimary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          side: BorderSide(color: Constanst.border)),
-                      elevation: 0,
-                      // padding: EdgeInsets.zero,
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                    child: Text(
-                      controllerTracking.bagikanlokasi.value != "tidak aktif"
-                          ? 'Hentikan Live Tracking'
-                          : 'Mulai Live Tracking',
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w500,
-                          color: controllerTracking.bagikanlokasi.value !=
-                                  "tidak aktif"
-                              ? Constanst.color4
-                              : Constanst.colorWhite,
-                          fontSize: 15),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          // MaterialButton(
-          //   child: const Text('Stop Tracking'),
-          //   onPressed: controllerTracking.isTrackingLokasi.value
-          //       ? () async {
-          //           await LocationDao().clear();
-          //           await _getLocations();
-          //           await BackgroundLocationTrackerManager.stopTracking();
-          //           setState(() =>
-          //               controllerTracking.isTrackingLokasi.value = false);
-          //         }
-          //       : null,
-          // ),
-          // const SizedBox(height: 8),
-          // Container(
-          //   color: Colors.black12,
-          //   height: 2,
-          // ),
-          // const Text('Locations'),
-          // MaterialButton(
-          //   child: const Text('Refresh locations'),
-          //   onPressed: _getLocations,
-          // ),
-          // Container(
-          //   height: 500,
-          //   child: Builder(
-          //     builder: (context) {
-          //       if (_locations.isEmpty) {
-          //         return const Text('No locations saved');
-          //       }
-          //       return ListView.builder(
-          //         itemCount: _locations.length,
-          //         itemBuilder: (context, index) => Padding(
-          //           padding: const EdgeInsets.symmetric(
-          //             horizontal: 16,
-          //             vertical: 12,
-          //           ),
-          //           child: Text(
-          //             _locations[index],
-          //           ),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),
+            // MaterialButton(
+            //   child: const Text('Stop Tracking'),
+            //   onPressed: controllerTracking.isTrackingLokasi.value
+            //       ? () async {
+            //           await LocationDao().clear();
+            //           await _getLocations();
+            //           await BackgroundLocationTrackerManager.stopTracking();
+            //           setState(() =>
+            //               controllerTracking.isTrackingLokasi.value = false);
+            //         }
+            //       : null,
+            // ),
+            // const SizedBox(height: 8),
+            // Container(
+            //   color: Colors.black12,
+            //   height: 2,
+            // ),
+            // const Text('Locations'),
+            // MaterialButton(
+            //   child: const Text('Refresh locations'),
+            //   onPressed: _getLocations,
+            // ),
+            // Container(
+            //   height: 500,
+            //   child: Builder(
+            //     builder: (context) {
+            //       if (_locations.isEmpty) {
+            //         return const Text('No locations saved');
+            //       }
+            //       return ListView.builder(
+            //         itemCount: _locations.length,
+            //         itemBuilder: (context, index) => Padding(
+            //           padding: const EdgeInsets.symmetric(
+            //             horizontal: 16,
+            //             vertical: 12,
+            //           ),
+            //           child: Text(
+            //             _locations[index],
+            //           ),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
 
-          controllerTracking.bagikanlokasi.value != "tidak aktif"
-              ? Obx(
-                  () => controllerTracking.isLoadingDetailTracking.value
-                      ? const Padding(
-                          padding: EdgeInsets.only(top: 200.0),
-                          child: Center(
-                            child: SizedBox(
-                                width: 35,
-                                height: 35,
-                                child:
-                                    CircularProgressIndicator(strokeWidth: 3)),
-                          ),
-                        )
-                      : Expanded(child: listHistoryControl()),
-                )
-              : Padding(
-                  padding:
-                      const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.0),
-                      color: Constanst.infoLight1,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Iconsax.info_circle5,
-                            size: 24,
-                            color: Constanst.colotStateInfoBg,
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 12.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Informasi",
-                                    style: GoogleFonts.inter(
-                                        color: Constanst.fgPrimary,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "SISCOM HRIS mengumpulkan data aktivitas lokasi perangkat Anda selama fitur Tracking aktif.",
-                                    textAlign: TextAlign.left,
-                                    style: GoogleFonts.inter(
-                                        color: Constanst.fgSecondary,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14),
-                                  ),
-                                ],
+            controllerTracking.bagikanlokasi.value != "tidak aktif"
+                ? Container()
+                : Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, top: 16.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.0),
+                        color: Constanst.infoLight1,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Iconsax.info_circle5,
+                              size: 24,
+                              color: Constanst.colotStateInfoBg,
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 12.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Informasi",
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgPrimary,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "SISCOM HRIS mengumpulkan data aktivitas lokasi perangkat Anda selama fitur Tracking aktif.",
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgSecondary,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-        ],
+            // Container(
+            //   height: 1000,
+            //   color: Colors.blue,
+            // )
+            Obx(
+              () => controllerTracking.isLoadingDetailTracking.value
+                  ? const Padding(
+                      padding: EdgeInsets.only(top: 200.0),
+                      child: Center(
+                        child: SizedBox(
+                            width: 35,
+                            height: 35,
+                            child: CircularProgressIndicator(strokeWidth: 3)),
+                      ),
+                    )
+                  : listHistoryControl(),
+            ),
+            const SizedBox(height: 16.0)
+          ],
+        ),
       ),
     );
   }
@@ -1004,7 +1034,7 @@ class _LiveTrackingState extends State<LiveTracking> {
 
   Widget listHistoryControl() {
     return ListView.builder(
-        // physics: NeverScrollableScrollPhysics(),
+        physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: controllerTracking.detailTrackings.length,
         itemBuilder: (context, index) {
@@ -1040,7 +1070,8 @@ class _LiveTrackingState extends State<LiveTracking> {
               // ));
             },
             child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0),
+              padding:
+                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 0.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
