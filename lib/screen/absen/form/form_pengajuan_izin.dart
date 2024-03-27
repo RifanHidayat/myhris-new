@@ -272,15 +272,19 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                 var data = controller.allTipe.value
                     .where((element) => value
                         .toString()
-                        .toLowerCase().trim()
-                        .contains("${element['name']} - ${element['category']}".toString().toLowerCase().trim()))
+                        .toLowerCase()
+                        .trim()
+                        .contains("${element['name']} - ${element['category']}"
+                            .toString()
+                            .toLowerCase()
+                            .trim()))
                     .toList();
-                    // controller.loadTypeSakit();
-                    print("new data ${data[0]['cut_leave']}");
+                // controller.loadTypeSakit();
+                print("new data ${data[0]['cut_leave']}");
 
                 if (data[0]['leave_day'] > 0) {
                   print("new data ${data[0]['id']}");
-                
+
                   controller
                       .loadDataAjuanIzinCategori(id: data[0]['type_id'])
                       .then((value) {
@@ -482,7 +486,7 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                 ),
                 elevation: 0,
                 child: SfDateRangePicker(
-                  selectionMode: DateRangePickerSelectionMode.multiple,
+                  selectionMode: DateRangePickerSelectionMode.range,
                   initialSelectedDates: controller.tanggalSelectedEdit.value,
                   monthCellStyle: const DateRangePickerMonthCellStyle(
                     weekendTextStyle: TextStyle(color: Colors.red),
@@ -492,11 +496,30 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                   ),
                   onSelectionChanged:
                       (DateRangePickerSelectionChangedArgs args) {
+                    // print(args.value);
+
+                    // Konversi menjadi List<DateTime>
+                    List<DateTime> dateList = [];
+                    DateTime startDate =
+                        args.value.startDate ?? args.value.endDate;
+                    DateTime endDate =
+                        args.value.endDate ?? args.value.startDate;
+
+                    // Tambahkan rentang tanggal ke dalam daftar
+                    for (DateTime date = startDate;
+                        date.isBefore(endDate.add(Duration(days: 1)));
+                        date = date.add(Duration(days: 1))) {
+                      dateList.add(date);
+                    }
+
+                    // Cetak hasil
+                    print(dateList);
+
                     if (controller.idEditFormTidakMasukKerja.value != "") {
-                      controller.tanggalSelectedEdit.value = args.value;
+                      controller.tanggalSelectedEdit.value = dateList;
                       this.controller.tanggalSelectedEdit.refresh();
                     } else {
-                      controller.tanggalSelected.value = args.value;
+                      controller.tanggalSelected.value = dateList;
                       this.controller.tanggalSelected.refresh();
                     }
                   },

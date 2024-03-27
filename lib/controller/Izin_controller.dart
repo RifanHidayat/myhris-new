@@ -417,12 +417,11 @@ class IzinController extends GetxController {
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
 
-           print("data type sakit new  ${data}");
+        print("data type sakit new  ${data}");
         for (var element in data) {
-          
-           allTipeFormTidakMasukKerja1.value
+          allTipeFormTidakMasukKerja1.value
               .add("${element['name']} - ${element['category']}");
-          
+
           allTipeFormTidakMasukKerja.value
               .add("${element['name']} - ${element['category']}");
 
@@ -456,7 +455,7 @@ class IzinController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
-     
+
         for (var element in data) {
           allTipeFormTidakMasukKerja1.value
               .add("${element['name']} - ${element['category']}");
@@ -468,7 +467,7 @@ class IzinController extends GetxController {
             'name': element['name'],
             'status': element['status'],
             'category': element['category'],
-               'cut_leave': element['cut_leave'],
+            'cut_leave': element['cut_leave'],
             'ajuan': 3,
             'active': false,
           };
@@ -737,36 +736,31 @@ class IzinController extends GetxController {
     var data = allTipe.value
         .where((element) => selectedDropdownFormTidakMasukKerjaTipe.value
             .toString()
-            .toLowerCase().trim()
-                        .contains("${element['name']} - ${element['category']}".toString().toLowerCase().trim()))
+            .toLowerCase()
+            .trim()
+            .contains("${element['name']} - ${element['category']}"
+                .toString()
+                .toLowerCase()
+                .trim()))
         .toList();
 
     var statusA = data[0]['status'].toString();
-     var cutLeave = data[0]['cut_leave'].toString();
-     print("data izin  nwew");
-     print(statusA);
-     print(cutLeave);
+    var cutLeave = data[0]['cut_leave'].toString();
+    print("data izin  nwew");
+    print(statusA);
+    print(cutLeave);
 
-     var pola="";
+    var pola = "";
     if (statusA == "1") {
-    pola="CT";
-    
+      pola = "CT";
     } else if (statusA == "3") {
-      pola="IZ";
+      pola = "IZ";
     } else if (statusA == "2") {
-      if (cutLeave=="0"){
-         pola="SD";
-
-      }else{
-
-           pola="ST";
+      if (cutLeave == "0") {
+        pola = "SD";
+      } else {
+        pola = "ST";
       }
-
-
-
-
-
-
     }
 
     // var pola = selectedDropdownFormTidakMasukKerjaTipe.value

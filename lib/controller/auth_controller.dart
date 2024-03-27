@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:background_location_tracker/background_location_tracker.dart';
+// import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -190,7 +191,11 @@ class AuthController extends GetxController {
 
           if (AppData.informasiUser![0].is_tracking.toString() == '1') {
             controllerTracking.bagikanlokasi.value = "aktif";
-            await BackgroundLocationTrackerManager.startTracking();
+            // await BackgroundLocationTrackerManager.startTracking();
+            // final service = FlutterBackgroundService();
+            // FlutterBackgroundService().invoke("setAsBackground");
+
+            // service.startService();
             controllerTracking.updateStatus('1');
             controllerTracking.isTrackingLokasi.value = true;
             // controllerTracking.detailTracking(emIdEmployee: '');
@@ -200,7 +205,11 @@ class AuthController extends GetxController {
             controllerTracking.bagikanlokasi.value = "tidak aktif";
             // await LocationDao().clear();
             // await _getLocations();
-            await BackgroundLocationTrackerManager.stopTracking();
+            // await BackgroundLocationTrackerManager.stopTracking();
+            // final service = FlutterBackgroundService();
+            // FlutterBackgroundService().invoke("setAsBackground");
+
+            // service.invoke("stopService");
             controllerTracking.updateStatus('0');
             controllerTracking.isTrackingLokasi.value = false;
             print(

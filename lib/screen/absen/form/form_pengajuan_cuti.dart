@@ -32,7 +32,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
   @override
   void initState() {
     controller.loadCutiUser();
-      controller. loadDataTypeCuti();
+    controller.loadDataTypeCuti();
     print("data biaya ${widget.dataForm![0]}");
     if (widget.dataForm![1] == true) {
       controller.dariTanggal.value.text = widget.dataForm![0]['start_date'];
@@ -242,7 +242,6 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
 
                     if (controller.cutLeave.value == 1 ||
                         controller.cutLeave.value == 1) {
-                          
                       if (difference.inDays + 1 > controller.jumlahCuti.value) {
                         if (controller.allowMinus.value == 1) {
                         } else {
@@ -272,11 +271,9 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                     if (controller.statusForm.value == true) {
                       if (controller.cutLeave.value == 1) {
                         if (controller.allowMinus.value == 0) {
-                          
                           if ((controller.jumlahCuti.value -
                                   controller.cutiTerpakai.value) <
                               controller.tanggalSelectedEdit.value.length) {
-                        
                             UtilsAlert.showToast(
                                 "Tanggal yang dipilih melebihi sisa cuti ");
                           } else {
@@ -285,8 +282,6 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                         } else {
                           controller.validasiKirimPengajuan();
                         }
-
-
                       } else {
                         if ((controller.limitCuti.value) <
                             controller.tanggalSelectedEdit.value.length) {
@@ -1083,7 +1078,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: SfDateRangePicker(
-                selectionMode: DateRangePickerSelectionMode.multiple,
+                selectionMode: DateRangePickerSelectionMode.range,
                 initialSelectedDates: controller.tanggalSelectedEdit.value,
                 monthCellStyle: const DateRangePickerMonthCellStyle(
                   weekendTextStyle: TextStyle(color: Colors.red),
@@ -1092,11 +1087,29 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                       decoration: TextDecoration.lineThrough),
                 ),
                 onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+                  // print(args.value);
+
+                  // Konversi menjadi List<DateTime>
+                  List<DateTime> dateList = [];
+                  DateTime startDate =
+                      args.value.startDate ?? args.value.endDate;
+                  DateTime endDate = args.value.endDate ?? args.value.startDate;
+
+                  // Tambahkan rentang tanggal ke dalam daftar
+                  for (DateTime date = startDate;
+                      date.isBefore(endDate.add(Duration(days: 1)));
+                      date = date.add(Duration(days: 1))) {
+                    dateList.add(date);
+                  }
+
+                  // Cetak hasil
+                  print(dateList);
+
                   if (controller.statusForm.value == true) {
-                    controller.tanggalSelectedEdit.value = args.value;
+                    controller.tanggalSelectedEdit.value = dateList;
                     this.controller.tanggalSelectedEdit.refresh();
                   } else {
-                    controller.tanggalSelected.value = args.value;
+                    controller.tanggalSelected.value = dateList;
                     this.controller.tanggalSelected.refresh();
                   }
 

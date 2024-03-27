@@ -1,5 +1,5 @@
-import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -457,8 +457,13 @@ class _BagikanLokasiState extends State<BagikanLokasi> {
                                     Get.back();
                                     controllerTracking.bagikanlokasi.value =
                                         "aktif";
-                                    await BackgroundLocationTrackerManager
-                                        .startTracking();
+                                    // await BackgroundLocationTrackerManager
+                                    //     .startTracking();
+                                    // final service = FlutterBackgroundService();
+                                    // FlutterBackgroundService()
+                                    //     .invoke("setAsBackground");
+
+                                    // service.startService();
                                     controllerTracking.updateStatus('1');
 
                                     setState(() => controllerTracking

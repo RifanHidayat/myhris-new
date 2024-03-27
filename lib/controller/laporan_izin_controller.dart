@@ -1451,7 +1451,7 @@ class LaporanIzinController extends GetxController {
   }
 
   void viewLampiranAjuanKlaim(value) async {
-    var urlViewGambar = Api.UrlfileKlaim + value;
+    var urlViewGambar = Api.UrlfileTidakhadir + value;
 
     final url = Uri.parse(urlViewGambar);
     if (!await launchUrl(

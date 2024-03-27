@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/lembur_controller.dart';
 import 'package:siscom_operasional/screen/absen/form/form_lembur.dart';
@@ -26,17 +27,17 @@ class Lembur extends StatefulWidget {
 class _LemburState extends State<Lembur> {
   final controller = Get.put(LemburController());
   var controllerGlobal = Get.put(GlobalController());
+  final dashboardController = Get.put(DashboardController());
 
   @override
   void initState() {
     Api().checkLogin();
-      controller.loadDataLembur();
+    controller.loadDataLembur();
     super.initState();
   }
 
   Future<void> refreshData() async {
     await Future.delayed(Duration(seconds: 2));
-  
   }
 
   @override
@@ -144,34 +145,43 @@ class _LemburState extends State<Lembur> {
                       )
                     : Row(
                         children: [
-                          SizedBox(
-                            width: 25,
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: Icon(
-                                Iconsax.search_normal_1,
-                                color: Constanst.fgPrimary,
-                                size: 24,
+                          Padding(
+                            padding: EdgeInsets.only(
+                                right: dashboardController.showLaporan.value ==
+                                        false
+                                    ? 16.0
+                                    : 0),
+                            child: SizedBox(
+                              width: 25,
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                icon: Icon(
+                                  Iconsax.search_normal_1,
+                                  color: Constanst.fgPrimary,
+                                  size: 24,
+                                ),
+                                onPressed: controller.showInputCari,
+                                // controller.toggleSearch,
                               ),
-                              onPressed: controller.showInputCari,
-                              // controller.toggleSearch,
                             ),
                           ),
                           Obx(
                             () => controller.showButtonlaporan.value == false
                                 ? const SizedBox()
-                                : IconButton(
-                                    padding: EdgeInsets.zero,
-                                    icon: Icon(
-                                      Iconsax.document_text,
-                                      color: Constanst.fgPrimary,
-                                      size: 24,
-                                    ),
-                                    onPressed: () => Get.to(LaporanLembur(
-                                      title: 'lembur',
-                                    )),
-                                    // controller.toggleSearch,
-                                  ),
+                                : dashboardController.showLaporan.value == false
+                                    ? const SizedBox()
+                                    : IconButton(
+                                        padding: EdgeInsets.zero,
+                                        icon: Icon(
+                                          Iconsax.document_text,
+                                          color: Constanst.fgPrimary,
+                                          size: 24,
+                                        ),
+                                        onPressed: () => Get.to(LaporanLembur(
+                                          title: 'lembur',
+                                        )),
+                                        // controller.toggleSearch,
+                                      ),
                           ),
                         ],
                       ),

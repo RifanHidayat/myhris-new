@@ -639,12 +639,19 @@ class Aktifitas extends StatelessWidget {
                           DateFormat('MMMM').format(time);
                       controller.endPayroll.value =
                           DateFormat('MMMM').format(time);
+
+                      controller.bulanEnd.value = DateFormat('MM').format(time);
+
                       if (AppData.informasiUser![0].beginPayroll == 1) {
                         controller.beginPayroll.value =
                             DateFormat('MMMM').format(time);
+                        controller.bulanStart.value =
+                            DateFormat('MM').format(time);
                       } else {
                         controller.beginPayroll.value =
                             DateFormat('MMMM').format(previousMonthDate);
+                        controller.bulanStart.value =
+                            DateFormat('MM').format(previousMonthDate);
                       }
                       controller.bulanSelectedSearchHistory.value = bulan;
                       controller.tahunSelectedSearchHistory.value = tahun;
@@ -824,7 +831,7 @@ class Aktifitas extends StatelessWidget {
                           //       fontSize: 12),
                           // ),
                           Text(
-                            "Dari ${AppData.informasiUser![0].beginPayroll}  ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll}  ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
+                            "Dari ${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
                             style: GoogleFonts.inter(
                                 fontWeight: FontWeight.w400,
                                 color: Constanst.fgSecondary,

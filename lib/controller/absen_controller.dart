@@ -1,7 +1,7 @@
-import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -1058,7 +1058,11 @@ class AbsenController extends GetxController {
               print("isViewTracking ${typeAbsen.value}");
               if (AppData.informasiUser![0].isViewTracking.toString() == '0') {
                 controllerTracking.bagikanlokasi.value = "aktif";
-                await BackgroundLocationTrackerManager.startTracking();
+
+                // final service = FlutterBackgroundService();
+                // FlutterBackgroundService().invoke("setAsBackground");
+
+                // service.startService();
                 controllerTracking.updateStatus('1');
                 controllerTracking.isTrackingLokasi.value = true;
                 // controllerTracking.detailTracking(emIdEmployee: '');
@@ -1070,7 +1074,11 @@ class AbsenController extends GetxController {
                 controllerTracking.bagikanlokasi.value = "tidak aktif";
                 // await LocationDao().clear();
                 // await _getLocations();
-                await BackgroundLocationTrackerManager.stopTracking();
+                // await BackgroundLocationTrackerManager.stopTracking();
+                // final service = FlutterBackgroundService();
+                // FlutterBackgroundService().invoke("setAsBackground");
+
+                // service.invoke("stopService");
                 controllerTracking.updateStatus('0');
                 controllerTracking.isTrackingLokasi.value = false;
                 print(

@@ -109,6 +109,7 @@ class DashboardController extends GetxController {
   var showUlangTahun = false.obs;
   var showPkwt = false.obs;
   var showPengumuman = false.obs;
+  var showLaporan = false.obs;
 
   var selectedPageView = 0.obs;
   var indexBanner = 0.obs;
@@ -985,6 +986,7 @@ class DashboardController extends GetxController {
     showPengumuman.value = false;
     showPkwt.value = false;
     showUlangTahun.value = false;
+    showLaporan.value = false;
     menuShowInMain.value.clear();
     var connect = Api.connectionApi("get", {}, "menu_dashboard_utama",
         params: "&em_id=${AppData.informasiUser![0].em_id}");
@@ -1013,16 +1015,23 @@ class DashboardController extends GetxController {
                     p0['url'].toString().toLowerCase().trim() ==
                     "UlangTahun".toLowerCase().toString().trim())
                 .toList();
+            List menuLaporan = menuShowInMainUtama
+                .where((p0) =>
+                    p0['url'].toString().toLowerCase().trim() ==
+                    "Laporan".toLowerCase().toString().trim())
+                .toList();
 
             if (menuPengumuman.isNotEmpty) {
               showPengumuman.value = true;
             }
-
             if (menuPkwt.isNotEmpty) {
               showPkwt.value = true;
             }
             if (menuUlangtahun.isNotEmpty) {
               showUlangTahun.value = true;
+            }
+            if (menuLaporan.isNotEmpty) {
+              showLaporan.value = true;
             }
           }
         }
