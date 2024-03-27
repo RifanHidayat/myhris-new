@@ -396,152 +396,154 @@ class LaporanLemburController extends GetxController {
           return SafeArea(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Pilih Divisi",
-                          style: GoogleFonts.inter(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18,
-                            color: Constanst.fgPrimary,
-                          ),
-                        ),
-                        InkWell(
-                            customBorder: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8))),
-                            onTap: () => Navigator.pop(Get.context!),
-                            child: Icon(
-                              Icons.close,
-                              size: 26,
-                              color: Constanst.fgSecondary,
-                            ))
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                    child: Divider(
-                      thickness: 1,
-                      height: 0,
-                      color: Constanst.border,
-                    ),
-                  ),
-                  SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Column(
-                        children: List.generate(departementAkses.value.length,
-                            (index) {
-                          var id = departementAkses.value[index]['id'];
-                          var dep_name = departementAkses.value[index]['name'];
-                          return InkWell(
-                            onTap: () {
-                              idDepartemenTerpilih.value = "$id";
-                              namaDepartemenTerpilih.value = dep_name;
-                              departemen.value.text =
-                                  departementAkses.value[index]['name'];
-                              this.departemen.refresh();
-                              Navigator.pop(context);
-                              if (selectedViewFilterPengajuan.value == 0) {
-                                aksiCariLaporan();
-                              } else {
-                                cariLaporanPengajuanTanggal(
-                                    pilihTanggalFilterAjuan.value);
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    dep_name,
-                                    style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Constanst.fgPrimary,
-                                    ),
-                                  ),
-                                  "$id" == idDepartemenTerpilih.value
-                                      ? InkWell(
-                                          onTap: () {},
-                                          child: Container(
-                                            height: 20,
-                                            width: 20,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 2,
-                                                    color: Constanst.onPrimary),
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(3),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Constanst.onPrimary,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : InkWell(
-                                          onTap: () {
-                                            idDepartemenTerpilih.value = "$id";
-                                            namaDepartemenTerpilih.value =
-                                                dep_name;
-                                            departemen.value.text =
-                                                departementAkses.value[index]
-                                                    ['name'];
-                                            this.departemen.refresh();
-                                            Navigator.pop(context);
-                                            if (selectedViewFilterPengajuan
-                                                    .value ==
-                                                0) {
-                                              aksiCariLaporan();
-                                            } else {
-                                              cariLaporanPengajuanTanggal(
-                                                  pilihTanggalFilterAjuan
-                                                      .value);
-                                            }
-                                          },
-                                          child: Container(
-                                            height: 20,
-                                            width: 20,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: Constanst.onPrimary),
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(2),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                ],
-                              ),
+                      child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Pilih Divisi",
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              color: Constanst.fgPrimary,
                             ),
-                          );
-                        }),
-                      )),
-                ],
+                          ),
+                          InkWell(
+                              customBorder: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              onTap: () => Navigator.pop(Get.context!),
+                              child: Icon(
+                                Icons.close,
+                                size: 26,
+                                color: Constanst.fgSecondary,
+                              ))
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      child: Divider(
+                        thickness: 1,
+                        height: 0,
+                        color: Constanst.border,
+                      ),
+                    ),
+                    SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          children: List.generate(departementAkses.value.length,
+                              (index) {
+                            var id = departementAkses.value[index]['id'];
+                            var dep_name = departementAkses.value[index]['name'];
+                            return InkWell(
+                              onTap: () {
+                                idDepartemenTerpilih.value = "$id";
+                                namaDepartemenTerpilih.value = dep_name;
+                                departemen.value.text =
+                                    departementAkses.value[index]['name'];
+                                this.departemen.refresh();
+                                Navigator.pop(context);
+                                if (selectedViewFilterPengajuan.value == 0) {
+                                  aksiCariLaporan();
+                                } else {
+                                  cariLaporanPengajuanTanggal(
+                                      pilihTanggalFilterAjuan.value);
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      dep_name,
+                                      style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16,
+                                        color: Constanst.fgPrimary,
+                                      ),
+                                    ),
+                                    "$id" == idDepartemenTerpilih.value
+                                        ? InkWell(
+                                            onTap: () {},
+                                            child: Container(
+                                              height: 20,
+                                              width: 20,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      width: 2,
+                                                      color: Constanst.onPrimary),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10)),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(3),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: Constanst.onPrimary,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : InkWell(
+                                            onTap: () {
+                                              idDepartemenTerpilih.value = "$id";
+                                              namaDepartemenTerpilih.value =
+                                                  dep_name;
+                                              departemen.value.text =
+                                                  departementAkses.value[index]
+                                                      ['name'];
+                                              this.departemen.refresh();
+                                              Navigator.pop(context);
+                                              if (selectedViewFilterPengajuan
+                                                      .value ==
+                                                  0) {
+                                                aksiCariLaporan();
+                                              } else {
+                                                cariLaporanPengajuanTanggal(
+                                                    pilihTanggalFilterAjuan
+                                                        .value);
+                                              }
+                                            },
+                                            child: Container(
+                                              height: 20,
+                                              width: 20,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color: Constanst.onPrimary),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10)),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(2),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        )),
+                  ],
+                ),
               ),
             ),
           );

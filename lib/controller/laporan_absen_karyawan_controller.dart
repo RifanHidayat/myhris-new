@@ -33,6 +33,7 @@ class LaporanAbsenKaryawanController extends GetxController {
     var bulan = listPeriode[0];
     var tahun = listPeriode[1];
     detailRiwayat.value.clear();
+    
     Map<String, dynamic> body = {
       'em_id': emIdKaryawan.value,
       'bulan': bulan,

@@ -1020,92 +1020,94 @@ class SettingController extends GetxController {
                 EdgeInsets.fromLTRB(0, AppBar().preferredSize.height, 0, 0),
             child: Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 90,
-                        child: Text(
-                          "Pilih Divisi",
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.bold, fontSize: 14),
+                        child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 90,
+                          child: Text(
+                            "Pilih Divisi",
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.bold, fontSize: 14),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                          flex: 10,
-                          child: InkWell(
-                              onTap: () => Navigator.pop(Get.context!),
-                              child: Icon(Iconsax.close_circle)))
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Flexible(
-                    flex: 3,
-                    child: Padding(
-                        padding: EdgeInsets.only(left: 8, right: 8),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            physics: BouncingScrollPhysics(),
-                            itemCount: listDepartement.value.length,
-                            itemBuilder: (context, index) {
-                              var id = listDepartement.value[index]['id'];
-                              var dep_name =
-                                  listDepartement.value[index]['name'];
-                              return InkWell(
-                                onTap: () {
-                                  print("tes");
-                                  idDepartemenTerpilih.value = id;
-                                  namaDepartemenTerpilih.value = dep_name;
-                                  departemen.value.text =
-                                      listDepartement.value[index]['name'];
-                                  this.departemen.refresh();
-                                  Navigator.pop(context);
-                                  getUserInfo();
-                                },
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.only(top: 5, bottom: 5),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: id == idDepartemenTerpilih.value
-                                            ? Constanst.colorPrimary
-                                            : Colors.transparent,
-                                        borderRadius: Constanst
-                                            .styleBoxDecoration1.borderRadius,
-                                        border: Border.all(
-                                            color: Constanst.colorText2)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 10, bottom: 10),
-                                      child: Center(
-                                        child: Text(
-                                          dep_name,
-                                          style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.bold,
-                                              color: id ==
-                                                      idDepartemenTerpilih.value
-                                                  ? Colors.white
-                                                  : Colors.black),
+                        Expanded(
+                            flex: 10,
+                            child: InkWell(
+                                onTap: () => Navigator.pop(Get.context!),
+                                child: Icon(Iconsax.close_circle)))
+                      ],
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Flexible(
+                      flex: 3,
+                      child: Padding(
+                          padding: EdgeInsets.only(left: 8, right: 8),
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.vertical,
+                              physics: BouncingScrollPhysics(),
+                              itemCount: listDepartement.value.length,
+                              itemBuilder: (context, index) {
+                                var id = listDepartement.value[index]['id'];
+                                var dep_name =
+                                    listDepartement.value[index]['name'];
+                                return InkWell(
+                                  onTap: () {
+                                    print("tes");
+                                    idDepartemenTerpilih.value = id;
+                                    namaDepartemenTerpilih.value = dep_name;
+                                    departemen.value.text =
+                                        listDepartement.value[index]['name'];
+                                    this.departemen.refresh();
+                                    Navigator.pop(context);
+                                    getUserInfo();
+                                  },
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(top: 5, bottom: 5),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: id == idDepartemenTerpilih.value
+                                              ? Constanst.colorPrimary
+                                              : Colors.transparent,
+                                          borderRadius: Constanst
+                                              .styleBoxDecoration1.borderRadius,
+                                          border: Border.all(
+                                              color: Constanst.colorText2)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 10, bottom: 10),
+                                        child: Center(
+                                          child: Text(
+                                            dep_name,
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.bold,
+                                                color: id ==
+                                                        idDepartemenTerpilih.value
+                                                    ? Colors.white
+                                                    : Colors.black),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            })),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                ],
+                                );
+                              })),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
