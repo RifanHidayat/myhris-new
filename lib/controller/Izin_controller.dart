@@ -808,13 +808,56 @@ class IzinController extends GetxController {
     // var pola =
     // selectedDropdownFormTidakMasukKerjaTipe.value ==
     //         allTipe.value[0]['name']
-    var pola = selectedDropdownFormTidakMasukKerjaTipe.value
+    // var pola = selectedDropdownFormTidakMasukKerjaTipe.value
+    //         .toString()
+    //         .trim()
+    //         .toLowerCase()
+    //         .contains(allTipe.value[0]['name'].toString().trim().toLowerCase())
+    //     ? "SD"
+    //     : "ST";
+        urutkanTanggalSelected(status);
+    var convertTanggalBikinPengajuan = status == false
+        ? Constanst.convertDateSimpan(tanggalBikinPengajuan.value)
+        : tanggalBikinPengajuan.value;
+    // print("tanggal bikin ajun" + convertTanggalBikinPengajuan);
+    // print(
+    //     "new type  ${allTipe.value} ${selectedDropdownFormTidakMasukKerjaTipe.value}");
+
+    var data = allTipe.value
+        .where((element) => selectedDropdownFormTidakMasukKerjaTipe.value
             .toString()
-            .trim()
-            .toLowerCase()
-            .contains(allTipe.value[0]['name'].toString().trim().toLowerCase())
-        ? "SD"
-        : "ST";
+            .toLowerCase().trim()
+                        .contains("${element['name']} - ${element['category']}".toString().toLowerCase().trim()))
+        .toList();
+
+    var statusA = data[0]['status'].toString();
+     var cutLeave = data[0]['cut_leave'].toString();
+     print("data izin  nwew");
+     print(statusA);
+     print(cutLeave);
+
+     var pola="";
+    if (statusA == "1") {
+    pola="CT";
+    
+    } else if (statusA == "3") {
+      pola="IZ";
+    } else if (statusA == "2") {
+      if (cutLeave=="0"){
+         pola="SD";
+
+      }else{
+
+           pola="ST";
+      }
+
+
+
+
+
+
+    }
+
 
     var getNomorAjuanTerakhir = nomorAjuanTerakhirDalamAntrian;
     var keyNomor = getNomorAjuanTerakhir.replaceAll("$pola", '');
