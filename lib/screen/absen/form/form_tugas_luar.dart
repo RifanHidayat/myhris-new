@@ -239,7 +239,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
                       ),
                       elevation: 0,
                       child: SfDateRangePicker(
-                        selectionMode: DateRangePickerSelectionMode.multiple,
+                        selectionMode: DateRangePickerSelectionMode.range,
                         initialSelectedDates:
                             controller.tanggalSelectedEdit.value,
                         monthCellStyle: const DateRangePickerMonthCellStyle(
@@ -250,11 +250,30 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
                         ),
                         onSelectionChanged:
                             (DateRangePickerSelectionChangedArgs args) {
+                          // print(args.value);
+
+                          // Konversi menjadi List<DateTime>
+                          List<DateTime> dateList = [];
+                          DateTime startDate =
+                              args.value.startDate ?? args.value.endDate;
+                          DateTime endDate =
+                              args.value.endDate ?? args.value.startDate;
+
+                          // Tambahkan rentang tanggal ke dalam daftar
+                          for (DateTime date = startDate;
+                              date.isBefore(endDate.add(Duration(days: 1)));
+                              date = date.add(Duration(days: 1))) {
+                            dateList.add(date);
+                          }
+
+                          // Cetak hasil
+                          print(dateList);
+
                           if (controller.idpengajuanTugasLuar.value != "") {
-                            controller.tanggalSelectedEdit.value = args.value;
+                            controller.tanggalSelectedEdit.value = dateList;
                             this.controller.tanggalSelectedEdit.refresh();
                           } else {
-                            controller.tanggalSelected.value = args.value;
+                            controller.tanggalSelected.value = dateList;
                             this.controller.tanggalSelected.refresh();
                           }
                         },
@@ -921,9 +940,6 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
   }
 
   Widget formCatatan() {
-
-
-    
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 4.0),
       child: Row(

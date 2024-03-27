@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/izin_controller.dart';
 import 'package:siscom_operasional/screen/absen/form/form_pengajuan_izin.dart';
@@ -21,16 +22,15 @@ class RiwayatIzin extends StatefulWidget {
 class _RiwayatIzinState extends State<RiwayatIzin> {
   var controller = Get.put(IzinController());
   var controllerGlobal = Get.put(GlobalController());
+  final dashboardController = Get.put(DashboardController());
 
   @override
   void initState() {
-            
     super.initState();
-   
-     controller.tempNamaTipe1.value == "Semua Tipe";
-     controller.loadDataAjuanIzin();
+
+    controller.tempNamaTipe1.value == "Semua Tipe";
+    controller.loadDataAjuanIzin();
     // controller.changeTypeSelected(2);
-           
   }
 
   Future<void> refreshData() async {
@@ -138,35 +138,45 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
                       )
                     : Row(
                         children: [
-                          SizedBox(
-                            width: 25,
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: Icon(
-                                Iconsax.search_normal_1,
-                                color: Constanst.fgPrimary,
-                                size: 24,
+                          Padding(
+                            padding: EdgeInsets.only(
+                                right: dashboardController.showLaporan.value ==
+                                        false
+                                    ? 16.0
+                                    : 0),
+                            child: SizedBox(
+                              width: 25,
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                icon: Icon(
+                                  Iconsax.search_normal_1,
+                                  color: Constanst.fgPrimary,
+                                  size: 24,
+                                ),
+                                onPressed: controller.showInputCari,
+                                // controller.toggleSearch,
                               ),
-                              onPressed: controller.showInputCari,
-                              // controller.toggleSearch,
                             ),
                           ),
-                          Obx(
-                            () => controller.showButtonlaporan.value == false
-                                ? const SizedBox()
-                                : IconButton(
-                                    padding: EdgeInsets.zero,
-                                    icon: Icon(
-                                      Iconsax.document_text,
-                                      color: Constanst.fgPrimary,
-                                      size: 24,
-                                    ),
-                                    onPressed: () => Get.to(LaporanIzin(
-                                      title: 'tidak_hadir',
-                                    )),
-                                    // controller.toggleSearch,
-                                  ),
-                          ),
+                          dashboardController.showLaporan.value == false
+                              ? const SizedBox()
+                              : Obx(
+                                  () => controller.showButtonlaporan.value ==
+                                          false
+                                      ? const SizedBox()
+                                      : IconButton(
+                                          padding: EdgeInsets.zero,
+                                          icon: Icon(
+                                            Iconsax.document_text,
+                                            color: Constanst.fgPrimary,
+                                            size: 24,
+                                          ),
+                                          onPressed: () => Get.to(LaporanIzin(
+                                            title: 'tidak_hadir',
+                                          )),
+                                          // controller.toggleSearch,
+                                        ),
+                                ),
                         ],
                       ),
               ],

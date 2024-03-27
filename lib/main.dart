@@ -1,12 +1,16 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-
-import 'package:background_location_tracker/background_location_tracker.dart';
+import 'dart:ui';
+// import 'package:background_location_tracker/background_location_tracker.dart';
+// import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:flutter/material.dart';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -50,27 +54,37 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'utils/app_data.dart';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 late List<CameraDescription> cameras;
 final controllerTracking = Get.put(TrackingController());
 
-@pragma('vm:entry-point')
-void backgroundCallback() {
-  BackgroundLocationTrackerManager.handleBackgroundUpdated(
-    (data) async {
-      LocalStorage.prefs = await SharedPreferences.getInstance();
-      // print("informasiUser 1111 ${AppData.informasiUser![0].em_id}");
-      // print("informasiUser ${AppData.informasiUser![0].em_id}");
-      controllerTracking.tracking(data.lat.toString(), data.lon.toString());
-      // Repo().tracking(data);
-      Repo().update(data);
-      return Repo().submitData(data);
-    },
-  );
-}
+// @pragma('vm:entry-point')
+// void backgroundCallback() {
+//   BackgroundLocationTrackerManager.handleBackgroundUpdated(
+//     (data) async {
+//       LocalStorage.prefs = await SharedPreferences.getInstance();
+//       // print("informasiUser 1111 ${AppData.informasiUser![0].em_id}");
+//       // print("informasiUser ${AppData.informasiUser![0].em_id}");
+//       // Timer.periodic(Duration(seconds: 5), (timer) {
+//       // Panggil fungsi yang ingin dijalankan setiap detik di sini
+//       print('Fungsi dijalankan setiap detik');
+//       controllerTracking.tracking(data.lat.toString(), data.lon.toString());
+//       // Repo().tracking(data);
+//       Repo().update(data);
+//       // });
+//       print("interval ${AppData.informasiUser![0].interval.toString()}");
+//       return Repo().submitData(data);
+//     },
+//   );
+// }
+
+// to ensure this is executed
+// run app from xcode, then from xcode menu, select Simulate Background Fetch
 
 Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -81,7 +95,6 @@ Future<void> main() async {
   // AppData.clearAllData();
 
   cameras = await availableCameras();
-  WidgetsFlutterBinding.ensureInitialized();
   // await BackgroundLocationTrackerManager.initialize(
   //   () => backgroundCallback,
   //   config: const BackgroundLocationTrackerConfig(
@@ -101,28 +114,28 @@ Future<void> main() async {
   LocalStorage.prefs = await SharedPreferences.getInstance();
   // controllerTracking.em_id.value = er![0].em_id;
   // print("em_id param ${controllerTracking.em_id.value}");
-  await BackgroundLocationTrackerManager.initialize(
-    backgroundCallback,
-    config: BackgroundLocationTrackerConfig(
-      loggingEnabled: true,
-      androidConfig: AndroidConfig(
-        notificationIcon: 'explore',
-        trackingInterval: Duration(
-          minutes: int.parse(
-              AppData.informasiUser == null || AppData.informasiUser!.isEmpty
-                  ? '1'
-                  : AppData.informasiUser![0].interval.toString()),
-          // seconds: 5,
-        ),
-        distanceFilterMeters: null,
-      ),
-      iOSConfig: IOSConfig(
-        activityType: ActivityType.FITNESS,
-        distanceFilterMeters: null,
-        restartAfterKill: true,
-      ),
-    ),
-  );
+  // await BackgroundLocationTrackerManager.initialize(
+  //   backgroundCallback,
+  //   config: BackgroundLocationTrackerConfig(
+  //     loggingEnabled: true,
+  //     androidConfig: AndroidConfig(
+  //       notificationIcon: 'explore',
+  //       trackingInterval: Duration(
+  //         // minutes: int.parse(
+  //         //     AppData.informasiUser == null || AppData.informasiUser!.isEmpty
+  //         //         ? '1'
+  //         //         : AppData.informasiUser![0].interval_tracking.toString()),
+  //         seconds: 120,
+  //       ),
+  //       distanceFilterMeters: null,
+  //     ),
+  //     iOSConfig: IOSConfig(
+  //       activityType: ActivityType.FITNESS,
+  //       distanceFilterMeters: null,
+  //       restartAfterKill: true,
+  //     ),
+  //   ),
+  // );
 
   if (Platform.isIOS) {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.ios);
@@ -162,7 +175,181 @@ Future<void> main() async {
         'User declined or has not accepted permission ${settings.authorizationStatus}');
   }
 
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeService();
+  runApp(const MyApp());
+}
+
+Future<void> initializeService() async {
+  final service = FlutterBackgroundService();
+  // FlutterBackgroundService().invoke("setAsBackground");
+
+  /// OPTIONAL, using custom notification channel id
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'my_foreground', // id
+    'MY FOREGROUND SERVICE', // title
+    description:
+        'This channel is used for important notifications.', // description
+    importance: Importance.low, // importance must be at low or higher level
+  );
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  if (Platform.isIOS || Platform.isAndroid) {
+    await flutterLocalNotificationsPlugin.initialize(
+      const InitializationSettings(
+        iOS: DarwinInitializationSettings(),
+        android: AndroidInitializationSettings('ic_bg_service_small'),
+      ),
+    );
+  }
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  await service.configure(
+    androidConfiguration: AndroidConfiguration(
+      // this will be executed when app is in foreground or background in separated isolate
+      onStart: onStart,
+
+      // auto start service
+      autoStart: false,
+      autoStartOnBoot: false,
+      isForegroundMode: true,
+
+      notificationChannelId: 'my_foreground',
+      initialNotificationTitle: 'SISCOM HRIS',
+      initialNotificationContent: 'Initializing',
+      foregroundServiceNotificationId: 888,
+    ),
+    iosConfiguration: IosConfiguration(
+      // auto start service
+      autoStart: false,
+
+      // this will be executed when app is in foreground in separated isolate
+      onForeground: onStart,
+
+      // you have to enable background fetch capability on xcode project
+      onBackground: onIosBackground,
+    ),
+  );
+}
+
+@pragma('vm:entry-point')
+Future<bool> onIosBackground(ServiceInstance service) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  DartPluginRegistrant.ensureInitialized();
+
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  await preferences.reload();
+  final log = preferences.getStringList('log') ?? <String>[];
+  log.add(DateTime.now().toIso8601String());
+  await preferences.setStringList('log', log);
+
+  return true;
+}
+
+@pragma('vm:entry-point')
+void onStart(ServiceInstance service) async {
+  // Only available for flutter 3.0.0 and later
+  DartPluginRegistrant.ensureInitialized();
+
+  // For flutter prior to version 3.0.0
+  // We have to register the plugin manually
+
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  await preferences.setString("hello", "world");
+
+  /// OPTIONAL when use custom notification
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  if (service is AndroidServiceInstance) {
+    service.on('setAsForeground').listen((event) {
+      service.setAsForegroundService();
+    });
+
+    service.on('setAsBackground').listen((event) {
+      service.setAsBackgroundService();
+    });
+  }
+
+  service.on('stopService').listen((event) {
+    service.stopSelf();
+  });
+
+  // LocalStorage.prefs = await SharedPreferences.getInstance();
+  // Position position = await Geolocator.getCurrentPosition(
+  //     desiredAccuracy: LocationAccuracy.high);
+  // controllerTracking.tracking(
+  //     position.latitude.toString(), position.longitude.toString());
+
+  // bring to foreground
+  Timer.periodic(
+      Duration(
+          minutes: int.parse(
+              AppData.informasiUser![0].interval_tracking.toString())),
+      (timer) async {
+    print(
+        "timer ${int.parse(AppData.informasiUser == null || AppData.informasiUser!.isEmpty ? '1' : AppData.informasiUser![0].interval_tracking.toString())}");
+    LocalStorage.prefs = await SharedPreferences.getInstance();
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    controllerTracking.tracking(
+        position.latitude.toString(), position.longitude.toString());
+    if (service is AndroidServiceInstance) {
+      if (await service.isForegroundService()) {
+        /// OPTIONAL for use custom notification
+        /// the notification id must be equals with AndroidConfiguration when you call configure() method.
+        flutterLocalNotificationsPlugin.show(
+          888,
+          'COOL SERVICE',
+          'Awesome ${DateTime.now()}',
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'my_foreground',
+              'MY FOREGROUND SERVICE',
+              icon: 'ic_bg_service_small',
+              ongoing: true,
+            ),
+          ),
+        );
+
+        // if you don't using custom notification, uncomment this
+        service.setForegroundNotificationInfo(
+          title: "SISCOM HRIS",
+          content: "Updated at ${DateTime.now()}",
+        );
+      }
+    }
+
+    /// you can see this log in logcat
+    print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
+
+    // test using external plugin
+    final deviceInfo = DeviceInfoPlugin();
+    String? device;
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      device = androidInfo.model;
+    }
+
+    if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      device = iosInfo.model;
+    }
+
+    service.invoke(
+      'update',
+      {
+        "current_date": DateTime.now().toIso8601String(),
+        "device": device,
+      },
+    );
+  });
 }
 
 Future showNotification(message) async {
@@ -438,123 +625,124 @@ void onDidReceiveLocalNotification(
   print('id $id');
 }
 
-class Repo {
-  static Repo? _instance;
+// class Repo {
+//   static Repo? _instance;
 
-  Repo._();
+//   Repo._();
 
-  factory Repo() => _instance ??= Repo._();
+//   factory Repo() => _instance ??= Repo._();
 
-  // Future<void> tracking(BackgroundLocationUpdateData data) async {
-  //   //  void tracking(String latitude, String longitude) async {
-  //   // print("informasiUser  ");
-  //   print("informasiUser 11 ${AppData.informasiUser![0].em_id}");
-  //   List<Placemark> placemarks =
-  //       await placemarkFromCoordinates(data.lat, data.lon);
+//   // Future<void> tracking(BackgroundLocationUpdateData data) async {
+//   //   //  void tracking(String latitude, String longitude) async {
+//   //   // print("informasiUser  ");
+//   //   print("informasiUser 11 ${AppData.informasiUser![0].em_id}");
+//   //   List<Placemark> placemarks =
+//   //       await placemarkFromCoordinates(data.lat, data.lon);
 
-  //   var address =
-  //       "${placemarks[0].street} ${placemarks[0].name}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].subAdministrativeArea}, ${placemarks[0].administrativeArea}, ${placemarks[0].postalCode}";
-  //   print("Alamat kirim ${address}");
+//   //   var address =
+//   //       "${placemarks[0].street} ${placemarks[0].name}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].subAdministrativeArea}, ${placemarks[0].administrativeArea}, ${placemarks[0].postalCode}";
+//   //   print("Alamat kirim ${address}");
 
-  //   Map<String, dynamic> body = {
-  //     'tanggal': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
-  //     // 'em_id': AppData.informasiUser == null || AppData.informasiUser!.isEmpty
-  //     //     ? ''
-  //     //     : AppData.informasiUser![0].em_id,
+//   //   Map<String, dynamic> body = {
+//   //     'tanggal': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+//   //     // 'em_id': AppData.informasiUser == null || AppData.informasiUser!.isEmpty
+//   //     //     ? ''
+//   //     //     : AppData.informasiUser![0].em_id,
 
-  //     'em_id': AppData.informasiUser![0].em_id,
-  //     'waktu': DateFormat('HH:mm').format(DateTime.now()).toString(),
-  //     'longitude': data.lon.toString(),
-  //     "latitude": data.lat.toString(),
-  //     'alamat': address.toString(),
-  //     'database': 'demohr',
-  //   };
-  //   print('parameter 2563 ${body}');
+//   //     'em_id': AppData.informasiUser![0].em_id,
+//   //     'waktu': DateFormat('HH:mm').format(DateTime.now()).toString(),
+//   //     'longitude': data.lon.toString(),
+//   //     "latitude": data.lat.toString(),
+//   //     'alamat': address.toString(),
+//   //     'database': 'demohr',
+//   //   };
+//   //   print('parameter 2563 ${body}');
 
-  //   try {
-  //     var response =
-  //         await ApiRequest(url: "employee-tracking-insert", body: body).post();
-  //     print('parameter ${response}');
-  //     var resp = jsonDecode(response.body);
+//   //   try {
+//   //     var response =
+//   //         await ApiRequest(url: "employee-tracking-insert", body: body).post();
+//   //     print('parameter ${response}');
+//   //     var resp = jsonDecode(response.body);
 
-  //     print('parameter ${resp}');
+//   //     print('parameter ${resp}');
 
-  //     if (response.statusCode == 200) {
-  //     } else {}
-  //     // Get.back();
-  //   } catch (e) {
-  //     print(e);
-  //     // Get.back();
-  //   }
-  // }
+//   //     if (response.statusCode == 200) {
+//   //     } else {}
+//   //     // Get.back();
+//   //   } catch (e) {
+//   //     print(e);
+//   //     // Get.back();
+//   //   }
+//   // }
 
-  Future<void> update(BackgroundLocationUpdateData data) async {
-    final text = 'Data: ${data.lat} Lon: ${data.lon}';
-    print(text); // ignore: avoid_print
-    sendNotification(text);
+//   Future<void> update(BackgroundLocationUpdateData data) async {
+//     // final text = 'Data: ${data.lat} Lon: ${data.lon}';
+//     final text = 'SISCOM HRIS';
+//     print(text); // ignore: avoid_print
+//     sendNotification(text);
 
-    await LocationDao().saveLocation(data);
-  }
+//     await LocationDao().saveLocation(data);
+//   }
 
-  Future<void> submitData(BackgroundLocationUpdateData datat) async {
-    // setState(() {
-    //   loading = true;
-    // });
-    final response = await http.post(
-        Uri.https('www.appfordev.com',
-            'disperindag_web/api_disperindag/pegawai/tambah_location.php'),
-        body: {
-          "username": datat.lat.toString(),
-        });
-    final data = jsonDecode(response.body);
-    print("data json ${data}");
-    if (response.statusCode > 2) {
-      print("image upload");
-      // setState(() {
-      //   widget.reload();
-      //   widget._jumlahNotif();
-      //   Navigator.pop(context);
-      //   alertDialog('berhasil');
-      // });
-    } else {
-      print("image failed");
-    }
-  }
-}
+//   Future<void> submitData(BackgroundLocationUpdateData datat) async {
+//     // setState(() {
+//     //   loading = true;
+//     // });
+//     final response = await http.post(
+//         Uri.https('www.appfordev.com',
+//             'disperindag_web/api_disperindag/pegawai/tambah_location.php'),
+//         body: {
+//           "username": datat.lat.toString(),
+//         });
+//     final data = jsonDecode(response.body);
+//     print("data json ${data}");
+//     if (response.statusCode > 2) {
+//       print("image upload");
+//       // setState(() {
+//       //   widget.reload();
+//       //   widget._jumlahNotif();
+//       //   Navigator.pop(context);
+//       //   alertDialog('berhasil');
+//       // });
+//     } else {
+//       print("image failed");
+//     }
+//   }
+// }
 
-class LocationDao {
-  static const _locationsKey = 'background_updated_locations';
-  static const _locationSeparator = '-/-/-/';
+// class LocationDao {
+//   static const _locationsKey = 'background_updated_locations';
+//   static const _locationSeparator = '-/-/-/';
 
-  static LocationDao? _instance;
+//   static LocationDao? _instance;
 
-  LocationDao._();
+//   LocationDao._();
 
-  factory LocationDao() => _instance ??= LocationDao._();
+//   factory LocationDao() => _instance ??= LocationDao._();
 
-  SharedPreferences? _prefs;
+//   SharedPreferences? _prefs;
 
-  Future<SharedPreferences> get prefs async =>
-      _prefs ??= await SharedPreferences.getInstance();
+//   Future<SharedPreferences> get prefs async =>
+//       _prefs ??= await SharedPreferences.getInstance();
 
-  Future<void> saveLocation(BackgroundLocationUpdateData data) async {
-    final locations = await getLocations();
-    locations
-        .add('${DateTime.now().toIso8601String()}*${data.lat}*${data.lon}');
-    await (await prefs)
-        .setString(_locationsKey, locations.join(_locationSeparator));
-  }
+//   Future<void> saveLocation(BackgroundLocationUpdateData data) async {
+//     final locations = await getLocations();
+//     locations
+//         .add('${DateTime.now().toIso8601String()}*${data.lat}*${data.lon}');
+//     await (await prefs)
+//         .setString(_locationsKey, locations.join(_locationSeparator));
+//   }
 
-  Future<List<String>> getLocations() async {
-    final prefs = await this.prefs;
-    await prefs.reload();
-    final locationsString = prefs.getString(_locationsKey);
-    if (locationsString == null) return [];
-    return locationsString.split(_locationSeparator);
-  }
+//   Future<List<String>> getLocations() async {
+//     final prefs = await this.prefs;
+//     await prefs.reload();
+//     final locationsString = prefs.getString(_locationsKey);
+//     if (locationsString == null) return [];
+//     return locationsString.split(_locationSeparator);
+//   }
 
-  // Future<void> clear() async => (await prefs).clear();
-}
+//   // Future<void> clear() async => (await prefs).clear();
+// }
 
 void sendNotification(String text) {
   // const settings = InitializationSettings(
@@ -581,12 +769,16 @@ void sendNotification(String text) {
       print('ON CLICK $data'); // ignore: avoid_print
     },
   );
+
   FlutterLocalNotificationsPlugin().show(
     Random().nextInt(9999),
     'Title',
     text,
     const NotificationDetails(
-      android: AndroidNotificationDetails('test_notification', 'Test'),
+      android: AndroidNotificationDetails(
+        'test_notification', 'Test',
+        // ongoing: true
+      ),
       iOS: DarwinNotificationDetails(),
     ),
   );

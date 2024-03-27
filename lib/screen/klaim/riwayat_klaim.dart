@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/klaim_controller.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_klaim.dart';
@@ -26,17 +27,17 @@ class Klaim extends StatefulWidget {
 class _KlaimState extends State<Klaim> {
   final controller = Get.put(KlaimController());
   var controllerGlobal = Get.put(GlobalController());
+  final dashboardController = Get.put(DashboardController());
 
   @override
   void initState() {
-        controller.loadDataKlaim();
+    controller.loadDataKlaim();
     super.initState();
   }
 
   Future<void> refreshData() async {
-         controller.loadDataKlaim();
+    controller.loadDataKlaim();
     await Future.delayed(Duration(seconds: 2));
-
   }
 
   @override
@@ -146,34 +147,43 @@ class _KlaimState extends State<Klaim> {
                       )
                     : Row(
                         children: [
-                          SizedBox(
-                            width: 25,
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: Icon(
-                                Iconsax.search_normal_1,
-                                color: Constanst.fgPrimary,
-                                size: 24,
+                          Padding(
+                            padding: EdgeInsets.only(
+                                right: dashboardController.showLaporan.value ==
+                                        false
+                                    ? 16.0
+                                    : 0),
+                            child: SizedBox(
+                              width: 25,
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                icon: Icon(
+                                  Iconsax.search_normal_1,
+                                  color: Constanst.fgPrimary,
+                                  size: 24,
+                                ),
+                                onPressed: controller.showInputCari,
+                                // controller.toggleSearch,
                               ),
-                              onPressed: controller.showInputCari,
-                              // controller.toggleSearch,
                             ),
                           ),
                           Obx(
                             () => controller.showButtonlaporan.value == false
                                 ? const SizedBox()
-                                : IconButton(
-                                    padding: EdgeInsets.zero,
-                                    icon: Icon(
-                                      Iconsax.document_text,
-                                      color: Constanst.fgPrimary,
-                                      size: 24,
-                                    ),
-                                    onPressed: () => Get.to(LaporanKlaim(
-                                      title: 'klaim',
-                                    )),
-                                    // controller.toggleSearch,
-                                  ),
+                                : dashboardController.showLaporan.value == false
+                                    ? const SizedBox()
+                                    : IconButton(
+                                        padding: EdgeInsets.zero,
+                                        icon: Icon(
+                                          Iconsax.document_text,
+                                          color: Constanst.fgPrimary,
+                                          size: 24,
+                                        ),
+                                        onPressed: () => Get.to(LaporanKlaim(
+                                          title: 'klaim',
+                                        )),
+                                        // controller.toggleSearch,
+                                      ),
                           ),
                         ],
                       ),
@@ -709,11 +719,8 @@ class _KlaimState extends State<Klaim> {
               controller.listKlaim.value[index]['created_on'];
           var status;
           if (controller.valuePolaPersetujuan.value == "1") {
-         
             status = controller.listKlaim.value[index]['status'];
-         
           } else {
-         
             status = controller.listKlaim.value[index]['status'] == "Approve"
                 ? "Approve 1"
                 : controller.listKlaim.value[index]['status'] == "Approve2"

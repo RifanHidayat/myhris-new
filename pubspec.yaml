@@ -121,8 +121,10 @@ dependencies:
   # screen_capture_event: ^1.1.1
   # screenshot:
   new_version_plus:
-  background_location_tracker: ^1.4.1
+  # background_location_tracker: ^1.4.1
   detect_fake_location_plus:
+  flutter_background_service: ^2.4.6
+  device_info_plus:
   # animations: ^2.0.10
  
   # system_alert_window: ^1.1.2

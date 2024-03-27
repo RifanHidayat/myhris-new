@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:siscom_operasional/controller/tab_controller.dart';
+import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/screen/aktifitas/aktifitas.dart';
 import 'package:siscom_operasional/screen/akun/setting.dart';
 import 'package:siscom_operasional/screen/dashboard.dart';
@@ -21,6 +22,7 @@ class InitScreen extends StatefulWidget {
 
 class _InitScreenState extends State<InitScreen> {
   final controller = Get.put(TabbController());
+  final controllerTracking = Get.put(TrackingController());
 
   // int _currentIndex = 0;
 
@@ -349,6 +351,7 @@ class _InitScreenState extends State<InitScreen> {
     super.initState();
     controller.currentIndex.value = 0;
     controller.checkuserinfo();
+    // controllerTracking.isTracking();
   }
 
   @override

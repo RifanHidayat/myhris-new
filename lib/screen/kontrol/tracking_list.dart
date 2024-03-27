@@ -213,7 +213,7 @@ class _TrackingListState extends State<TrackingList> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              "${controllerTracking.trackingLists.value.length} sedang online",
+                              "${controllerTracking.trackingLists.value.where((data) => data.em_tracking.toString() != "0" && data.token_notif != null).length} sedang online",
                               style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 14,

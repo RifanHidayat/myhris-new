@@ -32,6 +32,9 @@ class AktifitasController extends GetxController {
   var statusPencarian = false.obs;
   var statusFormPencarian = false.obs;
   var visibleWidget = false.obs;
+  var bulanStart = "".obs;
+  var bulanEnd = "".obs;
+  var tahunStart = "".obs;
 
   var indexList = 0.0.obs;
   var persenAbsenTelat = 0.0.obs;
@@ -151,8 +154,10 @@ class AktifitasController extends GetxController {
 
     if (AppData.informasiUser![0].beginPayroll == 1) {
       beginPayroll.value = "${DateFormat('MMMM').format(dt)}";
+      bulanStart.value = "${DateFormat('MM').format(dt)}";
     } else {
       beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
+      bulanStart.value = "${DateFormat('MM').format(previousMonthDate)}";
     }
 
     this.stringBulan.refresh();
@@ -161,6 +166,9 @@ class AktifitasController extends GetxController {
     this.bulanSelectedSearchHistory.refresh();
     this.tahunSelectedSearchHistory.refresh();
     this.bulanDanTahunNow.refresh();
+    this.bulanEnd.refresh();
+    this.bulanStart.refresh();
+    this.tahunStart.refresh();
   }
 
   void loadAktifitas() {
@@ -195,11 +203,28 @@ class AktifitasController extends GetxController {
     infoAktifitas.value.clear();
     var dataUser = AppData.informasiUser;
     var getEmId = dataUser![0].em_id;
+
+    var dt = DateTime.now();
+    if (bulanEnd.value.toString() == "01") {
+      tahunStart.value = "${dt.year - 1}";
+    } else {
+      tahunStart.value = "${dt.year}";
+    }
+
     Map<String, dynamic> body = {
       'em_id': getEmId,
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
+      'bulan_start': bulanStart.value,
+      'bulan_end': bulanEnd.value,
+      'tahun_start': tahunStart.value,
+      'tahun_end': tahunSelectedSearchHistory.value,
+      'date_start':
+          "${tahunStart.value}-${bulanStart.value}-${AppData.informasiUser![0].beginPayroll}",
+      'date_end':
+          DateFormat('yyyy-MM-dd').format(dt.subtract(Duration(days: 1))),
     };
+    print("getInformasiAktivitas ${body}");
     var connect = Api.connectionApi("post", body, 'info_aktifitas_employee');
     connect.then((dynamic res) {
       if (res.statusCode == 200) {

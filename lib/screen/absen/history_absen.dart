@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
+import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/screen/absen/camera_view.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_absen.dart';
@@ -27,6 +28,7 @@ class HistoryAbsen extends StatefulWidget {
 class _HistoryAbsenState extends State<HistoryAbsen> {
   var controller = Get.put(AbsenController());
   var controllerGlobal = Get.put(GlobalController());
+  final dashboardController = Get.put(DashboardController());
 
   @override
   void initState() {
@@ -80,22 +82,24 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                 },
               ),
               actions: [
-                Obx(
-                  () => controller.showButtonlaporan.value == false
-                      ? const SizedBox()
-                      : IconButton(
-                          icon: Icon(
-                            Iconsax.document_text,
-                            color: Constanst.fgPrimary,
-                            size: 24,
-                          ),
-                          onPressed: () {
-                            Get.to(LaporanAbsen(
-                              dataForm: "",
-                            ));
-                          },
-                        ),
-                ),
+                dashboardController.showLaporan.value == false
+                    ? const SizedBox()
+                    : Obx(
+                        () => controller.showButtonlaporan.value == false
+                            ? const SizedBox()
+                            : IconButton(
+                                icon: Icon(
+                                  Iconsax.document_text,
+                                  color: Constanst.fgPrimary,
+                                  size: 24,
+                                ),
+                                onPressed: () {
+                                  Get.to(LaporanAbsen(
+                                    dataForm: "",
+                                  ));
+                                },
+                              ),
+                      ),
               ],
             ),
           ),
@@ -2417,7 +2421,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                             ),
                             controllerGlobal.valuePolaPersetujuan == 1 ||
                                     controllerGlobal.valuePolaPersetujuan == "1"
-                                ?singgleApproval (data)
+                                ? singgleApproval(data)
                                 : multipleApproval(data)
                           ],
                         ),
@@ -2478,7 +2482,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
     );
   }
 
-   Widget singgleApproval(data) {
+  Widget singgleApproval(data) {
     var text = "";
     if (data['approve_status'] == "Pending" || data['status'] == "Pending") {
       text = "Pending Approval";
@@ -2510,7 +2514,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['approve_status'] == "Pending" || data['status'] == "Pending"
+                      data['approve_status'] == "Pending" ||
+                              data['status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,
@@ -2564,13 +2569,12 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
     if (data['approve_status'] == "Rejected") {
       text = "Rejected By - ${data['approve_by']}";
     }
-   
-   
-   
+
     if (data['approve_status'] == "Approve") {
       text = "Approve 1 By - ${data['approve_by']}";
 
-      if (data['approve2_status'] == "Pending" || data['approve2_status']==null )  {
+      if (data['approve2_status'] == "Pending" ||
+          data['approve2_status'] == null) {
         text2 = "Pending Approval 2";
       }
       if (data['approve2_status'] == "Rejected") {
@@ -2628,7 +2632,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("${ text}",
+                          Text("${text}",
                               style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   color: Constanst.fgPrimary,
@@ -2638,24 +2642,27 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                       ),
                     ],
                   ),
-                  
                   data['approve_status'] == "Approve"
                       ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                    padding: EdgeInsets.only(left:2.5,top: 2,bottom: 2),
-                    child: Container(
-                      height: 30,
-                      child:  VerticalDivider(color: Constanst.Secondary,),
-                    ),
-                  ),
-                          Padding(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 2.5, top: 2, bottom: 2),
+                              child: Container(
+                                height: 30,
+                                child: VerticalDivider(
+                                  color: Constanst.Secondary,
+                                ),
+                              ),
+                            ),
+                            Padding(
                               padding: EdgeInsets.only(top: 0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  data['approve2_status'] == "Pending" || data['approve2_status']==null
+                                  data['approve2_status'] == "Pending" ||
+                                          data['approve2_status'] == null
                                       ? Icon(
                                           Iconsax.timer,
                                           color: Constanst.warning,
@@ -2679,7 +2686,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                   // ),
                                   const SizedBox(width: 8),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text("${text2} ",
                                           style: GoogleFonts.inter(
@@ -2692,8 +2700,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 ],
                               ),
                             ),
-                        ],
-                      )
+                          ],
+                        )
                       : SizedBox(),
                 ],
               ),

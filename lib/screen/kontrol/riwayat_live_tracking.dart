@@ -21,6 +21,10 @@ class _RiwayatLiveTrackingState extends State<RiwayatLiveTracking> {
   final emIdEmployee = Get.arguments['em_id_employee'];
   final controllerTracking = Get.put(TrackingController());
 
+  Future<void> refreshData() async {
+    controllerTracking.riwayatLiveTracking(emIdEmployee: emIdEmployee);
+  }
+
   @override
   void initState() {
     controllerTracking.riwayatLiveTracking(emIdEmployee: emIdEmployee);
@@ -51,6 +55,18 @@ class _RiwayatLiveTrackingState extends State<RiwayatLiveTracking> {
             Navigator.pop(Get.context!);
           },
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              refreshData();
+            },
+            icon: Icon(
+              Iconsax.refresh,
+              color: Constanst.fgPrimary,
+              size: 24,
+            ),
+          ),
+        ],
       ),
       body: WillPopScope(
         onWillPop: () async {
@@ -105,131 +121,135 @@ class _RiwayatLiveTrackingState extends State<RiwayatLiveTracking> {
 
   Widget listHistoryControl() {
     return Expanded(
-      child: ListView.builder(
-          physics: controllerTracking.riwayatLiveTrackings.value.length <= 15
-              ? const AlwaysScrollableScrollPhysics()
-              : const BouncingScrollPhysics(),
-          itemCount: controllerTracking.riwayatLiveTrackings.value.length,
-          itemBuilder: (context, index) {
-            final data = controllerTracking.riwayatLiveTrackings[index];
-            return Padding(
-              padding:
-                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-              child: InkWell(
-                onTap: () {
-                  // Get.to(DetailLiveTracking(), arguments: {
-                  //   'atten_date': data.atten_date,
-                  //   'deskripsi': data.deskripsi,
-                  //   'emIdEmployee': emIdEmployee,
-                  // });
-                  Get.to(() => DetailLiveTracking(), arguments: {
-                    'atten_date': data.atten_date,
-                    'deskripsi': data.deskripsi,
-                    'emIdEmployee': emIdEmployee,
-                  });
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => DetailLiveTracking()),
-                  // );
-                  //  Get.to(LiveTracking(
-                  //   status: 'detail',
-                  //   atten_date: data.atten_date,
-                  //   emIdEmployee: 'SIS202305048',
-                  //   deskripsi: '',
-                  // )
-                },
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(12.0),
-                      ),
-                      border: Border.all(color: Constanst.fgBorder)),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 12.0, 16.0, 12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: RefreshIndicator(
+        onRefresh: refreshData,
+        child: ListView.builder(
+            physics: controllerTracking.riwayatLiveTrackings.value.length <= 15
+                ? const BouncingScrollPhysics()
+                : const BouncingScrollPhysics(),
+            itemCount: controllerTracking.riwayatLiveTrackings.value.length,
+            itemBuilder: (context, index) {
+              final data = controllerTracking.riwayatLiveTrackings[index];
+              return Padding(
+                padding: const EdgeInsets.only(
+                    left: 16.0, right: 16.0, bottom: 16.0),
+                child: InkWell(
+                  onTap: () {
+                    // Get.to(DetailLiveTracking(), arguments: {
+                    //   'atten_date': data.atten_date,
+                    //   'deskripsi': data.deskripsi,
+                    //   'emIdEmployee': emIdEmployee,
+                    // });
+                    Get.to(() => DetailLiveTracking(), arguments: {
+                      'atten_date': data.atten_date,
+                      'deskripsi': data.deskripsi,
+                      'emIdEmployee': emIdEmployee,
+                    });
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => DetailLiveTracking()),
+                    // );
+                    //  Get.to(LiveTracking(
+                    //   status: 'detail',
+                    //   atten_date: data.atten_date,
+                    //   emIdEmployee: 'SIS202305048',
+                    //   deskripsi: '',
+                    // )
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(12.0),
+                        ),
+                        border: Border.all(color: Constanst.fgBorder)),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 12.0, 16.0, 12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        Constanst.convertDate6(data.atten_date),
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                            color: Constanst.fgPrimary),
+                                      ),
+                                      data.deskripsi == ""
+                                          ? Container()
+                                          : const SizedBox(height: 4),
+                                      data.deskripsi == ""
+                                          ? Container()
+                                          : Text(
+                                              data.deskripsi,
+                                              style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14,
+                                                  color: Constanst.fgSecondary),
+                                            ),
+                                    ],
+                                  ),
+                                ),
+                                Icon(Iconsax.arrow_right_3,
+                                    color: Constanst.fgSecondary, size: 20),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 16.0, top: 12.0, bottom: 8.0),
+                            child: Divider(
+                              thickness: 1,
+                              height: 0,
+                              color: Constanst.border,
+                            ),
+                          ),
+                          Row(
                             children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      Constanst.convertDate6(data.atten_date),
-                                      style: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16,
-                                          color: Constanst.fgPrimary),
-                                    ),
-                                    data.deskripsi == ""
-                                        ? Container()
-                                        : const SizedBox(height: 4),
-                                    data.deskripsi == ""
-                                        ? Container()
-                                        : Text(
-                                            data.deskripsi,
-                                            style: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 14,
-                                                color: Constanst.fgSecondary),
-                                          ),
-                                  ],
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 12.0, right: 12.0),
+                                child: Image.asset(
+                                  // index == 0
+                                  //     ? 'assets/tracking.png'
+                                  //     :
+                                  'assets/tracking_slash.png',
+                                  width: 24,
+                                  height: 24,
                                 ),
                               ),
-                              Icon(Iconsax.arrow_right_3,
-                                  color: Constanst.fgSecondary, size: 20),
+                              Text(
+                                // index == 0
+                                //     ? "Live tracking active"
+                                //     :
+                                "Live tracking berakhir",
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: Constanst.fgPrimary),
+                              ),
                             ],
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 16.0, top: 12.0, bottom: 8.0),
-                          child: Divider(
-                            thickness: 1,
-                            height: 0,
-                            color: Constanst.border,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 12.0, right: 12.0),
-                              child: Image.asset(
-                                // index == 0
-                                //     ? 'assets/tracking.png'
-                                //     :
-                                'assets/tracking_slash.png',
-                                width: 24,
-                                height: 24,
-                              ),
-                            ),
-                            Text(
-                              // index == 0
-                              //     ? "Live tracking active"
-                              //     :
-                              "Live tracking berakhir",
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: Constanst.fgPrimary),
-                            ),
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+      ),
     );
   }
 

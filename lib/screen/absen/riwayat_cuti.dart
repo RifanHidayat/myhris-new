@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/cuti_controller.dart';
+import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_cuti.dart';
 import 'package:siscom_operasional/screen/absen/form/form_pengajuan_cuti.dart';
@@ -23,17 +24,17 @@ class RiwayatCuti extends StatefulWidget {
 class _RiwayatCutiState extends State<RiwayatCuti> {
   final controller = Get.put(CutiController());
   var controllerGlobal = Get.put(GlobalController());
+  final dashboardController = Get.put(DashboardController());
 
   @override
   void initState() {
     Api().checkLogin();
-        controller.loadDataAjuanCuti();
+    controller.loadDataAjuanCuti();
     super.initState();
   }
 
   Future<void> refreshData() async {
     await Future.delayed(Duration(seconds: 2));
-
   }
 
   @override
@@ -141,34 +142,43 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                       )
                     : Row(
                         children: [
-                          SizedBox(
-                            width: 25,
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: Icon(
-                                Iconsax.search_normal_1,
-                                color: Constanst.fgPrimary,
-                                size: 24,
+                          Padding(
+                            padding: EdgeInsets.only(
+                                right: dashboardController.showLaporan.value ==
+                                        false
+                                    ? 16.0
+                                    : 0),
+                            child: SizedBox(
+                              width: 25,
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                icon: Icon(
+                                  Iconsax.search_normal_1,
+                                  color: Constanst.fgPrimary,
+                                  size: 24,
+                                ),
+                                onPressed: controller.showInputCari,
+                                // controller.toggleSearch,
                               ),
-                              onPressed: controller.showInputCari,
-                              // controller.toggleSearch,
                             ),
                           ),
                           Obx(
                             () => controller.showButtonlaporan.value == false
                                 ? const SizedBox()
-                                : IconButton(
-                                    padding: EdgeInsets.zero,
-                                    icon: Icon(
-                                      Iconsax.document_text,
-                                      color: Constanst.fgPrimary,
-                                      size: 24,
-                                    ),
-                                    onPressed: () => Get.to(LaporanCuti(
-                                      title: 'cuti',
-                                    )),
-                                    // controller.toggleSearch,
-                                  ),
+                                : dashboardController.showLaporan.value == false
+                                    ? const SizedBox()
+                                    : IconButton(
+                                        padding: EdgeInsets.zero,
+                                        icon: Icon(
+                                          Iconsax.document_text,
+                                          color: Constanst.fgPrimary,
+                                          size: 24,
+                                        ),
+                                        onPressed: () => Get.to(LaporanCuti(
+                                          title: 'cuti',
+                                        )),
+                                        // controller.toggleSearch,
+                                      ),
                           ),
                         ],
                       ),

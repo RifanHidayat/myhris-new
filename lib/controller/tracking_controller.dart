@@ -1,13 +1,14 @@
-import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'dart:async';
@@ -19,6 +20,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
 import 'package:path_provider/path_provider.dart';
+// import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
 import 'package:siscom_operasional/model/detail_tracking.dart';
 import 'package:siscom_operasional/model/riwayat_live_tracking.dart';
@@ -53,6 +55,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 
 class TrackingController extends GetxController {
+  // final controllerDashboard = Get.put(DashboardController());
   // PageController? pageViewFilterAbsen;
   var em_id = "".obs;
 
@@ -64,6 +67,7 @@ class TrackingController extends GetxController {
 
   var isLoadingDetailTracking = true.obs;
   var isLoadingDetailTracking2 = true.obs;
+  var isLoadingDetailTracking3 = true.obs;
   var isLoadingRiwayatLiveTracking = true.obs;
   var isLoadingTrackingList = true.obs;
 
@@ -76,6 +80,22 @@ class TrackingController extends GetxController {
 
   var userTerpilih = [].obs;
   var kontrolHistory = [].obs;
+
+  List<LatLng> locations = [
+    // const LatLng(-6.142492997069779, 106.73685778167766), // Lokasi awal
+    // const LatLng(-6.142549098470421, 106.7356610004584),
+    // const LatLng(-6.142271312337554, 106.73567894572908),
+    // const LatLng(-6.141886577092146, 106.73568310655186),
+    // const LatLng(-6.141121242712904, 106.73570807148857),
+    // const LatLng(-6.140174709880735, 106.73571301458774),
+    // const LatLng(-6.13707495189963, 106.73576728423541),
+    // const LatLng(-6.136851555095482, 106.73559252967858),
+    // const LatLng(-6.136636432158509, 106.73562581626084),
+    // const LatLng(-6.1366612540258805, 106.73576728424145),
+    // const LatLng(-6.135581501098166, 106.73582553576081),
+    // const LatLng(-6.135548405188498, 106.73565910284955),
+    // const LatLng(-6.134586502844211, 106.73563972002698),
+  ];
 
   Rx<DateTime> initialDate = DateTime.now().obs;
   var tanggalPilihKontrol = TextEditingController().obs;
@@ -1155,7 +1175,9 @@ class TrackingController extends GetxController {
   void detailTracking({tanggal, emIdEmployee}) async {
     // detailTrackings.value = DetailTrackingModel.fromJsonToList([]);
     // isLoadingDetailTracking.value = true;
-    isLoadingDetailTracking2.value = true;
+    isLoadingDetailTracking.value = true;
+    // isLoadingDetailTracking2.value = true;
+    // isLoadingDetailTracking3.value = true;
 
     Map<String, dynamic> body = {
       'tanggal':
@@ -1184,19 +1206,122 @@ class TrackingController extends GetxController {
             DetailTrackingModel.fromJsonToList(resp['data']);
         detailTrackings.value = detailTrackings.reversed.toList();
         isLoadingDetailTracking.value = false;
-        isLoadingDetailTracking2.value = false;
+        // isLoadingDetailTracking2.value = false;
+        // isLoadingDetailTracking3.value = false;
         isMapsDetail.value = true;
       } else {
         detailTrackings.value = [];
         isLoadingDetailTracking.value = false;
-        isLoadingDetailTracking2.value = false;
+        // isLoadingDetailTracking2.value = false;
+        // isLoadingDetailTracking3.value = false;
       }
       // Get.back();
     } catch (e) {
       print(e);
       detailTrackings.value = [];
       isLoadingDetailTracking.value = false;
+      // isLoadingDetailTracking2.value = false;
+      // isLoadingDetailTracking3.value = false;
+    }
+  }
+
+  void detailTracking2({tanggal, emIdEmployee}) async {
+    // detailTrackings.value = DetailTrackingModel.fromJsonToList([]);
+    // isLoadingDetailTracking.value = true;
+
+    isLoadingDetailTracking2.value = true;
+    isLoadingDetailTracking3.value = true;
+
+    Map<String, dynamic> body = {
+      'tanggal':
+          tanggal ?? DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+      'em_id_employee': emIdEmployee == ''
+          ? AppData.informasiUser == null || AppData.informasiUser!.isEmpty
+              ? ''
+              : AppData.informasiUser![0].em_id
+          : emIdEmployee,
+      // 'em_id_employee': 'SIS202305048',
+      'database': AppData.selectedDatabase,
+    };
+    print('parameter 2 ${body}');
+    try {
+      var response =
+          await ApiRequest(url: "employee-tracking-detail", body: body).post();
+      print('parameter ${response}');
+      var resp = jsonDecode(response.body);
+
+      print('parameter 2${resp}');
+
+      if (response.statusCode == 200) {
+        print('parameter 2${resp}');
+
+        detailTrackings2.value =
+            DetailTrackingModel.fromJsonToList(resp['data']);
+        detailTrackings2.value = detailTrackings2.reversed.toList();
+        isLoadingDetailTracking2.value = false;
+        isLoadingDetailTracking3.value = false;
+        isMapsDetail.value = true;
+      } else {
+        detailTrackings2.value = [];
+        isLoadingDetailTracking2.value = false;
+        isLoadingDetailTracking3.value = false;
+      }
+      // Get.back();
+    } catch (e) {
+      print(e);
+      detailTrackings2.value = [];
       isLoadingDetailTracking2.value = false;
+      isLoadingDetailTracking3.value = false;
+    }
+  }
+
+  void lokasi({tanggal, emIdEmployee}) async {
+    // detailTrackings.value = DetailTrackingModel.fromJsonToList([]);
+    // isLoadingDetailTracking.value = true;
+
+    isLoadingDetailTracking2.value = true;
+    // isLoadingDetailTracking3.value = true;
+
+    Map<String, dynamic> body = {
+      'tanggal':
+          tanggal ?? DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+      'em_id_employee': emIdEmployee == ''
+          ? AppData.informasiUser == null || AppData.informasiUser!.isEmpty
+              ? ''
+              : AppData.informasiUser![0].em_id
+          : emIdEmployee,
+      // 'em_id_employee': 'SIS202305048',
+      'database': AppData.selectedDatabase,
+    };
+    print('parameter 2 ${body}');
+    try {
+      var response =
+          await ApiRequest(url: "employee-tracking-detail", body: body).post();
+      print('parameter ${response}');
+      var resp = jsonDecode(response.body);
+
+      print('parameter 2${resp}');
+
+      if (response.statusCode == 200) {
+        print('parameter 2${resp}');
+
+        detailTrackings2.value =
+            DetailTrackingModel.fromJsonToList(resp['data']);
+        detailTrackings2.value = detailTrackings2.reversed.toList();
+        isLoadingDetailTracking2.value = false;
+        // isLoadingDetailTracking3.value = false;
+        isMapsDetail.value = true;
+      } else {
+        detailTrackings2.value = [];
+        isLoadingDetailTracking2.value = false;
+        // isLoadingDetailTracking3.value = false;
+      }
+      // Get.back();
+    } catch (e) {
+      print(e);
+      detailTrackings2.value = [];
+      isLoadingDetailTracking2.value = false;
+      // isLoadingDetailTracking3.value = false;
     }
   }
 
@@ -1320,21 +1445,51 @@ class TrackingController extends GetxController {
   }
 
   Future<void> isTracking() async {
-    if (AppData.informasiUser![0].is_tracking.toString() == '1') {
+    print("isTracking ${AppData.informasiUser![0].is_tracking}");
+    if (AppData.informasiUser![0].is_tracking == 1) {
       bagikanlokasi.value = "aktif";
-      // await BackgroundLocationTrackerManager.startTracking();
-      // updateStatus('1');
+
       isTrackingLokasi.value = true;
-      // detailTracking(emIdEmployee: '');
+
+      updateStatus('1');
+
+      detailTracking(emIdEmployee: '');
+
+      // AppData.informasiUser![0].is_tracking = "1";
+      // controllerDashboard.updateInformasiUser();
+
+      final service = FlutterBackgroundService();
+      var isRunning = await service.isRunning();
+
+      // service.invoke("stopService");
+      // Timer.periodic(const Duration(seconds: 1), (timer) async {
+      service.startService();
+      // });
+
+      print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
+      print('hidup');
       print(
           "startTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
     } else {
       bagikanlokasi.value = "tidak aktif";
+
+      isTrackingLokasi.value = false;
       // await LocationDao().clear();
       // await _getLocations();
       // await BackgroundLocationTrackerManager.stopTracking();
       // updateStatus('0');
-      isTrackingLokasi.value = false;
+
+      updateStatus('0');
+
+      // AppData.informasiUser![0].is_tracking = "0";
+      // controllerDashboard.updateInformasiUser();
+
+      final service = FlutterBackgroundService();
+      var isRunning = await service.isRunning();
+
+      service.invoke("stopService");
+
+      print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
       print(
           "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
     }
