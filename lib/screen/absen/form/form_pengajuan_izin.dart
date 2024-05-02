@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -263,6 +264,7 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
               // onTap: () => controller.selectedTypeCuti.value = value,
 
               onTap: () {
+                  
                 print(value);
                 print("tes");
                 print(controller.allTipe.value);
@@ -280,8 +282,8 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                             .trim()))
                     .toList();
                 // controller.loadTypeSakit();
-                print("new data ${data[0]['cut_leave']}");
-
+                print("new data upload file ${data[0]['upload_file']}");
+                controller.isRequiredFile.value=data[0]['upload_file'].toString();
                 if (data[0]['leave_day'] > 0) {
                   print("new data ${data[0]['id']}");
 
@@ -835,13 +837,19 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                   Obx(() =>  controller.isRequiredFile.value=="1"? Text(
+                      "Unggah File*",
+                      style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Constanst.fgPrimary),
+                    ): Text(
                       "Unggah File",
                       style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: Constanst.fgPrimary),
-                    ),
+                    ),),
                     const SizedBox(height: 4),
                     Text(
                       "Ukuran file max 5 MB",

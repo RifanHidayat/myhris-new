@@ -54,6 +54,7 @@ class IzinController extends GetxController {
   var departementAkses = [].obs;
   var konfirmasiAtasan = [].obs;
   var tanggalSelectedEdit = <DateTime>[].obs;
+  var isRequiredFile = '0'.obs;
 
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
   Rx<List<String>> allTipeFormTidakMasukKerja = Rx<List<String>>([]);
@@ -432,6 +433,7 @@ class IzinController extends GetxController {
             'category': element['category'],
             'leave_day': element['leave_day'],
             'cut_leave': element['cut_leave'],
+            'upload_file': element['upload_file'],
             'ajuan': 2,
             'active': false,
           };
@@ -468,6 +470,7 @@ class IzinController extends GetxController {
             'status': element['status'],
             'category': element['category'],
             'cut_leave': element['cut_leave'],
+            'upload_file': element['upload_file'],
             'ajuan': 3,
             'active': false,
           };
@@ -479,6 +482,10 @@ class IzinController extends GetxController {
         this.allTipeFormTidakMasukKerja.refresh();
         this.allTipeFormTidakMasukKerja1.refresh();
         changeTypeSelected(2);
+
+        var getFirst = allTipe.value.first;
+
+        isRequiredFile.value = getFirst['upload_file'].toString();
       }
     });
   }
@@ -618,7 +625,9 @@ class IzinController extends GetxController {
   }
 
   void takeFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png']);
 
     if (result != null) {
       PlatformFile file = result.files.first;
@@ -646,6 +655,10 @@ class IzinController extends GetxController {
   }
 
   void validasiKirimPengajuan(status) {
+    if (uploadFile.value == false && isRequiredFile.value == "1") {
+      UtilsAlert.showToast("Form * harus diisi");
+      return;
+    }
     print("tanggal selecetd ${tanggalSelected.value.isEmpty}");
     print(viewFormWaktu.value);
     if (viewFormWaktu.value == true) {
@@ -815,7 +828,7 @@ class IzinController extends GetxController {
     //         .contains(allTipe.value[0]['name'].toString().trim().toLowerCase())
     //     ? "SD"
     //     : "ST";
-        urutkanTanggalSelected(status);
+    urutkanTanggalSelected(status);
     var convertTanggalBikinPengajuan = status == false
         ? Constanst.convertDateSimpan(tanggalBikinPengajuan.value)
         : tanggalBikinPengajuan.value;
@@ -826,38 +839,32 @@ class IzinController extends GetxController {
     var data = allTipe.value
         .where((element) => selectedDropdownFormTidakMasukKerjaTipe.value
             .toString()
-            .toLowerCase().trim()
-                        .contains("${element['name']} - ${element['category']}".toString().toLowerCase().trim()))
+            .toLowerCase()
+            .trim()
+            .contains("${element['name']} - ${element['category']}"
+                .toString()
+                .toLowerCase()
+                .trim()))
         .toList();
 
     var statusA = data[0]['status'].toString();
-     var cutLeave = data[0]['cut_leave'].toString();
-     print("data izin  nwew");
-     print(statusA);
-     print(cutLeave);
+    var cutLeave = data[0]['cut_leave'].toString();
+    print("data izin  nwew");
+    print(statusA);
+    print(cutLeave);
 
-     var pola="";
+    var pola = "";
     if (statusA == "1") {
-    pola="CT";
-    
+      pola = "CT";
     } else if (statusA == "3") {
-      pola="IZ";
+      pola = "IZ";
     } else if (statusA == "2") {
-      if (cutLeave=="0"){
-         pola="SD";
-
-      }else{
-
-           pola="ST";
+      if (cutLeave == "0") {
+        pola = "SD";
+      } else {
+        pola = "ST";
       }
-
-
-
-
-
-
     }
-
 
     var getNomorAjuanTerakhir = nomorAjuanTerakhirDalamAntrian;
     var keyNomor = getNomorAjuanTerakhir.replaceAll("$pola", '');

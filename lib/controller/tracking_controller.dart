@@ -1327,9 +1327,9 @@ class TrackingController extends GetxController {
 
   void riwayatLiveTracking({emIdEmployee}) async {
     isLoadingRiwayatLiveTracking.value = true;
-    print("em_id_employee ${emIdEmployee}");
+    print("em_id_employee ${tahunSelectedSearchHistory.value+"-"+bulanSelectedSearchHistory.value+"-"+"01" }");
     Map<String, dynamic> body = {
-      'tanggal': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+      'tanggal': DateFormat('yyyy-MM-dd').format(DateTime.parse("${tahunSelectedSearchHistory.value+"-"+bulanSelectedSearchHistory.value+"-"+"01" }" )).toString(),
       'em_id_employee': emIdEmployee == ''
           ? AppData.informasiUser == null || AppData.informasiUser!.isEmpty
               ? ''

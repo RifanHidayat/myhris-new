@@ -1110,7 +1110,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
 
                             Padding(
                               padding: const EdgeInsets.only(
-                                  top: 12.0, bottom: 12.0),
+                                  top: 6.0, bottom: 12.0),
                               child: Divider(
                                 thickness: 1,
                                 height: 0,
@@ -1411,6 +1411,7 @@ controller.valuePolaPersetujuan == 1 ||
                 controller.viewFile("klaim", controller.detailData[0]['file']);
               } else if (controller.detailData[0]['title_ajuan'] ==
                   "Pengajuan Absensi") {
+               //     print("masuk sini");
                 viewLampiranAjuan(controller.detailData[0]['file']);
               }
             },
@@ -1540,7 +1541,9 @@ controller.valuePolaPersetujuan == 1 ||
   // }
 
   void viewLampiranAjuan(value) async {
-    var urlViewGambar = Api.UrlfotoAbsen + value;
+    var urlViewGambar = Api.UrlfotoAbsen.toString().trim() + value.toString().trim();
+    print("url gambar ${urlViewGambar}");
+    print("value ${value}");
 
     final url = Uri.parse(urlViewGambar);
     if (!await launchUrl(

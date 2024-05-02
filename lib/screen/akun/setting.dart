@@ -174,11 +174,88 @@ class _SettingState extends State<Setting> {
                                                 AppData.informasiUser![0]
                                                         .em_image ==
                                                     ""
-                                            ? SvgPicture.asset(
-                                                'assets/avatar_default.svg',
-                                                width: 56,
-                                                height: 56,
+                                                    ?CircleAvatar(
+                                                radius: 28,
+                                                child: ClipOval(
+                                                  child: ClipOval(
+                                                    child: CachedNetworkImage(
+                                                         imageUrl:
+                                                    "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}",
+                                                      progressIndicatorBuilder:
+                                                          (context, url,
+                                                                  downloadProgress) =>
+                                                              Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.5,
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
+                                                        child: CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                      ),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          Container(
+                                                        color: Colors.white,
+                                                        child: SvgPicture.asset(
+                                                          'assets/avatar_default.svg',
+                                                          width: 56,
+                                                          height: 56,
+                                                        ),
+                                                      ),
+                                                      fit: BoxFit.cover,
+                                                      width: 56,
+                                                      height: 56,
+                                                    ),
+                                                  ),
+                                                ),
                                               )
+                                            // ? CachedNetworkImage(
+                                            //     imageUrl:
+                                            //         "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}",
+                                            //     progressIndicatorBuilder:
+                                            //         (context, url,
+                                            //                 downloadProgress) =>
+                                            //             Container(
+                                            //       alignment: Alignment.center,
+                                            //       height: MediaQuery.of(context)
+                                            //               .size
+                                            //               .height *
+                                            //           0.5,
+                                            //       width: MediaQuery.of(context)
+                                            //           .size
+                                            //           .width,
+                                            //       child:
+                                            //           CircularProgressIndicator(
+                                            //               value:
+                                            //                   downloadProgress
+                                            //                       .progress),
+                                            //     ),
+                                            //     errorWidget:
+                                            //         (context, url, error) =>
+                                            //             Container(
+                                            //       color: Colors.white,
+                                            //       child: SvgPicture.asset(
+                                            //     'assets/avatar_default.svg',
+                                            //     width: 56,
+                                            //     height: 56,
+                                            //   )
+                                            //     ),
+                                            //     fit: BoxFit.cover,
+                                            //   )
+                                            // ? SvgPicture.asset(
+                                            //     'assets/avatar_default.svg',
+                                            //     width: 56,
+                                            //     height: 56,
+                                            //   )
                                             : CircleAvatar(
                                                 radius: 28,
                                                 child: ClipOval(

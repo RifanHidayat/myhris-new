@@ -815,15 +815,15 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                                     controller.detailData[0]['file'] == null
                                 ? const SizedBox()
                                 : fileWidget(),
-                            //              Padding(
-                            //   padding: const EdgeInsets.only(
-                            //       top: 12.0, bottom: 12.0),
-                            //   child: Divider(
-                            //     thickness: 1,
-                            //     height: 0,
-                            //     color: Constanst.border,
-                            //   ),
-                            // ),
+                                         Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, bottom: 12.0),
+                              child: Divider(
+                                thickness: 1,
+                                height: 0,
+                                color: Constanst.border,
+                              ),
+                            ),
                                controller.valuePolaPersetujuan == 1 ||
                                     controller.valuePolaPersetujuan == "1"
                                 ? singgleApproval(controller.detailData[0])

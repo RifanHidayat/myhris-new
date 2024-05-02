@@ -771,10 +771,32 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
                               fontWeight: FontWeight.w500,
                               fontSize: 16),
                         ),
+                        //  Padding(
+                        //   padding: const EdgeInsets.only(
+                        //       top: 12.0, bottom: 12.0),
+                        //   child: Divider(
+                        //     thickness: 1,
+                        //     height: 0,
+                        //     color: Constanst.border,
+                        //   ),
+                        // ),
+                         controller.detailData[0]['file'] == "" ||
+                                controller.detailData[0]['file'] == null
+                            ? const SizedBox()
+                            : fileWidget(),
+                             Padding(
+                          padding: const EdgeInsets.only(
+                              top: 6.0, bottom: 12.0),
+                          child: Divider(
+                            thickness: 1,
+                            height: 0,
+                            color: Constanst.border,
+                          ),
+                        ),
                           controller.valuePolaPersetujuan == 1 ||
                                     controller.valuePolaPersetujuan == "1"
                                 ? singgleApproval(controller.detailData[0])
-                                : multipleApproval(controller.detailData[0])
+                                : multipleApproval(controller.detailData[0]),
                         // controller.detailData[0]['title_ajuan'] ==
                         //         "Pengajuan Tidak Hadir"
                         //     ? informasiIzinJam()
@@ -809,10 +831,7 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
                         //                     color: Constanst.colorText2),
                         //               ),
       
-                        // controller.detailData[0]['file'] == "" ||
-                        //         controller.detailData[0]['file'] == null
-                        //     ? const SizedBox()
-                        //     : fileWidget(),
+                       
                         // Padding(
                         //   padding: const EdgeInsets.only(
                         //       top: 12.0, bottom: 12.0),

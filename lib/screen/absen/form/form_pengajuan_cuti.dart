@@ -384,7 +384,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "${controller.jumlahCuti.value - controller.cutiTerpakai.value} Tersisa",
+                  " ${controller.jumlahCuti.value - controller.cutiTerpakai.value} Tersisa",
                   style: GoogleFonts.inter(
                       fontWeight: FontWeight.w500,
                       color: Constanst.infoLight,
@@ -504,6 +504,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
               // onTap: () => controller.selectedTypeCuti.value = value,
 
               onTap: () {
+                
                 var data = controller.allTipe
                     .where((p0) =>
                         p0['name'].toString().toLowerCase() ==
@@ -520,6 +521,8 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                 }
 
                 print("Allow minu ${data[0]['allow_minus']}");
+                 print("upload file  ${data[0]['upload_file']}");
+                 controller.isRequiredFile.value=data[0]['upload_file'].toString();
 
                 // var data=controller.allTipe.value.whe
                 controller.selectedTypeCuti.value = value!;
@@ -1470,13 +1473,19 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                   Obx(() => controller.isRequiredFile.value=="0"? Text(
                       "Unggah File",
                       style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: Constanst.fgPrimary),
-                    ),
+                    ): Text(
+                      "Unggah File *",
+                      style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Constanst.fgPrimary),
+                    ),),
                     const SizedBox(height: 4),
                     Text(
                       "Ukuran file max 5 MB",

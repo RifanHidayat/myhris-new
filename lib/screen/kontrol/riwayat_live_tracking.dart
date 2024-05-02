@@ -301,6 +301,8 @@ class _RiwayatLiveTrackingState extends State<RiwayatLiveTracking> {
               this.controllerTracking.bulanSelectedSearchHistory.refresh();
               this.controllerTracking.tahunSelectedSearchHistory.refresh();
               this.controllerTracking.bulanDanTahunNow.refresh();
+              controllerTracking.riwayatLiveTracking(emIdEmployee:  emIdEmployee);
+
             }
           },
         );

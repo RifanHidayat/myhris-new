@@ -20,14 +20,14 @@ class Api {
 
   // static var basicUrl = "http://mobilehris.siscom.id:3000/";
   static var urlImage = 'https://imagehris.siscom.id:4431';
-   static var basicUrl = "http://mobilehris.siscom.id:3000/";
-  // static var basicUrl = "http://kantor.membersis.com:2629/";
+//
+static var basicUrl = "http://mobilehris.siscom.id:3000/";
+ //  static var basicUrl = "http://kantor.membersis.com:2629/";
   static var token = '9d590c04119a4433971a1dd622266d38';
   static var luxand = 'https://api.luxand.cloud/photo/similarity';
   static var wappin = 'https://api.wappin.id/v1';
 
-  static var UrlfotoAbsen = urlImage +
-      "/${AppData.selectedDatabase}/foto_absen                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     /";
+  static var UrlfotoAbsen = urlImage +"/${AppData.selectedDatabase}/foto_absen/";
   static var UrlfotoProfile =
       urlImage + "/${AppData.selectedDatabase}/foto_profile/";
   static var UrlgambarDashboard =
@@ -40,9 +40,11 @@ class Api {
   static var urlGambarDariFinance =
       urlImage + "/${AppData.selectedDatabase}/gambar_banner/";
   static var urlFilePermintaanKandidat =
-      urlImage + "/${AppData.selectedDatabase}/file_permintaan_kandidat/";
+      urlImage + "/${AppData.selectedDatabase}/file_permintaan_kandida t/";
   static var urlFileKandidat =
       urlImage + "/${AppData.selectedDatabase}/file_kandidat/";
+
+
 
   static var urlFileRecog =
       urlImage + "/${AppData.selectedDatabase}/face_recog/";

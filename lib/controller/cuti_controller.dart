@@ -46,6 +46,8 @@ class CutiController extends GetxController {
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
   Rx<List<String>> allTipeFormCutiDropdown = Rx<List<String>>([]);
 
+  var isRequiredFile='0'.obs;
+
   var limitCuti = 0.obs;
   var cutLeave = 1.obs;
 
@@ -249,8 +251,11 @@ class CutiController extends GetxController {
             'select_date': element['select_date'],
             'allow_minus': element['allow_minus'],
             'cut_leave': element['cut_leave'],
+            'upload_file': element['upload_file'],
             'active': false,
+
           };
+
           allTipe.value.add(data);
         }
         if (statusForm.value == false) {
@@ -258,6 +263,7 @@ class CutiController extends GetxController {
           selectedTypeCuti.value = getFirst['name'];
           dateSelected.value = getFirst['select_date'];
           allowMinus.value = getFirst['allow_minus'];
+          isRequiredFile.value= getFirst['upload_file'].toString();
         } else {
           var getFirst = allTipe.value
               .firstWhere((element) => element['id'] == typeIdEdit.value);
@@ -265,6 +271,7 @@ class CutiController extends GetxController {
 
           dateSelected.value = getFirst['select_date'];
           allowMinus.value = getFirst['allow_minus'];
+              isRequiredFile.value= getFirst['upload_file'].toString();
         }
 
         this.allTipe.refresh();
@@ -510,7 +517,8 @@ class CutiController extends GetxController {
   }
 
   void takeFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles( type: FileType.custom,
+        allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png']);
 
     if (result != null) {
       PlatformFile file = result.files.first;
@@ -533,7 +541,7 @@ class CutiController extends GetxController {
   }
 
   void validasiKirimPengajuan() async {
-    if (selectedTypeCuti == "" || alasan.value.text == "") {
+    if (selectedTypeCuti == "" || alasan.value.text == "" || (isRequiredFile.value=="1" && uploadFile.value==false)) {
       UtilsAlert.showToast("Form * harus di isi");
     } else {
       var hitung = jumlahCuti.value - cutiTerpakai.value;
@@ -755,7 +763,7 @@ class CutiController extends GetxController {
         'ajuan': '1',
         'created_by': getEmid,
         'menu_name': 'Cuti',
-           'apply_status':"Pending"
+        'apply_status':"Pending"
       };
     }
 
