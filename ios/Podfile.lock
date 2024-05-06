@@ -1,6 +1,4 @@
 PODS:
-  - background_location_tracker (0.0.1):
-    - Flutter
   - camera_avfoundation (0.0.1):
     - Flutter
   - detect_fake_location_plus (1.0.2):
@@ -76,6 +74,8 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
   - Flutter (1.0.0)
+  - flutter_background_service_ios (0.0.3):
+    - Flutter
   - flutter_foreground_task (0.0.1):
     - Flutter
   - flutter_inappwebview (0.0.1):
@@ -213,7 +213,6 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - background_location_tracker (from `.symlinks/plugins/background_location_tracker/ios`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - detect_fake_location_plus (from `.symlinks/plugins/detect_fake_location_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -222,6 +221,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
+  - flutter_background_service_ios (from `.symlinks/plugins/flutter_background_service_ios/ios`)
   - flutter_foreground_task (from `.symlinks/plugins/flutter_foreground_task/ios`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
@@ -274,8 +274,6 @@ SPEC REPOS:
     - Toast
 
 EXTERNAL SOURCES:
-  background_location_tracker:
-    :path: ".symlinks/plugins/background_location_tracker/ios"
   camera_avfoundation:
     :path: ".symlinks/plugins/camera_avfoundation/ios"
   detect_fake_location_plus:
@@ -292,6 +290,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
+  flutter_background_service_ios:
+    :path: ".symlinks/plugins/flutter_background_service_ios/ios"
   flutter_foreground_task:
     :path: ".symlinks/plugins/flutter_foreground_task/ios"
   flutter_inappwebview:
@@ -336,7 +336,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
-  background_location_tracker: 3f0954d5a839b9bfffbdc887e679d183a7bbc1c9
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
   detect_fake_location_plus: 61b1051ec6dd0ab7f0917f29958fd1627afa0ad6
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
@@ -352,6 +351,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 033d199474164db20c8350736842a94fe717b960
   FirebaseMessaging: e345b219fd15d325f0cf2fef28cb8ce00d851b3f
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_background_service_ios: e30e0d3ee69e4cee66272d0c78eacd48c2e94aac
   flutter_foreground_task: 21ef182ab0a29a3005cc72cd70e5f45cb7f7f817
   flutter_inappwebview: acd4fc0f012cefd09015000c241137d82f01ba62
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743

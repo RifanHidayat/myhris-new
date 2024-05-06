@@ -21,31 +21,30 @@ class PersetujuanCuti extends StatefulWidget {
   _PersetujuanCutiState createState() => _PersetujuanCutiState();
 }
 
-class _PersetujuanCutiState extends State<PersetujuanCuti> with SingleTickerProviderStateMixin  {
+class _PersetujuanCutiState extends State<PersetujuanCuti>
+    with SingleTickerProviderStateMixin {
   var controller = Get.put(ApprovalController());
   var controllerGlobal = Get.put(GlobalController());
-     TabController? _tabController;
+  TabController? _tabController;
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
-       
+    _tabController = TabController(length: 2, vsync: this);
+
     controller.startLoadData(
         widget.title, widget.bulan, widget.tahun, 'persetujuan');
-          _tabController!.addListener(_handleTabChange);
+    _tabController!.addListener(_handleTabChange);
     super.initState();
   }
- 
 
-     void _handleTabChange() {
+  void _handleTabChange() {
     print("Tab changed: ${_tabController!.index}");
 
     _tabController!.index == 0
-        ? controller.startLoadData(widget.title,
-            widget.bulan, widget.tahun, 'persetujuan')
-        : controller.startLoadData(widget.title,
-            widget.bulan, widget.tahun, 'riwayat');
+        ? controller.startLoadData(
+            widget.title, widget.bulan, widget.tahun, 'persetujuan')
+        : controller.startLoadData(
+            widget.title, widget.bulan, widget.tahun, 'riwayat');
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -247,7 +246,7 @@ class _PersetujuanCutiState extends State<PersetujuanCuti> with SingleTickerProv
                         Expanded(
                             child: TabBarView(
                           physics: const BouncingScrollPhysics(),
-                            controller: _tabController,
+                          controller: _tabController,
                           children: [
                             controller.listData.value.isEmpty
                                 ? Center(
@@ -559,9 +558,9 @@ class _PersetujuanCutiState extends State<PersetujuanCuti> with SingleTickerProv
 
   Widget _approval(index) {
     var data = controller.listData[index];
-    var namaApprove1 = controller.listData.value[index]['nama_approve1']??"";
-    var namaApprove2 = controller.listData.value[index]['nama_approve2']??"";
-    var leave_status = controller.listData.value[index]['leave_status']??"";
+    var namaApprove1 = controller.listData.value[index]['nama_approve1'] ?? "";
+    var namaApprove2 = controller.listData.value[index]['nama_approve2'] ?? "";
+    var leave_status = controller.listData.value[index]['leave_status'] ?? "";
 
     if (leave_status == "Rejected") {
       return Container(
@@ -657,8 +656,8 @@ class _PersetujuanCutiState extends State<PersetujuanCuti> with SingleTickerProv
       );
     }
 
-    if (leave_status=="Approve2"){
-          return Container(
+    if (leave_status == "Approve2") {
+      return Container(
         child: namaApprove1 == ""
             ? const SizedBox()
             : Row(

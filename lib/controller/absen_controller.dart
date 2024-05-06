@@ -24,6 +24,7 @@ import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
@@ -76,6 +77,8 @@ class AbsenController extends GetxController {
   var checkoutAjuan2 = "".obs;
   var catataanAjuan = TextEditingController();
   var imageAjuan = "".obs;
+
+  var wfhstatus = false.obs;
 
   var pengajuanAbsensi = [].obs;
 
@@ -307,9 +310,17 @@ class AbsenController extends GetxController {
         if (res.statusCode == 200) {
           print("Place cordinate 200" + res.body.toString());
           var valueBody = jsonDecode(res.body);
-          selectedType.value = valueBody['data'][0]['place'];
+          // selectedType.value = valueBody['data'][0]['place'];
+          wfhstatus.value = controller.wfhstatus.value;
+          print("controller.wfhstatus ${wfhstatus.value}");
+          wfhstatus.value
+              ? selectedType.value = 'WFH'
+              : selectedType.value = valueBody['data'][0]['place'];
           for (var element in valueBody['data']) {
-            placeCoordinateDropdown.value.add(element['place']);
+            // placeCoordinateDropdown.value.add(element['place']);
+            wfhstatus.value
+                ? placeCoordinateDropdown.value.add('WFH')
+                : placeCoordinateDropdown.value.add(element['place']);
           }
           List filter = [];
           for (var element in valueBody['data']) {
@@ -993,7 +1004,8 @@ class AbsenController extends GetxController {
     absenSelfie();
   }
 
-  void kirimDataAbsensi() async {
+  void kirimDataAbsensi({typewfh}) async {
+    print("typewfh ${typewfh}");
     employeDetail();
     // if (base64fotoUser.value == "") {
     //   UtilsAlert.showToast("Silahkan Absen");
@@ -1020,27 +1032,46 @@ class AbsenController extends GetxController {
             AppData.statusAbsen = false;
             AppData.dateLastAbsen = tanggalUserFoto.value;
           }
-          Map<String, dynamic> body = {
-            'em_id': getEmpId,
-            'tanggal_absen': tanggalUserFoto.value,
-            'waktu': timeString.value,
-            // 'gambar': validasiGambar,
-            'reg_type': regType.value,
-            'gambar': base64fotoUser.value,
-            'lokasi': alamatUserFoto.value,
-            'latLang': latLangAbsen,
-            'catatan': deskripsiAbsen.value.text,
-            'typeAbsen': typeAbsen.value,
-            'place': selectedType.value,
-            'kategori': "1"
-          };
-
+          Map<String, dynamic> body = typewfh == "wfh"
+              ? {
+                  'em_id': getEmpId,
+                  'date': tanggalUserFoto.value,
+                  'uraian': deskripsiAbsen.value.text,
+                  'place': selectedType.value,
+                  'lokasi': alamatUserFoto.value,
+                  'latLang': latLangAbsen,
+                  // 'waktu': timeString.value,
+                  // // 'gambar': validasiGambar,
+                  // 'reg_type': regType.value,
+                  // 'gambar': base64fotoUser.value,
+                  // 'lokasi': alamatUserFoto.value,
+                  // 'latLang': latLangAbsen,
+                  // 'typeAbsen': typeAbsen.value,
+                  // 'kategori': "1"
+                }
+              : {
+                  'em_id': getEmpId,
+                  'tanggal_absen': tanggalUserFoto.value,
+                  'waktu': timeString.value,
+                  // 'gambar': validasiGambar,
+                  'reg_type': regType.value,
+                  'gambar': base64fotoUser.value,
+                  'lokasi': alamatUserFoto.value,
+                  'latLang': latLangAbsen,
+                  'catatan': deskripsiAbsen.value.text,
+                  'typeAbsen': typeAbsen.value,
+                  'place': selectedType.value,
+                  'kategori': "1"
+                };
+          print("respon wfh ${body}");
           isLoaingAbsensi.value = true;
-          var connect = Api.connectionApi("post", body, "kirimAbsen");
+          var connect = Api.connectionApi(
+              "post", body, typewfh == "wfh" ? "wfh" : "kirimAbsen");
           connect.then((dynamic res) async {
+            print("respon wfh ${res.statusCode}");
             if (res.statusCode == 200) {
               var valueBody = jsonDecode(res.body);
-              print(res.body);
+              print("respon wfh ${valueBody}");
               // for (var element in sysData.value) {
               //   if (element['kode'] == '006') {
               //     intervalControl.value = int.parse(element['name'].toString());
@@ -1924,7 +1955,8 @@ class AbsenController extends GetxController {
   }
 
   void takeFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles( type: FileType.custom,
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
         allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png']);
 
     if (result != null) {

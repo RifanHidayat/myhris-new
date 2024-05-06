@@ -21,14 +21,15 @@ class PersetujuanPayroll extends StatefulWidget {
   _PersetujuanPayrollState createState() => _PersetujuanPayrollState();
 }
 
-class _PersetujuanPayrollState extends State<PersetujuanPayroll> with SingleTickerProviderStateMixin {
+class _PersetujuanPayrollState extends State<PersetujuanPayroll>
+    with SingleTickerProviderStateMixin {
   var controller = Get.put(ApprovalController());
-    var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.put(GlobalController());
 
-   TabController? _tabController;
+  TabController? _tabController;
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     controller.startLoadData(
         widget.title, widget.bulan, widget.tahun, 'persetujuan');
     _tabController!.addListener(_handleTabChange);
@@ -39,10 +40,10 @@ class _PersetujuanPayrollState extends State<PersetujuanPayroll> with SingleTick
     print("Tab changed: ${_tabController!.index}");
 
     _tabController!.index == 0
-        ? controller.startLoadData(widget.title,
-            widget.bulan, widget.tahun, 'persetujuan')
-        : controller.startLoadData(widget.title,
-            widget.bulan, widget.tahun, 'riwayat');
+        ? controller.startLoadData(
+            widget.title, widget.bulan, widget.tahun, 'persetujuan')
+        : controller.startLoadData(
+            widget.title, widget.bulan, widget.tahun, 'riwayat');
   }
 
   @override
@@ -50,6 +51,7 @@ class _PersetujuanPayrollState extends State<PersetujuanPayroll> with SingleTick
     _tabController!.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -584,13 +586,11 @@ class _PersetujuanPayrollState extends State<PersetujuanPayroll> with SingleTick
     );
   }
 
-
-      
   Widget _approval(index) {
     var data = controller.listData[index];
-    var namaApprove1 = controller.listData.value[index]['nama_approve1']??"";
-    var namaApprove2 = controller.listData.value[index]['nama_approve2']??"";
-    var leave_status = controller.listData.value[index]['leave_status']??"";
+    var namaApprove1 = controller.listData.value[index]['nama_approve1'] ?? "";
+    var namaApprove2 = controller.listData.value[index]['nama_approve2'] ?? "";
+    var leave_status = controller.listData.value[index]['leave_status'] ?? "";
 
     if (leave_status == "Rejected") {
       return Container(
@@ -686,8 +686,8 @@ class _PersetujuanPayrollState extends State<PersetujuanPayroll> with SingleTick
       );
     }
 
-    if (leave_status=="Approve2"){
-          return Container(
+    if (leave_status == "Approve2") {
+      return Container(
         child: namaApprove1 == ""
             ? const SizedBox()
             : Row(

@@ -21,29 +21,30 @@ class PersetujuanAbsensi extends StatefulWidget {
   _PersetujuanAbsensiState createState() => _PersetujuanAbsensiState();
 }
 
-class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTickerProviderStateMixin  {
+class _PersetujuanAbsensiState extends State<PersetujuanAbsensi>
+    with SingleTickerProviderStateMixin {
   var controller = Get.put(ApprovalController());
 
   @override
   void initState() {
-        _tabController = TabController(length: 3, vsync: this);
-         _tabController!.addListener(_handleTabChange);
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController!.addListener(_handleTabChange);
     controller.startLoadData(
         widget.title, widget.bulan, widget.tahun, 'persetujuan');
-        
+
     super.initState();
   }
 
-    TabController? _tabController;
+  TabController? _tabController;
 
-     void _handleTabChange() {
+  void _handleTabChange() {
     print("Tab changed: ${_tabController!.index}");
 
     _tabController!.index == 0
-        ? controller.startLoadData(widget.title,
-            widget.bulan, widget.tahun, 'persetujuan')
-        : controller.startLoadData(widget.title,
-            widget.bulan, widget.tahun, 'riwayat');
+        ? controller.startLoadData(
+            widget.title, widget.bulan, widget.tahun, 'persetujuan')
+        : controller.startLoadData(
+            widget.title, widget.bulan, widget.tahun, 'riwayat');
   }
 
   @override
@@ -244,7 +245,7 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTick
                         ),
                         Expanded(
                             child: TabBarView(
-                              controller: _tabController,
+                          controller: _tabController,
                           physics: const BouncingScrollPhysics(),
                           children: [
                             controller.listData.value.isEmpty
@@ -597,12 +598,12 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTick
           }),
     );
   }
-  
+
   Widget _approval(index) {
     var data = controller.listData[index];
-    var namaApprove1 = controller.listData.value[index]['nama_approve1']??"";
-    var namaApprove2 = controller.listData.value[index]['nama_approve2']??"";
-    var leave_status = controller.listData.value[index]['leave_status']??"";
+    var namaApprove1 = controller.listData.value[index]['nama_approve1'] ?? "";
+    var namaApprove2 = controller.listData.value[index]['nama_approve2'] ?? "";
+    var leave_status = controller.listData.value[index]['leave_status'] ?? "";
 
     if (leave_status == "Rejected") {
       return Container(
@@ -658,7 +659,7 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTick
       );
     }
 
-    if ( controller.valuePolaPersetujuan.value.toString() == "1") {
+    if (controller.valuePolaPersetujuan.value.toString() == "1") {
       return Container(
         child: namaApprove1 == ""
             ? const SizedBox()
@@ -698,8 +699,8 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTick
       );
     }
 
-    if (leave_status=="Approve2"){
-          return Container(
+    if (leave_status == "Approve2") {
+      return Container(
         child: namaApprove1 == ""
             ? const SizedBox()
             : Row(
@@ -929,8 +930,7 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTick
         });
   }
 
-
-        Widget singgleApproval(data) {
+  Widget singgleApproval(data) {
     var text = "";
     if (data['approve_status'] == "Pending") {
       text = "Pending Approval";
@@ -1016,9 +1016,7 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTick
     if (data['approve_status'] == "Rejected") {
       text = "Rejected By - ${data['nama_approve1']}";
     }
-   
-   
-   
+
     if (data['approve_status'] == "Approve") {
       text = "Approve 1 By - ${data['nama_approve1']}";
 
@@ -1030,7 +1028,8 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTick
       }
 
       if (data['approve2_status'] == "Approve") {
-        text2 = "Approved 2 By - ${data['nama_approve2']} ${data['approve2_status'] }";
+        text2 =
+            "Approved 2 By - ${data['nama_approve2']} ${data['approve2_status']}";
       }
     }
     return Container(
@@ -1090,19 +1089,21 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTick
                       ),
                     ],
                   ),
-                  
                   data['approve_status'] == "Approve"
                       ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                    padding: EdgeInsets.only(left:2.5,top: 2,bottom: 2),
-                    child: Container(
-                      height: 30,
-                      child:  VerticalDivider(color: Constanst.Secondary,),
-                    ),
-                  ),
-                          Padding(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 2.5, top: 2, bottom: 2),
+                              child: Container(
+                                height: 30,
+                                child: VerticalDivider(
+                                  color: Constanst.Secondary,
+                                ),
+                              ),
+                            ),
+                            Padding(
                               padding: EdgeInsets.only(top: 0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1131,7 +1132,8 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTick
                                   // ),
                                   const SizedBox(width: 8),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text("${text2} ",
                                           style: GoogleFonts.inter(
@@ -1144,8 +1146,8 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTick
                                 ],
                               ),
                             ),
-                        ],
-                      )
+                          ],
+                        )
                       : SizedBox(),
                 ],
               ),
@@ -1155,5 +1157,4 @@ class _PersetujuanAbsensiState extends State<PersetujuanAbsensi> with SingleTick
       ),
     );
   }
-
 }

@@ -381,88 +381,87 @@ class _DetailPersetujuanPayrollState extends State<DetailPersetujuanPayroll> {
           ),
         ),
       ),
-      bottomNavigationBar: typeAjuan=="Approve2"?SizedBox(): SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-          ),
-          child: Obx(() => controller.showButton.value == true 
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Constanst
-                                .border, // Set the desired border color
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            print(AppData.informasiUser![0].em_id);
-                            print(controller.detailData[0]['em_report_to']);
-                            print(controller.detailData[0]['em_report2_to']);
-                            // print("tes");
-                            showBottomAlasanReject(em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Constanst.color4,
-                              backgroundColor: Constanst.colorWhite,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+      bottomNavigationBar: typeAjuan == "Approve2"
+          ? SizedBox()
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Obx(() => controller.showButton.value == true
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 40,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Constanst
+                                    .border, // Set the desired border color
+                                width: 1.0,
                               ),
-                              elevation: 0,
-                              // padding: EdgeInsets.zero,
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                          child: Text(
-                            'Tolak',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.color4,
-                                fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SizedBox(
-                        height: 40,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            validasiMenyetujui(true, em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Constanst.colorWhite,
-                            backgroundColor: Constanst.colorPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8.0),
                             ),
-                            elevation: 0,
-                            // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
-                          ),
-                          child: Text(
-                            'Menyetujui',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.colorWhite,
-                                fontSize: 14),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                print(AppData.informasiUser![0].em_id);
+                                print(controller.detailData[0]['em_report_to']);
+                                print(
+                                    controller.detailData[0]['em_report2_to']);
+                                // print("tes");
+                                showBottomAlasanReject(em_id);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  foregroundColor: Constanst.color4,
+                                  backgroundColor: Constanst.colorWhite,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                  // padding: EdgeInsets.zero,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                              child: Text(
+                                'Tolak',
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.color4,
+                                    fontSize: 14),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                )
-              : const SizedBox()),
-        ),
-      ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: SizedBox(
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                validasiMenyetujui(true, em_id);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Constanst.colorWhite,
+                                backgroundColor: Constanst.colorPrimary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 0,
+                                // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                              ),
+                              child: Text(
+                                'Menyetujui',
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.colorWhite,
+                                    fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox()),
+            ),
       body: WillPopScope(
           onWillPop: () async {
             controller.alasanReject.value.text = "";
@@ -561,8 +560,8 @@ class _DetailPersetujuanPayrollState extends State<DetailPersetujuanPayroll> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      controller.detailData[0]['nama_divisi']??""
-                                          .toString(),
+                                      controller.detailData[0]['nama_divisi'] ??
+                                          "".toString(),
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgSecondary,
                                           fontWeight: FontWeight.w400,

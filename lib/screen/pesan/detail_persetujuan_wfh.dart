@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
@@ -16,19 +17,17 @@ import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DetailPersetujuanDinasLuar extends StatefulWidget {
+class DetailPersetujuanWfh extends StatefulWidget {
   String? title, idxDetail, emId, delegasi;
 
-  DetailPersetujuanDinasLuar(
+  DetailPersetujuanWfh(
       {Key? key, this.title, this.idxDetail, this.emId, this.delegasi})
       : super(key: key);
   @override
-  _DetailPersetujuanDinasLuarState createState() =>
-      _DetailPersetujuanDinasLuarState();
+  _DetailPersetujuanWfhState createState() => _DetailPersetujuanWfhState();
 }
 
-class _DetailPersetujuanDinasLuarState
-    extends State<DetailPersetujuanDinasLuar> {
+class _DetailPersetujuanWfhState extends State<DetailPersetujuanWfh> {
   var controller = Get.put(ApprovalController());
   var controllerGlobal = Get.put(GlobalController());
   int hours = 0, minutes = 0, second = 0;
@@ -130,7 +129,6 @@ class _DetailPersetujuanDinasLuarState
                           onTap: () {
                             if (controller.alasanReject.value.text != "") {
                               Navigator.pop(Get.context!);
-
                               validasiMenyetujui(false, em_id);
                             } else {
                               UtilsAlert.showToast(
@@ -181,9 +179,19 @@ class _DetailPersetujuanDinasLuarState
             positiveBtnPressed: () {
               print(controller.detailData[0]);
               if (controller.detailData[0]['type'] == 'absensi') {
-                print("masuk sini ${controller.detailData[0]['type']}");
+                print('object 1');
+                print("masuk sini ${controller.detailData[0]['place_in']}");
+                print("masuk sini ${controller.detailData[0]}");
+                print("pilihan absensi ${pilihan}");
+                UtilsAlert.loadingSimpanData(
+                    Get.context!, "Proses $stringPilihan pengajuan");
+
                 controller.approvalAbsensi(
-                    pilihan: pilihan,
+                    pilihan: true,
+                    apBy1: controller.detailData[0]['approve_by'].toString(),
+                    apId1: controller.detailData[0]['approve_id'].toString(),
+                    apdDate1:
+                        controller.detailData[0]['approve_date'].toString(),
                     date:
                         controller.detailData[0]['waktu_pengajuan'].toString(),
                     status: styleChose.toString(),
@@ -192,14 +200,20 @@ class _DetailPersetujuanDinasLuarState
                     image: controller.detailData[0]['file'].toString(),
                     note: controller.detailData[0]['deskripsi'].toString(),
                     ajuanEmid: controller.detailData[0]['em_id'].toString(),
+                    pola:
+                        controllerGlobal.valuePolaPersetujuan.value.toString(),
+                    leaveStatus:
+                        controller.detailData[0]['leave_status'].toString(),
                     id: controller.detailData[0]['id'].toString());
+                return;
               } else {
+                print('object 2');
                 UtilsAlert.loadingSimpanData(
                     Get.context!, "Proses $stringPilihan pengajuan");
                 controller.aksiMenyetujui(pilihan);
               }
               controllerGlobal.kirimNotifikasi(
-                  title: 'Dinas Luar',
+                  title: 'WFH',
                   status: 'approve',
                   pola: controllerGlobal.valuePolaPersetujuan.value.toString(),
                   statusApproval: controller.valuePolaPersetujuan == 1 ||
@@ -353,7 +367,7 @@ class _DetailPersetujuanDinasLuarState
               titleSpacing: 0,
               centerTitle: true,
               title: Text(
-                "Detail Persetujuan ${widget.title}",
+                "Detail Persetujuan WFH",
                 style: GoogleFonts.inter(
                     color: Constanst.fgPrimary,
                     fontWeight: FontWeight.w500,
@@ -383,94 +397,93 @@ class _DetailPersetujuanDinasLuarState
           ),
         ),
       ),
-      bottomNavigationBar: typeAjuan == "Approve2"
-          ? SizedBox()
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Obx(() => controller.showButton.value == true &&
-                      (controller.detailData[0]['leave_status'] == "Pending" ||
-                          controller.detailData[0]['apply_status'] ==
-                              "Pending" ||
-                          (controller.detailData[0]['apply2_status'] ==
-                                  "Pending" &&
-                              controller.detailData[0]['apply_status'] !=
-                                  "Rejected"))
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 40,
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Constanst
-                                    .border, // Set the desired border color
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                print(AppData.informasiUser![0].em_id);
-                                print(controller.detailData[0]['em_report_to']);
-                                print(
-                                    controller.detailData[0]['em_report2_to']);
-                                // print("tes");
-                                showBottomAlasanReject(em_id);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  foregroundColor: Constanst.color4,
-                                  backgroundColor: Constanst.colorWhite,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  elevation: 0,
-                                  // padding: EdgeInsets.zero,
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                              child: Text(
-                                'Tolak',
-                                style: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    color: Constanst.color4,
-                                    fontSize: 14),
-                              ),
-                            ),
-                          ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Obx(() => controller.showButton.value == true ||
+                controller.showButton.value == true &&
+                    (controller.detailData[0]['status'] == "Pending" ||
+                        controller.detailData[0]['approve_status'] ==
+                            "Pending" ||
+                        controller.detailData[0]['approve_status'] ==
+                            "Pending" ||
+                        (controller.detailData[0]['approve2_status'] ==
+                                "Pending" &&
+                            controller.detailData[0]['approve_status'] !=
+                                "Rejected"))
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 40,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color:
+                              Constanst.border, // Set the desired border color
+                          width: 1.0,
                         ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: SizedBox(
-                            height: 40,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                validasiMenyetujui(true, em_id);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Constanst.colorWhite,
-                                backgroundColor: Constanst.colorPrimary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                elevation: 0,
-                                // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
-                              ),
-                              child: Text(
-                                'Menyetujui',
-                                style: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    color: Constanst.colorWhite,
-                                    fontSize: 14),
-                              ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          print(AppData.informasiUser![0].em_id);
+                          print(controller.detailData[0]['em_report_to']);
+                          print(controller.detailData[0]['em_report2_to']);
+                          // print("tes");
+                          showBottomAlasanReject(em_id);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.color4,
+                            backgroundColor: Constanst.colorWhite,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                          ),
+                            elevation: 0,
+                            // padding: EdgeInsets.zero,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                        child: Text(
+                          'Tolak',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.color4,
+                              fontSize: 14),
                         ),
-                      ],
-                    )
-                  : const SizedBox()),
-            ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          validasiMenyetujui(true, em_id);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Constanst.colorWhite,
+                          backgroundColor: Constanst.colorPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 0,
+                          // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                        ),
+                        child: Text(
+                          'Menyetujui',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.colorWhite,
+                              fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : const SizedBox()),
+      ),
       body: WillPopScope(
           onWillPop: () async {
             controller.alasanReject.value.text = "";
@@ -692,8 +705,15 @@ class _DetailPersetujuanDinasLuarState
                             //             fontWeight: FontWeight.w500,
                             //             fontSize: 16),
                             //       ),
+                            // Text(
+                            //   "${controller.detailData[0]['type']} - ${controller.detailData[0]['category']}",
+                            //   style: GoogleFonts.inter(
+                            //       fontWeight: FontWeight.w500,
+                            //       color: Constanst.fgPrimary,
+                            //       fontSize: 16),
+                            // ),
                             Text(
-                              "${controller.detailData[0]['type']} ",
+                              "Pengajuan WFH",
                               style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   color: Constanst.fgPrimary,
@@ -709,22 +729,314 @@ class _DetailPersetujuanDinasLuarState
                               ),
                             ),
                             Text(
-                              "Waktu ${widget.title.toString()}",
+                              "Tanggal WFH",
                               style: GoogleFonts.inter(
                                   color: Constanst.fgSecondary,
                                   fontWeight: FontWeight.w400,
                                   fontSize: 14),
                             ),
                             const SizedBox(height: 4),
-                            controller.detailData[0]['type'] == "Klaim"
-                                ? const SizedBox()
-                                : Text(
-                                    "${"${controller.detailData[0]['waktu_dari']}"} - ${"${controller.detailData[0]['waktu_sampai']}"}",
-                                    style: GoogleFonts.inter(
-                                        color: Constanst.fgPrimary,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
+                            // controller.detailData[0]['type'] == "Klaim"
+                            //     ? const SizedBox()
+                            //     : Text(
+                            //         "${"${controller.detailData[0]['waktu_dari']}"} - ${"${controller.detailData[0]['waktu_sampai']}"}",
+                            //         style: GoogleFonts.inter(
+                            //             color: Constanst.fgPrimary,
+                            //             fontWeight: FontWeight.w500,
+                            //             fontSize: 16),
+                            //       ),
+                            Text(
+                              Constanst.convertDate6(DateFormat(
+                                      "dd-MM-yyyy HH:mm:ss")
+                                  .parse(controller.detailData[0]['waktu_dari'])
+                                  .toString()),
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 12.0, bottom: 12.0),
+                              child: Divider(
+                                thickness: 1,
+                                height: 0,
+                                color: Constanst.border,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Absen Masuk",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        DateFormat.Hm().format(
+                                            DateFormat("dd-MM-yyyy HH:mm:ss")
+                                                .parse(controller.detailData[0]
+                                                    ['waktu_dari'])),
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgPrimary,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        "Setelah",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12),
+                                      ),
+                                      // Padding(
+                                      //   padding: const EdgeInsets.only(
+                                      //       top: 12.0, bottom: 12.0),
+                                      //   child: Divider(
+                                      //     thickness: 1,
+                                      //     height: 0,
+                                      //     color: Constanst.border,
+                                      //   ),
+                                      // ),
+                                    ],
                                   ),
+                                ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       left: 16.0, right: 16.0),
+                                //   child: Icon(
+                                //     Iconsax.arrow_right_1,
+                                //     color: Constanst.fgSecondary,
+                                //     size: 22,
+                                //   ),
+                                // ),
+                                // Expanded(
+                                //   child: Column(
+                                //     crossAxisAlignment:
+                                //         CrossAxisAlignment.start,
+                                //     children: [
+                                //       Text(
+                                //         "Absen Keluar",
+                                //         style: GoogleFonts.inter(
+                                //             color: Constanst.fgSecondary,
+                                //             fontWeight: FontWeight.w400,
+                                //             fontSize: 14),
+                                //       ),
+                                //       const SizedBox(height: 4),
+                                //       Text(
+                                //         DateFormat.Hm().format(
+                                //             DateFormat("dd-MM-yyyy HH:mm:ss")
+                                //                 .parse(controller.detailData[0]
+                                //                     ['waktu_sampai'])),
+                                //         style: GoogleFonts.inter(
+                                //             color: Constanst.fgPrimary,
+                                //             fontWeight: FontWeight.w500,
+                                //             fontSize: 16),
+                                //       ),
+                                //       const SizedBox(height: 4),
+                                //       Text(
+                                //         "Setelah",
+                                //         style: GoogleFonts.inter(
+                                //             color: Constanst.fgSecondary,
+                                //             fontWeight: FontWeight.w400,
+                                //             fontSize: 12),
+                                //       ),
+                                //       // Padding(
+                                //       //   padding: const EdgeInsets.only(
+                                //       //       top: 12.0, bottom: 12.0),
+                                //       //   child: Divider(
+                                //       //     thickness: 1,
+                                //       //     height: 0,
+                                //       //     color: Constanst.border,
+                                //       //   ),
+                                //       // ),
+                                //     ],
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                            // Row(
+                            //   children: [
+                            //     Expanded(
+                            //       child: Column(
+                            //         crossAxisAlignment:
+                            //             CrossAxisAlignment.start,
+                            //         children: [
+                            //           Text(
+                            //             "Absen Masuk",
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgSecondary,
+                            //                 fontWeight: FontWeight.w400,
+                            //                 fontSize: 14),
+                            //           ),
+                            //           const SizedBox(height: 4),
+                            //           Text(
+                            //             "_ _ : _ _",
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgSecondary,
+                            //                 fontWeight: FontWeight.w500,
+                            //                 fontSize: 16),
+                            //           ),
+                            //           const SizedBox(height: 4),
+                            //           Text(
+                            //             "Sebelum",
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgSecondary,
+                            //                 fontWeight: FontWeight.w400,
+                            //                 fontSize: 12),
+                            //           ),
+                            //           Padding(
+                            //             padding: const EdgeInsets.only(
+                            //                 top: 12.0, bottom: 12.0),
+                            //             child: Divider(
+                            //               thickness: 1,
+                            //               height: 0,
+                            //               color: Constanst.border,
+                            //             ),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //     Padding(
+                            //       padding: const EdgeInsets.only(
+                            //           left: 16.0, right: 16.0),
+                            //       child: Icon(
+                            //         Iconsax.arrow_right_1,
+                            //         color: Constanst.fgSecondary,
+                            //         size: 22,
+                            //       ),
+                            //     ),
+                            //     Expanded(
+                            //       child: Column(
+                            //         crossAxisAlignment:
+                            //             CrossAxisAlignment.start,
+                            //         children: [
+                            //           Text(
+                            //             "Absen Masuk",
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgSecondary,
+                            //                 fontWeight: FontWeight.w400,
+                            //                 fontSize: 14),
+                            //           ),
+                            //           const SizedBox(height: 4),
+                            //           Text(
+                            //             DateFormat.Hm().format(
+                            //                 DateFormat("dd-MM-yyyy HH:mm:ss")
+                            //                     .parse(controller.detailData[0]
+                            //                         ['waktu_dari'])),
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgPrimary,
+                            //                 fontWeight: FontWeight.w500,
+                            //                 fontSize: 16),
+                            //           ),
+                            //           const SizedBox(height: 4),
+                            //           Text(
+                            //             "Setelah",
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgSecondary,
+                            //                 fontWeight: FontWeight.w400,
+                            //                 fontSize: 12),
+                            //           ),
+                            //           Padding(
+                            //             padding: const EdgeInsets.only(
+                            //                 top: 12.0, bottom: 12.0),
+                            //             child: Divider(
+                            //               thickness: 1,
+                            //               height: 0,
+                            //               color: Constanst.border,
+                            //             ),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
+                            // Row(
+                            //   children: [
+                            //     Expanded(
+                            //       child: Column(
+                            //         crossAxisAlignment:
+                            //             CrossAxisAlignment.start,
+                            //         children: [
+                            //           Text(
+                            //             "Absen Keluar",
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgSecondary,
+                            //                 fontWeight: FontWeight.w400,
+                            //                 fontSize: 14),
+                            //           ),
+                            //           const SizedBox(height: 4),
+                            //           Text(
+                            //             "_ _ : _ _",
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgSecondary,
+                            //                 fontWeight: FontWeight.w500,
+                            //                 fontSize: 16),
+                            //           ),
+                            //           const SizedBox(height: 4),
+                            //           Text(
+                            //             "Sebelum",
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgSecondary,
+                            //                 fontWeight: FontWeight.w400,
+                            //                 fontSize: 12),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //     Padding(
+                            //       padding: const EdgeInsets.only(
+                            //           left: 16.0, right: 16.0),
+                            //       child: Icon(
+                            //         Iconsax.arrow_right_1,
+                            //         color: Constanst.fgSecondary,
+                            //         size: 22,
+                            //       ),
+                            //     ),
+                            //     Expanded(
+                            //       child: Column(
+                            //         crossAxisAlignment:
+                            //             CrossAxisAlignment.start,
+                            //         children: [
+                            //           Text(
+                            //             "Absen Keluar",
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgSecondary,
+                            //                 fontWeight: FontWeight.w400,
+                            //                 fontSize: 14),
+                            //           ),
+                            //           const SizedBox(height: 4),
+                            //           Text(
+                            //             DateFormat.Hm().format(
+                            //                 DateFormat("dd-MM-yyyy HH:mm:ss")
+                            //                     .parse(controller.detailData[0]
+                            //                         ['waktu_sampai'])),
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgPrimary,
+                            //                 fontWeight: FontWeight.w500,
+                            //                 fontSize: 16),
+                            //           ),
+                            //           const SizedBox(height: 4),
+                            //           Text(
+                            //             "Setelah",
+                            //             style: GoogleFonts.inter(
+                            //                 color: Constanst.fgSecondary,
+                            //                 fontWeight: FontWeight.w400,
+                            //                 fontSize: 12),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
 
                             Padding(
                               padding: const EdgeInsets.only(
@@ -735,42 +1047,6 @@ class _DetailPersetujuanDinasLuarState
                                 color: Constanst.border,
                               ),
                             ),
-                            controller.detailData[0]['durasi'] == "" ||
-                                    controller.detailData[0]['durasi'] == null
-                                ? const SizedBox()
-                                : Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Durasi",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.fgSecondary,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        controller.detailData[0]['category'] ==
-                                                "HALFDAY"
-                                            ? "${controller.detailData[0]['jamAjuan']} sd ${controller.detailData[0]['sampaiJamAjaun']}"
-                                            : "${controller.detailData[0]['durasi']} Hari",
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.fgPrimary,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 12.0, bottom: 12.0),
-                                        child: Divider(
-                                          thickness: 1,
-                                          height: 0,
-                                          color: Constanst.border,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                             Text(
                               "Catatan",
                               style: GoogleFonts.inter(
@@ -788,12 +1064,21 @@ class _DetailPersetujuanDinasLuarState
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16),
                             ),
-
                             // controller.detailData[0]['title_ajuan'] ==
                             //         "Pengajuan Tidak Hadir"
                             //     ? informasiIzinJam()
                             //     : const SizedBox(),
 
+                            // controllerGlobal.valuePolaPersetujuan.value ==
+                            //             "1" ||
+                            //         controller.detailData[0]['nama_approve1'] ==
+                            //             "" ||
+                            //         controller.detailData[0]['nama_approve1'] ==
+                            //             "null" ||
+                            //         controller.detailData[0]['nama_approve1'] ==
+                            //             null
+                            //     ? const SizedBox()
+                            //     : infoApprove1(),
                             // controller.detailData[0]['type']
                             //             .toString()
                             //             .toLowerCase() ==
@@ -827,30 +1112,20 @@ class _DetailPersetujuanDinasLuarState
                                     controller.detailData[0]['file'] == null
                                 ? const SizedBox()
                                 : fileWidget(),
+
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 12.0, bottom: 12.0),
+                              padding:
+                                  const EdgeInsets.only(top: 6.0, bottom: 12.0),
                               child: Divider(
                                 thickness: 1,
                                 height: 0,
                                 color: Constanst.border,
                               ),
                             ),
-
                             controller.valuePolaPersetujuan == 1 ||
                                     controller.valuePolaPersetujuan == "1"
                                 ? singgleApproval(controller.detailData[0])
                                 : multipleApproval(controller.detailData[0])
-                            // Padding(
-                            //   padding: const EdgeInsets.only(
-                            //       top: 12.0, bottom: 12.0),
-                            //   child: Divider(
-                            //     thickness: 1,
-                            //     height: 0,
-                            //     color: Constanst.border,
-                            //   ),
-                            // ),
-
                             // typeAjuan == 'Rejected'
                             //     ? Row(
                             //         crossAxisAlignment:
@@ -900,9 +1175,9 @@ class _DetailPersetujuanDinasLuarState
                             //             crossAxisAlignment:
                             //                 CrossAxisAlignment.start,
                             //             children: [
-                            //               const Icon(
-                            //                 Iconsax.tick_circle,
-                            //                 color: Colors.green,
+                            //               Icon(
+                            //                 Iconsax.timer,
+                            //                 color: Constanst.color3,
                             //                 size: 22,
                             //               ),
                             //               const SizedBox(width: 8),
@@ -919,14 +1194,73 @@ class _DetailPersetujuanDinasLuarState
                             //                     ),
                             //                   ),
                             //                   const SizedBox(height: 4),
-                            //                   Text(
-                            //                       "Approved by ${controller.detailData[0]['nama_approve1']} ",
-                            //                       style: GoogleFonts.inter(
-                            //                           fontWeight:
-                            //                               FontWeight.w500,
-                            //                           color:
-                            //                               Constanst.fgPrimary,
-                            //                           fontSize: 14)),
+                            //                   Padding(
+                            //                     padding: const EdgeInsets.only(
+                            //                         left: 3),
+                            //                     child: Column(
+                            //                       crossAxisAlignment:
+                            //                           CrossAxisAlignment.start,
+                            //                       children: [
+                            //                         Text(
+                            //                           controller.valuePolaPersetujuan ==
+                            //                                       1 ||
+                            //                                   controller
+                            //                                           .valuePolaPersetujuan ==
+                            //                                       "1"
+                            //                               ? controller
+                            //                                       .detailData[0]
+                            //                                   ['leave_status']
+                            //                               : controller.detailData[
+                            //                                               0][
+                            //                                           'leave_status'] ==
+                            //                                       "Pending"
+                            //                                   ? "Pending Approval 1"
+                            //                                   : "Pending Approval 2",
+                            //                           textAlign:
+                            //                               TextAlign.center,
+                            //                           style: GoogleFonts.inter(
+                            //                               fontWeight:
+                            //                                   FontWeight.w500,
+                            //                               color: Constanst
+                            //                                   .fgPrimary,
+                            //                               fontSize: 14),
+                            //                         ),
+                            //                         controller.detailData[0][
+                            //                                         'nama_approve1'] ==
+                            //                                     "" ||
+                            //                                 controller.detailData[
+                            //                                             0][
+                            //                                         'leave_status'] ==
+                            //                                     "Pending"
+                            //                             ? const SizedBox()
+                            //                             : Text(
+                            //                                 "Approve 1 by - ${controller.detailData[0]['nama_approve1']}",
+                            //                                 style: GoogleFonts.inter(
+                            //                                     fontWeight:
+                            //                                         FontWeight
+                            //                                             .w500,
+                            //                                     color: Constanst
+                            //                                         .fgPrimary,
+                            //                                     fontSize: 14),
+                            //                               ),
+                            //                       ],
+                            //                     ),
+                            //                   ),
+                            //                   // const SizedBox(height: 4),
+                            //                   // InkWell(
+                            //                   //     onTap: () {
+                            //                   //       var dataEmployee = {
+                            //                   //         'nameType': '$namaTypeAjuan',
+                            //                   //         'nomor_ajuan': '$nomorAjuan',
+                            //                   //       };
+                            //                   //       controllerGlobal
+                            //                   //           .showDataPilihAtasan(dataEmployee);
+                            //                   //     },
+                            //                   //     child: Text("Konfirmasi via Whatsapp",
+                            //                   //         style: GoogleFonts.inter(
+                            //                   //             fontWeight: FontWeight.w400,
+                            //                   //             color: Constanst.infoLight,
+                            //                   //             fontSize: 14))),
                             //                 ],
                             //               ),
                             //             ],
@@ -954,13 +1288,58 @@ class _DetailPersetujuanDinasLuarState
                             //                     ),
                             //                   ),
                             //                   const SizedBox(height: 4),
-                            //                   Text("Pending Approval",
-                            //                       style: GoogleFonts.inter(
-                            //                           fontWeight:
-                            //                               FontWeight.w500,
-                            //                           color:
-                            //                               Constanst.fgPrimary,
-                            //                           fontSize: 14)),
+                            //                   Padding(
+                            //                     padding: const EdgeInsets.only(
+                            //                         left: 3),
+                            //                     child: Column(
+                            //                       crossAxisAlignment:
+                            //                           CrossAxisAlignment.start,
+                            //                       children: [
+                            //                         Text(
+                            //                           controller.valuePolaPersetujuan ==
+                            //                                       1 ||
+                            //                                   controller
+                            //                                           .valuePolaPersetujuan ==
+                            //                                       "1"
+                            //                               ? controller
+                            //                                       .detailData[0]
+                            //                                   ['leave_status']
+                            //                               : controller.detailData[
+                            //                                               0][
+                            //                                           'leave_status'] ==
+                            //                                       "Pending"
+                            //                                   ? "Pending Approval 1"
+                            //                                   : "Pending Approval 2",
+                            //                           textAlign:
+                            //                               TextAlign.center,
+                            //                           style: GoogleFonts.inter(
+                            //                               fontWeight:
+                            //                                   FontWeight.w500,
+                            //                               color: Constanst
+                            //                                   .fgPrimary,
+                            //                               fontSize: 14),
+                            //                         ),
+                            //                         controller.detailData[0][
+                            //                                         'nama_approve1'] ==
+                            //                                     "" ||
+                            //                                 controller.detailData[
+                            //                                             0][
+                            //                                         'leave_status'] ==
+                            //                                     "Pending"
+                            //                             ? const SizedBox()
+                            //                             : Text(
+                            //                                 "Approve 1 by - ${controller.detailData[0]['nama_approve1']}",
+                            //                                 style: GoogleFonts.inter(
+                            //                                     fontWeight:
+                            //                                         FontWeight
+                            //                                             .w500,
+                            //                                     color: Constanst
+                            //                                         .fgPrimary,
+                            //                                     fontSize: 14),
+                            //                               ),
+                            //                       ],
+                            //                     ),
+                            //                   ),
                             //                   // const SizedBox(height: 4),
                             //                   // InkWell(
                             //                   //     onTap: () {
@@ -1037,6 +1416,7 @@ class _DetailPersetujuanDinasLuarState
                 controller.viewFile("klaim", controller.detailData[0]['file']);
               } else if (controller.detailData[0]['title_ajuan'] ==
                   "Pengajuan Absensi") {
+                //     print("masuk sini");
                 viewLampiranAjuan(controller.detailData[0]['file']);
               }
             },
@@ -1166,7 +1546,10 @@ class _DetailPersetujuanDinasLuarState
   // }
 
   void viewLampiranAjuan(value) async {
-    var urlViewGambar = Api.UrlfotoAbsen + value;
+    var urlViewGambar =
+        Api.UrlfotoAbsen.toString().trim() + value.toString().trim();
+    print("url gambar ${urlViewGambar}");
+    print("value ${value}");
 
     final url = Uri.parse(urlViewGambar);
     if (!await launchUrl(
@@ -1179,14 +1562,13 @@ class _DetailPersetujuanDinasLuarState
 
   Widget singgleApproval(data) {
     var text = "";
-    if (data['apply_status'] == "Pending" ||
-        data['leave_status'] == "Pending") {
+    if (data['approve_status'] == "Pending" || data['status'] == "Pending") {
       text = "Pending Approval";
     }
-    if (data['apply_status'] == "Rejected") {
+    if (data['approve_status'] == "Rejected") {
       text = "Rejected by - ${data['nama_approve1']}";
     }
-    if (data['apply_status'] == "Approve") {
+    if (data['approve_status'] == "Approve") {
       text = "Approved by - ${data['nama_approve1']}";
     }
     return Container(
@@ -1210,14 +1592,14 @@ class _DetailPersetujuanDinasLuarState
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['apply_status'] == "Pending" ||
-                              data['leave_status'] == "Pending"
+                      data['approve_status'] == "Pending" ||
+                              data['status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,
                               size: 22,
                             )
-                          : data['apply_status'] == "Rejected"
+                          : data['approve_status'] == "Rejected"
                               ? Icon(
                                   Iconsax.tick_circle,
                                   color: Colors.green,
@@ -1259,26 +1641,26 @@ class _DetailPersetujuanDinasLuarState
   Widget multipleApproval(data) {
     var text = "";
     var text2 = "";
-    if (data['apply_status'] == "Pending" ||
-        data['leave_status'] == "Pending") {
+    if (data['approve_status'] == "Pending" || data['status'] == "Pending") {
       text = "Pending Approval 1";
     }
-    if (data['apply_status'] == "Rejected") {
+    if (data['approve_status'] == "Rejected") {
       text = "Rejected By - ${data['nama_approve1']}";
     }
 
-    if (data['apply_status'] == "Approve") {
+    if (data['approve_status'] == "Approve") {
       text = "Approve 1 By - ${data['nama_approve1']}";
 
-      if (data['apply2_status'] == "Pending") {
+      if (data['approve2_status'] == "Pending" ||
+          data['approve2_status'] == null) {
         text2 = "Pending Approval 2";
       }
-      if (data['apply2_status'] == "Rejected") {
-        text2 = "Rejected 2 By - ${data['nama_approve1']}";
+      if (data['approve2_status'] == "Rejected") {
+        text2 = "Rejected 1 By - ${data['nama_approve1']}";
       }
 
-      if (data['apply2_status'] == "Approve") {
-        text2 = "Approved 2 By - ${data['nama_approve2']}";
+      if (data['approve2_status'] == "Approve") {
+        text2 = "Approved 2 By - ${data['nama_approve2']} ";
       }
     }
     return Container(
@@ -1302,14 +1684,13 @@ class _DetailPersetujuanDinasLuarState
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['apply_status'] == "Pending" ||
-                              data['leave_status'] == "Pending"
+                      data['approve_status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,
                               size: 22,
                             )
-                          : data['apply_status'] == "Rejected"
+                          : data['approve_status'] == "Rejected"
                               ? Icon(
                                   Iconsax.close_circle,
                                   color: Colors.red,
@@ -1329,7 +1710,7 @@ class _DetailPersetujuanDinasLuarState
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("${text} ",
+                          Text("${text}",
                               style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   color: Constanst.fgPrimary,
@@ -1339,7 +1720,7 @@ class _DetailPersetujuanDinasLuarState
                       ),
                     ],
                   ),
-                  data['apply_status'] == "Approve"
+                  data['approve_status'] == "Approve"
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -1358,13 +1739,14 @@ class _DetailPersetujuanDinasLuarState
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  data['apply2_status'] == "Pending"
+                                  data['approve2_status'] == "Pending" ||
+                                          data['approve2_status'] == null
                                       ? Icon(
                                           Iconsax.timer,
                                           color: Constanst.warning,
                                           size: 22,
                                         )
-                                      : data['apply2_status'] == "Rejected"
+                                      : data['approve2_status'] == "Rejected"
                                           ? Icon(
                                               Iconsax.close_circle,
                                               color: Colors.red,

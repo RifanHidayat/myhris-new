@@ -128,16 +128,12 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                         child: TextButtonWidget(
                           title: "Tolak",
                           onTap: () {
-                            
                             if (controller.alasanReject.value.text != "") {
                               Navigator.pop(Get.context!);
                               validasiMenyetujui(false, em_id);
-                            
                             } else {
-                            
                               UtilsAlert.showToast(
                                   "Harap isi alasan terlebih dahulu");
-                            
                             }
                           },
                           colorButton: Constanst.colorPrimary,
@@ -159,7 +155,7 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
     );
   }
 
-  void  validasiMenyetujui(pilihan, em_id) {
+  void validasiMenyetujui(pilihan, em_id) {
     int styleChose = pilihan == false ? 1 : 2;
     var stringPilihan = pilihan == false ? 'Tolak' : 'Menyetujui';
     showGeneralDialog(
@@ -386,89 +382,94 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
           ),
         ),
       ),
-      bottomNavigationBar: typeAjuan=="Approve2"?SizedBox(): SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-          ),
-          child: Obx(() =>  controller.showButton.value == true && ( controller.detailData[0]['leave_status']=="Pending" ||controller.detailData[0]['apply_status']=="Pending" || (controller.detailData[0]['apply2_status']=="Pending" && controller.detailData[0]['apply_status']!="Rejected"  ) )
-                    
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Constanst
-                                .border, // Set the desired border color
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            print(AppData.informasiUser![0].em_id);
-                            print(controller.detailData[0]['em_report_to']);
-                            print(controller.detailData[0]['em_report2_to']);
-                            // print("tes");
-                            showBottomAlasanReject(em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Constanst.color4,
-                              backgroundColor: Constanst.colorWhite,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+      bottomNavigationBar: typeAjuan == "Approve2"
+          ? SizedBox()
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Obx(() => controller.showButton.value == true &&
+                      (controller.detailData[0]['leave_status'] == "Pending" ||
+                          controller.detailData[0]['apply_status'] ==
+                              "Pending" ||
+                          (controller.detailData[0]['apply2_status'] ==
+                                  "Pending" &&
+                              controller.detailData[0]['apply_status'] !=
+                                  "Rejected"))
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 40,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Constanst
+                                    .border, // Set the desired border color
+                                width: 1.0,
                               ),
-                              elevation: 0,
-                              // padding: EdgeInsets.zero,
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                          child: Text(
-                            'Tolak',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.color4,
-                                fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SizedBox(
-                        height: 40,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            validasiMenyetujui(true, em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Constanst.colorWhite,
-                            backgroundColor: Constanst.colorPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8.0),
                             ),
-                            elevation: 0,
-                            // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
-                          ),
-                          child: Text(
-                            'Menyetujui',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.colorWhite,
-                                fontSize: 14),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                print(AppData.informasiUser![0].em_id);
+                                print(controller.detailData[0]['em_report_to']);
+                                print(
+                                    controller.detailData[0]['em_report2_to']);
+                                // print("tes");
+                                showBottomAlasanReject(em_id);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  foregroundColor: Constanst.color4,
+                                  backgroundColor: Constanst.colorWhite,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                  // padding: EdgeInsets.zero,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                              child: Text(
+                                'Tolak',
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.color4,
+                                    fontSize: 14),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                )
-              : const SizedBox()),
-        ),
-      ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: SizedBox(
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                validasiMenyetujui(true, em_id);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Constanst.colorWhite,
+                                backgroundColor: Constanst.colorPrimary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 0,
+                                // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                              ),
+                              child: Text(
+                                'Menyetujui',
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.colorWhite,
+                                    fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox()),
+            ),
       body: WillPopScope(
           onWillPop: () async {
             controller.alasanReject.value.text = "";
@@ -567,7 +568,8 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      controller.detailData[0]['nama_divisi']??"",
+                                      controller.detailData[0]['nama_divisi'] ??
+                                          "",
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgSecondary,
                                           fontWeight: FontWeight.w400,
@@ -815,7 +817,7 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                                     controller.detailData[0]['file'] == null
                                 ? const SizedBox()
                                 : fileWidget(),
-                                         Padding(
+                            Padding(
                               padding: const EdgeInsets.only(
                                   top: 12.0, bottom: 12.0),
                               child: Divider(
@@ -824,12 +826,10 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                                 color: Constanst.border,
                               ),
                             ),
-                               controller.valuePolaPersetujuan == 1 ||
+                            controller.valuePolaPersetujuan == 1 ||
                                     controller.valuePolaPersetujuan == "1"
                                 ? singgleApproval(controller.detailData[0])
                                 : multipleApproval(controller.detailData[0])
-
-                               
 
                             // Padding(
                             //   padding: const EdgeInsets.only(
@@ -919,7 +919,7 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                             //                 ],
                             //               ),
                             //             ],
-                            //           )    : typeAjuan == "Approve2" 
+                            //           )    : typeAjuan == "Approve2"
                             //         ? Row(
                             //             crossAxisAlignment:
                             //                 CrossAxisAlignment.start,
@@ -1201,10 +1201,10 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
     }
   }
 
-
-        Widget singgleApproval(data) {
+  Widget singgleApproval(data) {
     var text = "";
-    if (data['apply_status'] == "Pending" || data['leave_status'] == "Pending") {
+    if (data['apply_status'] == "Pending" ||
+        data['leave_status'] == "Pending") {
       text = "Pending Approval";
     }
     if (data['apply_status'] == "Rejected") {
@@ -1234,7 +1234,8 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['apply_status'] == "Pending"  || data['leave_status'] == "Pending"
+                      data['apply_status'] == "Pending" ||
+                              data['leave_status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,
@@ -1282,15 +1283,14 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
   Widget multipleApproval(data) {
     var text = "";
     var text2 = "";
-    if (data['apply_status'] == "Pending" || data['leave_status'] == "Pending"  ) {
+    if (data['apply_status'] == "Pending" ||
+        data['leave_status'] == "Pending") {
       text = "Pending Approval 1";
     }
     if (data['apply_status'] == "Rejected") {
       text = "Rejected By - ${data['nama_approve1']}";
     }
-   
-   
-   
+
     if (data['apply_status'] == "Approve") {
       text = "Approve 1 By - ${data['nama_approve1']}";
 
@@ -1362,19 +1362,21 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                       ),
                     ],
                   ),
-                  
                   data['apply_status'] == "Approve"
                       ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                    padding: EdgeInsets.only(left:2.5,top: 2,bottom: 2),
-                    child: Container(
-                      height: 30,
-                      child:  VerticalDivider(color: Constanst.Secondary,),
-                    ),
-                  ),
-                          Padding(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 2.5, top: 2, bottom: 2),
+                              child: Container(
+                                height: 30,
+                                child: VerticalDivider(
+                                  color: Constanst.Secondary,
+                                ),
+                              ),
+                            ),
+                            Padding(
                               padding: EdgeInsets.only(top: 0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1403,7 +1405,8 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                                   // ),
                                   const SizedBox(width: 8),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text("${text2} ",
                                           style: GoogleFonts.inter(
@@ -1416,8 +1419,8 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                                 ],
                               ),
                             ),
-                        ],
-                      )
+                          ],
+                        )
                       : SizedBox(),
                 ],
               ),
@@ -1427,5 +1430,4 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
       ),
     );
   }
-
 }

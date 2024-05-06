@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
@@ -724,9 +725,17 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                           8.0),
                                                   side: BorderSide(color: Colors.white)))),
                                       onPressed: () {
-                                        controllerDashboard
-                                            .widgetButtomSheetAktifCamera(
-                                                'checkTracking');
+                                        print(controller.selectedType.value);
+                                        // controller.selectedType.value = "WFH";
+                                        controller.selectedType.value
+                                                        .toString() ==
+                                                    "WFH" &&
+                                                widget.status == "Absen Masuk"
+                                            ? controllerDashboard
+                                                .widgetButtomSheetWfh()
+                                            : controllerDashboard
+                                                .widgetButtomSheetAktifCamera(
+                                                    type: 'checkTracking');
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.only(
@@ -1037,7 +1046,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                   onPressed: () {
                                     controllerDashboard
                                         .widgetButtomSheetAktifCamera(
-                                            'checkTracking');
+                                            type: 'checkTracking');
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.only(

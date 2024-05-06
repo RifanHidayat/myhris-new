@@ -390,90 +390,97 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
           ),
         ),
       ),
-      bottomNavigationBar: typeAjuan=="Approve2"?SizedBox(): SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-          ),
-          child: Obx(() =>  controller.showButton.value == true &&  ( controller.detailData[0]['leave_status']=="Pending"  && (controllerGlobal.valuePolaPersetujuan.value=="1"  || controllerGlobal.valuePolaPersetujuan.value=="1" ) ) || 
-          ( controller.detailData[0]['leave_status']=="Approve"  && (controllerGlobal.valuePolaPersetujuan.value=="2"  || controllerGlobal.valuePolaPersetujuan.value=="2" ) ) 
-                     
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Constanst
-                                .border, // Set the desired border color
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            print(AppData.informasiUser![0].em_id);
-                            print(controller.detailData[0]['em_report_to']);
-                            print(controller.detailData[0]['em_report2_to']);
-                            // print("tes");
-                            showBottomAlasanReject(em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Constanst.color4,
-                              backgroundColor: Constanst.colorWhite,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+      bottomNavigationBar: typeAjuan == "Approve2"
+          ? SizedBox()
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Obx(() => controller.showButton.value == true &&
+                          (controller.detailData[0]['leave_status'] ==
+                                  "Pending" &&
+                              (controllerGlobal.valuePolaPersetujuan.value ==
+                                      "1" ||
+                                  controllerGlobal.valuePolaPersetujuan.value ==
+                                      "1")) ||
+                      (controller.detailData[0]['leave_status'] == "Approve" &&
+                          (controllerGlobal.valuePolaPersetujuan.value == "2" ||
+                              controllerGlobal.valuePolaPersetujuan.value ==
+                                  "2"))
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 40,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Constanst
+                                    .border, // Set the desired border color
+                                width: 1.0,
                               ),
-                              elevation: 0,
-                              // padding: EdgeInsets.zero,
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                          child: Text(
-                            'Tolak',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.color4,
-                                fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SizedBox(
-                        height: 40,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            validasiMenyetujui(true, em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Constanst.colorWhite,
-                            backgroundColor: Constanst.colorPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8.0),
                             ),
-                            elevation: 0,
-                            // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
-                          ),
-                          child: Text(
-                            'Menyetujui',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.colorWhite,
-                                fontSize: 14),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                print(AppData.informasiUser![0].em_id);
+                                print(controller.detailData[0]['em_report_to']);
+                                print(
+                                    controller.detailData[0]['em_report2_to']);
+                                // print("tes");
+                                showBottomAlasanReject(em_id);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  foregroundColor: Constanst.color4,
+                                  backgroundColor: Constanst.colorWhite,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                  // padding: EdgeInsets.zero,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                              child: Text(
+                                'Tolak',
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.color4,
+                                    fontSize: 14),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                )
-              : const SizedBox()),
-        ),
-      ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: SizedBox(
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                validasiMenyetujui(true, em_id);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Constanst.colorWhite,
+                                backgroundColor: Constanst.colorPrimary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 0,
+                                // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                              ),
+                              child: Text(
+                                'Menyetujui',
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.colorWhite,
+                                    fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox()),
+            ),
       body: WillPopScope(
           onWillPop: () async {
             controller.alasanReject.value.text = "";
@@ -500,7 +507,8 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                 const BorderRadius.all(Radius.circular(12)),
                             border: Border.all(
                                 width: 0.5,
-                                color: const Color.fromARGB(255, 211, 205, 205))),
+                                color:
+                                    const Color.fromARGB(255, 211, 205, 205))),
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Column(
@@ -529,13 +537,15 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                                               downloadProgress) =>
                                                           Container(
                                                     alignment: Alignment.center,
-                                                    height: MediaQuery.of(context)
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.5,
+                                                    width:
+                                                        MediaQuery.of(context)
                                                             .size
-                                                            .height *
-                                                        0.5,
-                                                    width: MediaQuery.of(context)
-                                                        .size
-                                                        .width,
+                                                            .width,
                                                     child:
                                                         CircularProgressIndicator(
                                                             value:
@@ -562,7 +572,8 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                         ),
                                   const SizedBox(width: 12),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "${controller.detailData[0]['nama_pengaju']}",
@@ -573,7 +584,8 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        controller.detailData[0]['nama_divisi'] ??
+                                        controller.detailData[0]
+                                                ['nama_divisi'] ??
                                             "",
                                         style: GoogleFonts.inter(
                                             color: Constanst.fgSecondary,
@@ -610,7 +622,8 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          controller.detailData[0]['nomor_ajuan']
+                                          controller.detailData[0]
+                                                  ['nomor_ajuan']
                                               .toString(),
                                           style: GoogleFonts.inter(
                                             fontWeight: FontWeight.w500,
@@ -660,7 +673,8 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                 const BorderRadius.all(Radius.circular(12)),
                             border: Border.all(
                                 width: 0.5,
-                                color: const Color.fromARGB(255, 211, 205, 205))),
+                                color:
+                                    const Color.fromARGB(255, 211, 205, 205))),
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Column(
@@ -765,7 +779,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                   color: Constanst.border,
                                 ),
                               ),
-                                 Text(
+                              Text(
                                 "Saldo",
                                 style: GoogleFonts.inter(
                                     color: Constanst.fgSecondary,
@@ -774,13 +788,14 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                toCurrency("${controller.detailData[0]['saldo_klaim']}"),
+                                toCurrency(
+                                    "${controller.detailData[0]['saldo_klaim']}"),
                                 style: GoogleFonts.inter(
                                     color: Constanst.fgPrimary,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16),
                               ),
-          
+
                               Padding(
                                 padding: const EdgeInsets.only(
                                     top: 12.0, bottom: 12.0),
@@ -805,7 +820,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16),
                               ),
-          
+
                               Padding(
                                 padding: const EdgeInsets.only(
                                     top: 12.0, bottom: 12.0),
@@ -815,7 +830,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                   color: Constanst.border,
                                 ),
                               ),
-                           
+
                               Text(
                                 "Sisa Limit",
                                 style: GoogleFonts.inter(
@@ -825,13 +840,14 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                               toCurrency( "${controller.detailData[0]['sisa_klaim']}"),
+                                toCurrency(
+                                    "${controller.detailData[0]['sisa_klaim']}"),
                                 style: GoogleFonts.inter(
                                     color: Constanst.fgPrimary,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16),
                               ),
-          
+
                               Padding(
                                 padding: const EdgeInsets.only(
                                     top: 12.0, bottom: 12.0),
@@ -862,7 +878,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                               //         "Pengajuan Tidak Hadir"
                               //     ? informasiIzinJam()
                               //     : const SizedBox(),
-          
+
                               // controller.detailData[0]['type']
                               //             .toString()
                               //             .toLowerCase() ==
@@ -891,7 +907,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                               //                 style: TextStyle(
                               //                     color: Constanst.colorText2),
                               //               ),
-          
+
                               controller.detailData[0]['file'] == "" ||
                                       controller.detailData[0]['file'] == null
                                   ? const SizedBox()
@@ -905,12 +921,12 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                   color: Constanst.border,
                                 ),
                               ),
-                                 //singgle approval
-                             controller.valuePolaPersetujuan == 1 ||
+                              //singgle approval
+                              controller.valuePolaPersetujuan == 1 ||
                                       controller.valuePolaPersetujuan == "1"
                                   ? singgleApproval(controller.detailData[0])
                                   : multipleApproval(controller.detailData[0])
-          
+
                               // typeAjuan == 'Rejected'
                               //     ? Row(
                               //         crossAxisAlignment:
@@ -1238,7 +1254,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
     }
   }
 
-        Widget singgleApproval(data) {
+  Widget singgleApproval(data) {
     var text = "";
     if (data['leave_status'] == "Pending") {
       text = "Pending Approval";
@@ -1320,36 +1336,28 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
     var text2 = "";
     if (data['leave_status'] == "Pending") {
       text = "Pending Approval 1";
-      
     }
     if (data['leave_status'] == "Rejected") {
-      if (data['nama_approve2']=="" || data['nama_approve2']==null ){
-      text = "Rejected 1 By - ${data['nama_approve1']}";
-      text2="";
-      }else {
-      
-      text = "Approve 1 By - ${data['nama_approve1']}";
-      text2 = "Rejected 2 By - ${data['nama_approve2']}";
-
+      if (data['nama_approve2'] == "" || data['nama_approve2'] == null) {
+        text = "Rejected 1 By - ${data['nama_approve1']}";
+        text2 = "";
+      } else {
+        text = "Approve 1 By - ${data['nama_approve1']}";
+        text2 = "Rejected 2 By - ${data['nama_approve2']}";
       }
-   
     }
-   
-   
-   
-    if (data['leave_status'] == "Approve" || data['leave_status']=="Approve 1" || data['leave_status']=="Approve1") {
+
+    if (data['leave_status'] == "Approve" ||
+        data['leave_status'] == "Approve 1" ||
+        data['leave_status'] == "Approve1") {
       text = "Approve 1 By - ${data['nama_approve1']}";
       text2 = "Pending Approval 2";
-
-
-     
     }
-    if (data['leave_status'] == "Approve2" || data['leave_status'] == "Approve 2" || data['leave_status'] == "Approve2" ) {
+    if (data['leave_status'] == "Approve2" ||
+        data['leave_status'] == "Approve 2" ||
+        data['leave_status'] == "Approve2") {
       text = "Approve 1 By - ${data['nama_approve1']}";
-       text2 = "Approve 2 By - ${data['nama_approve2']}";
-
-
-     
+      text2 = "Approve 2 By - ${data['nama_approve2']}";
     }
     return Container(
       child: Column(
@@ -1384,7 +1392,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                   color: Colors.red,
                                   size: 22,
                                 )
-                              :  Icon(
+                              : Icon(
                                   Iconsax.tick_circle,
                                   color: Colors.green,
                                   size: 22,
@@ -1408,24 +1416,28 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                       ),
                     ],
                   ),
-                  
-                  text!= ""
+                  text != ""
                       ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                    padding: EdgeInsets.only(left:2.5,top: 2,bottom: 2),
-                    child: Container(
-                      height: 30,
-                      child:  VerticalDivider(color: Constanst.Secondary,),
-                    ),
-                  ),
-                          Padding(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 2.5, top: 2, bottom: 2),
+                              child: Container(
+                                height: 30,
+                                child: VerticalDivider(
+                                  color: Constanst.Secondary,
+                                ),
+                              ),
+                            ),
+                            Padding(
                               padding: EdgeInsets.only(top: 0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                 data['leave_status']=='Approve' && (data['nama_approve1'] == "" || data['nama_approve1']==null )
+                                  data['leave_status'] == 'Approve' &&
+                                          (data['nama_approve1'] == "" ||
+                                              data['nama_approve1'] == null)
                                       ? Icon(
                                           Iconsax.timer,
                                           color: Constanst.warning,
@@ -1449,7 +1461,8 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                   // ),
                                   const SizedBox(width: 8),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text("${text2} ",
                                           style: GoogleFonts.inter(
@@ -1462,8 +1475,8 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                                 ],
                               ),
                             ),
-                        ],
-                      )
+                          ],
+                        )
                       : SizedBox(),
                 ],
               ),
@@ -1473,5 +1486,4 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
       ),
     );
   }
-
 }

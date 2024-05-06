@@ -33,8 +33,6 @@ class _DetailPersetujuanTugasLuarState
   var controllerGlobal = Get.put(GlobalController());
   int hours = 0, minutes = 0, second = 0;
 
-
-
   void showBottomAlasanReject(em_id) {
     showModalBottomSheet(
       context: Get.context!,
@@ -122,29 +120,18 @@ class _DetailPersetujuanTugasLuarState
                           colorButton: Colors.red,
                           colortext: Colors.white,
                           border: BorderRadius.circular(8.0),
-
                         ),
-
                       )),
-
                       Expanded(
-
                           child: Padding(
-
                         padding: const EdgeInsets.all(8.0),
-
                         child: TextButtonWidget(
-
                           title: "Tolak",
-
                           onTap: () {
-
-                            if (controller.alasanReject.value.text 
-                            != "") {
+                            if (controller.alasanReject.value.text != "") {
                               Navigator.pop(Get.context!);
 
                               validasiMenyetujui(false, em_id);
-
                             } else {
                               UtilsAlert.showToast(
                                   "Harap isi alasan terlebih dahulu");
@@ -396,88 +383,94 @@ class _DetailPersetujuanTugasLuarState
           ),
         ),
       ),
-      bottomNavigationBar : typeAjuan=="Approve2"?SizedBox(): SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-          ),
-          child: Obx(() => controller.showButton.value == true && (controller.detailData[0]['status']=="Pending" || controller.detailData[0]['approve_status']=="Pending" || (controller.detailData[0]['approve2_status']=="Pending" && controller.detailData[0]['approve_status']!="Rejected"  ) )
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Constanst
-                                .border, // Set the desired border color
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            print(AppData.informasiUser![0].em_id);
-                            print(controller.detailData[0]['em_report_to']);
-                            print(controller.detailData[0]['em_report2_to']);
-                            // print("tes");
-                            showBottomAlasanReject(em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Constanst.color4,
-                              backgroundColor: Constanst.colorWhite,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+      bottomNavigationBar: typeAjuan == "Approve2"
+          ? SizedBox()
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Obx(() => controller.showButton.value == true &&
+                      (controller.detailData[0]['status'] == "Pending" ||
+                          controller.detailData[0]['approve_status'] ==
+                              "Pending" ||
+                          (controller.detailData[0]['approve2_status'] ==
+                                  "Pending" &&
+                              controller.detailData[0]['approve_status'] !=
+                                  "Rejected"))
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 40,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Constanst
+                                    .border, // Set the desired border color
+                                width: 1.0,
                               ),
-                              elevation: 0,
-                              // padding: EdgeInsets.zero,
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                          child: Text(
-                            'Tolak',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.color4,
-                                fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SizedBox(
-                        height: 40,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            validasiMenyetujui(true, em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Constanst.colorWhite,
-                            backgroundColor: Constanst.colorPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8.0),
                             ),
-                            elevation: 0,
-                            // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
-                          ),
-                          child: Text(
-                            'Menyetujui',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.colorWhite,
-                                fontSize: 14),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                print(AppData.informasiUser![0].em_id);
+                                print(controller.detailData[0]['em_report_to']);
+                                print(
+                                    controller.detailData[0]['em_report2_to']);
+                                // print("tes");
+                                showBottomAlasanReject(em_id);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  foregroundColor: Constanst.color4,
+                                  backgroundColor: Constanst.colorWhite,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                  // padding: EdgeInsets.zero,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                              child: Text(
+                                'Tolak',
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.color4,
+                                    fontSize: 14),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                )
-              : const SizedBox()),
-        ),
-      ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: SizedBox(
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                validasiMenyetujui(true, em_id);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Constanst.colorWhite,
+                                backgroundColor: Constanst.colorPrimary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 0,
+                                // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                              ),
+                              child: Text(
+                                'Menyetujui',
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.colorWhite,
+                                    fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox()),
+            ),
       body: WillPopScope(
           onWillPop: () async {
             controller.alasanReject.value.text = "";
@@ -576,8 +569,8 @@ class _DetailPersetujuanTugasLuarState
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      controller.detailData[0]['nama_divisi']??""
-                                          .toString(),
+                                      controller.detailData[0]['nama_divisi'] ??
+                                          "".toString(),
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgSecondary,
                                           fontWeight: FontWeight.w400,
@@ -732,7 +725,7 @@ class _DetailPersetujuanTugasLuarState
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16),
                                   ),
-                                  
+
                             Padding(
                               padding: const EdgeInsets.only(
                                   top: 12.0, bottom: 12.0),
@@ -785,7 +778,7 @@ class _DetailPersetujuanTugasLuarState
                                   fontWeight: FontWeight.w400,
                                   fontSize: 14),
                             ),
-                                  Padding(
+                            Padding(
                               padding: const EdgeInsets.only(
                                   top: 12.0, bottom: 12.0),
                               child: Divider(
@@ -803,7 +796,7 @@ class _DetailPersetujuanTugasLuarState
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16),
                             ),
-                                 Padding(
+                            Padding(
                               padding: const EdgeInsets.only(
                                   top: 12.0, bottom: 12.0),
                               child: Divider(
@@ -812,9 +805,8 @@ class _DetailPersetujuanTugasLuarState
                                 color: Constanst.border,
                               ),
                             ),
-                               
 
-                               controller.valuePolaPersetujuan == 1 ||
+                            controller.valuePolaPersetujuan == 1 ||
                                     controller.valuePolaPersetujuan == "1"
                                 ? singgleApproval(controller.detailData[0])
                                 : multipleApproval(controller.detailData[0])
@@ -1191,8 +1183,8 @@ class _DetailPersetujuanTugasLuarState
       UtilsAlert.showToast('Tidak dapat membuka file');
     }
   }
-  
-      Widget singgleApproval(data) {
+
+  Widget singgleApproval(data) {
     var text = "";
     if (data['approve_status'] == "Pending" || data['status'] == "Pending") {
       text = "Pending Approval";
@@ -1224,7 +1216,8 @@ class _DetailPersetujuanTugasLuarState
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['approve_status'] == "Pending" || data['status'] == "Pending"
+                      data['approve_status'] == "Pending" ||
+                              data['status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,
@@ -1278,9 +1271,7 @@ class _DetailPersetujuanTugasLuarState
     if (data['approve_status'] == "Rejected") {
       text = "Rejected By - ${data['nama_approve1']}";
     }
-   
-   
-   
+
     if (data['approve_status'] == "Approve") {
       text = "Approve 1 By - ${data['nama_approve1']}";
 
@@ -1352,19 +1343,21 @@ class _DetailPersetujuanTugasLuarState
                       ),
                     ],
                   ),
-                  
                   data['approve_status'] == "Approve"
                       ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                    padding: EdgeInsets.only(left:2.5,top: 2,bottom: 2),
-                    child: Container(
-                      height: 30,
-                      child:  VerticalDivider(color: Constanst.Secondary,),
-                    ),
-                  ),
-                          Padding(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 2.5, top: 2, bottom: 2),
+                              child: Container(
+                                height: 30,
+                                child: VerticalDivider(
+                                  color: Constanst.Secondary,
+                                ),
+                              ),
+                            ),
+                            Padding(
                               padding: EdgeInsets.only(top: 0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1393,7 +1386,8 @@ class _DetailPersetujuanTugasLuarState
                                   // ),
                                   const SizedBox(width: 8),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text("${text2} ",
                                           style: GoogleFonts.inter(
@@ -1406,8 +1400,8 @@ class _DetailPersetujuanTugasLuarState
                                 ],
                               ),
                             ),
-                        ],
-                      )
+                          ],
+                        )
                       : SizedBox(),
                 ],
               ),
@@ -1417,6 +1411,4 @@ class _DetailPersetujuanTugasLuarState
       ),
     );
   }
-
-  
 }

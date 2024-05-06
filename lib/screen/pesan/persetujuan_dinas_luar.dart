@@ -21,30 +21,31 @@ class PersetujuanDinasLuar extends StatefulWidget {
   _PersetujuanDinasLuarState createState() => _PersetujuanDinasLuarState();
 }
 
-class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar> with SingleTickerProviderStateMixin  {
+class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar>
+    with SingleTickerProviderStateMixin {
   var controller = Get.put(ApprovalController());
-   var controllerGlobal = Get.put(GlobalController());
-    TabController? _tabController;
+  var controllerGlobal = Get.put(GlobalController());
+  TabController? _tabController;
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
-       
+    _tabController = TabController(length: 2, vsync: this);
+
     controller.startLoadData(
         widget.title, widget.bulan, widget.tahun, 'persetujuan');
-          _tabController!.addListener(_handleTabChange);
+    _tabController!.addListener(_handleTabChange);
     super.initState();
   }
- 
 
-     void _handleTabChange() {
+  void _handleTabChange() {
     print("Tab changed: ${_tabController!.index}");
 
     _tabController!.index == 0
-        ? controller.startLoadData(widget.title,
-            widget.bulan, widget.tahun, 'persetujuan')
-        : controller.startLoadData(widget.title,
-            widget.bulan, widget.tahun, 'riwayat');
+        ? controller.startLoadData(
+            widget.title, widget.bulan, widget.tahun, 'persetujuan')
+        : controller.startLoadData(
+            widget.title, widget.bulan, widget.tahun, 'riwayat');
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -788,8 +789,8 @@ class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar> with Single
                               color: Constanst.border,
                             ),
                           ),
-                           _approval(index)
-                              
+                          _approval(index)
+
                           // Padding(
                           //   padding:
                           //       const EdgeInsets.only(top: 12.0, bottom: 12.0),
@@ -847,11 +848,12 @@ class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar> with Single
           }),
     );
   }
-    Widget _approval(index) {
+
+  Widget _approval(index) {
     var data = controller.listData[index];
-    var namaApprove1 = controller.listData.value[index]['nama_approve1']??"";
-    var namaApprove2 = controller.listData.value[index]['nama_approve2']??"";
-    var leave_status = controller.listData.value[index]['leave_status']??"";
+    var namaApprove1 = controller.listData.value[index]['nama_approve1'] ?? "";
+    var namaApprove2 = controller.listData.value[index]['nama_approve2'] ?? "";
+    var leave_status = controller.listData.value[index]['leave_status'] ?? "";
 
     if (leave_status == "Rejected") {
       return Container(
@@ -947,8 +949,8 @@ class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar> with Single
       );
     }
 
-    if (leave_status=="Approve2"){
-          return Container(
+    if (leave_status == "Approve2") {
+      return Container(
         child: namaApprove1 == ""
             ? const SizedBox()
             : Row(
@@ -1004,7 +1006,6 @@ class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar> with Single
 
     // }
   }
-
 
   showDataDepartemenAkses({index}) {
     var data = controller.listData[index];

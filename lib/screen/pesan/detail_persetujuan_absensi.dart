@@ -185,7 +185,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                 print("pilihan absensi ${pilihan}");
                 UtilsAlert.loadingSimpanData(
                     Get.context!, "Proses $stringPilihan pengajuan");
-               
+
                 controller.approvalAbsensi(
                     pilihan: true,
                     apBy1: controller.detailData[0]['approve_by'].toString(),
@@ -202,8 +202,8 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                     ajuanEmid: controller.detailData[0]['em_id'].toString(),
                     pola:
                         controllerGlobal.valuePolaPersetujuan.value.toString(),
-                    leaveStatus: controller.detailData[0]['leave_status'].toString(),
-                    
+                    leaveStatus:
+                        controller.detailData[0]['leave_status'].toString(),
                     id: controller.detailData[0]['id'].toString());
                 return;
               } else {
@@ -396,88 +396,92 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
           ),
         ),
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-          ),
-          child: Obx(() => controller.showButton.value == true ||  controller.showButton.value == true && (  controller.detailData[0]['status']=="Pending" || controller.detailData[0]['approve_status']=="Pending" ||  controller.detailData[0]['approve_status']=="Pending" || (controller.detailData[0]['approve2_status']=="Pending" && controller.detailData[0]['approve_status']!="Rejected"  ) )
-                    
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Constanst
-                                .border, // Set the desired border color
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Obx(() => controller.showButton.value == true ||
+                controller.showButton.value == true &&
+                    (controller.detailData[0]['status'] == "Pending" ||
+                        controller.detailData[0]['approve_status'] ==
+                            "Pending" ||
+                        controller.detailData[0]['approve_status'] ==
+                            "Pending" ||
+                        (controller.detailData[0]['approve2_status'] ==
+                                "Pending" &&
+                            controller.detailData[0]['approve_status'] !=
+                                "Rejected"))
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 40,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color:
+                              Constanst.border, // Set the desired border color
+                          width: 1.0,
                         ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            print(AppData.informasiUser![0].em_id);
-                            print(controller.detailData[0]['em_report_to']);
-                            print(controller.detailData[0]['em_report2_to']);
-                            // print("tes");
-                            showBottomAlasanReject(em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Constanst.color4,
-                              backgroundColor: Constanst.colorWhite,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              elevation: 0,
-                              // padding: EdgeInsets.zero,
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                          child: Text(
-                            'Tolak',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.color4,
-                                fontSize: 14),
-                          ),
-                        ),
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SizedBox(
-                        height: 40,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            validasiMenyetujui(true, em_id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Constanst.colorWhite,
-                            backgroundColor: Constanst.colorPrimary,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          print(AppData.informasiUser![0].em_id);
+                          print(controller.detailData[0]['em_report_to']);
+                          print(controller.detailData[0]['em_report2_to']);
+                          // print("tes");
+                          showBottomAlasanReject(em_id);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.color4,
+                            backgroundColor: Constanst.colorWhite,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                             elevation: 0,
-                            // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
-                          ),
-                          child: Text(
-                            'Menyetujui',
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                color: Constanst.colorWhite,
-                                fontSize: 14),
-                          ),
+                            // padding: EdgeInsets.zero,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                        child: Text(
+                          'Tolak',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.color4,
+                              fontSize: 14),
                         ),
                       ),
                     ),
-                  ],
-                )
-              : const SizedBox()),
-        ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          validasiMenyetujui(true, em_id);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Constanst.colorWhite,
+                          backgroundColor: Constanst.colorPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 0,
+                          // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                        ),
+                        child: Text(
+                          'Menyetujui',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.colorWhite,
+                              fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : const SizedBox()),
       ),
       body: WillPopScope(
           onWillPop: () async {
@@ -1109,15 +1113,15 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                                 : fileWidget(),
 
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 6.0, bottom: 12.0),
+                              padding:
+                                  const EdgeInsets.only(top: 6.0, bottom: 12.0),
                               child: Divider(
                                 thickness: 1,
                                 height: 0,
                                 color: Constanst.border,
                               ),
                             ),
-controller.valuePolaPersetujuan == 1 ||
+                            controller.valuePolaPersetujuan == 1 ||
                                     controller.valuePolaPersetujuan == "1"
                                 ? singgleApproval(controller.detailData[0])
                                 : multipleApproval(controller.detailData[0])
@@ -1411,7 +1415,7 @@ controller.valuePolaPersetujuan == 1 ||
                 controller.viewFile("klaim", controller.detailData[0]['file']);
               } else if (controller.detailData[0]['title_ajuan'] ==
                   "Pengajuan Absensi") {
-               //     print("masuk sini");
+                //     print("masuk sini");
                 viewLampiranAjuan(controller.detailData[0]['file']);
               }
             },
@@ -1541,7 +1545,8 @@ controller.valuePolaPersetujuan == 1 ||
   // }
 
   void viewLampiranAjuan(value) async {
-    var urlViewGambar = Api.UrlfotoAbsen.toString().trim() + value.toString().trim();
+    var urlViewGambar =
+        Api.UrlfotoAbsen.toString().trim() + value.toString().trim();
     print("url gambar ${urlViewGambar}");
     print("value ${value}");
 
@@ -1554,8 +1559,7 @@ controller.valuePolaPersetujuan == 1 ||
     }
   }
 
-    
-      Widget singgleApproval(data) {
+  Widget singgleApproval(data) {
     var text = "";
     if (data['approve_status'] == "Pending" || data['status'] == "Pending") {
       text = "Pending Approval";
@@ -1587,7 +1591,8 @@ controller.valuePolaPersetujuan == 1 ||
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['approve_status'] == "Pending" || data['status'] == "Pending"
+                      data['approve_status'] == "Pending" ||
+                              data['status'] == "Pending"
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,
@@ -1641,13 +1646,12 @@ controller.valuePolaPersetujuan == 1 ||
     if (data['approve_status'] == "Rejected") {
       text = "Rejected By - ${data['nama_approve1']}";
     }
-   
-   
-   
+
     if (data['approve_status'] == "Approve") {
       text = "Approve 1 By - ${data['nama_approve1']}";
 
-      if (data['approve2_status'] == "Pending" || data['approve2_status']==null )  {
+      if (data['approve2_status'] == "Pending" ||
+          data['approve2_status'] == null) {
         text2 = "Pending Approval 2";
       }
       if (data['approve2_status'] == "Rejected") {
@@ -1705,7 +1709,7 @@ controller.valuePolaPersetujuan == 1 ||
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("${ text}",
+                          Text("${text}",
                               style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   color: Constanst.fgPrimary,
@@ -1715,24 +1719,27 @@ controller.valuePolaPersetujuan == 1 ||
                       ),
                     ],
                   ),
-                  
                   data['approve_status'] == "Approve"
                       ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                    padding: EdgeInsets.only(left:2.5,top: 2,bottom: 2),
-                    child: Container(
-                      height: 30,
-                      child:  VerticalDivider(color: Constanst.Secondary,),
-                    ),
-                  ),
-                          Padding(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 2.5, top: 2, bottom: 2),
+                              child: Container(
+                                height: 30,
+                                child: VerticalDivider(
+                                  color: Constanst.Secondary,
+                                ),
+                              ),
+                            ),
+                            Padding(
                               padding: EdgeInsets.only(top: 0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  data['approve2_status'] == "Pending" || data['approve2_status']==null
+                                  data['approve2_status'] == "Pending" ||
+                                          data['approve2_status'] == null
                                       ? Icon(
                                           Iconsax.timer,
                                           color: Constanst.warning,
@@ -1756,7 +1763,8 @@ controller.valuePolaPersetujuan == 1 ||
                                   // ),
                                   const SizedBox(width: 8),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text("${text2} ",
                                           style: GoogleFonts.inter(
@@ -1769,8 +1777,8 @@ controller.valuePolaPersetujuan == 1 ||
                                 ],
                               ),
                             ),
-                        ],
-                      )
+                          ],
+                        )
                       : SizedBox(),
                 ],
               ),
@@ -1780,5 +1788,4 @@ controller.valuePolaPersetujuan == 1 ||
       ),
     );
   }
-
 }

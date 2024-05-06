@@ -74,6 +74,9 @@ class DashboardController extends GetxController {
 
   RxString signoutTime = "".obs;
   RxString signinTime = "".obs;
+  var status = "".obs;
+  var wfhstatus = false.obs;
+  var nomorAjuan = "".obs;
 
   RxBool isSearching = false.obs;
   var searchController = TextEditingController();
@@ -258,11 +261,38 @@ class DashboardController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         print("data login ${valueBody}");
+        // var data = valueBody['wfh'] ?? valueBody['data'];
         var data = valueBody['data'];
+        List wfh = valueBody['wfh'];
+        // status.value = valueBody['wfh'].toString == "[]"
+        //     ? ""
+        //     : valueBody['wfh'][0]['status'];
+
+        print("hasil view_last_absen_user1 status ${valueBody['wfh']}");
+        print("hasil view_last_absen_user1 ${valueBody['data'].toString()}");
+        print("hasil view_last_absen_user1 ${status.value}");
+
+        status.value = data.toString();
+        wfhstatus.value = wfh.isEmpty ? false : true;
+        // signinTime.value = wfh[0]['signing_time'].toString();
+        nomorAjuan.value = wfh[0]['nomor_ajuan'].toString();
+
+        print("controller.wfhstatus ${wfhstatus.value}");
+        // var wfh = valueBody['wfh'];
         if (data.isEmpty) {
           AppData.statusAbsen = false;
           signoutTime.value = '00:00:00';
           signinTime.value = '00:00:00';
+
+          // if (data.isEmpty) {
+          signinTime.value = wfh[0]['signing_time'].toString();
+          // status.value = wfh[0]['status'].toString();
+
+          // status.value = "ad";
+          // controllerAbsensi.absenStatus.value = true;
+          print("hasil signinTime ${signinTime.value}");
+          print("hasil signinTime ${status.value}");
+          // }
         } else {
           AppData.statusAbsen =
               data[0]['signout_time'] == "00:00:00" ? true : false;
@@ -272,6 +302,22 @@ class DashboardController extends GetxController {
           signoutTime.value = data[0]['signout_time'].toString();
           signinTime.value = data[0]['signin_time'].toString();
         }
+      }
+    });
+  }
+
+  void wfhDelete() {
+    Map<String, dynamic> body = {
+      'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      'nomor_ajuan': nomorAjuan.value,
+    };
+    var connect = Api.connectionApi("post", body, "wfh-delete");
+
+    connect.then((dynamic res) {
+      print("data res ${res.statusCode}");
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print("data valueBody ${valueBody}");
       }
     });
   }
@@ -793,12 +839,12 @@ class DashboardController extends GetxController {
     var statusCamera = Permission.camera.status;
     statusCamera.then((value) {
       if (value != PermissionStatus.granted) {
-        widgetButtomSheetAktifCamera('loadfirst');
+        widgetButtomSheetAktifCamera(type: 'loadfirst');
       } else {
         var statusLokasi = Permission.location.status;
         statusLokasi.then((value) {
           if (value != PermissionStatus.granted) {
-            widgetButtomSheetAktifCamera('loadfirst');
+            widgetButtomSheetAktifCamera(type: 'loadfirst');
           }
         });
       }
@@ -1448,7 +1494,7 @@ class DashboardController extends GetxController {
     }
   }
 
-  void widgetButtomSheetAktifCamera(type) {
+  void widgetButtomSheetAktifCamera({type, typewfh}) {
     showModalBottomSheet(
       context: Get.context!,
       shape: const RoundedRectangleBorder(
@@ -1540,12 +1586,80 @@ class DashboardController extends GetxController {
                             if (type == "checkTracking") {
                               print('kesini');
                               Get.back();
-                              controllerAbsensi.kirimDataAbsensi();
+                              controllerAbsensi.kirimDataAbsensi(
+                                  typewfh: typewfh);
                             } else {
                               Navigator.pop(context);
                               await Permission.camera.request();
                               await Permission.location.request();
                             }
+                          },
+                          colorButton: Constanst.colorButton1,
+                          colortext: Constanst.colorWhite,
+                          border: BorderRadius.circular(15.0),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void widgetButtomSheetWfh() {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5, right: 5),
+                          child: Image.asset("assets/vector_map.png"),
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          "Tipe lokasi ",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        const SizedBox(height: 15),
+                        const Text(
+                          "Anda memilih tipe lokasi WFH",
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 30),
+                        TextButtonWidget(
+                          title: "Lanjutkan",
+                          onTap: () async {
+                            widgetButtomSheetAktifCamera(
+                                type: 'checkTracking', typewfh: 'wfh');
                           },
                           colorButton: Constanst.colorButton1,
                           colortext: Constanst.colorWhite,
