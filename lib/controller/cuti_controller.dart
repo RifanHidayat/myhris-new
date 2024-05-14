@@ -46,7 +46,7 @@ class CutiController extends GetxController {
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
   Rx<List<String>> allTipeFormCutiDropdown = Rx<List<String>>([]);
 
-  var isRequiredFile='0'.obs;
+  var isRequiredFile = '0'.obs;
 
   var limitCuti = 0.obs;
   var cutLeave = 1.obs;
@@ -54,7 +54,6 @@ class CutiController extends GetxController {
   var dateSelected = 0.obs;
 
   var statusFormPencarian = false.obs;
-
 
   var jumlahCuti = 0.0.obs;
   var typeIdEdit = 0.obs;
@@ -253,7 +252,6 @@ class CutiController extends GetxController {
             'cut_leave': element['cut_leave'],
             'upload_file': element['upload_file'],
             'active': false,
-
           };
 
           allTipe.value.add(data);
@@ -263,7 +261,7 @@ class CutiController extends GetxController {
           selectedTypeCuti.value = getFirst['name'];
           dateSelected.value = getFirst['select_date'];
           allowMinus.value = getFirst['allow_minus'];
-          isRequiredFile.value= getFirst['upload_file'].toString();
+          isRequiredFile.value = getFirst['upload_file'].toString();
         } else {
           var getFirst = allTipe.value
               .firstWhere((element) => element['id'] == typeIdEdit.value);
@@ -271,7 +269,7 @@ class CutiController extends GetxController {
 
           dateSelected.value = getFirst['select_date'];
           allowMinus.value = getFirst['allow_minus'];
-              isRequiredFile.value= getFirst['upload_file'].toString();
+          isRequiredFile.value = getFirst['upload_file'].toString();
         }
 
         this.allTipe.refresh();
@@ -432,16 +430,14 @@ class CutiController extends GetxController {
     // if (em_id=="null" || em_id == "" || em_id==null){
 
     // }else{
-      
+
     var getData =
         allEmployee.value.firstWhere((element) => element["em_id"] == em_id);
     selectedDelegasi.value = getData["full_name"];
     this.selectedDelegasi.refresh();
 
-
     //}
     print("data employee ${em_id},${allEmployee.value}");
-
   }
 
   void loadCutiUserMelahirkan() {
@@ -479,8 +475,10 @@ class CutiController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         if (valueBody['data'].isNotEmpty) {
-          var totalDay = double.parse(valueBody['data'][0]['total_day'].toString());
-          var terpakai = double.parse(valueBody['data'][0]['terpakai'].toString());
+          var totalDay =
+              double.parse(valueBody['data'][0]['total_day'].toString());
+          var terpakai =
+              double.parse(valueBody['data'][0]['terpakai'].toString());
           print("ini data cuti user ${valueBody['data']}");
           if (totalDay == 0) {
             statusHitungCuti.value = false;
@@ -517,7 +515,8 @@ class CutiController extends GetxController {
   }
 
   void takeFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles( type: FileType.custom,
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
         allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png']);
 
     if (result != null) {
@@ -541,31 +540,28 @@ class CutiController extends GetxController {
   }
 
   void validasiKirimPengajuan() async {
-    if (selectedTypeCuti == "" || alasan.value.text == "" || (isRequiredFile.value=="1" && uploadFile.value==false)) {
+    if (selectedTypeCuti == "" ||
+        alasan.value.text == "" ||
+        (isRequiredFile.value == "1" && uploadFile.value == false)) {
       UtilsAlert.showToast("Form * harus di isi");
     } else {
       var hitung = jumlahCuti.value - cutiTerpakai.value;
 
       if (hitung <= 0 || hitung == 0) {
-       if (allowMinus.value==0){
-        if (cutLeave.value==1){
-           UtilsAlert.showToast("Cuti anda sudah habis");
-        return;
-
+        if (allowMinus.value == 0) {
+          if (cutLeave.value == 1) {
+            UtilsAlert.showToast("Cuti anda sudah habis");
+            return;
+          }
         }
-        
-       }
       }
-     if (cutLeave.value==1){
-      if (tanggalSelected==0){
-            UtilsAlert.showToast("Form * harus di isi");
-        return ;
+      if (cutLeave.value == 1) {
+        if (tanggalSelected == 0) {
+          UtilsAlert.showToast("Form * harus di isi");
+          return;
+        }
+      }
 
-      }
-    
-     }
-      
-    
       if (uploadFile.value == true) {
         UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan File");
         var connectUpload = await Api.connectionApiUploadFile(
@@ -742,7 +738,7 @@ class CutiController extends GetxController {
         'ajuan': '1',
         'created_by': getEmid,
         'menu_name': 'Cuti',
-           'apply_status':"Pending"
+        'apply_status': "Pending"
       };
     } else {
       body = {
@@ -763,7 +759,7 @@ class CutiController extends GetxController {
         'ajuan': '1',
         'created_by': getEmid,
         'menu_name': 'Cuti',
-        'apply_status':"Pending"
+        'apply_status': "Pending"
       };
     }
 

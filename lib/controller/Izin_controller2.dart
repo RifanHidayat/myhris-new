@@ -541,7 +541,7 @@
 
 //   void kirimKonfirmasiWa(dataEmployee, namaAtasan, nomorAtasan) async {
 //     var dataUser = AppData.informasiUser;
-//     var getEmid = dataUser![0].em_id;
+//     var getEmid = ;
 //     var getFullName = dataUser[0].full_name;
 //     var gabunganPesan =
 //         "Hallo pak ${namaAtasan}, saya ${getFullName} mengajukan ${dataEmployee['nameType']} dengan nomor ajuan ${dataEmployee['nomor_ajuan']}";

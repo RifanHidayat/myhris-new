@@ -408,7 +408,8 @@ class _DashboardState extends State<Dashboard> {
                   child: Padding(
                     padding: EdgeInsets.only(
                         top: _isVisible
-                            ? controller.status.value == "[]"
+                            ? controller.status.value == "[]" &&
+                                    controller.wfhstatus.value
                                 ? 272.0
                                 : 252.0
                             : 175.0),
@@ -1180,35 +1181,52 @@ class _DashboardState extends State<Dashboard> {
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 12, top: 12.0, bottom: 12),
+                                      left: 4, top: 12.0, bottom: 6),
                                   child: Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Expanded(
-                                        flex: 10,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Icon(
-                                              Iconsax.login5,
-                                              color: !controllerAbsensi
-                                                      .absenStatus.value
-                                                  ? Constanst.color5
-                                                  : const Color.fromARGB(
-                                                      168, 166, 167, 158),
-                                              size: 26,
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Masuk",
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Icon(
+                                            Iconsax.login5,
+                                            color: !controllerAbsensi
+                                                    .absenStatus.value
+                                                ? Constanst.color5
+                                                : const Color.fromARGB(
+                                                    168, 166, 167, 158),
+                                            size: 26,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Masuk",
+                                                style: GoogleFonts.inter(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 16,
+                                                    color: !controllerAbsensi
+                                                            .absenStatus.value
+                                                        ? Constanst.fgPrimary
+                                                        : const Color.fromARGB(
+                                                            168,
+                                                            166,
+                                                            167,
+                                                            158)),
+                                              ),
+                                              Obx(
+                                                () => Text(
+                                                  controller.signinTime.value ==
+                                                          "00:00:00"
+                                                      ? "_ _:_ _:_ _"
+                                                      : controller
+                                                          .signinTime.value,
                                                   style: GoogleFonts.inter(
                                                       fontWeight:
                                                           FontWeight.w500,
@@ -1220,99 +1238,90 @@ class _DashboardState extends State<Dashboard> {
                                                                   .fromARGB(168,
                                                               166, 167, 158)),
                                                 ),
-                                                Obx(
-                                                  () => Text(
-                                                    controller.signinTime
-                                                                .value ==
-                                                            "00:00:00"
-                                                        ? "_ _:_ _:_ _"
-                                                        : controller
-                                                            .signinTime.value,
-                                                    style: GoogleFonts.inter(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontSize: 16,
-                                                        color: !controllerAbsensi
-                                                                .absenStatus
-                                                                .value
-                                                            ? Constanst
-                                                                .fgPrimary
-                                                            : const Color
-                                                                    .fromARGB(
-                                                                168,
-                                                                166,
-                                                                167,
-                                                                158)),
-                                                  ),
-                                                ),
-                                                controller.status.value == "[]"
-                                                    ? Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(top: 4.0),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Obx(
-                                                              () => Text(
-                                                                // controller
-                                                                //     .status.value,
-                                                                "Pending",
-                                                                style: GoogleFonts.inter(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    fontSize:
-                                                                        13,
-                                                                    color: !controllerAbsensi
-                                                                            .absenStatus
-                                                                            .value
-                                                                        ? Constanst
-                                                                            .fgPrimary
-                                                                        : const Color.fromARGB(
-                                                                            168,
-                                                                            166,
-                                                                            167,
-                                                                            158)),
-                                                              ),
+                                              ),
+                                              controller.status.value == "[]" &&
+                                                      controller.wfhstatus.value
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 4.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          // Icon(
+                                                          //   Iconsax.timer,
+                                                          //   color: Constanst
+                                                          //       .color3,
+                                                          //   size: 15,
+                                                          // ),
+                                                          // SizedBox(width: 2),
+                                                          Obx(
+                                                            () => Text(
+                                                              // controller
+                                                              //     .status.value,
+                                                              "Pending WFH Approval",
+                                                              style: GoogleFonts.inter(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  fontSize: 9,
+                                                                  color: !controllerAbsensi
+                                                                          .absenStatus
+                                                                          .value
+                                                                      ? Constanst
+                                                                          .fgPrimary
+                                                                      : Constanst
+                                                                          .color4),
                                                             ),
-                                                            GestureDetector(
-                                                              onTap: () {
-                                                                controller
-                                                                    .wfhDelete();
-                                                              },
-                                                              child: const Icon(
-                                                                Icons.close,
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        168,
-                                                                        166,
-                                                                        167,
-                                                                        158),
-                                                                size: 26,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    : Container()
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  : Container()
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                       Expanded(
                                         flex: 1,
-                                        child: Icon(
-                                          Iconsax.arrow_right_3,
-                                          color:
-                                              Constanst.colorNeutralFgTertiary,
-                                          size: 18,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Icon(
+                                              Iconsax.arrow_right_3,
+                                              color: Constanst
+                                                  .colorNeutralFgTertiary,
+                                              size: 18,
+                                            ),
+                                            const SizedBox(height: 22),
+                                            controller.status.value == "[]" &&
+                                                    controller.wfhstatus.value
+                                                ? controller.approveStatus
+                                                            .value ==
+                                                        "Approve"
+                                                    ? Container()
+                                                    : GestureDetector(
+                                                        onTap: () {
+                                                          controller
+                                                              .widgetButtomSheetWfhDelete();
+                                                        },
+                                                        child: Icon(
+                                                          Iconsax.close_circle5,
+                                                          color:
+                                                              Constanst.color4,
+                                                          size: 15,
+                                                        ),
+                                                      )
+                                                : Container(),
+                                          ],
                                         ),
                                       ),
                                       const SizedBox(width: 18),
@@ -1333,8 +1342,9 @@ class _DashboardState extends State<Dashboard> {
                           Expanded(
                             flex: 165,
                             child: Material(
-                              color: controller.status.value == "[]"
-                                  ? Constanst.colorNonAktif
+                              color: controller.status.value == "[]" &&
+                                      controller.wfhstatus.value
+                                  ? Constanst.colorWhite
                                   : controllerAbsensi.absenStatus.value
                                       ? Constanst.colorWhite
                                       : Constanst.colorNonAktif,
@@ -1351,7 +1361,8 @@ class _DashboardState extends State<Dashboard> {
                                   if (!controllerAbsensi.absenStatus.value) {
                                     UtilsAlert.showToast(
                                         "Absen Masuk terlebih dahulu");
-                                  } else if (controller.status.value == "[]") {
+                                  } else if (controller.status.value == "[]" &&
+                                      controller.wfhstatus.value) {
                                     UtilsAlert.showToast(
                                         "Abeen WFH beluum di approve");
                                   } else {
@@ -1460,7 +1471,8 @@ class _DashboardState extends State<Dashboard> {
                                             Icon(
                                               Iconsax.logout_15,
                                               color: controller.status.value ==
-                                                      "[]"
+                                                          "[]" &&
+                                                      controller.wfhstatus.value
                                                   ? const Color.fromARGB(
                                                       168, 166, 167, 158)
                                                   : controllerAbsensi
@@ -1482,8 +1494,11 @@ class _DashboardState extends State<Dashboard> {
                                                           FontWeight.w500,
                                                       fontSize: 16,
                                                       color: controller.status
-                                                                  .value ==
-                                                              "[]"
+                                                                      .value ==
+                                                                  "[]" &&
+                                                              controller
+                                                                  .wfhstatus
+                                                                  .value
                                                           ? const Color
                                                                   .fromARGB(168,
                                                               166, 167, 158)
@@ -1501,19 +1516,26 @@ class _DashboardState extends State<Dashboard> {
                                                 ),
                                                 Obx(
                                                   () => Text(
-                                                    controller.signoutTime
-                                                                .value ==
-                                                            "00:00:00"
+                                                    controller.status.value ==
+                                                            "[]"
                                                         ? "_ _:_ _:_ _"
-                                                        : controller
-                                                            .signoutTime.value,
+                                                        : controller.signoutTime
+                                                                    .value ==
+                                                                "00:00:00"
+                                                            ? "_ _:_ _:_ _"
+                                                            : controller
+                                                                .signoutTime
+                                                                .value,
                                                     style: GoogleFonts.inter(
                                                         fontWeight:
                                                             FontWeight.w500,
                                                         fontSize: 16,
-                                                        color: controller.status
-                                                                    .value ==
-                                                                "[]"
+                                                        color: controller
+                                                                        .status.value ==
+                                                                    "[]" &&
+                                                                controller
+                                                                    .wfhstatus
+                                                                    .value
                                                             ? const Color
                                                                     .fromARGB(
                                                                 168,
@@ -1533,7 +1555,10 @@ class _DashboardState extends State<Dashboard> {
                                                                     158)),
                                                   ),
                                                 ),
-                                                controller.status.value == "[]"
+                                                controller.status.value ==
+                                                            "[]" &&
+                                                        controller
+                                                            .wfhstatus.value
                                                     ? Container(
                                                         height: 20,
                                                       )
@@ -2168,6 +2193,7 @@ class _DashboardState extends State<Dashboard> {
                         controller.menuShowInMain[0]['menu'][idxMenu]['gambar'];
                     var namaMenu =
                         controller.menuShowInMain[0]['menu'][idxMenu]['nama'];
+
                     return Padding(
                       padding: EdgeInsets.only(
                           left: idxMenu == 0 ? 16.0 : 0.0,

@@ -44,6 +44,7 @@ class PesanController extends GetxController {
   var jumlahApproveKlaim = 0.obs;
   var jumlahApprovePayroll = 0.obs;
   var jumlahApproveWfh = 0.obs;
+  var jumlahApproveKasbon = 0.obs;
   var jumlahNotifikasiBelumDibaca = 0.obs;
   var jumlahCheckin = 0.obs;
 
@@ -71,7 +72,8 @@ class PesanController extends GetxController {
     "Klaim",
     "Payroll",
     "Absensi",
-    "WFH"
+    "WFH",
+    "Kasbon"
   ];
 
   @override
@@ -145,6 +147,7 @@ class PesanController extends GetxController {
           jumlahApprovePayroll.value = valueBody['jumlah_payroll'];
           jumlahCheckin.value = valueBody['jumlah_checkin'];
           jumlahApproveWfh.value = valueBody['jumlah_wfh'];
+          // jumlahApproveKasbon.value = valueBody['jumlah_kasbon'];
 
           jumlahPersetujuan.value = jumlahApproveCuti.value +
               jumlahApproveLembur.value +
@@ -153,7 +156,8 @@ class PesanController extends GetxController {
               jumlahApproveDinasLuar.value +
               jumlahApproveKlaim.value +
               jumlahCheckin.value +
-              jumlahApproveWfh.value;
+              jumlahApproveWfh.value +
+              jumlahApproveKasbon.value;
 
           this.jumlahApproveCuti.refresh();
           this.jumlahApproveLembur.refresh();
@@ -164,6 +168,7 @@ class PesanController extends GetxController {
           this.jumlahPersetujuan.refresh();
           this.jumlahCheckin.refresh();
           this.jumlahApproveWfh.refresh();
+          this.jumlahApproveKasbon.refresh();
           jumlahApprovePayroll.refresh();
 
           print("Jumlah Approval payroll ${jumlahApprovePayroll}");
@@ -575,6 +580,14 @@ class PesanController extends GetxController {
 
         dataScreenPersetujuan.value.add(data);
         this.dataScreenPersetujuan.refresh();
+      } else if (element == "Kasbon") {
+        var data = {
+          'title': element,
+          'jumlah_approve': "${jumlahApproveKasbon.value}",
+        };
+
+        dataScreenPersetujuan.value.add(data);
+        this.dataScreenPersetujuan.refresh();
       }
     }
     statusScreenInfoApproval.value = false;
@@ -641,13 +654,25 @@ class PesanController extends GetxController {
                                             tahun: tahunSelectedSearchHistory
                                                 .value,
                                           ))
-                                        : Get.to(Approval(
-                                            title: index['title'],
-                                            bulan: bulanSelectedSearchHistory
-                                                .value,
-                                            tahun: tahunSelectedSearchHistory
-                                                .value,
-                                          ));
+                                        : index['title'] == "Kasbon"
+                                            ? Get.to(PersetujuanWfh(
+                                                title: index['title'],
+                                                bulan:
+                                                    bulanSelectedSearchHistory
+                                                        .value,
+                                                tahun:
+                                                    tahunSelectedSearchHistory
+                                                        .value,
+                                              ))
+                                            : Get.to(Approval(
+                                                title: index['title'],
+                                                bulan:
+                                                    bulanSelectedSearchHistory
+                                                        .value,
+                                                tahun:
+                                                    tahunSelectedSearchHistory
+                                                        .value,
+                                              ));
     // }
   }
 

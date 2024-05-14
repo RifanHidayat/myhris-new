@@ -484,6 +484,86 @@ class ApprovalController extends GetxController {
     });
   }
 
+  void loadkasbon(status) {
+    print("data wfh");
+    var urlLoad = "employee-loan-history";
+    listNotModif.value.clear();
+    listData.value.clear();
+    listDataAll.value.clear();
+    var dataUser = AppData.informasiUser;
+    var getEmCode = dataUser![0].em_id;
+    Map<String, dynamic> body = {
+      'em_id': getEmCode,
+      'name_data': 'wfh',
+      'bulan': bulanSelected.value,
+      'tahun': tahunSelected.value,
+      'status': status == "riwayat" ? '' : 'pending',
+    };
+    var connect = Api.connectionApi("post", body, urlLoad);
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print("value body ${valueBody}");
+        if (valueBody['data'].length == 0) {
+          loadingString.value = 'Tidak ada pengajuan';
+        }
+        listNotModif.value = valueBody['data'];
+
+        print("data body 2 ${valueBody['data']}");
+        for (var element in valueBody['data']) {
+          var fullName = element['full_name'] ?? "";
+          var convertNama = "$fullName";
+          var tanggalDari = Constanst.convertDate1("${element['atten_date']}");
+          var tanggalSampai =
+              Constanst.convertDate1("${element['atten_date']}");
+          var filterStatus = element['leave_status'];
+          var data = {
+            'id': element['id'],
+            'nama_pengaju': convertNama,
+            'emId_pengaju': element['em_id'],
+            'em_id': element['em_id'],
+            'title_ajuan': 'Pengajuan WFH',
+            'waktu_dari': "${tanggalDari} ${element['dari_jam'] ?? "_ _:_ _"}",
+            'waktu_sampai': "${tanggalDari} ${element['sampai_jam']}",
+            'durasi': element['leave_duration'],
+            'leave_status': filterStatus,
+            'delegasi': element['em_delegation'],
+            'nama_approve1': element['approve_by'],
+            'nama_approve2': element['approve2_by'],
+            'waktu_pengajuan': element['atten_date'],
+            'catatan': element['reason'],
+            'type': 'wfh',
+            'category': element['category'],
+            'lainnya': "",
+            'file': element['req_file'] ?? "",
+            'dari_jam': element['dari_jam'],
+            'sampai_jam': element['sampai_jam'],
+            'deskripsi': element['uraian'],
+            'nomor_ajuan': element['nomor_ajuan'],
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
+            'nama_divisi': element['nama_divisi'],
+            'place_in': element['place_in'],
+            'place_out': element['place_out'],
+            'approve_id': element['approve_id'],
+            'approve_by': element['approve_by'],
+            'approve_date': element['approve_date'],
+            'status': element['status'],
+            'approve_status': element['approve_status'],
+            'approve2_status': element['approve2_status']
+          };
+          listData.value.add(data);
+          listDataAll.value.add(data);
+          print("data body 2 ${valueBody['data']}");
+        }
+        listData.value.sort(
+            (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
+        this.listData.refresh();
+        this.listNotModif.refresh();
+      }
+    });
+  }
+
   void loadDataTidakHadir(status) {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"

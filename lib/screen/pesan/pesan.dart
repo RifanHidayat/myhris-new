@@ -725,31 +725,31 @@ class _PesanState extends State<Pesan> {
   }
 
   Widget screenPersetujuan() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 24),
-          pickDate(),
-          const SizedBox(height: 8),
-          Obx(
-            () => controller.statusScreenInfoApproval.value == true
-                ? Center(
-                    child: Column(
-                      children: [
-                        const CircularProgressIndicator(strokeWidth: 3),
-                        const SizedBox(height: 8),
-                        Text(controller.stringLoading.value),
-                      ],
-                    ),
-                  )
-                : RefreshIndicator(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 24),
+        pickDate(),
+        const SizedBox(height: 8),
+        Obx(
+          () => controller.statusScreenInfoApproval.value == true
+              ? Center(
+                  child: Column(
+                    children: [
+                      const CircularProgressIndicator(strokeWidth: 3),
+                      const SizedBox(height: 8),
+                      Text(controller.stringLoading.value),
+                    ],
+                  ),
+                )
+              : Expanded(
+                  child: RefreshIndicator(
                     onRefresh: refreshData,
                     child: ListView.builder(
                         itemCount:
                             controller.dataScreenPersetujuan.value.length,
                         shrinkWrap: true,
-                        physics: const AlwaysScrollableScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           var title = controller
                               .dataScreenPersetujuan.value[index]['title'];
@@ -825,7 +825,9 @@ class _PesanState extends State<Pesan> {
                                                                           ? 'Persetujuan Payroll'
                                                                           : title == 'Absensi'
                                                                               ? 'Persetujuan Absensi'
-                                                                              : 'Persetujuan WFH',
+                                                                              : title == 'WFH'
+                                                                                  ? 'Persetujuan WFH'
+                                                                                  : 'Persetujuan Kasbon',
                                               style: GoogleFonts.inter(
                                                   fontWeight: FontWeight.w500,
                                                   color: Constanst.fgPrimary,
@@ -933,9 +935,9 @@ class _PesanState extends State<Pesan> {
                           );
                         }),
                   ),
-          ),
-        ],
-      ),
+                ),
+        ),
+      ],
     );
   }
 
