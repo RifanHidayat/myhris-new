@@ -78,7 +78,7 @@ class ApprovalController extends GetxController {
   }
 
   void getLoadsysData(title, bulan, tahun, status) {
-    print(title);
+    print("Judul persetujuan ${title}");
     var connect = Api.connectionApi("get", "", "sysdata");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -108,6 +108,8 @@ class ApprovalController extends GetxController {
               loadAbsensi(status);
             } else if (title == "WFH") {
               loadwfh(status);
+            } else if (title == "Kasbon") {
+              loadkasbon(status);
             }
           }
         }
@@ -486,7 +488,9 @@ class ApprovalController extends GetxController {
 
   void loadkasbon(status) {
     print("data wfh");
-    var urlLoad = "employee-loan-history";
+    var urlLoad = valuePolaPersetujuan.value == "1"
+        ? "spesifik_approval"
+        : "spesifik_approval_multi";
     listNotModif.value.clear();
     listData.value.clear();
     listDataAll.value.clear();
@@ -494,7 +498,7 @@ class ApprovalController extends GetxController {
     var getEmCode = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmCode,
-      'name_data': 'wfh',
+      'name_data': 'kasbon',
       'bulan': bulanSelected.value,
       'tahun': tahunSelected.value,
       'status': status == "riwayat" ? '' : 'pending',
@@ -513,16 +517,17 @@ class ApprovalController extends GetxController {
         for (var element in valueBody['data']) {
           var fullName = element['full_name'] ?? "";
           var convertNama = "$fullName";
-          var tanggalDari = Constanst.convertDate1("${element['atten_date']}");
+          var tanggalDari =
+              Constanst.convertDate1("${element['tanggal_ajuan']}");
           var tanggalSampai =
-              Constanst.convertDate1("${element['atten_date']}");
+              Constanst.convertDate1("${element['tanggal_ajuan']}");
           var filterStatus = element['leave_status'];
           var data = {
             'id': element['id'],
             'nama_pengaju': convertNama,
             'emId_pengaju': element['em_id'],
             'em_id': element['em_id'],
-            'title_ajuan': 'Pengajuan WFH',
+            'title_ajuan': 'Pengajuan Kasbon',
             'waktu_dari': "${tanggalDari} ${element['dari_jam'] ?? "_ _:_ _"}",
             'waktu_sampai': "${tanggalDari} ${element['sampai_jam']}",
             'durasi': element['leave_duration'],
@@ -532,7 +537,7 @@ class ApprovalController extends GetxController {
             'nama_approve2': element['approve2_by'],
             'waktu_pengajuan': element['atten_date'],
             'catatan': element['reason'],
-            'type': 'wfh',
+            'type': 'kasbon',
             'category': element['category'],
             'lainnya': "",
             'file': element['req_file'] ?? "",
@@ -550,14 +555,19 @@ class ApprovalController extends GetxController {
             'approve_date': element['approve_date'],
             'status': element['status'],
             'approve_status': element['approve_status'],
-            'approve2_status': element['approve2_status']
+            'approve2_status': element['approve2_status'],
+            'tanggal_ajuan': element['tanggal_ajuan'],
+            'description': element['description'],
+            'total_pinjaman': element['total_pinjaman'],
+            'durasi_cicil': element['durasi_cicil'],
+            'periode': element['periode']
           };
           listData.value.add(data);
           listDataAll.value.add(data);
           print("data body 2 ${valueBody['data']}");
         }
-        listData.value.sort(
-            (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
+        // listData.value.sort(
+        //     (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
         this.listData.refresh();
         this.listNotModif.refresh();
       }
@@ -1454,6 +1464,295 @@ class ApprovalController extends GetxController {
         }
       });
     }
+  }
+
+  String formatDate(String dateString) {
+    // Parse the original date string to a DateTime object
+    DateTime dateTime = DateTime.parse(dateString);
+
+    // Format the DateTime object to 'yyyy-MM-dd'
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+
+    return formattedDate;
+  }
+
+  void aksiMenyetujuiKasbon(pilihan) {
+    // print("object ${detailData[0]['type']}");
+    // List dataEditFinal = [];
+    // for (var element in listNotModif.value) {
+    //   if (element['id'] == detailData[0]['id']) {
+    //     dataEditFinal.add(element);
+    //   }
+    // }
+    // var dt = DateTime.now();
+    // var dateString = "${dt.day}-${dt.month}-${dt.year}";
+    // var tanggalNow = Constanst.convertDateSimpan(dateString);
+
+    // print("type ${detailData[0]['type']}");
+    // var url_tujuan;
+
+    // if (detailData[0]['type'] == 'Klaim') {
+    //   url_tujuan = 'edit-emp_claim';
+    // } else {
+    //   url_tujuan = detailData[0]['type'] == 'Tugas Luar' ||
+    //           detailData[0]['type'] == 'Lembur'
+    //       ? 'edit-emp_labor'
+    //       : detailData[0]['type'] == 'wfh'
+    //           ? 'wfh-approval'
+    //           : 'edit-emp_leave';
+    // }
+
+    // if (valuePolaPersetujuan.value == "1") {
+    //   if (pilihan == true && url_tujuan == "edit-emp_leave") {
+    //     print("kesiniiii atuh");
+    //     validasiPemakaianCuti(dataEditFinal);
+    //   }
+    // } else {
+    //   if (pilihan == true && url_tujuan == "edit-emp_leave") {
+    //     if (dataEditFinal[0]['leave_status'] == "Approve") {
+    //       print("kesiniiii atuh");
+    //       validasiPemakaianCuti(dataEditFinal);
+    //     }
+    //   }
+    // }
+    // var dataUser = AppData.informasiUser;
+    // var getEmpid = dataUser![0].em_id;
+    // var fullName = dataUser[0].full_name ?? "";
+    // var namaAtasanApprove = "$fullName";
+
+    // var statusPengajuan = "";
+    // var applyDate1 = "";
+    // var applyBy1 = "";
+    // var applyId1 = "";
+    // var applyStatus = null;
+
+    // var applyDate2 = "";
+    // var applyBy2 = "";
+    // var applyId2 = "";
+    // var apply2Status = null;
+    // print("tes wfh 22 ${tanggalNow}");
+    // if (valuePolaPersetujuan.value == "1") {
+    //   statusPengajuan = pilihan == true ? 'Approve' : 'Rejected';
+    //   applyDate1 = tanggalNow;
+    //   applyBy1 = namaAtasanApprove;
+    //   applyId1 = "$getEmpid";
+    //   applyStatus = statusPengajuan;
+    //   applyDate2 = "";
+    //   applyBy2 = "";
+    //   applyId2 = "";
+    //   apply2Status = null;
+    // } else {
+    //   if (url_tujuan == "edit-emp_leave") {
+    //     print("tes wfh ${tanggalNow}");
+    //     if (dataEditFinal[0]['leave_status'] == "Pending") {
+    //       print("tes wfh ${tanggalNow}");
+    //       statusPengajuan = pilihan == true ? 'Approve' : 'Rejected';
+    //       applyDate1 = tanggalNow;
+    //       applyBy1 = namaAtasanApprove;
+    //       applyId1 = "$getEmpid";
+    //       applyStatus = pilihan == true ? 'Approve' : 'Rejected';
+    //       applyDate2 = "";
+    //       applyBy2 = "";
+    //       applyId2 = "";
+    //       apply2Status = "Pending";
+    //     } else if (dataEditFinal[0]['leave_status'] == "Approve") {
+    //       print("tes wfh ${tanggalNow}");
+    //       statusPengajuan = pilihan == true ? 'Approve2' : 'Rejected';
+    //       applyDate1 = dataEditFinal[0]['apply_date'];
+    //       applyBy1 = dataEditFinal[0]['apply_by'];
+    //       applyId1 = dataEditFinal[0]['apply_id'];
+
+    //       applyStatus = dataEditFinal[0]['apply_status'];
+
+    //       applyDate2 = tanggalNow;
+    //       applyBy2 = namaAtasanApprove;
+    //       applyId2 = "$getEmpid";
+    //       apply2Status = pilihan == true ? 'Approve' : 'Rejected';
+    //     }
+    //   } else {
+    //     print("tes wfh status ${dataEditFinal[0]['status']}");
+    //     if (dataEditFinal[0]['status'] == "Pending") {
+    //       print("tes wfh ${tanggalNow}");
+    //       statusPengajuan = pilihan == true ? 'Approve' : 'Rejected';
+
+    //       applyDate1 = tanggalNow;
+    //       applyBy1 = namaAtasanApprove;
+    //       applyId1 = "$getEmpid";
+    //       applyDate2 = "";
+    //       applyBy2 = "";
+    //       applyId2 = "";
+    //       applyStatus = pilihan == true ? 'Approve' : 'Rejected';
+    //       apply2Status = 'Pending';
+    //     } else if (dataEditFinal[0]['status'] == "Approve") {
+    //       print("tes wfh ${tanggalNow}");
+    //       statusPengajuan = pilihan == true ? 'Approve2' : 'Rejected';
+    //       applyDate1 = dataEditFinal[0]['approve_date'];
+    //       applyBy1 = dataEditFinal[0]['approve_by'];
+    //       applyId1 = dataEditFinal[0]['approve_id'].toString();
+    //       applyStatus = dataEditFinal[0]['approve_status'].toString();
+    //       apply2Status = pilihan == true ? 'Approve' : 'Rejected';
+    //       applyDate2 = tanggalNow;
+    //       applyBy2 = namaAtasanApprove;
+    //       applyId2 = "$getEmpid";
+    //     }
+    //   }
+    // }
+
+    // var alasanRejectShow = alasanReject.value.text != ""
+    //     ? ", Alasan pengajuan di tolak = ${alasanReject.value.text}"
+    //     : "";
+    // if (url_tujuan == 'edit-emp_leave') {
+    // emp_leave
+    Map<String, dynamic> body = {
+      'nomor_ajuan': detailData[0]['nomor_ajuan'].toString(),
+      'em_id': AppData.informasiUser![0].em_id,
+      'tanggal': formatDate(detailData[0]['tanggal_ajuan'].toString()),
+      'status': pilihan == 'Tolak' ? 'Reject' : 'Approve',
+    };
+    print("body approval 1 ${body.toString()}");
+    var connect = Api.connectionApi("post", body, "employee-loan-approval");
+    connect.then((dynamic res) {
+      var dt = DateTime.now();
+
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print("response valueBody ${valueBody.toString()}");
+        Get.back();
+        Get.back();
+        Get.back();
+        startLoadData('Kasbon', "${dt.month}", "${dt.year}", 'persetujuan');
+      }
+    });
+    // connect.then((dynamic res) {
+    //   if (res.statusCode == 200) {
+    //     if (pilihan == true) {
+    //       if (valuePolaPersetujuan.value == '1') {
+    //         if (statusPengajuan == 'Approve') {
+    //           insertAbsensiUserAfterApprove(dataEditFinal);
+    //         }
+    //       } else {
+    //         if (statusPengajuan == 'Approve2') {
+    //           insertAbsensiUserAfterApprove(dataEditFinal);
+    //         }
+    //       }
+    //     }
+    //     print('berhasil sampai sini edit emp leave');
+    //     print('pola persetujuan ${valuePolaPersetujuan.value}');
+    //     print('pilihan $pilihan');
+    //     print('status pengajuan $statusPengajuan');
+    //     insertNotifikasi(dataEditFinal, statusPengajuan, tanggalNow, dt,
+    //         pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow);
+    //   }
+    // });
+    // }
+    // else if (url_tujuan == 'edit-emp_labor') {
+    //   Map<String, dynamic> body = {
+    //     'em_id': dataEditFinal[0]['em_id'],
+    //     'dari_jam': dataEditFinal[0]['dari_jam'],
+    //     'sampai_jam': dataEditFinal[0]['sampai_jam'],
+    //     'atten_date': dataEditFinal[0]['atten_date'],
+    //     'status': statusPengajuan,
+    //     'approve_date': applyDate1,
+    //     'approve_by': applyBy1,
+    //     'approve_id': applyId1,
+    //     'approve2_date': applyDate2,
+    //     'approve2_by': applyBy2,
+    //     'approve2_id': applyId2,
+    //     'alasan_reject': alasanReject.value.text,
+    //     'em_delegation': dataEditFinal[0]['em_delegation'],
+    //     'uraian': dataEditFinal[0]['uraian'],
+    //     'ajuan': dataEditFinal[0]['ajuan'],
+    //     'created_by': getEmpid,
+    //     'menu_name': detailData[0]['type'],
+    //     'val': 'id',
+    //     'cari': dataEditFinal[0]['id'],
+    //     'activity_name':
+    //         "$statusPengajuan Pengajuan ${detailData[0]['type']} pada tanggal $tanggalNow. Pengajuan atas nama ${detailData[0]['nama_pengaju']} $alasanRejectShow",
+    //     "approve_status": applyStatus,
+    //     "approve2_status": apply2Status
+    //   };
+    //   print("body approval 2 ${body.toString()}");
+    //   var connect = Api.connectionApi("post", body, "edit-emp_labor");
+    //   connect.then((dynamic res) {
+    //     if (res.statusCode == 200) {
+    //       print('berhasil sampai sini edit emp labor');
+    //       insertNotifikasi(dataEditFinal, statusPengajuan, tanggalNow, dt,
+    //           pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow);
+    //     }
+    //   });
+    // } else if (url_tujuan == 'edit-emp_claim') {
+    //   Map<String, dynamic> body = {
+    //     'status': statusPengajuan,
+    //     'atten_date': detailData[0]['waktu_pengajuan'],
+    //     'approve_date': applyDate1,
+    //     'approve_by': applyBy1,
+    //     'approve_id': applyId1,
+    //     'approve2_date': applyDate2,
+    //     'approve2_by': applyBy2,
+    //     'approve2_id': applyId2,
+    //     'alasan_reject': alasanReject.value.text,
+    //     'created_by': getEmpid,
+    //     'menu_name': detailData[0]['type'],
+    //     'val': 'id',
+    //     'cari': dataEditFinal[0]['id'],
+    //     'activity_name':
+    //         "$statusPengajuan Pengajuan ${detailData[0]['type']} pada tanggal $tanggalNow. Pengajuan atas nama ${detailData[0]['nama_pengaju']} $alasanRejectShow"
+    //   };
+    //   print("body ${body}");
+    //   var connect = Api.connectionApi("post", body, 'edit-emp_claim');
+    //   connect.then((dynamic res) {
+    //     if (res.statusCode == 200) {
+    //       print('berhasil sampai sini klaim');
+    //       insertNotifikasiClaim(
+    //           dataEditFinal,
+    //           statusPengajuan,
+    //           tanggalNow,
+    //           dt,
+    //           pilihan,
+    //           namaAtasanApprove,
+    //           url_tujuan,
+    //           alasanRejectShow,
+    //           detailData[0]['em_id']);
+    //     }
+    //   });
+    // } else if (url_tujuan == 'wfh-approval') {
+    //   print('tes print');
+    //   Map<String, dynamic> body = {
+    //     'em_id': dataEditFinal[0]['em_id'],
+    //     'dari_jam': dataEditFinal[0]['dari_jam'],
+    //     'sampai_jam': dataEditFinal[0]['sampai_jam'],
+    //     'atten_date': dataEditFinal[0]['atten_date'],
+    //     'status': statusPengajuan,
+    //     'approve_date': applyDate1,
+    //     'approve_by': applyBy1,
+    //     'approve_id': applyId1,
+    //     'approve2_date': applyDate2,
+    //     'approve2_by': applyBy2,
+    //     'approve2_id': applyId2,
+    //     'alasan_reject': alasanReject.value.text,
+    //     'em_delegation': dataEditFinal[0]['em_delegation'],
+    //     'uraian': dataEditFinal[0]['uraian'],
+    //     'ajuan': dataEditFinal[0]['ajuan'],
+    //     'created_by': getEmpid,
+    //     'menu_name': detailData[0]['type'],
+    //     'val': 'id',
+    //     'cari': dataEditFinal[0]['id'],
+    //     'activity_name':
+    //         "$statusPengajuan Pengajuan ${detailData[0]['type']} pada tanggal $tanggalNow. Pengajuan atas nama ${detailData[0]['nama_pengaju']} $alasanRejectShow",
+    //     "approve_status": applyStatus,
+    //     "approve2_status": apply2Status,
+    //     'pola': controllerGlobal.valuePolaPersetujuan.value.toString(),
+    //   };
+    //   print("body approval 3 ${body.toString()}");
+    //   var connect = Api.connectionApi("post", body, "wfh-approval");
+    //   connect.then((dynamic res) {
+    //     if (res.statusCode == 200) {
+    //       print('berhasil sampai sini edit emp labor');
+    //       insertNotifikasi(dataEditFinal, statusPengajuan, tanggalNow, dt,
+    //           pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow);
+    //     }
+    //   });
+    // }
   }
 
   void validasiPemakaianCuti(dataEditFinal) {

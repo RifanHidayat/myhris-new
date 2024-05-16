@@ -2719,7 +2719,9 @@ class DashboardController extends GetxController {
                                                                                                   ? 'assets/11_bpjs_kes.svg'
                                                                                                   : gambar == "bpjsksh.png"
                                                                                                       ? 'assets/12_bpjs_ket.svg'
-                                                                                                      : 'assets/12_bpjs_ket.svg',
+                                                                                                      : gambar == "kasbon.png"
+                                                                                                          ? 'assets/13_kasbon.svg'
+                                                                                                          : 'assets/12_bpjs_ket.svg',
                                                           height: 42,
                                                           width: 42,
                                                         ),

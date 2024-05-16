@@ -26,22 +26,40 @@ class _FormKasbonState extends State<FormKasbon> {
   void initState() {
     print(widget.dataForm![0]);
     if (widget.dataForm![1] == true) {
-      controller.selectedTypeKasbon.value = widget.dataForm![0]['type'];
+      // controller.selectedTypeKasbon.value = widget.dataForm![0]['type'];
+
       controller.tanggalKasbon.value.text =
-          Constanst.convertDate("${widget.dataForm![0]['atten_date']}");
-      var convertDariJam = widget.dataForm![0]['dari_jam'].split(":");
-      var convertSampaiJam = widget.dataForm![0]['sampai_jam'].split(":");
-      var hasilDarijam = "${convertDariJam[0]}:${convertDariJam[1]}";
-      var hasilSampaijam = "${convertSampaiJam[0]}:${convertSampaiJam[1]}";
-      controller.dariJam.value.text = hasilDarijam;
-      controller.sampaiJam.value.text = hasilSampaijam;
-      controller.catatan.value.text = widget.dataForm![0]['uraian'];
+          Constanst.convertDate("${widget.dataForm![0]['tanggal_pinjaman']}");
+      controller.totalPinjaman.value.text =
+          "${widget.dataForm![0]['total_loan']}";
+
+      // String yang ingin dipisahkan
+      String date = widget.dataForm![0]['periode'] ?? "2024-01";
+      // Memisahkan string berdasarkan karakter "-"
+      List<String> parts = date.split('-');
+      String year = parts[0];
+      String month = parts[1];
+
+      controller.tahunSelectedSearchHistory.value = year;
+      // controller.bulanSelectedSearchHistory.value = month;
+
+      // var convertDariJam = widget.dataForm![0]['dari_jam'].split(":");
+      // var convertSampaiJam = widget.dataForm![0]['sampai_jam'].split(":");
+      // var hasilDarijam = "${convertDariJam[0]}:${convertDariJam[1]}";
+      // var hasilSampaijam = "${convertSampaiJam[0]}:${convertSampaiJam[1]}";
+      // controller.dariJam.value.text = hasilDarijam;
+      // controller.sampaiJam.value.text = hasilSampaijam;
+      controller.catatan.value.text = widget.dataForm![0]['description'];
       controller.statusForm.value = true;
       controller.idpengajuanKasbon.value = "${widget.dataForm![0]['id']}";
       controller.emIdDelegasi.value = "${widget.dataForm![0]['em_delegation']}";
-      controller.checkingDelegation(widget.dataForm![0]['em_delegation']);
+      controller.durasiCicilan.value.text =
+          widget.dataForm![0]['durasi_cicil'].toString();
+      // controller.checkingDelegation(widget.dataForm![0]['em_delegation']);
       controller.nomorAjuan.value.text =
           "${widget.dataForm![0]['nomor_ajuan']}";
+
+      // controller.id.value = widget.dataForm![0]['tanggal_pinjaman'];
     } else {
       // controller.selectedTypeKasbon.value = "";
       // controller.tanggalKasbon.value.text = "";
@@ -105,6 +123,7 @@ class _FormKasbonState extends State<FormKasbon> {
                         formHariDanTanggal(),
                         formTotalPinjaman(),
                         pickDate(),
+                        durasiCician(),
                         formCatatan(),
                       ],
                     ),
@@ -507,6 +526,80 @@ class _FormKasbonState extends State<FormKasbon> {
     );
   }
 
+  Widget durasiCician() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Divider(
+            height: 0,
+            thickness: 1,
+            color: Constanst.fgBorder,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Iconsax.money_tick, size: 24),
+                const SizedBox(width: 12),
+                Expanded(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Durasi Cicilan*",
+                      style: GoogleFonts.inter(
+                          color: Constanst.fgPrimary,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14),
+                    ),
+                    TextField(
+                      // inputFormatters: [
+                      //   CurrencyTextInputFormatter(
+                      //     locale: 'id',
+                      //     symbol: 'Rp ',
+                      //     decimalDigits: 0,
+                      //   )
+                      // ],
+                      controller: controller.durasiCicilan.value,
+                      keyboardType:
+                          const TextInputType.numberWithOptions(signed: true),
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (value) {
+                        controller.durasiCicilan.value.text = value;
+                        this.controller.durasiCicilan.refresh();
+                      },
+                      decoration: InputDecoration(
+                        hintText: '0',
+                        border: InputBorder.none,
+                        hintStyle: GoogleFonts.inter(
+                            color: Constanst.fgSecondary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16),
+                      ),
+                      maxLines: null,
+                      style: GoogleFonts.inter(
+                          color: Constanst.fgPrimary,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16),
+                    )
+                  ],
+                ))
+              ],
+            ),
+          ),
+          Divider(
+            height: 0,
+            thickness: 1,
+            color: Constanst.fgBorder,
+          ),
+        ],
+      ),
+    );
+  }
   // Widget formJam() {
   //   return Row(
   //     crossAxisAlignment: CrossAxisAlignment.start,

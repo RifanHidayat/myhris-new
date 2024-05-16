@@ -11,6 +11,7 @@ import 'package:siscom_operasional/screen/pesan/persetujuan_absensi.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_cuti.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_dinas_luar.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_izin.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_kasbon.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_klaim.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_lembur.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_payroll.dart';
@@ -147,7 +148,7 @@ class PesanController extends GetxController {
           jumlahApprovePayroll.value = valueBody['jumlah_payroll'];
           jumlahCheckin.value = valueBody['jumlah_checkin'];
           jumlahApproveWfh.value = valueBody['jumlah_wfh'];
-          // jumlahApproveKasbon.value = valueBody['jumlah_kasbon'];
+          jumlahApproveKasbon.value = valueBody['jumlah_kasbon'];
 
           jumlahPersetujuan.value = jumlahApproveCuti.value +
               jumlahApproveLembur.value +
@@ -655,7 +656,7 @@ class PesanController extends GetxController {
                                                 .value,
                                           ))
                                         : index['title'] == "Kasbon"
-                                            ? Get.to(PersetujuanWfh(
+                                            ? Get.to(PersetujuanKasbon(
                                                 title: index['title'],
                                                 bulan:
                                                     bulanSelectedSearchHistory

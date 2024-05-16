@@ -6,6 +6,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_kasbon.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
@@ -349,7 +350,7 @@ class _PersetujuanKasbonState extends State<PersetujuanKasbon>
             var sampaiJam = controller.listData.value[index]['sampai_jam'];
             var nomor_ajuan = controller.listData.value[index]['nomor_ajuan'];
             var tanggalPengajuan =
-                controller.listData.value[index]['waktu_pengajuan'];
+                controller.listData.value[index]['tanggal_ajuan'];
             var titleAjuan = controller.listData.value[index]['title_ajuan'];
             var namaTypeAjuan = controller.listData.value[index]['name'];
             var categoryAjuan = controller.listData.value[index]['category'];
@@ -366,12 +367,12 @@ class _PersetujuanKasbonState extends State<PersetujuanKasbon>
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   onTap: () {
-                    // Get.to(DetailPersetujuanKasbon(
-                    //   emId: emIdPengaju,
-                    //   title: typeAjuan,
-                    //   idxDetail: "$idx",
-                    //   delegasi: delegasi,
-                    // ));
+                    Get.to(DetailPersetujuanKasbon(
+                      emId: emIdPengaju,
+                      title: typeAjuan,
+                      idxDetail: "$idx",
+                      delegasi: delegasi,
+                    ));
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -599,9 +600,9 @@ class _PersetujuanKasbonState extends State<PersetujuanKasbon>
 
   Widget _approval(index) {
     var data = controller.listData[index];
-    var namaApprove1 = controller.listData.value[index]['nama_approve1'] ?? "";
+    var namaApprove1 = controller.listData.value[index]['approve_by'] ?? "";
     var namaApprove2 = controller.listData.value[index]['nama_approve2'] ?? "";
-    var leave_status = controller.listData.value[index]['leave_status'] ?? "";
+    var leave_status = controller.listData.value[index]['approve_status'] ?? "";
 
     if (leave_status == "Rejected") {
       return Container(
@@ -640,12 +641,7 @@ class _PersetujuanKasbonState extends State<PersetujuanKasbon>
           Padding(
             padding: const EdgeInsets.only(left: 3),
             child: Text(
-              controller.valuePolaPersetujuan == 1 ||
-                      controller.valuePolaPersetujuan == "1"
-                  ? '$leave_status'
-                  : leave_status == "Pending"
-                      ? "Pending Approval 1"
-                      : "Pending Approval 2",
+              leave_status == "Pending" ? "Pending Approval" : "Approve",
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                   fontWeight: FontWeight.w500,
@@ -726,19 +722,14 @@ class _PersetujuanKasbonState extends State<PersetujuanKasbon>
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Icon(
-          Iconsax.timer,
-          color: Constanst.color3,
+          Iconsax.tick_circle,
+          color: Constanst.color5,
           size: 20,
         ),
         Padding(
           padding: const EdgeInsets.only(left: 3),
           child: Text(
-            controller.valuePolaPersetujuan == 1 ||
-                    controller.valuePolaPersetujuan == "1"
-                ? '$leave_status'
-                : leave_status == "Pending"
-                    ? "Pending Approval 1"
-                    : "Pending Approval 2",
+            "${leave_status} by ${namaApprove1}",
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
                 fontWeight: FontWeight.w500,
@@ -1018,9 +1009,9 @@ class _PersetujuanKasbonState extends State<PersetujuanKasbon>
     if (data['approve_status'] == "Approve") {
       text = "Approve 1 By - ${data['nama_approve1']}";
 
-      if (data['approve2_status'] == "Pending") {
-        text2 = "Pending Approval 2";
-      }
+      // if (data['approve2_status'] == "Pending") {
+      //   text2 = "Pending Approval 2";
+      // }
       if (data['approve2_status'] == "Rejected") {
         text2 = "Rejected 1 By - ${data['nama_approve1']}";
       }

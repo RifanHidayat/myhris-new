@@ -804,11 +804,11 @@ class _KasbonState extends State<Kasbon> {
         physics: const BouncingScrollPhysics(),
         itemCount: controller.listKasbon.value.length,
         itemBuilder: (context, index) {
-          var nomorAjuan = controller.listKasbon.value[index]['nomor_ajuan'];
+          var nomorAjuan = controller.listKasbon.value[index]['nomor'];
           var dariJam = controller.listKasbon.value[index]['dari_jam'];
           var sampaiJam = controller.listKasbon.value[index]['sampai_jam'];
           var tanggalPengajuan =
-              controller.listKasbon.value[index]['tanggal_ajuan'];
+              controller.listKasbon.value[index]['tanggal_pinjaman'];
           var status;
           if (controller.valuePolaPersetujuan.value == "1") {
             status = controller.listKasbon.value[index]['status'];
