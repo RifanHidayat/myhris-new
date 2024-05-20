@@ -432,87 +432,93 @@ class _FormLemburState extends State<FormLembur> {
   }
 
   Widget formJam() {
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Expanded(
-          child: InkWell(
-            onTap: () {
-              showTimePicker(
-                context: Get.context!,
-                initialTime: TimeOfDay.now(),
-                // initialEntryMode: TimePickerEntryMode.input,
-                builder: (context, child) {
-                  return MediaQuery(
-                    data: MediaQuery.of(context)
-                        .copyWith(alwaysUse24HourFormat: true),
-                    child: Theme(
-                      data: ThemeData(
-                        colorScheme: ColorScheme.light(
-                          primary: Constanst.onPrimary,
-                        ),
-                        // useMaterial3: settings.useMaterial3,
-                        dialogTheme: const DialogTheme(
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16)))),
-                        primaryColor: Constanst.fgPrimary,
-                        textTheme: TextTheme(
-                          titleMedium: GoogleFonts.inter(
-                            color: Constanst.fgPrimary,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              child: InkWell(
+                onTap: () {
+                  showTimePicker(
+                    context: Get.context!,
+                    initialTime: TimeOfDay.now(),
+                    // initialEntryMode: TimePickerEntryMode.input,
+                    builder: (context, child) {
+                      return MediaQuery(
+                        data: MediaQuery.of(context)
+                            .copyWith(alwaysUse24HourFormat: true),
+                        child: Theme(
+                          data: ThemeData(
+                            colorScheme: ColorScheme.light(
+                              primary: Constanst.onPrimary,
+                            ),
+                            // useMaterial3: settings.useMaterial3,
+                            dialogTheme: const DialogTheme(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(16)))),
+                            primaryColor: Constanst.fgPrimary,
+                            textTheme: TextTheme(
+                              titleMedium: GoogleFonts.inter(
+                                color: Constanst.fgPrimary,
+                              ),
+                            ),
+                            dialogBackgroundColor: Constanst.colorWhite,
+                            canvasColor: Colors.white,
+                            hintColor: Constanst.onPrimary,
+                            textButtonTheme: TextButtonThemeData(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Constanst.onPrimary,
+                              ),
+                            ),
                           ),
+                          child: child!,
                         ),
-                        dialogBackgroundColor: Constanst.colorWhite,
-                        canvasColor: Colors.white,
-                        hintColor: Constanst.onPrimary,
-                        textButtonTheme: TextButtonThemeData(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Constanst.onPrimary,
-                          ),
-                        ),
-                      ),
-                      child: child!,
-                    ),
-                  );
+                      );
+                    },
+                  ).then((value) {
+                    if (value == null) {
+                      UtilsAlert.showToast('gagal pilih jam');
+                    } else {
+                      var convertJam =
+                          value.hour <= 9 ? "0${value.hour}" : "${value.hour}";
+                      var convertMenit = value.minute <= 9
+                          ? "0${value.minute}"
+                          : "${value.minute}";
+                      controller.dariJam.value.text =
+                          "$convertJam:$convertMenit";
+                      this.controller.dariJam.refresh();
+
+                      var startTimeParts = controller.dariJam.value.text
+                          .split(":")
+                          .map(int.parse)
+                          .toList();
+                      var endTimeParts = controller.sampaiJam.value.text
+                          .split(":")
+                          .map(int.parse)
+                          .toList();
+
+                      var startTime = TimeOfDay(
+                          hour: startTimeParts[0], minute: startTimeParts[1]);
+                      var endTime = TimeOfDay(
+                          hour: endTimeParts[0], minute: endTimeParts[1]);
+
+                      if (endTime.hour < startTime.hour ||
+                          (endTime.hour == startTime.hour &&
+                              endTime.minute < startTime.minute)) {
+                        controller.statusJam.value =
+                            "Pemilihan jam melintasi hari";
+                      } else {
+                        controller.statusJam.value = "";
+                      }
+                    }
+                  });
                 },
-              ).then((value) {
-                if (value == null) {
-                  UtilsAlert.showToast('gagal pilih jam');
-                } else {
-                  var convertJam =
-                      value.hour <= 9 ? "0${value.hour}" : "${value.hour}";
-                  var convertMenit = value.minute <= 9
-                      ? "0${value.minute}"
-                      : "${value.minute}";
-                  controller.dariJam.value.text = "$convertJam:$convertMenit";
-                  this.controller.dariJam.refresh();
-                  var startTimeParts = controller.dariJam.value.text
-                      .split(":")
-                      .map(int.parse)
-                      .toList();
-                  var endTimeParts = controller.sampaiJam.value.text
-                      .split(":")
-                      .map(int.parse)
-                      .toList();
-
-                  var startTime = TimeOfDay(
-                      hour: startTimeParts[0], minute: startTimeParts[1]);
-                  var endTime =
-                      TimeOfDay(hour: endTimeParts[0], minute: endTimeParts[1]);
-
-                  if (endTime.hour < startTime.hour ||
-                      (endTime.hour == startTime.hour &&
-                          endTime.minute < startTime.minute)) {
-                    UtilsAlert.showToast('Pemilihan jam melintasi hari');
-                  }
-                }
-              });
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
+                child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -553,76 +559,87 @@ class _FormLemburState extends State<FormLembur> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Divider(
-                    height: 0,
-                    thickness: 1,
-                    color: Constanst.fgBorder,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-        Expanded(
-          child: InkWell(
-            onTap: () {
-              showTimePicker(
-                context: Get.context!,
-                initialTime: TimeOfDay.now(),
-                // initialEntryMode: TimePickerEntryMode.input,
-                builder: (context, child) {
-                  return MediaQuery(
-                    data: MediaQuery.of(context)
-                        .copyWith(alwaysUse24HourFormat: true),
-                    child: Theme(
-                      data: ThemeData(
-                        colorScheme: ColorScheme.light(
-                          primary: Constanst.onPrimary,
-                        ),
-                        // useMaterial3: settings.useMaterial3,
-                        dialogTheme: const DialogTheme(
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16)))),
-                        primaryColor: Constanst.fgPrimary,
-                        textTheme: TextTheme(
-                          titleMedium: GoogleFonts.inter(
-                            color: Constanst.fgPrimary,
+            Expanded(
+              child: InkWell(
+                onTap: () {
+                  showTimePicker(
+                    context: Get.context!,
+                    initialTime: TimeOfDay.now(),
+                    // initialEntryMode: TimePickerEntryMode.input,
+                    builder: (context, child) {
+                      return MediaQuery(
+                        data: MediaQuery.of(context)
+                            .copyWith(alwaysUse24HourFormat: true),
+                        child: Theme(
+                          data: ThemeData(
+                            colorScheme: ColorScheme.light(
+                              primary: Constanst.onPrimary,
+                            ),
+                            // useMaterial3: settings.useMaterial3,
+                            dialogTheme: const DialogTheme(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(16)))),
+                            primaryColor: Constanst.fgPrimary,
+                            textTheme: TextTheme(
+                              titleMedium: GoogleFonts.inter(
+                                color: Constanst.fgPrimary,
+                              ),
+                            ),
+                            dialogBackgroundColor: Constanst.colorWhite,
+                            canvasColor: Colors.white,
+                            hintColor: Constanst.onPrimary,
+                            textButtonTheme: TextButtonThemeData(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Constanst.onPrimary,
+                              ),
+                            ),
                           ),
+                          child: child!,
                         ),
-                        dialogBackgroundColor: Constanst.colorWhite,
-                        canvasColor: Colors.white,
-                        hintColor: Constanst.onPrimary,
-                        textButtonTheme: TextButtonThemeData(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Constanst.onPrimary,
-                          ),
-                        ),
-                      ),
-                      child: child!,
-                    ),
-                  );
+                      );
+                    },
+                  ).then((value) {
+                    if (value == null) {
+                      UtilsAlert.showToast('gagal pilih jam');
+                    } else {
+                      var convertJam =
+                          value.hour <= 9 ? "0${value.hour}" : "${value.hour}";
+                      var convertMenit = value.minute <= 9
+                          ? "0${value.minute}"
+                          : "${value.minute}";
+                      controller.sampaiJam.value.text =
+                          "$convertJam:$convertMenit";
+                      this.controller.sampaiJam.refresh();
+
+                      var startTimeParts = controller.dariJam.value.text
+                          .split(":")
+                          .map(int.parse)
+                          .toList();
+                      var endTimeParts = controller.sampaiJam.value.text
+                          .split(":")
+                          .map(int.parse)
+                          .toList();
+
+                      var startTime = TimeOfDay(
+                          hour: startTimeParts[0], minute: startTimeParts[1]);
+                      var endTime = TimeOfDay(
+                          hour: endTimeParts[0], minute: endTimeParts[1]);
+
+                      if (endTime.hour < startTime.hour ||
+                          (endTime.hour == startTime.hour &&
+                              endTime.minute < startTime.minute)) {
+                        controller.statusJam.value =
+                            "Pemilihan jam melintasi hari";
+                      } else {
+                        controller.statusJam.value = "";
+                      }
+                    }
+                  });
                 },
-              ).then((value) {
-                if (value == null) {
-                  UtilsAlert.showToast('gagal pilih jam');
-                } else {
-                  var convertJam =
-                      value.hour <= 9 ? "0${value.hour}" : "${value.hour}";
-                  var convertMenit = value.minute <= 9
-                      ? "0${value.minute}"
-                      : "${value.minute}";
-                  controller.sampaiJam.value.text = "$convertJam:$convertMenit";
-                  this.controller.sampaiJam.refresh();
-                }
-              });
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
+                child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -653,16 +670,38 @@ class _FormLemburState extends State<FormLembur> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Divider(
-                    height: 0,
-                    thickness: 1,
-                    color: Constanst.fgBorder,
-                  ),
-                ),
-              ],
+              ),
             ),
+          ],
+        ),
+        controller.statusJam.value == ""
+            ? Container()
+            : Padding(
+                padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      Iconsax.info_circle,
+                      size: 16,
+                      color: Constanst.fgSecondary,
+                    ),
+                    const SizedBox(width: 8.0),
+                    Text(
+                      controller.statusJam.value,
+                      style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: Constanst.fgSecondary),
+                    ),
+                  ],
+                ),
+              ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Divider(
+            height: 0,
+            thickness: 1,
+            color: Constanst.fgBorder,
           ),
         ),
       ],

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 // import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:flutter/material.dart';
@@ -155,10 +157,43 @@ class _LiveTrackingState extends State<LiveTracking> {
     print("dapatttt isTracking ${AppData.informasiUser![0].is_tracking}");
   }
 
+  String _fakeGpsMessage = "Detecting...";
+
+  Future<void> _checkForFakeGps() async {
+    bool isFakeGps = await _isMockLocation() || await _isDeveloperModeEnabled();
+    if (isFakeGps) {
+      setState(() {
+        _fakeGpsMessage = "Fake GPS detected!";
+      });
+    } else {
+      setState(() {
+        _fakeGpsMessage = "No Fake GPS detected.";
+      });
+    }
+  }
+
+  Future<bool> _isMockLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition();
+      return position.isMocked;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> _isDeveloperModeEnabled() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    return androidInfo.isPhysicalDevice != true &&
+        androidInfo.version.sdkInt! >= 23;
+  }
+
   @override
   void initState() {
     super.initState();
     refreshData();
+    _checkForFakeGps();
   }
 
   @override
@@ -178,7 +213,9 @@ class _LiveTrackingState extends State<LiveTracking> {
         centerTitle: false,
         title: Text(
           // AppData.informasiUser![0].interval_tracking.toString(),
-          'Tracking',
+          // 'Tracking' ,
+
+          _fakeGpsMessage,
           style: GoogleFonts.inter(
               color: Constanst.fgPrimary,
               fontWeight: FontWeight.w500,

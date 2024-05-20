@@ -1047,12 +1047,12 @@ class TrackingController extends GetxController {
 
   void getPosisition() async {
     Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+        desiredAccuracy: LocationAccuracy.best);
     try {
       List<Placemark> placemarks =
           await placemarkFromCoordinates(position.latitude, position.longitude);
       Placemark place = placemarks[0];
-      print(place);
+      print("lokasi ${place}");
       latUser.value = position.latitude;
       langUser.value = position.longitude;
       alamatUserFoto.value =
@@ -1190,17 +1190,17 @@ class TrackingController extends GetxController {
       // 'em_id_employee': 'SIS202305048',
       'database': AppData.selectedDatabase,
     };
-    print('parameter 2 ${body}');
+    print('parameter 21 ${body}');
     try {
       var response =
           await ApiRequest(url: "employee-tracking-detail", body: body).post();
       print('parameter ${response}');
       var resp = jsonDecode(response.body);
 
-      print('parameter 2${resp}');
+      print('parameter 22${resp}');
 
       if (response.statusCode == 200) {
-        print('parameter 2${resp}');
+        print('parameter 23${resp}');
 
         detailTrackings.value =
             DetailTrackingModel.fromJsonToList(resp['data']);
@@ -1243,17 +1243,17 @@ class TrackingController extends GetxController {
       // 'em_id_employee': 'SIS202305048',
       'database': AppData.selectedDatabase,
     };
-    print('parameter 2 ${body}');
+    print('parameter 24 ${body}');
     try {
       var response =
           await ApiRequest(url: "employee-tracking-detail", body: body).post();
       print('parameter ${response}');
       var resp = jsonDecode(response.body);
 
-      print('parameter 2${resp}');
+      print('parameter 25 ${resp}');
 
       if (response.statusCode == 200) {
-        print('parameter 2${resp}');
+        print('parameter 26 ${resp}');
 
         detailTrackings2.value =
             DetailTrackingModel.fromJsonToList(resp['data']);
@@ -1293,17 +1293,17 @@ class TrackingController extends GetxController {
       // 'em_id_employee': 'SIS202305048',
       'database': AppData.selectedDatabase,
     };
-    print('parameter 2 ${body}');
+    print('parameter 27 ${body}');
     try {
       var response =
           await ApiRequest(url: "employee-tracking-detail", body: body).post();
       print('parameter ${response}');
       var resp = jsonDecode(response.body);
 
-      print('parameter 2${resp}');
+      print('parameter 28 ${resp}');
 
       if (response.statusCode == 200) {
-        print('parameter 2${resp}');
+        print('parameter 29 ${resp}');
 
         detailTrackings2.value =
             DetailTrackingModel.fromJsonToList(resp['data']);
@@ -1327,9 +1327,13 @@ class TrackingController extends GetxController {
 
   void riwayatLiveTracking({emIdEmployee}) async {
     isLoadingRiwayatLiveTracking.value = true;
-    print("em_id_employee ${tahunSelectedSearchHistory.value+"-"+bulanSelectedSearchHistory.value+"-"+"01" }");
+    print(
+        "em_id_employee ${tahunSelectedSearchHistory.value + "-" + bulanSelectedSearchHistory.value + "-" + "01"}");
     Map<String, dynamic> body = {
-      'tanggal': DateFormat('yyyy-MM-dd').format(DateTime.parse("${tahunSelectedSearchHistory.value+"-"+bulanSelectedSearchHistory.value+"-"+"01" }" )).toString(),
+      'tanggal': DateFormat('yyyy-MM-dd')
+          .format(DateTime.parse(
+              "${tahunSelectedSearchHistory.value + "-" + bulanSelectedSearchHistory.value + "-" + "01"}"))
+          .toString(),
       'em_id_employee': emIdEmployee == ''
           ? AppData.informasiUser == null || AppData.informasiUser!.isEmpty
               ? ''
@@ -1346,7 +1350,7 @@ class TrackingController extends GetxController {
       print('parameter ${response}');
       var resp = jsonDecode(response.body);
 
-      print('parameter 2${resp}');
+      print('parameter 30 ${resp}');
 
       if (response.statusCode == 200) {
         print('parameter 2${resp}');

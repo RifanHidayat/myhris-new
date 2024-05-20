@@ -83,7 +83,7 @@ dependencies:
   dots_indicator: ^2.1.0
   geocoding: ^2.0.2
   google_mlkit_face_detection: ^0.5.0
-  
+  device_apps:
   geolocator: ^11.0.0
 
   # camera: ^0.9.4+21
