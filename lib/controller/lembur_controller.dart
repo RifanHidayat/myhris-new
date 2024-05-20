@@ -20,6 +20,7 @@ class LemburController extends GetxController {
   var tanggalLembur = TextEditingController().obs;
   var dariJam = TextEditingController().obs;
   var sampaiJam = TextEditingController().obs;
+  var statusJam = "".obs;
   var durasi = TextEditingController().obs;
   var catatan = TextEditingController().obs;
   var cari = TextEditingController().obs;
@@ -492,7 +493,7 @@ class LemburController extends GetxController {
       'ajuan': '1',
       'created_by': getEmid,
       'menu_name': 'Lembur',
-      'approve_status':"pending"
+      'approve_status': "pending"
     };
     var typeNotifFcm = "Pengajuan Lembur";
     if (statusForm.value == false) {
