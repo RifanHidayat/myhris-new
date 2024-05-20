@@ -122,7 +122,7 @@ class _FormLemburState extends State<FormLembur> {
             ]),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 12.0),
             child: ElevatedButton(
               onPressed: () {
                 print("tes ${controller.dariJam.value.text.toString()}");
@@ -487,6 +487,25 @@ class _FormLemburState extends State<FormLembur> {
                       : "${value.minute}";
                   controller.dariJam.value.text = "$convertJam:$convertMenit";
                   this.controller.dariJam.refresh();
+                  var startTimeParts = controller.dariJam.value.text
+                      .split(":")
+                      .map(int.parse)
+                      .toList();
+                  var endTimeParts = controller.sampaiJam.value.text
+                      .split(":")
+                      .map(int.parse)
+                      .toList();
+
+                  var startTime = TimeOfDay(
+                      hour: startTimeParts[0], minute: startTimeParts[1]);
+                  var endTime =
+                      TimeOfDay(hour: endTimeParts[0], minute: endTimeParts[1]);
+
+                  if (endTime.hour < startTime.hour ||
+                      (endTime.hour == startTime.hour &&
+                          endTime.minute < startTime.minute)) {
+                    UtilsAlert.showToast('Pemilihan jam melintasi hari');
+                  }
                 }
               });
             },

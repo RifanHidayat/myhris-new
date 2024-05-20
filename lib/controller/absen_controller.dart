@@ -24,6 +24,7 @@ import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
@@ -76,6 +77,7 @@ class AbsenController extends GetxController {
   var checkoutAjuan2 = "".obs;
   var catataanAjuan = TextEditingController();
   var imageAjuan = "".obs;
+  var nomorAjuan = "".obs;
 
   var pengajuanAbsensi = [].obs;
 
@@ -307,9 +309,34 @@ class AbsenController extends GetxController {
         if (res.statusCode == 200) {
           print("Place cordinate 200" + res.body.toString());
           var valueBody = jsonDecode(res.body);
-          selectedType.value = valueBody['data'][0]['place'];
+          controller.checkAbsenUser(
+              DateFormat('yyyy-MM-dd').format(DateTime.now()),
+              AppData.informasiUser![0].em_id);
+          // selectedType.value = valueBody['data'][0]['place'];
+
+          print("controller.wfhlokasi ${controller.wfhlokasi.value}");
+
+          if (typeAbsen.value == 1) {
+            selectedType.value = valueBody['data'][0]['place'];
+          } else {
+            if (controller.wfhlokasi.value == true) {
+              selectedType.value = 'WFH';
+            } else {
+              selectedType.value = valueBody['data'][0]['place'];
+            }
+          }
+
           for (var element in valueBody['data']) {
-            placeCoordinateDropdown.value.add(element['place']);
+            // placeCoordinateDropdown.value.add(element['place']);
+            if (typeAbsen.value == 1) {
+              placeCoordinateDropdown.value.add(element['place']);
+            } else {
+              if (controller.wfhlokasi.value == true) {
+                placeCoordinateDropdown.value.add('WFH');
+              } else {
+                placeCoordinateDropdown.value.add(element['place']);
+              }
+            }
           }
           List filter = [];
           for (var element in valueBody['data']) {
@@ -993,7 +1020,8 @@ class AbsenController extends GetxController {
     absenSelfie();
   }
 
-  void kirimDataAbsensi() async {
+  void kirimDataAbsensi({typewfh}) async {
+    print("typewfh ${typewfh}");
     employeDetail();
     // if (base64fotoUser.value == "") {
     //   UtilsAlert.showToast("Silahkan Absen");
@@ -1011,6 +1039,52 @@ class AbsenController extends GetxController {
           var getSettingAppSaveImageAbsen = "1";
           var validasiGambar =
               getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
+
+          var getFullName = "${dataUser![0].full_name}";
+          var convertTanggalBikinPengajuan =
+              // status == false
+              //     ? Constanst.convertDateSimpan(
+              //         pilihTanggalTelatAbsen.value.toString())
+              //     :
+              pilihTanggalTelatAbsen.value.toString();
+          var getEmid = "${dataUser![0].em_id}";
+          var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
+          var typeNotifFcm = "Pengajuan WFH";
+          var now = DateTime.now();
+          var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
+          var getNomorAjuanTerakhir = nomorAjuan;
+
+          if (typeAbsen.value == 1 && typewfh == "wfh") {
+            for (var item in globalCt.konfirmasiAtasan) {
+              print("Token notif ${item['token_notif']}");
+              var pesan;
+              if (item['em_gender'] == "PRIA") {
+                pesan =
+                    "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
+              } else {
+                pesan =
+                    "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
+              }
+
+              kirimNotifikasiToDelegasi1(
+                  getFullName,
+                  convertTanggalBikinPengajuan,
+                  item['em_id'],
+                  '',
+                  stringTanggal,
+                  typeNotifFcm,
+                  pesan,
+                  'Approval WFH');
+
+              if (item['token_notif'] != null) {
+                globalCt.kirimNotifikasiFcm(
+                  title: typeNotifFcm,
+                  message: pesan,
+                  tokens: item['token_notif'],
+                );
+              }
+            }
+          }
           if (typeAbsen.value == 1) {
             absenStatus.value = true;
             AppData.statusAbsen = true;
@@ -1020,27 +1094,46 @@ class AbsenController extends GetxController {
             AppData.statusAbsen = false;
             AppData.dateLastAbsen = tanggalUserFoto.value;
           }
-          Map<String, dynamic> body = {
-            'em_id': getEmpId,
-            'tanggal_absen': tanggalUserFoto.value,
-            'waktu': timeString.value,
-            // 'gambar': validasiGambar,
-            'reg_type': regType.value,
-            'gambar': base64fotoUser.value,
-            'lokasi': alamatUserFoto.value,
-            'latLang': latLangAbsen,
-            'catatan': deskripsiAbsen.value.text,
-            'typeAbsen': typeAbsen.value,
-            'place': selectedType.value,
-            'kategori': "1"
-          };
-
+          Map<String, dynamic> body = typewfh == "wfh"
+              ? {
+                  'em_id': getEmpId,
+                  'date': tanggalUserFoto.value,
+                  'uraian': deskripsiAbsen.value.text,
+                  'place': selectedType.value,
+                  'lokasi': alamatUserFoto.value,
+                  'latLang': latLangAbsen,
+                  // 'waktu': timeString.value,
+                  // // 'gambar': validasiGambar,
+                  // 'reg_type': regType.value,
+                  // 'gambar': base64fotoUser.value,
+                  // 'lokasi': alamatUserFoto.value,
+                  // 'latLang': latLangAbsen,
+                  // 'typeAbsen': typeAbsen.value,
+                  // 'kategori': "1"
+                }
+              : {
+                  'em_id': getEmpId,
+                  'tanggal_absen': tanggalUserFoto.value,
+                  'waktu': timeString.value,
+                  // 'gambar': validasiGambar,
+                  'reg_type': regType.value,
+                  'gambar': base64fotoUser.value,
+                  'lokasi': alamatUserFoto.value,
+                  'latLang': latLangAbsen,
+                  'catatan': deskripsiAbsen.value.text,
+                  'typeAbsen': typeAbsen.value,
+                  'place': selectedType.value,
+                  'kategori': "1"
+                };
+          print("respon wfh ${body}");
           isLoaingAbsensi.value = true;
-          var connect = Api.connectionApi("post", body, "kirimAbsen");
+          var connect = Api.connectionApi(
+              "post", body, typewfh == "wfh" ? "wfh" : "kirimAbsen");
           connect.then((dynamic res) async {
+            print("respon wfh ${res.statusCode}");
             if (res.statusCode == 200) {
               var valueBody = jsonDecode(res.body);
-              print(res.body);
+              print("respon wfh ${valueBody}");
               // for (var element in sysData.value) {
               //   if (element['kode'] == '006') {
               //     intervalControl.value = int.parse(element['name'].toString());
@@ -1924,7 +2017,8 @@ class AbsenController extends GetxController {
   }
 
   void takeFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles( type: FileType.custom,
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
         allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png']);
 
     if (result != null) {
@@ -2880,14 +2974,14 @@ class AbsenController extends GetxController {
           }
 
           kirimNotifikasiToDelegasi1(
-            getFullName,
-            convertTanggalBikinPengajuan,
-            item['em_id'],
-            '',
-            stringTanggal,
-            typeNotifFcm,
-            pesan,
-          );
+              getFullName,
+              convertTanggalBikinPengajuan,
+              item['em_id'],
+              '',
+              stringTanggal,
+              typeNotifFcm,
+              pesan,
+              'Approval Absensi');
 
           if (item['token_notif'] != null) {
             globalCt.kirimNotifikasiFcm(
@@ -2966,14 +3060,15 @@ class AbsenController extends GetxController {
       validasiDelegasiSelected,
       stringTanggal,
       typeNotifFcm,
-      pesan) {
+      pesan,
+      type) {
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
     // var description =
     //     'Anda mendapatkan delegasi pekerjaan dari $getFullName untuk pengajuan $selectedDropdownFormTidakMasukKerjaTipe, tanggal pengajuan $stringTanggal';
     Map<String, dynamic> body = {
       'em_id': fcmTokenDelegasi,
-      'title': 'Approval Absensi',
+      'title': type,
       'deskripsi': pesan,
       'url': '',
       'atten_date': convertTanggalBikinPengajuan,

@@ -480,11 +480,14 @@ class AuthController extends GetxController {
     };
     var connect = Api.connectionApi("post", body, "view_last_absen_user1");
 
+    print("data login ${body}");
+
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         print("data login ${valueBody}");
         var data = valueBody['data'];
+        // var wfh = valueBody['wfh'];
         if (data.isEmpty) {
           isautoLogout.value = false;
           signoutTime.value = '00:00:00';

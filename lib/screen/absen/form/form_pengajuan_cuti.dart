@@ -196,7 +196,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             ]),
         child: SafeArea(
           child: Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 12.0),
               child: TextButtonWidget(
                 title: "Kirim",
                 onTap: () {
@@ -504,7 +504,6 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
               // onTap: () => controller.selectedTypeCuti.value = value,
 
               onTap: () {
-                
                 var data = controller.allTipe
                     .where((p0) =>
                         p0['name'].toString().toLowerCase() ==
@@ -521,8 +520,9 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                 }
 
                 print("Allow minu ${data[0]['allow_minus']}");
-                 print("upload file  ${data[0]['upload_file']}");
-                 controller.isRequiredFile.value=data[0]['upload_file'].toString();
+                print("upload file  ${data[0]['upload_file']}");
+                controller.isRequiredFile.value =
+                    data[0]['upload_file'].toString();
 
                 // var data=controller.allTipe.value.whe
                 controller.selectedTypeCuti.value = value!;
@@ -1314,6 +1314,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
   Widget formDelegasiKepada() {
     return InkWell(
       onTap: () async {
+        print(controller.allEmployeeDelegasi.value);
         await showMenu(
           context: context,
           position: controller.selectedTypeCuti.value
@@ -1473,19 +1474,23 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                   Obx(() => controller.isRequiredFile.value=="0"? Text(
-                      "Unggah File",
-                      style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Constanst.fgPrimary),
-                    ): Text(
-                      "Unggah File *",
-                      style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Constanst.fgPrimary),
-                    ),),
+                    Obx(
+                      () => controller.isRequiredFile.value == "0"
+                          ? Text(
+                              "Unggah File",
+                              style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Constanst.fgPrimary),
+                            )
+                          : Text(
+                              "Unggah File *",
+                              style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Constanst.fgPrimary),
+                            ),
+                    ),
                     const SizedBox(height: 4),
                     Text(
                       "Ukuran file max 5 MB",

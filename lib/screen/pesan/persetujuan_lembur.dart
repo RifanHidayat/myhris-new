@@ -28,7 +28,7 @@ class _PersetujuanLemburState extends State<PersetujuanLembur>
   TabController? _tabController;
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     controller.startLoadData(
         widget.title, widget.bulan, widget.tahun, 'persetujuan');
     _tabController!.addListener(_handleTabChange);
@@ -39,10 +39,10 @@ class _PersetujuanLemburState extends State<PersetujuanLembur>
     print("Tab changed: ${_tabController!.index}");
 
     _tabController!.index == 0
-        ? controller.startLoadData(widget.title,
-            widget.bulan, widget.tahun, 'persetujuan')
-        : controller.startLoadData(widget.title,
-            widget.bulan, widget.tahun, 'riwayat');
+        ? controller.startLoadData(
+            widget.title, widget.bulan, widget.tahun, 'persetujuan')
+        : controller.startLoadData(
+            widget.title, widget.bulan, widget.tahun, 'riwayat');
   }
 
   @override

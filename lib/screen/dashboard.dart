@@ -42,6 +42,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as dom;
 import 'package:upgrader/upgrader.dart';
+
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
   @override
@@ -117,7 +118,6 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return UpgradeAlert(
-      
       child: Scaffold(
         backgroundColor: Constanst.coloBackgroundScreen,
         floatingActionButton: _isVisible == true
@@ -164,7 +164,7 @@ class _DashboardState extends State<Dashboard> {
                                       UtilsAlert.showToast(
                                           "Anda harus aktifkan kamera dan lokasi anda");
                                       controller.widgetButtomSheetAktifCamera(
-                                          'loadfirst');
+                                          type: 'loadfirst');
                                     } else {
                                       print("masuk absen user");
                                       // Get.offAll(AbsenMasukKeluar(
@@ -172,7 +172,7 @@ class _DashboardState extends State<Dashboard> {
                                       //   type: 1,
                                       // ));
                                       //  controllerAbsensi.absenSelfie();
-    
+
                                       var validasiAbsenMasukUser =
                                           controller.validasiAbsenMasukUser();
                                       if (!validasiAbsenMasukUser) {
@@ -180,9 +180,9 @@ class _DashboardState extends State<Dashboard> {
                                       } else {
                                         controllerAbsensi.titleAbsen.value =
                                             "Absen masuk";
-    
+
                                         controllerAbsensi.typeAbsen.value = 1;
-    
+
                                         //begin image picker
                                         // final getFoto = await ImagePicker()
                                         //     .pickImage(
@@ -211,13 +211,13 @@ class _DashboardState extends State<Dashboard> {
                                         //   // ));
                                         // }
                                         //end image picker
-    
+
                                         //begin face recognition
                                         // Get.to(FaceDetectorView(
                                         //   status: "masuk",
                                         // ));
                                         //end begin face recogniton
-    
+
                                         if (controllerAbsensi.regType.value ==
                                             1) {
                                           Get.to(AbsensiLocation(
@@ -228,14 +228,14 @@ class _DashboardState extends State<Dashboard> {
                                             status: "masuk",
                                           ));
                                         }
-    
+
                                         // // controllerAbsensi.getPlaceCoordinate();
                                         // ;
                                         // controllerAbsensi.facedDetection(
                                         //     status: "detection",
                                         //     absenStatus: "masuk",
                                         //     type: "1");
-    
+
                                         // var kalkulasiRadius =
                                         //     controller.radiusNotOpen();
                                         // Get.to(faceDetectionPage(
@@ -263,17 +263,18 @@ class _DashboardState extends State<Dashboard> {
                           }
                         : () async {
                             if (!controllerAbsensi.absenStatus.value) {
-                              UtilsAlert.showToast("Absen Masuk terlebih dahulu");
+                              UtilsAlert.showToast(
+                                  "Absen Masuk terlebih dahulu");
                             } else {
                               var dataUser = AppData.informasiUser;
                               var faceRecog = dataUser![0].face_recog;
-    
+
                               if (GetStorage().read('face_recog') == true) {
                                 controllerAbsensi.getPlaceCoordinate();
                                 controllerAbsensi.titleAbsen.value =
                                     "Absen Keluar";
                                 controllerAbsensi.typeAbsen.value = 2;
-    
+
                                 //begin image picker
                                 // final getFoto = await ImagePicker()
                                 //     .pickImage(
@@ -302,7 +303,7 @@ class _DashboardState extends State<Dashboard> {
                                 //   // ));
                                 // }
                                 //end image picker
-    
+
                                 if (controllerAbsensi.regType.value == 1) {
                                   Get.to(AbsensiLocation(
                                     status: "keluar",
@@ -312,7 +313,7 @@ class _DashboardState extends State<Dashboard> {
                                     status: "keluar",
                                   ));
                                 }
-    
+
                                 // controllerAbsensi.facedDetection(
                                 //     status: "detection",
                                 //     type: "2",
@@ -329,7 +330,7 @@ class _DashboardState extends State<Dashboard> {
                                 //     controller.validasiAbsenMasukUser();
                                 // print(validasiAbsenMasukUser);
                                 // if (validasiAbsenMasukUser == false) {
-    
+
                                 // } else {
                                 //   var kalkulasiRadius =
                                 //       controller.radiusNotOpen();
@@ -405,7 +406,13 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 SafeArea(
                   child: Padding(
-                    padding: EdgeInsets.only(top: _isVisible ? 252.0 : 175.0),
+                    padding: EdgeInsets.only(
+                        top: _isVisible
+                            ? controller.status.value == "[]" &&
+                                    controller.wfhstatus.value
+                                ? 272.0
+                                : 252.0
+                            : 175.0),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Constanst.colorWhite,
@@ -435,7 +442,8 @@ class _DashboardState extends State<Dashboard> {
                               //     : listModul(),
                               const SizedBox(height: 16),
                               controller.menuShowInMain.value.isEmpty
-                                  ? UtilsAlert.shimmerMenuDashboard(Get.context!)
+                                  ? UtilsAlert.shimmerMenuDashboard(
+                                      Get.context!)
                                   : MenuDashboard(),
                               cardFormPengajuan(),
                               const SizedBox(height: 16),
@@ -443,7 +451,7 @@ class _DashboardState extends State<Dashboard> {
                                   ? const SizedBox()
                                   : sliderBanner(),
                               const SizedBox(height: 10),
-    
+
                               controller.showPengumuman.value == false
                                   ? const SizedBox()
                                   : controller.informasiDashboard.value.isEmpty
@@ -490,19 +498,22 @@ class _DashboardState extends State<Dashboard> {
                                                         index: 0,
                                                       )),
                                                       child: Padding(
-                                                        padding: const EdgeInsets
-                                                                .fromLTRB(
-                                                            8.0, 3.0, 8.0, 3.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
+                                                                8.0,
+                                                                3.0,
+                                                                8.0,
+                                                                3.0),
                                                         child: Text(
                                                           "Lihat semua",
-                                                          style:
-                                                              GoogleFonts.inter(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Constanst
-                                                                      .infoLight),
+                                                          style: GoogleFonts.inter(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color: Constanst
+                                                                  .infoLight),
                                                         ),
                                                       ),
                                                     ),
@@ -512,13 +523,13 @@ class _DashboardState extends State<Dashboard> {
                                             ),
                                           ],
                                         ),
-    
+
                               controller.showPengumuman.value == false
                                   ? const SizedBox()
                                   : controller.informasiDashboard.value.isEmpty
                                       ? const SizedBox()
                                       : listInformasi(),
-    
+
                               controller.showPkwt.value == false
                                   ? const SizedBox()
                                   : controllerGlobal
@@ -566,19 +577,22 @@ class _DashboardState extends State<Dashboard> {
                                                         index: 3,
                                                       )),
                                                       child: Padding(
-                                                        padding: const EdgeInsets
-                                                                .fromLTRB(
-                                                            8.0, 3.0, 8.0, 3.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
+                                                                8.0,
+                                                                3.0,
+                                                                8.0,
+                                                                3.0),
                                                         child: Text(
                                                           "Lihat semua",
-                                                          style:
-                                                              GoogleFonts.inter(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Constanst
-                                                                      .infoLight),
+                                                          style: GoogleFonts.inter(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color: Constanst
+                                                                  .infoLight),
                                                         ),
                                                       ),
                                                     ),
@@ -599,7 +613,7 @@ class _DashboardState extends State<Dashboard> {
                                       ? const SizedBox()
                                       : listReminderPkwt(),
                               const SizedBox(height: 16),
-    
+
                               controller.showUlangTahun.value
                                   ? controller.employeeUltah.isEmpty
                                       ? const SizedBox()
@@ -644,19 +658,22 @@ class _DashboardState extends State<Dashboard> {
                                                         Informasi(index: 1),
                                                       ),
                                                       child: Padding(
-                                                        padding: const EdgeInsets
-                                                                .fromLTRB(
-                                                            8.0, 3.0, 8.0, 3.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
+                                                                8.0,
+                                                                3.0,
+                                                                8.0,
+                                                                3.0),
                                                         child: Text(
                                                           "Lihat semua",
-                                                          style:
-                                                              GoogleFonts.inter(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Constanst
-                                                                      .infoLight),
+                                                          style: GoogleFonts.inter(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color: Constanst
+                                                                  .infoLight),
                                                         ),
                                                       ),
                                                     ),
@@ -687,7 +704,7 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   ),
                 )
-    
+
                 // Padding(
                 //   padding: const EdgeInsets.only(left: 5, right: 5),
                 //   child: Row(
@@ -1062,7 +1079,7 @@ class _DashboardState extends State<Dashboard> {
                                                 "Anda harus aktifkan kamera dan lokasi anda");
                                             controller
                                                 .widgetButtomSheetAktifCamera(
-                                                    'loadfirst');
+                                                    type: 'loadfirst');
                                           } else {
                                             print("masuk absen user");
                                             // Get.offAll(AbsenMasukKeluar(
@@ -1164,35 +1181,52 @@ class _DashboardState extends State<Dashboard> {
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 12, top: 12.0, bottom: 12),
+                                      left: 4, top: 12.0, bottom: 6),
                                   child: Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Expanded(
-                                        flex: 10,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Icon(
-                                              Iconsax.login5,
-                                              color: !controllerAbsensi
-                                                      .absenStatus.value
-                                                  ? Constanst.color5
-                                                  : const Color.fromARGB(
-                                                      168, 166, 167, 158),
-                                              size: 26,
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Masuk",
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Icon(
+                                            Iconsax.login5,
+                                            color: !controllerAbsensi
+                                                    .absenStatus.value
+                                                ? Constanst.color5
+                                                : const Color.fromARGB(
+                                                    168, 166, 167, 158),
+                                            size: 26,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Masuk",
+                                                style: GoogleFonts.inter(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 16,
+                                                    color: !controllerAbsensi
+                                                            .absenStatus.value
+                                                        ? Constanst.fgPrimary
+                                                        : const Color.fromARGB(
+                                                            168,
+                                                            166,
+                                                            167,
+                                                            158)),
+                                              ),
+                                              Obx(
+                                                () => Text(
+                                                  controller.signinTime.value ==
+                                                          "00:00:00"
+                                                      ? "_ _:_ _:_ _"
+                                                      : controller
+                                                          .signinTime.value,
                                                   style: GoogleFonts.inter(
                                                       fontWeight:
                                                           FontWeight.w500,
@@ -1204,43 +1238,90 @@ class _DashboardState extends State<Dashboard> {
                                                                   .fromARGB(168,
                                                               166, 167, 158)),
                                                 ),
-                                                Obx(
-                                                  () => Text(
-                                                    controller.signinTime
-                                                                .value ==
-                                                            "00:00:00"
-                                                        ? "_ _:_ _:_ _"
-                                                        : controller
-                                                            .signinTime.value,
-                                                    style: GoogleFonts.inter(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontSize: 16,
-                                                        color: !controllerAbsensi
-                                                                .absenStatus
-                                                                .value
-                                                            ? Constanst
-                                                                .fgPrimary
-                                                            : const Color
-                                                                    .fromARGB(
-                                                                168,
-                                                                166,
-                                                                167,
-                                                                158)),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                              ),
+                                              controller.status.value == "[]" &&
+                                                      controller.wfhstatus.value
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 4.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          // Icon(
+                                                          //   Iconsax.timer,
+                                                          //   color: Constanst
+                                                          //       .color3,
+                                                          //   size: 15,
+                                                          // ),
+                                                          // SizedBox(width: 2),
+                                                          Obx(
+                                                            () => Text(
+                                                              // controller
+                                                              //     .status.value,
+                                                              "Pending WFH Approval",
+                                                              style: GoogleFonts.inter(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  fontSize: 9,
+                                                                  color: !controllerAbsensi
+                                                                          .absenStatus
+                                                                          .value
+                                                                      ? Constanst
+                                                                          .fgPrimary
+                                                                      : Constanst
+                                                                          .color4),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  : Container()
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                       Expanded(
                                         flex: 1,
-                                        child: Icon(
-                                          Iconsax.arrow_right_3,
-                                          color:
-                                              Constanst.colorNeutralFgTertiary,
-                                          size: 18,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Icon(
+                                              Iconsax.arrow_right_3,
+                                              color: Constanst
+                                                  .colorNeutralFgTertiary,
+                                              size: 18,
+                                            ),
+                                            const SizedBox(height: 22),
+                                            controller.status.value == "[]" &&
+                                                    controller.wfhstatus.value
+                                                ? controller.approveStatus
+                                                            .value ==
+                                                        "Approve"
+                                                    ? Container()
+                                                    : GestureDetector(
+                                                        onTap: () {
+                                                          controller
+                                                              .widgetButtomSheetWfhDelete();
+                                                        },
+                                                        child: Icon(
+                                                          Iconsax.close_circle5,
+                                                          color:
+                                                              Constanst.color4,
+                                                          size: 15,
+                                                        ),
+                                                      )
+                                                : Container(),
+                                          ],
                                         ),
                                       ),
                                       const SizedBox(width: 18),
@@ -1261,9 +1342,12 @@ class _DashboardState extends State<Dashboard> {
                           Expanded(
                             flex: 165,
                             child: Material(
-                              color: controllerAbsensi.absenStatus.value
+                              color: controller.status.value == "[]" &&
+                                      controller.wfhstatus.value
                                   ? Constanst.colorWhite
-                                  : Constanst.colorNonAktif,
+                                  : controllerAbsensi.absenStatus.value
+                                      ? Constanst.colorWhite
+                                      : Constanst.colorNonAktif,
                               borderRadius: const BorderRadius.only(
                                 bottomRight: Radius.circular(15.0),
                               ),
@@ -1277,6 +1361,10 @@ class _DashboardState extends State<Dashboard> {
                                   if (!controllerAbsensi.absenStatus.value) {
                                     UtilsAlert.showToast(
                                         "Absen Masuk terlebih dahulu");
+                                  } else if (controller.status.value == "[]" &&
+                                      controller.wfhstatus.value) {
+                                    UtilsAlert.showToast(
+                                        "Abeen WFH beluum di approve");
                                   } else {
                                     var dataUser = AppData.informasiUser;
                                     var faceRecog = dataUser![0].face_recog;
@@ -1382,11 +1470,16 @@ class _DashboardState extends State<Dashboard> {
                                             const SizedBox(width: 18),
                                             Icon(
                                               Iconsax.logout_15,
-                                              color: controllerAbsensi
-                                                      .absenStatus.value
-                                                  ? Constanst.color4
-                                                  : const Color.fromARGB(
-                                                      168, 166, 167, 158),
+                                              color: controller.status.value ==
+                                                          "[]" &&
+                                                      controller.wfhstatus.value
+                                                  ? const Color.fromARGB(
+                                                      168, 166, 167, 158)
+                                                  : controllerAbsensi
+                                                          .absenStatus.value
+                                                      ? Constanst.color4
+                                                      : const Color.fromARGB(
+                                                          168, 166, 167, 158),
                                               size: 26,
                                             ),
                                             const SizedBox(width: 8),
@@ -1400,38 +1493,76 @@ class _DashboardState extends State<Dashboard> {
                                                       fontWeight:
                                                           FontWeight.w500,
                                                       fontSize: 16,
-                                                      color: controllerAbsensi
-                                                              .absenStatus.value
-                                                          ? Constanst.fgPrimary
-                                                          : const Color
+                                                      color: controller.status
+                                                                      .value ==
+                                                                  "[]" &&
+                                                              controller
+                                                                  .wfhstatus
+                                                                  .value
+                                                          ? const Color
                                                                   .fromARGB(168,
-                                                              166, 167, 158)),
+                                                              166, 167, 158)
+                                                          : controllerAbsensi
+                                                                  .absenStatus
+                                                                  .value
+                                                              ? Constanst
+                                                                  .fgPrimary
+                                                              : const Color
+                                                                      .fromARGB(
+                                                                  168,
+                                                                  166,
+                                                                  167,
+                                                                  158)),
                                                 ),
                                                 Obx(
                                                   () => Text(
-                                                    controller.signoutTime
-                                                                .value ==
-                                                            "00:00:00"
+                                                    controller.status.value ==
+                                                            "[]"
                                                         ? "_ _:_ _:_ _"
-                                                        : controller
-                                                            .signoutTime.value,
+                                                        : controller.signoutTime
+                                                                    .value ==
+                                                                "00:00:00"
+                                                            ? "_ _:_ _:_ _"
+                                                            : controller
+                                                                .signoutTime
+                                                                .value,
                                                     style: GoogleFonts.inter(
                                                         fontWeight:
                                                             FontWeight.w500,
                                                         fontSize: 16,
-                                                        color: controllerAbsensi
-                                                                .absenStatus
-                                                                .value
-                                                            ? Constanst
-                                                                .fgPrimary
-                                                            : const Color
+                                                        color: controller
+                                                                        .status.value ==
+                                                                    "[]" &&
+                                                                controller
+                                                                    .wfhstatus
+                                                                    .value
+                                                            ? const Color
                                                                     .fromARGB(
                                                                 168,
                                                                 166,
                                                                 167,
-                                                                158)),
+                                                                158)
+                                                            : controllerAbsensi
+                                                                    .absenStatus
+                                                                    .value
+                                                                ? Constanst
+                                                                    .fgPrimary
+                                                                : const Color
+                                                                        .fromARGB(
+                                                                    168,
+                                                                    166,
+                                                                    167,
+                                                                    158)),
                                                   ),
-                                                )
+                                                ),
+                                                controller.status.value ==
+                                                            "[]" &&
+                                                        controller
+                                                            .wfhstatus.value
+                                                    ? Container(
+                                                        height: 20,
+                                                      )
+                                                    : Container()
                                               ],
                                             ),
                                           ],
@@ -1732,7 +1863,7 @@ class _DashboardState extends State<Dashboard> {
 
   Widget cardFormPengajuan() {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 12.0),
       child: Row(
         children: [
           Expanded(
@@ -2062,6 +2193,7 @@ class _DashboardState extends State<Dashboard> {
                         controller.menuShowInMain[0]['menu'][idxMenu]['gambar'];
                     var namaMenu =
                         controller.menuShowInMain[0]['menu'][idxMenu]['nama'];
+
                     return Padding(
                       padding: EdgeInsets.only(
                           left: idxMenu == 0 ? 16.0 : 0.0,

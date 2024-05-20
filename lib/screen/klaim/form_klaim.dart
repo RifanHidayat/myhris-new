@@ -166,14 +166,12 @@ class _FormKlaimState extends State<FormKlaim> {
             ]),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 12.0),
             child: ElevatedButton(
               onPressed: () {
-                if (controller.totalKlaim.value.text==""){
-                   UtilsAlert.showToast(
-                      "Total Klaim belum di input");
+                if (controller.totalKlaim.value.text == "") {
+                  UtilsAlert.showToast("Total Klaim belum di input");
                   return;
-
                 }
                 print(controller.totalKlaim.value.text);
                 var cv1 = controller.totalKlaim.value.text.replaceAll('Rp', '');

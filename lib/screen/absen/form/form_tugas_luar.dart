@@ -165,7 +165,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
             ]),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 12.0),
             child: ElevatedButton(
               onPressed: () {
                 controller.validasiKirimPengajuan();

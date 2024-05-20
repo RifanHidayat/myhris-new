@@ -742,191 +742,199 @@ class _PesanState extends State<Pesan> {
                     ],
                   ),
                 )
-              : RefreshIndicator(
-                  onRefresh: refreshData,
-                  child: ListView.builder(
-                      itemCount: controller.dataScreenPersetujuan.value.length,
-                      shrinkWrap: true,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        var title = controller
-                            .dataScreenPersetujuan.value[index]['title'];
-                        var jumlah = controller.dataScreenPersetujuan
-                            .value[index]['jumlah_approve'];
-                        return
-                            // title == 'Dinas Luar'
-                            //     ? Container() :
-                            InkWell(
-                          // highlightColor: Colors.white,
-                          onTap: () => controller.routeApproval(
-                              controller.dataScreenPersetujuan.value[index]),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    12.0, 12.0, 19.0, 12.0),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          title == 'Cuti'
-                                              ? 'assets/5_cuti.svg'
-                                              : title == 'Lembur'
-                                                  ? 'assets/4_lembur.svg'
-                                                  : title == 'Tidak Hadir'
-                                                      ? 'assets/3_izin.svg'
-                                                      : title == 'Tugas Luar'
-                                                          ? 'assets/6_tugas_luar.svg'
-                                                          : title ==
-                                                                  'Dinas Luar'
-                                                              ? 'assets/6_tugas_luar.svg'
-                                                              : title == 'Klaim'
-                                                                  ? 'assets/7_klaim.svg'
-                                                                  : title ==
-                                                                          'Payroll'
-                                                                      ? 'assets/3_izin.svg'
-                                                                      : title ==
-                                                                              'Absensi'
-                                                                          ? 'assets/2_absen.svg'
-                                                                          : 'assets/3_izin.svg',
-                                          height: 35,
-                                          width: 35,
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 12),
-                                          child: Text(
+              : Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: refreshData,
+                    child: ListView.builder(
+                        itemCount:
+                            controller.dataScreenPersetujuan.value.length,
+                        shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          var title = controller
+                              .dataScreenPersetujuan.value[index]['title'];
+                          var jumlah = controller.dataScreenPersetujuan
+                              .value[index]['jumlah_approve'];
+                          return
+                              // title == 'Dinas Luar'
+                              //     ? Container() :
+                              InkWell(
+                            // highlightColor: Colors.white,
+                            onTap: () => controller.routeApproval(
+                                controller.dataScreenPersetujuan.value[index]),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      12.0, 12.0, 19.0, 12.0),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
                                             title == 'Cuti'
-                                                ? 'Persetujuan Cuti'
+                                                ? 'assets/5_cuti.svg'
                                                 : title == 'Lembur'
-                                                    ? 'Persetujuan Lembur'
+                                                    ? 'assets/4_lembur.svg'
                                                     : title == 'Tidak Hadir'
-                                                        ? 'Persetujuan Izin'
+                                                        ? 'assets/3_izin.svg'
                                                         : title == 'Tugas Luar'
-                                                            ? 'Persetujuan Tugas Luar'
+                                                            ? 'assets/6_tugas_luar.svg'
                                                             : title ==
                                                                     'Dinas Luar'
-                                                                ? 'Persetujuan Dinas Luar'
+                                                                ? 'assets/6_tugas_luar.svg'
                                                                 : title ==
                                                                         'Klaim'
-                                                                    ? 'Persetujuan Klaim'
+                                                                    ? 'assets/7_klaim.svg'
                                                                     : title ==
                                                                             'Payroll'
-                                                                        ? 'Persetujuan Payroll'
+                                                                        ? 'assets/3_izin.svg'
                                                                         : title ==
                                                                                 'Absensi'
-                                                                            ? 'Persetujuan Absensi'
-                                                                            : '',
-                                            style: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w500,
-                                                color: Constanst.fgPrimary,
-                                                fontSize: 16),
+                                                                            ? 'assets/2_absen.svg'
+                                                                            : 'assets/3_izin.svg',
+                                            height: 35,
+                                            width: 35,
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    // title == 'Cuti'
-                                    //     ? Icon(
-                                    //         Iconsax.calendar_remove,
-                                    //         color: Constanst.colorPrimary,
-                                    //       )
-                                    //     : title == 'Lembur'
-                                    //         ? Icon(
-                                    //             Iconsax.clock,
-                                    //             color: Constanst.colorPrimary,
-                                    //           )
-                                    //         : title == 'Tidak Hadir'
-                                    //             ? Icon(
-                                    //                 Iconsax.clipboard_close,
-                                    //                 color:
-                                    //                     Constanst.colorPrimary,
-                                    //               )
-                                    //             : title == 'Tugas Luar'
-                                    //                 ? Icon(
-                                    //                     Iconsax.send_2,
-                                    //                     color: Constanst
-                                    //                         .colorPrimary,
-                                    //                   )
-                                    //                 : title == 'Dinas Luar'
-                                    //                     ? Icon(
-                                    //                         Iconsax.airplane,
-                                    //                         color: Constanst
-                                    //                             .colorPrimary,
-                                    //                       )
-                                    //                     : title == 'Klaim'
-                                    //                         ? Icon(
-                                    //                             Iconsax.receipt,
-                                    //                             color: Constanst
-                                    //                                 .colorPrimary,
-                                    //                           )
-                                    //                         : title == 'Payroll'
-                                    //                             ? Icon(
-                                    //                                 Iconsax
-                                    //                                     .receipt,
-                                    //                                 color: Constanst
-                                    //                                     .colorPrimary,
-                                    //                               )
-                                    //                             : title ==
-                                    //                                     'Absensi'
-                                    //                                 ? Icon(
-                                    //                                     Iconsax
-                                    //                                         .receipt,
-                                    //                                     color: Constanst
-                                    //                                         .colorPrimary,
-                                    //                                   )
-                                    //                                 : const SizedBox(),
-
-                                    Row(
-                                      children: [
-                                        Container(
-                                          height: 22,
-                                          width: 22,
-                                          decoration: BoxDecoration(
-                                              color:
-                                                  Constanst.colorStateDangerBg,
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                Radius.circular(100.0),
-                                              ),
-                                              border: Border.all(
-                                                width: 1.0,
-                                                color: Constanst
-                                                    .colorStateDangerBorder,
-                                              )),
-                                          child: Center(
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 12),
                                             child: Text(
-                                              jumlah,
+                                              title == 'Cuti'
+                                                  ? 'Persetujuan Cuti'
+                                                  : title == 'Lembur'
+                                                      ? 'Persetujuan Lembur'
+                                                      : title == 'Tidak Hadir'
+                                                          ? 'Persetujuan Izin'
+                                                          : title ==
+                                                                  'Tugas Luar'
+                                                              ? 'Persetujuan Tugas Luar'
+                                                              : title ==
+                                                                      'Dinas Luar'
+                                                                  ? 'Persetujuan Dinas Luar'
+                                                                  : title ==
+                                                                          'Klaim'
+                                                                      ? 'Persetujuan Klaim'
+                                                                      : title ==
+                                                                              'Payroll'
+                                                                          ? 'Persetujuan Payroll'
+                                                                          : title == 'Absensi'
+                                                                              ? 'Persetujuan Absensi'
+                                                                              : title == 'WFH'
+                                                                                  ? 'Persetujuan WFH'
+                                                                                  : 'Persetujuan Kasbon',
                                               style: GoogleFonts.inter(
-                                                  color: Constanst
-                                                      .colorStateOnDangerBg,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500),
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Constanst.fgPrimary,
+                                                  fontSize: 16),
                                             ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: Icon(
-                                            Icons.arrow_forward_ios,
-                                            color: Constanst.colorText2,
-                                            size: 18,
+                                        ],
+                                      ),
+                                      // title == 'Cuti'
+                                      //     ? Icon(
+                                      //         Iconsax.calendar_remove,
+                                      //         color: Constanst.colorPrimary,
+                                      //       )
+                                      //     : title == 'Lembur'
+                                      //         ? Icon(
+                                      //             Iconsax.clock,
+                                      //             color: Constanst.colorPrimary,
+                                      //           )
+                                      //         : title == 'Tidak Hadir'
+                                      //             ? Icon(
+                                      //                 Iconsax.clipboard_close,
+                                      //                 color:
+                                      //                     Constanst.colorPrimary,
+                                      //               )
+                                      //             : title == 'Tugas Luar'
+                                      //                 ? Icon(
+                                      //                     Iconsax.send_2,
+                                      //                     color: Constanst
+                                      //                         .colorPrimary,
+                                      //                   )
+                                      //                 : title == 'Dinas Luar'
+                                      //                     ? Icon(
+                                      //                         Iconsax.airplane,
+                                      //                         color: Constanst
+                                      //                             .colorPrimary,
+                                      //                       )
+                                      //                     : title == 'Klaim'
+                                      //                         ? Icon(
+                                      //                             Iconsax.receipt,
+                                      //                             color: Constanst
+                                      //                                 .colorPrimary,
+                                      //                           )
+                                      //                         : title == 'Payroll'
+                                      //                             ? Icon(
+                                      //                                 Iconsax
+                                      //                                     .receipt,
+                                      //                                 color: Constanst
+                                      //                                     .colorPrimary,
+                                      //                               )
+                                      //                             : title ==
+                                      //                                     'Absensi'
+                                      //                                 ? Icon(
+                                      //                                     Iconsax
+                                      //                                         .receipt,
+                                      //                                     color: Constanst
+                                      //                                         .colorPrimary,
+                                      //                                   )
+                                      //                                 : const SizedBox(),
+
+                                      Row(
+                                        children: [
+                                          Container(
+                                            height: 22,
+                                            width: 22,
+                                            decoration: BoxDecoration(
+                                                color: Constanst
+                                                    .colorStateDangerBg,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                  Radius.circular(100.0),
+                                                ),
+                                                border: Border.all(
+                                                  width: 1.0,
+                                                  color: Constanst
+                                                      .colorStateDangerBorder,
+                                                )),
+                                            child: Center(
+                                              child: Text(
+                                                jumlah,
+                                                style: GoogleFonts.inter(
+                                                    color: Constanst
+                                                        .colorStateOnDangerBg,
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0),
+                                            child: Icon(
+                                              Icons.arrow_forward_ios,
+                                              color: Constanst.colorText2,
+                                              size: 18,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
+                              ],
+                            ),
+                          );
+                        }),
+                  ),
                 ),
         ),
       ],

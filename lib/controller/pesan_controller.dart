@@ -11,10 +11,12 @@ import 'package:siscom_operasional/screen/pesan/persetujuan_absensi.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_cuti.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_dinas_luar.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_izin.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_kasbon.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_klaim.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_lembur.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_payroll.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_tugas_luar.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_wfh.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -42,8 +44,11 @@ class PesanController extends GetxController {
   var jumlahApproveDinasLuar = 0.obs;
   var jumlahApproveKlaim = 0.obs;
   var jumlahApprovePayroll = 0.obs;
+  var jumlahApproveWfh = 0.obs;
+  var jumlahApproveKasbon = 0.obs;
   var jumlahNotifikasiBelumDibaca = 0.obs;
   var jumlahCheckin = 0.obs;
+
   var jumlahPersetujuan = 0.obs;
 
   var jumlahRiwayat = 0.obs;
@@ -67,7 +72,9 @@ class PesanController extends GetxController {
     "Dinas Luar",
     "Klaim",
     "Payroll",
-    "Absensi"
+    "Absensi",
+    "WFH",
+    "Kasbon"
   ];
 
   @override
@@ -140,6 +147,8 @@ class PesanController extends GetxController {
           jumlahApproveKlaim.value = valueBody['jumlah_klaim'];
           jumlahApprovePayroll.value = valueBody['jumlah_payroll'];
           jumlahCheckin.value = valueBody['jumlah_checkin'];
+          jumlahApproveWfh.value = valueBody['jumlah_wfh'];
+          jumlahApproveKasbon.value = valueBody['jumlah_kasbon'];
 
           jumlahPersetujuan.value = jumlahApproveCuti.value +
               jumlahApproveLembur.value +
@@ -147,7 +156,9 @@ class PesanController extends GetxController {
               jumlahApproveTugasLuar.value +
               jumlahApproveDinasLuar.value +
               jumlahApproveKlaim.value +
-              jumlahCheckin.value;
+              jumlahCheckin.value +
+              jumlahApproveWfh.value +
+              jumlahApproveKasbon.value;
 
           this.jumlahApproveCuti.refresh();
           this.jumlahApproveLembur.refresh();
@@ -157,6 +168,8 @@ class PesanController extends GetxController {
           this.jumlahApproveKlaim.refresh();
           this.jumlahPersetujuan.refresh();
           this.jumlahCheckin.refresh();
+          this.jumlahApproveWfh.refresh();
+          this.jumlahApproveKasbon.refresh();
           jumlahApprovePayroll.refresh();
 
           print("Jumlah Approval payroll ${jumlahApprovePayroll}");
@@ -560,10 +573,18 @@ class PesanController extends GetxController {
 
         dataScreenPersetujuan.value.add(data);
         this.dataScreenPersetujuan.refresh();
-      } else if (element == "Absensi") {
+      } else if (element == "WFH") {
         var data = {
           'title': element,
-          'jumlah_approve': "${jumlahCheckin.value}",
+          'jumlah_approve': "${jumlahApproveWfh.value}",
+        };
+
+        dataScreenPersetujuan.value.add(data);
+        this.dataScreenPersetujuan.refresh();
+      } else if (element == "Kasbon") {
+        var data = {
+          'title': element,
+          'jumlah_approve': "${jumlahApproveKasbon.value}",
         };
 
         dataScreenPersetujuan.value.add(data);
@@ -626,11 +647,33 @@ class PesanController extends GetxController {
                                         bulan: bulanSelectedSearchHistory.value,
                                         tahun: tahunSelectedSearchHistory.value,
                                       ))
-                                    : Get.to(Approval(
-                                        title: index['title'],
-                                        bulan: bulanSelectedSearchHistory.value,
-                                        tahun: tahunSelectedSearchHistory.value,
-                                      ));
+                                    : index['title'] == "WFH"
+                                        ? Get.to(PersetujuanWfh(
+                                            title: index['title'],
+                                            bulan: bulanSelectedSearchHistory
+                                                .value,
+                                            tahun: tahunSelectedSearchHistory
+                                                .value,
+                                          ))
+                                        : index['title'] == "Kasbon"
+                                            ? Get.to(PersetujuanKasbon(
+                                                title: index['title'],
+                                                bulan:
+                                                    bulanSelectedSearchHistory
+                                                        .value,
+                                                tahun:
+                                                    tahunSelectedSearchHistory
+                                                        .value,
+                                              ))
+                                            : Get.to(Approval(
+                                                title: index['title'],
+                                                bulan:
+                                                    bulanSelectedSearchHistory
+                                                        .value,
+                                                tahun:
+                                                    tahunSelectedSearchHistory
+                                                        .value,
+                                              ));
     // }
   }
 
