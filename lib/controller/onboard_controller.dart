@@ -112,7 +112,7 @@ class OnboardController extends GetxController {
     Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
     print(body);
 
-    var connect = Api.connectionApi("post", body, "view_last_absen_user1");
+    var connect = Api.connectionApi("post", body, "view_last_absen_user2");
     var value = await connect;
     var valueBody = jsonDecode(value.body);
     print("view last absen ${valueBody}");

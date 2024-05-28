@@ -98,13 +98,13 @@ class AuthController extends GetxController {
 
   Future<void> loginUser() async {
     final box = GetStorage();
-    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
-    print("fcmtoken ${fcm_registration_token}");
+    // var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+    // print("fcmtoken ${fcm_registration_token}");
     UtilsAlert.showLoadingIndicator(Get.context!);
     Map<String, dynamic> body = {
       'email': email.value.text,
       'password': password.value.text,
-      'token_notif': fcm_registration_token,
+      'token_notif': "1",
       'database': selectedDb.value
     };
     var connect = Api.connectionApi("post", body, "login");
@@ -186,7 +186,7 @@ class AuthController extends GetxController {
           getAktif = "${element['status_aktif']}";
 
           AppData.isLogin = true;
-          AppData.setFcmToken = fcm_registration_token!;
+          AppData.setFcmToken = "1";
           print(element.toString());
 
           if (AppData.informasiUser![0].is_tracking.toString() == '1') {
@@ -253,15 +253,15 @@ class AuthController extends GetxController {
 
   Future<void> loginUser1() async {
     final box = GetStorage();
-    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+    // var fcm_registration_token = await FirebaseMessaging.instance.getToken();
 
-    print("fcmtoken ${fcm_registration_token}");
+  //  print("fcmtoken ${fcm_registration_token}");
 
     UtilsAlert.showLoadingIndicator(Get.context!);
     Map<String, dynamic> body = {
       'email': email.value.text,
       'password': password.value.text,
-      'token_notif': fcm_registration_token,
+      'token_notif':"1",
       'database': selectedDb.value
     };
     var connect = Api.connectionApi("post", body, "login");
@@ -333,7 +333,7 @@ class AuthController extends GetxController {
 
           AppData.isLogin = true;
           print(element.toString());
-          AppData.setFcmToken = fcm_registration_token!;
+          AppData.setFcmToken = "1";
         }
 
         if (getAktif == "ACTIVE") {
@@ -478,7 +478,7 @@ class AuthController extends GetxController {
       'start_time': startTime,
       'end_time': endTime,
     };
-    var connect = Api.connectionApi("post", body, "view_last_absen_user1");
+    var connect = Api.connectionApi("post", body, "view_last_absen_user2");
 
     print("data login ${body}");
 

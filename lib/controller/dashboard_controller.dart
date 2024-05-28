@@ -262,7 +262,7 @@ class DashboardController extends GetxController {
       'end_time': endTime,
       'pola': globalCtr.valuePolaPersetujuan.value.toString(),
     };
-    var connect = Api.connectionApi("post", body, "view_last_absen_user1");
+    var connect = Api.connectionApi("post", body, "view_last_absen_user2");
 
     connect.then((dynamic res) {
       if (res.statusCode == 200) {

@@ -674,28 +674,28 @@ class _FormLemburState extends State<FormLembur> {
             ),
           ],
         ),
-        controller.statusJam.value == ""
-            ? Container()
-            : Padding(
-                padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                child: Row(
-                  children: [
-                    Icon(
-                      Iconsax.info_circle,
-                      size: 16,
-                      color: Constanst.fgSecondary,
-                    ),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      controller.statusJam.value,
-                      style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: Constanst.fgSecondary),
-                    ),
-                  ],
-                ),
-              ),
+        // controller.statusJam.value == ""
+        //     ? Container()
+        //     : Padding(
+        //         padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+        //         child: Row(
+        //           children: [
+        //             Icon(
+        //               Iconsax.info_circle,
+        //               size: 16,
+        //               color: Constanst.fgSecondary,
+        //             ),
+        //             const SizedBox(width: 8.0),
+        //             Text(
+        //               controller.statusJam.value,
+        //               style: GoogleFonts.inter(
+        //                   fontSize: 12,
+        //                   fontWeight: FontWeight.w400,
+        //                   color: Constanst.fgSecondary),
+        //             ),
+        //           ],
+        //         ),
+        //       ),
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
           child: Divider(

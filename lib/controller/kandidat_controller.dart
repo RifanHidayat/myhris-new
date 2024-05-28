@@ -797,6 +797,10 @@ class KandidatController extends GetxController {
     });
   }
 
+
+
+  
+
   void takeFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles( type: FileType.custom,
         allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png']);

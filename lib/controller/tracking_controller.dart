@@ -1328,21 +1328,17 @@ class TrackingController extends GetxController {
   void riwayatLiveTracking({emIdEmployee}) async {
     isLoadingRiwayatLiveTracking.value = true;
     print(
-        "em_id_employee ${tahunSelectedSearchHistory.value + "-" + bulanSelectedSearchHistory.value + "-" + "01"}");
+        "em_id_employee new ${tahunSelectedSearchHistory.value + "-" + bulanSelectedSearchHistory.value.toString().padLeft(2,'0') + "-" + "01"}");
     Map<String, dynamic> body = {
       'tanggal': DateFormat('yyyy-MM-dd')
           .format(DateTime.parse(
-              "${tahunSelectedSearchHistory.value + "-" + bulanSelectedSearchHistory.value + "-" + "01"}"))
+              "${tahunSelectedSearchHistory.value + "-" + bulanSelectedSearchHistory.value.toString().padLeft(2,'0')  + "-" + "01"}"))
           .toString(),
-      'em_id_employee': emIdEmployee == ''
-          ? AppData.informasiUser == null || AppData.informasiUser!.isEmpty
-              ? ''
-              : AppData.informasiUser![0].em_id
-          : emIdEmployee,
+      'em_id_employee': emIdEmployee,
       // 'em_id_employee': 'SIS202305048',
       'database': AppData.selectedDatabase,
     };
-    print('parameter 3 ${body}');
+    print('body  ${body}');
 
     try {
       var response =
@@ -1375,18 +1371,18 @@ class TrackingController extends GetxController {
     isLoadingTrackingList.value = true;
     // trackingLists.value = [];
     Map<String, dynamic> body = {
-      // 'tanggal':
-      //     tanggal ?? DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
-      'date': '2024-01-01',
-      // 'em_id_employee':
-      //     AppData.informasiUser == null || AppData.informasiUser!.isEmpty
-      //         ? ''
-      //         : AppData.informasiUser![0].em_id,
+      'date':
+          tanggal ?? DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+      // 'date': '2024-01-01',
+      'em_id':
+          AppData.informasiUser == null || AppData.informasiUser!.isEmpty
+              ? ''
+              : AppData.informasiUser![0].em_id,
       // 'em_id': 'SIS202305048',
-      'em_id': '030500919',
+   
       // 'database': 'demohr',
     };
-    print('parameter 4 ${body}');
+    print('parameter 4 new ${body}');
 
     try {
       var response =
@@ -1394,7 +1390,7 @@ class TrackingController extends GetxController {
       print('parameter ${response}');
       var resp = jsonDecode(response.body);
 
-      print('parameter 234${resp}');
+      print('parameter 234  ${resp}');
 
       if (response.statusCode == 200) {
         print('parameter 23${resp}');
