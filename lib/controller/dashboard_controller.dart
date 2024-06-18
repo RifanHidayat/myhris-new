@@ -28,6 +28,7 @@ import 'package:siscom_operasional/model/menu.dart';
 import 'package:siscom_operasional/model/menu_dashboard_model.dart';
 import 'package:google_maps_utils/google_maps_utils.dart' as maps;
 import 'package:siscom_operasional/model/user_model.dart';
+import 'package:siscom_operasional/screen/absen/camera_view.dart';
 import 'package:siscom_operasional/screen/absen/form/form_lembur.dart';
 import 'package:siscom_operasional/screen/absen/form/form_pengajuan_izin.dart';
 import 'package:siscom_operasional/screen/absen/form/form_tugas_luar.dart';
@@ -265,6 +266,7 @@ class DashboardController extends GetxController {
     var connect = Api.connectionApi("post", body, "view_last_absen_user2");
 
     connect.then((dynamic res) {
+
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         print("data login ${valueBody}");
@@ -1254,11 +1256,46 @@ class DashboardController extends GetxController {
       if (res == false) {
         UtilsAlert.koneksiBuruk();
       } else {
+        absenControllre.showButtonlaporan.value = false;
+        controllerIzin.showButtonlaporan.value = false;
+        controllerLembur.showButtonlaporan.value = false;
+        
+        controllerTugasLuar.showButtonlaporan.value = false;
+        controllerKlaim.showButtonlaporan.value = false;
+        controllerCuti.showButtonlaporan.value = false;
+
+
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
           var temporary = valueBody['data'];
 
+          List tempData = temporary;
+
           print("data temporary ${temporary}");
+          for (var element in tempData[0]['menu']) {
+            print("Nama Menu ${element['nama']}");
+            if (element['nama'] == "Absensi") {
+              absenControllre.showButtonlaporan.value = true;
+            }
+
+            if (element['nama'].toString().trim() == "Izin") {
+              print("masuk sini ${element['nama'].toString().trim()}");
+              controllerIzin.showButtonlaporan.value = true;
+            }
+
+            if (element['nama'] == "Lembur") {
+              controllerLembur.showButtonlaporan.value = true;
+            }
+            if (element['nama'] == "Cuti") {
+              controllerCuti.showButtonlaporan.value = true;
+            }
+            if (element['nama'] == "Tugas Luar") {
+              controllerTugasLuar.showButtonlaporan.value = true;
+            }
+            if (element['nama'] == "Klaim") {
+              controllerKlaim.showButtonlaporan.value = true;
+            }
+          }
 
           menuShowInMain.value = temporary;
         }
@@ -2578,7 +2615,7 @@ class DashboardController extends GetxController {
       builder: (context) {
         return SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
@@ -2599,7 +2636,7 @@ class DashboardController extends GetxController {
                         Padding(
                           padding: const EdgeInsets.only(left: 12),
                           child: Text(
-                            "Semua Menu SISCOM HRIS",
+                            "Semua Menu",
                             style: GoogleFonts.inter(
                                 color: Constanst.fgPrimary,
                                 fontSize: 18,
@@ -2635,126 +2672,135 @@ class DashboardController extends GetxController {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(menuShowInMain.length, (index) {
                   var data = menuShowInMain[index];
-                  return InkWell(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16, right: 16),
-                          child: Text(
-                            data['nama_modul'].toString(),
-                            style: GoogleFonts.inter(
-                                color: Constanst.fgPrimary,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Wrap(
-                          direction: Axis.horizontal,
-                          runSpacing: 16.0, // gap between lines
-                          children:
-                              List.generate(data['menu'].length, (idxMenu) {
-                            var gambar = data['menu'][idxMenu]['gambar'];
-                            print(gambar);
-                            var namaMenu = data['menu'][idxMenu]['nama'];
-                            return data['menu'][idxMenu]['id'] == 8
-                                ? const SizedBox()
-                                : SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width / 4,
-                                    child: InkWell(
-                                      onTap: () => routePageDashboard(
-                                          data['menu'][idxMenu]['url']),
-                                      highlightColor: Colors.white,
-                                      child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            gambar != ""
-                                                ? Stack(
-                                                    children: [
-                                                      Container(
-                                                        height: 42,
-                                                        width: 42,
-                                                        decoration: BoxDecoration(
-                                                            color: Constanst
-                                                                .infoLight1,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        100.0)),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          left: 8,
-                                                          top: 8,
+                  return data['menu'].length <= 0
+                      ? SizedBox()
+                      : InkWell(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 16, right: 16),
+                                child: Text(
+                                  data['nama_modul'].toString(),
+                                  style: GoogleFonts.inter(
+                                      color: Constanst.fgPrimary,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Wrap(
+                                direction: Axis.horizontal,
+                                runSpacing: 16.0, // gap between lines
+                                children: List.generate(data['menu'].length,
+                                    (idxMenu) {
+                                  var gambar = data['menu'][idxMenu]['gambar'];
+                                  print(gambar);
+                                  var namaMenu = data['menu'][idxMenu]['nama'];
+                                  return data['menu'][idxMenu]['id'] == 8
+                                      ? const SizedBox()
+                                      : SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              4,
+                                          child: InkWell(
+                                            onTap: () => routePageDashboard(
+                                                data['menu'][idxMenu]['url']),
+                                            highlightColor: Colors.white,
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  gambar != ""
+                                                      ? Stack(
+                                                          children: [
+                                                            Container(
+                                                              height: 42,
+                                                              width: 42,
+                                                              decoration: BoxDecoration(
+                                                                  color: Constanst
+                                                                      .infoLight1,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              100.0)),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                left: 8,
+                                                                top: 8,
+                                                              ),
+                                                              child: SvgPicture
+                                                                  .asset(
+                                                                gambar ==
+                                                                        "watch.png"
+                                                                    ? 'assets/2_absen.svg'
+                                                                    : gambar ==
+                                                                            "tidak_masuk.png"
+                                                                        ? 'assets/3_izin.svg'
+                                                                        : gambar ==
+                                                                                "clock.png"
+                                                                            ? 'assets/4_lembur.svg'
+                                                                            : gambar == "riwayat_cuti.png"
+                                                                                ? 'assets/5_cuti.svg'
+                                                                                : gambar == "tugas_luar.png"
+                                                                                    ? 'assets/6_tugas_luar.svg'
+                                                                                    : gambar == "limit_claim.png"
+                                                                                        ? 'assets/7_klaim.svg'
+                                                                                        : gambar == "profile_kandidat.png"
+                                                                                            ? 'assets/8_kandidat.svg'
+                                                                                            : gambar == "slip_gaji.png"
+                                                                                                ? 'assets/9_slip_gaji.svg'
+                                                                                                : gambar == "pph.png"
+                                                                                                    ? 'assets/10_pph_21.svg'
+                                                                                                    : gambar == "bpjstng.png"
+                                                                                                        ? 'assets/11_bpjs_kes.svg'
+                                                                                                        : gambar == "bpjsksh.png"
+                                                                                                            ? 'assets/12_bpjs_ket.svg'
+                                                                                                            : gambar == "kasbon.png"
+                                                                                                                ? 'assets/13_kasbon.svg'
+                                                                                                                : 'assets/12_bpjs_ket.svg',
+                                                                height: 42,
+                                                                width: 42,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : Container(
+                                                          color: Constanst
+                                                              .colorButton1,
+                                                          height: 32,
+                                                          width: 32,
                                                         ),
-                                                        child: SvgPicture.asset(
-                                                          gambar == "watch.png"
-                                                              ? 'assets/2_absen.svg'
-                                                              : gambar ==
-                                                                      "tidak_masuk.png"
-                                                                  ? 'assets/3_izin.svg'
-                                                                  : gambar ==
-                                                                          "clock.png"
-                                                                      ? 'assets/4_lembur.svg'
-                                                                      : gambar ==
-                                                                              "riwayat_cuti.png"
-                                                                          ? 'assets/5_cuti.svg'
-                                                                          : gambar == "tugas_luar.png"
-                                                                              ? 'assets/6_tugas_luar.svg'
-                                                                              : gambar == "limit_claim.png"
-                                                                                  ? 'assets/7_klaim.svg'
-                                                                                  : gambar == "profile_kandidat.png"
-                                                                                      ? 'assets/8_kandidat.svg'
-                                                                                      : gambar == "slip_gaji.png"
-                                                                                          ? 'assets/9_slip_gaji.svg'
-                                                                                          : gambar == "pph.png"
-                                                                                              ? 'assets/10_pph_21.svg'
-                                                                                              : gambar == "bpjstng.png"
-                                                                                                  ? 'assets/11_bpjs_kes.svg'
-                                                                                                  : gambar == "bpjsksh.png"
-                                                                                                      ? 'assets/12_bpjs_ket.svg'
-                                                                                                      : gambar == "kasbon.png"
-                                                                                                          ? 'assets/13_kasbon.svg'
-                                                                                                          : 'assets/12_bpjs_ket.svg',
-                                                          height: 42,
-                                                          width: 42,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
-                                                : Container(
-                                                    color:
-                                                        Constanst.colorButton1,
-                                                    height: 32,
-                                                    width: 32,
+                                                  const SizedBox(height: 4),
+                                                  Text(
+                                                    namaMenu.length > 20
+                                                        ? namaMenu.substring(
+                                                                0, 20) +
+                                                            '...'
+                                                        : namaMenu,
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts.inter(
+                                                        color:
+                                                            Constanst.fgPrimary,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500),
                                                   ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              namaMenu.length > 20
-                                                  ? namaMenu.substring(0, 20) +
-                                                      '...'
-                                                  : namaMenu,
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.inter(
-                                                  color: Constanst.fgPrimary,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ]),
-                                    ),
-                                  );
-                          }),
-                        ),
-                        SizedBox(height: index == 0 ? 32 : 0),
-                      ],
-                    ),
-                  );
+                                                ]),
+                                          ),
+                                        );
+                                }),
+                              ),
+                              SizedBox(height: index == 0 ? 32 : 0),
+                            ],
+                          ),
+                        );
                   //                 style
                 }),
               ),

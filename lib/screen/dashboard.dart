@@ -2186,7 +2186,7 @@ class _DashboardState extends State<Dashboard> {
               child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   itemCount:
-                      controller.menuShowInMain.value[0]['menu'].length - 1,
+                      controller.menuShowInMain.value[0]['menu'].length ,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, idxMenu) {
                     var gambar =

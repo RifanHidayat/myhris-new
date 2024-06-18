@@ -229,6 +229,7 @@ class AktifitasController extends GetxController {
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+        print("data employee ${valueBody}");
 
         var finalFilterMasukKerja;
 
@@ -247,6 +248,11 @@ class AktifitasController extends GetxController {
         var dataIzin = valueBody['status'] == false
             ? 0
             : valueBody['data_izin'][0]['jumlah_izin'];
+
+             var dataEmployee = valueBody['status'] == false
+            ? 0
+            : valueBody['data_employee'][0]['workday'];
+            
         var dataSakit = valueBody['status'] == false
             ? 0
             : valueBody['data_sakit'][0]['jumlah_sakit'];
@@ -256,9 +262,12 @@ class AktifitasController extends GetxController {
         var dataLembur = valueBody['status'] == false
             ? 0
             : valueBody['data_lembur'][0]['jumlah_lembur'];
+
         var dataMasukWfh = valueBody['status'] == false
             ? 0
             : valueBody['data_masukwfh'][0]['jumlah_masuk_wfh'];
+
+
         List dataAbsenTepatWaktu = valueBody['status'] == false
             ? []
             : valueBody['data_absentepatwaktu'];
@@ -327,7 +336,7 @@ class AktifitasController extends GetxController {
         }
         this.jumlahTepatWaktu.refresh();
         this.infoAktifitas.refresh();
-        hitungTepatWaktu(20, jumlahTepatWaktu.value);
+        hitungTepatWaktu(int.parse("20"), jumlahTepatWaktu.value);
       }
     });
   }

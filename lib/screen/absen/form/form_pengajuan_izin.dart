@@ -58,11 +58,25 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
       for (var element in listDateTerpilih) {
         var convertDate = DateTime.parse(element);
         getDummy.add(convertDate);
+        print("tanggaln dumy ${getDummy}");
       }
       setState(() {
         controller.tanggalSelectedEdit.value = getDummy;
       });
+
+
+      
+      
+      if (widget.dataForm![0]['input_time'] == null) {
+      } else {
+        controller.inputTime.value =
+            int.parse(widget.dataForm![0]['input_time'].toString());
+      }
+
+
     } else {
+
+
       var data = controller.allTipe.value
           .where((element) => controller.allTipeFormTidakMasukKerja.value
               .toString()
@@ -81,7 +95,16 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
       } else {
         controller.showDurationIzin.value = false;
       }
+
+      if (data[0]['input_time'] == null) {
+      } else {
+        controller.inputTime.value =
+            int.parse(data[0]['input_time'].toString());
+      }
+      controller.jamAjuan.value.text="";
+      controller.sampaiJamAjuan.value.text="";
     }
+    
     super.initState();
   }
 
@@ -179,9 +202,13 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                                     formTipe(),
                                     formAjuanTanggal(),
                                     // Text(AppData.informasiUser![0].dep_group.toString()),
-                                    controller.viewFormWaktu.value == false
+                                    controller.inputTime.value == 0
                                         ? const SizedBox()
-                                        : formAjuanWaktu(),
+                                        : controller.inputTime.value == 1
+                                            ? formJam()
+                                            : controller.inputTime.value == 2
+                                                ? formJam2Waktu()
+                                                : SizedBox(),
                                     formDelegasiKepada(),
                                     formUploadFile(),
                                     formAlasan(),
@@ -212,7 +239,13 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
               child: TextButtonWidget(
                 title: "Kirim",
                 onTap: () {
+                  if (controller.inputTime.value == 1) {
+                    controller.jamAjuan.value = controller.sampaiJamAjuan.value;
+                  }
+                    print("tangagl mulai  ${controller.sampaiJamAjuan.value.text}");
+                print("tanggal selesai  ${ controller.jamAjuan.value.text}");
                   if (controller.jumlahIzin.value > 0) {
+                    print("jumlah izin ${controller.jumlahIzin.value}");
                     if (controller.percentIzin.value >= 1) {
                       UtilsAlert.showToast(
                           "Pemakaian izin telah melewati batas maksimal");
@@ -281,7 +314,12 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                             .trim()))
                     .toList();
                 // controller.loadTypeSakit();
-                print("new data upload file ${data[0]['upload_file']}");
+                if (data[0]['input_time'] == null) {
+                } else {
+                  controller.inputTime.value =
+                      int.parse(data[0]['input_time'].toString());
+                }
+                print("new data upload file ${data[0]['input_time']}");
                 controller.isRequiredFile.value =
                     data[0]['upload_file'].toString();
                 if (data[0]['leave_day'] > 0) {
@@ -489,7 +527,8 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                 elevation: 0,
                 child: SfDateRangePicker(
                   selectionMode: DateRangePickerSelectionMode.range,
-                  initialSelectedDates: controller.tanggalSelectedEdit.value,
+                  
+                  initialSelectedRanges:[PickerDateRange(DateTime.now(), DateTime.now())],
                   monthCellStyle: const DateRangePickerMonthCellStyle(
                     weekendTextStyle: TextStyle(color: Colors.red),
                     blackoutDateTextStyle: TextStyle(
@@ -587,139 +626,217 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
             )));
   }
 
-  Widget formAjuanWaktu() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SizedBox(
-              height: 8,
-            ),
-            Text(
-              "Dari jam *",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 6,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 45,
-                    width: MediaQuery.of(Get.context!).size.width,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: Constanst.borderStyle1,
-                        border: Border.all(
-                            width: 0.5,
-                            color: Color.fromARGB(255, 211, 205, 205))),
-                    child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: InkWell(
-                            onTap: () {
-                              showTimePicker(
-                                context: Get.context!,
-                                initialTime: TimeOfDay.now(),
-                                // initialEntryMode: TimePickerEntryMode.dial,
-                              ).then((value) {
-                                if (value == null) {
-                                  UtilsAlert.showToast('gagal pilih jam');
-                                } else {
-                                  var convertJam = value.hour <= 9
-                                      ? "0${value.hour}"
-                                      : "${value.hour}";
-                                  var convertMenit = value.minute <= 9
-                                      ? "0${value.minute}"
-                                      : "${value.minute}";
-                                  controller.jamAjuan.value.text =
-                                      "$convertJam:$convertMenit";
-                                  this.controller.jamAjuan.refresh();
-                                }
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8, top: 5),
-                              child: Text(
-                                "${controller.jamAjuan.value.text}",
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ))),
-                  ),
-                ],
+  Widget formJam() {
+    return Padding(
+      padding: EdgeInsets.only(left: 12, right: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SizedBox(
+                height: 8,
               ),
-            ),
-          ]),
-        ),
-        Expanded(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SizedBox(
-              height: 8,
-            ),
-            Text(
-              "Sampai Jam *",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 6,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 45,
-                    width: MediaQuery.of(Get.context!).size.width,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: Constanst.borderStyle1,
-                        border: Border.all(
-                            width: 0.5,
-                            color: Color.fromARGB(255, 211, 205, 205))),
-                    child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: InkWell(
-                            onTap: () {
-                              showTimePicker(
-                                context: Get.context!,
-                                initialTime: TimeOfDay.now(),
-                                // initialEntryMode: TimePickerEntryMode.dial,
-                              ).then((value) {
-                                if (value == null) {
-                                  UtilsAlert.showToast('gagal pilih jam');
-                                } else {
-                                  var convertJam = value.hour <= 9
-                                      ? "0${value.hour}"
-                                      : "${value.hour}";
-                                  var convertMenit = value.minute <= 9
-                                      ? "0${value.minute}"
-                                      : "${value.minute}";
-                                  controller.sampaiJamAjuan.value.text =
-                                      "$convertJam:$convertMenit";
-                                  this.controller.sampaiJamAjuan.refresh();
-                                }
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8, top: 5),
-                              child: Text(
-                                "${controller.sampaiJamAjuan.value.text.toString()}",
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ))),
-                  ),
-                ],
+              Text(
+                "jam Izin",
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-            ),
-          ]),
-        ),
-      ],
+              SizedBox(
+                height: 6,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 45,
+                      width: MediaQuery.of(Get.context!).size.width,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: Constanst.borderStyle1,
+                          border: Border.all(
+                              width: 0.5,
+                              color: Color.fromARGB(255, 211, 205, 205))),
+                      child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: InkWell(
+                              onTap: () {
+                                showTimePicker(
+                                  context: Get.context!,
+                                  initialTime: TimeOfDay.now(),
+                                  // initialEntryMode: TimePickerEntryMode.dial,
+                                ).then((value) {
+                                  if (value == null) {
+                                    UtilsAlert.showToast('gagal pilih jam');
+                                  } else {
+                                    var convertJam = value.hour <= 9
+                                        ? "0${value.hour}"
+                                        : "${value.hour}";
+                                    var convertMenit = value.minute <= 9
+                                        ? "0${value.minute}"
+                                        : "${value.minute}";
+                                    controller.sampaiJamAjuan.value.text =
+                                        "$convertJam:$convertMenit";
+                                    this.controller.sampaiJamAjuan.refresh();
+                                  }
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8, top: 5),
+                                child: Text(
+                                  "${controller.sampaiJamAjuan.value.text.toString()}",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ))),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget formJam2Waktu() {
+    return Padding(
+      padding: EdgeInsets.only(left: 12, right: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SizedBox(
+                height: 8,
+              ),
+              Text(
+                "Dari jam *",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 6,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 45,
+                      width: MediaQuery.of(Get.context!).size.width,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: Constanst.borderStyle1,
+                          border: Border.all(
+                              width: 0.5,
+                              color: Color.fromARGB(255, 211, 205, 205))),
+                      child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: InkWell(
+                              onTap: () {
+                                showTimePicker(
+                                  context: Get.context!,
+                                  initialTime: TimeOfDay.now(),
+                                  // initialEntryMode: TimePickerEntryMode.dial,
+                                ).then((value) {
+                                  if (value == null) {
+                                    UtilsAlert.showToast('gagal pilih jam');
+                                  } else {
+                                    var convertJam = value.hour <= 9
+                                        ? "0${value.hour}"
+                                        : "${value.hour}";
+                                    var convertMenit = value.minute <= 9
+                                        ? "0${value.minute}"
+                                        : "${value.minute}";
+                                    controller.jamAjuan.value.text =
+                                        "$convertJam:$convertMenit";
+                                    this.controller.jamAjuan.refresh();
+                                  }
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8, top: 5),
+                                child: Text(
+                                  "${controller.jamAjuan.value.text}",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ))),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
+          ),
+          Expanded(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SizedBox(
+                height: 8,
+              ),
+              Text(
+                "Sampai Jam *",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 6,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 45,
+                      width: MediaQuery.of(Get.context!).size.width,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: Constanst.borderStyle1,
+                          border: Border.all(
+                              width: 0.5,
+                              color: Color.fromARGB(255, 211, 205, 205))),
+                      child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: InkWell(
+                              onTap: () {
+                                showTimePicker(
+                                  context: Get.context!,
+                                  initialTime: TimeOfDay.now(),
+                                  // initialEntryMode: TimePickerEntryMode.dial,
+                                ).then((value) {
+                                  if (value == null) {
+                                    UtilsAlert.showToast('gagal pilih jam');
+                                  } else {
+                                    var convertJam = value.hour <= 9
+                                        ? "0${value.hour}"
+                                        : "${value.hour}";
+                                    var convertMenit = value.minute <= 9
+                                        ? "0${value.minute}"
+                                        : "${value.minute}";
+                                    controller.sampaiJamAjuan.value.text =
+                                        "$convertJam:$convertMenit";
+                                    this.controller.sampaiJamAjuan.refresh();
+                                  }
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8, top: 5),
+                                child: Text(
+                                  "${controller.sampaiJamAjuan.value.text.toString()} ",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ))),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
+          ),
+        ],
+      ),
     );
   }
 

@@ -37,6 +37,7 @@ class IzinController extends GetxController {
   var jumlahIzin = 0.obs;
   var percentIzin = 0.0.obs;
   var showDurationIzin = false.obs;
+  var inputTime = 0.obs;
 
   var typeTap = 0.obs;
 
@@ -434,6 +435,7 @@ class IzinController extends GetxController {
             'leave_day': element['leave_day'],
             'cut_leave': element['cut_leave'],
             'upload_file': element['upload_file'],
+            'input_time': element['input_time'],
             'ajuan': 2,
             'active': false,
           };
@@ -444,6 +446,11 @@ class IzinController extends GetxController {
         if (idEditFormTidakMasukKerja == "") {
           var listFirst = allTipeFormTidakMasukKerja.value.first;
           selectedDropdownFormTidakMasukKerjaTipe.value = listFirst;
+
+          if (allTipe[0]['input_time'] == null) {
+          } else {
+            inputTime.value = int.parse(allTipe[0]['input_time'].toString());
+          }
         }
         loadTypeIzin();
       }
@@ -471,6 +478,7 @@ class IzinController extends GetxController {
             'category': element['category'],
             'cut_leave': element['cut_leave'],
             'upload_file': element['upload_file'],
+            'input_time': element['input_time'],
             'ajuan': 3,
             'active': false,
           };
@@ -551,6 +559,7 @@ class IzinController extends GetxController {
   }
 
   void typeAjuanRefresh(name) {
+    print("name ${name}");
     for (var element in dataTypeAjuan.value) {
       if (element['nama'] == name) {
         element['status'] = true;
@@ -945,20 +954,30 @@ class IzinController extends GetxController {
     var validasiDelegasiSelected = validasiSelectedDelegasi();
     var validasiDelegasiSelectedToken = validasiSelectedDelegasiToken();
     var timeValue =
-        viewFormWaktu.value == false ? "00:00:00" : "${jamAjuan.value.text}:00";
+        viewFormWaktu.value == false ? "00:00:00" : "${jamAjuan.value.text}";
     var timeValue2 = viewFormWaktu.value == false
         ? "00:00:00"
-        : "${sampaiJamAjuan.value.text}:00";
+        : "${sampaiJamAjuan.value.text}";
 
     var convertTanggalBikinPengajuan = status == false
         ? Constanst.convertDateSimpan(tanggalBikinPengajuan.value)
         : tanggalBikinPengajuan.value;
 
+    var category = "";
+
+    List type = allTipe
+        .where(
+            (p0) => p0['type_id'].toString() == validasiTipeSelected.toString())
+        .toList();
+    if (type.isNotEmpty) {
+      category = type[0]['category'];
+    }
+
     Map<String, dynamic> body = {
       'em_id': '$getEmid',
       'typeid': validasiTipeSelected,
       'nomor_ajuan': getNomorAjuanTerakhir,
-      'leave_type': 'Full Day',
+      'leave_type': category,
       'start_date': dariTanggal.value.text,
       'end_date': sampaiTanggal.value.text,
       'leave_duration': durasiIzin.value,
@@ -974,7 +993,7 @@ class IzinController extends GetxController {
       'ajuan': getAjuanType,
       'apply_status': "Pending"
     };
-    print(body);
+    print("data body izin ${body}");
     if (status == false) {
       body['created_by'] = getEmid;
       body['menu_name'] = "Tidak Hadir";
@@ -1425,6 +1444,7 @@ class IzinController extends GetxController {
     var categoryAjuan = detailData['category'];
     var tanggalAjuanDari = detailData['start_date'];
     var tanggalAjuanSampai = detailData['end_date'];
+    var inputTime = detailData['input_time'];
     var alasan = detailData['reason'];
     var durasi = detailData['leave_duration'];
     var typeAjuan;
@@ -1653,6 +1673,123 @@ class IzinController extends GetxController {
                           ),
                         ),
                         const SizedBox(height: 12),
+                      
+                        // Divider(
+                        //   height: 0,
+                        //   thickness: 1,
+                        //   color: Constanst.border,
+                        // ),
+                        // const SizedBox(height: 12),
+                        // Container(
+                        //   child: Row(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     mainAxisAlignment: MainAxisAlignment.start,
+                        //     children: [
+                        //       Expanded(
+                        //         flex: 50,
+                        //         child: Container(
+                        //           child: Column(
+                        //             crossAxisAlignment: CrossAxisAlignment.start,
+                        //     mainAxisAlignment: MainAxisAlignment.start,
+                        //             children: [
+                        //               Text(
+                        //                 "Dari Jam",
+                        //                 style: GoogleFonts.inter(
+                        //                   fontWeight: FontWeight.w400,
+                        //                   fontSize: 14,
+                        //                   color: Constanst.fgSecondary,
+                        //                 ),
+                        //               ),
+                        //               const SizedBox(height: 4),
+                        //               Text(
+                        //                 "$durasi Hari",
+                        //                 style: GoogleFonts.inter(
+                        //                   fontWeight: FontWeight.w500,
+                        //                   fontSize: 16,
+                        //                   color: Constanst.fgPrimary,
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       ),
+                        //               Expanded(
+                        //         flex: 50,
+                        //         child: Container(
+                        //           child: Column(
+                        //             crossAxisAlignment: CrossAxisAlignment.start,
+                        //     mainAxisAlignment: MainAxisAlignment.start,
+                        //             children: [
+                        //               Text(
+                        //                 "Sampai Jam",
+                        //                 style: GoogleFonts.inter(
+                        //                   fontWeight: FontWeight.w400,
+                        //                   fontSize: 14,
+                        //                   color: Constanst.fgSecondary,
+                        //                 ),
+                        //               ),
+                        //               const SizedBox(height: 4),
+                        //               Text(
+                        //                 "$durasi Hari",
+                        //                 style: GoogleFonts.inter(
+                        //                   fontWeight: FontWeight.w500,
+                        //                   fontSize: 16,
+                        //                   color: Constanst.fgPrimary,
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
+                  inputTime.toString()=="0"?SizedBox():     Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                              const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Jam",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                inputTime.toString()=="2"?  Text(
+                          "$jamAjuan sd $sampaiJamAjuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ): Text(
+                          " $sampaiJamAjuan",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ],
+                       ),
+                      
+                        // Divider(
+                        //   height: 0,
+                        //   thickness: 1,
+                        //   color: Constanst.border,
+                        // ),
+
+                        // const SizedBox(height: 12),
+
                         //         jamAjuan == "" ||
                         //     jamAjuan == "NULL" ||
                         //     jamAjuan == null ||
