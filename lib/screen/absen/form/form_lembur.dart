@@ -140,23 +140,32 @@ class _FormLemburState extends State<FormLembur> {
                         .toString()
                         .split(":")[1]));
 
-                if (_endTime.hour >= _startTime.hour) {
-                  if (_endTime.hour == _startTime.hour) {
-                    if (_endTime.minute < _startTime.minute) {
-                      UtilsAlert.showToast(
-                          "waktu yang dimasukan tidak valid, coba periksa lagi waktu lemburmu");
+                // if (_endTime.hour >= _startTime.hour) {
+                //   if (_endTime.hour == _startTime.hour) {
+                //     if (_endTime.minute < _startTime.minute) {
+                //       UtilsAlert.showToast(
+                //           "waktu yang dimasukan tidak valid, coba periksa lagi waktu lemburmu");
 
-                      return;
-                    }
-                  }
-                  print("masuk sini");
-                  controller.validasiKirimPengajuan();
-                } else {
-                  UtilsAlert.showToast(
-                      "waktu yang dimasukan tidak valid, coba periksa lagi waktu lemburmu");
-                }
+                //       return;
+                //     }
+                //   }
+                //   print("masuk sini");
+                //   controller.validasiKirimPengajuan();
+                // } else {
+                 
+                //   UtilsAlert.showToast(
+                //       "waktu yang dimasukan tidak valid, coba periksa lagi waktu lemburmu");
+                // }
 
                 //
+
+
+
+
+
+
+                
+                  controller.validasiKirimPengajuan();
               },
               style: ElevatedButton.styleFrom(
                   foregroundColor: Constanst.colorWhite,
@@ -426,6 +435,10 @@ class _FormLemburState extends State<FormLembur> {
               color: Constanst.fgBorder,
             ),
           ),
+         Padding(padding: EdgeInsets.only(top: 4,left: 14),child: Container(
+          child: Obx(() => TextLabell(text:controller.statusJam.value)),
+        
+         ),)
         ],
       ),
     );
@@ -511,7 +524,7 @@ class _FormLemburState extends State<FormLembur> {
                           (endTime.hour == startTime.hour &&
                               endTime.minute < startTime.minute)) {
                         controller.statusJam.value =
-                            "Pemilihan jam melintasi hari";
+                            "Day + 1";
                       } else {
                         controller.statusJam.value = "";
                       }
@@ -632,7 +645,7 @@ class _FormLemburState extends State<FormLembur> {
                           (endTime.hour == startTime.hour &&
                               endTime.minute < startTime.minute)) {
                         controller.statusJam.value =
-                            "Pemilihan jam melintasi hari";
+                            "Day + 1";
                       } else {
                         controller.statusJam.value = "";
                       }

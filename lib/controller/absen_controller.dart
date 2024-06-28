@@ -1117,15 +1117,16 @@ class AbsenController extends GetxController {
                   'waktu': timeString.value,
                   // 'gambar': validasiGambar,
                   'reg_type': regType.value,
-                  'gambar': base64fotoUser.value,
+                  
                   'lokasi': alamatUserFoto.value,
                   'latLang': latLangAbsen,
                   'catatan': deskripsiAbsen.value.text,
                   'typeAbsen': typeAbsen.value,
                   'place': selectedType.value,
-                  'kategori': "1"
+                  'kategori': "1",
+                  'gambar': base64fotoUser.value,
                 };
-          print("respon wfh ${body}");
+          print("parameter wfh ${body}");
           isLoaingAbsensi.value = true;
           var connect = Api.connectionApi(
               "post", body, typewfh == "wfh" ? "wfh" : "kirimAbsen");

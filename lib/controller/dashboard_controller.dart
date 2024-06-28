@@ -225,6 +225,7 @@ class DashboardController extends GetxController {
       int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
 
       if (totalMinutes2 > totalMinutes3) {
+        print("masuk sini view las user");
         startTime = AppData.informasiUser![0].endTime;
         endTime = AppData.informasiUser![0].startTime;
 
@@ -236,6 +237,7 @@ class DashboardController extends GetxController {
 
         endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       } else {
+        print("masuk sini view las user 2");
         startTime = AppData.informasiUser![0].endTime;
         endTime = AppData.informasiUser![0].startTime;
 
@@ -263,6 +265,7 @@ class DashboardController extends GetxController {
       'end_time': endTime,
       'pola': globalCtr.valuePolaPersetujuan.value.toString(),
     };
+    print("data param ${body}");
     var connect = Api.connectionApi("post", body, "view_last_absen_user2");
 
     connect.then((dynamic res) {

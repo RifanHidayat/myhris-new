@@ -409,7 +409,7 @@ class AuthController extends GetxController {
 
   void checkAbsenUser(convert, getEmid) {
     messageNewPassword.value = "";
-    print("view last absen user");
+    print("view last absen user 3");
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
     var startTime = "";
     var endTime = "";
@@ -480,9 +480,10 @@ class AuthController extends GetxController {
       'start_time': startTime,
       'end_time': endTime,
     };
-    var connect = Api.connectionApi("post", body, "view_last_absen_user2");
+    
+    print("param view last absen ${body}");
 
-    print("data login ${body}");
+    var connect = Api.connectionApi("post", body, "view_last_absen_user2");
 
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
