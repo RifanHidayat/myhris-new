@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/setting_controller.dart';
+import 'package:siscom_operasional/screen/chatting/chat.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -96,6 +97,7 @@ class InfoKaryawan extends StatelessWidget {
               ),
             );
           } else {
+
             return Text(
               "Info Karyawan",
               style: GoogleFonts.inter(
@@ -103,6 +105,7 @@ class InfoKaryawan extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   fontSize: 20),
             );
+            
           }
         }),
         actions: [
@@ -299,6 +302,7 @@ class InfoKaryawan extends StatelessWidget {
             var full_name = controller.infoEmployee.value[index]['full_name'];
             var image = controller.infoEmployee.value[index]['em_image'];
             var title = controller.infoEmployee.value[index]['job_title'];
+             
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -313,66 +317,86 @@ class InfoKaryawan extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           image == ""
-                              ? SvgPicture.asset(
-                                  'assets/avatar_default.svg',
-                                  width: 50,
-                                  height: 50,
-                                )
-                              : CircleAvatar(
-                                  radius: 25,
-                                  child: ClipOval(
-                                    child: CachedNetworkImage(
-                                      imageUrl: "${Api.UrlfotoProfile}$image",
-                                      progressIndicatorBuilder:
-                                          (context, url, downloadProgress) =>
-                                              Container(
-                                        alignment: Alignment.center,
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.5,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: CircularProgressIndicator(
-                                            value: downloadProgress.progress),
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          Container(
-                                        color: Colors.white,
-                                        child: SvgPicture.asset(
-                                          'assets/avatar_default.svg',
-                                          width: 50,
-                                          height: 50,
+                              ? Expanded(
+                                flex: 15,
+                                child: SvgPicture.asset(
+                                    'assets/avatar_default.svg',
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                              )
+                              : Expanded(
+                                  flex: 15,
+                                child: CircleAvatar(
+                                    radius: 25,
+                                    child: ClipOval(
+                                      child: CachedNetworkImage(
+                                        imageUrl: "${Api.UrlfotoProfile}$image",
+                                        progressIndicatorBuilder:
+                                            (context, url, downloadProgress) =>
+                                                Container(
+                                          alignment: Alignment.center,
+                                          height:
+                                              MediaQuery.of(context).size.height *
+                                                  0.5,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: CircularProgressIndicator(
+                                              value: downloadProgress.progress),
                                         ),
+                                        errorWidget: (context, url, error) =>
+                                            Container(
+                                          color: Colors.white,
+                                          child: SvgPicture.asset(
+                                            'assets/avatar_default.svg',
+                                            width: 50,
+                                            height: 50,
+                                          ),
+                                        ),
+                                        fit: BoxFit.cover,
+                                        width: 50,
+                                        height: 50,
                                       ),
-                                      fit: BoxFit.cover,
-                                      width: 50,
-                                      height: 50,
                                     ),
                                   ),
-                                ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "$full_name",
-                                  style: GoogleFonts.inter(
-                                      fontSize: 16,
-                                      color: Constanst.fgPrimary,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "$title",
-                                  style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      color: Constanst.fgSecondary,
-                                      fontWeight: FontWeight.w400),
-                                )
-                              ],
+                              ),
+                          Expanded(
+                            flex: 60,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "$full_name",
+                                    style: GoogleFonts.inter(
+                                        fontSize: 16,
+                                        color: Constanst.fgPrimary,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "$title",
+                                    style: GoogleFonts.inter(
+                                        fontSize: 12,
+                                        color: Constanst.fgSecondary,
+                                        fontWeight: FontWeight.w400),
+                                  )
+                                ],
+                              ),
                             ),
-                          )
+                          ),
+                          Expanded(
+
+                            flex: 15,
+                            child: InkWell(
+                              onTap: (){
+                                Get.to(ChattingPage(title: title,fullName: full_name,image: image,));
+                              },
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Icon(Iconsax.message)),
+                            ))
                         ],
                       ),
                       const SizedBox(height: 12),

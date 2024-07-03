@@ -2185,8 +2185,7 @@ class _DashboardState extends State<Dashboard> {
             Expanded(
               child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
-                  itemCount:
-                      controller.menuShowInMain.value[0]['menu'].length ,
+                  itemCount: controller.menuShowInMain.value[0]['menu'].length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, idxMenu) {
                     var gambar =
@@ -2700,11 +2699,10 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
+    _checkversion();
     controller.updateInformasiUser();
-
     controller.initData();
     absenControllre.getTimeNow();
-
     controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
         AppData.informasiUser![0].em_id);
     controllerBpj.employeDetaiBpjs();
@@ -2740,17 +2738,20 @@ class _DashboardState extends State<Dashboard> {
     );
 
     final status = await newVersion.getVersionStatus();
-    newVersion.showUpdateDialog(
-        context: context,
-        versionStatus: status!,
-        dialogTitle: "Update SISCOM HRIS",
-        dialogText:
-            "Update versi SISCOM HRIS dari versi${status.localVersion} ke versi ${status.storeVersion}",
-        dismissAction: () {
-          Get.back();
-        },
-        updateButtonText: "Update Sekarang",
-        dismissButtonText: "Skip");
-    print("status ${status.localVersion}");
+
+    if (status != null) {
+      newVersion.showUpdateDialog(
+          context: context,
+          versionStatus: status!,
+          dialogTitle: "Update SISCOM HRIS",
+          dialogText:
+              "Update versi SISCOM HRIS dari versi ${status.localVersion} ke versi ${status.storeVersion}",
+          dismissAction: () {
+            Get.back();
+          },
+          updateButtonText: "Update Sekarang",
+          dismissButtonText: "Skip");
+      print("status ${status.localVersion}");
+    }
   }
 }

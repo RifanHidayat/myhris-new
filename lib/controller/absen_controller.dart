@@ -1021,6 +1021,71 @@ class AbsenController extends GetxController {
   }
 
   void kirimDataAbsensi({typewfh}) async {
+//// untuk cek absensi
+    print("view last absen user 3");
+    print("tes ${AppData.informasiUser![0].startTime.toString()}");
+    var startTime = "";
+    var endTime = "";
+    var startDate = "";
+    var endDate = "";
+    TimeOfDay waktu1 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[0]),
+        minute: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[1]));
+
+    TimeOfDay waktu2 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].endTime.toString().split(':')[0]),
+        minute: int.parse(AppData.informasiUser![0].startTime
+            .toString()
+            .split(':')[1])); // Waktu kedua
+
+    int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+    int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+
+    //alur normal
+    if (totalMinutes1 < totalMinutes2) {
+      startTime = AppData.informasiUser![0].startTime;
+      endTime = AppData.informasiUser![0].endTime;
+
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+      //alur beda hari
+    } else if (totalMinutes1 > totalMinutes2) {
+      var waktu3 =
+          TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+      int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+      if (totalMinutes2 > totalMinutes3) {
+        startTime = AppData.informasiUser![0].endTime;
+        endTime = AppData.informasiUser![0].startTime;
+
+        startDate = DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(Duration(days: -1)));
+
+        endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      } else {
+        startTime = AppData.informasiUser![0].endTime;
+        endTime = AppData.informasiUser![0].startTime;
+
+        endDate = DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(Duration(days: 1)));
+
+        startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      }
+    } else {
+      startTime = AppData.informasiUser![0].startTime;
+      endTime = AppData.informasiUser![0].endTime;
+
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      print("Waktu 1 sama dengan waktu 2");
+    }
+
+    ////////
+
     print("typewfh ${typewfh}");
     employeDetail();
     // if (base64fotoUser.value == "") {
@@ -1102,6 +1167,7 @@ class AbsenController extends GetxController {
                   'place': selectedType.value,
                   'lokasi': alamatUserFoto.value,
                   'latLang': latLangAbsen,
+
                   // 'waktu': timeString.value,
                   // // 'gambar': validasiGambar,
                   // 'reg_type': regType.value,
@@ -1110,6 +1176,11 @@ class AbsenController extends GetxController {
                   // 'latLang': latLangAbsen,
                   // 'typeAbsen': typeAbsen.value,
                   // 'kategori': "1"
+
+                  'start_date': startDate,
+                  'end_date': endDate,
+                  'start_time': startTime,
+                  'end_time': endTime,
                 }
               : {
                   'em_id': getEmpId,
@@ -1117,7 +1188,7 @@ class AbsenController extends GetxController {
                   'waktu': timeString.value,
                   // 'gambar': validasiGambar,
                   'reg_type': regType.value,
-                  
+
                   'lokasi': alamatUserFoto.value,
                   'latLang': latLangAbsen,
                   'catatan': deskripsiAbsen.value.text,
@@ -1125,6 +1196,11 @@ class AbsenController extends GetxController {
                   'place': selectedType.value,
                   'kategori': "1",
                   'gambar': base64fotoUser.value,
+
+                  'start_date': startDate,
+                  'end_date': endDate,
+                  'start_time': startTime,
+                  'end_time': endTime,
                 };
           print("parameter wfh ${body}");
           isLoaingAbsensi.value = true;
@@ -1231,7 +1307,12 @@ class AbsenController extends GetxController {
           'catatan': deskripsiAbsen.value.text,
           'typeAbsen': typeAbsen.value,
           'place': selectedType.value,
-          'kategori': "1"
+          'kategori': "1",
+
+          'start_date': startDate,
+          'end_date': endDate,
+          'start_time': startTime,
+          'end_time': endTime,
         };
         isLoaingAbsensi.value = true;
 
