@@ -1254,8 +1254,15 @@ class LaporanIzinController extends GetxController {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
-                                  Text(
+                                 detailData['input_time'].toString() =="2"?   Text(
                                     "$jamAjuan sd $sampaiJamAjuan",
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                  ): Text(
+                                    " $sampaiJamAjuan",
                                     style: GoogleFonts.inter(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16,

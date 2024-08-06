@@ -507,6 +507,7 @@ class DetailAbsen extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                         fontSize: 16),
                   ),
+                 
                   SizedBox(
                     // width: gambarKeluar != ''
                     //     ? MediaQuery.of(Get.context!).size.width / 2
@@ -542,6 +543,41 @@ class DetailAbsen extends StatelessWidget {
                       ),
                     ),
                   ),
+                ],
+              ),
+
+              SizedBox(height: 15,),
+
+                          Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Tipe Lokasi",
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                 
+                  SizedBox(
+                    // width: gambarKeluar != ''
+                    //     ? MediaQuery.of(Get.context!).size.width / 2
+                    //     : MediaQuery.of(Get.context!).size.width - 80,
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          " $placeIn",
+                          textAlign: TextAlign.justify,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines:
+                              controller.selengkapnyaMasuk.value ? 100 : 2,
+                          style: GoogleFonts.inter(
+                              color: Constanst.fgSecondary,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14),
+                        )),
+                  ),
+           
                 ],
               ),
               const SizedBox(height: 16),

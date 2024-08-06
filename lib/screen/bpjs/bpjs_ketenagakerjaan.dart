@@ -125,6 +125,12 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                 ],
               ),
               Obx(() {
+                 if (controller.isLoadingBpjsKetenagakerjaan.value == true) {
+                  return const Center(
+                    heightFactor: 17,
+                    child: CircularProgressIndicator(),
+                  );
+                }
                 if (controller.bpjsKetenagakerjaan.isEmpty) {
                   return Expanded(
                     child: Column(
@@ -149,12 +155,7 @@ class BpjsKetenagakerjaan extends StatelessWidget {
                     ),
                   );
                 }
-                if (controller.isLoadingBpjsKetenagakerjaan.value == true) {
-                  return const Center(
-                    heightFactor: 17,
-                    child: CircularProgressIndicator(),
-                  );
-                }
+               
                 return SingleChildScrollView(
                   child: Column(
                     children: List.generate(

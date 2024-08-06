@@ -61,6 +61,7 @@ dependencies:
   permission_handler: ^10.2.0
   get: ^4.5.1
   carousel_slider: ^4.0.0
+  sqflite: 
   email_validator: ^2.0.1
   date_field: ^3.0.2
   url_launcher: ^6.0.18
@@ -112,7 +113,10 @@ dependencies:
   simple_animations: ^5.0.0+3
   scanning_effect: ^1.0.4
   draggable_home: ^1.0.4
+  
   draggable_bottom_sheet: ^1.0.2
+  
+  
   upgrader: 
   # ffi: ^1.0.0
   # open_file_safe: ^3.2.3
@@ -123,7 +127,8 @@ dependencies:
   new_version_plus:
   # background_location_tracker: ^1.4.1
   detect_fake_location_plus:
-  flutter_background_service: ^2.4.6
+  
+  flutter_background_service: ^5.0.6
   device_info_plus:
   # animations: ^2.0.10
  

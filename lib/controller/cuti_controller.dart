@@ -62,6 +62,8 @@ class CutiController extends GetxController {
   var durasiIzin = 0.obs;
   var jumlahData = 0.obs;
 
+  var isBackDate="0".obs;
+
   var tempNamaStatus1 = "Semua Status".obs;
 
   var namaFileUpload = "".obs;
@@ -251,6 +253,7 @@ class CutiController extends GetxController {
             'allow_minus': element['allow_minus'],
             'cut_leave': element['cut_leave'],
             'upload_file': element['upload_file'],
+            'back_date': element['backdate'],
             'active': false,
           };
 
@@ -262,6 +265,7 @@ class CutiController extends GetxController {
           dateSelected.value = getFirst['select_date'];
           allowMinus.value = getFirst['allow_minus'];
           isRequiredFile.value = getFirst['upload_file'].toString();
+           isBackDate.value= getFirst['back_date'].toString();
         } else {
           var getFirst = allTipe.value
               .firstWhere((element) => element['id'] == typeIdEdit.value);
@@ -270,6 +274,7 @@ class CutiController extends GetxController {
           dateSelected.value = getFirst['select_date'];
           allowMinus.value = getFirst['allow_minus'];
           isRequiredFile.value = getFirst['upload_file'].toString();
+           isBackDate.value= getFirst['back_date'].toString();
         }
 
         this.allTipe.refresh();

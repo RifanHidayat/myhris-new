@@ -285,6 +285,8 @@ class _VerifyPasswordPayrollState extends State<VerifyPasswordPayroll> {
                                           children: [
                                             InkWell(
                                               onTap: () {
+                                                print(widget.titlepage);
+                                                 print(widget.page);
                                                 if (passwordCtr.text
                                                         .toString() ==
                                                     controller

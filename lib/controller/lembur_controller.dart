@@ -399,12 +399,14 @@ class LemburController extends GetxController {
         dariJam.value.text == "" ||
         sampaiJam.value.text == "" ||
         selectedTypeLembur.value == "" ||
-        catatan.value.text == "") {
+        catatan.value.text == "" || selectedDropdownDelegasi.value=="") {
       UtilsAlert.showToast("Lengkapi form *");
     } else {
       if (statusForm.value == false) {
         UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan");
         checkNomorAjuan();
+
+
       } else {
         UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan");
         kirimPengajuan(nomorAjuan.value.text);
@@ -443,6 +445,7 @@ class LemburController extends GetxController {
             var keyNomor = getNomorAjuanTerakhir.replaceAll("LB", '');
             var hasilTambah = int.parse(keyNomor) + 1;
             var finalNomor = "LB$hasilTambah";
+            print("final nomor ${finalNomor}");
             kirimPengajuan(finalNomor);
           }
         } else {
@@ -478,7 +481,7 @@ class LemburController extends GetxController {
         ? tanggalPengajuanInsert
         : tanggalLemburEditData;
     var hasilDurasi = hitungDurasi();
-    Map<String, dynamic> body = {
+    var  body = {
       'em_id': getEmid,
       'typeid': finalIdLembur,
       'nomor_ajuan': getNomorAjuanTerakhir,
@@ -500,10 +503,11 @@ class LemburController extends GetxController {
       print("sampe sini input");
       body['activity_name'] =
           "Membuat Pengajuan Lembur. alasan = ${catatan.value.text}";
-      var connect = Api.connectionApi("post", body, "insert-emp_labor");
+      var connect = Api.connectionApi("post", body, "lembur");
       connect.then((dynamic res) {
+         var valueBody = jsonDecode(res.body);
         if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
+         
           if (valueBody['status'] == true) {
             var stringWaktu =
                 "${dariJam.value.text} sd ${sampaiJam.value.text}";
@@ -570,6 +574,11 @@ class LemburController extends GetxController {
                   "Data periode $finalTanggalPengajuan belum tersedia, harap hubungi HRD");
             }
           }
+        }else{
+          Get.back();
+           UtilsAlert.showToast(
+                  valueBody['message']);
+
         }
       });
     } else {
@@ -577,8 +586,10 @@ class LemburController extends GetxController {
       body['cari'] = idpengajuanLembur.value;
       body['activity_name'] =
           "Edit Pengajuan Lembur. Tanggal Pengajuan = $finalTanggalPengajuan";
-      var connect = Api.connectionApi("post", body, "edit-emp_labor");
+      var connect = Api.connectionApi("post", body, "edit-lembur");
       connect.then((dynamic res) {
+        
+          var valueBody = jsonDecode(res.body);
         if (res.statusCode == 200) {
           Navigator.pop(Get.context!);
           var pesan1 = "Pengajuan lembur berhasil di edit";
@@ -592,6 +603,10 @@ class LemburController extends GetxController {
           Get.offAll(BerhasilPengajuan(
             dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
           ));
+        }else{
+              Get.back();
+           UtilsAlert.showToast(
+                  valueBody['message']);
         }
       });
     }

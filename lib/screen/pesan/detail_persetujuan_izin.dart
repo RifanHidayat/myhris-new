@@ -700,15 +700,50 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
                               fontSize: 14),
                         ),
                         const SizedBox(height: 4),
-                        controller.detailData[0]['type'] == "Klaim"
-                            ? const SizedBox()
-                            : Text(
-                                "${"${controller.detailData[0]['date_selected']}"} ",
-                                style: GoogleFonts.inter(
-                                    color: Constanst.fgPrimary,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
-                              ),
+                          controller.detailData[0]['date_selected'] == null ||
+                              controller.detailData[0]['date_selected']== "" ||
+                                controller.detailData[0]['date_selected'] == "null"
+                            ? Container()
+                            : Container(
+                             
+                              
+                              child: Wrap(
+                                  children: List.generate(
+                                     controller.detailData[0]['date_selected'].toString().split(',').length, (index) {
+                                    var nomor = index + 1;
+                                    var tanggalConvert = Constanst.convertDate7(
+                                         controller.detailData[0]['date_selected'].toString().split(',')[index]);
+                                    var tanggalConvert2 = Constanst.convertDate5(
+                                         controller.detailData[0]['date_selected'].toString().split(',')[index]);
+                                    return StreamBuilder<Object>(
+                                      stream: null,
+                                      builder: (context, snapshot) {
+                                        return Text(
+                                          index ==  controller.detailData[0]['date_selected'].toString().split(',').length - 1
+                                              ? tanggalConvert2
+                                              : '$tanggalConvert, ',
+                                          style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                            color: Constanst.fgPrimary,
+                                          ),
+                                        );
+                                      }
+                                    );
+                                  }),
+                                ),
+                            ),
+                        const SizedBox(height: 12),
+                        // controller.detailData[0]['type'] == "Klaim"
+                  
+                        //     ? const SizedBox()
+                        //     : Text(
+                        //         "${"${controller.detailData[0]['date_selected']}"} ",
+                        //         style: GoogleFonts.inter(
+                        //             color: Constanst.fgPrimary,
+                        //             fontWeight: FontWeight.w500,
+                        //             fontSize: 16),
+                        //       ),
                         Padding(
                           padding:
                               const EdgeInsets.only(top: 12.0, bottom: 12.0),
@@ -733,10 +768,7 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    controller.detailData[0]['category'] ==
-                                            "HALFDAY"
-                                        ? "${controller.detailData[0]['jamAjuan']} sd ${controller.detailData[0]['sampaiJamAjaun']}"
-                                        : "${controller.detailData[0]['durasi']} Hari",
+                                     "${controller.detailData[0]['durasi']} Hari",
                                     style: GoogleFonts.inter(
                                         color: Constanst.fgPrimary,
                                         fontWeight: FontWeight.w500,
@@ -744,6 +776,43 @@ class _DetailPersetujuanIzinState extends State<DetailPersetujuanIzin> {
                                   ),
                                 ],
                               ),
+                              controller.detailData[0]['input_time'].toString()=="0"?SizedBox():     Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                              const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.border,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Jam",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Constanst.fgSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                controller.detailData[0]['input_time'].toString()=="2"?  Text(
+                          "${controller.detailData[0]['jamAjuan']} sd ${controller.detailData[0]['sampaiJamAjaun']}",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ): Text(
+                          " ${controller.detailData[0]['sampaiJamAjaun']}",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Constanst.fgPrimary,
+                          ),
+                        ),
+                        
+                        ],
+                       ),
                         Padding(
                           padding:
                               const EdgeInsets.only(top: 12.0, bottom: 12.0),

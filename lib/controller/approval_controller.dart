@@ -144,6 +144,7 @@ class ApprovalController extends GetxController {
         }
         listNotModif.value = valueBody['data'];
         for (var element in valueBody['data']) {
+          print("Inpu time ${element['input_time']}");
           var fullName = element['full_name'] ?? "";
           var convertNama = "$fullName";
           var tanggalDari = Constanst.convertDate1("${element['start_date']}");
@@ -177,6 +178,7 @@ class ApprovalController extends GetxController {
             'image': element['image'],
             'apply_status': element['apply_status'],
             'apply2_status': element['apply2_status'],
+           
           };
           listData.value.add(data);
           listDataRiwayat.value.add(data);
@@ -574,7 +576,7 @@ class ApprovalController extends GetxController {
     });
   }
 
-  void loadDataTidakHadir(status) {
+  void    loadDataTidakHadir(status) {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
         : "spesifik_approval_multi";
@@ -635,6 +637,7 @@ class ApprovalController extends GetxController {
             'date_selected': element['date_selected'],
             'apply_status': element['apply_status'],
             'apply2_status': element['apply2_status'],
+            'input_time':element['input_time']
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -1197,19 +1200,19 @@ class ApprovalController extends GetxController {
     } else {
       url_tujuan = detailData[0]['type'] == 'Tugas Luar' ||
               detailData[0]['type'] == 'Lembur'
-          ? 'edit-emp_labor'
+          ? 'edit-emp_labor-approval'
           : detailData[0]['type'] == 'wfh'
               ? 'wfh-approval'
-              : 'edit-emp_leave';
+              : 'edit-emp_leave-approval';
     }
 
     if (valuePolaPersetujuan.value == "1") {
-      if (pilihan == true && url_tujuan == "edit-emp_leave") {
+      if (pilihan == true && url_tujuan == "edit-emp_leave-approval") {
         print("kesiniiii atuh");
         validasiPemakaianCuti(dataEditFinal);
       }
     } else {
-      if (pilihan == true && url_tujuan == "edit-emp_leave") {
+      if (pilihan == true && url_tujuan == "edit-emp_leave-approval") {
         if (dataEditFinal[0]['leave_status'] == "Approve") {
           print("kesiniiii atuh");
           validasiPemakaianCuti(dataEditFinal);
@@ -1243,7 +1246,7 @@ class ApprovalController extends GetxController {
       applyId2 = "";
       apply2Status = null;
     } else {
-      if (url_tujuan == "edit-emp_leave") {
+      if (url_tujuan == "edit-emp_leave-approval") {
         print("tes wfh ${tanggalNow}");
         if (dataEditFinal[0]['leave_status'] == "Pending") {
           print("tes wfh ${tanggalNow}");
@@ -1302,7 +1305,7 @@ class ApprovalController extends GetxController {
     var alasanRejectShow = alasanReject.value.text != ""
         ? ", Alasan pengajuan di tolak = ${alasanReject.value.text}"
         : "";
-    if (url_tujuan == 'edit-emp_leave') {
+    if (url_tujuan == 'edit-emp_leave-approval') {
       // emp_leave
       Map<String, dynamic> body = {
         'em_id': dataEditFinal[0]['em_id'],
@@ -1334,7 +1337,7 @@ class ApprovalController extends GetxController {
         'apply2_status': apply2Status
       };
       print("body approval ${body.toString()}");
-      var connect = Api.connectionApi("post", body, "edit-emp_leave");
+      var connect = Api.connectionApi("post", body, "edit-emp_leave-approval");
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
           if (pilihan == true) {
@@ -1356,7 +1359,7 @@ class ApprovalController extends GetxController {
               pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow);
         }
       });
-    } else if (url_tujuan == 'edit-emp_labor') {
+    } else if (url_tujuan == 'edit-emp_labor-approval') {
       Map<String, dynamic> body = {
         'em_id': dataEditFinal[0]['em_id'],
         'dari_jam': dataEditFinal[0]['dari_jam'],
@@ -1383,7 +1386,7 @@ class ApprovalController extends GetxController {
         "approve2_status": apply2Status
       };
       print("body approval ${body.toString()}");
-      var connect = Api.connectionApi("post", body, "edit-emp_labor");
+      var connect = Api.connectionApi("post", body, "edit-emp_labor-approval");
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
           print('berhasil sampai sini edit emp labor');
@@ -2012,9 +2015,9 @@ class ApprovalController extends GetxController {
       'status': statusNotif,
       'view': '0',
     };
-    if (url_tujuan == 'edit-emp_leave') {
+    if (url_tujuan == 'edit-emp_leave-approval') {
       body['em_id'] = dataEditFinal[0]['em_id'];
-    } else if (url_tujuan == 'edit-emp_labor') {
+    } else if (url_tujuan == 'edit-emp_labor-approval') {
       body['em_id'] = dataEditFinal[0]['em_id'];
     } else if (url_tujuan == 'edit-emp_claim') {
       body['em_id'] = dataEditFinal[0]['em_id'];

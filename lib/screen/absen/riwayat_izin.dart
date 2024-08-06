@@ -30,6 +30,7 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
 
     controller.tempNamaTipe1.value == "Semua Tipe";
     controller.loadDataAjuanIzin();
+    controller.loadTypeSakit();
     // controller.changeTypeSelected(2);
   }
 

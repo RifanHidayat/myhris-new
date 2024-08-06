@@ -1,8 +1,11 @@
+import 'dart:ui';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -20,12 +23,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
 import 'package:siscom_operasional/model/detail_tracking.dart';
 import 'package:siscom_operasional/model/riwayat_live_tracking.dart';
 import 'package:siscom_operasional/model/shift_model.dart';
 import 'package:siscom_operasional/model/tracking_list.dart';
+import 'package:siscom_operasional/model/user_model.dart';
 import 'package:siscom_operasional/screen/absen/berhasil_absen.dart';
 import 'package:siscom_operasional/screen/absen/berhasil_registrasi.dart';
 import 'package:siscom_operasional/screen/absen/detail_absen.dart';
@@ -54,7 +59,18 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 
+import '../main.dart';
+
 class TrackingController extends GetxController {
+
+   @override
+  void onInit() async {
+ 
+    // checkIsLogin();
+    print("Init");
+    super.onInit();
+    // initializeService();
+  }
   // final controllerDashboard = Get.put(DashboardController());
   // PageController? pageViewFilterAbsen;
   var em_id = "".obs;
@@ -1130,6 +1146,34 @@ class TrackingController extends GetxController {
   // }
 
   void tracking(String latitude, String longitude) async {
+    print("Masuk Sini tracking");
+    final prefs = await SharedPreferences.getInstance();
+ var emId= prefs.getString('em_id');
+ var database= prefs.getString('dbname');
+
+  List<String>? listData = prefs.getStringList('informasiUser')??[];
+  List<UserModel> userModel= listData.map((e) => UserModel.fromMap(jsonDecode(e))).toList();
+
+
+  //List<String> listData = LocalStorage.getFromDisk('informasiUser');
+
+  //  static List<UserModel>? get informasiUser {
+  //   if (LocalStorage.getFromDisk('informasiUser') != null) {
+  //     List<String> listData = LocalStorage.getFromDisk('informasiUser');
+  //     return listData.map((e) => UserModel.fromMap(jsonDecode(e))).toList();
+  //   }
+  //   return null;
+  // }
+
+ 
+ print("dbname new ${prefs.getString('selectedDatabase')}");
+ 
+ print("emId App Data ${AppData.informasiUser == null || AppData.informasiUser!.isEmpty
+          ? ''
+          : AppData.informasiUser![0].em_id}");
+ 
+ print("dbname AppData ${AppData.selectedDatabase}");
+
     // print("informasiUser  ");
     // print("informasiUser ${AppData.informasiUser![0].em_id}");
     List<Placemark> placemarks = await placemarkFromCoordinates(
@@ -1141,9 +1185,7 @@ class TrackingController extends GetxController {
 
     Map<String, dynamic> body = {
       'tanggal': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
-      'em_id': AppData.informasiUser == null || AppData.informasiUser!.isEmpty
-          ? ''
-          : AppData.informasiUser![0].em_id,
+      'em_id': "${userModel.isNotEmpty?userModel[0].em_id:"tidak dapat"}",
 
       // 'em_id':
       //     AppData.informasiUser!.isEmpty ? '' : AppData.informasiUser![0].em_id,
@@ -1151,7 +1193,7 @@ class TrackingController extends GetxController {
       'longitude': longitude.toString(),
       "latitude": latitude.toString(),
       'alamat': address.toString(),
-      'database': AppData.selectedDatabase,
+      'database':prefs.getString('selectedDatabase'),
     };
     print('parameter 1111 ${body}');
 
@@ -1445,8 +1487,8 @@ class TrackingController extends GetxController {
   }
 
   Future<void> isTracking() async {
-    print("isTracking ${AppData.informasiUser![0].is_tracking}");
-    if (AppData.informasiUser![0].is_tracking == 1) {
+    print("isTracking new new new ${AppData.informasiUser![0].is_tracking}");
+    if (AppData.informasiUser![0].is_tracking.toString() == "1") {
       bagikanlokasi.value = "aktif";
 
       isTrackingLokasi.value = true;
@@ -1458,13 +1500,15 @@ class TrackingController extends GetxController {
       // AppData.informasiUser![0].is_tracking = "1";
       // controllerDashboard.updateInformasiUser();
 
-      final service = FlutterBackgroundService();
-      var isRunning = await service.isRunning();
+      // final service = FlutterBackgroundService();
+      // var isRunning = await service.isRunning();
 
-      // service.invoke("stopService");
+      // // service.invoke("stopService");
       // Timer.periodic(const Duration(seconds: 1), (timer) async {
-      service.startService();
+      // service.startService();
       // });
+
+        //FlutterBackgroundService().invoke("setAsForeground");
 
       print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
       print('hidup');
@@ -1484,10 +1528,10 @@ class TrackingController extends GetxController {
       // AppData.informasiUser![0].is_tracking = "0";
       // controllerDashboard.updateInformasiUser();
 
-      final service = FlutterBackgroundService();
-      var isRunning = await service.isRunning();
+    //   final service = FlutterBackgroundService();
+    //  // var isRunning = await service.isRunning();
 
-      service.invoke("stopService");
+    //   service.invoke("stopService");
 
       print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
       print(
@@ -3922,4 +3966,110 @@ class TrackingController extends GetxController {
       }
     });
   }
+
+    void onStartTracking(ServiceInstance service) async {
+  DartPluginRegistrant.ensureInitialized();
+
+  if (service is AndroidServiceInstance) {
+    service.on('setAsForeground').listen((event) {
+      service.setAsForegroundService();
+    });
+
+    service.on('setAsBackground').listen((event) {
+      service.setAsBackgroundService();
+    });
+  }
+
+  service.on('stopService').listen((event) {
+    service.stopSelf();
+  });
+
+  Timer.periodic(const Duration(seconds: 1), (timer) async {
+    if (service is AndroidServiceInstance) {
+      print("tes");
+      service.setForegroundNotificationInfo(
+        title: "Background Service",
+        content: "Updated at ${DateTime.now()}",
+      );
+    }
+     // Update the notification content
+      flutterLocalNotificationsPlugin.show(
+        888,
+        'Background Service',
+        'Service updated at ${DateTime.now()}',
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'my_foreground',
+            'MY FOREGROUND SERVICE',
+            channelDescription: 'This channel is used for important notifications.',
+            importance: Importance.low,
+            priority: Priority.low,
+            ongoing: true,
+          ),
+        ),
+      );
+    
+
+    print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
+
+    service.invoke(
+      'update',
+      {
+        "current_date": DateTime.now().toIso8601String(),
+      },
+    );
+  });
+}
+
+
+Future<void> initializeService() async {
+  final service = FlutterBackgroundService();
+
+  // OPTIONAL, using custom notification channel id
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'my_foreground', // id
+    'MY FOREGROUND SERVICE', // title
+    description: 'This channel is used for important notifications.', // description
+    importance: Importance.low, // default is low, other value is high
+  );
+
+  await service.configure(
+    androidConfiguration: AndroidConfiguration(
+      // this will be executed when app is in foreground or background in separated isolate
+      onStart: onStartTracking,
+
+      // auto start service
+      autoStart: true,
+      isForegroundMode: true,
+
+      notificationChannelId: 'my_foreground',
+      initialNotificationTitle: 'Background Service',
+      initialNotificationContent: 'Service is running',
+      foregroundServiceNotificationId: 888,
+    ),
+    iosConfiguration: IosConfiguration(
+      // auto start service
+      autoStart: true,
+
+      // this will be executed when app is in foreground in separated isolate
+      onForeground: onStartTracking,
+
+      // you have to enable background fetch capability on xcode project
+      onBackground: onIosBackground,
+    ),
+  );
+
+  print("masuk sini init");
+
+  service.startService();
+}
+
+// to ensure this executed
+// run app from xcode, then from xcode menu, select Simulate Background Fetch
+bool onIosBackground(ServiceInstance service) {
+  WidgetsFlutterBinding.ensureInitialized();
+  print('FLUTTER BACKGROUND FETCH');
+  return true;
+}
+
 }

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/lembur_controller.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
@@ -57,8 +58,8 @@ class _FormLemburState extends State<FormLembur> {
         leadingWidth: 50,
         titleSpacing: 0,
         centerTitle: true,
-        title: Text(
-          "Pengajuan Lembur",
+        title: Text( 
+          "Pengajuan Lembur ",
           style: GoogleFonts.inter(
               color: Constanst.fgPrimary,
               fontWeight: FontWeight.w500,
@@ -316,6 +317,19 @@ class _FormLemburState extends State<FormLembur> {
     );
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    // if (picked != null && picked != _selectedDate)
+      setState(() {
+        //_selectedDate = picked;
+      });
+  }
+
   Widget formHariDanTanggal() {
     return InkWell(
       onTap: () async {
@@ -326,7 +340,7 @@ class _FormLemburState extends State<FormLembur> {
         //     DateTime(now.year, now.month + 1, 0);
         var dateSelect = await showDatePicker(
           context: Get.context!,
-          firstDate: DateTime(2000),
+          firstDate: AppData.informasiUser![0].isBackDateLembur.toString()=="0"? DateTime(2000):DateTime.now(),
           lastDate: DateTime(2100),
           initialDate: controller.initialDate.value,
           cancelText: 'Batal',

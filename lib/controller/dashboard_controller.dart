@@ -13,6 +13,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
@@ -203,7 +204,7 @@ class DashboardController extends GetxController {
     TimeOfDay waktu2 = TimeOfDay(
         hour: int.parse(
             AppData.informasiUser![0].endTime.toString().split(':')[0]),
-        minute: int.parse(AppData.informasiUser![0].startTime
+        minute: int.parse(AppData.informasiUser![0].endTime
             .toString()
             .split(':')[1])); // Waktu kedua
 
@@ -242,7 +243,7 @@ class DashboardController extends GetxController {
         endTime = AppData.informasiUser![0].startTime;
 
         endDate = DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(Duration(days: 1)));
+            .format(DateTime.now().add(Duration(days: 2)));
 
         startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       }
@@ -252,7 +253,7 @@ class DashboardController extends GetxController {
 
       startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      print("Waktu 1 sama dengan waktu 2");
+      print("Waktu 1 sama dengan waktu 2 new ${totalMinutes1}  ${totalMinutes2}");
     }
     Map<String, dynamic> body = {
       'atten_date': DateFormat('yyyy-MM-dd')
@@ -272,7 +273,7 @@ class DashboardController extends GetxController {
 
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-        print("data login ${valueBody}");
+        print("data login new ${valueBody}");
         // print(
         //     "hasil view_last_absen_user1 wfhstatus.valu ${valueBody['data'][0]['place_in'].toString()}");
         // var data = valueBody['wfh'] ?? valueBody['data'];
@@ -1101,19 +1102,42 @@ class DashboardController extends GetxController {
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {'em_id': getEmid};
     var connect = Api.connectionApi("post", body, "refresh_employee");
-    connect.then((dynamic res) {
+    connect.then((dynamic res)  async{
       var valueBody = jsonDecode(res.body);
-      print("data ${valueBody}");
+      print("data refresh employee ${valueBody}");
 
       if (valueBody['status'] == false) {
         UtilsAlert.showToast(valueBody['message']);
         Navigator.pop(Get.context!);
       } else {
-        print("data employee ${valueBody['data']}");
+        print("data employee baru new ${valueBody['data']}");
         AppData.informasiUser = null;
         List<UserModel> getData = [];
+           var isBackDateSakit = "0";
+        var isBackDateIzin = "0";
+        var isBackDateCuti = "0";
+        var isBackDateTugasLuar = "0";
+        var isBackDateDinasLuar = "0";
+        var isBackDateLembur = "0";
+
         for (var element in valueBody['data']) {
+          if (element['back_date'] == "" || element['back_date'] == null) {
+          } else {
+            List isBackDates = element['back_date'].toString().split(',');
+            isBackDateSakit = isBackDates[0].toString();
+            isBackDateIzin = isBackDates[1].toString();
+            isBackDateCuti = isBackDates[2].toString();
+            isBackDateTugasLuar = isBackDates[3].toString();
+            isBackDateDinasLuar = isBackDates[4].toString();
+            isBackDateLembur = isBackDates[5].toString();
+          }
           var data = UserModel(
+        isBackDateSakit: isBackDateSakit,
+            isBackDateIzin: isBackDateIzin,
+            isBackDateCuti: isBackDateCuti,
+            isBackDateTugasLuar: isBackDateTugasLuar,
+            isBackDateDinasLuar: isBackDateDinasLuar,
+            isBackDateLembur: isBackDateLembur,
               em_id: element['em_id'] ?? "",
               des_id: element['des_id'] ?? 0,
               dep_id: element['dep_id'] ?? 0,
@@ -1149,11 +1173,22 @@ class DashboardController extends GetxController {
               is_tracking: element['is_tracking']);
           print(element['posisi']);
           getData.add(data);
+          final prefs = await SharedPreferences.getInstance();
+  await prefs.setString("interval_tracking", element['interval_tracking'].toString());
+   await prefs.setString("em_id", element['em_id'].toString());
+    await prefs.setString("", element['em_id'].toString());
+   
+
+  print("interval tracking ${ element['interval_tracking'].toString()}");
+     
+     
         }
         AppData.informasiUser = getData;
 
         getUserInfo();
+        
         controllerTracking.isLoadingDetailTracking.value = false;
+         controllerTracking.isTracking();
       }
       //   Api().validateAuth(res.statusCode );
     });

@@ -24,6 +24,7 @@ import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
 class IzinController extends GetxController {
   var cari = TextEditingController().obs;
   var nomorAjuan = TextEditingController().obs;
@@ -56,6 +57,9 @@ class IzinController extends GetxController {
   var konfirmasiAtasan = [].obs;
   var tanggalSelectedEdit = <DateTime>[].obs;
   var isRequiredFile = '0'.obs;
+  var isBackdate="0".obs;
+
+  var isLoadingzin=false.obs;
 
   Rx<List<String>> allEmployeeDelegasi = Rx<List<String>>([]);
   Rx<List<String>> allTipeFormTidakMasukKerja = Rx<List<String>>([]);
@@ -278,8 +282,8 @@ class IzinController extends GetxController {
 
   Future<bool> loadDataAjuanIzinCategori({id}) async {
     print("masuk sini");
-    AlllistHistoryAjuan.value.clear();
-    listHistoryAjuan.value.clear();
+    // AlllistHistoryAjuan.value.clear();
+    // listHistoryAjuan.value.clear();
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {
@@ -411,6 +415,8 @@ class IzinController extends GetxController {
   }
 
   void loadTypeSakit() {
+    isLoadingzin.value=true;
+    showTipe.value =false;
     allTipe.value.clear();
     Map<String, dynamic> body = {'val': 'status', 'cari': '2'};
     var connect = Api.connectionApi("post", body, "whereOnce-leave_types");
@@ -436,6 +442,7 @@ class IzinController extends GetxController {
             'cut_leave': element['cut_leave'],
             'upload_file': element['upload_file'],
             'input_time': element['input_time'],
+            'back_date':element['backdate']??"0",
             'ajuan': 2,
             'active': false,
           };
@@ -450,6 +457,7 @@ class IzinController extends GetxController {
           if (allTipe[0]['input_time'] == null) {
           } else {
             inputTime.value = int.parse(allTipe[0]['input_time'].toString());
+          isBackdate.value=allTipe[0]['back_date'].toString();
           }
         }
         loadTypeIzin();
@@ -479,6 +487,7 @@ class IzinController extends GetxController {
             'cut_leave': element['cut_leave'],
             'upload_file': element['upload_file'],
             'input_time': element['input_time'],
+             'back_date':element['backdate']??"0",
             'ajuan': 3,
             'active': false,
           };
@@ -494,6 +503,34 @@ class IzinController extends GetxController {
         var getFirst = allTipe.value.first;
 
         isRequiredFile.value = getFirst['upload_file'].toString();
+
+         var data1 = allTipe.value
+          .where((element) =>allTipeFormTidakMasukKerja.value
+              .toString()
+              .toLowerCase()
+              .contains(element['name'].toString().toLowerCase()))
+          .toList();
+
+      if (data1[0]['leave_day'] > 0) {
+        loadDataAjuanIzinCategori(id: data1[0]['id']);
+       showDurationIzin.value = true;
+        jumlahIzin.value = data[0]['leave_day'];
+        percentIzin.value = double.parse(
+            ((izinTerpakai.value / jumlahIzin.value) *
+                    100)
+                .toString());
+      } else {
+        showDurationIzin.value = false;
+      }
+
+      if (data1[0]['input_time'] == null) {
+      } else {
+        inputTime.value =
+            int.parse(data[0]['input_time'].toString());
+      }
+      jamAjuan.value.text="";
+     sampaiJamAjuan.value.text="";
+        isLoadingzin.value=false;
       }
     });
   }
@@ -949,10 +986,12 @@ class IzinController extends GetxController {
     var dataUser = AppData.informasiUser;
     var getEmid = "${dataUser![0].em_id}";
     var getFullName = "${dataUser[0].full_name}";
+   
     var validasiTipeSelected = validasiSelectedType();
     var getAjuanType = validasiTypeAjuan();
     var validasiDelegasiSelected = validasiSelectedDelegasi();
     var validasiDelegasiSelectedToken = validasiSelectedDelegasiToken();
+   
     var timeValue =
         viewFormWaktu.value == false ? "00:00:00" : "${jamAjuan.value.text}";
     var timeValue2 = viewFormWaktu.value == false
@@ -1054,6 +1093,7 @@ class IzinController extends GetxController {
                     tokens: item['token_notif']);
               }
             }
+            loadTypeSakit();
 
             Get.offAll(BerhasilPengajuan(
               dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
@@ -1102,7 +1142,7 @@ class IzinController extends GetxController {
             'nameType': '${selectedDropdownFormTidakMasukKerjaTipe.value}',
             'nomor_ajuan': '${getNomorAjuanTerakhir}',
           };
-
+    loadTypeSakit();
           Get.offAll(BerhasilPengajuan(
             dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
           ));
@@ -1624,30 +1664,35 @@ class IzinController extends GetxController {
                                 detailData['date_selected'] == "" ||
                                 detailData['date_selected'] == "null"
                             ? Container()
-                            : Row(
-                                children: List.generate(
-                                    listTanggalTerpilih.length, (index) {
-                                  var nomor = index + 1;
-                                  var tanggalConvert = Constanst.convertDate7(
-                                      listTanggalTerpilih[index]);
-                                  var tanggalConvert2 = Constanst.convertDate5(
-                                      listTanggalTerpilih[index]);
-                                  return Row(
-                                    children: [
-                                      Text(
-                                        index == listTanggalTerpilih.length - 1
-                                            ? tanggalConvert2
-                                            : '$tanggalConvert, ',
-                                        style: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16,
-                                          color: Constanst.fgPrimary,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }),
-                              ),
+                            : Container(
+                             
+                              
+                              child: Wrap(
+                                  children: List.generate(
+                                      listTanggalTerpilih.length, (index) {
+                                    var nomor = index + 1;
+                                    var tanggalConvert = Constanst.convertDate7(
+                                        listTanggalTerpilih[index]);
+                                    var tanggalConvert2 = Constanst.convertDate5(
+                                        listTanggalTerpilih[index]);
+                                    return StreamBuilder<Object>(
+                                      stream: null,
+                                      builder: (context, snapshot) {
+                                        return Text(
+                                          index == listTanggalTerpilih.length - 1
+                                              ? tanggalConvert2
+                                              : '$tanggalConvert, ',
+                                          style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                            color: Constanst.fgPrimary,
+                                          ),
+                                        );
+                                      }
+                                    );
+                                  }),
+                                ),
+                            ),
                         const SizedBox(height: 12),
                         Divider(
                           height: 0,

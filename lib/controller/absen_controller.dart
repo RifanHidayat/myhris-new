@@ -104,6 +104,7 @@ class AbsenController extends GetxController {
   var tempNamaTipe1 = "".obs;
 
   var historyAbsen = <AbsenModel>[].obs;
+    var tempHistoryAbsen = <AbsenModel>[].obs;
   var historyAbsenShow = [].obs;
   var placeCoordinate = [].obs;
   var departementAkses = [].obs;
@@ -1037,7 +1038,7 @@ class AbsenController extends GetxController {
     TimeOfDay waktu2 = TimeOfDay(
         hour: int.parse(
             AppData.informasiUser![0].endTime.toString().split(':')[0]),
-        minute: int.parse(AppData.informasiUser![0].startTime
+        minute: int.parse(AppData.informasiUser![0].endTime
             .toString()
             .split(':')[1])); // Waktu kedua
 
@@ -1432,28 +1433,34 @@ class AbsenController extends GetxController {
   }
 
   void loadHistoryAbsenUser() {
+    print("masuk sini terbaru new");
     historyAbsen.value.clear();
+    historyAbsenShow.value.clear();
 
     var dataUser = AppData.informasiUser;
 
     var getEmpId = dataUser![0].em_id;
     print(getEmpId);
-    Map<String, dynamic> body = {
+    var  body = {
       'em_id': getEmpId,
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
     };
-    var connect = Api.connectionApi("post", body, "history-attendance");
+    print(body);
+    var connect = Api.connectionApi("post", body, "attendance");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
+
         var valueBody = jsonDecode(res.body);
+        print('data body ${valueBody}');
         if (valueBody['status'] == true) {
           List data = valueBody['data'];
           loading.value =
               data.length == 0 ? "Data tidak ditemukan" : "Memuat data...";
           for (var el in data) {
-            historyAbsen.value.add(AbsenModel(
-                id: el['id'] ?? "",
+                historyAbsen.value.add(AbsenModel(
+                  date: el['date'],
+                id: el['id'] ?? 0,
                 em_id: el['em_id'] ?? "",
                 atten_date: el['atten_date'] ?? "",
                 signin_time: el['signin_time'] ?? "",
@@ -1475,101 +1482,190 @@ class AbsenController extends GetxController {
                 signin_addr: el['signin_addr'] ?? "",
                 signout_addr: el['signout_addr'] ?? "",
                 reqType: el['reg_type'] ?? 0,
-                atttype: el['atttype'] ?? 0));
-          }
-          if (historyAbsen.value.length != 0) {
-            var listTanggal = [];
-            var finalData = [];
-            for (var element in historyAbsen.value) {
-              listTanggal.add(element.atten_date);
-            }
-            listTanggal = listTanggal.toSet().toList();
-            for (var element in listTanggal) {
-              var valueTurunan = [];
-              var stringDateAdaTurunan = "";
-              for (var element1 in historyAbsen.value) {
-                if (element == element1.atten_date) {
-                  var dataTurunan = {
-                    'id': element1.id,
-                    'signin_time': element1.signin_time,
-                    'signout_time': element1.signout_time,
-                    'atten_date': element1.atten_date,
-                    'place_in': element1.place_in,
-                    'place_out': element1.place_out,
-                    'signin_note': element1.signin_note,
-                    'signin_longlat': element1.signin_longlat,
-                    'signout_longlat': element1.signout_longlat,
-                    'reg_type': element1.reqType
-                  };
-                  stringDateAdaTurunan = "${element1.atten_date}";
-                  valueTurunan.add(dataTurunan);
-                }
-              }
-              List hasilFilter = [];
-              List hasilFilterPengajuan = [];
-              for (var element1 in valueTurunan) {
-                if (element1['place_in'] == 'pengajuan') {
-                  hasilFilterPengajuan.add(element1);
-                } else {
-                  hasilFilter.add(element1);
-                }
-              }
-              List hasilFinalPengajuan = [];
-              if (hasilFilterPengajuan.isNotEmpty) {
-                var data = hasilFilterPengajuan;
-                var seen = Set<String>();
-                List filter = data
-                    .where((pengajuan) => seen.add(pengajuan['signin_note']))
-                    .toList();
-                hasilFinalPengajuan = filter;
-              }
-              List finalAllData = new List.from(hasilFilter)
-                ..addAll(hasilFinalPengajuan);
+                atttype: el['atttype'] ?? 0,
+                namaLembur: el['lembur'],
+                namaTugasLuar: el['tuas_luar'],
+                namaCuti: el['cuti'],
+                namaSakit: el['sakit'],
+                namaIzin: el['izin'],
+                namaDinasLuar: el['dinas_luar'],
+                offDay: el['off_date'],
+                namaHariLibur: el['hari_libur'],
+                statusView: el['status_view']??false
+                ));
+                tempHistoryAbsen.value=historyAbsen.value;
+            // historyAbsen.value.add(AbsenModel(
+            //     id: el['id'] ?? "",
+            //     em_id: el['em_id'] ?? "",
+            //     atten_date: el['atten_date'] ?? "",
+            //     signin_time: el['signin_time'] ?? "",
+            //     signout_time: el['signout_time'] ?? "",
+            //     working_hour: el['working_hour'] ?? "",
+            //     place_in: el['place_in'] ?? "",
+            //     place_out: el['place_out'] ?? "",
+            //     absence: el['absence'] ?? "",
+            //     overtime: el['overtime'] ?? "",
+            //     earnleave: el['earnleave'] ?? "",
+            //     status: el['status'] ?? "",
+            //     signin_longlat: el['signin_longlat'] ?? "",
+            //     signout_longlat: el['signout_longlat'] ?? "",
+            //     att_type: el['att_type'] ?? "",
+            //     signin_pict: el['signin_pict'] ?? "",
+            //     signout_pict: el['signout_pict'] ?? "",
+            //     signin_note: el['signin_note'] ?? "",
+            //     signout_note: el['signout_note'] ?? "",
+            //     signin_addr: el['signin_addr'] ?? "",
+            //     signout_addr: el['signout_addr'] ?? "",
+            //     reqType: el['reg_type'] ?? 0,
+            //     atttype: el['atttype'] ?? 0));
 
-              var lengthTurunan = finalAllData.length == 1 ? false : true;
 
-              if (lengthTurunan == false) {
-                var data = {
-                  'id': finalAllData[0]['id'],
-                  'signin_time': finalAllData[0]['signin_time'],
-                  'signout_time': finalAllData[0]['signout_time'],
-                  'atten_date': finalAllData[0]['atten_date'],
-                  'place_in': finalAllData[0]['place_in'],
-                  'place_out': finalAllData[0]['place_out'],
-                  'signin_note': finalAllData[0]['signin_note'],
-                  'signin_longlat': finalAllData[0]['signin_longlat'],
-                  'signout_longlat': finalAllData[0]['signout_longlat'],
-                  'reg_type': finalAllData[0]['reg_type'],
-                  'view_turunan': lengthTurunan,
-                  'turunan': [],
-                };
-                finalData.add(data);
-              } else {
-                var data = {
-                  'id': "",
-                  'signout_time': "",
-                  'atten_date': stringDateAdaTurunan,
-                  'place_in': "",
-                  'place_out': "",
-                  'signin_note': "",
-                  'signin_longlat': "",
-                  'signout_longlat': "",
-                  'view_turunan': lengthTurunan,
-                  'status_view': false,
-                  'turunan': finalAllData,
-                };
-                stringDateAdaTurunan = "";
-                finalData.add(data);
-              }
-            }
-            finalData.sort((a, b) {
-              return DateTime.parse(b['atten_date'])
-                  .compareTo(DateTime.parse(a['atten_date']));
-            });
-            historyAbsenShow.value = finalData;
-            this.historyAbsenShow.refresh();
           }
-          this.historyAbsen.refresh();
+          
+   //historyAbsenShow.value = historyAbsen;
+    Set<String> seenDates = {};
+   historyAbsen.value = historyAbsen.where((event) {
+    if (seenDates.contains(event.date)) {
+      return false;
+    } else {
+      seenDates.add(event.date);
+      return true;
+    }
+  }).toList();
+
+
+
+  historyAbsen.value.forEach((element) {
+    print("masuk sini");
+    
+       var data=tempHistoryAbsen.where((p0) => p0.date==element.date ).where((p0) => p0.id!=element.id ).toList();
+       if (data.length>0){
+           element.turunan=data;
+        
+
+       }else{
+         element.turunan=[];
+
+       }
+
+print('data list ${element} tes');
+    
+  });
+
+  //  historyAbsenShow.toSet().toList();
+  //  historyAbsenShow.forEach((element) {
+  //   var data=historyAbsenShow.where((p0) => p0['date']=element['date']).toList();
+  //   if (data.length>)
+    
+  //  });
+
+
+
+          // if (historyAbsen.value.length != 0) {
+          //   var listTanggal = [];
+          //   var finalData = [];
+          //   for (var element in historyAbsen.value) {
+          //     listTanggal.add(element.date);
+          //   }
+          //   print("date new  ${listTanggal}");
+          //   listTanggal = listTanggal.toSet().toList();
+          //   for (var element in listTanggal) {
+          //     var valueTurunan = [];
+          //     var stringDateAdaTurunan = "";
+          //     for (var element1 in historyAbsen.value) {
+          //       if (element == element1.atten_date) {
+          //         print("ada turunan");
+          //         var dataTurunan = {
+          //           'id': element1.id,
+          //           'signin_time': element1.signin_time,
+          //           'signout_time': element1.signout_time,
+          //           'atten_date': element1.atten_date,
+          //           'place_in': element1.place_in,
+          //           'place_out': element1.place_out,
+          //           'signin_note': element1.signin_note,
+          //           'signin_longlat': element1.signin_longlat,
+          //           'signout_longlat': element1.signout_longlat,
+          //           'reg_type': element1.reqType
+          //         };
+          //         stringDateAdaTurunan = "${element1.atten_date}";
+          //         valueTurunan.add(dataTurunan);
+          //       }
+          //     }
+          //     List hasilFilter = [];
+          //     List hasilFilterPengajuan = [];
+          //     for (var element1 in valueTurunan) {
+          //       if (element1['place_in'] == 'pengajuan') {
+          //         hasilFilterPengajuan.add(element1);
+          //       } else {
+          //         hasilFilter.add(element1);
+          //       }
+          //     }
+          //     List hasilFinalPengajuan = [];
+          //     if (hasilFilterPengajuan.isNotEmpty) {
+          //       var data = hasilFilterPengajuan;
+          //       var seen = Set<String>();
+          //       List filter = data
+          //           .where((pengajuan) => seen.add(pengajuan['signin_note']))
+          //           .toList();
+          //       hasilFinalPengajuan = filter;
+          //     }
+          //     List finalAllData = new List.from(hasilFilter)
+          //       ..addAll(hasilFinalPengajuan);
+
+          //     var lengthTurunan = finalAllData.length == 1 ? false : true;
+
+          //     if (lengthTurunan == false) {
+          //       var data = {
+          //         'id': finalAllData[0]['id'],
+          //         'signin_time': finalAllData[0]['signin_time'],
+          //         'signout_time': finalAllData[0]['signout_time'],
+          //         'atten_date': finalAllData[0]['atten_date'],
+          //         'place_in': finalAllData[0]['place_in'],
+          //         'place_out': finalAllData[0]['place_out'],
+          //         'signin_note': finalAllData[0]['signin_note'],
+          //         'signin_longlat': finalAllData[0]['signin_longlat'],
+          //         'signout_longlat': finalAllData[0]['signout_longlat'],
+          //         'reg_type': finalAllData[0]['reg_type'],
+          //         'date':finalAllData[0]['date'],
+          //         'view_turunan': lengthTurunan,
+
+          //         'turunan': [],
+          //       };
+          //       finalData.add(data);
+          //     } else {
+          //       var data = {
+          //         'id': "",
+          //         'signout_time': "",
+          //         'atten_date': stringDateAdaTurunan,
+          //            'date':   stringDateAdaTurunan,
+          //         'place_in': "",
+          //         'place_out': "",
+          //         'signin_note': "",
+          //         'signin_longlat': "",
+          //         'signout_longlat': "",
+          //         'view_turunan': lengthTurunan,
+          //         'status_view': false,
+          //         'turunan': finalAllData,
+          //       };
+          //       stringDateAdaTurunan = "";
+          //       finalData.add(data);
+          //     }
+          //   }
+          //   // finalData.sort((a, b) {
+          //   //   return DateTime.parse(b['date'])
+          //   //       .compareTo(DateTime.parse(a['date']));
+          //   // });
+          //   historyAbsenShow.value = finalData;
+          //   print("data now now ${finalData}");
+          //    print("data now now now ${finalData.length}");
+          //   this.historyAbsenShow.refresh();
+
+
+
+
+            
+          // // }
+          // this.historyAbsen.refresh();
         } else {
           loading.value = "Data tidak ditemukan";
         }
@@ -1593,7 +1689,7 @@ class AbsenController extends GetxController {
   void historySelected(id_absen, status) {
     if (status == 'history') {
       var getSelected =
-          historyAbsen.value.firstWhere((element) => element.id == id_absen);
+         tempHistoryAbsen.value.firstWhere((element) => element.id == id_absen);
       // print(getSelected);
       Get.to(DetailAbsen(
         absenSelected: [getSelected],

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 // import 'package:background_location_tracker/background_location_tracker.dart';
@@ -167,7 +169,7 @@ class _LiveTrackingState extends State<LiveTracking> {
       });
     } else {
       setState(() {
-        _fakeGpsMessage = "No Fake GPS detected.";
+        _fakeGpsMessage = "11.";
       });
     }
   }
@@ -212,10 +214,11 @@ class _LiveTrackingState extends State<LiveTracking> {
         elevation: 0,
         centerTitle: false,
         title: Text(
+          "Tracking",
           // AppData.informasiUser![0].interval_tracking.toString(),
           // 'Tracking' ,
 
-          _fakeGpsMessage,
+          // _fakeGpsMessage,
           style: GoogleFonts.inter(
               color: Constanst.fgPrimary,
               fontWeight: FontWeight.w500,
@@ -656,8 +659,10 @@ class _LiveTrackingState extends State<LiveTracking> {
                 child: Obx(
                   () => ElevatedButton(
                     onPressed: () async {
+                  // initializeService();
                       if (controllerTracking.bagikanlokasi.value ==
                           "tidak aktif") {
+                           // FlutterBackgroundService().invoke("setAsBackground");
                         print(controllerTracking.latUser.value);
                         print(controllerTracking.langUser.value);
 
@@ -679,13 +684,14 @@ class _LiveTrackingState extends State<LiveTracking> {
                             "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
                         print('hidup');
 
-                        final service = FlutterBackgroundService();
-                        var isRunning = await service.isRunning();
+                        // final service = FlutterBackgroundService();
+                        // var isRunning = await service.isRunning();
 
-                        service.startService();
+                        // service.startService();
 
                         setState(() {});
                       } else {
+                          //FlutterBackgroundService().stopService();
                         controllerTracking.bagikanlokasi.value = "tidak aktif";
                         // await LocationDao().clear();
                         // await _getLocations();
@@ -700,10 +706,10 @@ class _LiveTrackingState extends State<LiveTracking> {
                         print(
                             "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
 
-                        final service = FlutterBackgroundService();
-                        var isRunning = await service.isRunning();
+                        // final service = FlutterBackgroundService();
+                      
 
-                        service.invoke("stopService");
+                        // service.invoke("stopService");
 
                         setState(() {});
                         // controllerTracking.latUser.value = 0.0;
@@ -1301,4 +1307,7 @@ class _LiveTrackingState extends State<LiveTracking> {
           );
         });
   }
+  
+
+  
 }

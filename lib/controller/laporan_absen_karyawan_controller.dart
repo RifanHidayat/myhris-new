@@ -39,7 +39,7 @@ class LaporanAbsenKaryawanController extends GetxController {
       'bulan': bulan,
       'tahun': tahun,
     };
-    var connect = Api.connectionApi("post", body, "history-attendance");
+    var connect = Api.connectionApi("post", body, "attendance");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);

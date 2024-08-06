@@ -2,6 +2,7 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +12,7 @@ import 'package:siscom_operasional/controller/tugas_luar_controller.dart';
 import 'package:siscom_operasional/screen/absen/lembur.dart';
 import 'package:siscom_operasional/screen/absen/tugas_luar.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
@@ -88,15 +90,15 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
             // leadingWidth: controller.statusFormPencarian.value ? 50 : 16,
             titleSpacing: 0,
             centerTitle: true,
-            title: Text(
+            title: Obx(() => Text(
               controller.viewTugasLuar.value
                   ? "Form Tugas Luar"
-                  : "Form Dinas Luar",
+                  : "Form Dinas Luar ",
               style: GoogleFonts.inter(
                   color: Constanst.fgPrimary,
                   fontWeight: FontWeight.w500,
                   fontSize: 20),
-            ),
+            )),
             leading: IconButton(
               icon: Icon(
                 Iconsax.arrow_left,
@@ -239,6 +241,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
                       ),
                       elevation: 0,
                       child: SfDateRangePicker(
+                        minDate: AppData.informasiUser![0].isBackDateDinasLuar=="0"?DateTime(2000):DateTime.now(),
                         selectionMode: DateRangePickerSelectionMode.range,
                         initialSelectedDates:
                             controller.tanggalSelectedEdit.value,
@@ -490,7 +493,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
         //     DateTime(now.year, now.month + 1, 0);
         var dateSelect = await showDatePicker(
           context: Get.context!,
-          firstDate: DateTime(2000),
+          firstDate:AppData.informasiUser![0].isBackDateTugasLuar=="0"?DateTime(2000):DateTime.now(),
           lastDate: DateTime(2100),
           initialDate: controller.initialDate.value,
           cancelText: 'Batal',

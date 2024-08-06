@@ -302,6 +302,7 @@ class InfoKaryawan extends StatelessWidget {
             var full_name = controller.infoEmployee.value[index]['full_name'];
             var image = controller.infoEmployee.value[index]['em_image'];
             var title = controller.infoEmployee.value[index]['job_title'];
+              var emId = controller.infoEmployee.value[index]['em_id'];
              
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,17 +387,18 @@ class InfoKaryawan extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Expanded(
+                          // Expanded(
 
-                            flex: 15,
-                            child: InkWell(
-                              onTap: (){
-                                Get.to(ChattingPage(title: title,fullName: full_name,image: image,));
-                              },
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Icon(Iconsax.message)),
-                            ))
+                          //   flex: 15,
+                          //   child: InkWell(
+                          //     onTap: (){
+                          //       // chattingCtr.emIdUser.value=emId.toString();
+                          //       // Get.to(ChattingPage(title: title,fullName: full_name,image: image,em_id:emId ,));
+                          //     },
+                          //     child: Align(
+                          //       alignment: Alignment.centerRight,
+                          //       child: Icon(Iconsax.message)),
+                          //   ))
                         ],
                       ),
                       const SizedBox(height: 12),

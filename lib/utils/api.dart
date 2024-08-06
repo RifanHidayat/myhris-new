@@ -14,14 +14,18 @@ import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class Api {
+
+
   static var basicAuth = 'Basic ' +
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
-
-  static var basicUrl = "http://mobilehris.siscom.id:3000/";
+ 
+ // static var basicUrl = "http://mobilehris.siscom.id:3000/";
   static var urlImage = 'https://imagehris.siscom.id:4431';
+
   //static var basicUrl = "http://mobilehris.siscom.id:3000/";
-  //static var basicUrl = "http://kantor.membersis.com:3001/";
+ static var basicUrl = "http://kantor.membersis.com:2626/";
+
   static var token = '9d590c04119a4433971a1dd622266d38';
   static var luxand = 'https://api.luxand.cloud/photo/similarity';
   static var wappin = 'https://api.wappin.id/v1';
@@ -171,9 +175,9 @@ class ApiRequest {
   static var basicAuth = 'Basic ' +
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
-  //  static var basicUrl = "http://mobilehris.siscom.id:3000/";
-  static var basicUrl = "http://kantor.membersis.com:2628/";
-
+   // static var basicUrl = "http://mobilehris.siscom.id:3000/";
+  static var basicUrl = "http://kantor.membersis.com:2626/";
+ // static var basicUrl = "http://mobilehris.siscom.id:3000/";
   Map<String, String> headers = {
     'Authorization': basicAuth,
     'Content-type': 'application/json',

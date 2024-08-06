@@ -38,42 +38,56 @@ class UserModel {
   var isViewTracking;
   var is_tracking;
 
-  UserModel(
-      {this.em_id,
-      this.des_id,
-      this.dep_id,
-      this.dep_group,
-      this.full_name,
-      this.em_email,
-      this.em_phone,
-      this.em_birthday,
-      this.em_gender,
-      this.em_image,
-      this.em_joining_date,
-      this.em_status,
-      this.em_blood_group,
-      this.posisi,
-      this.emp_jobTitle,
-      this.emp_departmen,
-      this.em_control,
-      this.em_control_acess,
-      this.emp_att_working,
-      this.face_recog,
-      this.branchName,
-      this.branchId,
-      this.beginPayroll,
-      this.endPayroll,
-      this.startTime,
-      this.endTime,
-      this.em_hak_akses,
-      this.nomorBpjsKesehatan,
-      this.nomorBpjsTenagakerja,
-      this.timeIn,
-      this.timeOut,
-      this.interval,
-      this.interval_tracking,
-      this.isViewTracking,
-      this.is_tracking});
+  var isBackDateSakit;
+  var isBackDateIzin;
+  var isBackDateCuti;
+  var isBackDateTugasLuar;
+  var isBackDateDinasLuar;
+  var isBackDateLembur;
+
+  UserModel({
+    this.em_id,
+    this.des_id,
+    this.dep_id,
+    this.dep_group,
+    this.full_name,
+    this.em_email,
+    this.em_phone,
+    this.em_birthday,
+    this.em_gender,
+    this.em_image,
+    this.em_joining_date,
+    this.em_status,
+    this.em_blood_group,
+    this.posisi,
+    this.emp_jobTitle,
+    this.emp_departmen,
+    this.em_control,
+    this.em_control_acess,
+    this.emp_att_working,
+    this.face_recog,
+    this.branchName,
+    this.branchId,
+    this.beginPayroll,
+    this.endPayroll,
+    this.startTime,
+    this.endTime,
+    this.em_hak_akses,
+    this.nomorBpjsKesehatan,
+    this.nomorBpjsTenagakerja,
+    this.timeIn,
+    this.timeOut,
+    this.interval,
+    this.interval_tracking,
+    this.isViewTracking,
+    this.is_tracking,
+    this.isBackDateSakit,
+    this.isBackDateIzin,
+    this.isBackDateCuti,
+    this.isBackDateTugasLuar,
+    this.isBackDateDinasLuar,
+    this.isBackDateLembur,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -111,6 +125,12 @@ class UserModel {
       'interval_tracking': interval_tracking,
       'is_view_tracking': isViewTracking,
       'is_tracking': is_tracking,
+      "is_back_date_sakit": isBackDateSakit,
+      "is_back_date_izin": isBackDateIzin,
+      "is_back_date_cuti": isBackDateCuti,
+      "is_back_date_dinas_luar": isBackDateDinasLuar,
+      "is_back_date_lembur": isBackDateLembur,
+        "is_back_date_tugas_luar": isBackDateTugasLuar,
     };
   }
 
@@ -149,6 +169,12 @@ class UserModel {
         timeOut: map['time_out'],
         interval_tracking: map['interval_tracking'],
         isViewTracking: map['is_view_tracking'],
+        isBackDateSakit: map['is_back_date_sakit'],
+        isBackDateIzin: map['is_back_date_izin'],
+        isBackDateCuti: map['is_back_date_cuti'],
+        isBackDateTugasLuar: map['is_back_date_tugas_luar'],
+        isBackDateDinasLuar: map['is_back_date_dinas_luar'],
+        isBackDateLembur: map['is_back_date_lembur'],
         is_tracking: map['is_tracking']);
   }
 

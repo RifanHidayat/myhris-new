@@ -16,6 +16,7 @@ import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AbsenMasukKeluar extends StatefulWidget {
@@ -724,7 +725,12 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                       BorderRadius.circular(
                                                           8.0),
                                                   side: BorderSide(color: Colors.white)))),
-                                      onPressed: () {
+                                      onPressed: () async{
+                                         // Mendapatkan informasi paket aplikasi pihak ketiga
+              final packageInfo = await PackageInfo.fromPlatform();
+              //for (var package in packageInfo) {
+            print('tes');
+          
                                         print(controller.selectedType.value);
                                         // controller.selectedType.value = "WFH";
                                         controller.selectedType.value

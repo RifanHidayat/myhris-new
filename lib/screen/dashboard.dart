@@ -3,6 +3,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
@@ -64,6 +66,8 @@ class _DashboardState extends State<Dashboard> {
   var controllerBpj = Get.put(BpjsController());
   final tabbController = Get.put(TabbController());
   final authController = Get.put(AuthController());
+
+  var intervalTracking="";
 
   Future<void> refreshData() async {
     controller.refreshPagesStatus.value = true;
@@ -146,6 +150,14 @@ class _DashboardState extends State<Dashboard> {
                     onPressed: !controllerAbsensi.absenStatus.value
                         ? () {
                             if (controllerAbsensi.absenStatus.value == true) {
+                                     if (  controller.wfhstatus.value ==true){
+                                  UtilsAlert.showToast(
+                                  "Menunggu status wfh anda di approve");
+                                return;
+                              }
+                              
+
+                             
                               UtilsAlert.showToast(
                                   "Anda harus absen keluar terlebih dahulu");
                             } else {
@@ -741,7 +753,13 @@ class _DashboardState extends State<Dashboard> {
   Widget informasiUser() {
     return IntrinsicHeight(
       child: InkWell(
-        onTap: () => Get.to(PersonalInfo()),
+        onTap: () {
+          print("tes");
+          print(intervalTracking.toString());
+        //  FlutterBackgroundService().invoke("setAsBackground");
+          // Get.to(PersonalInfo());
+          
+        },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -965,16 +983,16 @@ class _DashboardState extends State<Dashboard> {
                                         color: Constanst.fgSecondary),
                                   ),
                                 ),
-                                const SizedBox(width: 8),
-                                InkWell(
-                                  onTap: () => UtilsAlert.informasiDashboard(
-                                      Get.context!),
-                                  child: Icon(
-                                    Iconsax.info_circle,
-                                    size: 16,
-                                    color: Constanst.fgSecondary,
-                                  ),
-                                ),
+                                // const SizedBox(width: 8),
+                                // InkWell(
+                                //   onTap: () => UtilsAlert.informasiDashboard(
+                                //       Get.context!),
+                                //   child: Icon(
+                                //     Iconsax.info_circle,
+                                //     size: 16,
+                                //     color: Constanst.fgSecondary,
+                                //   ),
+                                // ),
                               ],
                             ),
                           ],
@@ -1055,6 +1073,11 @@ class _DashboardState extends State<Dashboard> {
                                 onTap: () {
                                   if (controllerAbsensi.absenStatus.value ==
                                       true) {
+                                         if (  controller.wfhstatus.value ==true){
+                                  UtilsAlert.showToast(
+                                  "Menunggu status wfh anda di approve");
+                                return;
+                              }
                                     UtilsAlert.showToast(
                                         "Anda harus absen keluar terlebih dahulu");
                                   } else {
@@ -2696,9 +2719,20 @@ class _DashboardState extends State<Dashboard> {
             }));
   }
 
+  void getSession() async{
+     final prefs = await SharedPreferences.getInstance();
+     var d= prefs.getString('interval_tracking');
+ 
+ setState(() {
+   intervalTracking="${d}";
+ });
+
+  }
+
   @override
   void initState() {
     super.initState();
+    
     _checkversion();
     controller.updateInformasiUser();
     controller.initData();
@@ -2720,6 +2754,7 @@ class _DashboardState extends State<Dashboard> {
       // absenControllre.absenStatus.value =
       //     controller.dashboardStatusAbsen.value;
     });
+    
 
     // Api().checkLogin();
     // Add a listener to the scroll controller
@@ -2739,7 +2774,8 @@ class _DashboardState extends State<Dashboard> {
 
     final status = await newVersion.getVersionStatus();
 
-    if (status != null) {
+    if (status!=null){
+       if (status!.localVersion!=status.storeVersion) {
       newVersion.showUpdateDialog(
           context: context,
           versionStatus: status!,
@@ -2753,5 +2789,8 @@ class _DashboardState extends State<Dashboard> {
           dismissButtonText: "Skip");
       print("status ${status.localVersion}");
     }
+    }
   }
+   
+    
 }

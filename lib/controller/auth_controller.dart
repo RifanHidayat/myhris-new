@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/model/database.dart';
@@ -98,7 +99,7 @@ class AuthController extends GetxController {
 
   Future<void> loginUser() async {
     final box = GetStorage();
-      var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
     //  var fcm_registration_token = "1";
     // print("fcmtoken ${fcm_registration_token}");
     UtilsAlert.showLoadingIndicator(Get.context!);
@@ -127,15 +128,40 @@ class AuthController extends GetxController {
         var getAktif = "";
         var idMobile = "";
 
-        print("data login 2 ${valueBody['data']}");
+        print("data login 2 new new ${valueBody['data']}");
+       var isBackDateSakit = "0";
+        var isBackDateIzin = "0";
+        var isBackDateCuti = "0";
+        var isBackDateTugasLuar = "0";
+        var isBackDateDinasLuar = "0";
+        var isBackDateLembur = "0";
 
         for (var element in valueBody['data']) {
-          print(
-              "data att ${element['time_attendance'].toString().split(',')[0]}");
-          print(
-              "data att ${element['time_attendance'].toString().split(',')[1]}");
-          print("tes ${element['time_attendance'].toString()}");
+          if (element['back_date'] == "" || element['back_date'] == null) {
+          } else {
+            List isBackDates = element['back_date'].toString().split(',');
+            isBackDateSakit = isBackDates[0].toString();
+            isBackDateIzin = isBackDates[1].toString();
+            isBackDateCuti = isBackDates[2].toString();
+            isBackDateTugasLuar = isBackDates[3].toString();
+            isBackDateDinasLuar = isBackDates[4].toString();
+            isBackDateLembur = isBackDates[5].toString();
+
+          print("data back date ");
+               print("1 ${isBackDates[0].toString()}");
+               print("2 ${isBackDates[1].toString()}");
+               print("3 ${isBackDates[2].toString()}");
+               print("4 ${isBackDates[3].toString()}");
+               print("dinas luar ${isBackDates[4].toString()} ${isBackDateDinasLuar}");
+               print("6 ${isBackDates[5].toString()}");
+          }
           var data = UserModel(
+            isBackDateSakit: isBackDateSakit,
+            isBackDateIzin: isBackDateIzin,
+            isBackDateCuti: isBackDateCuti,
+            isBackDateTugasLuar: isBackDateTugasLuar,
+            isBackDateDinasLuar: isBackDateDinasLuar,
+            isBackDateLembur: isBackDateLembur,
               em_id: element['em_id'] ?? "",
               des_id: element['des_id'] ?? 0,
               dep_id: element['dep_id'] ?? 0,
@@ -172,6 +198,12 @@ class AuthController extends GetxController {
               //   startTime: "00:01",
               // endTime: "23:59",
               );
+
+
+               final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString("interval_tracking", element['interval_tracking'].toString());
+                    await prefs.setString("em_id", element['em_id'].toString());
+
 
           print('data login ${data}');
 
@@ -254,22 +286,22 @@ class AuthController extends GetxController {
 
   Future<void> loginUser1() async {
     final box = GetStorage();
-     var fcm_registration_token = await FirebaseMessaging.instance.getToken();
-     //  var fcm_registration_token = "1";
+    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+    //  var fcm_registration_token = "1";
 
-  //  print("fcmtoken ${fcm_registration_token}");
+    //  print("fcmtoken ${fcm_registration_token}");
 
     UtilsAlert.showLoadingIndicator(Get.context!);
     Map<String, dynamic> body = {
       'email': email.value.text,
       'password': password.value.text,
-      'token_notif':fcm_registration_token,
+      'token_notif': fcm_registration_token,
       'database': selectedDb.value
     };
     var connect = Api.connectionApi("post", body, "login");
-    connect.then((dynamic res) {
+    connect.then((dynamic res) async {
       var valueBody = jsonDecode(res.body);
-      print('data login ${valueBody}');
+      print('data login 2 new ${valueBody}');
       if (valueBody['status'] == false) {
         UtilsAlert.showToast(valueBody['message']);
         Navigator.pop(Get.context!);
@@ -283,8 +315,35 @@ class AuthController extends GetxController {
         var getEmId = "";
         var getAktif = "";
         var idMobile = "";
+        
+        var isBackDateSakit = "0";
+        var isBackDateIzin = "0";
+        var isBackDateCuti = "0";
+        
+        var isBackDateTugasLuar = "0";
+        var isBackDateDinasLuar = "0";
+        var isBackDateLembur = "0";
+
         for (var element in valueBody['data']) {
+          
+          if (element['back_date'] == "" || element['back_date'] == null) {
+          } else {
+            List isBackDates = element['back_date'].toString().split(',');
+             isBackDateSakit = isBackDates[0].toString();
+            isBackDateIzin = isBackDates[1].toString();
+            isBackDateCuti = isBackDates[2].toString();
+        
+            isBackDateTugasLuar = isBackDates[3].toString();
+            isBackDateDinasLuar = isBackDates[4].toString();
+            isBackDateLembur = isBackDates[5].toString();
+          }
           var data = UserModel(
+           isBackDateSakit: isBackDateSakit,
+            isBackDateIzin: isBackDateIzin,
+            isBackDateCuti: isBackDateCuti,
+            isBackDateTugasLuar: isBackDateTugasLuar,
+            isBackDateDinasLuar: isBackDateDinasLuar,
+            isBackDateLembur: isBackDateLembur,
               em_id: element['em_id'] ?? "",
               des_id: element['des_id'] ?? 0,
               dep_id: element['dep_id'] ?? 0,
@@ -336,6 +395,9 @@ class AuthController extends GetxController {
           AppData.isLogin = true;
           print(element.toString());
           AppData.setFcmToken = fcm_registration_token.toString();
+             final prefs = await SharedPreferences.getInstance();
+  await prefs.setString("interval_tracking", element['interval_tracking'].toString());
+    await prefs.setString("em_id", element['em_id'].toString());
         }
 
         if (getAktif == "ACTIVE") {
@@ -424,7 +486,7 @@ class AuthController extends GetxController {
     TimeOfDay waktu2 = TimeOfDay(
         hour: int.parse(
             AppData.informasiUser![0].endTime.toString().split(':')[0]),
-        minute: int.parse(AppData.informasiUser![0].startTime
+        minute: int.parse(AppData.informasiUser![0].endTime
             .toString()
             .split(':')[1])); // Waktu kedua
 
@@ -480,7 +542,7 @@ class AuthController extends GetxController {
       'start_time': startTime,
       'end_time': endTime,
     };
-    
+
     print("param view last absen ${body}");
 
     var connect = Api.connectionApi("post", body, "view_last_absen_user2");

@@ -144,7 +144,7 @@ class Pph21Controller extends GetxController {
         isLoading.value = false;
       });
     } catch (e) {
-      print("error ${e}");
+      print("error pph21 ${e}");
       isLoading.value = false;
     }
   }

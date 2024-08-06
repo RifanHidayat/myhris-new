@@ -65,10 +65,12 @@ class AktifitasController extends GetxController {
       'id': '5',
       'nama': 'Lembur',
     },
+
     {
       'id': '6',
       'nama': 'WFH',
     },
+    
   ];
 
   void toggleSearch() {
@@ -200,6 +202,7 @@ class AktifitasController extends GetxController {
   }
 
   void getInformasiAktivitas() {
+    print("info aktifita");
     infoAktifitas.value.clear();
     var dataUser = AppData.informasiUser;
     var getEmId = dataUser![0].em_id;
@@ -229,7 +232,7 @@ class AktifitasController extends GetxController {
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-        print("data employee ${valueBody}");
+        print("data employee new ${valueBody}");
 
         var finalFilterMasukKerja;
 

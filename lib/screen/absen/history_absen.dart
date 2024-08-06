@@ -18,6 +18,8 @@ import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../model/absen_model.dart';
+
 class HistoryAbsen extends StatefulWidget {
   var dataForm;
   HistoryAbsen({Key? key, this.dataForm}) : super(key: key);
@@ -334,7 +336,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         //             top: 8),
                                         //         child: Text(
                                         //           "Riwayat Absensi",
-                                        //           textAlign: TextAlign.left,
+                                        //           textAlign: TextAliginitn.left,
                                         //           style: GoogleFonts.inter(
                                         //               fontWeight:
                                         //                   FontWeight.bold,
@@ -752,27 +754,22 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
 
   Widget listAbsen() {
     return ListView.builder(
-        physics: controller.historyAbsenShow.value.length <= 10
+        physics: controller.historyAbsen.length <= 10
             ? const AlwaysScrollableScrollPhysics()
             : const BouncingScrollPhysics(),
-        itemCount: controller.historyAbsenShow.value.length,
+        itemCount: controller.historyAbsen.value.length,
         itemBuilder: (context, index) {
-          var jamMasuk =
-              controller.historyAbsenShow.value[index]['signin_time'] ?? '';
+          var jamMasuk = controller.historyAbsen.value[index].signin_time ?? '';
           var jamKeluar =
-              controller.historyAbsenShow.value[index]['signout_time'] ?? '';
-          var placeIn =
-              controller.historyAbsenShow.value[index]['place_in'] ?? '';
-          var placeOut =
-              controller.historyAbsenShow.value[index]['place_out'] ?? '';
-          var note =
-              controller.historyAbsenShow.value[index]['signin_note'] ?? '';
+              controller.historyAbsen.value[index].signout_time ?? '';
+          var placeIn = controller.historyAbsen.value[index].place_in ?? '';
+          var placeOut = controller.historyAbsen.value[index].place_out ?? '';
+          var note = controller.historyAbsen.value[index].signout_note ?? '';
           var signInLongLat =
-              controller.historyAbsenShow.value[index]['signin_longlat'] ?? '';
+              controller.historyAbsen.value[index].signin_longlat ?? '';
           var signOutLongLat =
-              controller.historyAbsenShow.value[index]['signout_longlat'] ?? '';
-          var reqType =
-              controller.historyAbsenShow.value[index]['reg_type'] ?? '';
+              controller.historyAbsen.value[index].signout_longlat ?? '';
+          var reqType = controller.historyAbsen.value[index].reqType ?? '';
 
           var statusView;
           var listJamMasuk;
@@ -790,34 +787,37 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                 ? true
                 : false;
           }
-          if (controller.historyAbsenShow.value[index]['view_turunan'] ==
-              false) {
+          if (controller.historyAbsen.value[index].viewTurunan == false) {
             listJamMasuk = (jamMasuk!.split(':'));
             listJamKeluar = (jamKeluar!.split(':'));
-            perhitunganJamMasuk1 =
-                830 - int.parse("${listJamMasuk[0]}${listJamMasuk[1]}");
-            perhitunganJamMasuk2 =
-                1800 - int.parse("${listJamKeluar[0]}${listJamKeluar[1]}");
+            // perhitunganJamMasuk1 =
+            //     830 - int.parse("${listJamMasuk[0]}${listJamMasuk[1]}");
+            // perhitunganJamMasuk2 =
+            //     1800 - int.parse("${listJamKeluar[0]}${listJamKeluar[1]}");
 
-            if (perhitunganJamMasuk1 < 0) {
-              getColorMasuk = Colors.red;
-            } else {
-              getColorMasuk = Colors.black;
-            }
+            // if (perhitunganJamMasuk1 < 0) {
+            //   getColorMasuk = Colors.red;
+            // } else {
+            //   getColorMasuk = Colors.black;
+            // }
 
-            if (perhitunganJamMasuk2 == 0) {
-              getColorKeluar = Colors.black;
-            } else if (perhitunganJamMasuk2 > 0) {
-              getColorKeluar = Colors.red;
-            } else if (perhitunganJamMasuk2 < 0) {
-              getColorKeluar = Constanst.colorPrimary;
-            }
+            // if (perhitunganJamMasuk2 == 0) {
+            //   getColorKeluar = Colors.black;
+            // } else if (perhitunganJamMasuk2 > 0) {
+            //   getColorKeluar = Colors.red;
+            // } else if (perhitunganJamMasuk2 < 0) {
+            //   getColorKeluar = Constanst.colorPrimary;
+            // }
           } else {}
 
-          return controller.historyAbsenShow.value[index]['view_turunan'] ==
-                  true
-              ? tampilan1(controller.historyAbsenShow.value[index], index)
-              : tampilan2(controller.historyAbsenShow.value[index]);
+          print("id ${controller.historyAbsen.value[index].id}");
+
+          // return controller.historyAbsen.value[index].id=="" || controller.historyAbsen.value[index].id==null|| controller.historyAbsen.value[index].id==0?SizedBox():  controller.historyAbsen.value[index].viewTurunan ==
+          //         true
+          //     ? tampilan1(controller.historyAbsen.value[index], index)
+          //     : tampilan2(controller.historyAbsen.value[index]);
+
+          return tampilan2(controller.historyAbsen.value[index]);
         });
   }
 
@@ -1529,15 +1529,15 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
     );
   }
 
-  Widget tampilan2(index) {
-    var jamMasuk = index['signin_time'] ?? '';
-    var jamKeluar = index['signout_time'] ?? '';
-    var placeIn = index['place_in'] ?? '';
-    var placeOut = index['place_out'] ?? '';
-    var note = index['signin_note'] ?? '';
-    var signInLongLat = index['signin_longlat'] ?? '';
-    var signOutLongLat = index['signout_longlat'] ?? '';
-    var regType = index['regtype'] ?? 0;
+  Widget tampilan2(AbsenModel index) {
+    var jamMasuk = index.signin_time ?? '';
+    var jamKeluar = index.signout_time ?? '';
+    var placeIn = index.place_in ?? '';
+    var placeOut = index.place_out ?? '';
+    var note = index.signin_note ?? '';
+    var signInLongLat = index.signin_longlat ?? '';
+    var signOutLongLat = index.signout_longlat ?? '';
+    var regType = index.reqType ?? 0;
     var statusView;
     if (placeIn != "") {
       statusView =
@@ -1545,66 +1545,235 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
     }
     var listJamMasuk = (jamMasuk!.split(':'));
     var listJamKeluar = (jamKeluar!.split(':'));
-    var perhitunganJamMasuk1 =
-        830 - int.parse("${listJamMasuk[0]}${listJamMasuk[1]}");
-    var perhitunganJamMasuk2 =
-        1800 - int.parse("${listJamKeluar[0]}${listJamKeluar[1]}");
-    var getColorMasuk;
-    var getColorKeluar;
+    // var perhitunganJamMasuk1 =
+    //     830 - int.parse("${listJamMasuk[0]}${listJamMasuk[1]}");
+    // var perhitunganJamMasuk2 =
+    //     1800 - int.parse("${listJamKeluar[0]}${listJamKeluar[1]}");
+    // var getColorMasuk;
+    // var getColorKeluar;
 
-    if (perhitunganJamMasuk1 < 0) {
-      getColorMasuk = Colors.red;
-    } else {
-      getColorMasuk = Colors.black;
-    }
+    // if (perhitunganJamMasuk1 < 0) {
+    //   getColorMasuk = Colors.red;
+    // } else {
+    //   getColorMasuk = Colors.black;
+    // }
 
-    if (perhitunganJamMasuk2 == 0) {
-      getColorKeluar = Colors.black;
-    } else if (perhitunganJamMasuk2 > 0) {
-      getColorKeluar = Colors.red;
-    } else if (perhitunganJamMasuk2 < 0) {
-      getColorKeluar = Constanst.colorPrimary;
-    }
+    // if (perhitunganJamMasuk2 == 0) {
+    //   getColorKeluar = Colors.black;
+    // } else if (perhitunganJamMasuk2 > 0) {
+    //   getColorKeluar = Colors.red;
+    // } else if (perhitunganJamMasuk2 < 0) {
+    //   getColorKeluar = Constanst.colorPrimary;
+    // }
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: InkWell(
         customBorder: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12))),
         onTap: () {
-          if (statusView == false) {
-            controller.historySelected(index['id'], 'history');
-          }
+          // if (statusView == false) {
+          //   controller.historySelected(index.id, 'history');
+          // }
         },
-        child: statusView == false
-            ? Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(width: 1, color: Constanst.fgBorder)),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 15,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Constanst.colorNeutralBgSecondary,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(8.0),
-                              bottomLeft: Radius.circular(8.0),
-                            ),
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                            child: Column(
+        child:
+            //  statusView == false
+            //     ? Container(
+            //         decoration: BoxDecoration(
+            //             borderRadius: BorderRadius.circular(12),
+            //             border: Border.all(width: 1, color: Constanst.fgBorder)),
+            //         child: Row(
+            //           crossAxisAlignment: CrossAxisAlignment.center,
+            //           mainAxisAlignment: MainAxisAlignment.start,
+            //           children: [
+            //             Expanded(
+            //               flex: 15,
+            //               child: Padding(
+            //                 padding: const EdgeInsets.all(4.0),
+            //                 child: Container(
+            //                   decoration: BoxDecoration(
+            //                     color: Constanst.colorNeutralBgSecondary,
+            //                     borderRadius: const BorderRadius.only(
+            //                       topLeft: Radius.circular(8.0),
+            //                       bottomLeft: Radius.circular(8.0),
+            //                     ),
+            //                   ),
+            //                   child: Padding(
+            //                     padding:
+            //                         const EdgeInsets.only(top: 5.0, bottom: 5.0),
+            //                     child:  index.namaHariLibur==null || index.namaHariLibur==""? Column(
+            //                       children: [
+            //                         Text(
+            //                             DateFormat('d').format(
+            //                                 DateFormat('yyyy-MM-dd')
+            //                                     .parse(index.date)),
+            //                             style: GoogleFonts.inter(
+            //                               fontSize: 20,
+            //                               fontWeight: FontWeight.w500,
+            //                               color: Constanst.fgPrimary,
+            //                             )),
+            //                         Text(
+            //                             DateFormat('EEEE', 'id').format(
+            //                                 DateFormat('yyyy-MM-dd')
+            //                                     .parse(index.date)),
+            //                             style: GoogleFonts.inter(
+            //                               fontSize: 12,
+            //                               fontWeight: FontWeight.w400,
+            //                               color: Constanst.fgSecondary,
+            //                             )),
+            //                       ],
+            //                     ):Column(
+            //                       children: [
+            //                         Text(
+            //                             DateFormat('d').format(
+            //                                 DateFormat('yyyy-MM-dd')
+            //                                     .parse(index.date)),
+            //                             style: GoogleFonts.inter(
+            //                               fontSize: 20,
+            //                               fontWeight: FontWeight.w500,
+            //                               color: Constanst.fgPrimary,
+            //                             )),
+            //                         Text(
+            //                             DateFormat('EEEE', 'id').format(
+            //                                 DateFormat('yyyy-MM-dd')
+            //                                     .parse(index.date)),
+            //                             style: GoogleFonts.inter(
+            //                               fontSize: 12,
+            //                               fontWeight: FontWeight.w400,
+            //                               color: Constanst.color4,
+            //                             )),
+            //                       ],
+            //                     ),
+            //                   ),
+            //                 ),
+            //               ),
+            //             ),
+            //             Expanded(
+            //               flex: 38,
+            //               child: Padding(
+            //                 padding: const EdgeInsets.only(left: 8.0),
+            //                 child: Row(
+            //                   mainAxisAlignment: MainAxisAlignment.start,
+            //                   children: [
+            //                     Icon(
+            //                       Iconsax.login_1,
+            //                       color: Constanst.color5,
+            //                       size: 16,
+            //                     ),
+            //                     Padding(
+            //                       padding: const EdgeInsets.only(left: 4),
+            //                       child: Column(
+            //                         crossAxisAlignment: CrossAxisAlignment.start,
+            //                         children: [
+            //                           Text(
+            //                             "$jamMasuk",
+            //                             style: GoogleFonts.inter(
+            //                                 color: Constanst.fgPrimary,
+            //                                 fontWeight: FontWeight.w500,
+            //                                 fontSize: 16),
+            //                           ),
+            //                           const SizedBox(height: 4),
+            //                           Text(
+            //                             regType == 0 ? "Face Recognition" : "Photo",
+            //                             style: GoogleFonts.inter(
+            //                                 color: Constanst.fgSecondary,
+            //                                 fontWeight: FontWeight.w400,
+            //                                 fontSize: 10),
+            //                           ),
+            //                         ],
+            //                       ),
+            //                     )
+            //                   ],
+            //                 ),
+            //               ),
+            //             ),
+            //             Expanded(
+            //               flex: 38,
+            //               child: Padding(
+            //                 padding: const EdgeInsets.only(left: 4),
+            //                 child: Row(
+            //                   mainAxisAlignment: MainAxisAlignment.start,
+            //                   children: [
+            //                     Icon(
+            //                       Iconsax.logout_14,
+            //                       color: Constanst.color4,
+            //                       size: 16,
+            //                     ),
+            //                     Padding(
+            //                       padding: const EdgeInsets.only(left: 4),
+            //                       child: Column(
+            //                         crossAxisAlignment: CrossAxisAlignment.start,
+            //                         children: [
+            //                           Text(
+            //                             "$jamKeluar",
+            //                             style: GoogleFonts.inter(
+            //                                 color: Constanst.fgPrimary,
+            //                                 fontWeight: FontWeight.w500,
+            //                                 fontSize: 16),
+            //                           ),
+            //                           const SizedBox(height: 4),
+            //                           Text(
+            //                             regType == 0 ? "Face Recognition" : "Photo",
+            //                             style: GoogleFonts.inter(
+            //                                 color: Constanst.fgSecondary,
+            //                                 fontWeight: FontWeight.w400,
+            //                                 fontSize: 10),
+            //                           ),
+            //                         ],
+            //                       ),
+            //                     )
+            //                   ],
+            //                 ),
+            //               ),
+            //             ),
+            //             Expanded(
+            //               flex: 9,
+            //               child: Icon(
+            //                 Icons.arrow_forward_ios_rounded,
+            //                 size: 16,
+            //                 color: Constanst.colorNeutralFgTertiary,
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //       )
+            //     :
+
+            Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(width: 1, color: Constanst.fgBorder)),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 15,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Container(
+                    height: index.turunan!.isNotEmpty &&
+                            index.statusView == true
+                        ? int.parse(index.turunan!.length.toString()) * 55 + 28
+                        : null,
+                    decoration: BoxDecoration(
+                      color: Constanst.colorNeutralBgSecondary,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(8.0),
+                        bottomLeft: Radius.circular(8.0),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                      child: index.namaHariLibur == null ||
+                              index.namaHariLibur == ""
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                     DateFormat('d').format(
                                         DateFormat('yyyy-MM-dd')
-                                            .parse(index['atten_date'])),
+                                            .parse(index.date)),
                                     style: GoogleFonts.inter(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w500,
@@ -1613,248 +1782,548 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 Text(
                                     DateFormat('EEEE', 'id').format(
                                         DateFormat('yyyy-MM-dd')
-                                            .parse(index['atten_date'])),
+                                            .parse(index.date)),
                                     style: GoogleFonts.inter(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,
-                                      color: Constanst.fgSecondary,
+                                      color: Constanst.fgPrimary,
                                     )),
                               ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 38,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Iconsax.login_1,
-                              color: Constanst.color5,
-                              size: 16,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "$jamMasuk",
-                                    style: GoogleFonts.inter(
-                                        color: Constanst.fgPrimary,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    regType == 0 ? "Face Recognition" : "Photo",
-                                    style: GoogleFonts.inter(
-                                        color: Constanst.fgSecondary,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 10),
-                                  ),
-                                ],
-                              ),
                             )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 38,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Iconsax.logout_14,
-                              color: Constanst.color4,
-                              size: 16,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "$jamKeluar",
-                                    style: GoogleFonts.inter(
-                                        color: Constanst.fgPrimary,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    regType == 0 ? "Face Recognition" : "Photo",
-                                    style: GoogleFonts.inter(
-                                        color: Constanst.fgSecondary,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 10),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 9,
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 16,
-                        color: Constanst.colorNeutralFgTertiary,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            : Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(width: 1, color: Constanst.fgBorder)),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 15,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Constanst.colorNeutralBgSecondary,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(8.0),
-                              bottomLeft: Radius.circular(8.0),
-                            ),
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                            child: Column(
+                          : Column(
                               children: [
                                 Text(
                                     DateFormat('d').format(
                                         DateFormat('yyyy-MM-dd')
-                                            .parse(index['atten_date'])),
+                                            .parse(index.date)),
                                     style: GoogleFonts.inter(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w500,
-                                      color: Constanst.fgPrimary,
+                                      color: Colors.red,
                                     )),
                                 Text(
                                     DateFormat('EEEE', 'id').format(
                                         DateFormat('yyyy-MM-dd')
-                                            .parse(index['atten_date'])),
+                                            .parse(index.date)),
                                     style: GoogleFonts.inter(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,
-                                      color: Constanst.fgSecondary,
+                                      color: Colors.red,
                                     )),
                               ],
                             ),
-                          ),
-                        ),
-                      ),
                     ),
-                    Expanded(
-                      flex: 38,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Iconsax.login_1,
-                              color: Constanst.color5,
-                              size: 16,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "$jamMasuk",
-                                    style: GoogleFonts.inter(
-                                        color: Constanst.fgPrimary,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    regType == 0 ? "Face Recognition" : "Photo",
-                                    style: GoogleFonts.inter(
-                                        color: Constanst.fgSecondary,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 10),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 38,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Iconsax.logout_14,
-                              color: Constanst.color4,
-                              size: 16,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "$jamKeluar",
-                                    style: GoogleFonts.inter(
-                                        color: Constanst.fgPrimary,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    regType == 0 ? "Face Recognition" : "Photo",
-                                    style: GoogleFonts.inter(
-                                        color: Constanst.fgSecondary,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 10),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 9,
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 16,
-                        color: Constanst.colorNeutralFgTertiary,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
+              Expanded(
+                flex: 85,
+                child: index.atten_date == "" || index.atten_date == null
+                    ?
+                    //tidak ada absen
+                    index.namaHariLibur != null
+                        ? Padding(
+                            padding: EdgeInsets.only(left: 18),
+                            child: TextLabell(
+                              text: index.namaHariLibur,
+                              size: 14.0,
+                              weight: FontWeight.w500,
+                            ))
+                        : index.namaTugasLuar != null
+                            ? Padding(
+                                padding: EdgeInsets.only(left: 18),
+                                child: TextLabell(
+                                  text: "Tugas Luar",
+                                  size: 14.0,
+                                  weight: FontWeight.w500,
+                                ))
+                            : index.namaDinasLuar != null
+                                ? Padding(
+                                    padding: EdgeInsets.only(left: 18),
+                                    child: TextLabell(
+                                      text: "Dinas Luar",
+                                      size: 14.0,
+                                      weight: FontWeight.w500,
+                                    ))
+                                : index.namaCuti != null
+                                    ? Padding(
+                                        padding: EdgeInsets.only(left: 18),
+                                        child: TextLabell(
+                                          text: "Cuti",
+                                          size: 14.0,
+                                          weight: FontWeight.w500,
+                                        ))
+                                    : index.namaSakit != null
+                                        ? Padding(
+                                            padding: EdgeInsets.only(left: 18),
+                                            child: TextLabell(
+                                              text: "Sakit",
+                                              size: 14.0,
+                                              weight: FontWeight.w500,
+                                            ))
+                                        : index.offDay.toString() == '0'
+                                            ? Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 18),
+                                                child: TextLabell(
+                                                  text: "Hari Libur Kerja",
+                                                  size: 14.0,
+                                                  weight: FontWeight.w500,
+                                                ))
+                                            : Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 18),
+                                                child: TextLabell(
+                                                  text: "ALPHA / Belum Absen",
+                                                  weight: FontWeight.w500,
+                                                ))
+                    :
+
+                    //     ada asen
+                    Column(
+                        children: [
+                          index.atten_date == "" || index.atten_date == null
+                              ?
+                              //tidak ada absen
+                              index.namaHariLibur != null
+                                  ? Padding(
+                                  padding: EdgeInsets.only(top: 12),
+                                  child: Row(
+                                    children: [
+                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
+                                      SizedBox(width: 10,),
+                                      TextLabell(
+                                        text: index.namaHariLibur,
+                                        weight: FontWeight.w400,
+                                        size: 11.0,
+                                      ),
+                                    ],
+                                  ))
+                                  : index.namaTugasLuar != null
+                                      ? Padding(
+                                  padding: EdgeInsets.only(top: 12),
+                                  child: Row(
+                                    children: [
+                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
+                                      SizedBox(width: 10,),
+                                      TextLabell(
+                                        text: index.namaTugasLuar,
+                                        weight: FontWeight.w400,
+                                        size: 11.0,
+                                      ),
+                                    ],
+                                  ))
+                                      : index.namaDinasLuar != null
+                                          ? Padding(
+                                  padding: EdgeInsets.only(top: 12),
+                                  child: Row(
+                                    children: [
+                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
+                                      SizedBox(width: 10,),
+                                      TextLabell(
+                                        text: index.namaDinasLuar,
+                                        weight: FontWeight.w400,
+                                        size: 11.0,
+                                      ),
+                                    ],
+                                  ))
+                                          : index.namaCuti != null
+                                              ?Padding(
+                                  padding: EdgeInsets.only(top: 12),
+                                  child: Row(
+                                    children: [
+                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
+                                      SizedBox(width: 10,),
+                                      TextLabell(
+                                        text: index.namaCuti,
+                                        weight: FontWeight.w400,
+                                        size: 11.0,
+                                      ),
+                                    ],
+                                  ))
+                                              : index.namaSakit != null
+                                                  ? Padding(
+                                  padding: EdgeInsets.only(top: 12),
+                                  child: Row(
+                                    children: [
+                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
+                                      SizedBox(width: 10,),
+                                      TextLabell(
+                                        text: index.namaSakit,
+                                        weight: FontWeight.w400,
+                                        size: 11.0,
+                                      ),
+                                    ],
+                                  ))
+                                                  : index.offDay.toString() ==
+                                                          '0'
+                                                      ? Padding(
+                                  padding: EdgeInsets.only(top: 12),
+                                  child: Row(
+                                    children: [
+                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
+                                      SizedBox(width: 10,),
+                                      TextLabell(
+                                        text: "Hari Libur Kerja",
+                                        weight: FontWeight.w400,
+                                        size: 11.0,
+                                      ),
+                                    ],
+                                  ))
+                                                      : SizedBox()
+                              : SizedBox(),
+                          Padding(
+                            padding: EdgeInsets.only(top: 12, bottom: 1),
+                            child: InkWell(
+                              onTap: () {
+                                controller.historySelected(index.id, 'history');
+                              },
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 38,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Iconsax.login_1,
+                                            color: Constanst.color5,
+                                            size: 16,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 4),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "$jamMasuk",
+                                                  style: GoogleFonts.inter(
+                                                      color:
+                                                          Constanst.fgPrimary,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 16),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  regType == 0
+                                                      ? "Face Recognition"
+                                                      : "Photo",
+                                                  style: GoogleFonts.inter(
+                                                      color:
+                                                          Constanst.fgSecondary,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 10),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 38,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Iconsax.logout_14,
+                                            color: Constanst.color4,
+                                            size: 16,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 4),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "$jamKeluar",
+                                                  style: GoogleFonts.inter(
+                                                      color:
+                                                          Constanst.fgPrimary,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 16),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  regType == 0
+                                                      ? "Face Recognition"
+                                                      : "Photo",
+                                                  style: GoogleFonts.inter(
+                                                      color:
+                                                          Constanst.fgSecondary,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 10),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 9,
+                                    child: Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      size: 16,
+                                      color: Constanst.colorNeutralFgTertiary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          index.turunan!.isNotEmpty
+                              ? Container(
+                                  padding: EdgeInsets.only(top: 4),
+                                  child: Column(
+                                    children: [
+                                      index.statusView == false
+                                          ? SizedBox()
+                                          : Column(
+                                              children: List.generate(
+                                                  index.turunan!.length, (i) {
+                                                var datum = index.turunan![i];
+                                                var jamMasuk =
+                                                    datum.signin_time ?? '';
+                                                var jamKeluar =
+                                                    datum.signout_time ?? '';
+                                                var placeIn =
+                                                    datum.place_in ?? '';
+                                                var placeOut =
+                                                    datum.place_out ?? '';
+                                                var note =
+                                                    datum.signin_note ?? '';
+                                                var signInLongLat =
+                                                    datum.signin_longlat ?? '';
+                                                var signOutLongLat =
+                                                    datum.signout_longlat ?? '';
+                                                var regType =
+                                                    datum.reqType ?? 0;
+                                                var statusView;
+                                                if (placeIn != "") {
+                                                  statusView =
+                                                      placeIn == "pengajuan" &&
+                                                              placeOut ==
+                                                                  "pengajuan"
+                                                          ? true
+                                                          : false;
+                                                }
+                                                var listJamMasuk =
+                                                    (jamMasuk!.split(':'));
+                                                var listJamKeluar =
+                                                    (jamKeluar!.split(':'));
+                                                return Column(
+                                                  children: [
+                                                    Divider(),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 6),
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          controller
+                                                              .historySelected(
+                                                                  datum.id,
+                                                                  'history');
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              flex: 38,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            8.0),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Icon(
+                                                                      Iconsax
+                                                                          .login_1,
+                                                                      color: Constanst
+                                                                          .color5,
+                                                                      size: 16,
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          left:
+                                                                              4),
+                                                                      child:
+                                                                          Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Text(
+                                                                            "$jamMasuk",
+                                                                            style: GoogleFonts.inter(
+                                                                                color: Constanst.fgPrimary,
+                                                                                fontWeight: FontWeight.w500,
+                                                                                fontSize: 16),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              height: 4),
+                                                                          Text(
+                                                                            regType == 0
+                                                                                ? "Face Recognition"
+                                                                                : "Photo",
+                                                                            style: GoogleFonts.inter(
+                                                                                color: Constanst.fgSecondary,
+                                                                                fontWeight: FontWeight.w400,
+                                                                                fontSize: 10),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              flex: 38,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            4),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Icon(
+                                                                      Iconsax
+                                                                          .logout_14,
+                                                                      color: Constanst
+                                                                          .color4,
+                                                                      size: 16,
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          left:
+                                                                              4),
+                                                                      child:
+                                                                          Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Text(
+                                                                            "$jamKeluar",
+                                                                            style: GoogleFonts.inter(
+                                                                                color: Constanst.fgPrimary,
+                                                                                fontWeight: FontWeight.w500,
+                                                                                fontSize: 16),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              height: 4),
+                                                                          Text(
+                                                                            regType == 0
+                                                                                ? "Face Recognition"
+                                                                                : "Photo",
+                                                                            style: GoogleFonts.inter(
+                                                                                color: Constanst.fgSecondary,
+                                                                                fontWeight: FontWeight.w400,
+                                                                                fontSize: 10),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              flex: 9,
+                                                              child: Icon(
+                                                                Icons
+                                                                    .arrow_forward_ios_rounded,
+                                                                size: 16,
+                                                                color: Constanst
+                                                                    .colorNeutralFgTertiary,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              }),
+                                            ),
+                                      Divider(),
+                                      InkWell(
+                                        onTap: () {
+                                          print(index.statusView);
+                                          //  index.statusView=!index.statusView;
+                                          controller.historyAbsen
+                                              .forEach((element) {
+                                            if (element.id.toString() ==
+                                                index.id.toString()) {
+                                              element.statusView =
+                                                  !index.statusView;
+                                            } else {}
+                                          });
+                                          controller.historyAbsen.refresh();
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.only(bottom: 12),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: index.statusView == true
+                                              ? Center(
+                                                  child: Container(
+                                                      child: TextLabell(
+                                                  text: "Tutup",
+                                                  size: 14,
+                                                )))
+                                              : Center(
+                                                  child: Container(
+                                                      child: TextLabell(
+                                                          text: "lainnya",
+                                                          size: 14))),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : SizedBox(height: 8,)
+                        ],
+                      ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
+  //  index.atten_date=="" || index.atten_date==null?
+  //    //tidak ada absen
+
+  //    index.namaHariLibur!=null?
+  //    TextLabell(text: index.namaHariLibur): TextLabell(text: "Tidak Masuk Kerja"):
+
+  //    //ada asen
 
   Widget listTurunanHistoryAbsen(indexData, String atten_date, index) {
     return Column(

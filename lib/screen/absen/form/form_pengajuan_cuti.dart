@@ -416,30 +416,42 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/5_cuti.svg',
-                      height: 22,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      "${controller.selectedTypeCuti.value}",
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w500,
-                          color: Constanst.fgPrimary,
-                          fontSize: 16),
-                    ),
-                  ],
+                Expanded(
+                  flex: 90,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        flex: 15,
+                        child: SvgPicture.asset(
+                          'assets/5_cuti.svg',
+                          height: 22,
+                        ),
+                      ),
+                      // const SizedBox(width: 4),
+                      Expanded(
+                        flex: 85,
+                        child: Text(
+                          "${controller.selectedTypeCuti.value} ",
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.fgPrimary,
+                              fontSize: 16),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  "${controller.limitCuti.value} Total",
-                  textAlign: TextAlign.right,
-                  style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w500,
-                      color: Constanst.fgSecondary,
-                      fontSize: 12),
+                Expanded(
+                  flex: 20,
+                  child: Text(
+                    "${controller.limitCuti.value} Total",
+                    textAlign: TextAlign.right,
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.fgSecondary,
+                        fontSize: 12),
+                  ),
                 ),
               ],
             ),
@@ -513,10 +525,13 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
 
                 print(data.toString());
 
+                
+
                 if (data.isNotEmpty) {
                   controller.limitCuti.value = data[0]['leave_day'];
                   controller.dateSelected.value = data[0]['select_date'];
                   controller.allowMinus.value = data[0]['allow_minus'];
+                  controller.isBackDate.value=data[0]['back_date'].toString();
                 }
 
                 print("Allow minu ${data[0]['allow_minus']}");
@@ -557,40 +572,52 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(
-                      Iconsax.note_2,
-                      size: 26,
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Tipe Cuti *",
-                          style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Constanst.fgPrimary),
+                Expanded(
+                  flex: 70,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 15,
+                        child: const Icon(
+                          Iconsax.note_2,
+                          size: 26,
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          controller.selectedTypeCuti.value,
-                          style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Constanst.fgPrimary),
+                      ),
+                     
+                      Expanded(
+                        flex: 90,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Tipe Cuti *",
+                              style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Constanst.fgPrimary),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              controller.selectedTypeCuti.value,
+                              style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.fgPrimary),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-                Icon(Iconsax.arrow_down_1,
-                    size: 20, color: Constanst.fgPrimary),
+                Expanded(
+                  flex: 10,
+                  child: Icon(Iconsax.arrow_down_1,
+                      size: 20, color: Constanst.fgPrimary),
+                ),
               ],
             ),
           ),
@@ -673,14 +700,18 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
+               flex: 50,
               child: Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: InkWell(
                   onTap: () {
                     DatePicker.showPicker(
                       context,
+                    
                       pickerModel: CustomDatePicker(
+                        
                         currentTime: DateTime.now(),
+                        minTime: controller.isBackDate.value=="0"?DateTime(2000):DateTime.now(),
                       ),
                       onConfirm: (time) {
                         if (time != null) {
@@ -695,11 +726,15 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 16.0, 0.0, 16.0),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Iconsax.calendar_2),
-                        const SizedBox(width: 12),
                         Expanded(
+                          flex: 15,
+                          child: const Icon(Iconsax.calendar_2)),
+                       
+                        Expanded(
+                          flex: 80,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -739,6 +774,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
               ),
             ),
             Expanded(
+              flex: 50,
               child: InkWell(
                 onTap: () {
                   if (controller.startDate.value == "") {
@@ -757,6 +793,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                       // maxTime: DateTime(DateTime.now().year, DateTime.now().month,
                       //     DateTime.now().day),
                       currentTime: DateTime.now(),
+                       minTime: controller.isBackDate.value=="0"?DateTime(2000):DateTime.now(),
                     ),
                     onConfirm: (time) {
                       if (time != null) {
@@ -812,16 +849,19 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 16.0, 16.0, 16.0),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Iconsax.calendar_2),
-                      const SizedBox(width: 12),
                       Expanded(
+                        flex: 15,
+                        child: Icon(Iconsax.calendar_2)),
+                   
+                      Expanded(
+                        flex: 80,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TextLabell(
-                              text: "Tanggal Selesai*",
+                            TextLabell( 
+                              text: "Tanggal Selesai *",
                               color: Constanst.fgPrimary,
                               size: 14,
                               weight: FontWeight.w400,
@@ -1028,7 +1068,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
         //           selectionMode: DateRangePickerSelectionMode.range,
         //           initialSelectedDates: controller.tanggalSelectedEdit.value,
         //           monthCellStyle: DateRangePickerMonthCellStyle(
-        //             weekendTextStyle: TextStyle(color: Colors.red),
+        //             weekendTextStyle: TextStyle(color: Colors.red),tang
         //             blackoutDateTextStyle: TextStyle(
         //                 color: Colors.red,
         //                 decoration: TextDecoration.lineThrough),
@@ -1081,6 +1121,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: SfDateRangePicker(
+                minDate: controller.isBackDate.value=="0"?DateTime(2000):DateTime.now(),
                 selectionMode: DateRangePickerSelectionMode.range,
                 initialSelectedDates: controller.tanggalSelectedEdit.value,
                 monthCellStyle: const DateRangePickerMonthCellStyle(
@@ -1359,38 +1400,50 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(
-                      Iconsax.profile_add,
-                      size: 26,
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Delegasikan Tugas kepada*",
-                          style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Constanst.fgPrimary),
+                Expanded(
+                  flex: 70,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 15,
+                        child: const Icon(
+                          Iconsax.profile_add,
+                          size: 26,
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          controller.selectedDelegasi.value,
-                          style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Constanst.fgPrimary),
+                      ),
+                    
+                      Expanded(
+                        flex: 90,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Delegasikan Tugas kepada*",
+                              style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Constanst.fgPrimary),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              controller.selectedDelegasi.value,
+                              style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.fgPrimary),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-                Icon(Iconsax.arrow_down_1,
-                    size: 20, color: Constanst.fgPrimary),
+                Expanded(
+                  flex: 10,
+                  child: Icon(Iconsax.arrow_down_1,
+                      size: 20, color: Constanst.fgPrimary),
+                ),
               ],
             ),
           ),
@@ -1466,72 +1519,78 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Iconsax.document_upload,
-                  size: 26,
+                Expanded(
+                  flex: 15,
+                  child: const Icon(
+                    Iconsax.document_upload,
+                    size: 26,
+                  ),
                 ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(
-                      () => controller.isRequiredFile.value == "0"
-                          ? Text(
-                              "Unggah File",
-                              style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Constanst.fgPrimary),
-                            )
-                          : Text(
-                              "Unggah File *",
-                              style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Constanst.fgPrimary),
-                            ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "Ukuran file max 5 MB",
-                      style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Constanst.fgSecondary),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            controller.takeFile();
-                          },
-                          customBorder: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8))),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                    width: 1.0,
-                                    color: Color.fromARGB(255, 211, 205, 205))),
-                            child: Icon(
-                              Iconsax.add,
-                              size: 26,
-                              color: Constanst.fgSecondary,
+                
+                Expanded(
+                  flex: 90,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Obx(
+                        () => controller.isRequiredFile.value == "0"
+                            ? Text(
+                                "Unggah File",
+                                style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Constanst.fgPrimary),
+                              )
+                            : Text(
+                                "Unggah File *",
+                                style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Constanst.fgPrimary),
+                              ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Ukuran file max 5 MB",
+                        style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Constanst.fgSecondary),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              controller.takeFile();
+                            },
+                            customBorder: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                      width: 1.0,
+                                      color: Color.fromARGB(255, 211, 205, 205))),
+                              child: Icon(
+                                Iconsax.add,
+                                size: 26,
+                                color: Constanst.fgSecondary,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          controller.namaFileUpload.value.length > 20
-                              ? '${controller.namaFileUpload.value.substring(0, 15)}...'
-                              : controller.namaFileUpload.value,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    )
-                  ],
+                          SizedBox(width: 8),
+                          Text(
+                            controller.namaFileUpload.value.length > 20
+                                ? '${controller.namaFileUpload.value.substring(0, 15)}...'
+                                : controller.namaFileUpload.value,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -1555,9 +1614,12 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Iconsax.textalign_justifyleft, size: 24),
+          Expanded(
+            flex: 15,
+            child: const Icon(Iconsax.textalign_justifyleft, size: 24)),
           const SizedBox(width: 8),
           Expanded(
+            flex: 90,
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

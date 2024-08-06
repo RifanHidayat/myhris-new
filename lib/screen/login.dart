@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/components/text.dart';
 import 'package:siscom_operasional/components/text_field.dart';
 import 'package:siscom_operasional/controller/auth_controller.dart';
@@ -481,7 +482,7 @@ class Login extends StatelessWidget {
                                   controller.databases.length, (index) {
                                 var data = controller.databases[index];
                                 return InkWell(
-                                  onTap: () {
+                                  onTap: () async{
                                     controller.databases.forEach((element) {
                                       element.isSelected = false;
                                     });
@@ -493,6 +494,10 @@ class Login extends StatelessWidget {
                                     controller.perusahaan.text = data.name;
 
                                     AppData.selectedDatabase = data.dbname;
+                                    
+  final prefs = await SharedPreferences.getInstance();
+ prefs.setString('dbname',data.dbname);
+
 
                                     Get.back();
                                   },
