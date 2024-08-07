@@ -2623,7 +2623,7 @@ class _DashboardState extends State<Dashboard> {
                             fontWeight: FontWeight.w500),
                       ),
                     )
-                  ],
+                  ], 
                 ),
               );
             }));

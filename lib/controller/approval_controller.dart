@@ -1397,6 +1397,7 @@ class ApprovalController extends GetxController {
     } else if (url_tujuan == 'edit-emp_claim') {
       Map<String, dynamic> body = {
         'status': statusPengajuan,
+         'em_id': dataEditFinal[0]['em_id'],
         'atten_date': detailData[0]['waktu_pengajuan'],
         'approve_date': applyDate1,
         'approve_by': applyBy1,

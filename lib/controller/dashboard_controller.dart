@@ -1064,6 +1064,8 @@ class DashboardController extends GetxController {
     this.user.refresh();
     refreshPagesStatus.value = false;
     getDepartemen();
+
+    
   }
 
   void checkHakAkses() {
