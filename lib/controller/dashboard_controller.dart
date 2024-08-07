@@ -253,7 +253,8 @@ class DashboardController extends GetxController {
 
       startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      print("Waktu 1 sama dengan waktu 2 new ${totalMinutes1}  ${totalMinutes2}");
+      print(
+          "Waktu 1 sama dengan waktu 2 new ${totalMinutes1}  ${totalMinutes2}");
     }
     Map<String, dynamic> body = {
       'atten_date': DateFormat('yyyy-MM-dd')
@@ -270,7 +271,6 @@ class DashboardController extends GetxController {
     var connect = Api.connectionApi("post", body, "view_last_absen_user2");
 
     connect.then((dynamic res) {
-
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         print("data login new ${valueBody}");
@@ -1102,7 +1102,7 @@ class DashboardController extends GetxController {
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {'em_id': getEmid};
     var connect = Api.connectionApi("post", body, "refresh_employee");
-    connect.then((dynamic res)  async{
+    connect.then((dynamic res) async {
       var valueBody = jsonDecode(res.body);
       print("data refresh employee ${valueBody}");
 
@@ -1113,7 +1113,7 @@ class DashboardController extends GetxController {
         print("data employee baru new ${valueBody['data']}");
         AppData.informasiUser = null;
         List<UserModel> getData = [];
-           var isBackDateSakit = "0";
+        var isBackDateSakit = "0";
         var isBackDateIzin = "0";
         var isBackDateCuti = "0";
         var isBackDateTugasLuar = "0";
@@ -1132,12 +1132,12 @@ class DashboardController extends GetxController {
             isBackDateLembur = isBackDates[5].toString();
           }
           var data = UserModel(
-        isBackDateSakit: isBackDateSakit,
-            isBackDateIzin: isBackDateIzin,
-            isBackDateCuti: isBackDateCuti,
-            isBackDateTugasLuar: isBackDateTugasLuar,
-            isBackDateDinasLuar: isBackDateDinasLuar,
-            isBackDateLembur: isBackDateLembur,
+              isBackDateSakit: isBackDateSakit,
+              isBackDateIzin: isBackDateIzin,
+              isBackDateCuti: isBackDateCuti,
+              isBackDateTugasLuar: isBackDateTugasLuar,
+              isBackDateDinasLuar: isBackDateDinasLuar,
+              isBackDateLembur: isBackDateLembur,
               em_id: element['em_id'] ?? "",
               des_id: element['des_id'] ?? 0,
               dep_id: element['dep_id'] ?? 0,
@@ -1174,21 +1174,19 @@ class DashboardController extends GetxController {
           print(element['posisi']);
           getData.add(data);
           final prefs = await SharedPreferences.getInstance();
-  await prefs.setString("interval_tracking", element['interval_tracking'].toString());
-   await prefs.setString("em_id", element['em_id'].toString());
-    await prefs.setString("", element['em_id'].toString());
-   
+          await prefs.setString(
+              "interval_tracking", element['interval_tracking'].toString());
+          await prefs.setString("em_id", element['em_id'].toString());
+          await prefs.setString("", element['em_id'].toString());
 
-  print("interval tracking ${ element['interval_tracking'].toString()}");
-     
-     
+          print("interval tracking ${element['interval_tracking'].toString()}");
         }
         AppData.informasiUser = getData;
 
         getUserInfo();
-        
+
         controllerTracking.isLoadingDetailTracking.value = false;
-         controllerTracking.isTracking();
+        controllerTracking.isTracking();
       }
       //   Api().validateAuth(res.statusCode );
     });
@@ -1297,11 +1295,10 @@ class DashboardController extends GetxController {
         absenControllre.showButtonlaporan.value = false;
         controllerIzin.showButtonlaporan.value = false;
         controllerLembur.showButtonlaporan.value = false;
-        
+
         controllerTugasLuar.showButtonlaporan.value = false;
         controllerKlaim.showButtonlaporan.value = false;
         controllerCuti.showButtonlaporan.value = false;
-
 
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
@@ -1901,8 +1898,23 @@ class DashboardController extends GetxController {
                             if (type == "checkTracking") {
                               print('kesini');
                               Get.back();
-                              controllerAbsensi.kirimDataAbsensi(
-                                  typewfh: typewfh);
+                              await controllerAbsensi
+                                  .deteksiOpsiPengembang(context);
+                              if (controllerAbsensi.statusDeteksi.value ==
+                                      false &&
+                                  controllerAbsensi.statusDeteksi2.value ==
+                                      false) {
+                                controllerAbsensi.kirimDataAbsensi(
+                                    typewfh: typewfh);
+                              } else if (controllerAbsensi
+                                          .statusDeteksi.value ==
+                                      false &&
+                                  controllerAbsensi.statusDeteksi2.value ==
+                                      true) {
+                                if (context.mounted) {
+                                  controllerAbsensi.popUpRefresh(context);
+                                }
+                              }
                             } else {
                               Navigator.pop(context);
                               await Permission.camera.request();

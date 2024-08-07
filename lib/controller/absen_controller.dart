@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'dart:async';
@@ -57,6 +58,10 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 
+import 'package:flutter/services.dart';
+import 'package:android_intent/android_intent.dart';
+import 'package:android_intent/flag.dart';
+
 class AbsenController extends GetxController {
   var globalCt = Get.put(GlobalController());
   final controllerTracking = Get.put(TrackingController());
@@ -104,7 +109,7 @@ class AbsenController extends GetxController {
   var tempNamaTipe1 = "".obs;
 
   var historyAbsen = <AbsenModel>[].obs;
-    var tempHistoryAbsen = <AbsenModel>[].obs;
+  var tempHistoryAbsen = <AbsenModel>[].obs;
   var historyAbsenShow = [].obs;
   var placeCoordinate = [].obs;
   var departementAkses = [].obs;
@@ -298,7 +303,7 @@ class AbsenController extends GetxController {
   }
 
   void getPlaceCoordinate() {
-    placeCoordinate.clear();
+    // placeCoordinate.clear();
     placeCoordinateDropdown.value.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate",
         params: "&id=${AppData.informasiUser![0].em_id}");
@@ -824,7 +829,8 @@ class AbsenController extends GetxController {
           // Get.back();
           Navigator.push(
             Get.context!,
-            MaterialPageRoute(builder: (context) => BerhasilRegistration()),
+            MaterialPageRoute(
+                builder: (context) => const BerhasilRegistration()),
           );
         } else {
           // Get.back();
@@ -1021,6 +1027,116 @@ class AbsenController extends GetxController {
     absenSelfie();
   }
 
+  Future<void> bukaOpsiPengembangSettings() async {
+    const intent = AndroidIntent(
+      action: 'android.settings.APPLICATION_DEVELOPMENT_SETTINGS',
+      package: 'com.android.settings',
+      // componentName: 'com.android.settings/.DevelopmentSettings',
+      // packageName: 'com.android.settings',
+      flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
+    );
+
+    try {
+      await intent.launch();
+    } on PlatformException catch (e) {
+      print('Failed to open developer options settings: ${e.message}');
+    }
+  }
+
+  static const platform = MethodChannel('com.example/developer_options');
+  var statusDeteksi = false.obs;
+  var statusDeteksi2 = false.obs;
+  GoogleMapController? mapController;
+
+  Future<void> deteksiOpsiPengembang(BuildContext context) async {
+    statusDeteksi.value =
+        await platform.invokeMethod('isDeveloperOptionsEnabled');
+
+    if (statusDeteksi.value == true) {
+      statusDeteksi2.value = true;
+      if (context.mounted) {
+        final maxWidth = MediaQuery.of(context).size.width;
+        Get.defaultDialog(
+          radius: 8,
+          title: "",
+          contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          content: SizedBox(
+            width: maxWidth,
+            child: Column(
+              children: [
+                const Text(
+                  'Opsi Pengembang Tedeteksi',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Silahkan menonaktifkan opsi pengembang sebelum melakukan absen',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: maxWidth * 0.5,
+                  child: TextButton(
+                    child: const Text('Buka Settings'),
+                    onPressed: () async {
+                      Get.back();
+                      bukaOpsiPengembangSettings();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+    update();
+  }
+
+  Future<void> refreshLokasi() async {
+    getPosisition();
+    mapController?.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(latUser.value, langUser.value), zoom: 20)
+        //17 is new zoom level
+        ));
+  }
+
+  Future<void> popUpRefresh(BuildContext context) async {
+    if (context.mounted) {
+      final maxWidth = MediaQuery.of(context).size.width;
+      Get.defaultDialog(
+        // backgroundColor: AppColors.surface,
+        radius: 8,
+        title: "",
+        contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+        content: SizedBox(
+          width: maxWidth,
+          child: Column(
+            children: [
+              const Text(
+                'Anda harus merefresh lokasi terlebih dahulu!',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: maxWidth * 0.5,
+                child: TextButton(
+                  child: const Text('Refresh'),
+                  onPressed: () async {
+                    refreshLokasi();
+                    statusDeteksi2.value = false;
+                    Get.back();
+                    update();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
   void kirimDataAbsensi({typewfh}) async {
 //// untuk cek absensi
     print("view last absen user 3");
@@ -1064,7 +1180,7 @@ class AbsenController extends GetxController {
         endTime = AppData.informasiUser![0].startTime;
 
         startDate = DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(Duration(days: -1)));
+            .format(DateTime.now().add(const Duration(days: -1)));
 
         endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       } else {
@@ -1072,7 +1188,7 @@ class AbsenController extends GetxController {
         endTime = AppData.informasiUser![0].startTime;
 
         endDate = DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(Duration(days: 1)));
+            .format(DateTime.now().add(const Duration(days: 1)));
 
         startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       }
@@ -1403,7 +1519,7 @@ class AbsenController extends GetxController {
           barrierDismissible: false,
           context: Get.context!,
           barrierColor: Colors.black54, // space around dialog
-          transitionDuration: Duration(milliseconds: 200),
+          transitionDuration: const Duration(milliseconds: 200),
           transitionBuilder: (context, a1, a2, child) {
             return ScaleTransition(
               scale: CurvedAnimation(
@@ -1441,7 +1557,7 @@ class AbsenController extends GetxController {
 
     var getEmpId = dataUser![0].em_id;
     print(getEmpId);
-    var  body = {
+    var body = {
       'em_id': getEmpId,
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
@@ -1450,7 +1566,6 @@ class AbsenController extends GetxController {
     var connect = Api.connectionApi("post", body, "attendance");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
-
         var valueBody = jsonDecode(res.body);
         print('data body ${valueBody}');
         if (valueBody['status'] == true) {
@@ -1458,8 +1573,8 @@ class AbsenController extends GetxController {
           loading.value =
               data.length == 0 ? "Data tidak ditemukan" : "Memuat data...";
           for (var el in data) {
-                historyAbsen.value.add(AbsenModel(
-                  date: el['date'],
+            historyAbsen.value.add(AbsenModel(
+                date: el['date'],
                 id: el['id'] ?? 0,
                 em_id: el['em_id'] ?? "",
                 atten_date: el['atten_date'] ?? "",
@@ -1491,9 +1606,8 @@ class AbsenController extends GetxController {
                 namaDinasLuar: el['dinas_luar'],
                 offDay: el['off_date'],
                 namaHariLibur: el['hari_libur'],
-                statusView: el['status_view']??false
-                ));
-                tempHistoryAbsen.value=historyAbsen.value;
+                statusView: el['status_view'] ?? false));
+            tempHistoryAbsen.value = historyAbsen.value;
             // historyAbsen.value.add(AbsenModel(
             //     id: el['id'] ?? "",
             //     em_id: el['em_id'] ?? "",
@@ -1518,48 +1632,41 @@ class AbsenController extends GetxController {
             //     signout_addr: el['signout_addr'] ?? "",
             //     reqType: el['reg_type'] ?? 0,
             //     atttype: el['atttype'] ?? 0));
-
-
           }
-          
-   //historyAbsenShow.value = historyAbsen;
-    Set<String> seenDates = {};
-   historyAbsen.value = historyAbsen.where((event) {
-    if (seenDates.contains(event.date)) {
-      return false;
-    } else {
-      seenDates.add(event.date);
-      return true;
-    }
-  }).toList();
 
+          //historyAbsenShow.value = historyAbsen;
+          Set<String> seenDates = {};
+          historyAbsen.value = historyAbsen.where((event) {
+            if (seenDates.contains(event.date)) {
+              return false;
+            } else {
+              seenDates.add(event.date);
+              return true;
+            }
+          }).toList();
 
+          historyAbsen.value.forEach((element) {
+            print("masuk sini");
 
-  historyAbsen.value.forEach((element) {
-    print("masuk sini");
-    
-       var data=tempHistoryAbsen.where((p0) => p0.date==element.date ).where((p0) => p0.id!=element.id ).toList();
-       if (data.length>0){
-           element.turunan=data;
-        
+            var data = tempHistoryAbsen
+                .where((p0) => p0.date == element.date)
+                .where((p0) => p0.id != element.id)
+                .toList();
+            if (data.length > 0) {
+              element.turunan = data;
+            } else {
+              element.turunan = [];
+            }
 
-       }else{
-         element.turunan=[];
+            print('data list ${element} tes');
+          });
 
-       }
+          //  historyAbsenShow.toSet().toList();
+          //  historyAbsenShow.forEach((element) {
+          //   var data=historyAbsenShow.where((p0) => p0['date']=element['date']).toList();
+          //   if (data.length>)
 
-print('data list ${element} tes');
-    
-  });
-
-  //  historyAbsenShow.toSet().toList();
-  //  historyAbsenShow.forEach((element) {
-  //   var data=historyAbsenShow.where((p0) => p0['date']=element['date']).toList();
-  //   if (data.length>)
-    
-  //  });
-
-
+          //  });
 
           // if (historyAbsen.value.length != 0) {
           //   var listTanggal = [];
@@ -1660,10 +1767,6 @@ print('data list ${element} tes');
           //    print("data now now now ${finalData.length}");
           //   this.historyAbsenShow.refresh();
 
-
-
-
-            
           // // }
           // this.historyAbsen.refresh();
         } else {
@@ -1688,8 +1791,8 @@ print('data list ${element} tes');
 
   void historySelected(id_absen, status) {
     if (status == 'history') {
-      var getSelected =
-         tempHistoryAbsen.value.firstWhere((element) => element.id == id_absen);
+      var getSelected = tempHistoryAbsen.value
+          .firstWhere((element) => element.id == id_absen);
       // print(getSelected);
       Get.to(DetailAbsen(
         absenSelected: [getSelected],
@@ -1760,13 +1863,13 @@ print('data list ${element} tes');
       context: Get.context!,
       builder: (BuildContext context) {
         return AlertDialog(
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(15.0))),
             content: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
                   Image.network(
                     Api.UrlfotoAbsen + stringImageSelected.value,
                     loadingBuilder: (context, child, loadingProgress) {
@@ -1781,7 +1884,7 @@ print('data list ${element} tes');
                       );
                     },
                   ),
-                  SizedBox(height: 15)
+                  const SizedBox(height: 15)
                 ]));
       },
     );
@@ -2424,21 +2527,21 @@ print('data list ${element} tes');
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Padding(
-              padding: EdgeInsets.only(left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
+                      const Expanded(
                         flex: 90,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 16),
+                          padding: EdgeInsets.only(top: 16),
                           child: Text(
                             "Filter",
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -2449,7 +2552,7 @@ print('data list ${element} tes');
                         flex: 10,
                         child: IconButton(
                           onPressed: () => Navigator.pop(Get.context!),
-                          icon: Icon(Iconsax.close_circle),
+                          icon: const Icon(Iconsax.close_circle),
                         ),
                       )
                     ],
@@ -2458,11 +2561,11 @@ print('data list ${element} tes');
                     height: 5,
                     color: Constanst.colorText2,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 16,
                   ),
                   lineTitleKategori(),
-                  SizedBox(
+                  const SizedBox(
                     height: 25,
                   ),
                   SizedBox(
@@ -2471,7 +2574,7 @@ print('data list ${element} tes');
                         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                         child: pageViewKategoriFilter(),
                       )),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   )
                 ],
@@ -2496,7 +2599,7 @@ print('data list ${element} tes');
                 this.selectedViewFilterAbsen.refresh();
               },
               child: Container(
-                margin: EdgeInsets.only(left: 6, right: 6),
+                margin: const EdgeInsets.only(left: 6, right: 6),
                 decoration: BoxDecoration(
                     color: selectedViewFilterAbsen.value == 0
                         ? Constanst.colorPrimary
@@ -2526,7 +2629,7 @@ print('data list ${element} tes');
                 this.selectedViewFilterAbsen.refresh();
               },
               child: Container(
-                margin: EdgeInsets.only(left: 6, right: 6),
+                margin: const EdgeInsets.only(left: 6, right: 6),
                 decoration: BoxDecoration(
                     color: selectedViewFilterAbsen.value == 1
                         ? Constanst.colorPrimary
@@ -2555,7 +2658,7 @@ print('data list ${element} tes');
 
   Widget pageViewKategoriFilter() {
     return PageView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         controller: pageViewFilterAbsen,
         onPageChanged: (index) {
           selectedViewFilterAbsen.value = index;
@@ -2563,12 +2666,12 @@ print('data list ${element} tes');
         itemCount: 2,
         itemBuilder: (context, index) {
           return Padding(
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               child: index == 0
                   ? filterBulan()
                   : index == 1
                       ? filterTanggal()
-                      : SizedBox());
+                      : const SizedBox());
         });
   }
 
@@ -2611,22 +2714,22 @@ print('data list ${element} tes');
                 borderRadius: Constanst.borderStyle1,
                 border: Border.all(color: Constanst.colorText2)),
             child: Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 8),
+              padding: const EdgeInsets.only(top: 10, bottom: 8),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 6),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 6),
                         child: Icon(Iconsax.calendar_2),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 3),
                         child: Text(
                           "${Constanst.convertDateBulanDanTahun(bulanDanTahunNow.value)}",
-                          style: TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16),
                         ),
                       ),
                     ],
@@ -2661,7 +2764,7 @@ print('data list ${element} tes');
                 borderRadius: Constanst.borderStyle1,
                 border: Border.all(color: Constanst.colorText2)),
             child: Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 8),
+              padding: const EdgeInsets.only(top: 10, bottom: 8),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -2669,8 +2772,8 @@ print('data list ${element} tes');
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 6),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 6),
                           child: Icon(Iconsax.calendar_2),
                         ),
                         Flexible(
@@ -2678,7 +2781,7 @@ print('data list ${element} tes');
                             padding: const EdgeInsets.only(left: 6),
                             child: Text(
                               "${Constanst.convertDate('${DateFormat('yyyy-MM-dd').format(pilihTanggalTelatAbsen.value)}')}",
-                              style: TextStyle(fontSize: 16),
+                              style: const TextStyle(fontSize: 16),
                             ),
                           ),
                         ),
@@ -2721,7 +2824,7 @@ print('data list ${element} tes');
         Get.back();
 
         // print("body " + jsonDecode(response.body.toString()).toString());
-        Get.to(BerhasilRegistration());
+        Get.to(const BerhasilRegistration());
       }
 
       // var data = jsonDecode(response.body);
@@ -2899,7 +3002,7 @@ print('data list ${element} tes');
                             onTap: () {
                               Get.back();
                             },
-                            child: Icon(Icons.close))
+                            child: const Icon(Icons.close))
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -3121,7 +3224,7 @@ print('data list ${element} tes');
       var valueBody = jsonDecode(res.body);
 
       if (res.statusCode == 200) {
-        Get.to(pengajuanAbsenBerhasil());
+        Get.to(const pengajuanAbsenBerhasil());
 
         dataPengajuanAbsensi();
 
