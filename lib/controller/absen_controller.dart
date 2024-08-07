@@ -303,7 +303,8 @@ class AbsenController extends GetxController {
   }
 
   void getPlaceCoordinate() {
-    //  placeCoordinate.clear();
+    // placeCoordinate.clear();
+
     placeCoordinateDropdown.value.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate",
         params: "&id=${AppData.informasiUser![0].em_id}");
