@@ -293,12 +293,12 @@ class AbsenController extends GetxController {
             }
           }
         }
-      }
+      }   
     });
   }
 
   void getPlaceCoordinate() {
-    placeCoordinate.clear();
+  //  placeCoordinate.clear();
     placeCoordinateDropdown.value.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate",
         params: "&id=${AppData.informasiUser![0].em_id}");
@@ -3065,17 +3065,17 @@ print('data list ${element} tes');
   }
 
   void resetData() {
-    placeCoordinateCheckin.clear();
-    placeCoordinateCheckout.clear();
-    isChecked.value = false;
-    isChecked2.value = false;
-    tglAjunan.value = "";
-    checkinAjuan.value = "";
-    checkoutAjuan.value = "";
-    checkinAjuan2.value = "";
-    checkoutAjuan2.value = "";
-    catataanAjuan.clear();
-    imageAjuan = "".obs;
+   // placeCoordinateCheckin.clear();
+  //  placeCoordinateCheckout.clear();
+    // isChecked.value = false;
+    // isChecked2.value = false;
+    // tglAjunan.value = "";
+    // checkinAjuan.value = "";
+    // checkoutAjuan.value = "";
+    // checkinAjuan2.value = "";
+    // checkoutAjuan2.value = "";
+    // catataanAjuan.clear();
+    // imageAjuan = "".obs;
   }
 
   void kirimPengajuan(getNomorAjuanTerakhir, status) {
