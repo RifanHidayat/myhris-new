@@ -1600,7 +1600,7 @@ class AbsenController extends GetxController {
                 reqType: el['reg_type'] ?? 0,
                 atttype: el['atttype'] ?? 0,
                 namaLembur: el['lembur'],
-                namaTugasLuar: el['tuas_luar'],
+                namaTugasLuar: el['tugas_luar'],
                 namaCuti: el['cuti'],
                 namaSakit: el['sakit'],
                 namaIzin: el['izin'],
