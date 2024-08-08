@@ -224,7 +224,7 @@ class _KasbonState extends State<Kasbon> {
       body: WillPopScope(
         onWillPop: () async {
           controller.onClose();
-          Get.offAll(InitScreen());
+          Get.back();
           return true;
         },
         child: Obx(

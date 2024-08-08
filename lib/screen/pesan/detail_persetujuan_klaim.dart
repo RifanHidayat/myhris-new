@@ -267,7 +267,6 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
       if (controller.detailData[0]['nama_approve1'] == "" ||
           controller.detailData[0]['nama_approve1'] == "null" ||
           controller.detailData[0]['nama_approve1'] == null) {
-      
         if (controller.detailData[0]['em_report_to']
             .toString()
             .contains(emId)) {
@@ -396,11 +395,16 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Obx(() => controller.showButton.value == true &&
-                      (controller.detailData[0]['leave_status'] == "Pending" ||
-                          controller.detailData[0]['leave_status'] ==
-                              "Approve"  || controller.detailData[0]['leave_status'] ==
-                              "Approve 1" 
-                          )
+                          (controller.detailData[0]['leave_status'] ==
+                                  "Pending" &&
+                              (controllerGlobal.valuePolaPersetujuan.value ==
+                                      "1" ||
+                                  controllerGlobal.valuePolaPersetujuan.value ==
+                                      "1")) ||
+                      (controller.detailData[0]['leave_status'] == "Approve" &&
+                          (controllerGlobal.valuePolaPersetujuan.value == "2" ||
+                              controllerGlobal.valuePolaPersetujuan.value ==
+                                  "2"))
                   ? Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -1332,7 +1336,6 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
     var text2 = "";
     if (data['leave_status'] == "Pending") {
       text = "Pending Approval 1";
-       text2 = "Pending Approval 2";
     }
     if (data['leave_status'] == "Rejected") {
       if (data['nama_approve2'] == "" || data['nama_approve2'] == null) {
@@ -1413,7 +1416,7 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                       ),
                     ],
                   ),
-                  text2 != ""
+                  text != ""
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -1432,7 +1435,9 @@ class _DetailPersetujuanKlaimState extends State<DetailPersetujuanKlaim> {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  data['leave_status'] == 'Pending' || data['leave_status'] == 'Approve'  || data['leave_status'] == 'Approve 1'
+                                  data['leave_status'] == 'Approve' &&
+                                          (data['nama_approve1'] == "" ||
+                                              data['nama_approve1'] == null)
                                       ? Icon(
                                           Iconsax.timer,
                                           color: Constanst.warning,

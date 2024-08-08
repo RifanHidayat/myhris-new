@@ -220,7 +220,7 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
       body: WillPopScope(
         onWillPop: () async {
           controller.onClose();
-          Get.offAll(InitScreen());
+          Get.back();
           return true;
         },
         child: Obx(

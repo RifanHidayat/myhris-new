@@ -67,7 +67,7 @@ class _DashboardState extends State<Dashboard> {
   final tabbController = Get.put(TabbController());
   final authController = Get.put(AuthController());
 
-  var intervalTracking="";
+  var intervalTracking = "";
 
   Future<void> refreshData() async {
     controller.refreshPagesStatus.value = true;
@@ -150,14 +150,12 @@ class _DashboardState extends State<Dashboard> {
                     onPressed: !controllerAbsensi.absenStatus.value
                         ? () {
                             if (controllerAbsensi.absenStatus.value == true) {
-                                     if (  controller.wfhstatus.value ==true){
-                                  UtilsAlert.showToast(
-                                  "Menunggu status wfh anda di approve");
+                              if (controller.wfhstatus.value == true) {
+                                UtilsAlert.showToast(
+                                    "Menunggu status wfh anda di approve");
                                 return;
                               }
-                              
 
-                             
                               UtilsAlert.showToast(
                                   "Anda harus absen keluar terlebih dahulu");
                             } else {
@@ -756,9 +754,8 @@ class _DashboardState extends State<Dashboard> {
         onTap: () {
           print("tes");
           print(intervalTracking.toString());
-        //  FlutterBackgroundService().invoke("setAsBackground");
+          //  FlutterBackgroundService().invoke("setAsBackground");
           // Get.to(PersonalInfo());
-          
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -1073,11 +1070,11 @@ class _DashboardState extends State<Dashboard> {
                                 onTap: () {
                                   if (controllerAbsensi.absenStatus.value ==
                                       true) {
-                                         if (  controller.wfhstatus.value ==true){
-                                  UtilsAlert.showToast(
-                                  "Menunggu status wfh anda di approve");
-                                return;
-                              }
+                                    if (controller.wfhstatus.value == true) {
+                                      UtilsAlert.showToast(
+                                          "Menunggu status wfh anda di approve");
+                                      return;
+                                    }
                                     UtilsAlert.showToast(
                                         "Anda harus absen keluar terlebih dahulu");
                                   } else {
@@ -1892,12 +1889,12 @@ class _DashboardState extends State<Dashboard> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Constanst.colorStateInfoBorder,
-                    width: 1.0,
-                  ),
-                  // color: Constanst.colorButton3,
-                  borderRadius: Constanst.borderStyle2),
+                border: Border.all(
+                  color: Constanst.colorStateInfoBorder,
+                  width: 1.0,
+                ),
+                borderRadius: Constanst.borderStyle2,
+              ),
               child: Material(
                 borderRadius: Constanst.borderStyle2,
                 color: Constanst.infoLight1,
@@ -1912,35 +1909,41 @@ class _DashboardState extends State<Dashboard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Iconsax.add_square5,
-                              color: Constanst.infoLight,
-                              size: 26,
-                            ),
-                            const SizedBox(width: 4),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Pengajuan",
-                                  style: GoogleFonts.inter(
-                                      color: Constanst.fgPrimary,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Iconsax.add_square5,
+                                color: Constanst.infoLight,
+                                size: 26,
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Pengajuan",
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgPrimary,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      "Buat dengan cepat!",
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgPrimary,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  "Buat dengan cepat!",
-                                  style: GoogleFonts.inter(
-                                      color: Constanst.fgPrimary,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                         Icon(
                           Icons.arrow_forward_ios_rounded,
@@ -1963,12 +1966,12 @@ class _DashboardState extends State<Dashboard> {
                   : Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Constanst.colorStateInfoBorder,
-                              width: 1.0,
-                            ),
-                            // color: Constanst.colorButton3,
-                            borderRadius: Constanst.borderStyle2),
+                          border: Border.all(
+                            color: Constanst.colorStateInfoBorder,
+                            width: 1.0,
+                          ),
+                          borderRadius: Constanst.borderStyle2,
+                        ),
                         child: Material(
                           borderRadius: Constanst.borderStyle2,
                           color: Constanst.infoLight1,
@@ -1987,36 +1990,44 @@ class _DashboardState extends State<Dashboard> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Iconsax.document_text5,
-                                        color: Constanst.infoLight,
-                                        size: 26,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Laporan",
-                                            style: GoogleFonts.inter(
-                                                color: Constanst.fgPrimary,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Iconsax.document_text5,
+                                          color: Constanst.infoLight,
+                                          size: 26,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Laporan",
+                                                style: GoogleFonts.inter(
+                                                    color: Constanst.fgPrimary,
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Text(
+                                                "Cek laporan disini!",
+                                                style: GoogleFonts.inter(
+                                                    color: Constanst.fgPrimary,
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(height: 6),
-                                          Text(
-                                            "Cek laporan disini!",
-                                            style: GoogleFonts.inter(
-                                                color: Constanst.fgPrimary,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   Icon(
                                     Icons.arrow_forward_ios_rounded,
@@ -2623,7 +2634,7 @@ class _DashboardState extends State<Dashboard> {
                             fontWeight: FontWeight.w500),
                       ),
                     )
-                  ], 
+                  ],
                 ),
               );
             }));
@@ -2719,20 +2730,18 @@ class _DashboardState extends State<Dashboard> {
             }));
   }
 
-  void getSession() async{
-     final prefs = await SharedPreferences.getInstance();
-     var d= prefs.getString('interval_tracking');
- 
- setState(() {
-   intervalTracking="${d}";
- });
+  void getSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    var d = prefs.getString('interval_tracking');
 
+    setState(() {
+      intervalTracking = "${d}";
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    
     _checkversion();
     controller.updateInformasiUser();
     controller.initData();
@@ -2754,7 +2763,6 @@ class _DashboardState extends State<Dashboard> {
       // absenControllre.absenStatus.value =
       //     controller.dashboardStatusAbsen.value;
     });
-    
 
     // Api().checkLogin();
     // Add a listener to the scroll controller
@@ -2768,29 +2776,31 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _checkversion() async {
-    final newVersion = NewVersionPlus(
-      androidId: 'com.siscom.siscomhris',
-    );
+    try {
+      final newVersion = NewVersionPlus(
+        androidId: 'com.siscom.siscomhris',
+      );
 
-    final status = await newVersion.getVersionStatus();
+      final status = await newVersion.getVersionStatus();
 
-    if (status!=null){
-       if (status!.localVersion!=status.storeVersion) {
-      newVersion.showUpdateDialog(
-          context: context,
-          versionStatus: status!,
-          dialogTitle: "Update SISCOM HRIS",
-          dialogText:
-              "Update versi SISCOM HRIS dari versi ${status.localVersion} ke versi ${status.storeVersion}",
-          dismissAction: () {
-            Get.back();
-          },
-          updateButtonText: "Update Sekarang",
-          dismissButtonText: "Skip");
-      print("status ${status.localVersion}");
-    }
-    }
+      if (status != null) {
+        if (status.localVersion != status.storeVersion) {
+          if (context.mounted) {
+            newVersion.showUpdateDialog(
+                context: context,
+                versionStatus: status,
+                dialogTitle: "Update SISCOM HRIS",
+                dialogText:
+                    "Update versi SISCOM HRIS dari versi ${status.localVersion} ke versi ${status.storeVersion}",
+                dismissAction: () {
+                  Get.back();
+                },
+                updateButtonText: "Update Sekarang",
+                dismissButtonText: "Skip");
+            print("status yesy ${status.localVersion}");
+          }
+        }
+      } else {}
+    } catch (e) {}
   }
-   
-    
 }

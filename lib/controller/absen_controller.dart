@@ -298,12 +298,11 @@ class AbsenController extends GetxController {
             }
           }
         }
-      }   
+      }
     });
   }
 
   void getPlaceCoordinate() {
-
     // placeCoordinate.clear();
 
     placeCoordinateDropdown.value.clear();
@@ -3170,8 +3169,8 @@ class AbsenController extends GetxController {
   }
 
   void resetData() {
-   // placeCoordinateCheckin.clear();
-  //  placeCoordinateCheckout.clear();
+    // placeCoordinateCheckin.clear();
+    //  placeCoordinateCheckout.clear();
     // isChecked.value = false;
     // isChecked2.value = false;
     // tglAjunan.value = "";

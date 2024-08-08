@@ -977,7 +977,9 @@ class DashboardController extends GetxController {
           var dataDepartemen = valueBody['data'];
 
           var dataUser = AppData.informasiUser;
-          var hakAkses = dataUser![0].em_hak_akses;
+          var hakAkses = dataUser == null || dataUser == "null"
+              ? ""
+              : dataUser[0].em_hak_akses;
 
           if (hakAkses != "" || hakAkses != null) {
             if (hakAkses == '0') {
@@ -1064,8 +1066,6 @@ class DashboardController extends GetxController {
     this.user.refresh();
     refreshPagesStatus.value = false;
     getDepartemen();
-
-    
   }
 
   void checkHakAkses() {
@@ -1102,7 +1102,7 @@ class DashboardController extends GetxController {
     print("informasi hak akseesss");
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
-    Map<String, dynamic> body = {'em_id': getEmid};
+    var body = {'em_id': getEmid};
     var connect = Api.connectionApi("post", body, "refresh_employee");
     connect.then((dynamic res) async {
       var valueBody = jsonDecode(res.body);
@@ -1197,8 +1197,10 @@ class DashboardController extends GetxController {
   void updateWorkTime() {
     print("informasi hak akses work schdule");
     var dataUser = AppData.informasiUser;
-    var getEmid = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var getEmid = dataUser == null || dataUser == "null" || dataUser == ""
+        ? ""
+        : dataUser[0].em_id;
+    var body = {
       'em_id': getEmid,
       'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
     };

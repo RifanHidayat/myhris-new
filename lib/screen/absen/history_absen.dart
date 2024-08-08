@@ -109,7 +109,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
         body: WillPopScope(
           onWillPop: () async {
             controller.removeAll();
-            Get.offAll(InitScreen());
+            Get.back();
             return true;
           },
           child: SizedBox(
@@ -1895,89 +1895,138 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                               //tidak ada absen
                               index.namaHariLibur != null
                                   ? Padding(
-                                  padding: EdgeInsets.only(top: 12),
-                                  child: Row(
-                                    children: [
-                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
-                                      SizedBox(width: 10,),
-                                      TextLabell(
-                                        text: index.namaHariLibur,
-                                        weight: FontWeight.w400,
-                                        size: 11.0,
-                                      ),
-                                    ],
-                                  ))
+                                      padding: EdgeInsets.only(top: 12),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Iconsax.info_circle,
+                                            size: 15,
+                                            color: Constanst.infoLight,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          TextLabell(
+                                            text: index.namaHariLibur,
+                                            weight: FontWeight.w400,
+                                            size: 11.0,
+                                          ),
+                                        ],
+                                      ))
                                   : index.namaTugasLuar != null
                                       ? Padding(
-                                  padding: EdgeInsets.only(top: 12),
-                                  child: Row(
-                                    children: [
-                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
-                                      SizedBox(width: 10,),
-                                      TextLabell(
-                                        text: index.namaTugasLuar,
-                                        weight: FontWeight.w400,
-                                        size: 11.0,
-                                      ),
-                                    ],
-                                  ))
+                                          padding: EdgeInsets.only(top: 12),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Iconsax.info_circle,
+                                                size: 15,
+                                                color: Constanst.infoLight,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              TextLabell(
+                                                text: index.namaTugasLuar,
+                                                weight: FontWeight.w400,
+                                                size: 11.0,
+                                              ),
+                                            ],
+                                          ))
                                       : index.namaDinasLuar != null
                                           ? Padding(
-                                  padding: EdgeInsets.only(top: 12),
-                                  child: Row(
-                                    children: [
-                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
-                                      SizedBox(width: 10,),
-                                      TextLabell(
-                                        text: index.namaDinasLuar,
-                                        weight: FontWeight.w400,
-                                        size: 11.0,
-                                      ),
-                                    ],
-                                  ))
+                                              padding: EdgeInsets.only(top: 12),
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Iconsax.info_circle,
+                                                    size: 15,
+                                                    color: Constanst.infoLight,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  TextLabell(
+                                                    text: index.namaDinasLuar,
+                                                    weight: FontWeight.w400,
+                                                    size: 11.0,
+                                                  ),
+                                                ],
+                                              ))
                                           : index.namaCuti != null
-                                              ?Padding(
-                                  padding: EdgeInsets.only(top: 12),
-                                  child: Row(
-                                    children: [
-                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
-                                      SizedBox(width: 10,),
-                                      TextLabell(
-                                        text: index.namaCuti,
-                                        weight: FontWeight.w400,
-                                        size: 11.0,
-                                      ),
-                                    ],
-                                  ))
+                                              ? Padding(
+                                                  padding:
+                                                      EdgeInsets.only(top: 12),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Iconsax.info_circle,
+                                                        size: 15,
+                                                        color:
+                                                            Constanst.infoLight,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      TextLabell(
+                                                        text: index.namaCuti,
+                                                        weight: FontWeight.w400,
+                                                        size: 11.0,
+                                                      ),
+                                                    ],
+                                                  ))
                                               : index.namaSakit != null
                                                   ? Padding(
-                                  padding: EdgeInsets.only(top: 12),
-                                  child: Row(
-                                    children: [
-                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
-                                      SizedBox(width: 10,),
-                                      TextLabell(
-                                        text: index.namaSakit,
-                                        weight: FontWeight.w400,
-                                        size: 11.0,
-                                      ),
-                                    ],
-                                  ))
+                                                      padding: EdgeInsets.only(
+                                                          top: 12),
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            Iconsax.info_circle,
+                                                            size: 15,
+                                                            color: Constanst
+                                                                .infoLight,
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          TextLabell(
+                                                            text:
+                                                                index.namaSakit,
+                                                            weight:
+                                                                FontWeight.w400,
+                                                            size: 11.0,
+                                                          ),
+                                                        ],
+                                                      ))
                                                   : index.offDay.toString() ==
                                                           '0'
                                                       ? Padding(
-                                  padding: EdgeInsets.only(top: 12),
-                                  child: Row(
-                                    children: [
-                                      Icon(Iconsax.info_circle,size: 15,color: Constanst.infoLight,),
-                                      SizedBox(width: 10,),
-                                      TextLabell(
-                                        text: "Hari Libur Kerja",
-                                        weight: FontWeight.w400,
-                                        size: 11.0,
-                                      ),
-                                    ],
-                                  ))
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 12),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(
+                                                                Iconsax
+                                                                    .info_circle,
+                                                                size: 15,
+                                                                color: Constanst
+                                                                    .infoLight,
+                                                              ),
+                                                              SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              TextLabell(
+                                                                text:
+                                                                    "Hari Libur Kerja",
+                                                                weight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                size: 11.0,
+                                                              ),
+                                                            ],
+                                                          ))
                                                       : SizedBox()
                               : SizedBox(),
                           Padding(
@@ -2315,7 +2364,9 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                     ],
                                   ),
                                 )
-                              : SizedBox(height: 8,)
+                              : SizedBox(
+                                  height: 8,
+                                )
                         ],
                       ),
               )

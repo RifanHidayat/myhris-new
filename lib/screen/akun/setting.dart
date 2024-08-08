@@ -174,13 +174,13 @@ class _SettingState extends State<Setting> {
                                                 AppData.informasiUser![0]
                                                         .em_image ==
                                                     ""
-                                                    ?CircleAvatar(
+                                            ? CircleAvatar(
                                                 radius: 28,
                                                 child: ClipOval(
                                                   child: ClipOval(
                                                     child: CachedNetworkImage(
-                                                         imageUrl:
-                                                    "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}",
+                                                      imageUrl:
+                                                          "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}",
                                                       progressIndicatorBuilder:
                                                           (context, url,
                                                                   downloadProgress) =>
@@ -408,15 +408,17 @@ class _SettingState extends State<Setting> {
               onTap: () => Get.to(InfoKaryawan()),
               child: Container(
                 decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Constanst.fgBorder,
-                      width: 1.0,
-                    ),
-                    borderRadius: const BorderRadius.all(Radius.circular(12))),
+                  border: Border.all(
+                    color: Constanst.fgBorder,
+                    width: 1.0,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 8.0, 4.0, 8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset(
                         "assets/icon_info_keryawan.png",
@@ -425,37 +427,35 @@ class _SettingState extends State<Setting> {
                       ),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: Row(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Info Karyawan",
-                                  style: GoogleFonts.inter(
-                                      color: Constanst.fgPrimary,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "Cek rekan kerjamu!",
-                                  style: GoogleFonts.inter(
-                                      color: Constanst.fgSecondary,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 12),
-                                ),
-                              ],
+                            Text(
+                              "Info Karyawan",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 16,
-                              color: Constanst.fgSecondary,
+                            const SizedBox(height: 4),
+                            Text(
+                              "Cek rekan kerjamu!",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
                           ],
                         ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 16,
+                        color: Constanst.fgSecondary,
                       ),
                     ],
                   ),
@@ -471,14 +471,15 @@ class _SettingState extends State<Setting> {
               // onTap: () => Get.to(InfoKaryawan()),
               child: Container(
                 decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Constanst.fgBorder,
-                      width: 1.0,
-                    ),
-                    color: Constanst.colorNonAktif,
-                    borderRadius: const BorderRadius.all(Radius.circular(12))),
+                  border: Border.all(
+                    color: Constanst.fgBorder,
+                    width: 1.0,
+                  ),
+                  color: Constanst.colorNonAktif,
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 8.0, 4.0, 8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -489,59 +490,53 @@ class _SettingState extends State<Setting> {
                       ),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: Row(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Text(
+                              "Kontrak 1",
+                              style: GoogleFonts.inter(
+                                  color:
+                                      const Color.fromARGB(168, 166, 167, 158),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
                               children: [
                                 Text(
-                                  "Kontrak 1",
+                                  "12-12-2023",
                                   style: GoogleFonts.inter(
                                       color: const Color.fromARGB(
                                           168, 166, 167, 158),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14),
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12),
                                 ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "12-12-2023",
-                                      style: GoogleFonts.inter(
-                                          color: const Color.fromARGB(
-                                              168, 166, 167, 158),
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12),
-                                    ),
-                                    Text(
-                                      " • ",
-                                      style: GoogleFonts.inter(
-                                          color: const Color.fromARGB(
-                                              168, 166, 167, 158),
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 7),
-                                    ),
-                                    Text(
-                                      "5hr",
-                                      style: GoogleFonts.inter(
-                                          color: const Color.fromARGB(
-                                              168, 166, 167, 158),
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12),
-                                    ),
-                                  ],
+                                Text(
+                                  " • ",
+                                  style: GoogleFonts.inter(
+                                      color: const Color.fromARGB(
+                                          168, 166, 167, 158),
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 7),
+                                ),
+                                Text(
+                                  "5hr",
+                                  style: GoogleFonts.inter(
+                                      color: const Color.fromARGB(
+                                          168, 166, 167, 158),
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12),
                                 ),
                               ],
                             ),
-                            const Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 16,
-                              color: Color.fromARGB(168, 166, 167, 158),
-                            ),
                           ],
                         ),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 16,
+                        color: Color.fromARGB(168, 166, 167, 158),
                       ),
                     ],
                   ),

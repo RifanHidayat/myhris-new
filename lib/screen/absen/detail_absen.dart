@@ -118,6 +118,7 @@ class DetailAbsen extends StatelessWidget {
                   longlatMasuk == "" ? const SizedBox() : descMasuk(),
                   const SizedBox(height: 16),
                   longlatKeluar == "" ? const SizedBox() : descKeluar(),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -497,117 +498,232 @@ class DetailAbsen extends StatelessWidget {
               //   ],
               // ),
               // const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Lokasi",
-                    style: GoogleFonts.inter(
-                        color: Constanst.fgPrimary,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
-                  ),
-                 
-                  SizedBox(
-                    // width: gambarKeluar != ''
-                    //     ? MediaQuery.of(Get.context!).size.width / 2
-                    //     : MediaQuery.of(Get.context!).size.width - 80,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          "$alamatMasuk ($placeIn)",
-                          textAlign: TextAlign.justify,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines:
-                              controller.selengkapnyaMasuk.value ? 100 : 2,
-                          style: GoogleFonts.inter(
-                              color: Constanst.fgSecondary,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14),
-                        )),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: InkWell(
-                      onTap: () => controller.selengkapnyaMasuk.value
-                          ? controller.selengkapnyaMasuk.value = false
-                          : controller.selengkapnyaMasuk.value = true,
-                      child: Text(
-                        controller.selengkapnyaMasuk.value
-                            ? "Tutup"
-                            : "Selengkapnya",
-                        style: GoogleFonts.inter(
-                            color: Constanst.fgPrimary,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14),
-                      ),
+              gambarMasuk != ''
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(6.0),
+                          child: SizedBox(
+                            width: MediaQuery.of(Get.context!).size.width / 3,
+                            child: Image.network(
+                              Api.UrlfotoAbsen + gambarMasuk,
+                              errorBuilder: (context, exception, stackTrace) {
+                                return Image.asset(
+                                  'assets/Foto.png',
+                                  fit: BoxFit.fill,
+                                );
+                              },
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Lokasi",
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "$alamatMasuk ($placeIn)",
+                                textAlign: TextAlign.justify,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: controller.selengkapnyaMasuk.value
+                                    ? 100
+                                    : 2,
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: InkWell(
+                                  onTap: () =>
+                                      controller.selengkapnyaMasuk.value =
+                                          !controller.selengkapnyaMasuk.value,
+                                  child: Text(
+                                    controller.selengkapnyaMasuk.value
+                                        ? "Tutup"
+                                        : "Selengkapnya",
+                                    style: GoogleFonts.inter(
+                                      color: Constanst.fgPrimary,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              Text(
+                                "Tipe Lokasi",
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                " $placeIn",
+                                textAlign: TextAlign.justify,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: controller.selengkapnyaMasuk.value
+                                    ? 100
+                                    : 2,
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                "Catatan",
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                catatanMasuk.isEmpty ? '-' : catatanMasuk,
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Lokasi",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            ),
+                            SizedBox(
+                              // width: gambarKeluar != ''
+                              //     ? MediaQuery.of(Get.context!).size.width / 2
+                              //     : MediaQuery.of(Get.context!).size.width - 80,
+                              child: Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    "$alamatMasuk ($placeIn)",
+                                    textAlign: TextAlign.justify,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: controller.selengkapnyaMasuk.value
+                                        ? 100
+                                        : 2,
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14),
+                                  )),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: InkWell(
+                                onTap: () => controller.selengkapnyaMasuk.value
+                                    ? controller.selengkapnyaMasuk.value = false
+                                    : controller.selengkapnyaMasuk.value = true,
+                                child: Text(
+                                  controller.selengkapnyaMasuk.value
+                                      ? "Tutup"
+                                      : "Selengkapnya",
+                                  style: GoogleFonts.inter(
+                                      color: Constanst.fgPrimary,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Tipe Lokasi",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            ),
+                            SizedBox(
+                              // width: gambarKeluar != ''
+                              //     ? MediaQuery.of(Get.context!).size.width / 2
+                              //     : MediaQuery.of(Get.context!).size.width - 80,
+                              child: Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    " $placeIn",
+                                    textAlign: TextAlign.justify,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: controller.selengkapnyaMasuk.value
+                                        ? 100
+                                        : 2,
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14),
+                                  )),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Catatan",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            ),
+                            SizedBox(
+                              // width: gambarMasuk != ''
+                              //     ? MediaQuery.of(Get.context!).size.width / 2
+                              //     : MediaQuery.of(Get.context!).size.width - 80,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  catatanMasuk == "" ? '-' : catatanMasuk,
+                                  style: GoogleFonts.inter(
+                                      color: Constanst.fgSecondary,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 15,),
-
-                          Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Tipe Lokasi",
-                    style: GoogleFonts.inter(
-                        color: Constanst.fgPrimary,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
-                  ),
-                 
-                  SizedBox(
-                    // width: gambarKeluar != ''
-                    //     ? MediaQuery.of(Get.context!).size.width / 2
-                    //     : MediaQuery.of(Get.context!).size.width - 80,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          " $placeIn",
-                          textAlign: TextAlign.justify,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines:
-                              controller.selengkapnyaMasuk.value ? 100 : 2,
-                          style: GoogleFonts.inter(
-                              color: Constanst.fgSecondary,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14),
-                        )),
-                  ),
-           
-                ],
-              ),
-              const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Catatan",
-                    style: GoogleFonts.inter(
-                        color: Constanst.fgPrimary,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
-                  ),
-                  SizedBox(
-                    // width: gambarMasuk != ''
-                    //     ? MediaQuery.of(Get.context!).size.width / 2
-                    //     : MediaQuery.of(Get.context!).size.width - 80,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        catatanMasuk == "" ? '-' : catatanMasuk,
-                        style: GoogleFonts.inter(
-                            color: Constanst.fgSecondary,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14),
-                      ),
-                    ),
-                  )
-                ],
-              ),
             ],
           ),
         ),
@@ -777,81 +893,233 @@ class DetailAbsen extends StatelessWidget {
               //   ],
               // ),
               // const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Lokasi",
-                    style: GoogleFonts.inter(
-                        color: Constanst.fgPrimary,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
-                  ),
-                  SizedBox(
-                    // width: gambarKeluar != ''
-                    //     ? MediaQuery.of(Get.context!).size.width / 2
-                    //     : MediaQuery.of(Get.context!).size.width - 80,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          "$alamatKeluar ($placeOut)",
-                          textAlign: TextAlign.justify,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines:
-                              controller.selengkapnyaKeluar.value ? 100 : 2,
-                          style: GoogleFonts.inter(
-                              color: Constanst.fgSecondary,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14),
-                        )),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: InkWell(
-                      onTap: () => controller.selengkapnyaKeluar.value
-                          ? controller.selengkapnyaKeluar.value = false
-                          : controller.selengkapnyaKeluar.value = true,
-                      child: Text(
-                        controller.selengkapnyaKeluar.value
-                            ? "Tutup"
-                            : "Selengkapnya",
-                        style: GoogleFonts.inter(
-                            color: Constanst.fgPrimary,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14),
-                      ),
+              gambarKeluar != ''
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(6.0),
+                          child: SizedBox(
+                            width: MediaQuery.of(Get.context!).size.width / 3,
+                            child: Image.network(
+                              Api.UrlfotoAbsen + gambarKeluar,
+                              errorBuilder: (context, exception, stackTrace) {
+                                return Image.asset(
+                                  'assets/Foto.png',
+                                  fit: BoxFit.fill,
+                                );
+                              },
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Lokasi",
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "$alamatKeluar ($placeOut)",
+                                textAlign: TextAlign.justify,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: controller.selengkapnyaKeluar.value
+                                    ? 100
+                                    : 2,
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: InkWell(
+                                  onTap: () =>
+                                      controller.selengkapnyaKeluar.value =
+                                          !controller.selengkapnyaKeluar.value,
+                                  child: Text(
+                                    controller.selengkapnyaKeluar.value
+                                        ? "Tutup"
+                                        : "Selengkapnya",
+                                    style: GoogleFonts.inter(
+                                      color: Constanst.fgPrimary,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              Text(
+                                "Tipe Lokasi",
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                " $placeOut",
+                                textAlign: TextAlign.justify,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: controller.selengkapnyaKeluar.value
+                                    ? 100
+                                    : 2,
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                "Catatan",
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                catatanKeluar.isEmpty ? '-' : catatanKeluar,
+                                style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Lokasi",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            ),
+                            SizedBox(
+                              // width: gambarKeluar != ''
+                              //     ? MediaQuery.of(Get.context!).size.width / 2
+                              //     : MediaQuery.of(Get.context!).size.width - 80,
+                              child: Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    "$alamatKeluar ($placeOut)",
+                                    textAlign: TextAlign.justify,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines:
+                                        controller.selengkapnyaKeluar.value
+                                            ? 100
+                                            : 2,
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14),
+                                  )),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: InkWell(
+                                onTap: () => controller.selengkapnyaKeluar.value
+                                    ? controller.selengkapnyaKeluar.value =
+                                        false
+                                    : controller.selengkapnyaKeluar.value =
+                                        true,
+                                child: Text(
+                                  controller.selengkapnyaKeluar.value
+                                      ? "Tutup"
+                                      : "Selengkapnya",
+                                  style: GoogleFonts.inter(
+                                      color: Constanst.fgPrimary,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Tipe Lokasi",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            ),
+                            SizedBox(
+                              // width: gambarKeluar != ''
+                              //     ? MediaQuery.of(Get.context!).size.width / 2
+                              //     : MediaQuery.of(Get.context!).size.width - 80,
+                              child: Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    " $placeOut",
+                                    textAlign: TextAlign.justify,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: controller.selengkapnyaMasuk.value
+                                        ? 100
+                                        : 2,
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14),
+                                  )),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Catatan",
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgPrimary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
+                            ),
+                            SizedBox(
+                              // width: gambarKeluar != ''
+                              //     ? MediaQuery.of(Get.context!).size.width / 2
+                              //     : MediaQuery.of(Get.context!).size.width - 80,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  catatanKeluar == "" ? '-' : catatanKeluar,
+                                  style: GoogleFonts.inter(
+                                      color: Constanst.fgSecondary,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Catatan",
-                    style: GoogleFonts.inter(
-                        color: Constanst.fgPrimary,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
-                  ),
-                  SizedBox(
-                    // width: gambarKeluar != ''
-                    //     ? MediaQuery.of(Get.context!).size.width / 2
-                    //     : MediaQuery.of(Get.context!).size.width - 80,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        catatanKeluar == "" ? '-' : catatanKeluar,
-                        style: GoogleFonts.inter(
-                            color: Constanst.fgSecondary,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14),
-                      ),
-                    ),
-                  )
-                ],
-              ),
             ],
           ),
         ),
