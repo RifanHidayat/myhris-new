@@ -220,7 +220,7 @@ class _TugasLuarState extends State<TugasLuar> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          Get.offAll(InitScreen());
+          Get.back();
           return true;
         },
         child: Obx(

@@ -217,7 +217,9 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          Get.offAll(InitScreen());
+          controller.cari.value.clear();
+          controller.onClose();
+          Get.back();
           return true;
         },
         child: Obx(

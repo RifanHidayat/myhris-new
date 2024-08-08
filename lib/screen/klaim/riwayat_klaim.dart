@@ -224,7 +224,7 @@ class _KlaimState extends State<Klaim> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          Get.offAll(InitScreen());
+          Get.back();
           return true;
         },
         child: Obx(
