@@ -1857,11 +1857,19 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         ? Padding(
                                             padding: EdgeInsets.only(left: 18),
                                             child: TextLabell(
-                                              text: "Sakit",
+                                              text: "Sakit : ${index.namaSakit}",
                                               size: 14.0,
                                               weight: FontWeight.w500,
                                             ))
-                                        : index.offDay.toString() == '0'
+                                        : index.namaIzin != null
+                                        ? Padding(
+                                            padding: EdgeInsets.only(left: 18),
+                                            child: TextLabell(
+                                              text: "Izin : ${index.namaIzin}",
+                                              size: 14.0,
+                                              weight: FontWeight.w500,
+                                            ))
+                                        :index.offDay.toString() == '0'
                                             ? Padding(
                                                 padding:
                                                     EdgeInsets.only(left: 18),
