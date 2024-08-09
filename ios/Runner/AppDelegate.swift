@@ -6,6 +6,7 @@ import FirebaseCore
 import flutter_local_notifications
 import FirebaseMessaging    
 import background_location_tracker
+// import CorerLocation // update fake gps
 
 // @UIApplicationMain
 // @objc class AppDelegate: FlutterAppDelegate {
@@ -19,7 +20,11 @@ import background_location_tracker
 // }
 
 @UIApplicationMain
-@objc class AppDelegate: FlutterAppDelegate {
+@objc class AppDelegate: FlutterAppDelegate, CLLocationManagerDelegate {
+  // update fake gps
+  // private let locationManager = CLLocationManager()
+  // private var isMockLocation = false
+  // update fake gps sampai sini
 
   override func application(
     _ application: UIApplication,
@@ -40,6 +45,24 @@ if #available(iOS 10.0, *) {
         GeneratedPluginRegistrant.register(with: registry)
     }
     
+    // update fake gps
+    // GeneratedPluginRegistrant.register(with: self)
+    
+    // let controller = window?.rootViewController as! FlutterViewController
+    // let mockLocationChannel = FlutterMethodChannel(
+    //   name: "com.example.mocklocation/detect",
+    //   binaryMessenger: controller.binaryMessenger
+    // )
+    
+    // mockLocationChannel.setMethodCallHandler { (call, result) in
+    //   if call.method == "checkMockLocationIOS" {
+    //     self.checkForMockLocation()
+    //     result(self.isMockLocation)
+    //   } else {
+    //     result(FlutterMethodNotImplemented)
+    //   }
+    // }
+    // update fake gps sampai sini
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
@@ -47,7 +70,24 @@ if #available(iOS 10.0, *) {
     Messaging.messaging().apnsToken=deviceToken 
     super.application(application,didRegisterForRemoteNotificationsWithDeviceToken:deviceToken)
   }
+  // update fake gps
+  // private func checkForMockLocation() {
+  //   locationManager.delegate = self
+  //   locationManager.requestWhenInUseAuthorization()
+  //   locationManager.startUpdatingLocation()
+  // }
   
+  // func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+  //   if let location = locations.last {
+  //     if location.timestamp.timeIntervalSinceNow > 5.0 || location.horizontalAccuracy < 0 {
+  //       isMockLocation = true
+  //     } else {
+  //       isMockLocation = false
+  //     }
+  //   }
+  //   locationManager.stopUpdatingLocation()
+  // }
+  // update fake gps sampai sini
 }
 
 // here

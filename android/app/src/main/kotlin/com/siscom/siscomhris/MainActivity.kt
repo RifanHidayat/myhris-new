@@ -9,32 +9,29 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 
-import android.content.ContentResolver
-import android.provider.Settings
+import androidx.annotation.NonNull
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
-    private val CHANNEL = "com.example/developer_options"
+    private val CHANNEL = "com.example.mocklocation/detect"
 
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+    override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
-            call, result ->
-            if (call.method == "isDeveloperOptionsEnabled") {
-                val developerOptionsEnabled = isDeveloperOptionsEnabled()
-                result.success(developerOptionsEnabled)
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "checkMockLocation") {
+                val isMockLocation = checkForMockLocation()
+                result.success(isMockLocation)
             } else {
                 result.notImplemented()
             }
         }
     }
 
-    private fun isDeveloperOptionsEnabled(): Boolean {
-        return try {
-            Settings.Global.getInt(contentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0
-        } catch (e: Settings.SettingNotFoundException) {
-            false
-        }
+    private fun checkForMockLocation(): Boolean {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        return lastLocation?.isFromMockProvider ?: false
     }
 }

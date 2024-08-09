@@ -1035,7 +1035,7 @@ class SettingController extends GetxController {
                 EdgeInsets.fromLTRB(0, AppBar().preferredSize.height, 0, 0),
             child: Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
-                        child: SingleChildScrollView(
+              child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1087,13 +1087,14 @@ class SettingController extends GetxController {
                                     getUserInfo();
                                   },
                                   child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(top: 5, bottom: 5),
+                                    padding: const EdgeInsets.only(
+                                        top: 5, bottom: 5),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                          color: id == idDepartemenTerpilih.value
-                                              ? Constanst.colorPrimary
-                                              : Colors.transparent,
+                                          color:
+                                              id == idDepartemenTerpilih.value
+                                                  ? Constanst.colorPrimary
+                                                  : Colors.transparent,
                                           borderRadius: Constanst
                                               .styleBoxDecoration1.borderRadius,
                                           border: Border.all(
@@ -1107,7 +1108,8 @@ class SettingController extends GetxController {
                                             style: GoogleFonts.inter(
                                                 fontWeight: FontWeight.bold,
                                                 color: id ==
-                                                        idDepartemenTerpilih.value
+                                                        idDepartemenTerpilih
+                                                            .value
                                                     ? Colors.white
                                                     : Colors.black),
                                           ),
