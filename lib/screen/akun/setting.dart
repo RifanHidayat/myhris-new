@@ -5,8 +5,10 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:new_version_plus/new_version_plus.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/setting_controller.dart';
+import 'package:siscom_operasional/screen/akun/change_log.dart';
 import 'package:siscom_operasional/screen/akun/edit_password.dart';
 import 'package:siscom_operasional/screen/akun/face_recognigration.dart';
 import 'package:siscom_operasional/screen/akun/info_karyawan.dart';
@@ -27,6 +29,7 @@ class _SettingState extends State<Setting> {
   final controller = Get.put(SettingController());
   final controllerDashboard = Get.put(DashboardController());
   var faceRecog = false;
+  var namaVersi = "...".obs;
 
   Future<void> refreshData() async {
     controller.refreshPageStatus.value = true;
@@ -43,6 +46,17 @@ class _SettingState extends State<Setting> {
   void initState() {
     super.initState();
     getFace();
+    _checkversion();
+  }
+
+  void _checkversion() async {
+    final newVersion = NewVersionPlus(
+      androidId: 'com.siscom.siscomhris',
+    );
+
+    final status = await newVersion.getVersionStatus();
+    print("ini status valuenya $status");
+    namaVersi.value = status!.localVersion;
   }
 
   @override
@@ -665,14 +679,66 @@ class _SettingState extends State<Setting> {
             ),
           ),
         ),
-        // Padding(
-        //   padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-        //   child: Divider(
-        //     height: 0,
-        //     thickness: 1,
-        //     color: Constanst.colorNeutralBgTertiary,
-        //   ),
-        // ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+          child: Divider(
+            height: 0,
+            thickness: 1,
+            color: Constanst.colorNeutralBgTertiary,
+          ),
+        ),
+        InkWell(
+          onTap: () => Get.to(ChangeLogPage()),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 12.0, 20.0, 12.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Iconsax.info_circle,
+                          color: Constanst.fgSecondary,
+                          size: 24,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Change Log",
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14),
+                              ),
+                              const SizedBox(height: 4),
+                              Obx(
+                                () => Text(
+                                  "Versi App: ${namaVersi.value}",
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12,
+                                      color: Constanst.infoLight),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    Icon(Icons.arrow_forward_ios_rounded,
+                        size: 18, color: Constanst.fgSecondary)
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
         // InkWell(
         //   onTap: () => null,
         //   child: Padding(

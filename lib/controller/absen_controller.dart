@@ -1044,14 +1044,18 @@ class AbsenController extends GetxController {
     }
   }
 
-  static const platform = MethodChannel('com.example/developer_options');
+  static const platform = MethodChannel('com.example.mocklocation/detect');
   var statusDeteksi = false.obs;
   var statusDeteksi2 = false.obs;
   GoogleMapController? mapController;
+  var loadingButton = false.obs;
 
-  Future<void> deteksiOpsiPengembang(BuildContext context) async {
-    statusDeteksi.value =
-        await platform.invokeMethod('isDeveloperOptionsEnabled');
+  Future<void> deteksiFakeGps(BuildContext context) async {
+    if (Platform.isAndroid) {
+      statusDeteksi.value = await platform.invokeMethod('checkMockLocation');
+    } else if (Platform.isIOS) {
+      statusDeteksi.value = await platform.invokeMethod('checkMockLocationIOS');
+    }
 
     if (statusDeteksi.value == true) {
       statusDeteksi2.value = true;
@@ -1066,22 +1070,21 @@ class AbsenController extends GetxController {
             child: Column(
               children: [
                 const Text(
-                  'Opsi Pengembang Tedeteksi',
+                  'Fake GPS Tedeteksi',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  'Silahkan menonaktifkan opsi pengembang sebelum melakukan absen',
+                  'Silahkan menonaktifkan fake gps sebelum melakukan absen',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
                   width: maxWidth * 0.5,
                   child: TextButton(
-                    child: const Text('Buka Settings'),
+                    child: const Text('Kembali'),
                     onPressed: () async {
                       Get.back();
-                      bukaOpsiPengembangSettings();
                     },
                   ),
                 ),
@@ -1092,50 +1095,6 @@ class AbsenController extends GetxController {
       }
     }
     update();
-  }
-
-  Future<void> refreshLokasi() async {
-    getPosisition();
-    mapController?.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(latUser.value, langUser.value), zoom: 20)
-        //17 is new zoom level
-        ));
-  }
-
-  Future<void> popUpRefresh(BuildContext context) async {
-    if (context.mounted) {
-      final maxWidth = MediaQuery.of(context).size.width;
-      Get.defaultDialog(
-        // backgroundColor: AppColors.surface,
-        radius: 8,
-        title: "",
-        contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-        content: SizedBox(
-          width: maxWidth,
-          child: Column(
-            children: [
-              const Text(
-                'Anda harus merefresh lokasi terlebih dahulu!',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: maxWidth * 0.5,
-                child: TextButton(
-                  child: const Text('Refresh'),
-                  onPressed: () async {
-                    refreshLokasi();
-                    statusDeteksi2.value = false;
-                    Get.back();
-                    update();
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
   }
 
   void kirimDataAbsensi({typewfh}) async {

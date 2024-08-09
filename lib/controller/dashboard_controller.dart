@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
@@ -137,6 +138,8 @@ class DashboardController extends GetxController {
   var timeIn = "".obs;
   var timeOut = "".obs;
 
+  GoogleMapController? mapController;
+
   void toggleSearch() {
     isSearching.value = !isSearching.value;
   }
@@ -187,6 +190,51 @@ class DashboardController extends GetxController {
     getSizeDevice();
     checkStatusPermission();
     checkHakAkses();
+  }
+
+  void popUpRefresh(BuildContext context) async {
+    if (context.mounted) {
+      final maxWidth = MediaQuery.of(context).size.width;
+      Get.defaultDialog(
+        // backgroundColor: AppColors.surface,
+        radius: 8,
+        title: "",
+        contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+        content: SizedBox(
+          width: maxWidth,
+          child: Column(
+            children: [
+              const Text(
+                'Anda harus merefresh lokasi terlebih dahulu!',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: maxWidth * 0.5,
+                child: TextButton(
+                  child: const Text('Refresh'),
+                  onPressed: () async {
+                    // UtilsAlert.showLoadingIndicator(Get.context!);
+                    controllerAbsensi.getPosisition();
+                    controllerAbsensi.getPlaceCoordinate1();
+                    mapController?.animateCamera(CameraUpdate.newCameraPosition(
+                        CameraPosition(
+                            target: LatLng(controllerAbsensi.latUser.value,
+                                controllerAbsensi.langUser.value),
+                            zoom: 20)
+                        //17 is new zoom level
+                        ));
+                    Get.back();
+                    controllerAbsensi.statusDeteksi2.value = false;
+                    update();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   void checkAbsenUser(convert, getEmid) {
@@ -1011,7 +1059,7 @@ class DashboardController extends GetxController {
               }
             }
           }
-          print("hak akses ${dataUser![0].em_hak_akses}");
+          // print("hak akses ${dataUser![0].em_hak_akses}");
           this.departementAkses.refresh();
           if (departementAkses.value.isNotEmpty) {
             print("get departement ${departementAkses} ");
@@ -1902,8 +1950,7 @@ class DashboardController extends GetxController {
                             if (type == "checkTracking") {
                               print('kesini');
                               Get.back();
-                              await controllerAbsensi
-                                  .deteksiOpsiPengembang(context);
+                              await controllerAbsensi.deteksiFakeGps(context);
                               if (controllerAbsensi.statusDeteksi.value ==
                                       false &&
                                   controllerAbsensi.statusDeteksi2.value ==
@@ -1916,7 +1963,7 @@ class DashboardController extends GetxController {
                                   controllerAbsensi.statusDeteksi2.value ==
                                       true) {
                                 if (context.mounted) {
-                                  controllerAbsensi.popUpRefresh(context);
+                                  popUpRefresh(context);
                                 }
                               }
                             } else {
