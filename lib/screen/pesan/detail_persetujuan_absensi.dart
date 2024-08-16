@@ -178,6 +178,11 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
             style: styleChose,
             buttonStatus: 1,
             positiveBtnPressed: () {
+                  print("pilihan absensi ${pilihan}");
+
+                  print(controller.detailData[0]['leave_status']);
+                  // return;
+           //   return ;
               print(controller.detailData[0]);
               if (controller.detailData[0]['type'] == 'absensi') {
                 print("masuk sini ${controller.detailData[0]['place_in']}");
@@ -187,7 +192,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                     Get.context!, "Proses $stringPilihan pengajuan");
 
                 controller.approvalAbsensi(
-                    pilihan: true,
+                    pilihan: pilihan,
                     apBy1: controller.detailData[0]['approve_by'].toString(),
                     apId1: controller.detailData[0]['approve_id'].toString(),
                     apdDate1:
