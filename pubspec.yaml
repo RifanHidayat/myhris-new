@@ -132,6 +132,8 @@ dependencies:
   device_info_plus:
   android_intent: ^2.0.2
   new_version_plus: ^0.0.9
+  dotted_border: ^2.1.0
+  web_socket_channel: ^2.4.0
   # animations: ^2.0.10
  
   # system_alert_window: ^1.1.2

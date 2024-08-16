@@ -6,10 +6,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/setting_controller.dart';
 import 'package:siscom_operasional/screen/chatting/chat.dart';
+import 'package:siscom_operasional/screen/chatting/chat_page.dart';
 import 'package:siscom_operasional/utils/api.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:web_socket_channel/io.dart';
 
 class InfoKaryawan extends StatelessWidget {
   final controller = Get.put(SettingController());
@@ -97,7 +100,6 @@ class InfoKaryawan extends StatelessWidget {
               ),
             );
           } else {
-
             return Text(
               "Info Karyawan",
               style: GoogleFonts.inter(
@@ -105,7 +107,6 @@ class InfoKaryawan extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   fontSize: 20),
             );
-            
           }
         }),
         actions: [
@@ -302,8 +303,8 @@ class InfoKaryawan extends StatelessWidget {
             var full_name = controller.infoEmployee.value[index]['full_name'];
             var image = controller.infoEmployee.value[index]['em_image'];
             var title = controller.infoEmployee.value[index]['job_title'];
-              var emId = controller.infoEmployee.value[index]['em_id'];
-             
+            var emId = controller.infoEmployee.value[index]['em_id'];
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -319,16 +320,16 @@ class InfoKaryawan extends StatelessWidget {
                         children: [
                           image == ""
                               ? Expanded(
-                                flex: 15,
-                                child: SvgPicture.asset(
+                                  flex: 15,
+                                  child: SvgPicture.asset(
                                     'assets/avatar_default.svg',
                                     width: 50,
                                     height: 50,
                                   ),
-                              )
+                                )
                               : Expanded(
                                   flex: 15,
-                                child: CircleAvatar(
+                                  child: CircleAvatar(
                                     radius: 25,
                                     child: ClipOval(
                                       child: CachedNetworkImage(
@@ -337,9 +338,10 @@ class InfoKaryawan extends StatelessWidget {
                                             (context, url, downloadProgress) =>
                                                 Container(
                                           alignment: Alignment.center,
-                                          height:
-                                              MediaQuery.of(context).size.height *
-                                                  0.5,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.5,
                                           width:
                                               MediaQuery.of(context).size.width,
                                           child: CircularProgressIndicator(
@@ -360,7 +362,7 @@ class InfoKaryawan extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                              ),
+                                ),
                           Expanded(
                             flex: 60,
                             child: Padding(
@@ -387,18 +389,33 @@ class InfoKaryawan extends StatelessWidget {
                               ),
                             ),
                           ),
-                          // Expanded(
-
-                          //   flex: 15,
-                          //   child: InkWell(
-                          //     onTap: (){
-                          //       // chattingCtr.emIdUser.value=emId.toString();
-                          //       // Get.to(ChattingPage(title: title,fullName: full_name,image: image,em_id:emId ,));
-                          //     },
-                          //     child: Align(
-                          //       alignment: Alignment.centerRight,
-                          //       child: Icon(Iconsax.message)),
-                          //   ))
+                          Expanded(
+                              flex: 15,
+                              child: InkWell(
+                                onTap: () {
+                                  // chattingCtr.emIdUser.value=emId.toString();
+                                  // Get.to(ChattingPage(title: title,fullName: full_name,image: image,em_id:emId ,));
+                                  Get.to(
+                                    ChatPage(
+                                      webSocketChannel:
+                                          IOWebSocketChannel.connect(
+                                              Uri.parse(Api.webSocket)),
+                                      fullNamePenerima: full_name,
+                                      emIdPengirim:
+                                          AppData.informasiUser![0].em_id,
+                                      emIdPenerima: emId,
+                                      imageProfil: image,
+                                      title: title,
+                                    ),
+                                  );
+                                  print(AppData.informasiUser![0].em_id);
+                                  print(full_name);
+                                  print(emId);
+                                },
+                                child: const Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Icon(Iconsax.message)),
+                              ))
                         ],
                       ),
                       const SizedBox(height: 12),
