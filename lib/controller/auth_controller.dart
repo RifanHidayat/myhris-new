@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:ntp/ntp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
@@ -470,6 +471,12 @@ class AuthController extends GetxController {
   }
 
   void checkAbsenUser(convert, getEmid) {
+
+
+
+  
+
+    // skema menggunakan jam reset
     messageNewPassword.value = "";
     print("view last absen user 3");
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
@@ -483,12 +490,17 @@ class AuthController extends GetxController {
         minute: int.parse(
             AppData.informasiUser![0].startTime.toString().split(':')[1]));
 
+
+
     TimeOfDay waktu2 = TimeOfDay(
         hour: int.parse(
             AppData.informasiUser![0].endTime.toString().split(':')[0]),
         minute: int.parse(AppData.informasiUser![0].endTime
             .toString()
             .split(':')[1])); // Waktu kedua
+
+
+
 
     int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
     int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
@@ -547,12 +559,16 @@ class AuthController extends GetxController {
 
     var connect = Api.connectionApi("post", body, "view_last_absen_user2");
 
-    connect.then((dynamic res) {
+    connect.then((dynamic res)async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         print("data login ${valueBody}");
         var data = valueBody['data'];
-        // var wfh = valueBody['wfh'];
+       
+  var date= AppData.informasiUser![0].startTime.toString().split(':');
+  var date2= AppData.informasiUser![0].startTime.toString().split(':');
+
+ //skema pertama
         if (data.isEmpty) {
           isautoLogout.value = false;
           signoutTime.value = '00:00:00';
@@ -569,8 +585,22 @@ class AuthController extends GetxController {
 
           Get.offAll(InitScreen());
         }
+
+
+
+      
+      
+
+
+
       }
     });
+
+
+    //sekema tidak menggunakan jam reset
+
+
+
   }
 
   //   void checkAbsenUser(convert, getEmid) {

@@ -1098,44 +1098,44 @@ class ApprovalController extends GetxController {
             style: styleChose,
             buttonStatus: 1,
             positiveBtnPressed: () {
-              print("data detail ${detailData[0]}");
-              if (detailData[0]['type'] == 'absensi' ||
-                  detailData[0]['type'] == 'Absensi') {
-                print("masuk sini  ${detailData[0]['type']}");
+              print("data detail ${detailData[0]['type']}");
+              // if (detailData[0]['type'] == 'absensi' ||
+              //     detailData[0]['type'] == 'Absensi') {
+              //   print("masuk sini  ${detailData[0]['type']}");
 
-                approvalAbsensi(
-                    pilihan: pilihan,
-                    date: detailData[0]['waktu_pengajuan'].toString(),
-                    leaveStatus: detailData[0]['leave_status'].toString(),
-                    status: styleChose.toString(),
-                    checkin: detailData[0]['dari_jam'].toString(),
-                    checkout: detailData[0]['sampai_jam'].toString(),
-                    image: detailData[0]['file'].toString(),
-                    note: detailData[0]['deskripsi'].toString(),
-                    ajuanEmid: detailData[0]['em_id'].toString(),
-                    id: detailData[0]['id'].toString());
-              } else {
-                print("Aksi menyetujui  ${detailData[0]['type']}");
-                UtilsAlert.loadingSimpanData(
-                    Get.context!, "Proses $stringPilihan pengajuan");
-                aksiMenyetujui(pilihan);
-              }
-              controllerGlobal.kirimNotifikasi(
-                  title: 'Izin',
-                  status: 'approve',
-                  pola: controllerGlobal.valuePolaPersetujuan.value.toString(),
-                  statusApproval: valuePolaPersetujuan == 1 ||
-                          valuePolaPersetujuan == "1"
-                      ? "1"
-                      : valuePolaPersetujuan == 2 || valuePolaPersetujuan == "2"
-                          ? detailData[0]['nama_approve1'] == "" ||
-                                  detailData[0]['nama_approve1'] == "null" ||
-                                  detailData[0]['nama_approve1'] == null
-                              ? "1"
-                              : "2"
-                          : "1",
-                  emId: AppData.informasiUser![0].em_id,
-                  nomor: detailData[0]['nomor_ajuan']);
+              //   approvalAbsensi(
+              //       pilihan: pilihan,
+              //       date: detailData[0]['waktu_pengajuan'].toString(),
+              //       leaveStatus: detailData[0]['leave_status'].toString(),
+              //       status: styleChose.toString(),
+              //       checkin: detailData[0]['dari_jam'].toString(),
+              //       checkout: detailData[0]['sampai_jam'].toString(),
+              //       image: detailData[0]['file'].toString(),
+              //       note: detailData[0]['deskripsi'].toString(),
+              //       ajuanEmid: detailData[0]['em_id'].toString(),
+              //       id: detailData[0]['id'].toString());
+              // } else {
+              //   print("Aksi menyetujui  ${detailData[0]['type']}");
+              //   UtilsAlert.loadingSimpanData(
+              //       Get.context!, "Proses $stringPilihan pengajuan");
+              //   aksiMenyetujui(pilihan);
+              // }
+              // controllerGlobal.kirimNotifikasi(
+              //     title: 'Izin',
+              //     status: 'approve',
+              //     pola: controllerGlobal.valuePolaPersetujuan.value.toString(),
+              //     statusApproval: valuePolaPersetujuan == 1 ||
+              //             valuePolaPersetujuan == "1"
+              //         ? "1"
+              //         : valuePolaPersetujuan == 2 || valuePolaPersetujuan == "2"
+              //             ? detailData[0]['nama_approve1'] == "" ||
+              //                     detailData[0]['nama_approve1'] == "null" ||
+              //                     detailData[0]['nama_approve1'] == null
+              //                 ? "1"
+              //                 : "2"
+              //             : "1",
+              //     emId: AppData.informasiUser![0].em_id,
+              //     nomor: detailData[0]['nomor_ajuan']);
             },
           ),
         );
