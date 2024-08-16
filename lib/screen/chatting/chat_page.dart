@@ -48,7 +48,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    // _tandaSudahDibaca();
+    _tandaSudahDibaca();
     _fetchPesan();
     _setData();
   }
@@ -74,31 +74,31 @@ class _ChatPageState extends State<ChatPage> {
       var bytes = imgFile.readAsBytesSync();
       base64fotoUser.value = base64Encode(bytes);
 
-      var type = controller.getFileExtension(imgFile.toString());
+      // var type = controller.getFileExtension(imgFile.toString());
 
-      final body = {
-        'em_id_penerima': widget.emIdPenerima,
-        'em_id_pengirim': widget.emIdPengirim,
-        'pesan': '',
-        'tanggal': controller.getTanggal(),
-        'waktu': controller.getWaktu(),
-        'type': type,
-        'lampiran': '$base64fotoUser',
-        'dibaca': false
-      };
-      final body2 =
-          "{'em_id_penerima': '${widget.emIdPenerima}','em_id_pengirim': '${widget.emIdPengirim}','pesan': '','tanggal': '${controller.getTanggal()}','waktu': '${controller.getWaktu()}','type': '$type','lampiran': '$base64fotoUser','dibaca': '0'}";
-      widget.webSocketChannel.sink.add(jsonEncode(body));
-      _messageController.clear();
+      // final body = {
+      //   'em_id_penerima': widget.emIdPenerima,
+      //   'em_id_pengirim': widget.emIdPengirim,
+      //   'pesan': '',
+      //   'tanggal': controller.getTanggal(),
+      //   'waktu': controller.getWaktu(),
+      //   'type': type,
+      //   'lampiran': '$base64fotoUser',
+      //   'dibaca': false
+      // };
+      // final body2 =
+      //     "{'em_id_penerima': '${widget.emIdPenerima}','em_id_pengirim': '${widget.emIdPengirim}','pesan': '','tanggal': '${controller.getTanggal()}','waktu': '${controller.getWaktu()}','type': '$type','lampiran': '$base64fotoUser','dibaca': '0'}";
+      // widget.webSocketChannel.sink.add(jsonEncode(body));
+      // _messageController.clear();
 
-      var connect = Api.connectionApi("post", body, "chatting");
-      connect.then((dynamic res) {
-        if (res.statusCode == 200) {
-          _pesans.add(body2.toString());
-        } else {
-          UtilsAlert.showToast("koneksi buruk pesan tidak terkirim");
-        }
-      });
+      // var connect = Api.connectionApi("post", body, "chatting");
+      // connect.then((dynamic res) {
+      //   if (res.statusCode == 200) {
+      //     _pesans.add(body2.toString());
+      //   } else {
+      //     UtilsAlert.showToast("koneksi buruk pesan tidak terkirim");
+      //   }
+      // });
 
       _scrollToBottom();
 
@@ -180,28 +180,30 @@ class _ChatPageState extends State<ChatPage> {
 
   void _fetchPesan() async {
     var connect = Api.connectionApi('get', {}, 'chatting/history',
-        params: {widget.emIdPengirim, widget.emIdPenerima});
+        params:
+            "&em_id_pengirim=${widget.emIdPengirim}&em_id_penerima=${widget.emIdPenerima}");
 
     connect.then((dynamic res) {
       print("${res.statusCode}");
       if (res.statusCode == 200) {
         var data = jsonDecode(res.body);
         print("resbody:${res.body}");
-        final formattedData = data.map((pesan) {
+        var formattedData = (data['data']).map((pesan) {
           return {
-            'em_id_penerima': pesan["em_id_penerima"].toString(),
-            'em_id_pengirim': pesan["em_id_pengirim"].toString(),
-            'pesan': pesan["pesan"].toString(),
-            'tanggal': pesan["tanggal"].toString(),
-            'waktu': pesan["waktu"].toString(),
+            'em_id_penerima': pesan['em_id_penerima'],
+            'em_id_pengirim': pesan['em_id_pengirim'],
+            'pesan': pesan['pesan'],
+            'tanggal': pesan['tanggal'],
+            'waktu': pesan['waktu'],
             'type': 'message',
-            'lampiran': pesan["lampiran"].toString(),
+            'lampiran': pesan['lampiran'],
           };
         }).toList();
 
-        // for (var element in formattedData) {
-        //   _pesans.add(jsonEncode(element));
-        // }
+        for (var element in formattedData) {
+          _pesans.add(jsonEncode(element));
+        }
+        // _pesans.add(data);
 
         _scrollToBottom();
       }
@@ -210,7 +212,8 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _tandaSudahDibaca() async {
     var connect = Api.connectionApi("post", {}, "chatting/update-status",
-        params: {widget.emIdPengirim, widget.emIdPenerima});
+        params:
+            "&em_id_pengirim=${widget.emIdPengirim}&em_id_penerima=${widget.emIdPenerima}");
     connect.then((dynamic res) {
       if (res.statusCode != 200) {
         UtilsAlert.showToast("koneksi buruk pesan tidak terkirim");
@@ -355,7 +358,7 @@ class _ChatPageState extends State<ChatPage> {
                           if (messageData['type'] != 'error') {
                             _pesans.add(message);
                             _scrollToBottom();
-                            // _tandaSudahDibaca();
+                            _tandaSudahDibaca();
                             print(message);
                           }
                         }
