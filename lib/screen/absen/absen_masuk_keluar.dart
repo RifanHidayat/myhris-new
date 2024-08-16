@@ -131,16 +131,17 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                         print(controller.placeCoordinateDropdown.value
                             .toSet()
                             .toList());
-                        controller.getPosisition();
-                        controller.getPlaceCoordinate1();
-                        mapController?.animateCamera(
-                            CameraUpdate.newCameraPosition(
-                                CameraPosition(
-                                    target: LatLng(controller.latUser.value,
-                                        controller.langUser.value),
-                                    zoom: 20)
-                                //17 is new zoom level
-                                ));
+                        // controller.getPosisition();
+                        // controller.getPlaceCoordinate1();
+                        // mapController?.animateCamera(
+                        //     CameraUpdate.newCameraPosition(
+                        //         CameraPosition(
+                        //             target: LatLng(controller.latUser.value,
+                        //                 controller.langUser.value),
+                        //             zoom: 20)
+                        //         //17 is new zoom level
+                        //         ));
+                        controller.refreshPage();
                       },
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -725,12 +726,13 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                       BorderRadius.circular(
                                                           8.0),
                                                   side: BorderSide(color: Colors.white)))),
-                                      onPressed: () async{
-                                         // Mendapatkan informasi paket aplikasi pihak ketiga
-              final packageInfo = await PackageInfo.fromPlatform();
-              //for (var package in packageInfo) {
-            print('tes');
-          
+                                      onPressed: () async {
+                                        // Mendapatkan informasi paket aplikasi pihak ketiga
+                                        final packageInfo =
+                                            await PackageInfo.fromPlatform();
+                                        //for (var package in packageInfo) {
+                                        print('tes');
+
                                         print(controller.selectedType.value);
                                         // controller.selectedType.value = "WFH";
                                         controller.selectedType.value

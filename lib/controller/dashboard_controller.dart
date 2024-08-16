@@ -214,18 +214,8 @@ class DashboardController extends GetxController {
                 child: TextButton(
                   child: const Text('Refresh'),
                   onPressed: () async {
-                    // UtilsAlert.showLoadingIndicator(Get.context!);
-                    controllerAbsensi.getPosisition();
-                    controllerAbsensi.getPlaceCoordinate1();
-                    mapController?.animateCamera(CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                            target: LatLng(controllerAbsensi.latUser.value,
-                                controllerAbsensi.langUser.value),
-                            zoom: 20)
-                        //17 is new zoom level
-                        ));
                     Get.back();
-                    controllerAbsensi.statusDeteksi2.value = false;
+                    controllerAbsensi.refreshPage();
                     update();
                   },
                 ),

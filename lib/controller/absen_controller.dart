@@ -610,6 +610,15 @@ class AbsenController extends GetxController {
     });
   }
 
+  Future<void> refreshPage() async {
+    getPosisition();
+    getPlaceCoordinate1();
+    mapController?.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(latUser.value, langUser.value), zoom: 20)
+        //17 is new zoom level
+        ));
+  }
+
   void removeAll() {
     fotoUser.value = File("");
     base64fotoUser.value = "";
