@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
+import 'package:siscom_operasional/controller/chat_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
@@ -34,6 +37,7 @@ import 'package:siscom_operasional/screen/pesan/pesan.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -44,6 +48,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as dom;
 import 'package:upgrader/upgrader.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -66,9 +71,11 @@ class _DashboardState extends State<Dashboard> {
   var controllerBpj = Get.put(BpjsController());
   final tabbController = Get.put(TabbController());
   final authController = Get.put(AuthController());
+  final chatController = Get.put(ChatController());
 
   var intervalTracking = "";
-
+ final WebSocketChannel channel =
+      WebSocketChannel.connect(Uri.parse(Api.webSocket));
   Future<void> refreshData() async {
     controller.refreshPagesStatus.value = true;
     await Future.delayed(const Duration(seconds: 2));
@@ -89,6 +96,7 @@ class _DashboardState extends State<Dashboard> {
         //     controller.dashboardStatusAbsen.value;
       });
       tabbController.checkuserinfo();
+
     });
   }
 
@@ -795,41 +803,93 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ],
             ),
+
             AppData.informasiUser![0].em_image == ""
-                ? SvgPicture.asset(
-                    'assets/avatar_default.svg',
-                    width: _isVisible ? 50 : 42,
-                    height: _isVisible ? 50 : 42,
+                ? Row(
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.only(right: 5),
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            
+                            child: Stack(
+                              children: [
+                                CircleAvatar(
+                                  radius: 7,
+                                  backgroundColor: Colors.red,
+                                  child: TextLabell(text: chatController.jumlahChat.value,color: Colors.white,),
+                                ),
+                                Image.asset(
+                                  'assets/chat.png',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                              ],
+                            ),
+                          )),
+                      SvgPicture.asset(
+                        'assets/avatar_default.svg',
+                        width: _isVisible ? 50 : 42,
+                        height: _isVisible ? 50 : 42,
+                      ),
+                    ],
                   )
-                : CircleAvatar(
-                    radius: 25, // Image radius
-                    child: ClipOval(
-                      child: ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              "${Api.UrlfotoProfile}${AppData.informasiUser![0].em_image}",
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) => Container(
-                            alignment: Alignment.center,
-                            height: MediaQuery.of(context).size.height * 0.5,
-                            width: MediaQuery.of(context).size.width,
-                            child: CircularProgressIndicator(
-                                value: downloadProgress.progress),
-                          ),
-                          errorWidget: (context, url, error) => Container(
-                            color: Colors.white,
-                            child: SvgPicture.asset(
-                              'assets/avatar_default.svg',
-                              width: 40,
-                              height: 40,
+                : Row(
+                    children: [
+                         Padding(
+                          padding: EdgeInsets.only(right: 5),
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            
+                            child: Stack(
+                              children: [
+                                Obx(() => CircleAvatar(
+                                  radius: 7,
+                                  backgroundColor: Colors.red,
+                                  child: TextLabell(text: chatController.jumlahChat.value.toString(),color: Colors.white,),
+                                ),),
+                                Image.asset(
+                                  'assets/chat.png',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                              ],
+                            ),
+                          )),
+                      CircleAvatar(
+                        radius: 25, // Image radius
+                        child: ClipOval(
+                          child: ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  "${Api.UrlfotoProfile}${AppData.informasiUser![0].em_image}",
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) => Container(
+                                alignment: Alignment.center,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.5,
+                                width: MediaQuery.of(context).size.width,
+                                child: CircularProgressIndicator(
+                                    value: downloadProgress.progress),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                color: Colors.white,
+                                child: SvgPicture.asset(
+                                  'assets/avatar_default.svg',
+                                  width: 40,
+                                  height: 40,
+                                ),
+                              ),
+                              fit: BoxFit.cover,
+                              width: 50,
+                              height: 50,
                             ),
                           ),
-                          fit: BoxFit.cover,
-                          width: 50,
-                          height: 50,
                         ),
                       ),
-                    ),
+                    ],
                   ),
             // Expanded(
             //   flex: 15,
@@ -2742,10 +2802,11 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
- 
+
     // controller.updateInformasiUser();
     //controller.initData();
     absenControllre.getTimeNow();
+
     // controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
     //     AppData.informasiUser![0].em_id);
     controllerBpj.employeDetaiBpjs();
@@ -2753,10 +2814,9 @@ class _DashboardState extends State<Dashboard> {
     absenControllre.absenStatus.value = AppData.statusAbsen;
     authController.signinTime.value = controller.signinTime.value;
     authController.signoutTime.value = controller.signoutTime.value;
-   
-     controller.initData();
+
+    controller.initData();
     Future.delayed(const Duration(milliseconds: 500), () {
-    
       absenControllre.absenStatus.value = AppData.statusAbsen;
       authController.signinTime.value = controller.signinTime.value;
       authController.signoutTime.value = controller.signoutTime.value;
@@ -2772,7 +2832,24 @@ class _DashboardState extends State<Dashboard> {
     if (controllerTracking.bagikanlokasi.value == "aktif") {
       controllerTracking.absenSelfie();
     }
-       _checkversion();
+
+    chatController.getCount();
+
+            channel.sink.add(jsonEncode({'type': 'count','database':AppData.selectedDatabase,'em_id':AppData.informasiUser![0].em_id}));
+print('ambil data websoket');
+          channel.stream.listen((message) {
+            print('ambil data websoket');
+      final decodedMessage = jsonDecode(message);
+      if (decodedMessage['type'] == 'count') {
+
+        print('total chat ${decodedMessage['data'][0]['total']}');
+
+        chatController.jumlahChat.value=decodedMessage['data'][0]['total'] ;
+        
+      }
+    });
+
+    _checkversion();
     print("interval ${AppData.informasiUser![0].interval.toString()}");
   }
 
