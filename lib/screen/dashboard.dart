@@ -2742,21 +2742,21 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    _checkversion();
-    controller.updateInformasiUser();
-    controller.initData();
+ 
+    // controller.updateInformasiUser();
+    //controller.initData();
     absenControllre.getTimeNow();
-    controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        AppData.informasiUser![0].em_id);
+    // controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+    //     AppData.informasiUser![0].em_id);
     controllerBpj.employeDetaiBpjs();
-
     controllerAbsensi.employeDetail();
-
     absenControllre.absenStatus.value = AppData.statusAbsen;
     authController.signinTime.value = controller.signinTime.value;
     authController.signoutTime.value = controller.signoutTime.value;
+   
+     controller.initData();
     Future.delayed(const Duration(milliseconds: 500), () {
-      controller.initData();
+    
       absenControllre.absenStatus.value = AppData.statusAbsen;
       authController.signinTime.value = controller.signinTime.value;
       authController.signoutTime.value = controller.signoutTime.value;
@@ -2772,6 +2772,7 @@ class _DashboardState extends State<Dashboard> {
     if (controllerTracking.bagikanlokasi.value == "aktif") {
       controllerTracking.absenSelfie();
     }
+       _checkversion();
     print("interval ${AppData.informasiUser![0].interval.toString()}");
   }
 
