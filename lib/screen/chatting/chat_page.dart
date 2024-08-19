@@ -15,6 +15,7 @@ import 'package:siscom_operasional/utils/widget/image_picker_bottom_sheet.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:web_socket_channel/io.dart';
 import 'dart:convert';
+import 'package:image/image.dart' as img;
 
 TextEditingController _messageController = TextEditingController();
 ScrollController _scrollController = ScrollController();
@@ -43,7 +44,8 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final ChatController controller = Get.put(ChatController());
   var _pesans = [].obs;
-  final Rx<File?> imgFile = Rx<File?>(null);
+  var lampiran = ''.obs;
+  // final Rx<File?> imgFile = Rx<File?>(null);
 
   @override
   void initState() {
@@ -63,44 +65,63 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future pickImage(ImageSource source) async {
-    var base64fotoUser = ''.obs;
     try {
-      final image = await ImagePicker().pickImage(source: source);
+      final image = await ImagePicker().pickImage(
+        source: source,
+        maxWidth: 2056,
+        maxHeight: 2056,
+        imageQuality: 75,
+      );
       if (image == null) return;
 
       File? imgFile;
       imgFile = File(image.path);
+      img.Image? images = img.decodeImage(imgFile.readAsBytesSync());
+      List<int> pngBytes = img.encodePng(images!);
 
-      var bytes = imgFile.readAsBytesSync();
-      base64fotoUser.value = base64Encode(bytes);
+      String base64Image = base64Encode(pngBytes);
 
-      // var type = controller.getFileExtension(imgFile.toString());
+      // var type = controller.getFileExtension(pngBytes.toString());
+      var tanggal = controller.getTanggal();
+      var waktu = controller.getWaktu();
+      final bodyApi = {
+        'em_id_penerima': widget.emIdPenerima,
+        'em_id_pengirim': widget.emIdPengirim,
+        'pesan': '',
+        'tanggal': tanggal,
+        'waktu': waktu,
+        'type': ".png",
+        'lampiran': base64Image,
+        'dibaca': '0'
+      };
 
-      // final body = {
-      //   'em_id_penerima': widget.emIdPenerima,
-      //   'em_id_pengirim': widget.emIdPengirim,
-      //   'pesan': '',
-      //   'tanggal': controller.getTanggal(),
-      //   'waktu': controller.getWaktu(),
-      //   'type': type,
-      //   'lampiran': '$base64fotoUser',
-      //   'dibaca': false
-      // };
-      // final body2 =
-      //     "{'em_id_penerima': '${widget.emIdPenerima}','em_id_pengirim': '${widget.emIdPengirim}','pesan': '','tanggal': '${controller.getTanggal()}','waktu': '${controller.getWaktu()}','type': '$type','lampiran': '$base64fotoUser','dibaca': '0'}";
-      // widget.webSocketChannel.sink.add(jsonEncode(body));
-      // _messageController.clear();
+      var connect = Api.connectionApi("post", bodyApi, "chatting");
+      connect.then((dynamic res) {
+        if (res.statusCode == 200) {
+          _fetchPesan();
 
-      // var connect = Api.connectionApi("post", body, "chatting");
-      // connect.then((dynamic res) {
-      //   if (res.statusCode == 200) {
-      //     _pesans.add(body2.toString());
-      //   } else {
-      //     UtilsAlert.showToast("koneksi buruk pesan tidak terkirim");
-      //   }
-      // });
+          final bodyWebsocket = {
+            'em_id_penerima': widget.emIdPenerima,
+            'em_id_pengirim': widget.emIdPengirim,
+            'pesan': '',
+            'tanggal': tanggal,
+            'waktu': waktu,
+            'type': 'message',
+            'lampiran': lampiran.value,
+            'dibaca': '1'
+          };
 
-      _scrollToBottom();
+          widget.webSocketChannel.sink.add(jsonEncode(bodyWebsocket));
+          _messageController.clear();
+          _pesans.add(jsonEncode(bodyWebsocket));
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _scrollToBottom();
+          });
+        } else {
+          UtilsAlert.showToast("koneksi buruk pesan tidak terkirim");
+        }
+      });
 
       Get.back();
     } on PlatformException {
@@ -165,17 +186,19 @@ class _ChatPageState extends State<ChatPage> {
     };
     widget.webSocketChannel.sink.add(jsonEncode(body));
     _messageController.clear();
+    _pesans.add(jsonEncode(body));
 
     var connect = Api.connectionApi("post", body, "chatting");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
-        _pesans.add(jsonEncode(body));
       } else {
         UtilsAlert.showToast("koneksi buruk pesan tidak terkirim");
       }
     });
 
-    _scrollToBottom();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
   }
 
   void _fetchPesan() async {
@@ -197,15 +220,23 @@ class _ChatPageState extends State<ChatPage> {
             'waktu': pesan['waktu'],
             'type': 'message',
             'lampiran': pesan['lampiran'],
+            'dibaca': pesan['dibaca'],
           };
         }).toList();
 
         for (var element in formattedData) {
           _pesans.add(jsonEncode(element));
+          lampiran.value = element['lampiran'];
         }
-        // _pesans.add(data);
 
-        _scrollToBottom();
+        if (formattedData.isNotEmpty) {
+          var lastLampiran = formattedData.last['lampiran'];
+          lampiran.value = lastLampiran;
+        }
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToBottom();
+        });
       }
     });
   }
@@ -223,12 +254,14 @@ class _ChatPageState extends State<ChatPage> {
 
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
-      Future.delayed(const Duration(milliseconds: 100), () {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOut,
-        );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(milliseconds: 200), () {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+          );
+        });
       });
     }
   }
@@ -322,13 +355,6 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ],
               ),
-              // Text(
-              //   "Change Log",
-              //   style: GoogleFonts.inter(
-              //       color: Constanst.fgPrimary,
-              //       fontWeight: FontWeight.w500,
-              //       fontSize: 20),
-              // ),
               leading: IconButton(
                 icon: Icon(
                   Iconsax.arrow_left,
@@ -357,7 +383,11 @@ class _ChatPageState extends State<ChatPage> {
                           final messageData = jsonDecode(message);
                           if (messageData['type'] != 'error') {
                             _pesans.add(message);
-                            _scrollToBottom();
+
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _scrollToBottom();
+                            });
+
                             _tandaSudahDibaca();
                             print(message);
                           }
@@ -372,18 +402,17 @@ class _ChatPageState extends State<ChatPage> {
                                 jsonDecode(_pesans[index].toString());
 
                             final messageText = messageData['pesan'];
-                            final statusText = messageData['dibaca'] == "1";
+                            final statusText = messageData['dibaca'] == 1 ||
+                                messageData['dibaca'] == "1";
+
                             final waktuText =
                                 messageData['waktu'].substring(0, 5);
 
                             final isSender = messageData['em_id_pengirim'] ==
                                 "${widget.emIdPengirim}";
 
-                            var img = false.obs;
-                            if (messageData['lampiran'] != '' ||
-                                messageData['lampiran'] != "null") {
-                              // img = true.obs;
-                            }
+                            final isImage = messageData['lampiran'] != "";
+                            final urlImage = messageData['lampiran'];
 
                             return Align(
                               alignment: isSender
@@ -399,7 +428,7 @@ class _ChatPageState extends State<ChatPage> {
                                       : Constanst.greyLight100,
                                   borderRadius: BorderRadius.circular(12.0),
                                 ),
-                                constraints: img.isTrue
+                                constraints: isImage
                                     ? BoxConstraints(
                                         maxWidth:
                                             MediaQuery.of(context).size.width *
@@ -411,7 +440,7 @@ class _ChatPageState extends State<ChatPage> {
                                       ? CrossAxisAlignment.end
                                       : CrossAxisAlignment.start,
                                   children: [
-                                    if (img.isTrue) ...[
+                                    if (isImage) ...[
                                       InkWell(
                                         onTap: () {
                                           showDialog(
@@ -425,9 +454,24 @@ class _ChatPageState extends State<ChatPage> {
                                                 child: Stack(
                                                   children: [
                                                     InteractiveViewer(
-                                                      child: Image.file(
-                                                        imgFile.value!,
+                                                      child: CachedNetworkImage(
+                                                        imageUrl:
+                                                            "${Api.urlFotoChat}$urlImage",
                                                         fit: BoxFit.contain,
+                                                        placeholder:
+                                                            (context, url) =>
+                                                                const Center(
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        ),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            const Center(
+                                                          child: Icon(
+                                                            Icons.error,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                     Positioned(
@@ -455,13 +499,34 @@ class _ChatPageState extends State<ChatPage> {
                                             // width: 350,
                                             height: 300,
                                             decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                                image: DecorationImage(
-                                                  image:
-                                                      FileImage(imgFile.value!),
-                                                  fit: BoxFit.cover,
-                                                )),
+                                              borderRadius:
+                                                  BorderRadius.circular(12.0),
+                                            ),
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  "${Api.urlFotoChat}$urlImage",
+                                              fit: BoxFit.cover,
+                                              progressIndicatorBuilder:
+                                                  (context, url,
+                                                          downloadProgress) =>
+                                                      Container(
+                                                alignment: Alignment.center,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.5,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        value: downloadProgress
+                                                            .progress),
+                                              ),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      const Icon(Icons.error),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -469,26 +534,16 @@ class _ChatPageState extends State<ChatPage> {
                                         height: 8,
                                       ),
                                     ],
-                                    // Padding(
-                                    //   padding:
-                                    //       const EdgeInsets.only(bottom: 8.0),
-                                    //   child: Image.network(
-                                    //     imageUrl,
-                                    //     width: 150, // Sesuaikan ukuran gambar
-                                    //     height: 150,
-                                    //     fit: BoxFit.cover,
-                                    //   ),
-                                    // ),
-
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
                                       children: [
-                                        if (img.isFalse)
+                                        if (!isImage) ...[
                                           Flexible(
                                             child: Text(
-                                              messageText ?? "",
+                                              messageText ??
+                                                  "${Api.urlFotoChat}$urlImage",
                                               style: TextStyle(
                                                 color: isSender
                                                     ? Constanst.colorWhite
@@ -496,6 +551,7 @@ class _ChatPageState extends State<ChatPage> {
                                               ),
                                             ),
                                           ),
+                                        ],
                                         const SizedBox(
                                           width: 8,
                                         ),

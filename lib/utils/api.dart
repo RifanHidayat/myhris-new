@@ -48,6 +48,8 @@ class Api {
   static var urlFileKandidat =
       urlImage + "/${AppData.selectedDatabase}/file_kandidat/";
 
+  static var urlFotoChat = urlImage + "/${AppData.selectedDatabase}/chat/";
+
   static var urlFileRecog =
       urlImage + "/${AppData.selectedDatabase}/face_recog/";
 

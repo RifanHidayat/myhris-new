@@ -411,6 +411,7 @@ class InfoKaryawan extends StatelessWidget {
                                   print(AppData.informasiUser![0].em_id);
                                   print(full_name);
                                   print(emId);
+                                  print(image);
                                 },
                                 child: const Align(
                                     alignment: Alignment.centerRight,

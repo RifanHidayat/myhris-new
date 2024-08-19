@@ -14,12 +14,4 @@ class ChatController extends GetxController {
     String formattedTime = DateFormat('HH:mm:ss').format(now);
     return formattedTime;
   }
-
-  String getFileExtension(String filePath) {
-    int dotIndex = filePath.lastIndexOf('.');
-    if (dotIndex != -1 && dotIndex != filePath.length - 1) {
-      return filePath.substring(dotIndex + 1);
-    }
-    return '';
-  }
 }
