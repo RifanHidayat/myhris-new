@@ -17,7 +17,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
-
+import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
 import 'package:siscom_operasional/controller/init_controller.dart';
@@ -30,6 +30,7 @@ import 'package:siscom_operasional/screen/absen/lembur.dart';
 import 'package:siscom_operasional/screen/absen/riwayat_cuti.dart';
 import 'package:siscom_operasional/screen/absen/riwayat_izin.dart';
 import 'package:siscom_operasional/screen/absen/tugas_luar.dart';
+import 'package:siscom_operasional/screen/chatting/chat_page.dart';
 
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/screen/kandidat/list_kandidat.dart';
@@ -53,6 +54,7 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
+import 'package:web_socket_channel/io.dart';
 import 'database/database_services.dart';
 import 'utils/app_data.dart';
 
@@ -180,11 +182,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //await initializeService();
 
-
   runApp(const MyApp());
- //await DatabaseService.database;
-   
-  
+  //await DatabaseService.database;
 }
 
 // Future<void> initializeService() async {
@@ -258,17 +257,12 @@ Future<void> main() async {
 //   return true;
 // }
 
-
-
 // proses tracking
 
 void onStart(ServiceInstance service) async {
-
   final prefs = await SharedPreferences.getInstance();
- var d= prefs.getString('interval_tracking');
+  var d = prefs.getString('interval_tracking');
 
-
- 
   DartPluginRegistrant.ensureInitialized();
 
   if (service is AndroidServiceInstance) {
@@ -286,14 +280,14 @@ void onStart(ServiceInstance service) async {
   });
 
   // Timer.periodic( Duration(minutes: int.parse( prefs.getString('interval_tracking')??"2")), (timer) async {
-  Timer.periodic( Duration(seconds: 10), (timer) async {
+  Timer.periodic(Duration(seconds: 10), (timer) async {
     if (service is AndroidServiceInstance) {
       service.setForegroundNotificationInfo(
         title: "Background Service",
         content: "Updated at ${DateTime.now()}",
       );
 //       print("background service");
-          
+
 //  Position position = await Geolocator.getCurrentPosition(
 //     desiredAccuracy: LocationAccuracy.high);
 //     print('lat :${position.latitude.toString()}');
@@ -301,9 +295,9 @@ void onStart(ServiceInstance service) async {
 //     controllerTracking.tracking(
 //     position.latitude.toString(), position.longitude.toString());
     }
-     print("foregf service");
+    print("foregf service");
     // Update the notification content
-    
+
 //  Position position = await Geolocator.getCurrentPosition(
 //     desiredAccuracy: LocationAccuracy.high);
 //     print('lat :${position.latitude.toString()}');
@@ -311,24 +305,25 @@ void onStart(ServiceInstance service) async {
 //     controllerTracking.tracking(
 //     position.latitude.toString(), position.longitude.toString());
 
-      flutterLocalNotificationsPlugin.show(
-        888,
-        'Background Service',
-        'Service updated at ${DateTime.now()}',
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'my_foreground',
-            'MY FOREGROUND SERVICE',
-            channelDescription: 'This channel is used for important notifications.',
-            importance: Importance.low,
-            priority: Priority.low,
-            ongoing: true,
-          ),
+    flutterLocalNotificationsPlugin.show(
+      888,
+      'Background Service',
+      'Service updated at ${DateTime.now()}',
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'my_foreground',
+          'MY FOREGROUND SERVICE',
+          channelDescription:
+              'This channel is used for important notifications.',
+          importance: Importance.low,
+          priority: Priority.low,
+          ongoing: true,
         ),
-      );
-   
+      ),
+    );
 
-    print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()} ${AppData.emailUser} -- email ${prefs.getString('selectedDatabase')}');
+    print(
+        'FLUTTER BACKGROUND SERVICE: ${DateTime.now()} ${AppData.emailUser} -- email ${prefs.getString('selectedDatabase')}');
 
     service.invoke(
       'update',
@@ -339,7 +334,6 @@ void onStart(ServiceInstance service) async {
   });
 }
 
-
 Future<void> initializeService() async {
   final service = FlutterBackgroundService();
 
@@ -347,7 +341,8 @@ Future<void> initializeService() async {
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'my_foreground', // id
     'MY FOREGROUND SERVICE', // title
-    description: 'This channel is used for important notifications.', // description
+    description:
+        'This channel is used for important notifications.', // description
     importance: Importance.low, // default is low, other value is high
   );
 
@@ -563,11 +558,10 @@ Future showNotification(message) async {
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  var info = message.data['body'];
-  print("tes");
-  // showNotification(message);
+  // var info = message.data['body'];
+  // print("tes");
+
   FlutterRingtonePlayer.playNotification();
-  // await Firebase.initializeApp();
 }
 
 Future<void> setupInteractedMessage() async {
@@ -604,7 +598,30 @@ Future<void> setupInteractedMessage() async {
   FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 }
 
-void _handleMessage(RemoteMessage message) {}
+void _handleMessage(RemoteMessage message) async {
+  final messageData = message.data;
+  final route = messageData['route'];
+
+  await Future.delayed(const Duration(seconds: 7));
+  UtilsAlert.showToast("handle: $messageData");
+  switch (route) {
+    case 'pesan':
+      Get.to(
+        ChatPage(
+          webSocketChannel:
+              IOWebSocketChannel.connect(Uri.parse(Api.webSocket)),
+          fullNamePenerima: messageData['full_name'],
+          emIdPengirim: AppData.informasiUser![0].em_id,
+          emIdPenerima: messageData['em_id_pengirim'],
+          imageProfil: messageData['em_image'],
+          title: messageData['job_title'],
+        ),
+      );
+      break;
+    default:
+      Get.offNamed('/home');
+  }
+}
 
 // var controller = Get.put(ApprovalController());
 
@@ -626,6 +643,27 @@ Future onSelectNotification(notificationResponse) async {
     String key = parts[0].trim();
     String value = parts[1].trim();
     jsonMap[key] = value;
+  }
+
+  final message = Map.from(jsonMap);
+  final route = message['route'];
+
+  switch (route) {
+    case 'pesan':
+      Get.to(
+        ChatPage(
+          webSocketChannel:
+              IOWebSocketChannel.connect(Uri.parse(Api.webSocket)),
+          fullNamePenerima: message['full_name'],
+          emIdPengirim: AppData.informasiUser![0].em_id,
+          emIdPenerima: message['em_id_pengirim'],
+          imageProfil: message['em_image'],
+          title: message['job_title'],
+        ),
+      );
+      break;
+    default:
+      Get.offNamed('/home');
   }
 
   // Gunakan map untuk membuat objek
