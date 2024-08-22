@@ -8,6 +8,80 @@ import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class ChatController extends GetxController {
+
+ var loading = "Memuat data...".obs;
+  var jumlahChat=0.obs;
+    RxBool isSearching = false.obs;
+    var isLoading=true.obs;
+        RxBool isLoadingEnployee = false.obs;
+      RxBool isSearchingEmployee = false.obs;
+  var searchController = TextEditingController();
+   var searchControllerEmployee = TextEditingController();
+  var cari = TextEditingController().obs;
+  void toggleSearch() {
+    
+    isSearching.value = !isSearching.value;
+  }
+  
+  void toggleSearchEmployee() {
+    isSearchingEmployee.value = !isSearchingEmployee.value;
+   
+  }
+
+
+  
+
+  void clearText() {
+    searchController.clear();
+    // pencarianNamaKaryawan('');
+  }
+   void clearTextEmployee() {
+     searchControllerEmployee.clear();
+     getAllEmployee();
+    // pencarianNamaKaryawan('');
+  }
+  var infoEmployee = [].obs;
+   var infoAllEmployee = [].obs;
+void getCount() async{
+
+  var emId=AppData.informasiUser==null || AppData.informasiUser!.isEmpty || AppData.informasiUser==""?"":AppData.informasiUser![0].em_id ;
+  try{
+var data=await Request(url: '/chatting/employee-history/count',params: '&em_id=${emId}').get();
+
+  var response=jsonDecode(data.body);
+
+  if (data.statusCode==200){
+    jumlahChat.value=response['total'];
+    
+  }else{
+     jumlahChat.value=0;
+
+  }
+  }catch(e){
+    print(e);
+    jumlahChat.value=0;
+    
+
+  }
+
+}
+
+Future<List<dynamic>>  getEmployee() async{
+print('masuk sini history chat new  newnew ');
+
+  var data=await Request(url: 'chatting/employee-history',params: '&em_id=${AppData.informasiUser![0].em_id}&search=${searchController.value.text}').get();
+var response=jsonDecode(data.body);
+print('masuk sini history chat new ${response}');
+
+if (data.statusCode==200){
+  isLoading.value=false;
+return response;
+  infoEmployee.value=response['data'];
+  print('berhasil ambil data chat ${response['data']}');
+
+}else {
+   isLoading.value=false;
+
   var jumlahChat = 0.obs;
   var isSelectionMode = false.obs;
   var selectedMessage = Rxn<dynamic>();
@@ -53,12 +127,17 @@ class ChatController extends GetxController {
       infoEmployee.value = response['data'];
       print('berhasil ambil data chat ${response['data']}');
     } else {
+
       throw Exception('Failed to load data');
     }
   }
 
-  void getAllEmployee() async {
-    print('masuk sini history chat new  newnew new ');
+
+void  getAllEmployee() async{
+isLoadingEnployee.value=true;
+  infoAllEmployee.clear();
+print('masuk sini history chat new  newnew new ');
+
 
     var data = await Request(
             url: 'chatting/employee',
@@ -68,10 +147,17 @@ class ChatController extends GetxController {
     var response = jsonDecode(data.body);
     print('masuk sini history chat new employee ${response}');
 
-    if (data.statusCode == 200) {
+
+if (data.statusCode==200){
+ isLoadingEnployee.value=false;
+
 // return response;
-      infoAllEmployee.value = response;
-    } else {
+  infoAllEmployee.value=response;
+
+
+}else {
+isLoadingEnployee.value=false;
+
       throw Exception('Failed to load data');
     }
   }
