@@ -18,6 +18,11 @@ class ChatController extends GetxController {
   var searchController = TextEditingController();
    var searchControllerEmployee = TextEditingController();
   var cari = TextEditingController().obs;
+
+  var isSelectionMode = false.obs;
+  var selectedMessage = Rxn<dynamic>();
+  var isPressed = false.obs;
+
   void toggleSearch() {
     
     isSearching.value = !isSearching.value;
@@ -42,50 +47,31 @@ class ChatController extends GetxController {
   }
   var infoEmployee = [].obs;
    var infoAllEmployee = [].obs;
-void getCount() async{
+// void getCount() async{
 
-  var emId=AppData.informasiUser==null || AppData.informasiUser!.isEmpty || AppData.informasiUser==""?"":AppData.informasiUser![0].em_id ;
-  try{
-var data=await Request(url: '/chatting/employee-history/count',params: '&em_id=${emId}').get();
+//   var emId=AppData.informasiUser==null || AppData.informasiUser!.isEmpty || AppData.informasiUser==""?"":AppData.informasiUser![0].em_id ;
+//   try{
+// var data=await Request(url: '/chatting/employee-history/count',params: '&em_id=${emId}').get();
 
-  var response=jsonDecode(data.body);
+//   var response=jsonDecode(data.body);
 
-  if (data.statusCode==200){
-    jumlahChat.value=response['total'];
+//   if (data.statusCode==200){
+//     jumlahChat.value=response['total'];
     
-  }else{
-     jumlahChat.value=0;
+//   }else{
+//      jumlahChat.value=0;
 
-  }
-  }catch(e){
-    print(e);
-    jumlahChat.value=0;
+//   }
+//   }catch(e){
+//     print(e);
+//     jumlahChat.value=0;
     
 
-  }
+//   }
 
-}
+// }
 
-Future<List<dynamic>>  getEmployee() async{
-print('masuk sini history chat new  newnew ');
 
-  var data=await Request(url: 'chatting/employee-history',params: '&em_id=${AppData.informasiUser![0].em_id}&search=${searchController.value.text}').get();
-var response=jsonDecode(data.body);
-print('masuk sini history chat new ${response}');
-
-if (data.statusCode==200){
-  isLoading.value=false;
-return response;
-  infoEmployee.value=response['data'];
-  print('berhasil ambil data chat ${response['data']}');
-
-}else {
-   isLoading.value=false;
-
-  var jumlahChat = 0.obs;
-  var isSelectionMode = false.obs;
-  var selectedMessage = Rxn<dynamic>();
-  var isPressed = false.obs;
 
   void getCount() async {
     var emId = AppData.informasiUser == null ||
@@ -161,16 +147,7 @@ isLoadingEnployee.value=false;
       throw Exception('Failed to load data');
     }
   }
-// Future<List<dynamic>> fetchDataFromApi() async {
-//   final response = await http.get(Uri.parse('https://api.example.com/data'));
 
-//   if (response.statusCode == 200) {
-//     // Parse JSON data
-//     return json.decode(response.body);
-//   } else {
-//     throw Exception('Failed to load data');
-//   }
-// }
 
   // var listFoto = [].obs;
   String getTanggal() {
