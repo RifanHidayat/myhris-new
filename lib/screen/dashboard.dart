@@ -31,6 +31,7 @@ import 'package:siscom_operasional/screen/absen/face_id_registration.dart';
 import 'package:siscom_operasional/screen/absen/facee_id_detection.dart';
 import 'package:siscom_operasional/screen/absen/loading_absen.dart';
 import 'package:siscom_operasional/screen/akun/personal_info.dart';
+import 'package:siscom_operasional/screen/chatting/history.dart';
 import 'package:siscom_operasional/screen/detail_informasi.dart';
 import 'package:siscom_operasional/screen/informasi.dart';
 import 'package:siscom_operasional/screen/pesan/pesan.dart';
@@ -49,6 +50,8 @@ import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as dom;
 import 'package:upgrader/upgrader.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+
+import 'chatting/history.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -74,7 +77,7 @@ class _DashboardState extends State<Dashboard> {
   final chatController = Get.put(ChatController());
 
   var intervalTracking = "";
- final WebSocketChannel channel =
+  final WebSocketChannel channel =
       WebSocketChannel.connect(Uri.parse(Api.webSocket));
   Future<void> refreshData() async {
     controller.refreshPagesStatus.value = true;
@@ -96,7 +99,6 @@ class _DashboardState extends State<Dashboard> {
         //     controller.dashboardStatusAbsen.value;
       });
       tabbController.checkuserinfo();
-
     });
   }
 
@@ -807,27 +809,35 @@ class _DashboardState extends State<Dashboard> {
             AppData.informasiUser![0].em_image == ""
                 ? Row(
                     children: [
-                      Padding(
-                          padding: EdgeInsets.only(right: 5),
-                          child: Container(
-                            width: 30,
-                            height: 30,
-                            
-                            child: Stack(
-                              children: [
-                                CircleAvatar(
-                                  radius: 7,
-                                  backgroundColor: Colors.red,
-                                  child: TextLabell(text: chatController.jumlahChat.value,color: Colors.white,),
-                                ),
-                                Image.asset(
-                                  'assets/chat.png',
-                                  width: 20,
-                                  height: 20,
-                                ),
-                              ],
-                            ),
-                          )),
+                      InkWell(
+                        onTap: (){
+                          Get.to(HistoryChat());
+
+                        },
+                        child: Padding(
+                            padding: EdgeInsets.only(right: 5),
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              child: Stack(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 7,
+                                    backgroundColor: Colors.red,
+                                    child: TextLabell(
+                                      text: chatController.jumlahChat.value,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Image.asset(
+                                    'assets/chat.png',
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ),
                       SvgPicture.asset(
                         'assets/avatar_default.svg',
                         width: _isVisible ? 50 : 42,
@@ -837,27 +847,37 @@ class _DashboardState extends State<Dashboard> {
                   )
                 : Row(
                     children: [
-                         Padding(
-                          padding: EdgeInsets.only(right: 5),
-                          child: Container(
-                            width: 30,
-                            height: 30,
-                            
-                            child: Stack(
-                              children: [
-                                Obx(() => CircleAvatar(
-                                  radius: 7,
-                                  backgroundColor: Colors.red,
-                                  child: TextLabell(text: chatController.jumlahChat.value.toString(),color: Colors.white,),
-                                ),),
-                                Image.asset(
-                                  'assets/chat.png',
-                                  width: 20,
-                                  height: 20,
-                                ),
-                              ],
-                            ),
-                          )),
+                      InkWell(
+                        onTap: (){
+   Get.to(HistoryChat());
+                        },
+                        child: Padding(
+                            padding: EdgeInsets.only(right: 5),
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              child: Stack(
+                                children: [
+                                  Obx(
+                                    () => CircleAvatar(
+                                      radius: 7,
+                                      backgroundColor: Colors.red,
+                                      child: TextLabell(
+                                        text: chatController.jumlahChat.value
+                                            .toString(),
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Image.asset(
+                                    'assets/chat.png',
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ),
                       CircleAvatar(
                         radius: 25, // Image radius
                         child: ClipOval(
@@ -2833,20 +2853,34 @@ class _DashboardState extends State<Dashboard> {
       controllerTracking.absenSelfie();
     }
 
-    chatController.getCount();
+    // chatController.getCount();
 
-            channel.sink.add(jsonEncode({'type': 'count','database':AppData.selectedDatabase,'em_id':AppData.informasiUser![0].em_id}));
-print('ambil data websoket');
-          channel.stream.listen((message) {
-            print('ambil data websoket');
+    channel.sink.add(jsonEncode({
+      'type': 'count',
+      'database': AppData.selectedDatabase,
+      'em_id': AppData.informasiUser![0].em_id
+    }));
+
+  
+
+
+
+    channel.stream.listen((message) {
+      print('ambil data websoket');
       final decodedMessage = jsonDecode(message);
+      
       if (decodedMessage['type'] == 'count') {
-
-        print('total chat ${decodedMessage['data'][0]['total']}');
-
-        chatController.jumlahChat.value=decodedMessage['data'][0]['total'] ;
-        
+       // print('total chat ${decodedMessage['data'][0]['total']}');
+        chatController.jumlahChat.value = decodedMessage['data'][0]['total'];
       }
+
+      if (decodedMessage['type'] == 'fetchHistory') {
+        print('total chat ${decodedMessage['data']}');
+        // print('total chat ${decodedMessage['data'][0]['total']}');
+        // chatController.jumlahChat.value = decodedMessage['data'][0]['total'];
+      }
+
+
     });
 
     _checkversion();

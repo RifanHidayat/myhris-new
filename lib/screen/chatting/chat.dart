@@ -75,8 +75,7 @@
 
 // Widget bodyChat(){
 //   return Container(
-  
-  
+
 //     alignment: Alignment.bottomCenter,
 //     padding: EdgeInsets.all(12 ),
 //     child: Align(

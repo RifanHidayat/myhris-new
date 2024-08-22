@@ -31,7 +31,7 @@ class Request {
 
   
   Future<http.Response> get() async {
-    print("url ${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"+params??""}");
+    print("url get ${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"+params??""}");
     return await http
         .get(Uri.parse("${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"+params??""}"), headers: headers)
         .timeout(Duration(minutes: 2));

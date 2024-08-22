@@ -18,7 +18,7 @@ class Api {
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
-  // static var basicUrl = "http://mobilehris.siscom.id:3000/";
+   //static var basicUrl = "http://mobilehris.siscom.id:3000/";
   static var urlImage = 'https://imagehris.siscom.id:4431';
 
   //static var basicUrl = "http://mobilehris.siscom.id:3000/";
