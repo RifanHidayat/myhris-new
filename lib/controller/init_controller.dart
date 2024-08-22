@@ -61,7 +61,7 @@ class InitController extends GetxController {
   void validasiLastAbsensi() async {
     // await Future.delayed(const Duration(seconds: 3));
     // Get.offAll(Onboard());
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 2));
 
     if (AppData.isOnboarding == true) {
       // Get.offAll(Login());
