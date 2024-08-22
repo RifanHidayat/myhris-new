@@ -8,91 +8,73 @@ import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class ChatController extends GetxController {
- var loading = "Memuat data...".obs;
-  var jumlahChat=0.obs;
-    RxBool isSearching = false.obs;
-      RxBool isSearchingEmployee = false.obs;
-  var searchController = TextEditingController();
-   var searchControllerEmployee = TextEditingController();
-  var cari = TextEditingController().obs;
-  void toggleSearch() {
-    isSearching.value = !isSearching.value;
-  }
-  
-  void toggleSearchEmployee() {
-    isSearchingEmployee.value = !isSearchingEmployee.value;
-  }
-  
+  var jumlahChat = 0.obs;
+  var isSelectionMode = false.obs;
+  var selectedMessage = Rxn<dynamic>();
+  var isPressed = false.obs;
 
-  void clearText() {
-    searchController.clear();
-    // pencarianNamaKaryawan('');
-  }
-   void clearTextEmployee() {
-    // searchControllerEmployee.clear();
-    // pencarianNamaKaryawan('');
-  }
-  var infoEmployee = [].obs;
-   var infoAllEmployee = [].obs;
-void getCount() async{
+  void getCount() async {
+    var emId = AppData.informasiUser == null ||
+            AppData.informasiUser!.isEmpty ||
+            AppData.informasiUser == ""
+        ? ""
+        : AppData.informasiUser![0].em_id;
+    try {
+      var data = await Request(
+              url: '/chatting/employee-history/count', params: '&em_id=${emId}')
+          .get();
 
-  var emId=AppData.informasiUser==null || AppData.informasiUser!.isEmpty || AppData.informasiUser==""?"":AppData.informasiUser![0].em_id ;
-  try{
-var data=await Request(url: '/chatting/employee-history/count',params: '&em_id=${emId}').get();
+      var response = jsonDecode(data.body);
 
-  var response=jsonDecode(data.body);
-
-  if (data.statusCode==200){
-    jumlahChat.value=response['total'];
-    
-  }else{
-     jumlahChat.value=0;
-
-  }
-  }catch(e){
-    print(e);
-    jumlahChat.value=0;
-    
-
+      if (data.statusCode == 200) {
+        jumlahChat.value = response['total'];
+      } else {
+        jumlahChat.value = 0;
+      }
+    } catch (e) {
+      print(e);
+      jumlahChat.value = 0;
+    }
   }
 
-}
+  Future<List<dynamic>> getEmployee() async {
+    print('masuk sini history chat new  newnew ');
 
-Future<List<dynamic>>  getEmployee() async{
-print('masuk sini history chat new  newnew ');
+    var data = await Request(
+            url: 'chatting/employee-history',
+            params:
+                '&em_id=${AppData.informasiUser![0].em_id}&search=${searchController.value.text}')
+        .get();
+    var response = jsonDecode(data.body);
+    print('masuk sini history chat new ${response}');
 
-  var data=await Request(url: 'chatting/employee-history',params: '&em_id=${AppData.informasiUser![0].em_id}&search=${searchController.value.text}').get();
-var response=jsonDecode(data.body);
-print('masuk sini history chat new ${response}');
-
-if (data.statusCode==200){
-return response;
-  infoEmployee.value=response['data'];
-  print('berhasil ambil data chat ${response['data']}');
-
-}else {
+    if (data.statusCode == 200) {
+      return response;
+      infoEmployee.value = response['data'];
+      print('berhasil ambil data chat ${response['data']}');
+    } else {
       throw Exception('Failed to load data');
-}
+    }
+  }
 
-}
+  void getAllEmployee() async {
+    print('masuk sini history chat new  newnew new ');
 
-void  getAllEmployee() async{
-print('masuk sini history chat new  newnew new ');
+    var data = await Request(
+            url: 'chatting/employee',
+            params:
+                '&em_id=${AppData.informasiUser![0].em_id}&search=${searchControllerEmployee.text}')
+        .get();
+    var response = jsonDecode(data.body);
+    print('masuk sini history chat new employee ${response}');
 
-  var data=await Request(url: 'chatting/employee',params: '&em_id=${AppData.informasiUser![0].em_id}&search=${searchControllerEmployee.text}').get();
-var response=jsonDecode(data.body);
-print('masuk sini history chat new employee ${response}');
-
-if (data.statusCode==200){
+    if (data.statusCode == 200) {
 // return response;
-  infoAllEmployee.value=response;
-
-
-}else {
+      infoAllEmployee.value = response;
+    } else {
       throw Exception('Failed to load data');
-}
-
-}
+    }
+  }
 // Future<List<dynamic>> fetchDataFromApi() async {
 //   final response = await http.get(Uri.parse('https://api.example.com/data'));
 
@@ -115,5 +97,29 @@ if (data.statusCode==200){
     DateTime now = DateTime.now();
     String formattedTime = DateFormat('HH:mm:ss').format(now);
     return formattedTime;
+  }
+
+  void tekanLamaPesan(dynamic messageData) {
+    if (isSelectionMode.value) return;
+
+    isSelectionMode.value = true;
+    selectedMessage.value = messageData;
+    isPressed.value = true;
+    print("Message Data: $messageData");
+  }
+
+  void releasePesan() {
+    isPressed.value = false; // Reset status ketika pesan dilepas
+  }
+
+  void forwardPesan() {
+    isSelectionMode.value = false;
+    selectedMessage.value = null;
+    releasePesan(); // Pastikan status ditekan direset
+  }
+
+  void resetSelection() {
+    isSelectionMode.value = false;
+    selectedMessage.value = null;
   }
 }

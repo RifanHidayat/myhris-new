@@ -562,29 +562,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // print("tes");
 
   FlutterRingtonePlayer.playNotification();
-
-  // final messageData = message.data;
-  // final route = messageData['route'];
-  // UtilsAlert.showToast("$messageData");
-
-  // switch (route) {
-  //   case 'pesan':
-  //     Get.to(
-  //       ChatPage(
-  //         webSocketChannel:
-  //             IOWebSocketChannel.connect(Uri.parse(Api.webSocket)),
-  //         fullNamePenerima: messageData['full_name'],
-  //         emIdPengirim:
-  //             messageData['em_id_pengirim'] ?? AppData.informasiUser![0].em_id,
-  //         emIdPenerima: messageData['em_id_penerima'],
-  //         imageProfil: messageData['em_image'],
-  //         title: messageData['job_title'],
-  //       ),
-  //     );
-  //     break;
-  //   default:
-  //     Get.offNamed('/home');
-  // }
 }
 
 Future<void> setupInteractedMessage() async {
@@ -621,7 +598,30 @@ Future<void> setupInteractedMessage() async {
   FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 }
 
-void _handleMessage(RemoteMessage message) {}
+void _handleMessage(RemoteMessage message) async {
+  final messageData = message.data;
+  final route = messageData['route'];
+
+  await Future.delayed(const Duration(seconds: 7));
+  UtilsAlert.showToast("handle: $messageData");
+  switch (route) {
+    case 'pesan':
+      Get.to(
+        ChatPage(
+          webSocketChannel:
+              IOWebSocketChannel.connect(Uri.parse(Api.webSocket)),
+          fullNamePenerima: messageData['full_name'],
+          emIdPengirim: AppData.informasiUser![0].em_id,
+          emIdPenerima: messageData['em_id_pengirim'],
+          imageProfil: messageData['em_image'],
+          title: messageData['job_title'],
+        ),
+      );
+      break;
+    default:
+      Get.offNamed('/home');
+  }
+}
 
 // var controller = Get.put(ApprovalController());
 
@@ -648,7 +648,6 @@ Future onSelectNotification(notificationResponse) async {
   final message = Map.from(jsonMap);
   final route = message['route'];
 
-  // Navigate based on type
   switch (route) {
     case 'pesan':
       Get.to(
@@ -656,16 +655,15 @@ Future onSelectNotification(notificationResponse) async {
           webSocketChannel:
               IOWebSocketChannel.connect(Uri.parse(Api.webSocket)),
           fullNamePenerima: message['full_name'],
-          emIdPengirim:
-              message['em_id_pengirim'] ?? AppData.informasiUser![0].em_id,
-          emIdPenerima: message['em_id_penerima'],
+          emIdPengirim: AppData.informasiUser![0].em_id,
+          emIdPenerima: message['em_id_pengirim'],
           imageProfil: message['em_image'],
           title: message['job_title'],
         ),
       );
       break;
     default:
-      Get.offNamed('/home'); // Handle unknown types or redirect to home
+      Get.offNamed('/home');
   }
 
   // Gunakan map untuk membuat objek
