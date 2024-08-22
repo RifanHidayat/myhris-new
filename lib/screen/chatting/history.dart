@@ -46,6 +46,8 @@ class _HistoryChatState extends State<HistoryChat> {
     //   'em_id': AppData.informasiUser![0].em_id,
     //   'search':controller.searchController.text
     // }));
+    controller.searchController.clear();
+    controller.searchControllerEmployee.clear();
     controller.getEmployee();
     controller.getAllEmployee();
     // channel.stream.listen((message) {
@@ -109,6 +111,7 @@ class _HistoryChatState extends State<HistoryChat> {
                   // controller.report();
                   // },
                   onChanged: (value) {
+                    controller.isLoading.value=true;
                     controller.getEmployee();
 
                     // print(controller.searchController.text);
@@ -197,7 +200,13 @@ class _HistoryChatState extends State<HistoryChat> {
                 size: 24,
               ),
               onPressed: controller.isSearching.value
-                  ? controller.toggleSearch
+                  ? (){
+                      controller.toggleSearch();
+                      controller.searchController.clear();
+                    controller.isLoading.value=true;
+                    controller.getEmployee();
+                  
+                  }
                   : Get.back,
               // onPressed: () {
               //   controller.cari.value.text = "";
@@ -247,13 +256,17 @@ class _HistoryChatState extends State<HistoryChat> {
                   child:
                       // : infoEmployeeList(),
                       Container(
-                    child: StreamBuilder<List<dynamic>>(
+                    child: Obx(() =>controller.isLoading.value==true?Center(
+                              child:
+                                  CircularProgressIndicator()): StreamBuilder<List<dynamic>>(
                       stream: getApiDataStream(), // Stream dari API
                       builder: (context, snapshot) {
+
+                        
                         if (snapshot.hasError) {
                           return Center(
                               child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData) {
+                        } else if (!snapshot.hasData || controller.isLoading.value==true) {
                           return Center(
                               child:
                                   CircularProgressIndicator()); // Menunggu data
@@ -272,7 +285,7 @@ class _HistoryChatState extends State<HistoryChat> {
                           // );
                         }
                       },
-                    ),
+                    )),
                   ),
                 )
               ],
@@ -610,7 +623,7 @@ class _HistoryChatState extends State<HistoryChat> {
       isScrollControlled: true,
       builder: (BuildContext context) {
         return SizedBox(
-          height: MediaQuery.of(context).size.height * 0.635,
+          height: MediaQuery.of(context).size.height * 0.8,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16.0),
             child: Scaffold(
@@ -635,12 +648,12 @@ class _HistoryChatState extends State<HistoryChat> {
                       () => AppBar(
                         backgroundColor: Colors.white,
                         elevation: 0,
-                        leadingWidth: controller.isSearching.value ? 50 : 0,
+                        leadingWidth: controller.isSearchingEmployee.value ? 50 : 0,
                         titleSpacing: 0,
                         centerTitle:
-                            controller.isSearching.value ? true : false,
+                            controller.isSearchingEmployee.value ? true : false,
                         title: Obx(() {
-                          if (controller.isSearching.value) {
+                          if (controller.isSearchingEmployee.value) {
                             return SizedBox(
                               height: 40,
                               child: TextFormField(
@@ -650,6 +663,7 @@ class _HistoryChatState extends State<HistoryChat> {
                                 // },
                                 onChanged: (value) {
                                   //controller.pencarianNamaKaryawan(value);
+                                  controller.getAllEmployee();
                                 },
                                 textAlignVertical: TextAlignVertical.center,
                                 style: GoogleFonts.inter(
@@ -702,42 +716,42 @@ class _HistoryChatState extends State<HistoryChat> {
                               ),
                             );
                           } else {
-                            return Text(
-                              "   Karyawan",
-                              style: GoogleFonts.inter(
-                                  color: Constanst.fgPrimary,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14),
+                            return Padding(
+                              padding: EdgeInsets.only(left: 12),
+                              child: Text(
+                                "Karyawan",
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14),
+                              ),
                             );
                           }
                         }),
                         actions: [
                           Obx(
-                            () => controller.isSearching.value
+                            () => controller.isSearchingEmployee.value
                                 ? Padding(
                                     padding: const EdgeInsets.only(right: 16.0),
                                     child: Container(),
                                   )
                                 : IconButton(
-                                    icon: SvgPicture.asset(
-                                      'assets/svg/search_icon.svg',
-                                      width: 24,
-                                      height: 24,
-                                    ),
-                                    onPressed: controller.toggleSearch,
+                                    icon: Icon(Iconsax.search_normal,color: Colors.black,),
+                                    onPressed: controller.toggleSearchEmployee,
                                   ),
                           ),
                         ],
                         leading: Obx(
                           () => IconButton(
-                            icon: controller.isSearching.value
-                                ? SvgPicture.asset(
-                                    'assets/svg/arrow_left_icon.svg',
-                                    width: 24,
-                                    height: 24,
-                                  )
+                            icon: controller.isSearchingEmployee.value
+                                ? Icon(Iconsax.arrow_left,color: Colors.black,)
                                 : Container(),
-                            onPressed: controller.toggleSearch,
+                            onPressed: (){
+                                controller.toggleSearchEmployee();
+                                controller.searchControllerEmployee.clear();
+                                controller.getAllEmployee();
+                            },
+                          
                           ),
                         ),
                       ),
@@ -752,10 +766,9 @@ class _HistoryChatState extends State<HistoryChat> {
               ),
               body: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                child: Obx(() => controller.isSearching.value
+                child: Obx(() => controller.isLoadingEnployee.value
                     ? SizedBox(
-                        height:
-                            MediaQuery.of(context).size.height * 0.5 - 0.635,
+                      
                         child: SizedBox(
                           height: double.maxFinite,
                           child: Align(
@@ -767,7 +780,7 @@ class _HistoryChatState extends State<HistoryChat> {
                                 children: [
                                   CircularProgressIndicator(
                                     color: Constanst.onPrimary,
-                                    backgroundColor: Constanst.onPrimary,
+                                   
                                   ),
                                   SizedBox(
                                     height: 15,

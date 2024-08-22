@@ -11,17 +11,23 @@ class ChatController extends GetxController {
  var loading = "Memuat data...".obs;
   var jumlahChat=0.obs;
     RxBool isSearching = false.obs;
+    var isLoading=true.obs;
+        RxBool isLoadingEnployee = false.obs;
       RxBool isSearchingEmployee = false.obs;
   var searchController = TextEditingController();
    var searchControllerEmployee = TextEditingController();
   var cari = TextEditingController().obs;
   void toggleSearch() {
+    
     isSearching.value = !isSearching.value;
   }
   
   void toggleSearchEmployee() {
     isSearchingEmployee.value = !isSearchingEmployee.value;
+   
   }
+
+
   
 
   void clearText() {
@@ -29,7 +35,8 @@ class ChatController extends GetxController {
     // pencarianNamaKaryawan('');
   }
    void clearTextEmployee() {
-    // searchControllerEmployee.clear();
+     searchControllerEmployee.clear();
+     getAllEmployee();
     // pencarianNamaKaryawan('');
   }
   var infoEmployee = [].obs;
@@ -66,17 +73,21 @@ var response=jsonDecode(data.body);
 print('masuk sini history chat new ${response}');
 
 if (data.statusCode==200){
+  isLoading.value=false;
 return response;
   infoEmployee.value=response['data'];
   print('berhasil ambil data chat ${response['data']}');
 
 }else {
+   isLoading.value=false;
       throw Exception('Failed to load data');
 }
 
 }
 
 void  getAllEmployee() async{
+isLoadingEnployee.value=true;
+  infoAllEmployee.clear();
 print('masuk sini history chat new  newnew new ');
 
   var data=await Request(url: 'chatting/employee',params: '&em_id=${AppData.informasiUser![0].em_id}&search=${searchControllerEmployee.text}').get();
@@ -84,11 +95,14 @@ var response=jsonDecode(data.body);
 print('masuk sini history chat new employee ${response}');
 
 if (data.statusCode==200){
+ isLoadingEnployee.value=false;
+
 // return response;
   infoAllEmployee.value=response;
 
 
 }else {
+isLoadingEnployee.value=false;
       throw Exception('Failed to load data');
 }
 
