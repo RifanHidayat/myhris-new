@@ -8,15 +8,14 @@ import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class ChatController extends GetxController {
-
- var loading = "Memuat data...".obs;
-  var jumlahChat=0.obs;
-    RxBool isSearching = false.obs;
-    var isLoading=true.obs;
-        RxBool isLoadingEnployee = false.obs;
-      RxBool isSearchingEmployee = false.obs;
+  var loading = "Memuat data...".obs;
+  var jumlahChat = 0.obs;
+  RxBool isSearching = false.obs;
+  var isLoading = true.obs;
+  RxBool isLoadingEnployee = false.obs;
+  RxBool isSearchingEmployee = false.obs;
   var searchController = TextEditingController();
-   var searchControllerEmployee = TextEditingController();
+  var searchControllerEmployee = TextEditingController();
   var cari = TextEditingController().obs;
 
   var isSelectionMode = false.obs;
@@ -24,29 +23,26 @@ class ChatController extends GetxController {
   var isPressed = false.obs;
 
   void toggleSearch() {
-    
     isSearching.value = !isSearching.value;
   }
-  
+
   void toggleSearchEmployee() {
     isSearchingEmployee.value = !isSearchingEmployee.value;
-   
   }
-
-
-  
 
   void clearText() {
     searchController.clear();
     // pencarianNamaKaryawan('');
   }
-   void clearTextEmployee() {
-     searchControllerEmployee.clear();
-     getAllEmployee();
+
+  void clearTextEmployee() {
+    searchControllerEmployee.clear();
+    getAllEmployee();
     // pencarianNamaKaryawan('');
   }
+
   var infoEmployee = [].obs;
-   var infoAllEmployee = [].obs;
+  var infoAllEmployee = [].obs;
 // void getCount() async{
 
 //   var emId=AppData.informasiUser==null || AppData.informasiUser!.isEmpty || AppData.informasiUser==""?"":AppData.informasiUser![0].em_id ;
@@ -57,7 +53,7 @@ class ChatController extends GetxController {
 
 //   if (data.statusCode==200){
 //     jumlahChat.value=response['total'];
-    
+
 //   }else{
 //      jumlahChat.value=0;
 
@@ -65,13 +61,10 @@ class ChatController extends GetxController {
 //   }catch(e){
 //     print(e);
 //     jumlahChat.value=0;
-    
 
 //   }
 
 // }
-
-
 
   void getCount() async {
     var emId = AppData.informasiUser == null ||
@@ -113,17 +106,14 @@ class ChatController extends GetxController {
       infoEmployee.value = response['data'];
       print('berhasil ambil data chat ${response['data']}');
     } else {
-
       throw Exception('Failed to load data');
     }
   }
 
-
-void  getAllEmployee() async{
-isLoadingEnployee.value=true;
-  infoAllEmployee.clear();
-print('masuk sini history chat new  newnew new ');
-
+  void getAllEmployee() async {
+    isLoadingEnployee.value = true;
+    infoAllEmployee.clear();
+    print('masuk sini history chat new  newnew new ');
 
     var data = await Request(
             url: 'chatting/employee',
@@ -133,21 +123,17 @@ print('masuk sini history chat new  newnew new ');
     var response = jsonDecode(data.body);
     print('masuk sini history chat new employee ${response}');
 
-
-if (data.statusCode==200){
- isLoadingEnployee.value=false;
+    if (data.statusCode == 200) {
+      isLoadingEnployee.value = false;
 
 // return response;
-  infoAllEmployee.value=response;
-
-
-}else {
-isLoadingEnployee.value=false;
+      infoAllEmployee.value = response;
+    } else {
+      isLoadingEnployee.value = false;
 
       throw Exception('Failed to load data');
     }
   }
-
 
   // var listFoto = [].obs;
   String getTanggal() {

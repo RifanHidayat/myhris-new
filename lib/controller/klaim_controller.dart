@@ -63,8 +63,8 @@ class KlaimController extends GetxController {
   var allType = [].obs;
   var dataTypeAjuan = [].obs;
   var departementAkses = [].obs;
-  var limitTransaksi=0.obs;
-  var saldo=0.obs;
+  var limitTransaksi = 0.obs;
+  var saldo = 0.obs;
 
   Rx<DateTime> initialDate = DateTime.now().obs;
 
@@ -229,24 +229,25 @@ class KlaimController extends GetxController {
         }
         if (idpengajuanKlaim == "") {
           var listFirst = allTypeKlaim.value.first;
-          var t=allType.where((p0) => p0['name'].toString()==listFirst.toString()).toList();
-   selectedDropdownType.value = listFirst;
-    
-      getSaldo(id:t.first['type_id'] );
-          
+          var t = allType
+              .where((p0) => p0['name'].toString() == listFirst.toString())
+              .toList();
+          selectedDropdownType.value = listFirst;
+
+          getSaldo(id: t.first['type_id']);
         }
-        
       }
     });
   }
-    void getSaldo({id}) {
-      print("saldo new ");
-  
-    var body={
-      "em_id":AppData.informasiUser![0].em_id,
-      "cost_id":id,
-      "pola":globalCt.valuePolaPersetujuan.value.toString(),
-      'date':DateFormat('yyyy-MM-dd').format(DateTime.now())
+
+  void getSaldo({id}) {
+    print("saldo new ");
+
+    var body = {
+      "em_id": AppData.informasiUser![0].em_id,
+      "cost_id": id,
+      "pola": globalCt.valuePolaPersetujuan.value.toString(),
+      'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
     };
     print("body ${body}");
     var connect = Api.connectionApi("post", body, "emp-claim-saldo");
@@ -254,14 +255,11 @@ class KlaimController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         print("value body ${valueBody}");
-      
-        saldo.value= int.parse(valueBody['saldo'].toString());
-      
-        limitTransaksi.value=int.parse(valueBody['saldo'].toString())-int.parse(valueBody['total_klaim'].toString());
-  
-     
 
-      
+        saldo.value = int.parse(valueBody['saldo'].toString());
+
+        limitTransaksi.value = int.parse(valueBody['saldo'].toString()) -
+            int.parse(valueBody['total_klaim'].toString());
       }
     });
   }
@@ -363,7 +361,8 @@ class KlaimController extends GetxController {
   }
 
   void takeFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles( type: FileType.custom,
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
         allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png']);
 
     if (result != null) {
@@ -392,27 +391,30 @@ class KlaimController extends GetxController {
   void validasiKirimPengajuan() async {
     if (tanggalKlaim.value.text == "" ||
         catatan.value.text == "" ||
-        tanggalTerpilih.value == "" ) {
+        tanggalTerpilih.value == "") {
       UtilsAlert.showToast("Lengkapi form *");
+    } else if (totalKlaim.value.text == "Rp" ||
+        totalKlaim.value.text == "Rp 0") {
+      UtilsAlert.showToast("Nominal klaim tidak bisa 0");
     } else {
       if (uploadFile.value == true) {
-        UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan File");
-        var connectUpload = await Api.connectionApiUploadFile(
-            "upload_form_klaim", filePengajuan.value);
-        var valueBody = jsonDecode(connectUpload);
-        if (valueBody['status'] == true) {
-          UtilsAlert.showToast("Berhasil upload file");
-          Navigator.pop(Get.context!);
-          if (statusForm.value == false) {
-            UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan");
-            checkNomorAjuan(statusForm.value);
-          } else {
-            UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan");
-            kirimPengajuan(nomorAjuan.value.text);
-          }
-        } else {
-          UtilsAlert.showToast("Gagal kirim file");
-        }
+        // UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan File");
+        // var connectUpload = await Api.connectionApiUploadFile(
+        //     "upload_form_klaim", filePengajuan.value);
+        // var valueBody = jsonDecode(connectUpload);
+        // if (valueBody['status'] == true) {
+        //   UtilsAlert.showToast("Berhasil upload file");
+        //   Navigator.pop(Get.context!);
+        //   if (statusForm.value == false) {
+        //     UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan");
+        //     checkNomorAjuan(statusForm.value);
+        //   } else {
+        //     UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan");
+        //     kirimPengajuan(nomorAjuan.value.text);
+        //   }
+        // } else {
+        //   UtilsAlert.showToast("Gagal kirim file");
+        // }
       } else {
         if (statusForm.value == false) {
           UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan");
@@ -485,7 +487,8 @@ class KlaimController extends GetxController {
     }
     print("data ${globalCt.konfirmasiAtasan}");
 
-   var convertTanggalBikinPengajuan = Constanst.convertDateSimpan(tanggalTerpilih.value);
+    var convertTanggalBikinPengajuan =
+        Constanst.convertDateSimpan(tanggalTerpilih.value);
     Map<String, dynamic> body = {
       'em_id': getEmid,
       'nomor_ajuan': getNomorAjuanTerakhir,
@@ -499,13 +502,12 @@ class KlaimController extends GetxController {
       'atten_date': tanggalKlaim.value.text,
       'created_by': getEmid,
       'menu_name': 'Klaim',
-      'saldo_claim':limitTransaksi.value.toString(),
-      'sisa_claim':(limitTransaksi.value-cv3).toString(),
-      'approve_status':"Pending"
+      'saldo_claim': limitTransaksi.value.toString(),
+      'sisa_claim': (limitTransaksi.value - cv3).toString(),
+      'approve_status': "Pending"
     };
     var typeNotifFcm = "Pengajuan Klaim";
-    if (statusForm.value == false) { 
-      
+    if (statusForm.value == false) {
       body['activity_name'] =
           "Membuat Pengajuan Klaim. alasan = ${catatan.value.text}";
       var connect = Api.connectionApi("post", body, "insert-emp_claim");
@@ -542,8 +544,6 @@ class KlaimController extends GetxController {
                   "",
                   typeNotifFcm,
                   pesan);
-
-                 
 
               if (item['token_notif'] != null) {
                 globalCt.kirimNotifikasiFcm(
@@ -593,7 +593,7 @@ class KlaimController extends GetxController {
     }
   }
 
-    void kirimNotifikasiToDelegasi1(
+  void kirimNotifikasiToDelegasi1(
       getFullName,
       convertTanggalBikinPengajuan,
       validasiDelegasiSelected,
@@ -601,7 +601,7 @@ class KlaimController extends GetxController {
       stringTanggal,
       typeNotifFcm,
       pesan) {
-         print("kirim notifikasin approval");
+    print("kirim notifikasin approval");
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
     // var description =
@@ -619,7 +619,6 @@ class KlaimController extends GetxController {
     var connect = Api.connectionApi("post", body, "insert-notifikasi");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
-
         print(" berhasil mengajukan klaim notifikasi");
         // globalCt.kirimNotifikasiFcm(
         //     title: typeNotifFcm,
@@ -877,7 +876,7 @@ class KlaimController extends GetxController {
       if (res.statusCode == 200) {
         Navigator.pop(Get.context!);
         Navigator.pop(Get.context!);
-          Navigator.pop(Get.context!);
+        Navigator.pop(Get.context!);
         UtilsAlert.showToast("Berhasil batalkan pengajuan");
         loadDataKlaim();
       }
@@ -901,11 +900,8 @@ class KlaimController extends GetxController {
     var sisaKlaim = detailData['sisa_claim'];
     var saldo = detailData['saldo_claim'];
 
-    
     if (valuePolaPersetujuan.value == "1") {
       typeAjuan = detailData['status'];
-    
-    
     } else {
       typeAjuan = detailData['status'] == "Approve"
           ? "Approve 1"
@@ -913,7 +909,7 @@ class KlaimController extends GetxController {
               ? "Approve 2"
               : detailData['status'];
     }
-    
+
     var nama_file = detailData['nama_file'];
     showModalBottomSheet(
       context: Get.context!,
@@ -1063,7 +1059,7 @@ class KlaimController extends GetxController {
                           color: Constanst.border,
                         ),
                         const SizedBox(height: 12),
-                          Text(
+                        Text(
                           "Sisa Saldo",
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w400,
@@ -1087,7 +1083,6 @@ class KlaimController extends GetxController {
                           color: Constanst.border,
                         ),
                         const SizedBox(height: 12),
-                        
                         Text(
                           "Total Klaim",
                           style: GoogleFonts.inter(
@@ -1112,7 +1107,7 @@ class KlaimController extends GetxController {
                           color: Constanst.border,
                         ),
                         const SizedBox(height: 12),
-                          Text(
+                        Text(
                           "Sisa Klaim",
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w400,

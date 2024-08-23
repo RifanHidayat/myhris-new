@@ -810,9 +810,8 @@ class _DashboardState extends State<Dashboard> {
                 ? Row(
                     children: [
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           Get.to(HistoryChat());
-
                         },
                         child: Padding(
                             padding: EdgeInsets.only(right: 5),
@@ -848,8 +847,8 @@ class _DashboardState extends State<Dashboard> {
                 : Row(
                     children: [
                       InkWell(
-                        onTap: (){
-   Get.to(HistoryChat());
+                        onTap: () {
+                          Get.to(HistoryChat());
                         },
                         child: Padding(
                             padding: EdgeInsets.only(right: 5),
@@ -1150,7 +1149,7 @@ class _DashboardState extends State<Dashboard> {
                                 onTap: () {
                                   if (controllerAbsensi.absenStatus.value ==
                                       true) {
-                                    if (controller.wfhstatus.value == true) {
+                                    if (controller.wfhstatus.value) {
                                       UtilsAlert.showToast(
                                           "Menunggu status wfh anda di approve");
                                       return;
@@ -2861,16 +2860,12 @@ class _DashboardState extends State<Dashboard> {
       'em_id': AppData.informasiUser![0].em_id
     }));
 
-  
-
-
-
     channel.stream.listen((message) {
       print('ambil data websoket');
       final decodedMessage = jsonDecode(message);
-      
+
       if (decodedMessage['type'] == 'count') {
-       // print('total chat ${decodedMessage['data'][0]['total']}');
+        // print('total chat ${decodedMessage['data'][0]['total']}');
         chatController.jumlahChat.value = decodedMessage['data'][0]['total'];
       }
 
@@ -2879,8 +2874,6 @@ class _DashboardState extends State<Dashboard> {
         // print('total chat ${decodedMessage['data'][0]['total']}');
         // chatController.jumlahChat.value = decodedMessage['data'][0]['total'];
       }
-
-
     });
 
     _checkversion();

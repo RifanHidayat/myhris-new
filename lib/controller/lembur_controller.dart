@@ -399,14 +399,13 @@ class LemburController extends GetxController {
         dariJam.value.text == "" ||
         sampaiJam.value.text == "" ||
         selectedTypeLembur.value == "" ||
-        catatan.value.text == "" || selectedDropdownDelegasi.value=="") {
+        catatan.value.text == "" ||
+        selectedDropdownDelegasi.value == "") {
       UtilsAlert.showToast("Lengkapi form *");
     } else {
       if (statusForm.value == false) {
         UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan");
         checkNomorAjuan();
-
-
       } else {
         UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan");
         kirimPengajuan(nomorAjuan.value.text);
@@ -481,7 +480,7 @@ class LemburController extends GetxController {
         ? tanggalPengajuanInsert
         : tanggalLemburEditData;
     var hasilDurasi = hitungDurasi();
-    var  body = {
+    var body = {
       'em_id': getEmid,
       'typeid': finalIdLembur,
       'nomor_ajuan': getNomorAjuanTerakhir,
@@ -505,9 +504,8 @@ class LemburController extends GetxController {
           "Membuat Pengajuan Lembur. alasan = ${catatan.value.text}";
       var connect = Api.connectionApi("post", body, "lembur");
       connect.then((dynamic res) {
-         var valueBody = jsonDecode(res.body);
+        var valueBody = jsonDecode(res.body);
         if (res.statusCode == 200) {
-         
           if (valueBody['status'] == true) {
             var stringWaktu =
                 "${dariJam.value.text} sd ${sampaiJam.value.text}";
@@ -574,11 +572,9 @@ class LemburController extends GetxController {
                   "Data periode $finalTanggalPengajuan belum tersedia, harap hubungi HRD");
             }
           }
-        }else{
+        } else {
           Get.back();
-           UtilsAlert.showToast(
-                  valueBody['message']);
-
+          UtilsAlert.showToast(valueBody['message']);
         }
       });
     } else {
@@ -588,8 +584,7 @@ class LemburController extends GetxController {
           "Edit Pengajuan Lembur. Tanggal Pengajuan = $finalTanggalPengajuan";
       var connect = Api.connectionApi("post", body, "edit-lembur");
       connect.then((dynamic res) {
-        
-          var valueBody = jsonDecode(res.body);
+        var valueBody = jsonDecode(res.body);
         if (res.statusCode == 200) {
           Navigator.pop(Get.context!);
           var pesan1 = "Pengajuan lembur berhasil di edit";
@@ -603,10 +598,9 @@ class LemburController extends GetxController {
           Get.offAll(BerhasilPengajuan(
             dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
           ));
-        }else{
-              Get.back();
-           UtilsAlert.showToast(
-                  valueBody['message']);
+        } else {
+          Get.back();
+          UtilsAlert.showToast(valueBody['message']);
         }
       });
     }

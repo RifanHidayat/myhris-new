@@ -560,7 +560,6 @@ Future showNotification(message) async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // var info = message.data['body'];
   // print("tes");
-
   FlutterRingtonePlayer.playNotification();
 }
 
@@ -599,6 +598,7 @@ Future<void> setupInteractedMessage() async {
 }
 
 void _handleMessage(RemoteMessage message) async {
+  showNotification(message);
   final messageData = message.data;
   final route = messageData['route'];
 

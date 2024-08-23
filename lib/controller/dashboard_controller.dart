@@ -51,6 +51,7 @@ import 'package:siscom_operasional/screen/absen/riwayat_cuti.dart';
 import 'package:siscom_operasional/screen/absen/izin.dart';
 import 'package:siscom_operasional/screen/bpjs/bpjs_kesehatan.dart';
 import 'package:siscom_operasional/screen/bpjs/bpjs_ketenagakerjaan.dart';
+import 'package:siscom_operasional/screen/init_screen.dart';
 
 import 'package:siscom_operasional/screen/kandidat/form_kandidat.dart';
 import 'package:siscom_operasional/screen/kandidat/list_kandidat.dart';
@@ -355,6 +356,7 @@ class DashboardController extends GetxController {
           }
         } else {
           wfhstatus.value = wfh.isEmpty ? false : true;
+          controllerAbsensi.absenStatus.value = wfh.isEmpty ? false : true;
           approveStatus.value = valueBody['wfh'][0]['status'].toString();
           // if (data.isEmpty) {
           signinTime.value = wfh[0]['signing_time'].toString();
@@ -443,10 +445,10 @@ class DashboardController extends GetxController {
                         onPressed: () async {
                           wfhDelete();
                           Get.back();
+                          Get.offAll(InitScreen());
 
                           refreshPagesStatus.value = true;
                           await Future.delayed(const Duration(seconds: 2));
-
                           updateInformasiUser();
                           controller.employeDetaiBpjs();
                           controllerAbsensi.employeDetail();

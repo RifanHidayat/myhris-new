@@ -1538,6 +1538,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
     var signInLongLat = index.signin_longlat ?? '';
     var signOutLongLat = index.signout_longlat ?? '';
     var regType = index.reqType ?? 0;
+    var attenDate = index.atten_date ?? "";
+    var batasJam = "08:30:00";
     var statusView;
     if (placeIn != "") {
       statusView =
@@ -1545,6 +1547,10 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
     }
     var listJamMasuk = (jamMasuk!.split(':'));
     var listJamKeluar = (jamKeluar!.split(':'));
+
+    var waktuMasuk = "$attenDate $jamMasuk";
+    var batasWaktu = "$attenDate $batasJam";
+// Pastikan formatnya benar sebelum parsing
     // var perhitunganJamMasuk1 =
     //     830 - int.parse("${listJamMasuk[0]}${listJamMasuk[1]}");
     // var perhitunganJamMasuk2 =
@@ -1754,7 +1760,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                     height: index.turunan!.isNotEmpty &&
                             index.statusView == true
                         ? int.parse(index.turunan!.length.toString()) * 55 + 28
-                        : null,
+                        : 50,
                     decoration: BoxDecoration(
                       color: Constanst.colorNeutralBgSecondary,
                       borderRadius: const BorderRadius.only(
@@ -1784,7 +1790,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         DateFormat('yyyy-MM-dd')
                                             .parse(index.date)),
                                     style: GoogleFonts.inter(
-                                      fontSize: 12,
+                                      fontSize: 10,
                                       fontWeight: FontWeight.w400,
                                       color: Constanst.fgPrimary,
                                     )),
@@ -1806,7 +1812,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         DateFormat('yyyy-MM-dd')
                                             .parse(index.date)),
                                     style: GoogleFonts.inter(
-                                      fontSize: 12,
+                                      fontSize: 10,
                                       fontWeight: FontWeight.w400,
                                       color: Colors.red,
                                     )),
@@ -1823,14 +1829,14 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                     //tidak ada absen
                     index.namaHariLibur != null
                         ? Padding(
-                            padding: EdgeInsets.only(left: 18),
+                            padding: const EdgeInsets.only(left: 18),
                             child: TextLabell(
                               text: index.namaHariLibur,
                               size: 14.0,
                               weight: FontWeight.w500,
                             ))
                         : index.namaTugasLuar != null
-                            ? Padding(
+                            ? const Padding(
                                 padding: EdgeInsets.only(left: 18),
                                 child: TextLabell(
                                   text: "Tugas Luar",
@@ -1838,7 +1844,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                   weight: FontWeight.w500,
                                 ))
                             : index.namaDinasLuar != null
-                                ? Padding(
+                                ? const Padding(
                                     padding: EdgeInsets.only(left: 18),
                                     child: TextLabell(
                                       text: "Dinas Luar",
@@ -1846,7 +1852,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                       weight: FontWeight.w500,
                                     ))
                                 : index.namaCuti != null
-                                    ? Padding(
+                                    ? const Padding(
                                         padding: EdgeInsets.only(left: 18),
                                         child: TextLabell(
                                           text: "Cuti",
@@ -1855,36 +1861,41 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         ))
                                     : index.namaSakit != null
                                         ? Padding(
-                                            padding: EdgeInsets.only(left: 18),
+                                            padding:
+                                                const EdgeInsets.only(left: 18),
                                             child: TextLabell(
-                                              text: "Sakit : ${index.namaSakit}",
+                                              text:
+                                                  "Sakit : ${index.namaSakit}",
                                               size: 14.0,
                                               weight: FontWeight.w500,
                                             ))
                                         : index.namaIzin != null
-                                        ? Padding(
-                                            padding: EdgeInsets.only(left: 18),
-                                            child: TextLabell(
-                                              text: "Izin : ${index.namaIzin}",
-                                              size: 14.0,
-                                              weight: FontWeight.w500,
-                                            ))
-                                        :index.offDay.toString() == '0'
                                             ? Padding(
-                                                padding:
-                                                    EdgeInsets.only(left: 18),
+                                                padding: const EdgeInsets.only(
+                                                    left: 18),
                                                 child: TextLabell(
-                                                  text: "Hari Libur Kerja",
+                                                  text:
+                                                      "Izin : ${index.namaIzin}",
                                                   size: 14.0,
                                                   weight: FontWeight.w500,
                                                 ))
-                                            : Padding(
-                                                padding:
-                                                    EdgeInsets.only(left: 18),
-                                                child: TextLabell(
-                                                  text: "ALPHA / Belum Absen",
-                                                  weight: FontWeight.w500,
-                                                ))
+                                            : index.offDay.toString() == '0'
+                                                ? const Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 18),
+                                                    child: TextLabell(
+                                                      text: "Hari Libur Kerja",
+                                                      size: 14.0,
+                                                      weight: FontWeight.w500,
+                                                    ))
+                                                : const Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 18),
+                                                    child: TextLabell(
+                                                      text:
+                                                          "ALPHA / Belum Absen",
+                                                      weight: FontWeight.w500,
+                                                    ))
                     :
 
                     //     ada asen
@@ -1895,7 +1906,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                               //tidak ada absen
                               index.namaHariLibur != null
                                   ? Padding(
-                                      padding: EdgeInsets.only(top: 12),
+                                      padding: const EdgeInsets.only(top: 12),
                                       child: Row(
                                         children: [
                                           Icon(
@@ -1903,7 +1914,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                             size: 15,
                                             color: Constanst.infoLight,
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 10,
                                           ),
                                           TextLabell(
@@ -1915,7 +1926,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                       ))
                                   : index.namaTugasLuar != null
                                       ? Padding(
-                                          padding: EdgeInsets.only(top: 12),
+                                          padding:
+                                              const EdgeInsets.only(top: 12),
                                           child: Row(
                                             children: [
                                               Icon(
@@ -1923,7 +1935,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                 size: 15,
                                                 color: Constanst.infoLight,
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 10,
                                               ),
                                               TextLabell(
@@ -1935,7 +1947,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                           ))
                                       : index.namaDinasLuar != null
                                           ? Padding(
-                                              padding: EdgeInsets.only(top: 12),
+                                              padding: const EdgeInsets.only(
+                                                  top: 12),
                                               child: Row(
                                                 children: [
                                                   Icon(
@@ -1943,7 +1956,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                     size: 15,
                                                     color: Constanst.infoLight,
                                                   ),
-                                                  SizedBox(
+                                                  const SizedBox(
                                                     width: 10,
                                                   ),
                                                   TextLabell(
@@ -1956,7 +1969,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                           : index.namaCuti != null
                                               ? Padding(
                                                   padding:
-                                                      EdgeInsets.only(top: 12),
+                                                      const EdgeInsets.only(
+                                                          top: 12),
                                                   child: Row(
                                                     children: [
                                                       Icon(
@@ -1965,7 +1979,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                         color:
                                                             Constanst.infoLight,
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         width: 10,
                                                       ),
                                                       TextLabell(
@@ -1977,8 +1991,9 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                   ))
                                               : index.namaSakit != null
                                                   ? Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 12),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 12),
                                                       child: Row(
                                                         children: [
                                                           Icon(
@@ -1987,7 +2002,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                             color: Constanst
                                                                 .infoLight,
                                                           ),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             width: 10,
                                                           ),
                                                           TextLabell(
@@ -2003,7 +2018,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                           '0'
                                                       ? Padding(
                                                           padding:
-                                                              EdgeInsets.only(
+                                                              const EdgeInsets
+                                                                      .only(
                                                                   top: 12),
                                                           child: Row(
                                                             children: [
@@ -2014,10 +2030,10 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                                 color: Constanst
                                                                     .infoLight,
                                                               ),
-                                                              SizedBox(
+                                                              const SizedBox(
                                                                 width: 10,
                                                               ),
-                                                              TextLabell(
+                                                              const TextLabell(
                                                                 text:
                                                                     "Hari Libur Kerja",
                                                                 weight:
@@ -2027,119 +2043,151 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                               ),
                                                             ],
                                                           ))
-                                                      : SizedBox()
-                              : SizedBox(),
+                                                      : const SizedBox()
+                              : const SizedBox(),
                           Padding(
-                            padding: EdgeInsets.only(top: 12, bottom: 1),
+                            padding: const EdgeInsets.only(top: 12, bottom: 1),
                             child: InkWell(
                               onTap: () {
                                 controller.historySelected(index.id, 'history');
                               },
-                              child: Row(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Expanded(
-                                    flex: 38,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Icon(
-                                            Iconsax.login_1,
-                                            color: Constanst.color5,
-                                            size: 16,
+                                  (DateTime.parse(waktuMasuk)
+                                          .isAfter(DateTime.parse(batasWaktu)))
+                                      ? Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 12.0, bottom: 4.0),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Iconsax.info_circle,
+                                                size: 15,
+                                                color: Constanst.infoLight,
+                                              ),
+                                              const SizedBox(
+                                                width: 8,
+                                              ),
+                                              const TextLabell(
+                                                text: "Terlambat",
+                                                weight: FontWeight.w400,
+                                                size: 11.0,
+                                              ),
+                                            ],
+                                          ))
+                                      : Container(),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 38,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Icon(
+                                                Iconsax.login_1,
+                                                color: Constanst.color5,
+                                                size: 16,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 4),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "$jamMasuk",
+                                                      style: GoogleFonts.inter(
+                                                          color: Constanst
+                                                              .fgPrimary,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontSize: 16),
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      regType == 0
+                                                          ? "Face Recognition"
+                                                          : "Photo",
+                                                      style: GoogleFonts.inter(
+                                                          color: Constanst
+                                                              .fgSecondary,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: 10),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
                                           ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 4),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "$jamMasuk",
-                                                  style: GoogleFonts.inter(
-                                                      color:
-                                                          Constanst.fgPrimary,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 16),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                Text(
-                                                  regType == 0
-                                                      ? "Face Recognition"
-                                                      : "Photo",
-                                                  style: GoogleFonts.inter(
-                                                      color:
-                                                          Constanst.fgSecondary,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 10),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 38,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 4),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Icon(
-                                            Iconsax.logout_14,
-                                            color: Constanst.color4,
-                                            size: 16,
+                                      const SizedBox(height: 4),
+                                      Expanded(
+                                        flex: 38,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 4),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Icon(
+                                                Iconsax.logout_14,
+                                                color: Constanst.color4,
+                                                size: 16,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 4),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "$jamKeluar",
+                                                      style: GoogleFonts.inter(
+                                                          color: Constanst
+                                                              .fgPrimary,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontSize: 16),
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      regType == 0
+                                                          ? "Face Recognition"
+                                                          : "Photo",
+                                                      style: GoogleFonts.inter(
+                                                          color: Constanst
+                                                              .fgSecondary,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: 10),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
                                           ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 4),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "$jamKeluar",
-                                                  style: GoogleFonts.inter(
-                                                      color:
-                                                          Constanst.fgPrimary,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 16),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                Text(
-                                                  regType == 0
-                                                      ? "Face Recognition"
-                                                      : "Photo",
-                                                  style: GoogleFonts.inter(
-                                                      color:
-                                                          Constanst.fgSecondary,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 10),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 9,
-                                    child: Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      size: 16,
-                                      color: Constanst.colorNeutralFgTertiary,
-                                    ),
+                                      Expanded(
+                                        flex: 9,
+                                        child: Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          size: 16,
+                                          color:
+                                              Constanst.colorNeutralFgTertiary,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -2147,11 +2195,11 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                           ),
                           index.turunan!.isNotEmpty
                               ? Container(
-                                  padding: EdgeInsets.only(top: 4),
+                                  padding: const EdgeInsets.only(top: 4),
                                   child: Column(
                                     children: [
                                       index.statusView == false
-                                          ? SizedBox()
+                                          ? const SizedBox()
                                           : Column(
                                               children: List.generate(
                                                   index.turunan!.length, (i) {
@@ -2187,10 +2235,11 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                     (jamKeluar!.split(':'));
                                                 return Column(
                                                   children: [
-                                                    Divider(),
+                                                    const Divider(),
                                                     Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 6),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 6),
                                                       child: InkWell(
                                                         onTap: () {
                                                           controller
@@ -2328,7 +2377,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                 );
                                               }),
                                             ),
-                                      Divider(),
+                                      const Divider(),
                                       InkWell(
                                         onTap: () {
                                           print(index.statusView);
@@ -2344,19 +2393,20 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                           controller.historyAbsen.refresh();
                                         },
                                         child: Container(
-                                          padding: EdgeInsets.only(bottom: 12),
+                                          padding:
+                                              const EdgeInsets.only(bottom: 12),
                                           width:
                                               MediaQuery.of(context).size.width,
                                           child: index.statusView == true
                                               ? Center(
                                                   child: Container(
-                                                      child: TextLabell(
+                                                      child: const TextLabell(
                                                   text: "Tutup",
                                                   size: 14,
                                                 )))
                                               : Center(
                                                   child: Container(
-                                                      child: TextLabell(
+                                                      child: const TextLabell(
                                                           text: "lainnya",
                                                           size: 14))),
                                         ),
@@ -2364,7 +2414,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                     ],
                                   ),
                                 )
-                              : SizedBox(
+                              : const SizedBox(
                                   height: 8,
                                 )
                         ],
@@ -3050,12 +3100,12 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                               size: 22,
                             )
                           : data['approve_status'] == "Rejected"
-                              ? Icon(
+                              ? const Icon(
                                   Iconsax.tick_circle,
                                   color: Colors.green,
                                   size: 22,
                                 )
-                              : Icon(
+                              : const Icon(
                                   Iconsax.tick_circle,
                                   color: Colors.green,
                                   size: 22,
@@ -3141,12 +3191,12 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                               size: 22,
                             )
                           : data['approve_status'] == "Rejected"
-                              ? Icon(
+                              ? const Icon(
                                   Iconsax.close_circle,
                                   color: Colors.red,
                                   size: 22,
                                 )
-                              : Icon(
+                              : const Icon(
                                   Iconsax.tick_circle,
                                   color: Colors.green,
                                   size: 22,
@@ -3175,8 +3225,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding:
-                                  EdgeInsets.only(left: 2.5, top: 2, bottom: 2),
+                              padding: const EdgeInsets.only(
+                                  left: 2.5, top: 2, bottom: 2),
                               child: Container(
                                 height: 30,
                                 child: VerticalDivider(
@@ -3185,7 +3235,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 0),
+                              padding: const EdgeInsets.only(top: 0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -3197,12 +3247,12 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                           size: 22,
                                         )
                                       : data['approve2_status'] == "Rejected"
-                                          ? Icon(
+                                          ? const Icon(
                                               Iconsax.close_circle,
                                               color: Colors.red,
                                               size: 22,
                                             )
-                                          : Icon(
+                                          : const Icon(
                                               Iconsax.tick_circle,
                                               color: Colors.green,
                                               size: 22,
@@ -3230,7 +3280,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                             ),
                           ],
                         )
-                      : SizedBox(),
+                      : const SizedBox(),
                 ],
               ),
             ],

@@ -58,7 +58,7 @@ class _FormLemburState extends State<FormLembur> {
         leadingWidth: 50,
         titleSpacing: 0,
         centerTitle: true,
-        title: Text( 
+        title: Text(
           "Pengajuan Lembur ",
           style: GoogleFonts.inter(
               color: Constanst.fgPrimary,
@@ -153,20 +153,14 @@ class _FormLemburState extends State<FormLembur> {
                 //   print("masuk sini");
                 //   controller.validasiKirimPengajuan();
                 // } else {
-                 
+
                 //   UtilsAlert.showToast(
                 //       "waktu yang dimasukan tidak valid, coba periksa lagi waktu lemburmu");
                 // }
 
                 //
 
-
-
-
-
-
-                
-                  controller.validasiKirimPengajuan();
+                controller.validasiKirimPengajuan();
               },
               style: ElevatedButton.styleFrom(
                   foregroundColor: Constanst.colorWhite,
@@ -231,43 +225,56 @@ class _FormLemburState extends State<FormLembur> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Icon(
-                      Iconsax.note_2,
-                      size: 26,
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Iconsax.note_2,
+                            size: 26,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Tipe Lembur*",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Constanst.fgPrimary,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  controller.selectedTypeLembur.value,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.fgPrimary,
+                                  ),
+                                  maxLines: 2, // Adjust as needed
+                                  overflow: TextOverflow
+                                      .ellipsis, // or TextOverflow.fade
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Tipe Lembur*",
-                          style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Constanst.fgPrimary),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          controller.selectedTypeLembur.value,
-                          style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Constanst.fgPrimary),
-                        ),
-                      ],
-                    ),
+                    Icon(Iconsax.arrow_down_1,
+                        size: 20, color: Constanst.fgPrimary),
                   ],
-                ),
-                Icon(Iconsax.arrow_down_1,
-                    size: 20, color: Constanst.fgPrimary),
-              ],
+                );
+              },
             ),
           ),
           Padding(
@@ -325,9 +332,9 @@ class _FormLemburState extends State<FormLembur> {
       lastDate: DateTime(2101),
     );
     // if (picked != null && picked != _selectedDate)
-      setState(() {
-        //_selectedDate = picked;
-      });
+    setState(() {
+      //_selectedDate = picked;
+    });
   }
 
   Widget formHariDanTanggal() {
@@ -340,7 +347,10 @@ class _FormLemburState extends State<FormLembur> {
         //     DateTime(now.year, now.month + 1, 0);
         var dateSelect = await showDatePicker(
           context: Get.context!,
-          firstDate: AppData.informasiUser![0].isBackDateLembur.toString()=="0"? DateTime(2000):DateTime.now(),
+          firstDate:
+              AppData.informasiUser![0].isBackDateLembur.toString() == "0"
+                  ? DateTime(2000)
+                  : DateTime.now(),
           lastDate: DateTime(2100),
           initialDate: controller.initialDate.value,
           cancelText: 'Batal',
@@ -449,10 +459,12 @@ class _FormLemburState extends State<FormLembur> {
               color: Constanst.fgBorder,
             ),
           ),
-         Padding(padding: EdgeInsets.only(top: 4,left: 14),child: Container(
-          child: Obx(() => TextLabell(text:controller.statusJam.value)),
-        
-         ),)
+          Padding(
+            padding: EdgeInsets.only(top: 4, left: 14),
+            child: Container(
+              child: Obx(() => TextLabell(text: controller.statusJam.value)),
+            ),
+          )
         ],
       ),
     );
@@ -537,8 +549,7 @@ class _FormLemburState extends State<FormLembur> {
                       if (endTime.hour < startTime.hour ||
                           (endTime.hour == startTime.hour &&
                               endTime.minute < startTime.minute)) {
-                        controller.statusJam.value =
-                            "Day + 1";
+                        controller.statusJam.value = "Day + 1";
                       } else {
                         controller.statusJam.value = "";
                       }
@@ -658,8 +669,7 @@ class _FormLemburState extends State<FormLembur> {
                       if (endTime.hour < startTime.hour ||
                           (endTime.hour == startTime.hour &&
                               endTime.minute < startTime.minute)) {
-                        controller.statusJam.value =
-                            "Day + 1";
+                        controller.statusJam.value = "Day + 1";
                       } else {
                         controller.statusJam.value = "";
                       }
