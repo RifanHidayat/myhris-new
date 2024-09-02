@@ -3209,8 +3209,8 @@ class AbsenController extends GetxController {
         // kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
         //     getEmid, '', stringTanggal, typeNotifFcm);
 
-        kirimNotifikasiToReportTo(
-            getFullName, convertTanggalBikinPengajuan, getEmid, stringTanggal);
+        // kirimNotifikasiToReportTo(
+        //     getFullName, convertTanggalBikinPengajuan, getEmid, stringTanggal);
 
         for (var item in globalCt.konfirmasiAtasan) {
           print("Token notif ${item['token_notif']}");
@@ -3223,15 +3223,15 @@ class AbsenController extends GetxController {
                 "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absensi dengan nomor ajuan ${getNomorAjuanTerakhir}";
           }
 
-          kirimNotifikasiToDelegasi1(
-              getFullName,
-              convertTanggalBikinPengajuan,
-              item['em_id'],
-              '',
-              stringTanggal,
-              typeNotifFcm,
-              pesan,
-              'Approval Absensi');
+          // kirimNotifikasiToDelegasi1(
+          //     getFullName,
+          //     convertTanggalBikinPengajuan,
+          //     item['em_id'],
+          //     '',
+          //     stringTanggal,
+          //     typeNotifFcm,
+          //     pesan,
+          //     'Approval Absensi');
 
           if (item['token_notif'] != null) {
             globalCt.kirimNotifikasiFcm(
@@ -3273,7 +3273,7 @@ class AbsenController extends GetxController {
   }
 
   void kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
-      validasiDelegasiSelected, fcmTokenDelegasi, stringWaktu, typeNotifFcm) {
+      validasiDelegasiSelected, fcmTokenDelegasi, stringWaktu, typeNotifFcm,nomorAjuan) {
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
     // var description =

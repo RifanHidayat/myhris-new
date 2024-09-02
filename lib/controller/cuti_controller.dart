@@ -772,7 +772,7 @@ class CutiController extends GetxController {
     if (statusForm.value == false) {
       body['activity_name'] =
           "Membuat Pengajuan Cuti. alasan = ${alasan.value.text}";
-      var connect = Api.connectionApi("post", body, "insert-emp_leave");
+      var connect = Api.connectionApi("post", body, "cuti");
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
@@ -786,8 +786,8 @@ class CutiController extends GetxController {
                 validasiDelegasiSelectedToken,
                 stringTanggal,
                 typeNotifFcm);
-            kirimNotifikasiToReportTo(getFullName, convertTanggalBikinPengajuan,
-                getEmid, "Cuti", stringTanggal);
+            // kirimNotifikasiToReportTo(getFullName, convertTanggalBikinPengajuan,
+            //     getEmid, "Cuti", stringTanggal);
             Navigator.pop(Get.context!);
 
             var pesan1 = "Pengajuan ${selectedTypeCuti.value} berhasil di buat";

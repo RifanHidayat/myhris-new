@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -8,7 +9,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/chat_controller.dart';
+import 'package:siscom_operasional/screen/pesan/pesan%20copy.dart';
+import 'package:siscom_operasional/services/request.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget/image_editing.dart';
@@ -18,6 +22,8 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:web_socket_channel/io.dart';
 import 'dart:convert';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+
+import '../../model/message_chat.dart';
 
 TextEditingController _messageController = TextEditingController();
 final ItemScrollController _scrollController = ItemScrollController();
@@ -45,16 +51,50 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final ChatController controller = Get.put(ChatController());
-  var _pesans = [].obs;
+  var _pesans = <Message>[].obs;
   var lampiran = ''.obs;
   var isLoading = false.obs;
-
+  Timer? _timer;
   @override
   void initState() {
     super.initState();
+    controller.statuspengiriman.value = true;
     _tandaSudahDibaca();
     _fetchPesan();
     _setData();
+
+    _loadTempMessage();
+  }
+
+  Future<void> _loadTempMessage() async
+  
+  
+   {
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) async {
+      List<Message> messages = await getItemList();
+
+      messages.sort((a, b) => (a.id).compareTo(b.id));
+      print('Panjang data ${messages.length}');
+      if (messages.isNotEmpty) {
+        // if (controller.statuspengiriman.value==true){
+        await kirimPesan(messages[0]);
+        print("masuk sini tidal else");
+        // }else{
+        //   print("masuk sini  else");
+        // }
+
+        // messages.forEach((element) async {
+
+        // });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _timer!.cancel();
   }
 
   void _setData() {
@@ -67,6 +107,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future pickImage(ImageSource source) async {
+
     try {
       final image = await ImagePicker().pickImage(
         source: source,
@@ -106,12 +147,13 @@ class _ChatPageState extends State<ChatPage> {
           'lampiran': base64Image,
           'dibaca': '0',
           'status': '1',
+          
         };
 
         var connect = Api.connectionApi("post", bodyApi, "chatting");
         connect.then((dynamic res) {
           if (res.statusCode == 200) {
-            _fetchPesan();
+            //_fetchPesan();
 
             final bodyWebsocket = {
               'em_id_penerima': widget.emIdPenerima,
@@ -184,37 +226,165 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Future<void> kirimPesan({
-    required String pesan,
-  }) async {
-    var tanggal = controller.getTanggal();
-    var waktu = controller.getWaktu();
-    final body = {
-      'em_id_penerima': widget.emIdPenerima,
-      'em_id_pengirim': widget.emIdPengirim,
-      'pesan': pesan,
-      'tanggal': tanggal,
-      'waktu': waktu,
-      'type': 'message',
-      'lampiran': '',
-      'dibaca': '0',
-      'status': '1',
-    };
-    widget.webSocketChannel.sink.add(jsonEncode(body));
-    _messageController.clear();
-    _pesans.add(jsonEncode(body));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
-    });
+  Future<void> kirimPesan(Message m) async {
+    controller.statuspengiriman.value = false;
 
-    await Api.connectionApi("post", body, "chatting");
+    var body = {
+      'em_id_penerima': m.emIdPenerima,
+      'em_id_pengirim': m.emIdPengirim,
+      'pesan': m.pesan,
+      'tanggal': m.tanggal,
+      'waktu': m.waktu,
+      // 'type': m.type,
+      'lampiran': m.lampiran,
+      'dibaca': m.dibaca,
+      'status': m.status,
+      'type': 'message'
+    };
+
+    try {
+      var response = await Request(url: 'chatting', body: body).post();
+      var resp = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        widget.webSocketChannel.sink.add(jsonEncode(body));
+        //_messageController.clear();
+
+        var bodyWekSoket = {
+          'em_id_penerima': m.emIdPenerima,
+          'em_id_pengirim': m.emIdPengirim,
+          'pesan': m.pesan,
+          'tanggal': m.tanggal,
+          'waktu': m.waktu,
+          // 'type': m.type,
+          'lampiran': m.lampiran,
+          'dibaca': m.dibaca,
+          'status': m.status,
+          'type': 'message',
+          'id': resp['insertId']
+        };
+
+        widget.webSocketChannel.sink.add(bodyWekSoket);
+        print('pesan ${m.pesan}');
+        deleteItemById(m.id.toString());
+
+        _fetchPesan1(m, resp['insertId'], m.id);
+        controller.statuspengiriman.value = true;
+      } else {
+        controller.statuspengiriman.value = true;
+      }
+    } catch (e) {
+      controller.statuspengiriman.value = true;
+    }
+
+    // var connect=await Api.connectionApi("post", body, "chatting");
     // connect.then((dynamic res) {
     //   if (res.statusCode == 200) {
+    //      UtilsAlert.showToast("koneksi buruk pesan tidak terkirim news");
+    //      _fetchPesan();
     //   } else {
     //     UtilsAlert.showToast("koneksi buruk pesan tidak terkirim");
     //   }
     // });
-    // _fetchPesan();
+  }
+
+  Future<void> deleteItemById(String id) async {
+    print('id delete ${id}');
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Ambil daftar item yang disimpan
+    List<String>? itemListJson = prefs.getStringList('messages');
+    print('id delete ${itemListJson}');
+
+    if (itemListJson != null) {
+      // Konversi JSON ke List<Item>
+      List<Message> items = itemListJson
+          .map((item) => Message.fromJson(jsonDecode(item)))
+          .toList();
+      print('id delete newws ${items.length}');
+      print('id delete newws ${items[0].id}');
+
+      // Hapus item dengan ID yang sesuai
+      items.removeWhere((item) => item.id.toString() == id.toString());
+
+      // Konversi kembali List<Item> ke List<String>
+      List<String> updatedItemListJson =
+          items.map((item) => jsonEncode(item.toJson())).toList();
+
+      // Simpan kembali daftar yang telah diperbarui ke SharedPreferences
+      await prefs.setStringList('messages', updatedItemListJson);
+    }
+  }
+
+  Future<void> savePesanTemporary({
+    required String pesan,
+  }) async {
+    var tanggal = controller.getTanggal();
+    var waktu = controller.getWaktu();
+    // final body = {
+    //   'em_id_penerima': widget.emIdPenerima,
+    //   'em_id_pengirim': widget.emIdPengirim,
+    //   'pesan': pesan,
+    //   'tanggal': tanggal,
+    //   'waktu': waktu,
+    //   'type': 'message',
+    //   'lampiran': '',
+    //   'dibaca': '0',
+    //   'status': '1',
+    //   'is_kirim':0
+
+    // };
+    // widget.webSocketChannel.sink.add(jsonEncode(body));
+    // _messageController.clear();
+    // _pesans.add(body);
+    //  _fetchPesan();
+
+    int timestampInSeconds = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    Message message = Message(
+        id: timestampInSeconds,
+        pesan: pesan,
+        tanggal: tanggal,
+        waktu: waktu,
+        emIdPengirim: widget.emIdPengirim,
+        emIdPenerima: widget.emIdPenerima,
+        lampiran: '',
+        dibaca: '0',
+        type: 'message',
+        status: '1',
+        tipeLampiran: 'message',
+        isKirim: 0);
+    List<Message> messages = await getItemList();
+    List<Message> tempMessage = messages;
+    tempMessage.add(message);
+    _pesans.add(message);
+    _scrollToBottomnew();
+    saveItemList(tempMessage);
+  }
+
+//   Future<void> saveUserToSession(Message user) async {
+//   final SharedPreferences prefs = await SharedPreferences.getInstance();
+//   String userJson = jsonEncode(user.toJson()); // Serialize to JSON
+//   await prefs.setString('message', userJson); // Save JSON string to SharedPreferences
+// }
+
+  Future<void> saveItemList(List<Message> items) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> itemListJson =
+        items.map((item) => jsonEncode(item.toJson())).toList();
+    await prefs.setStringList('messages', itemListJson);
+  }
+
+  Future<List<Message>> getItemList() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? itemListJson = prefs.getStringList('messages');
+
+    if (itemListJson != null) {
+      return itemListJson
+          .map((item) => Message.fromJson(jsonDecode(item)))
+          .toList();
+    } else {
+      return []; // Mengembalikan list kosong jika tidak ada data
+    }
   }
 
   void _fetchPesan() async {
@@ -222,40 +392,44 @@ class _ChatPageState extends State<ChatPage> {
         params:
             "&em_id_pengirim=${widget.emIdPengirim}&em_id_penerima=${widget.emIdPenerima}");
 
-    connect.then((dynamic res) {
+    connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var data = jsonDecode(res.body);
         print("resbody:${res.body}");
-        var formattedData = (data['data']).map((pesan) {
-          return {
-            'id': pesan['id'],
-            'em_id_penerima': pesan['em_id_penerima'],
-            'em_id_pengirim': pesan['em_id_pengirim'],
-            'pesan': pesan['pesan'],
-            'tanggal': pesan['tanggal'],
-            'waktu': pesan['waktu'],
-            'type': 'message',
-            'lampiran': pesan['lampiran'],
-            'dibaca': pesan['dibaca'],
-            'status': pesan['status'],
-          };
-        }).toList();
+        _pesans.value = Message.fromJsonToList(data['data']);
+        List<Message> messages = await getItemList();
+        messages.sort((a, b) => (a.id).compareTo(b.id));
+        _pesans.addAll(Message.fromJsonToList(messages));
 
-        for (var element in formattedData) {
-          _pesans.add(jsonEncode(element));
-          lampiran.value = element['lampiran'];
-        }
-
-        if (formattedData.isNotEmpty) {
-          var lastLampiran = formattedData.last['lampiran'];
-          lampiran.value = lastLampiran;
-        }
-
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _scrollToBottom();
-        });
+        _scrollToBottomnew();
+      } else {
+        UtilsAlert.showToast("tes");
       }
     });
+  }
+
+  void _fetchPesan1(Message message, id, idLama) async {
+    _pesans.forEach((element) {
+      if (element.id == idLama) {
+        element.id = id;
+        element.isKirim = 1;
+      }
+    });
+    _pesans.refresh();
+    // var connect = Api.connectionApi('get', {}, 'chatting/history',
+    //     params:
+    //         "&em_id_pengirim=${widget.emIdPengirim}&em_id_penerima=${widget.emIdPenerima}");
+
+    // connect.then((dynamic res) {
+    //   if (res.statusCode == 200) {
+    //     var data = jsonDecode(res.body);
+    //     print("resbody:${res.body}");
+    //     _pesans.value = data['data'];
+
+    //   } else {
+    //     UtilsAlert.showToast("tes");
+    //   }
+    // });
   }
 
   Future<void> _tandaSudahDibaca() async {
@@ -271,35 +445,86 @@ class _ChatPageState extends State<ChatPage> {
 
   void _scrollToBottom() {
     if (_pesans.isNotEmpty) {
-      _scrollController.jumpTo(
-        index: _pesans.length - 1,
-        // duration: const Duration(milliseconds: 0),
-        // curve: Curves.easeOut,
-      );
+      // _scrollController.jumpTo(
+      //   index: _pesans.length - 1,
+      //   // duration: const Duration(milliseconds: 0),
+      //   // curve: Curves.easeOut,
+      // );
+    }
+  }
+
+  void _scrollToBottomnew() {
+    if (_pesans.isNotEmpty) {
+      // _scrollController.jumpTo(
+      //   index: _pesans.length - 1,
+      //   // duration: const Duration(milliseconds: 0),
+      //   // curve: Curves.easeOut,
+      // );
+
+      _scrollController.scrollTo(
+          index: _pesans.length - 1, // Indeks terakhir
+          duration: Duration(seconds: 1),
+          curve: Curves.linear // Durasi 0 untuk menghindari animasi
+          );
     }
   }
 
   void deletePesan() async {
-    print("Message Data: ${controller.selectedMessage.value}");
+    UtilsAlert.showLoadingIndicator(context);
+    print("Message Data new: ${controller.selectedMessage.value!.id}");
     final body = {
-      'id': controller.selectedMessage.value['id'],
+      'id': controller.selectedMessage.value!.id,
     };
     print(body);
-    await Api.connectionApi("post", body, "chatting/delete",
-        params:
-            "&em_id_pengirim=${widget.emIdPengirim}&em_id_penerima=${widget.emIdPenerima}");
-    final data = {
-      'type': 'deleteData',
-    };
-    widget.webSocketChannel.sink.add(jsonEncode(data));
-    // connect.then((dynamic res) {
-    //   if (res.statusCode != 200) {
-    //     UtilsAlert.showToast("koneksi buruk pesan tidak terkirim");
-    //   }
-    // });
-    // _fetchPesan();
+
+    var request = await Request(
+            url: 'chatting/delete',
+            body: body,
+            params:
+                "&em_id_pengirim=${widget.emIdPengirim}&em_id_penerima=${widget.emIdPenerima}")
+        .post();
+
+    var response = jsonDecode(request.body);
+    if (request.statusCode == 200) {
+      deleteTemporaryData(controller.selectedMessage.value!.id);
+      Get.back();
+
+      // List<Message> updatePesan = _pesans.u((p0) =>
+      //     p0.id.toString() == controller.selectedMessage.value!.id.toString()).toList();
+      // if (updatePesan.isNotEmpty) {
+      //   updatePesan[0].status = '0';
+      // }
+
+      final data = {
+        'type': 'deleteData',
+        'id': controller.selectedMessage.value!.id,
+        'em_id_pengirim': widget.emIdPengirim,
+        'em_id_penerima': widget.emIdPenerima
+      };
+      widget.webSocketChannel.sink.add(jsonEncode(data));
+    } else {}
+    // await Api.connectionApi("post", body, "chatting/delete",
+    //     params:
+    //         "&em_id_pengirim=${widget.emIdPengirim}&em_id_penerima=${widget.emIdPenerima}");
+
+    // // connect.then((dynamic res) {
+    // //   if (res.statusCode != 200) {
+    // //     UtilsAlert.showToast("koneksi buruk pesan tidak terkirim");
+    // //   }
+    // // });
+    // // _fetchPesan();
     controller.resetSelection();
     controller.releasePesan();
+  }
+
+  void deleteTemporaryData(id) {
+    _pesans.forEach((element) {
+      if (element.id.toString() ==
+          controller.selectedMessage.value!.id.toString()) {
+        element.status = '0';
+      }
+    });
+    _pesans.refresh();
   }
 
   @override
@@ -467,334 +692,371 @@ class _ChatPageState extends State<ChatPage> {
                       if (snapshot.connectionState == ConnectionState.active) {
                         if (snapshot.hasData) {
                           final message = snapshot.data.toString();
+
+                          print('mesasge data new new ${message}');
                           final messageData = jsonDecode(message);
                           if (messageData['type'] != 'error') {
-                            _tandaSudahDibaca();
+                            //_tandaSudahDibaca();
                             _fetchPesan();
-                            // _pesans.add(message);
+                            // _pesans.add(Message(
+                            //     id: messageData['id'],
+                            //     pesan: messageData['pesan'],
+                            //     tanggal: messageData['tanggal'],
+                            //     waktu: messageData['waktu'],
+                            //     emIdPengirim: messageData['em_id_pengirim'],
+                            //     emIdPenerima: messageData['em_id_penerima'],
+                            //     lampiran: lampiran,
+                            //     dibaca: messageData['dibaca'],
+                            //     type: messageData['type'],
+                            //     status: messageData['status'],
+                            //     tipeLampiran: messageData['tipe_lampiran'],
+                            //     isKirim: 1));
+                            // _scrollToBottomnew();
 
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              _scrollToBottom();
-                            });
+                            // _tandaSudahDibaca();
+                          }
+                          if (messageData['type'] == 'deleteData') {
+                            _fetchPesan();
                           }
                         }
                       }
                       return Obx(
-                        () => ScrollablePositionedList.builder(
-                          itemScrollController: _scrollController,
-                          itemCount: _pesans.length,
-                          itemBuilder: (context, index) {
-                            final messageData =
-                                jsonDecode(_pesans[index].toString());
+                        () => _pesans.isEmpty
+                            ? SizedBox()
+                            : ScrollablePositionedList.builder(
+                                itemScrollController: _scrollController,
+                                itemCount: _pesans.length,
+                                initialScrollIndex: _pesans.length - 1,
+                                itemBuilder: (context, index) {
+                                  var messageData = _pesans[index];
+                                  final isKirim = messageData.isKirim;
 
-                            final messageText = messageData['pesan'];
-                            final dibacaText = messageData['dibaca'] == 1 ||
-                                messageData['dibaca'] == "1";
-                            final statusText = messageData['status'] == 1 ||
-                                messageData['status'] == "1";
+                                  final messageText = messageData.pesan;
+                                  final dibacaText = messageData.dibaca == 1 ||
+                                      messageData.dibaca == "1";
+                                  final statusText = messageData.status == 1 ||
+                                      messageData.status == "1";
 
-                            final waktuText =
-                                messageData['waktu'].substring(0, 5);
+                                  final waktuText =
+                                      messageData.waktu.substring(0, 5);
 
-                            final isSender = messageData['em_id_pengirim'] ==
-                                "${widget.emIdPengirim}";
+                                  final isSender = messageData.emIdPengirim ==
+                                      "${widget.emIdPengirim}";
 
-                            final isImage = messageData['lampiran'] != "";
-                            final urlImage = messageData['lampiran'];
+                                  final isImage = messageData.lampiran != "";
+                                  final urlImage = messageData.lampiran;
 
-                            return GestureDetector(
-                              onLongPressStart: (_) {
-                                controller.isSelectionMode.value = false;
-                                Future.delayed(
-                                    const Duration(milliseconds: 500), () {
-                                  if (!controller.isSelectionMode.value) {
-                                    if (isSender && statusText) {
-                                      controller.tekanLamaPesan(messageData);
-                                    }
-                                  }
-                                });
-                              },
-                              onLongPressEnd: (_) {
-                                controller.releasePesan();
-                              },
-                              child: Obx(
-                                () => Stack(
-                                  children: [
-                                    if (messageData ==
-                                        controller.selectedMessage.value) ...[
-                                      Positioned.fill(
-                                        child: Container(
-                                          color: Color.fromARGB(29, 0, 22, 103),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                        ),
-                                      ),
-                                    ],
-                                    Align(
-                                      alignment: isSender
-                                          ? Alignment.centerRight
-                                          : Alignment.centerLeft,
-                                      child: Container(
-                                        margin: const EdgeInsets.all(8.0),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0, vertical: 8.0),
-                                        decoration: BoxDecoration(
-                                          color: isSender
-                                              ? controller.isSelectionMode
-                                                          .value &&
-                                                      messageData ==
-                                                          controller
-                                                              .selectedMessage
-                                                              .value
-                                                  ? const Color.fromARGB(
-                                                      41, 0, 22, 103)
-                                                  : Constanst.onPrimary
-                                              : Constanst.greyLight100,
-                                          borderRadius:
-                                              BorderRadius.circular(12.0),
-                                        ),
-                                        constraints: isImage
-                                            ? statusText
-                                                ? BoxConstraints(
-                                                    maxWidth:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.65,
-                                                  )
-                                                : BoxConstraints(
-                                                    maxWidth:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.7,
-                                                  )
-                                            : const BoxConstraints(),
-                                        child: Column(
-                                          crossAxisAlignment: (isSender &&
-                                                  isImage &&
-                                                  messageText.isNotEmpty)
-                                              ? CrossAxisAlignment.start
-                                              : (isSender
-                                                  ? CrossAxisAlignment.end
-                                                  : CrossAxisAlignment.start),
-                                          children: [
-                                            if (isImage) ...[
-                                              statusText
-                                                  ? InkWell(
-                                                      onTap: () {
-                                                        showDialog(
-                                                          barrierColor: Colors
-                                                              .black
-                                                              .withOpacity(1),
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return Dialog(
-                                                              insetPadding:
-                                                                  EdgeInsets
-                                                                      .zero,
-                                                              backgroundColor:
-                                                                  Colors.black,
-                                                              child: Stack(
-                                                                children: [
-                                                                  InteractiveViewer(
+                                  return GestureDetector(
+                                    onLongPressStart: (_) {
+                                      controller.isSelectionMode.value = false;
+                                      Future.delayed(
+                                          const Duration(milliseconds: 200),
+                                          () {
+                                        if (!controller.isSelectionMode.value) {
+                                          if (isSender && statusText) {
+                                            controller
+                                                .tekanLamaPesan(messageData);
+                                          }
+                                        }
+                                      });
+                                    },
+                                    onLongPressEnd: (_) {
+                                      controller.releasePesan();
+                                    },
+                                    child: Obx(
+                                      () => Stack(
+                                        children: [
+                                          if (messageData ==
+                                              controller
+                                                  .selectedMessage.value) ...[
+                                            Positioned.fill(
+                                              child: Container(
+                                                color: Color.fromARGB(
+                                                    29, 0, 22, 103),
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                              ),
+                                            ),
+                                          ],
+                                          Align(
+                                            alignment: isSender
+                                                ? Alignment.centerRight
+                                                : Alignment.centerLeft,
+                                            child: Container(
+                                              margin: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0,
+                                                      vertical: 8.0),
+                                              decoration: BoxDecoration(
+                                                color: isSender
+                                                    ? controller.isSelectionMode
+                                                                .value &&
+                                                            messageData ==
+                                                                controller
+                                                                    .selectedMessage
+                                                                    .value
+                                                        ? const Color.fromARGB(
+                                                            41, 0, 22, 103)
+                                                        : Constanst.onPrimary
+                                                    : Constanst.greyLight100,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                              ),
+                                              constraints: isImage
+                                                  ? statusText
+                                                      ? BoxConstraints(
+                                                          maxWidth: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.65,
+                                                        )
+                                                      : BoxConstraints(
+                                                          maxWidth: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.7,
+                                                        )
+                                                  : const BoxConstraints(),
+                                              child: Column(
+                                                crossAxisAlignment: (isSender &&
+                                                        isImage &&
+                                                        messageText.isNotEmpty)
+                                                    ? CrossAxisAlignment.start
+                                                    : (isSender
+                                                        ? CrossAxisAlignment.end
+                                                        : CrossAxisAlignment
+                                                            .start),
+                                                children: [
+                                                  if (isImage) ...[
+                                                    statusText
+                                                        ? InkWell(
+                                                            onTap: () {
+                                                              showDialog(
+                                                                barrierColor: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        1),
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return Dialog(
+                                                                    insetPadding:
+                                                                        EdgeInsets
+                                                                            .zero,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .black,
+                                                                    child:
+                                                                        Stack(
+                                                                      children: [
+                                                                        InteractiveViewer(
+                                                                          child:
+                                                                              CachedNetworkImage(
+                                                                            imageUrl:
+                                                                                "${Api.urlFotoChat}$urlImage",
+                                                                            fit:
+                                                                                BoxFit.contain,
+                                                                            placeholder: (context, url) =>
+                                                                                const Center(
+                                                                              child: CircularProgressIndicator(),
+                                                                            ),
+                                                                            errorWidget: (context, url, error) =>
+                                                                                const Center(
+                                                                              child: Icon(
+                                                                                Icons.error,
+                                                                                color: Colors.white,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Positioned(
+                                                                          right:
+                                                                              10,
+                                                                          top:
+                                                                              10,
+                                                                          child:
+                                                                              IconButton(
+                                                                            icon:
+                                                                                const Icon(Icons.close, color: Colors.white),
+                                                                            onPressed:
+                                                                                () {
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              );
+                                                            },
+                                                            child: Center(
+                                                              child: Container(
+                                                                  // width: 350,
+                                                                  height: 350,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            12.0),
+                                                                  ),
+                                                                  child:
+                                                                      ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            12.0), // Adjust the radius as needed
                                                                     child:
                                                                         CachedNetworkImage(
                                                                       imageUrl:
                                                                           "${Api.urlFotoChat}$urlImage",
                                                                       fit: BoxFit
-                                                                          .contain,
-                                                                      placeholder:
-                                                                          (context, url) =>
-                                                                              const Center(
-                                                                        child:
-                                                                            CircularProgressIndicator(),
+                                                                          .fill,
+                                                                      width:
+                                                                          250,
+                                                                      progressIndicatorBuilder: (context,
+                                                                              url,
+                                                                              downloadProgress) =>
+                                                                          Container(
+                                                                        alignment:
+                                                                            Alignment.center,
+                                                                        height: MediaQuery.of(context).size.height *
+                                                                            0.5,
+                                                                        width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width,
+                                                                        child: CircularProgressIndicator(
+                                                                            value:
+                                                                                downloadProgress.progress),
                                                                       ),
                                                                       errorWidget: (context,
                                                                               url,
                                                                               error) =>
-                                                                          const Center(
-                                                                        child:
-                                                                            Icon(
-                                                                          Icons
-                                                                              .error,
-                                                                          color:
-                                                                              Colors.white,
-                                                                        ),
-                                                                      ),
+                                                                          const Icon(
+                                                                              Icons.error),
                                                                     ),
-                                                                  ),
-                                                                  Positioned(
-                                                                    right: 10,
-                                                                    top: 10,
-                                                                    child:
-                                                                        IconButton(
-                                                                      icon: const Icon(
-                                                                          Icons
-                                                                              .close,
-                                                                          color:
-                                                                              Colors.white),
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          },
-                                                        );
-                                                      },
-                                                      child: Center(
-                                                        child: Container(
-                                                            // width: 350,
-                                                            height: 350,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          12.0),
+                                                                  )),
                                                             ),
-                                                            child: ClipRRect(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          12.0), // Adjust the radius as needed
-                                                              child:
-                                                                  CachedNetworkImage(
-                                                                imageUrl:
-                                                                    "${Api.urlFotoChat}$urlImage",
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                width: 250,
-                                                                progressIndicatorBuilder:
-                                                                    (context,
-                                                                            url,
-                                                                            downloadProgress) =>
-                                                                        Container(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  height: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .height *
-                                                                      0.5,
-                                                                  width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                                  child: CircularProgressIndicator(
-                                                                      value: downloadProgress
-                                                                          .progress),
-                                                                ),
-                                                                errorWidget: (context,
-                                                                        url,
-                                                                        error) =>
-                                                                    const Icon(Icons
-                                                                        .error),
-                                                              ),
-                                                            )),
-                                                      ),
-                                                    )
-                                                  : Container(),
-                                            ],
-                                            if (isImage &&
-                                                messageText != "") ...[
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                            ],
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              mainAxisSize: isImage
-                                                  ? MainAxisSize.max
-                                                  : MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                statusText
-                                                    ? Flexible(
-                                                        child: Text(
-                                                          messageText ?? "",
-                                                          style: TextStyle(
-                                                            color: isSender
-                                                                ? Constanst
-                                                                    .colorWhite
-                                                                : Constanst
-                                                                    .colorText3,
-                                                          ),
-                                                        ),
-                                                      )
-                                                    : Flexible(
-                                                        child: Text(
-                                                          isSender
-                                                              ? "Anda menghapus pesan ini"
-                                                              : "Pesan ini dihapus",
-                                                          style: TextStyle(
-                                                            color: isSender
-                                                                ? Constanst
-                                                                    .colorText2
-                                                                : Constanst
-                                                                    .colorText2,
-                                                            fontStyle: FontStyle
-                                                                .italic,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                const SizedBox(
-                                                  width: 8,
-                                                ),
-                                                if (isSender) ...[
+                                                          )
+                                                        : Container(),
+                                                  ],
+                                                  if (isImage &&
+                                                      messageText != "") ...[
+                                                    const SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                  ],
                                                   Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    mainAxisSize: isImage
+                                                        ? MainAxisSize.max
+                                                        : MainAxisSize.min,
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment.end,
                                                     children: [
-                                                      Text(
-                                                        "$waktuText",
-                                                        style: const TextStyle(
-                                                            fontSize: 8,
-                                                            color:
-                                                                Colors.white),
-                                                      ),
+                                                      statusText
+                                                          ? Flexible(
+                                                              child: Text(
+                                                                messageText ??
+                                                                    "",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: isSender
+                                                                      ? Constanst
+                                                                          .colorWhite
+                                                                      : Constanst
+                                                                          .colorText3,
+                                                                ),
+                                                              ),
+                                                            )
+                                                          : Flexible(
+                                                              child: Text(
+                                                                isSender
+                                                                    ? "Anda menghapus pesan ini"
+                                                                    : "Pesan ini dihapus",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: isSender
+                                                                      ? Constanst
+                                                                          .colorText2
+                                                                      : Constanst
+                                                                          .colorText2,
+                                                                  fontStyle:
+                                                                      FontStyle
+                                                                          .italic,
+                                                                ),
+                                                              ),
+                                                            ),
                                                       const SizedBox(
-                                                        width: 2,
+                                                        width: 8,
                                                       ),
-                                                      Icon(
-                                                        Icons.check,
-                                                        color: dibacaText
-                                                            ? Constanst.color5
-                                                            : Constanst.color1,
-                                                        size: 12,
-                                                        weight: 1000,
-                                                      ),
+                                                      if (isSender) ...[
+                                                        Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .end,
+                                                          children: [
+                                                            Text(
+                                                              "$waktuText",
+                                                              style: const TextStyle(
+                                                                  fontSize: 8,
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 2,
+                                                            ),
+                                                            isKirim.toString() ==
+                                                                    '1'
+                                                                ? Icon(
+                                                                    Icons.check,
+                                                                    color: dibacaText
+                                                                        ? Constanst
+                                                                            .color5
+                                                                        : Constanst
+                                                                            .color1,
+                                                                    size: 12,
+                                                                    weight:
+                                                                        1000,
+                                                                  )
+                                                                : Icon(
+                                                                    Iconsax
+                                                                        .timer_1,
+                                                                    color: Constanst
+                                                                        .color1,
+                                                                    size: 12,
+                                                                    weight:
+                                                                        1000,
+                                                                  ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                      if (!isSender) ...[
+                                                        Text(
+                                                          "$waktuText",
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 8),
+                                                        )
+                                                      ],
                                                     ],
                                                   ),
                                                 ],
-                                                if (!isSender) ...[
-                                                  Text(
-                                                    "$waktuText",
-                                                    style: const TextStyle(
-                                                        fontSize: 8),
-                                                  )
-                                                ],
-                                              ],
+                                              ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                       );
                     },
                   ),
@@ -865,7 +1127,8 @@ class _ChatPageState extends State<ChatPage> {
                           onPressed: () async {
                             final message = _messageController.text;
                             if (message.isNotEmpty) {
-                              await kirimPesan(pesan: message);
+                              //  await kirimPesan(pesan: message);
+                              await savePesanTemporary(pesan: message);
                               _messageController.clear();
                             }
                           },

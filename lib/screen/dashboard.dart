@@ -825,8 +825,8 @@ class _DashboardState extends State<Dashboard> {
                                     radius: 7,
                                     backgroundColor: Colors.red,
                                     child: TextLabell(
-                                      text: chatController.jumlahChat.value,
-                                      color: Colors.white,
+                                      text: chatController.jumlahChat.value.toString(),
+                                      color: Colors.black,
                                     ),
                                   ),
                                   Image.asset(
@@ -849,7 +849,7 @@ class _DashboardState extends State<Dashboard> {
                     children: [
                       InkWell(
                         onTap: (){
-   Get.to(HistoryChat());
+                  Get.to(HistoryChat());
                         },
                         child: Padding(
                             padding: EdgeInsets.only(right: 5),
@@ -861,11 +861,12 @@ class _DashboardState extends State<Dashboard> {
                                   Obx(
                                     () => CircleAvatar(
                                       radius: 7,
-                                      backgroundColor: Colors.red,
+                                      backgroundColor:Colors.red,
                                       child: TextLabell(
                                         text: chatController.jumlahChat.value
                                             .toString(),
                                         color: Colors.white,
+                                        weight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
@@ -2631,6 +2632,8 @@ class _DashboardState extends State<Dashboard> {
           );
   }
 
+  
+
   Widget listEmployeeUltah() {
     return SizedBox(
         width: MediaQuery.of(Get.context!).size.width,
@@ -2855,33 +2858,27 @@ class _DashboardState extends State<Dashboard> {
 
     // chatController.getCount();
 
-    channel.sink.add(jsonEncode({
-      'type': 'count',
-      'database': AppData.selectedDatabase,
-      'em_id': AppData.informasiUser![0].em_id
-    }));
+    // channel.sink.add(jsonEncode({
+    //   'type': 'count',
+    //   'database': AppData.selectedDatabase,
+    //   'em_id': AppData.informasiUser![0].em_id
+    // }));
 
   
 
 
 
-    channel.stream.listen((message) {
-      print('ambil data websoket');
-      final decodedMessage = jsonDecode(message);
-      
-      if (decodedMessage['type'] == 'count') {
-       // print('total chat ${decodedMessage['data'][0]['total']}');
-        chatController.jumlahChat.value = decodedMessage['data'][0]['total'];
-      }
+    // channel.stream.listen((message) {
+  
+    //   final decodedMessage = jsonDecode(message);    
+    //   if (decodedMessage['type'] == 'count') {
+    //    // print('total chat ${decodedMessage['data'][0]['total']}');
+    //     chatController.jumlahChat.value = decodedMessage['data'][0]['total'];
+    //   }
 
-      if (decodedMessage['type'] == 'fetchHistory') {
-        print('total chat ${decodedMessage['data']}');
-        // print('total chat ${decodedMessage['data'][0]['total']}');
-        // chatController.jumlahChat.value = decodedMessage['data'][0]['total'];
-      }
+    
 
-
-    });
+    // });
 
     _checkversion();
     print("interval ${AppData.informasiUser![0].interval.toString()}");
