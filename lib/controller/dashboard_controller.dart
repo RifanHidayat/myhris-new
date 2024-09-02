@@ -51,6 +51,7 @@ import 'package:siscom_operasional/screen/absen/riwayat_cuti.dart';
 import 'package:siscom_operasional/screen/absen/izin.dart';
 import 'package:siscom_operasional/screen/bpjs/bpjs_kesehatan.dart';
 import 'package:siscom_operasional/screen/bpjs/bpjs_ketenagakerjaan.dart';
+import 'package:siscom_operasional/screen/init_screen.dart';
 
 import 'package:siscom_operasional/screen/kandidat/form_kandidat.dart';
 import 'package:siscom_operasional/screen/kandidat/list_kandidat.dart';
@@ -72,7 +73,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 var departementAkses = [].obs;
 
 class DashboardController extends GetxController {
-  CarouselController corouselDashboard = CarouselController();
+  CarouselSliderController corouselDashboard = CarouselSliderController();
   PageController menuController = PageController(initialPage: 0);
   PageController informasiController = PageController(initialPage: 0);
   final controllerTracking = Get.put(TrackingController());
@@ -172,12 +173,19 @@ class DashboardController extends GetxController {
     // DateTime startDate = await NTP.now();
 
     DateTime startDate = DateTime.now();
+    var emId;
+    Future.delayed(const Duration(seconds: 1), () {
+      if (AppData.informasiUser != null && AppData.informasiUser!.isNotEmpty) {
+        emId = AppData.informasiUser![0].em_id.toString();
+        checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), emId);
+      } else {
+        print("Informasi user tidak tersedia.");
+      }
+    });
     updateWorkTime();
     getBannerDashboard();
     updateInformasiUser();
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
-    checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        AppData.informasiUser![0].em_id.toString());
     getMenuDashboard();
     loadMenuShowInMain();
     loadMenuShowInMainUtama();
@@ -186,7 +194,7 @@ class DashboardController extends GetxController {
     timeString.value = formatDateTime(startDate);
     dateNow.value = dateNoww(startDate);
 
-    Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
+    Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
     getSizeDevice();
     checkStatusPermission();
     checkHakAkses();
@@ -272,7 +280,7 @@ class DashboardController extends GetxController {
         endTime = AppData.informasiUser![0].startTime;
 
         startDate = DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(Duration(days: -1)));
+            .format(DateTime.now().add(const Duration(days: -1)));
 
         endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       } else {
@@ -281,7 +289,7 @@ class DashboardController extends GetxController {
         endTime = AppData.informasiUser![0].startTime;
 
         endDate = DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(Duration(days: 2)));
+            .format(DateTime.now().add(const Duration(days: 2)));
 
         startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       }
@@ -296,7 +304,7 @@ class DashboardController extends GetxController {
     }
     Map<String, dynamic> body = {
       'atten_date': DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: -1))),
+          .format(DateTime.now().add(const Duration(days: -1))),
       'em_id': getEmid,
       'database': AppData.selectedDatabase,
       'start_date': startDate,
@@ -307,66 +315,69 @@ class DashboardController extends GetxController {
     };
     print("data param ${body}");
     var connect = Api.connectionApi("post", body, "view_last_absen_user2");
+    Future.delayed(const Duration(milliseconds: 500), () {
+      connect.then((dynamic res) {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          print("data login new ${valueBody}");
+          // print(
+          //     "hasil view_last_absen_user1 wfhstatus.valu ${valueBody['data'][0]['place_in'].toString()}");
+          // var data = valueBody['wfh'] ?? valueBody['data'];
+          var data = valueBody['data'];
+          List wfh = valueBody['wfh'];
+          // status.value = valueBody['wfh'].toString == "[]"
+          //     ? ""
+          //     : valueBody['wfh'][0]['status'];
 
-    connect.then((dynamic res) {
-      if (res.statusCode == 200) {
-        var valueBody = jsonDecode(res.body);
-        print("data login new ${valueBody}");
-        // print(
-        //     "hasil view_last_absen_user1 wfhstatus.valu ${valueBody['data'][0]['place_in'].toString()}");
-        // var data = valueBody['wfh'] ?? valueBody['data'];
-        var data = valueBody['data'];
-        List wfh = valueBody['wfh'];
-        // status.value = valueBody['wfh'].toString == "[]"
-        //     ? ""
-        //     : valueBody['wfh'][0]['status'];
+          status.value = data.toString();
+          print("hasil status.value ${status.value}");
+          // print(
+          //     "hasil view_last_absen_user1 wfhstatus.valu ${wfhstatus.value.toString()}");
+          // print("hasil view_last_absen_user1 status ${valueBody['wfh']}");
+          // print("hasil view_last_absen_user1 ${valueBody['data'].toString()}");
+          // print("hasil view_last_absen_user1 status.valu ${status.value}");
 
-        status.value = data.toString();
-        print("hasil status.value ${status.value}");
-        // print(
-        //     "hasil view_last_absen_user1 wfhstatus.valu ${wfhstatus.value.toString()}");
-        // print("hasil view_last_absen_user1 status ${valueBody['wfh']}");
-        // print("hasil view_last_absen_user1 ${valueBody['data'].toString()}");
-        // print("hasil view_last_absen_user1 status.valu ${status.value}");
+          // signinTime.value = wfh[0]['signing_time'].toString();
 
-        // signinTime.value = wfh[0]['signing_time'].toString();
+          // var wfh = valueBody['wfh'];
+          if (wfh.isEmpty) {
+            if (data.isEmpty) {
+              AppData.statusAbsen = false;
+              signoutTime.value = '00:00:00';
+              signinTime.value = '00:00:00';
+            } else {
+              wfhlokasi.value =
+                  valueBody['data'][0]['place_in'].toString() == "WFH"
+                      ? true
+                      : false;
 
-        // var wfh = valueBody['wfh'];
-        if (wfh.isEmpty) {
-          if (data.isEmpty) {
-            AppData.statusAbsen = false;
-            signoutTime.value = '00:00:00';
-            signinTime.value = '00:00:00';
+              AppData.statusAbsen =
+                  data[0]['signout_time'] == "00:00:00" ? true : false;
+              dashboardStatusAbsen.value =
+                  data[0]['signout_time'] == "00:00:00" ? true : false;
+
+              signoutTime.value = data[0]['signout_time'].toString();
+              signinTime.value = data[0]['signin_time'].toString();
+              print("hasil signinTime ${signinTime.value}");
+              print("hasil signinTime ${status.value}");
+            }
           } else {
-            wfhlokasi.value =
-                valueBody['data'][0]['place_in'].toString() == "WFH"
-                    ? true
-                    : false;
+            wfhstatus.value = wfh.isEmpty ? false : true;
+            controllerAbsensi.absenStatus.value = wfh.isEmpty ? false : true;
+            approveStatus.value = valueBody['wfh'][0]['status'].toString();
+            // if (data.isEmpty) {
+            signinTime.value = wfh[0]['signing_time'].toString();
+            controllerAbsensi.nomorAjuan.value =
+                wfh[0]['nomor_ajuan'].toString();
+            // status.value = wfh[0]['status'].toString();
 
-            AppData.statusAbsen =
-                data[0]['signout_time'] == "00:00:00" ? true : false;
-            dashboardStatusAbsen.value =
-                data[0]['signout_time'] == "00:00:00" ? true : false;
-
-            signoutTime.value = data[0]['signout_time'].toString();
-            signinTime.value = data[0]['signin_time'].toString();
+            // status.value = "ad";
+            // controllerAbsensi.absenStatus.value = true;
             print("hasil signinTime ${signinTime.value}");
             print("hasil signinTime ${status.value}");
           }
-        } else {
-          wfhstatus.value = wfh.isEmpty ? false : true;
-          approveStatus.value = valueBody['wfh'][0]['status'].toString();
-          // if (data.isEmpty) {
-          signinTime.value = wfh[0]['signing_time'].toString();
-          controllerAbsensi.nomorAjuan.value = wfh[0]['nomor_ajuan'].toString();
-          // status.value = wfh[0]['status'].toString();
-
-          // status.value = "ad";
-          // controllerAbsensi.absenStatus.value = true;
-          print("hasil signinTime ${signinTime.value}");
-          print("hasil signinTime ${status.value}");
         }
-      }
+      });
     });
   }
 
@@ -405,7 +416,7 @@ class DashboardController extends GetxController {
                             onTap: () {
                               Get.back();
                             },
-                            child: Icon(Icons.close))
+                            child: const Icon(Icons.close))
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -443,10 +454,10 @@ class DashboardController extends GetxController {
                         onPressed: () async {
                           wfhDelete();
                           Get.back();
+                          Get.offAll(InitScreen());
 
                           refreshPagesStatus.value = true;
                           await Future.delayed(const Duration(seconds: 2));
-
                           updateInformasiUser();
                           controller.employeDetaiBpjs();
                           controllerAbsensi.employeDetail();
@@ -1142,93 +1153,96 @@ class DashboardController extends GetxController {
     var getEmid = dataUser![0].em_id;
     var body = {'em_id': getEmid};
     var connect = Api.connectionApi("post", body, "refresh_employee");
-    connect.then((dynamic res) async {
-      var valueBody = jsonDecode(res.body);
-      print("data refresh employee ${valueBody}");
+    Future.delayed(const Duration(milliseconds: 500), () {
+      connect.then((dynamic res) async {
+        var valueBody = jsonDecode(res.body);
+        print("data refresh employee ${valueBody}");
 
-      if (valueBody['status'] == false) {
-        UtilsAlert.showToast(valueBody['message']);
-        Navigator.pop(Get.context!);
-      } else {
-        print("data employee baru new ${valueBody['data']}");
-        AppData.informasiUser = null;
-        List<UserModel> getData = [];
-        var isBackDateSakit = "0";
-        var isBackDateIzin = "0";
-        var isBackDateCuti = "0";
-        var isBackDateTugasLuar = "0";
-        var isBackDateDinasLuar = "0";
-        var isBackDateLembur = "0";
+        if (valueBody['status'] == false) {
+          UtilsAlert.showToast(valueBody['message']);
+          Navigator.pop(Get.context!);
+        } else {
+          print("data employee baru new ${valueBody['data']}");
+          AppData.informasiUser = null;
+          List<UserModel> getData = [];
+          var isBackDateSakit = "0";
+          var isBackDateIzin = "0";
+          var isBackDateCuti = "0";
+          var isBackDateTugasLuar = "0";
+          var isBackDateDinasLuar = "0";
+          var isBackDateLembur = "0";
 
-        for (var element in valueBody['data']) {
-          if (element['back_date'] == "" || element['back_date'] == null) {
-          } else {
-            List isBackDates = element['back_date'].toString().split(',');
-            isBackDateSakit = isBackDates[0].toString();
-            isBackDateIzin = isBackDates[1].toString();
-            isBackDateCuti = isBackDates[2].toString();
-            isBackDateTugasLuar = isBackDates[3].toString();
-            isBackDateDinasLuar = isBackDates[4].toString();
-            isBackDateLembur = isBackDates[5].toString();
+          for (var element in valueBody['data']) {
+            if (element['back_date'] == "" || element['back_date'] == null) {
+            } else {
+              List isBackDates = element['back_date'].toString().split(',');
+              isBackDateSakit = isBackDates[0].toString();
+              isBackDateIzin = isBackDates[1].toString();
+              isBackDateCuti = isBackDates[2].toString();
+              isBackDateTugasLuar = isBackDates[3].toString();
+              isBackDateDinasLuar = isBackDates[4].toString();
+              isBackDateLembur = isBackDates[5].toString();
+            }
+            var data = UserModel(
+                isBackDateSakit: isBackDateSakit,
+                isBackDateIzin: isBackDateIzin,
+                isBackDateCuti: isBackDateCuti,
+                isBackDateTugasLuar: isBackDateTugasLuar,
+                isBackDateDinasLuar: isBackDateDinasLuar,
+                isBackDateLembur: isBackDateLembur,
+                em_id: element['em_id'] ?? "",
+                des_id: element['des_id'] ?? 0,
+                dep_id: element['dep_id'] ?? 0,
+                dep_group: element['dep_group'] ?? 0,
+                full_name: element['full_name'] ?? "",
+                em_email: element['em_email'] ?? "",
+                em_phone: element['em_phone'] ?? "",
+                em_birthday: element['em_birthday'] ?? "1999-09-09",
+                em_gender: element['em_gender'] ?? "",
+                em_image: element['em_image'] ?? "",
+                em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+                em_status: element['em_status'] ?? "",
+                em_blood_group: element['em_blood_group'] ?? "",
+                posisi: element['posisi'] ?? "",
+                emp_jobTitle: element['emp_jobTitle'] ?? "",
+                emp_departmen: element['emp_departmen'] ?? "",
+                em_control: element['em_control'] ?? 0,
+                em_control_acess: element['em_control_access'] ?? 0,
+                emp_att_working: element['emp_att_working'] ?? 0,
+                em_hak_akses: element['em_hak_akses'] ?? "",
+                beginPayroll: element['begin_payroll'],
+                endPayroll: element['end_payroll'],
+                startTime: element['time_attendance'].toString().split(',')[0],
+                endTime: element['time_attendance'].toString().split(',')[1],
+                branchName: element['branch_name'],
+                nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'],
+                nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'],
+                timeIn: element['time_in'],
+                interval: element['interval'],
+                timeOut: element['time_out'],
+                interval_tracking: element['interval_tracking'],
+                isViewTracking: element['is_view_tracking'],
+                is_tracking: element['is_tracking']);
+            print(element['posisi']);
+            getData.add(data);
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString(
+                "interval_tracking", element['interval_tracking'].toString());
+            await prefs.setString("em_id", element['em_id'].toString());
+            await prefs.setString("", element['em_id'].toString());
+
+            print(
+                "interval tracking ${element['interval_tracking'].toString()}");
           }
-          var data = UserModel(
-              isBackDateSakit: isBackDateSakit,
-              isBackDateIzin: isBackDateIzin,
-              isBackDateCuti: isBackDateCuti,
-              isBackDateTugasLuar: isBackDateTugasLuar,
-              isBackDateDinasLuar: isBackDateDinasLuar,
-              isBackDateLembur: isBackDateLembur,
-              em_id: element['em_id'] ?? "",
-              des_id: element['des_id'] ?? 0,
-              dep_id: element['dep_id'] ?? 0,
-              dep_group: element['dep_group'] ?? 0,
-              full_name: element['full_name'] ?? "",
-              em_email: element['em_email'] ?? "",
-              em_phone: element['em_phone'] ?? "",
-              em_birthday: element['em_birthday'] ?? "1999-09-09",
-              em_gender: element['em_gender'] ?? "",
-              em_image: element['em_image'] ?? "",
-              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-              em_status: element['em_status'] ?? "",
-              em_blood_group: element['em_blood_group'] ?? "",
-              posisi: element['posisi'] ?? "",
-              emp_jobTitle: element['emp_jobTitle'] ?? "",
-              emp_departmen: element['emp_departmen'] ?? "",
-              em_control: element['em_control'] ?? 0,
-              em_control_acess: element['em_control_access'] ?? 0,
-              emp_att_working: element['emp_att_working'] ?? 0,
-              em_hak_akses: element['em_hak_akses'] ?? "",
-              beginPayroll: element['begin_payroll'],
-              endPayroll: element['end_payroll'],
-              startTime: element['time_attendance'].toString().split(',')[0],
-              endTime: element['time_attendance'].toString().split(',')[1],
-              branchName: element['branch_name'],
-              nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'],
-              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'],
-              timeIn: element['time_in'],
-              interval: element['interval'],
-              timeOut: element['time_out'],
-              interval_tracking: element['interval_tracking'],
-              isViewTracking: element['is_view_tracking'],
-              is_tracking: element['is_tracking']);
-          print(element['posisi']);
-          getData.add(data);
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString(
-              "interval_tracking", element['interval_tracking'].toString());
-          await prefs.setString("em_id", element['em_id'].toString());
-          await prefs.setString("", element['em_id'].toString());
+          AppData.informasiUser = getData;
 
-          print("interval tracking ${element['interval_tracking'].toString()}");
+          getUserInfo();
+
+          controllerTracking.isLoadingDetailTracking.value = false;
+          controllerTracking.isTracking();
         }
-        AppData.informasiUser = getData;
-
-        getUserInfo();
-
-        controllerTracking.isLoadingDetailTracking.value = false;
-        controllerTracking.isTracking();
-      }
-      //   Api().validateAuth(res.statusCode );
+        //   Api().validateAuth(res.statusCode );
+      });
     });
   }
 
@@ -1262,48 +1276,50 @@ class DashboardController extends GetxController {
   void getMenuDashboard() {
     finalMenu.value.clear();
     var connect = Api.connectionApi("get", {}, "getMenu");
-    connect.then((dynamic res) {
-      if (res == false) {
-        UtilsAlert.koneksiBuruk();
-      } else {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          var temporary = valueBody['data'];
-          temporary.firstWhere((element) => element['index'] == 0)['status'] =
-              true;
-          finalMenu.value = temporary;
-          // var dataFinal = [];
-          // for (var element in temporary) {
-          //   var convert = [];
-          //   for (var element1 in element['menu']) {
-          //     convert.add(element1);
-          //   }
-          //   if (convert.length > 3) {
-          //     var lengthMenu = convert.length;
-          //     var hitung = lengthMenu - 3;
-          //     int howMany = hitung;
-          //     convert.length = convert.length - howMany;
-          //     convert.add({'nama_menu': 'Menu Lainnya', 'gambar': 'menu_lainnya.png'});
-          //     var data = {
-          //       'index': element['index'],
-          //       'nama_modul': element['nama_modul'],
-          //       'status': element['status'],
-          //       'menu': convert
-          //     };
-          //     dataFinal.add(data);
-          //   } else {
-          //     var data = {
-          //       'index': element['index'],
-          //       'nama_modul': element['nama_modul'],
-          //       'status': element['status'],
-          //       'menu': convert
-          //     };
-          //     dataFinal.add(data);
-          //   }
-          // }
-          // print(dataFinal);
+    Future.delayed(const Duration(seconds: 1), () {
+      connect.then((dynamic res) {
+        if (res == false) {
+          UtilsAlert.koneksiBuruk();
+        } else {
+          if (res.statusCode == 200) {
+            var valueBody = jsonDecode(res.body);
+            var temporary = valueBody['data'];
+            temporary.firstWhere((element) => element['index'] == 0)['status'] =
+                true;
+            finalMenu.value = temporary;
+            // var dataFinal = [];
+            // for (var element in temporary) {
+            //   var convert = [];
+            //   for (var element1 in element['menu']) {
+            //     convert.add(element1);
+            //   }
+            //   if (convert.length > 3) {
+            //     var lengthMenu = convert.length;
+            //     var hitung = lengthMenu - 3;
+            //     int howMany = hitung;
+            //     convert.length = convert.length - howMany;
+            //     convert.add({'nama_menu': 'Menu Lainnya', 'gambar': 'menu_lainnya.png'});
+            //     var data = {
+            //       'index': element['index'],
+            //       'nama_modul': element['nama_modul'],
+            //       'status': element['status'],
+            //       'menu': convert
+            //     };
+            //     dataFinal.add(data);
+            //   } else {
+            //     var data = {
+            //       'index': element['index'],
+            //       'nama_modul': element['nama_modul'],
+            //       'status': element['status'],
+            //       'menu': convert
+            //     };
+            //     dataFinal.add(data);
+            //   }
+            // }
+            // print(dataFinal);
+          }
         }
-      }
+      });
     });
   }
 
@@ -1330,53 +1346,55 @@ class DashboardController extends GetxController {
     menuShowInMain.value.clear();
     var connect = Api.connectionApi("get", {}, "menu_dashboard",
         params: "&em_id=${AppData.informasiUser![0].em_id}");
-    connect.then((dynamic res) {
-      if (res == false) {
-        UtilsAlert.koneksiBuruk();
-      } else {
-        absenControllre.showButtonlaporan.value = false;
-        controllerIzin.showButtonlaporan.value = false;
-        controllerLembur.showButtonlaporan.value = false;
+    Future.delayed(const Duration(seconds: 1), () {
+      connect.then((dynamic res) {
+        if (res == false) {
+          UtilsAlert.koneksiBuruk();
+        } else {
+          absenControllre.showButtonlaporan.value = false;
+          controllerIzin.showButtonlaporan.value = false;
+          controllerLembur.showButtonlaporan.value = false;
 
-        controllerTugasLuar.showButtonlaporan.value = false;
-        controllerKlaim.showButtonlaporan.value = false;
-        controllerCuti.showButtonlaporan.value = false;
+          controllerTugasLuar.showButtonlaporan.value = false;
+          controllerKlaim.showButtonlaporan.value = false;
+          controllerCuti.showButtonlaporan.value = false;
 
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          var temporary = valueBody['data'];
+          if (res.statusCode == 200) {
+            var valueBody = jsonDecode(res.body);
+            var temporary = valueBody['data'];
 
-          List tempData = temporary;
+            List tempData = temporary;
 
-          print("data temporary ${temporary}");
-          for (var element in tempData[0]['menu']) {
-            print("Nama Menu ${element['nama']}");
-            if (element['nama'] == "Absensi") {
-              absenControllre.showButtonlaporan.value = true;
+            print("data temporary ${temporary}");
+            for (var element in tempData[0]['menu']) {
+              print("Nama Menu ${element['nama']}");
+              if (element['nama'] == "Absensi") {
+                absenControllre.showButtonlaporan.value = true;
+              }
+
+              if (element['nama'].toString().trim() == "Izin") {
+                print("masuk sini ${element['nama'].toString().trim()}");
+                controllerIzin.showButtonlaporan.value = true;
+              }
+
+              if (element['nama'] == "Lembur") {
+                controllerLembur.showButtonlaporan.value = true;
+              }
+              if (element['nama'] == "Cuti") {
+                controllerCuti.showButtonlaporan.value = true;
+              }
+              if (element['nama'] == "Tugas Luar") {
+                controllerTugasLuar.showButtonlaporan.value = true;
+              }
+              if (element['nama'] == "Klaim") {
+                controllerKlaim.showButtonlaporan.value = true;
+              }
             }
 
-            if (element['nama'].toString().trim() == "Izin") {
-              print("masuk sini ${element['nama'].toString().trim()}");
-              controllerIzin.showButtonlaporan.value = true;
-            }
-
-            if (element['nama'] == "Lembur") {
-              controllerLembur.showButtonlaporan.value = true;
-            }
-            if (element['nama'] == "Cuti") {
-              controllerCuti.showButtonlaporan.value = true;
-            }
-            if (element['nama'] == "Tugas Luar") {
-              controllerTugasLuar.showButtonlaporan.value = true;
-            }
-            if (element['nama'] == "Klaim") {
-              controllerKlaim.showButtonlaporan.value = true;
-            }
+            menuShowInMain.value = temporary;
           }
-
-          menuShowInMain.value = temporary;
         }
-      }
+      });
     });
   }
 
@@ -1388,84 +1406,88 @@ class DashboardController extends GetxController {
     menuShowInMain.value.clear();
     var connect = Api.connectionApi("get", {}, "menu_dashboard_utama",
         params: "&em_id=${AppData.informasiUser![0].em_id}");
-    connect.then((dynamic res) {
-      if (res == false) {
-        UtilsAlert.koneksiBuruk();
-      } else {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          print("daftar menu utama ${valueBody['data']} ");
-          var temporary = valueBody['data'];
-          menuShowInMainUtama.value = temporary;
-          if (menuShowInMainUtama.isNotEmpty) {
-            List menuPengumuman = menuShowInMainUtama
-                .where((p0) =>
-                    p0['url'].toString().toLowerCase().trim() ==
-                    "InfoHrd".toLowerCase().toString().trim())
-                .toList();
-            List menuPkwt = menuShowInMainUtama
-                .where((p0) =>
-                    p0['url'].toString().toLowerCase().trim() ==
-                    "PKWT".toLowerCase().toString().trim())
-                .toList();
-            List menuUlangtahun = menuShowInMainUtama
-                .where((p0) =>
-                    p0['url'].toString().toLowerCase().trim() ==
-                    "UlangTahun".toLowerCase().toString().trim())
-                .toList();
-            List menuLaporan = menuShowInMainUtama
-                .where((p0) =>
-                    p0['url'].toString().toLowerCase().trim() ==
-                    "Laporan".toLowerCase().toString().trim())
-                .toList();
+    Future.delayed(const Duration(seconds: 1), () {
+      connect.then((dynamic res) {
+        if (res == false) {
+          UtilsAlert.koneksiBuruk();
+        } else {
+          if (res.statusCode == 200) {
+            var valueBody = jsonDecode(res.body);
+            print("daftar menu utama ${valueBody['data']} ");
+            var temporary = valueBody['data'];
+            menuShowInMainUtama.value = temporary;
+            if (menuShowInMainUtama.isNotEmpty) {
+              List menuPengumuman = menuShowInMainUtama
+                  .where((p0) =>
+                      p0['url'].toString().toLowerCase().trim() ==
+                      "InfoHrd".toLowerCase().toString().trim())
+                  .toList();
+              List menuPkwt = menuShowInMainUtama
+                  .where((p0) =>
+                      p0['url'].toString().toLowerCase().trim() ==
+                      "PKWT".toLowerCase().toString().trim())
+                  .toList();
+              List menuUlangtahun = menuShowInMainUtama
+                  .where((p0) =>
+                      p0['url'].toString().toLowerCase().trim() ==
+                      "UlangTahun".toLowerCase().toString().trim())
+                  .toList();
+              List menuLaporan = menuShowInMainUtama
+                  .where((p0) =>
+                      p0['url'].toString().toLowerCase().trim() ==
+                      "Laporan".toLowerCase().toString().trim())
+                  .toList();
 
-            if (menuPengumuman.isNotEmpty) {
-              showPengumuman.value = true;
-            }
-            if (menuPkwt.isNotEmpty) {
-              showPkwt.value = true;
-            }
-            if (menuUlangtahun.isNotEmpty) {
-              showUlangTahun.value = true;
-            }
-            if (menuLaporan.isNotEmpty) {
-              showLaporan.value = true;
+              if (menuPengumuman.isNotEmpty) {
+                showPengumuman.value = true;
+              }
+              if (menuPkwt.isNotEmpty) {
+                showPkwt.value = true;
+              }
+              if (menuUlangtahun.isNotEmpty) {
+                showUlangTahun.value = true;
+              }
+              if (menuLaporan.isNotEmpty) {
+                showLaporan.value = true;
+              }
             }
           }
         }
-      }
+      });
     });
   }
 
   void getInformasiDashboard() async {
     print("masuk sini");
     var connect = Api.connectionApi("get", {}, "notice");
-    connect.then((dynamic res) {
-      print("masuk sini 1");
+    Future.delayed(const Duration(seconds: 1), () {
+      connect.then((dynamic res) {
+        print("masuk sini 1");
 
-      if (res == false) {
-        UtilsAlert.koneksiBuruk();
-      } else {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          var data = valueBody['data'];
-          print("data informasi ${data}");
-          var filter1 = [];
-          var dt = DateTime.now();
-          for (var element in data) {
-            DateTime dt2 = DateTime.parse("${element['end_date']}");
-            if (dt2.isBefore(dt)) {
-            } else {
-              filter1.add(element);
+        if (res == false) {
+          UtilsAlert.koneksiBuruk();
+        } else {
+          if (res.statusCode == 200) {
+            var valueBody = jsonDecode(res.body);
+            var data = valueBody['data'];
+            print("data informasi ${data}");
+            var filter1 = [];
+            var dt = DateTime.now();
+            for (var element in data) {
+              DateTime dt2 = DateTime.parse("${element['end_date']}");
+              if (dt2.isBefore(dt)) {
+              } else {
+                filter1.add(element);
+              }
             }
+            filter1.sort((a, b) => b['begin_date']
+                .toUpperCase()
+                .compareTo(a['begin_date'].toUpperCase()));
+            informasiDashboard.value = filter1;
+            getEmployeeUltah(dt);
           }
-          filter1.sort((a, b) => b['begin_date']
-              .toUpperCase()
-              .compareTo(a['begin_date'].toUpperCase()));
-          informasiDashboard.value = filter1;
-          getEmployeeUltah(dt);
         }
-      }
+      });
     });
   }
 
@@ -1478,13 +1500,15 @@ class DashboardController extends GetxController {
       'dateNow': tanggal,
     };
     var connect = Api.connectionApi("post", body, "informasi_employee_ultah");
-    connect.then((dynamic res) {
-      if (res.statusCode == 200) {
-        var valueBody = jsonDecode(res.body);
-        employeeUltah.value = valueBody['data'];
-        print("data ualgn tahun ${employeeUltah.length}");
-        this.employeeUltah.refresh();
-      }
+    Future.delayed(const Duration(seconds: 1), () {
+      connect.then((dynamic res) {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          employeeUltah.value = valueBody['data'];
+          print("data ualgn tahun ${employeeUltah.length}");
+          this.employeeUltah.refresh();
+        }
+      });
     });
   }
 
@@ -1493,24 +1517,26 @@ class DashboardController extends GetxController {
     var tanggal = "${DateFormat('yyyy-MM-dd').format(dt)}";
     Map<String, dynamic> body = {'atten_date': tanggal, 'status': "0"};
     var connect = Api.connectionApi("post", body, "load_laporan_belum_absen");
-    connect.then((dynamic res) {
-      if (res.statusCode == 200) {
-        var valueBody = jsonDecode(res.body);
-        List data = valueBody['data'];
-        print("data pengajuan" + valueBody['data_pengajuan1'].toString());
-        data.addAll(valueBody['data_pengajuan1']);
-        data.addAll(valueBody['data_pengajuan2']);
-        data.sort((a, b) => a['full_name']
-            .toUpperCase()
-            .compareTo(b['full_name'].toUpperCase()));
+    Future.delayed(const Duration(seconds: 1), () {
+      connect.then((dynamic res) {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          List data = valueBody['data'];
+          print("data pengajuan" + valueBody['data_pengajuan1'].toString());
+          data.addAll(valueBody['data_pengajuan1']);
+          data.addAll(valueBody['data_pengajuan2']);
+          data.sort((a, b) => a['full_name']
+              .toUpperCase()
+              .compareTo(b['full_name'].toUpperCase()));
 
-        employeeTidakHadir.value = data;
-        print("data tidak hadir ${employeeTidakHadir}");
-        final ids = employeeTidakHadir.map((e) => e['em_id']).toSet();
-        employeeTidakHadir.retainWhere((x) => ids.remove(x['em_id']));
+          employeeTidakHadir.value = data;
+          print("data tidak hadir ${employeeTidakHadir}");
+          final ids = employeeTidakHadir.map((e) => e['em_id']).toSet();
+          employeeTidakHadir.retainWhere((x) => ids.remove(x['em_id']));
 
-        this.employeeTidakHadir.refresh();
-      }
+          this.employeeTidakHadir.refresh();
+        }
+      });
     });
   }
 
@@ -1540,16 +1566,18 @@ class DashboardController extends GetxController {
     bannerDashboard.value.clear();
     // var connect = Api.connectionApi("get", {}, "banner_dashboard");
     var connect = Api.connectionApi("get", {}, "banner_from_finance");
-    connect.then((dynamic res) {
-      if (res == false) {
-        UtilsAlert.koneksiBuruk();
-      } else {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          bannerDashboard.value = valueBody['data'];
-          this.bannerDashboard.refresh();
+    Future.delayed(const Duration(seconds: 1), () {
+      connect.then((dynamic res) {
+        if (res == false) {
+          UtilsAlert.koneksiBuruk();
+        } else {
+          if (res.statusCode == 200) {
+            var valueBody = jsonDecode(res.body);
+            bannerDashboard.value = valueBody['data'];
+            bannerDashboard.refresh();
+          }
         }
-      }
+      });
     });
   }
 
@@ -1601,7 +1629,7 @@ class DashboardController extends GetxController {
     var langDefault = listLatLang[1];
     var to = Point(double.parse(latDefault), double.parse(langDefault));
 
-    double distance = maps.SphericalUtils.computeDistanceBetween(from, from);
+    num distance = maps.SphericalUtils.computeDistanceBetween(from, from);
     print('Distance: $distance meters');
     var filter = double.parse((distance).toStringAsFixed(0));
     if (filter <= double.parse(defaultRadius)) {
@@ -1614,7 +1642,7 @@ class DashboardController extends GetxController {
         barrierDismissible: false,
         context: Get.context!,
         barrierColor: Colors.black54, // space around dialog
-        transitionDuration: Duration(milliseconds: 200),
+        transitionDuration: const Duration(milliseconds: 200),
         transitionBuilder: (context, a1, a2, child) {
           return ScaleTransition(
             scale: CurvedAnimation(
@@ -1687,28 +1715,28 @@ class DashboardController extends GetxController {
     return status!;
   }
 
-  void routePageDashboard(url) {
+  void routePageDashboard(url, arguments) {
     print(url);
     if (url == "HistoryAbsen") {
-      Get.to(HistoryAbsen());
+      Get.to(HistoryAbsen(), arguments: arguments);
     } else if (url == "TidakMasukKerja") {
-      Get.to(RiwayatIzin());
+      Get.to(RiwayatIzin(), arguments: arguments);
     } else if (url == "Lembur") {
-      Get.to(Lembur());
+      Get.to(Lembur(), arguments: arguments);
     } else if (url == "FormPengajuanCuti") {
       Get.to(FormPengajuanCuti(
         dataForm: [[], false],
       ));
     } else if (url == "RiwayatCuti") {
-      Get.to(RiwayatCuti());
+      Get.to(RiwayatCuti(), arguments: arguments);
       // } else if (url == "Izin") {
-      //   Get.to(Izin());
+      //   Get.to(Izin(), arguments: arguments);
     } else if (url == "TugasLuar") {
-      Get.to(TugasLuar());
+      Get.to(TugasLuar(), arguments: arguments);
     } else if (url == "Klaim") {
-      Get.to(Klaim());
+      Get.to(Klaim(), arguments: arguments);
     } else if (url == "Kasbon") {
-      Get.to(Kasbon());
+      Get.to(Kasbon(), arguments: arguments);
     } else if (url == "FormKlaim") {
       Get.to(FormKlaim(
         dataForm: [[], false],
@@ -1725,7 +1753,7 @@ class DashboardController extends GetxController {
       //  Get.to(PPh21page());
 
       Get.to(VerifyPasswordPayroll(
-        page: SlipGaji(),
+        page: const SlipGaji(),
         titlepage: "slip_gaji",
       ));
       // Get.to(VerifyPasswordPayroll(
@@ -1734,7 +1762,7 @@ class DashboardController extends GetxController {
       // ));
     } else if (url == "Pph21") {
       //  Get.to(PPh21page());
-      Get.to(PPh21page());
+      Get.to(const PPh21page());
 
       // Get.to(VerifyPasswordPayroll(
       //     page: PPh21page(),
@@ -1862,7 +1890,7 @@ class DashboardController extends GetxController {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Padding(
@@ -1879,7 +1907,7 @@ class DashboardController extends GetxController {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             type == "checkTracking"
-                                ? SizedBox()
+                                ? const SizedBox()
                                 : Padding(
                                     padding: const EdgeInsets.only(
                                         left: 5, right: 5),
@@ -1892,11 +1920,11 @@ class DashboardController extends GetxController {
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         type == "checkTracking"
-                            ? SizedBox(
+                            ? const SizedBox(
                                 child: Column(
                                   children: [
                                     Text(
@@ -1914,24 +1942,24 @@ class DashboardController extends GetxController {
                                   ],
                                 ),
                               )
-                            : Text(
+                            : const Text(
                                 "Aktifkan Kamera dan Lokasi",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16),
                               ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         type == "checkTracking"
-                            ? Text(
+                            ? const Text(
                                 "SISCOM HRIS mengumpulkan data lokasi untuk mengaktifkan Absensi & Tracking bahkan jika aplikasi ditutup atau tidak digunakan.",
                                 textAlign: TextAlign.center,
                               )
-                            : Text(
+                            : const Text(
                                 "Aplikasi ini memerlukan akses pada kamera dan lokasi pada perangkat Anda",
                                 textAlign: TextAlign.center,
                               ),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         TextButtonWidget(
@@ -1972,7 +2000,7 @@ class DashboardController extends GetxController {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             )
           ],
@@ -1995,7 +2023,7 @@ class DashboardController extends GetxController {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Padding(
@@ -2039,7 +2067,7 @@ class DashboardController extends GetxController {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             )
           ],
@@ -2764,7 +2792,7 @@ class DashboardController extends GetxController {
                 children: List.generate(menuShowInMain.length, (index) {
                   var data = menuShowInMain[index];
                   return data['menu'].length <= 0
-                      ? SizedBox()
+                      ? const SizedBox()
                       : InkWell(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2799,7 +2827,8 @@ class DashboardController extends GetxController {
                                               4,
                                           child: InkWell(
                                             onTap: () => routePageDashboard(
-                                                data['menu'][idxMenu]['url']),
+                                                data['menu'][idxMenu]['url'],
+                                                null),
                                             highlightColor: Colors.white,
                                             child: Column(
                                                 crossAxisAlignment:

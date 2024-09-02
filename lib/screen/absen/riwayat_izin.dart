@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -23,6 +23,7 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
   var controller = Get.put(IzinController());
   var controllerGlobal = Get.put(GlobalController());
   final dashboardController = Get.put(DashboardController());
+  var idx = 0;
 
   @override
   void initState() {
@@ -32,6 +33,27 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
     controller.loadDataAjuanIzin();
     controller.loadTypeSakit();
     // controller.changeTypeSelected(2);
+    if (Get.arguments != null) {
+      idx = Get.arguments;
+    }
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (controller.listHistoryAjuan.isNotEmpty) {
+        for (var item in controller.listHistoryAjuan.value) {
+          if (item['id'] == idx) {
+            var alasanReject = item['alasan_reject'] ?? "";
+            var approve_by;
+            if (item['apply2_by'] == "" ||
+                item['apply2_by'] == "null" ||
+                item['apply2_by'] == null) {
+              approve_by = item['apply_by'];
+            } else {
+              approve_by = item['apply2_by'];
+            }
+            controller.showDetailRiwayat(item, approve_by, alasanReject);
+          }
+        }
+      }
+    });
   }
 
   Future<void> refreshData() async {

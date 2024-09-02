@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -337,7 +337,7 @@ class Aktifitas extends StatelessWidget {
                                                       child: Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                    .only(
+                                                                .only(
                                                                 left: 8,
                                                                 bottom: 4),
                                                         child: Text(
@@ -368,7 +368,7 @@ class Aktifitas extends StatelessWidget {
                                                           child: Container(
                                                             width: 2,
                                                             color: const Color
-                                                                    .fromARGB(
+                                                                .fromARGB(
                                                                 24, 0, 22, 103),
                                                           ),
                                                         ),
@@ -378,7 +378,7 @@ class Aktifitas extends StatelessWidget {
                                                         child: Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                      .only(
+                                                                  .only(
                                                                   left: 8,
                                                                   bottom: 4),
                                                           child: Text(
@@ -410,7 +410,7 @@ class Aktifitas extends StatelessWidget {
                                                           child: Container(
                                                             width: 2,
                                                             color: const Color
-                                                                    .fromARGB(
+                                                                .fromARGB(
                                                                 24, 0, 22, 103),
                                                           ),
                                                         ),
@@ -420,7 +420,7 @@ class Aktifitas extends StatelessWidget {
                                                         child: Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                        .only(
+                                                                    .only(
                                                                     left: 8),
                                                             child: Text(
                                                               "$namaAktifitas",
@@ -524,7 +524,7 @@ class Aktifitas extends StatelessWidget {
                                                       child: Container(
                                                         width: 2,
                                                         color: const Color
-                                                                .fromARGB(
+                                                            .fromARGB(
                                                             24, 0, 22, 103),
                                                       ),
                                                     ),
@@ -563,7 +563,7 @@ class Aktifitas extends StatelessWidget {
                                                       child: Container(
                                                         width: 2,
                                                         color: const Color
-                                                                .fromARGB(
+                                                            .fromARGB(
                                                             24, 0, 22, 103),
                                                       ),
                                                     ),

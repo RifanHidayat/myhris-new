@@ -51,7 +51,7 @@ class _HistoryChatState extends State<HistoryChat> {
     controller.searchControllerEmployee.clear();
     controller.getEmployeeNew();
     controller.getAllEmployee();
- 
+
     // channel.stream.listen((message) {
     //   print('ambil data websoket');
     //   final decodedMessage = jsonDecode(message);
@@ -76,7 +76,7 @@ class _HistoryChatState extends State<HistoryChat> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-               controller.getAllEmployee();
+            controller.getAllEmployee();
             showBottomCustomer(context);
             // Aksi saat tombol ditekan
             print('FAB pressed');
@@ -258,74 +258,36 @@ class _HistoryChatState extends State<HistoryChat> {
                   child:
                       // : infoEmployeeList(),
                       Container(
-                          child: StreamBuilder(
-                    stream: channel.stream, // Stream dari API
-                    builder: (context, snapshot) {
-
-                         if (snapshot.hasError) {
-                        // Handle errors
-                      }
-                      if (snapshot.connectionState == ConnectionState.active) {
-                        if (snapshot.hasData) {
-                          final message = snapshot.data.toString();
-
-                          print('mesasge data new new ${message}');
-                          final messageData = jsonDecode(message);
-                          controller.getEmployeeNew();
-                          if (messageData['type'] != 'error') {
-                            //_tandaSudahDibaca();
-                            //_fetchPesan();
-                            // _pesans.add(Message(
-                            //     id: messageData['id'],
-                            //     pesan: messageData['pesan'],
-                            //     tanggal: messageData['tanggal'],
-                            //     waktu: messageData['waktu'],
-                            //     emIdPengirim: messageData['em_id_pengirim'],
-                            //     emIdPenerima: messageData['em_id_penerima'],
-                            //     lampiran: lampiran,
-                            //     dibaca: messageData['dibaca'],
-                            //     type: messageData['type'],
-                            //     status: messageData['status'],
-                            //     tipeLampiran: messageData['tipe_lampiran'],
-                            //     isKirim: 1));
-                            // _scrollToBottomnew();
-
-                            // _tandaSudahDibaca();
-                          }
-                          if (messageData['type'] == 'deleteData') {
-                          //  _fetchPesan();
-                          }
-                        }
-                      }
-                      return infoEmployeeList(controller.infoEmployee.value);
-                    //   if (snapshot.hasError) {
-                    //     return Center(child: Text('Error: ${snapshot.error}'));
-                    //   } else if (!snapshot.hasData ||
-                    //       controller.isLoading.value == true) {
-                    //     return Center(
-                    //         child:
-                    //             CircularProgressIndicator()); // Menunggu data
-                    //   } else if (snapshot.data!.isEmpty) {
-                    //     return Center(
-                    //         child: TextLabell(
-                    //       text: "Data history tidak ditemukan",
-                    //     ));
-                    //   } else {
-                    //     final data = snapshot.data!;
-                    //     return infoEmployeeList(data);
-                    //     // return ListView.builder(
-                    //     //   itemCount: data.length,
-                    //     //   itemBuilder: (context, index) {
-                    //     //     final item = data[index];
-                    //     //     return ListTile(
-                    //     //       title: Text(item
-                    //     //           .toString()), // Sesuaikan dengan struktur data
-                    //     //     );
-                    //     //   },
-                    //     // );
-                    //   }
-                     },
-                  )),
+                    child: Obx(() => controller.isLoading.value == true
+                        ? Center(child: CircularProgressIndicator())
+                        : StreamBuilder<List<dynamic>>(
+                            stream: getApiDataStream(), // Stream dari API
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData ||
+                                  controller.isLoading.value == true) {
+                                return Center(
+                                    child:
+                                        CircularProgressIndicator()); // Menunggu data
+                              } else {
+                                final data = snapshot.data!;
+                                return infoEmployeeList(data);
+                                // return ListView.builder(
+                                //   itemCount: data.length,
+                                //   itemBuilder: (context, index) {
+                                //     final item = data[index];
+                                //     return ListTile(
+                                //       title: Text(item
+                                //           .toString()), // Sesuaikan dengan struktur data
+                                //     );
+                                //   },
+                                // );
+                              }
+                            },
+                          )),
+                  ),
                 )
               ],
             ),
@@ -432,11 +394,11 @@ class _HistoryChatState extends State<HistoryChat> {
 
       yield data; // Kirim data melalui stream
       // Jika ingin melakukan polling secara periodik:
-      while (true) {
-        await Future.delayed(Duration(seconds: 1)); // Poll setiap 10 detik
-        final data = await controller.getEmployee();
-        yield data;
-      }
+      // while (true) {
+      //   await Future.delayed(Duration(seconds: 1)); // Poll setiap 10 detik
+      //   final data = await controller.getEmployee();
+      //   yield data;
+      // }
     } catch (e) {
       yield []; // Kirimkan daftar kosong atau tangani error dengan cara lain
     }
@@ -611,29 +573,39 @@ class _HistoryChatState extends State<HistoryChat> {
                                                     size: 15,
                                                     color: Constanst.Secondary,
                                                   ),
-                                         status.toString() == '0'
+                                            status.toString() == '0'
                                                 ? Text(
-                                                  
                                                     " Pesan ini telah dihapus",
-                                                    
                                                     style: GoogleFonts.inter(
                                                         fontSize: 12,
-                                                        
                                                         color: Constanst
                                                             .fgSecondary,
-                                                            fontStyle: FontStyle.italic,
+                                                        fontStyle:
+                                                            FontStyle.italic,
                                                         fontWeight:
                                                             FontWeight.w400),
                                                   )
-                                                :     tipeLampiran == '.png'
-                                                ? Row(
-                                                    children: [
-                                                      Icon(Icons.image),
-                                                      SizedBox(
-                                                        width: 8,
-                                                      ),
-                                                      Text(
-                                                        "${pesan == "" ? "Foto " : pesan}",
+                                                : tipeLampiran == '.png'
+                                                    ? Row(
+                                                        children: [
+                                                          Icon(Icons.image),
+                                                          SizedBox(
+                                                            width: 8,
+                                                          ),
+                                                          Text(
+                                                            "${pesan == "" ? "Foto " : pesan}",
+                                                            style: GoogleFonts.inter(
+                                                                fontSize: 12,
+                                                                color: Constanst
+                                                                    .fgSecondary,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : Text(
+                                                        " $pesan",
                                                         style: GoogleFonts.inter(
                                                             fontSize: 12,
                                                             color: Constanst
@@ -642,17 +614,6 @@ class _HistoryChatState extends State<HistoryChat> {
                                                                 FontWeight
                                                                     .w400),
                                                       ),
-                                                    ],
-                                                  )
-                                                : Text(
-                                                    " $pesan",
-                                                    style: GoogleFonts.inter(
-                                                        fontSize: 12,
-                                                        color: Constanst
-                                                            .fgSecondary,
-                                                        fontWeight:
-                                                            FontWeight.w400),
-                                                  ),
                                           ],
                                         )
                                       : Row(
@@ -661,15 +622,13 @@ class _HistoryChatState extends State<HistoryChat> {
                                           children: [
                                             status.toString() == '0'
                                                 ? Text(
-                                                  
                                                     " Pesan ini telah dihapus",
-                                                    
                                                     style: GoogleFonts.inter(
                                                         fontSize: 12,
-                                                        
                                                         color: Constanst
                                                             .fgSecondary,
-                                                            fontStyle: FontStyle.italic,
+                                                        fontStyle:
+                                                            FontStyle.italic,
                                                         fontWeight:
                                                             FontWeight.w400),
                                                   )
@@ -926,27 +885,29 @@ class _HistoryChatState extends State<HistoryChat> {
                 physics: const BouncingScrollPhysics(),
                 child: Obx(() => controller.isLoadingEnployee.value
                     ? SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Center(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CircularProgressIndicator(
-                                  color: Constanst.onPrimary,
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                // TextLabel(
-                                //   text: "Memuat data",
-                                //   size: 12.0,
-                                //   font: FontsApp.interMedium,
-                                //   color: ColorsApp.colorBrandPrimary,
-                                // )
-                              ],
+                        child: SizedBox(
+                          height: double.maxFinite,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircularProgressIndicator(
+                                    color: Constanst.onPrimary,
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  // TextLabel(
+                                  //   text: "Memuat data",
+                                  //   size: 12.0,
+                                  //   font: FontsApp.interMedium,
+                                  //   color: ColorsApp.colorBrandPrimary,
+                                  // )
+                                ],
+                              ),
                             ),
                           ),
                         ),

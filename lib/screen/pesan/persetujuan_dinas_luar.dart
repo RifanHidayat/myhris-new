@@ -626,6 +626,7 @@ class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar>
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   onTap: () {
+                    print("nahlo: $idx");
                     Get.to(DetailPersetujuanDinasLuar(
                       emId: emIdPengaju,
                       title: typeAjuan,

@@ -111,7 +111,14 @@ class KontrolController extends GetxController {
             }
           }
           this.departementAkses.refresh();
-          if (departementAkses.value.isNotEmpty) {
+          if (status == 1) {
+            idDepartemenTerpilih.value = "${departementAkses[0]['id']}";
+            namaDepartemenTerpilih.value = departementAkses[0]['name'];
+            departemen.value.text = departementAkses[0]['name'];
+            showViewKontrol.value = true;
+            getEmployeeKontrol();
+          }
+          if (departementAkses.isNotEmpty) {
             if (status == 1) {
               idDepartemenTerpilih.value = "${departementAkses[0]['id']}";
               namaDepartemenTerpilih.value = departementAkses[0]['name'];

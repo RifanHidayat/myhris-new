@@ -364,6 +364,8 @@ class _PersetujuanLemburState extends State<PersetujuanLembur>
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   onTap: () {
+                    print(
+                        "wkwkw ini $emIdPengaju ,, $typeAjuan ,, $idx ,, $delegasi");
                     Get.to(DetailPersetujuanLembur(
                       emId: emIdPengaju,
                       title: typeAjuan,

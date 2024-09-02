@@ -55,7 +55,7 @@ class ApprovalController extends GetxController {
     statusCari.value = !statusCari.value;
   }
 
-  void startLoadData(title, bulan, tahun, status) {
+  Future<void> startLoadData(title, bulan, tahun, status) async {
     getLoadsysData(title, bulan, tahun, status);
   }
 
@@ -178,7 +178,6 @@ class ApprovalController extends GetxController {
             'image': element['image'],
             'apply_status': element['apply_status'],
             'apply2_status': element['apply2_status'],
-           
           };
           listData.value.add(data);
           listDataRiwayat.value.add(data);
@@ -576,7 +575,7 @@ class ApprovalController extends GetxController {
     });
   }
 
-  void    loadDataTidakHadir(status) {
+  void loadDataTidakHadir(status) {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
         : "spesifik_approval_multi";
@@ -637,7 +636,7 @@ class ApprovalController extends GetxController {
             'date_selected': element['date_selected'],
             'apply_status': element['apply_status'],
             'apply2_status': element['apply2_status'],
-            'input_time':element['input_time']
+            'input_time': element['input_time']
           };
           listData.value.add(data);
           listDataAll.value.add(data);

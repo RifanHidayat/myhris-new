@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,10 +28,32 @@ class _KlaimState extends State<Klaim> {
   final controller = Get.put(KlaimController());
   var controllerGlobal = Get.put(GlobalController());
   final dashboardController = Get.put(DashboardController());
+  var idx = 0;
 
   @override
   void initState() {
     controller.loadDataKlaim();
+    if (Get.arguments != null) {
+      idx = Get.arguments;
+    }
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (controller.listKlaim.isNotEmpty) {
+        for (var item in controller.listKlaim.value) {
+          if (item['id'] == idx) {
+            var alasanReject = item['alasan_reject'] ?? "";
+            var approve;
+            if (item['approve2_by'] == "" ||
+                item['approve2_by'] == "null" ||
+                item['approve2_by'] == null) {
+              approve = item['approve_by'];
+            } else {
+              approve = item['approve2_by'];
+            }
+            controller.showDetailRiwayat(item, approve, alasanReject);
+          }
+        }
+      }
+    });
     super.initState();
   }
 

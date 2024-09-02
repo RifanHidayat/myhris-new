@@ -9,47 +9,42 @@ import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class ChatController extends GetxController {
-
- var loading = "Memuat data...".obs;
-  var jumlahChat=0.obs;
-    RxBool isSearching = false.obs;
-    var isLoading=true.obs;
-        RxBool isLoadingEnployee = false.obs;
-      RxBool isSearchingEmployee = false.obs;
+  var loading = "Memuat data...".obs;
+  var jumlahChat = 0.obs;
+  RxBool isSearching = false.obs;
+  var isLoading = true.obs;
+  RxBool isLoadingEnployee = false.obs;
+  RxBool isSearchingEmployee = false.obs;
   var searchController = TextEditingController();
-   var searchControllerEmployee = TextEditingController();
+  var searchControllerEmployee = TextEditingController();
   var cari = TextEditingController().obs;
-  var statuspengiriman=true.obs;
+  var statuspengiriman = true.obs;
 
   var isSelectionMode = false.obs;
   var selectedMessage = Rxn<Message>();
   var isPressed = false.obs;
 
   void toggleSearch() {
-    
     isSearching.value = !isSearching.value;
   }
-  
+
   void toggleSearchEmployee() {
     isSearchingEmployee.value = !isSearchingEmployee.value;
-   
   }
-
-
-
 
   void clearText() {
     searchController.clear();
     // pencarianNamaKaryawan('');
   }
-   void clearTextEmployee() {
-     searchControllerEmployee.clear();
-     getAllEmployee();
+
+  void clearTextEmployee() {
+    searchControllerEmployee.clear();
+    getAllEmployee();
     // pencarianNamaKaryawan('');
   }
-  var infoEmployee = [].obs;
-   var infoAllEmployee = [].obs;
 
+  var infoEmployee = [].obs;
+  var infoAllEmployee = [].obs;
 
   void getCount() async {
     var emId = AppData.informasiUser == null ||
@@ -75,10 +70,7 @@ class ChatController extends GetxController {
     }
   }
 
-
-
   Future<List<dynamic>> getEmployee() async {
-
     print('masuk sini history chat new  newnew ');
 
     var data = await Request(
@@ -90,18 +82,17 @@ class ChatController extends GetxController {
     print('masuk sini history chat new ${response}');
 
     if (data.statusCode == 200) {
-          isLoading.value=false;
+      isLoading.value = false;
       return response;
       infoEmployee.value = response['data'];
       print('berhasil ambil data chat ${response['data']}');
     } else {
-    isLoading.value=false;
+      isLoading.value = false;
       throw Exception('Failed to load data');
     }
   }
 
-    void  getEmployeeNew() async {
-
+  void getEmployeeNew() async {
     print('masuk sini history chat new  newnew ');
 
     var data = await Request(
@@ -113,22 +104,20 @@ class ChatController extends GetxController {
     print('masuk sini history chat new ${response}');
 
     if (data.statusCode == 200) {
-          isLoading.value=false;
+      isLoading.value = false;
       // return response;
       infoEmployee.value = response;
       print('berhasil ambil data chat ${response}');
     } else {
-    isLoading.value=false;
+      isLoading.value = false;
       throw Exception('Failed to load data');
     }
   }
 
-
-void  getAllEmployee() async{
-isLoadingEnployee.value=true;
-  infoAllEmployee.clear();
-print('masuk sini history chat new  newnew new ');
-
+  void getAllEmployee() async {
+    isLoadingEnployee.value = true;
+    infoAllEmployee.clear();
+    print('masuk sini history chat new  newnew new ');
 
     var data = await Request(
             url: 'chatting/employee',
@@ -138,21 +127,17 @@ print('masuk sini history chat new  newnew new ');
     var response = jsonDecode(data.body);
     print('masuk sini history chat new employee ${response}');
 
-
-if (data.statusCode==200){
- isLoadingEnployee.value=false;
+    if (data.statusCode == 200) {
+      isLoadingEnployee.value = false;
 
 // return response;
-  infoAllEmployee.value=response;
-
-
-}else {
-isLoadingEnployee.value=false;
+      infoAllEmployee.value = response;
+    } else {
+      isLoadingEnployee.value = false;
 
       throw Exception('Failed to load data');
     }
   }
-
 
   // var listFoto = [].obs;
   String getTanggal() {

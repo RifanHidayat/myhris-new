@@ -4,7 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -381,7 +381,7 @@ class LaporanTidakHadirController extends GetxController {
           //       EdgeInsets.fromLTRB(0, AppBar().preferredSize.height, 0, 0),
           return Padding(
             padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: SingleChildScrollView(
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -444,9 +444,10 @@ class LaporanTidakHadirController extends GetxController {
                                       const EdgeInsets.only(top: 5, bottom: 5),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: "$id" == idDepartemenTerpilih.value
-                                            ? Constanst.colorPrimary
-                                            : Colors.transparent,
+                                        color:
+                                            "$id" == idDepartemenTerpilih.value
+                                                ? Constanst.colorPrimary
+                                                : Colors.transparent,
                                         borderRadius: Constanst
                                             .styleBoxDecoration1.borderRadius,
                                         border: Border.all(

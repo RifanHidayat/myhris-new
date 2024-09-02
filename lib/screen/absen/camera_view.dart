@@ -4,7 +4,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
@@ -309,8 +308,6 @@ class _CameraViewState extends State<CameraView> {
           alignment: Alignment.center,
           child: Stack(
             children: [
-          
-
               Align(
                 alignment: Alignment.center,
                 child: Container(
@@ -319,8 +316,7 @@ class _CameraViewState extends State<CameraView> {
                     child: FutureBuilder<void>(
                       future: _initializeControllerFuture,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.done) {
+                        if (snapshot.connectionState == ConnectionState.done) {
                           // If the Future is complete, display the preview.
                           return CameraPreview(_controller!);
                         } else {
@@ -331,9 +327,8 @@ class _CameraViewState extends State<CameraView> {
                       },
                     )),
               ),
-                  Container(
-             
-                padding: EdgeInsets.only(top: 28,left: 16,right: 16),
+              Container(
+                padding: EdgeInsets.only(top: 28, left: 16, right: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -341,31 +336,35 @@ class _CameraViewState extends State<CameraView> {
                         onTap: () {
                           Get.back();
                         },
-                        child: Icon(Iconsax.arrow_left,color: Colors.white,)),
+                        child: Icon(
+                          Iconsax.arrow_left,
+                          color: Colors.white,
+                        )),
                     SizedBox(
                       height: 16,
                     ),
                     Container(
-                        width: MediaQuery.of(context).size.width,
-                      child:Column(
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                            TextLabell(
-                      text: "Kedipkan mata",
-                      color: Colors.white,
-                      size: 14,
-                    ),
-                    SizedBox(height: 4,),
-                    TextLabell(
-                      text: "Untuk mulai memindai",
-                      color: Colors.white,
-                      size: 14,
-                    )
+                          TextLabell(
+                            text: "Kedipkan mata",
+                            color: Colors.white,
+                            size: 14,
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          TextLabell(
+                            text: "Untuk mulai memindai",
+                            color: Colors.white,
+                            size: 14,
+                          )
                         ],
-                      ) ,
+                      ),
                     )
-                  
                   ],
                 ),
               ),

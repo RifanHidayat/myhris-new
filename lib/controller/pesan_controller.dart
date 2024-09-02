@@ -4,9 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:siscom_operasional/controller/approval_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/screen/pesan/approval.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_absensi.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_cuti.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_dinas_luar.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_izin.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_kasbon.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_klaim.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_lembur.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_payroll.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_tugas_luar.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_wfh.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_absensi.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_cuti.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_dinas_luar.dart';
@@ -26,6 +37,7 @@ import 'package:url_launcher/url_launcher.dart';
 class PesanController extends GetxController {
   PageController menuController = PageController(initialPage: 0);
   RefreshController refreshController = RefreshController(initialRefresh: true);
+  var controllerApproval = Get.put(ApprovalController());
 
   var cari = TextEditingController().obs;
 
@@ -88,7 +100,7 @@ class PesanController extends GetxController {
     selectedView.value = 0;
   }
 
-  void getTimeNow() {
+  Future<void> getTimeNow() async {
     var dt = DateTime.now();
     bulanSelectedSearchHistory.value = "${dt.month}";
     tahunSelectedSearchHistory.value = "${dt.year}";
@@ -677,6 +689,153 @@ class PesanController extends GetxController {
     // }
   }
 
+  void routeApprovalNotif({
+    required String title,
+    required String emIdPengaju,
+    required String idx,
+    required String delegasi,
+    required String url,
+  }) async {
+    // print("lalala: $url");
+    if (title == "Persetujuan Lembur" || url == "Lembur") {
+      await controllerApproval.startLoadData(
+          'Lembur',
+          bulanSelectedSearchHistory.value,
+          tahunSelectedSearchHistory.value,
+          'persetujuan');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => DetailPersetujuanLembur(
+              emId: emIdPengaju,
+              title: 'Lembur',
+              idxDetail: idx,
+              delegasi: delegasi,
+            ));
+      });
+    } else if (title == "Approval Cuti" || url == "Cuti") {
+      controllerApproval.startLoadData('Cuti', bulanSelectedSearchHistory.value,
+          tahunSelectedSearchHistory.value, 'persetujuan');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => DetailPersetujuanCuti(
+              emId: emIdPengaju,
+              title: 'Cuti',
+              idxDetail: idx,
+              delegasi: delegasi,
+            ));
+      });
+    } else if (title == "Approval Izin" ||
+        url == "Izin" ||
+        url == "TidakHadir") {
+      controllerApproval.startLoadData(
+          'Tidak Hadir',
+          bulanSelectedSearchHistory.value,
+          tahunSelectedSearchHistory.value,
+          'persetujuan');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => DetailPersetujuanIzin(
+              emId: emIdPengaju,
+              title: 'Tidak Hadir',
+              idxDetail: idx,
+              delegasi: delegasi,
+            ));
+      });
+    } else if (title == "Approval Tugas Luar" || url == "TugasLuar") {
+      controllerApproval.startLoadData(
+          'Tugas Luar',
+          bulanSelectedSearchHistory.value,
+          tahunSelectedSearchHistory.value,
+          'persetujuan');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => DetailPersetujuanTugasLuar(
+              emId: emIdPengaju,
+              title: 'Tugas Luar',
+              idxDetail: idx,
+              delegasi: delegasi,
+            ));
+      });
+    } else if (url == "DinasLuar") {
+      controllerApproval.startLoadData(
+          'Dinas Luar',
+          bulanSelectedSearchHistory.value,
+          tahunSelectedSearchHistory.value,
+          'persetujuan');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => DetailPersetujuanDinasLuar(
+              emId: emIdPengaju,
+              title: 'Dinas Luar',
+              idxDetail: idx,
+              delegasi: delegasi,
+            ));
+      });
+    } else if (title == "Approval Klaim" || url == "Klaim") {
+      controllerApproval.startLoadData(
+          'Klaim',
+          bulanSelectedSearchHistory.value,
+          tahunSelectedSearchHistory.value,
+          'persetujuan');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => DetailPersetujuanKlaim(
+              emId: emIdPengaju,
+              title: 'Klaim',
+              idxDetail: idx,
+              delegasi: delegasi,
+            ));
+      });
+    } else if (title == "Approval Payroll" || url == "Payroll") {
+      controllerApproval.startLoadData(
+          'Payroll',
+          bulanSelectedSearchHistory.value,
+          tahunSelectedSearchHistory.value,
+          'persetujuan');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => DetailPersetujuanPayroll(
+              emId: emIdPengaju,
+              title: 'Payroll',
+              idxDetail: idx,
+              delegasi: delegasi,
+            ));
+      });
+    } else if (title == "Approval Absensi" || url == "Absensi") {
+      controllerApproval.startLoadData(
+          'Absensi',
+          bulanSelectedSearchHistory.value,
+          tahunSelectedSearchHistory.value,
+          'persetujuan');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => DetailPersetujuanAbsensi(
+              emId: emIdPengaju,
+              title: 'Absensi',
+              idxDetail: idx,
+              delegasi: delegasi,
+            ));
+      });
+    } else if (title == "Approval WFH" || url == "WFH") {
+      controllerApproval.startLoadData('WFH', bulanSelectedSearchHistory.value,
+          tahunSelectedSearchHistory.value, 'persetujuan');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => DetailPersetujuanWfh(
+              emId: emIdPengaju,
+              title: "WFH",
+              idxDetail: idx,
+              delegasi: delegasi,
+            ));
+      });
+    } else if (title == "Approval Kasbon" || url == "Kasbon") {
+      controllerApproval.startLoadData(
+          'Kasbon',
+          bulanSelectedSearchHistory.value,
+          tahunSelectedSearchHistory.value,
+          'persetujuan');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.to(() => DetailPersetujuanKasbon(
+              emId: emIdPengaju,
+              title: "Kasbon",
+              idxDetail: idx,
+              delegasi: delegasi,
+            ));
+      });
+    } else {}
+  }
+
   void loadNotifikasi() {
     listNotifikasi.value.clear();
     var dataUser = AppData.informasiUser;
@@ -742,10 +901,10 @@ class PesanController extends GetxController {
     updateDataNotif(pisahkanData);
   }
 
-  void redirectToPage(url) {
+  void redirectToPage(url, arguments) {
     if (url != "") {
       var dashboardController = Get.find<DashboardController>();
-      dashboardController.routePageDashboard(url);
+      dashboardController.routePageDashboard(url, arguments);
     }
   }
 
@@ -831,13 +990,13 @@ class PesanController extends GetxController {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
+                  const Expanded(
                     flex: 90,
                     child: Text(
                       "Detail Riwayat",
@@ -851,53 +1010,53 @@ class PesanController extends GetxController {
                         onTap: () {
                           Navigator.pop(Get.context!);
                         },
-                        child: Icon(
+                        child: const Icon(
                           Iconsax.close_circle,
                           color: Colors.red,
                         )),
                   )
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Divider(
                 height: 5,
                 color: Constanst.colorText2,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Center(
                 child: Text(
                   dataDetail[0]['title_ajuan'],
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Center(
                 child: Text(
                   Constanst.convertDate2("${dataDetail[0]['waktu_pengajuan']}"),
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Text(
                 dataDetail[0]['nama_pengaju'],
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
                 "${dataDetail[0]['title_ajuan']} pada : ",
                 style: TextStyle(color: Constanst.colorText2),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -906,103 +1065,103 @@ class PesanController extends GetxController {
                 children: [
                   Text(
                     dataDetail[0]['waktu_dari'],
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   dataDetail[0]['type'] == "Klaim"
-                      ? SizedBox()
-                      : Padding(
-                          padding: const EdgeInsets.only(left: 5),
+                      ? const SizedBox()
+                      : const Padding(
+                          padding: EdgeInsets.only(left: 5),
                           child: Text("s.d",
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                   dataDetail[0]['type'] == "Klaim"
-                      ? SizedBox()
+                      ? const SizedBox()
                       : Padding(
                           padding: const EdgeInsets.only(left: 5),
                           child: Text(
                             dataDetail[0]['waktu_sampai'],
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                 ],
               ),
               dataDetail[0]['type'] != "Klaim"
-                  ? SizedBox()
+                  ? const SizedBox()
                   : SizedBox(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Text(
                             "Total Klaim",
                             style: TextStyle(color: Constanst.colorText2),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           Text(
                             "$rupiah",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                     ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
                 "Deskripsi",
                 style: TextStyle(color: Constanst.colorText2),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Text(
                 dataDetail[0]['catatan'],
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               dataDetail[0]['durasi'] == ""
-                  ? SizedBox()
+                  ? const SizedBox()
                   : SizedBox(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Text(
                             "Durasi",
                             style: TextStyle(color: Constanst.colorText2),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           Text(
                             "${dataDetail[0]['durasi']} Hari",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                     ),
               listDateSelected.isEmpty
-                  ? SizedBox()
-                  : SizedBox(
+                  ? const SizedBox()
+                  : const SizedBox(
                       height: 10,
                     ),
               listDateSelected.isEmpty
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Text(
                       "Tanggal terpilih",
                       style: TextStyle(color: Constanst.colorText2),
                     ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               listDateSelected.isEmpty
-                  ? SizedBox()
+                  ? const SizedBox()
                   : ListView.builder(
                       itemCount: listDateSelected.length,
                       scrollDirection: Axis.vertical,
@@ -1014,28 +1173,29 @@ class PesanController extends GetxController {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             listDateSelected.length == 1
-                                ? SizedBox()
-                                : Text('-'),
+                                ? const SizedBox()
+                                : const Text('-'),
                             Padding(
                               padding: listDateSelected.length == 1
-                                  ? EdgeInsets.only(left: 2)
-                                  : EdgeInsets.only(left: 8),
+                                  ? const EdgeInsets.only(left: 2)
+                                  : const EdgeInsets.only(left: 8),
                               child: Text(
                                 tanggalConvert,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                             )
                           ],
                         );
                       }),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
                 "Tipe",
                 style: TextStyle(color: Constanst.colorText2),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Container(
@@ -1045,24 +1205,25 @@ class PesanController extends GetxController {
                     namaTipe == "" || namaTipe == "null" || namaTipe == null
                         ? Text(
                             "${dataDetail[0]['type']} ",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           )
                         : Text(
                             "${dataDetail[0]['type']} $namaTipe",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                     dataDetail[0]['nama_tipe'] == "" ||
                             dataDetail[0]['nama_tipe'] == null ||
                             dataDetail[0]['nama_tipe'] == 'null'
-                        ? SizedBox()
+                        ? const SizedBox()
                         : Expanded(
                             child: Container(
                               width: double.maxFinite,
                               child: Padding(
-                                padding: EdgeInsets.only(left: 8),
+                                padding: const EdgeInsets.only(left: 8),
                                 child: Text(
                                   "( ${dataDetail[0]['nama_tipe']}  ${dataDetail[0]['category'] == "" || dataDetail[0]['category'] == null ? "" : " - ${dataDetail[0]['category']}"})",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
@@ -1070,66 +1231,66 @@ class PesanController extends GetxController {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               dataDetail[0]['waktu'] == "" ||
                       dataDetail[0]['category'] == "FULLDAY"
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Text(
                       "Waktu",
                       style: TextStyle(color: Constanst.colorText2),
                     ),
               dataDetail[0]['waktu'] == "" ||
                       dataDetail[0]['category'] == "FULLDAY"
-                  ? SizedBox()
-                  : SizedBox(
+                  ? const SizedBox()
+                  : const SizedBox(
                       height: 5,
                     ),
               dataDetail[0]['waktu'] == "" ||
                       dataDetail[0]['category'] == "FULLDAY"
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "$waktu1 sd $waktu2",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
                 "Tanggal persetujuan / penolakan",
                 style: TextStyle(color: Constanst.colorText2),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               dataDetail[0]['apply_date'] == null ||
                       dataDetail[0]['apply_date'] == ''
-                  ? SizedBox(
+                  ? const SizedBox(
                       child: Text('Tanggal tidak valid'),
                     )
                   : Text(
                       Constanst.convertDate2("${dataDetail[0]['apply_date']}"),
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
                 "Status Pengajuan",
                 style: TextStyle(color: Constanst.colorText2),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               dataDetail[0]['apply_by'] == null ||
                       dataDetail[0]['apply_by'] == ""
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Text(
                       "${dataDetail[0]['status']} oleh ${dataDetail[0]['apply_by']}",
                       style: TextStyle(
@@ -1140,12 +1301,12 @@ class PesanController extends GetxController {
                                   ? Constanst.color5
                                   : Constanst.color4),
                     ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               dataDetail[0]['alasan_reject'] == "" ||
                       dataDetail[0]['alasan_reject'] == null
-                  ? SizedBox()
+                  ? const SizedBox()
                   : SizedBox(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1154,30 +1315,30 @@ class PesanController extends GetxController {
                             "Alasan Reject",
                             style: TextStyle(color: Constanst.colorText2),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           Text(
                             dataDetail[0]['alasan_reject'],
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                     ),
               dataDetail[0]['file'] == "" || dataDetail[0]['file'] == null
-                  ? SizedBox()
+                  ? const SizedBox()
                   : SizedBox(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Text(
                             "File",
                             style: TextStyle(color: Constanst.colorText2),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           Row(
@@ -1187,7 +1348,8 @@ class PesanController extends GetxController {
                                 flex: 60,
                                 child: Text(
                                   dataDetail[0]['file'].toString(),
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                               Expanded(
@@ -1213,7 +1375,7 @@ class PesanController extends GetxController {
                                             color: Constanst.colorPrimary),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(left: 8),
+                                        padding: const EdgeInsets.only(left: 8),
                                         child: Icon(
                                           Icons.arrow_forward_ios,
                                           color: Constanst.colorPrimary,
@@ -1229,7 +1391,7 @@ class PesanController extends GetxController {
                         ],
                       ),
                     ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
             ],

@@ -62,15 +62,15 @@ class _ApprovalState extends State<Approval> {
           child: SafeArea(
             child: Obx(
               () => Padding(
-                padding: EdgeInsets.only(left: 16, right: 16),
+                padding: const EdgeInsets.only(left: 16, right: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     pencarianData(),
-                    SizedBox(
+                    const SizedBox(
                       height: 16,
                     ),
                     Flexible(
@@ -97,10 +97,10 @@ class _ApprovalState extends State<Approval> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Expanded(
+          const Expanded(
             flex: 15,
             child: Padding(
-              padding: const EdgeInsets.only(top: 7, left: 10),
+              padding: EdgeInsets.only(top: 7, left: 10),
               child: Icon(Iconsax.search_normal_1),
             ),
           ),
@@ -117,9 +117,9 @@ class _ApprovalState extends State<Approval> {
                       flex: 85,
                       child: TextField(
                         controller: controller.cari.value,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             border: InputBorder.none, hintText: "Cari"),
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 14.0, height: 1.0, color: Colors.black),
                         onChanged: (value) {
                           controller.cariData(value);
@@ -127,11 +127,11 @@ class _ApprovalState extends State<Approval> {
                       ),
                     ),
                     !controller.statusCari.value
-                        ? SizedBox()
+                        ? const SizedBox()
                         : Expanded(
                             flex: 15,
                             child: IconButton(
-                              icon: Icon(
+                              icon: const Icon(
                                 Iconsax.close_circle,
                                 color: Colors.red,
                               ),
@@ -155,7 +155,7 @@ class _ApprovalState extends State<Approval> {
 
   Widget listDataApproval() {
     return ListView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         itemCount: controller.listData.value.length,
         itemBuilder: (context, index) {
           var data = controller.listData[index];
@@ -173,7 +173,7 @@ class _ApprovalState extends State<Approval> {
               controller.listData.value[index]['waktu_pengajuan'];
           return data['type'] == "payroll"
               ? Padding(
-                  padding: EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 10),
                   child: InkWell(
                     onTap: () {
                       showDataDepartemenAkses(index: index);
@@ -183,7 +183,7 @@ class _ApprovalState extends State<Approval> {
                           border:
                               Border.all(width: 1, color: HexColor('#A9B9CC')),
                           borderRadius: BorderRadius.circular(10)),
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -196,7 +196,7 @@ class _ApprovalState extends State<Approval> {
                               Expanded(
                                   flex: 70,
                                   child: Container(
-                                    padding: EdgeInsets.only(left: 5),
+                                    padding: const EdgeInsets.only(left: 5),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -205,7 +205,7 @@ class _ApprovalState extends State<Approval> {
                                           text: data['full_name'].toString(),
                                           weight: FontWeight.bold,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 1,
                                         ),
                                         TextLabell(
@@ -222,7 +222,7 @@ class _ApprovalState extends State<Approval> {
                                       borderRadius: BorderRadius.circular(10),
                                       color: HexColor('#FEF9E6'),
                                     ),
-                                    padding: EdgeInsets.only(
+                                    padding: const EdgeInsets.only(
                                         left: 8, right: 8, top: 4, bottom: 4),
                                     child: TextLabell(
                                       text: "Pending",
@@ -231,11 +231,11 @@ class _ApprovalState extends State<Approval> {
                                   ))
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 4,
                           ),
-                          Divider(),
-                          SizedBox(
+                          const Divider(),
+                          const SizedBox(
                             height: 4,
                           ),
                           Row(
@@ -258,11 +258,11 @@ class _ApprovalState extends State<Approval> {
                                   ))
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 4,
                           ),
-                          Divider(),
-                          SizedBox(
+                          const Divider(),
+                          const SizedBox(
                             height: 4,
                           ),
                           Row(
@@ -271,7 +271,7 @@ class _ApprovalState extends State<Approval> {
                                 Iconsax.timer,
                                 color: HexColor('#F2AA0D'),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 4,
                               ),
                               TextLabell(
@@ -290,11 +290,11 @@ class _ApprovalState extends State<Approval> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 16,
                         ),
                         Text("${Constanst.convertDate2("$tanggalPengajuan")}"),
-                        SizedBox(
+                        const SizedBox(
                           height: 8,
                         ),
                         Container(
@@ -303,12 +303,12 @@ class _ApprovalState extends State<Approval> {
                             borderRadius: Constanst.borderStyle2,
                             boxShadow: [
                               BoxShadow(
-                                color: Color.fromARGB(255, 170, 170, 170)
+                                color: const Color.fromARGB(255, 170, 170, 170)
                                     .withOpacity(0.4),
                                 spreadRadius: 1,
                                 blurRadius: 1,
-                                offset:
-                                    Offset(1, 1), // changes position of shadow
+                                offset: const Offset(
+                                    1, 1), // changes position of shadow
                               ),
                             ],
                           ),
@@ -332,13 +332,14 @@ class _ApprovalState extends State<Approval> {
                                           children: [
                                             Text(
                                               nomor_ajuan.toString(),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 16),
                                             ),
                                             Text(
                                               namaPengaju,
-                                              style: TextStyle(fontSize: 16),
+                                              style:
+                                                  const TextStyle(fontSize: 16),
                                             ),
                                           ],
                                         ),
@@ -352,13 +353,13 @@ class _ApprovalState extends State<Approval> {
                                           ? 30
                                           : 55,
                                       child: Container(
-                                        margin: EdgeInsets.only(right: 8),
+                                        margin: const EdgeInsets.only(right: 8),
                                         decoration: BoxDecoration(
                                           color: Constanst.colorBGPending,
                                           borderRadius: Constanst.borderStyle1,
                                         ),
                                         child: Padding(
-                                          padding: EdgeInsets.only(
+                                          padding: const EdgeInsets.only(
                                               left: 3,
                                               right: 3,
                                               top: 5,
@@ -400,7 +401,7 @@ class _ApprovalState extends State<Approval> {
                                     )
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Row(
@@ -409,32 +410,32 @@ class _ApprovalState extends State<Approval> {
                                       flex: 50,
                                       child: Text(
                                         "Checkin ${dariJam ?? "_ _ : _ _"}",
-                                        style: TextStyle(fontSize: 14),
+                                        style: const TextStyle(fontSize: 14),
                                       ),
                                     ),
                                     Expanded(
                                       flex: 50,
                                       child: Text(
                                         "Checkout ${sampaiJam ?? "_ _ : _ _"}",
-                                        style: TextStyle(fontSize: 14),
+                                        style: const TextStyle(fontSize: 14),
                                       ),
                                     ),
                                   ],
                                 ),
                                 namaApprove1 == "" || leave_status == "Pending"
-                                    ? SizedBox()
-                                    : SizedBox(
+                                    ? const SizedBox()
+                                    : const SizedBox(
                                         height: 10,
                                       ),
                                 namaApprove1 == "" || leave_status == "Pending"
-                                    ? SizedBox()
+                                    ? const SizedBox()
                                     : Center(
                                         child: Text(
                                           "Approve 3 by - $namaApprove1",
-                                          style: TextStyle(fontSize: 14),
+                                          style: const TextStyle(fontSize: 14),
                                         ),
                                       ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 InkWell(
@@ -450,9 +451,9 @@ class _ApprovalState extends State<Approval> {
                                     decoration: BoxDecoration(
                                         color: Constanst.colorPrimary,
                                         borderRadius: Constanst.borderStyle2),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 5, bottom: 5),
+                                    child: const Padding(
+                                      padding:
+                                          EdgeInsets.only(top: 5, bottom: 5),
                                       child: Center(
                                         child: Text(
                                           "Lihat Detail",
@@ -472,11 +473,11 @@ class _ApprovalState extends State<Approval> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 16,
                         ),
                         Text("${Constanst.convertDate2("$tanggalPengajuan")}"),
-                        SizedBox(
+                        const SizedBox(
                           height: 8,
                         ),
                         Container(
@@ -485,12 +486,12 @@ class _ApprovalState extends State<Approval> {
                             borderRadius: Constanst.borderStyle2,
                             boxShadow: [
                               BoxShadow(
-                                color: Color.fromARGB(255, 170, 170, 170)
+                                color: const Color.fromARGB(255, 170, 170, 170)
                                     .withOpacity(0.4),
                                 spreadRadius: 1,
                                 blurRadius: 1,
-                                offset:
-                                    Offset(1, 1), // changes position of shadow
+                                offset: const Offset(
+                                    1, 1), // changes position of shadow
                               ),
                             ],
                           ),
@@ -510,7 +511,7 @@ class _ApprovalState extends State<Approval> {
                                         padding: const EdgeInsets.only(top: 5),
                                         child: Text(
                                           namaPengaju,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16),
                                         ),
@@ -524,13 +525,13 @@ class _ApprovalState extends State<Approval> {
                                           ? 30
                                           : 55,
                                       child: Container(
-                                        margin: EdgeInsets.only(right: 8),
+                                        margin: const EdgeInsets.only(right: 8),
                                         decoration: BoxDecoration(
                                           color: Constanst.colorBGPending,
                                           borderRadius: Constanst.borderStyle1,
                                         ),
                                         child: Padding(
-                                          padding: EdgeInsets.only(
+                                          padding: const EdgeInsets.only(
                                               left: 3,
                                               right: 3,
                                               top: 5,
@@ -572,27 +573,27 @@ class _ApprovalState extends State<Approval> {
                                     )
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Text(
                                   "$typeAjuan",
-                                  style: TextStyle(fontSize: 14),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                                 namaApprove1 == "" || leave_status == "Pending"
-                                    ? SizedBox()
-                                    : SizedBox(
+                                    ? const SizedBox()
+                                    : const SizedBox(
                                         height: 10,
                                       ),
                                 namaApprove1 == "" || leave_status == "Pending"
-                                    ? SizedBox()
+                                    ? const SizedBox()
                                     : Center(
                                         child: Text(
                                           "Approve 1 by - $namaApprove1",
-                                          style: TextStyle(fontSize: 14),
+                                          style: const TextStyle(fontSize: 14),
                                         ),
                                       ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 InkWell(
@@ -608,9 +609,9 @@ class _ApprovalState extends State<Approval> {
                                     decoration: BoxDecoration(
                                         color: Constanst.colorPrimary,
                                         borderRadius: Constanst.borderStyle2),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 5, bottom: 5),
+                                    child: const Padding(
+                                      padding:
+                                          EdgeInsets.only(top: 5, bottom: 5),
                                       child: Center(
                                         child: Text(
                                           "Lihat Detail",
@@ -647,20 +648,20 @@ class _ApprovalState extends State<Approval> {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  padding:
-                      EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 8),
+                  padding: const EdgeInsets.only(
+                      top: 8, bottom: 8, left: 8, right: 8),
                   decoration: BoxDecoration(
                       border: Border.all(width: 1, color: HexColor('#CBD5E0')),
                       borderRadius: BorderRadius.circular(12)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextLabell(
+                      const TextLabell(
                         text: "Tanggal Pengajuan",
                         weight: FontWeight.bold,
                       ),
@@ -672,13 +673,13 @@ class _ApprovalState extends State<Approval> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  padding:
-                      EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 8),
+                  padding: const EdgeInsets.only(
+                      top: 8, bottom: 8, left: 8, right: 8),
                   decoration: BoxDecoration(
                       border: Border.all(width: 1, color: HexColor('#CBD5E0')),
                       borderRadius: BorderRadius.circular(12)),
@@ -688,7 +689,7 @@ class _ApprovalState extends State<Approval> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextLabell(
+                          const TextLabell(
                             text: "Nama pengajuan",
                             weight: FontWeight.bold,
                           ),
@@ -698,17 +699,17 @@ class _ApprovalState extends State<Approval> {
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 4,
                       ),
-                      Divider(),
-                      SizedBox(
+                      const Divider(),
+                      const SizedBox(
                         height: 4,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextLabell(
+                          const TextLabell(
                             text: "Keterangan",
                             weight: FontWeight.bold,
                           ),
@@ -721,13 +722,13 @@ class _ApprovalState extends State<Approval> {
                     ],
                   ),
                 ),
-                Flexible(
+                const Flexible(
                   flex: 3,
                   child: Padding(
                     padding: EdgeInsets.only(),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 Container(
@@ -743,8 +744,8 @@ class _ApprovalState extends State<Approval> {
                             ),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          padding: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Center(
+                          padding: const EdgeInsets.only(top: 8, bottom: 8),
+                          child: const Center(
                             child: TextLabell(
                               text: "Batalkan",
                               color: Colors.red,
@@ -752,7 +753,7 @@ class _ApprovalState extends State<Approval> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Expanded(
@@ -780,8 +781,8 @@ class _ApprovalState extends State<Approval> {
                               ),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            padding: EdgeInsets.only(top: 8, bottom: 8),
-                            child: Center(
+                            padding: const EdgeInsets.only(top: 8, bottom: 8),
+                            child: const Center(
                               child: TextLabell(
                                 text: "Approve",
                                 color: Colors.white,
@@ -793,7 +794,7 @@ class _ApprovalState extends State<Approval> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
               ],

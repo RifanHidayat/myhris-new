@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -525,13 +525,11 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
 
                 print(data.toString());
 
-                
-
                 if (data.isNotEmpty) {
                   controller.limitCuti.value = data[0]['leave_day'];
                   controller.dateSelected.value = data[0]['select_date'];
                   controller.allowMinus.value = data[0]['allow_minus'];
-                  controller.isBackDate.value=data[0]['back_date'].toString();
+                  controller.isBackDate.value = data[0]['back_date'].toString();
                 }
 
                 print("Allow minu ${data[0]['allow_minus']}");
@@ -586,7 +584,6 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                           size: 26,
                         ),
                       ),
-                     
                       Expanded(
                         flex: 90,
                         child: Column(
@@ -700,18 +697,18 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-               flex: 50,
+              flex: 50,
               child: Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: InkWell(
                   onTap: () {
                     DatePicker.showPicker(
                       context,
-                    
                       pickerModel: CustomDatePicker(
-                        
                         currentTime: DateTime.now(),
-                        minTime: controller.isBackDate.value=="0"?DateTime(2000):DateTime.now(),
+                        minTime: controller.isBackDate.value == "0"
+                            ? DateTime(2000)
+                            : DateTime.now(),
                       ),
                       onConfirm: (time) {
                         if (time != null) {
@@ -726,13 +723,10 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 16.0, 0.0, 16.0),
                     child: Row(
-                      
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          flex: 15,
-                          child: const Icon(Iconsax.calendar_2)),
-                       
+                            flex: 15, child: const Icon(Iconsax.calendar_2)),
                         Expanded(
                           flex: 80,
                           child: Column(
@@ -793,7 +787,9 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                       // maxTime: DateTime(DateTime.now().year, DateTime.now().month,
                       //     DateTime.now().day),
                       currentTime: DateTime.now(),
-                       minTime: controller.isBackDate.value=="0"?DateTime(2000):DateTime.now(),
+                      minTime: controller.isBackDate.value == "0"
+                          ? DateTime(2000)
+                          : DateTime.now(),
                     ),
                     onConfirm: (time) {
                       if (time != null) {
@@ -851,16 +847,13 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        flex: 15,
-                        child: Icon(Iconsax.calendar_2)),
-                   
+                      Expanded(flex: 15, child: Icon(Iconsax.calendar_2)),
                       Expanded(
                         flex: 80,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TextLabell( 
+                            TextLabell(
                               text: "Tanggal Selesai *",
                               color: Constanst.fgPrimary,
                               size: 14,
@@ -1121,7 +1114,9 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: SfDateRangePicker(
-                minDate: controller.isBackDate.value=="0"?DateTime(2000):DateTime.now(),
+                minDate: controller.isBackDate.value == "0"
+                    ? DateTime(2000)
+                    : DateTime.now(),
                 selectionMode: DateRangePickerSelectionMode.range,
                 initialSelectedDates: controller.tanggalSelectedEdit.value,
                 monthCellStyle: const DateRangePickerMonthCellStyle(
@@ -1412,7 +1407,6 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                           size: 26,
                         ),
                       ),
-                    
                       Expanded(
                         flex: 90,
                         child: Column(
@@ -1526,7 +1520,6 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                     size: 26,
                   ),
                 ),
-                
                 Expanded(
                   flex: 90,
                   child: Column(
@@ -1572,7 +1565,8 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
                                       width: 1.0,
-                                      color: Color.fromARGB(255, 211, 205, 205))),
+                                      color:
+                                          Color.fromARGB(255, 211, 205, 205))),
                               child: Icon(
                                 Iconsax.add,
                                 size: 26,
@@ -1615,33 +1609,33 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            flex: 15,
-            child: const Icon(Iconsax.textalign_justifyleft, size: 24)),
+              flex: 15,
+              child: const Icon(Iconsax.textalign_justifyleft, size: 24)),
           const SizedBox(width: 8),
           Expanded(
-            flex: 90,
+              flex: 90,
               child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextLabell(
-                text: "Catatan *",
-                color: Constanst.fgPrimary,
-                size: 14,
-                weight: FontWeight.w400,
-              ),
-              TextFormField(
-                controller: controller.alasan.value,
-                decoration: const InputDecoration(
-                  hintText: 'Tulis catatan disini',
-                  border: InputBorder.none,
-                ),
-                style: GoogleFonts.inter(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextLabell(
+                    text: "Catatan *",
                     color: Constanst.fgPrimary,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16),
-              )
-            ],
-          ))
+                    size: 14,
+                    weight: FontWeight.w400,
+                  ),
+                  TextFormField(
+                    controller: controller.alasan.value,
+                    decoration: const InputDecoration(
+                      hintText: 'Tulis catatan disini',
+                      border: InputBorder.none,
+                    ),
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  )
+                ],
+              ))
         ],
       ),
     );

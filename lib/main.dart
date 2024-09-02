@@ -17,6 +17,9 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
+import 'package:siscom_operasional/controller/pesan_controller.dart';
+import 'package:siscom_operasional/controller/tab_controller.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_lembur.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
@@ -60,12 +63,10 @@ import 'utils/app_data.dart';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 late List<CameraDescription> cameras;
-final controllerTracking = Get.put(TrackingController());
 
 // @pragma('vm:entry-point')
 // void backgroundCallback() {
@@ -180,8 +181,8 @@ Future<void> main() async {
   }
 
   WidgetsFlutterBinding.ensureInitialized();
-  //await initializeService();
-
+  await Geolocator.requestPermission();
+  await initializeService();
   runApp(const MyApp());
   //await DatabaseService.database;
 }
@@ -258,10 +259,12 @@ Future<void> main() async {
 // }
 
 // proses tracking
-
+@pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
+  final controllerTracking = Get.put(TrackingController());
   final prefs = await SharedPreferences.getInstance();
-  var d = prefs.getString('interval_tracking');
+  var time = prefs.getString('interval_tracking');
+  Timer? trackingTimer;
 
   DartPluginRegistrant.ensureInitialized();
 
@@ -277,38 +280,33 @@ void onStart(ServiceInstance service) async {
 
   service.on('stopService').listen((event) {
     service.stopSelf();
+    flutterLocalNotificationsPlugin.cancel(888);
+    trackingTimer?.cancel();
+    trackingTimer = null;
   });
 
-  // Timer.periodic( Duration(minutes: int.parse( prefs.getString('interval_tracking')??"2")), (timer) async {
-  Timer.periodic(Duration(seconds: 10), (timer) async {
+  Timer.periodic(const Duration(seconds: 1), (timer) async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    // print('lat :${position.latitude.toString()}');
+    // print('long :${position.latitude.toString()}');
+    trackingTimer ??= Timer.periodic(Duration(minutes: int.parse(time ?? "2")),
+        (timer) async {
+      controllerTracking.tracking(
+          position.latitude.toString(), position.longitude.toString());
+    });
+
     if (service is AndroidServiceInstance) {
       service.setForegroundNotificationInfo(
         title: "Background Service",
-        content: "Updated at ${DateTime.now()}",
+        content: "Updated at date ${DateTime.now()}",
       );
-//       print("background service");
-
-//  Position position = await Geolocator.getCurrentPosition(
-//     desiredAccuracy: LocationAccuracy.high);
-//     print('lat :${position.latitude.toString()}');
-//     print('long :${position.latitude.toString()}');
-//     controllerTracking.tracking(
-//     position.latitude.toString(), position.longitude.toString());
     }
-    print("foregf service");
-    // Update the notification content
-
-//  Position position = await Geolocator.getCurrentPosition(
-//     desiredAccuracy: LocationAccuracy.high);
-//     print('lat :${position.latitude.toString()}');
-//     print('long :${position.latitude.toString()}');
-//     controllerTracking.tracking(
-//     position.latitude.toString(), position.longitude.toString());
 
     flutterLocalNotificationsPlugin.show(
       888,
       'Background Service',
-      'Service updated at ${DateTime.now()}',
+      'Service Update at date ${DateTime.now()}',
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'my_foreground',
@@ -322,15 +320,14 @@ void onStart(ServiceInstance service) async {
       ),
     );
 
-    print(
-        'FLUTTER BACKGROUND SERVICE: ${DateTime.now()} ${AppData.emailUser} -- email ${prefs.getString('selectedDatabase')}');
+    // print(
+    //     'FLUTTER BACKGROUND SERVICE: ${DateTime.now()} ${AppData.emailUser} -- email ${prefs.getString('selectedDatabase')}');
 
-    service.invoke(
-      'update',
-      {
-        "current_date": DateTime.now().toIso8601String(),
-      },
-    );
+    service.invoke('updateLocation', {
+      "latitude": position.latitude.toString(),
+      "longitude": position.longitude.toString(),
+      "timestamp": DateTime.now().toIso8601String(),
+    });
   });
 }
 
@@ -346,28 +343,28 @@ Future<void> initializeService() async {
     importance: Importance.low, // default is low, other value is high
   );
 
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  // Create the notification channel
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
   await service.configure(
     androidConfiguration: AndroidConfiguration(
-      // this will be executed when app is in foreground or background in separated isolate
       onStart: onStart,
-
-      // auto start service
       autoStart: true,
       isForegroundMode: true,
-
-      notificationChannelId: 'my_foreground',
+      notificationChannelId: channel.id,
       initialNotificationTitle: 'Background Service',
       initialNotificationContent: 'Service is running',
       foregroundServiceNotificationId: 888,
     ),
     iosConfiguration: IosConfiguration(
-      // auto start service
       autoStart: true,
-
-      // this will be executed when app is in foreground in separated isolate
       onForeground: onStart,
-
-      // you have to enable background fetch capability on xcode project
       onBackground: onIosBackground,
     ),
   );
@@ -488,7 +485,7 @@ Future showNotification(message) async {
   // );
   RemoteNotification notification = message.notification;
   // AndroidNotification android = message.notification?.android;
-  var bigTextStyleInformation = BigTextStyleInformation(
+  var bigTextStyleInformation = const BigTextStyleInformation(
     'Body text that will be displayed in full without any truncation. You can add as much text as you need.',
     htmlFormatBigText: true,
     contentTitle: 'Title',
@@ -560,8 +557,8 @@ Future showNotification(message) async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // var info = message.data['body'];
   // print("tes");
-
-  FlutterRingtonePlayer.playNotification();
+  var ringtonePlayer = FlutterRingtonePlayer();
+  ringtonePlayer.playNotification();
 }
 
 Future<void> setupInteractedMessage() async {
@@ -593,17 +590,22 @@ Future<void> setupInteractedMessage() async {
     showNotification(message);
     print("ees");
 
-    FlutterRingtonePlayer.playNotification();
+    var ringtonePlayer = FlutterRingtonePlayer();
+    ringtonePlayer.playNotification();
   });
   FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 }
 
+var controllerApproval = Get.put(ApprovalController());
+var controllerPesan = Get.put(PesanController());
+
 void _handleMessage(RemoteMessage message) async {
+  showNotification(message);
   final messageData = message.data;
   final route = messageData['route'];
 
   await Future.delayed(const Duration(seconds: 7));
-  UtilsAlert.showToast("handle: $messageData");
+  // UtilsAlert.showToast("handle: $messageData");
   switch (route) {
     case 'pesan':
       Get.to(
@@ -618,12 +620,28 @@ void _handleMessage(RemoteMessage message) async {
         ),
       );
       break;
+    case 'Pesan':
+      final controllerTab = Get.find<TabbController>();
+      controllerTab.currentIndex.value = 3;
+      var emIdPengaju = "00000000124";
+      await Future.delayed(const Duration(milliseconds: 500), () {
+        if (emIdPengaju != AppData.informasiUser![0].em_id) {
+          controllerPesan.routeApprovalNotif(
+              emIdPengaju: emIdPengaju,
+              title: "Pengajuan Lembur",
+              idx: '26',
+              delegasi: AppData.informasiUser![0].em_id,
+              url: "Lembur");
+        } else if (emIdPengaju == AppData.informasiUser![0].em_id) {
+          controllerPesan.redirectToPage("Lembur", null);
+        }
+      });
+      break;
     default:
-      Get.offNamed('/home');
+      final controllerTab = Get.find<TabbController>();
+      controllerTab.currentIndex.value = 1;
   }
 }
-
-// var controller = Get.put(ApprovalController());
 
 Future onSelectNotification(notificationResponse) async {
   print(notificationResponse.payload);
@@ -662,8 +680,26 @@ Future onSelectNotification(notificationResponse) async {
         ),
       );
       break;
+    case 'Pesan':
+      final controllerTab = Get.find<TabbController>();
+      controllerTab.currentIndex.value = 3;
+      var emIdPengaju = "00000000124";
+      await Future.delayed(const Duration(milliseconds: 500), () {
+        if (emIdPengaju != AppData.informasiUser![0].em_id) {
+          controllerPesan.routeApprovalNotif(
+              emIdPengaju: emIdPengaju,
+              title: "Pengajuan Lembur",
+              idx: '26',
+              delegasi: AppData.informasiUser![0].em_id,
+              url: "Lembur");
+        } else if (emIdPengaju == AppData.informasiUser![0].em_id) {
+          controllerPesan.redirectToPage("TidakHadir", null);
+        }
+      });
+      break;
     default:
-      Get.offNamed('/home');
+      final controllerTab = Get.find<TabbController>();
+      controllerTab.currentIndex.value = 1;
   }
 
   // Gunakan map untuk membuat objek
@@ -711,86 +747,86 @@ Future onSelectNotification(notificationResponse) async {
   // var idx = controller.listData.value[index]['id'];
   // var delegasi = controller.listData.value[index]['delegasi'];
 
-  if (notificationsModel.status == "pengajuan") {
-    notificationsModel.route == "Cuti"
-        ? Get.to(RiwayatCuti())
-        : notificationsModel.route == "Izin"
-            ? Get.to(RiwayatIzin())
-            : notificationsModel.route == "Tugas Luar"
-                ? Get.to(TugasLuar())
-                : notificationsModel.route == "Dinas Luar"
-                    ? Get.to(TugasLuar())
-                    : notificationsModel.route == "Klaim"
-                        ? Get.to(Klaim())
-                        : notificationsModel.route == "Absensi"
-                            ? Get.to(HistoryAbsen())
-                            : notificationsModel.route == "Lembur"
-                                ? Get.to(Lembur())
-                                : notificationsModel.route == "Kandidat"
-                                    ? Get.to(Kandidat())
-                                    : Get.to(HistoryAbsen());
-  } else {
-    notificationsModel.route == "Cuti"
-        ? Get.to(DetailPersetujuanCuti(
-            emId: notificationsModel.emIdPengaju.toString(),
-            title: "Cuti",
-            idxDetail: notificationsModel.id.toString(),
-            delegasi: notificationsModel.delegasi.toString(),
-          ))
-        : notificationsModel.route == "Izin"
-            ? Get.to(DetailPersetujuanIzin(
-                emId: notificationsModel.emIdPengaju.toString(),
-                title: "Izin",
-                idxDetail: notificationsModel.id.toString(),
-                delegasi: notificationsModel.delegasi.toString(),
-              ))
-            : notificationsModel.route == "Tugas Luar"
-                ? Get.to(DetailPersetujuanTugasLuar(
-                    emId: notificationsModel.emIdPengaju.toString(),
-                    title: "Tugas Luar",
-                    idxDetail: notificationsModel.id.toString(),
-                    delegasi: notificationsModel.delegasi.toString(),
-                  ))
-                : notificationsModel.route == "Dinas Luar"
-                    ? Get.to(DetailPersetujuanTugasLuar(
-                        emId: notificationsModel.emIdPengaju.toString(),
-                        title: "Dinas Luar",
-                        idxDetail: notificationsModel.id.toString(),
-                        delegasi: notificationsModel.delegasi.toString(),
-                      ))
-                    : notificationsModel.route == "Klaim"
-                        ? Get.to(DetailPersetujuanKlaim(
-                            emId: notificationsModel.emIdPengaju.toString(),
-                            title: "Klaim",
-                            idxDetail: notificationsModel.id.toString(),
-                            delegasi: notificationsModel.delegasi.toString(),
-                          ))
-                        : notificationsModel.route == "Payroll"
-                            ? Get.to(DetailPersetujuanPayroll(
-                                emId: notificationsModel.emIdPengaju.toString(),
-                                title: "Payroll",
-                                idxDetail: notificationsModel.id.toString(),
-                                delegasi:
-                                    notificationsModel.delegasi.toString(),
-                              ))
-                            : notificationsModel.route == "Absensi"
-                                ? Get.to(DetailPersetujuanAbsensi(
-                                    emId: notificationsModel.emIdPengaju
-                                        .toString(),
-                                    title: "Absensi",
-                                    idxDetail: notificationsModel.id.toString(),
-                                    delegasi:
-                                        notificationsModel.delegasi.toString(),
-                                  ))
-                                : Get.to(DetailPersetujuanAbsensi(
-                                    emId: notificationsModel.emIdPengaju
-                                        .toString(),
-                                    title: "Absensi",
-                                    idxDetail: notificationsModel.id.toString(),
-                                    delegasi:
-                                        notificationsModel.delegasi.toString(),
-                                  ));
-  }
+  // if (notificationsModel.status == "pengajuan") {
+  //   notificationsModel.route == "Cuti"
+  //       ? Get.to(RiwayatCuti())
+  //       : notificationsModel.route == "Izin"
+  //           ? Get.to(RiwayatIzin())
+  //           : notificationsModel.route == "Tugas Luar"
+  //               ? Get.to(TugasLuar())
+  //               : notificationsModel.route == "Dinas Luar"
+  //                   ? Get.to(TugasLuar())
+  //                   : notificationsModel.route == "Klaim"
+  //                       ? Get.to(Klaim())
+  //                       : notificationsModel.route == "Absensi"
+  //                           ? Get.to(HistoryAbsen())
+  //                           : notificationsModel.route == "Lembur"
+  //                               ? Get.to(Lembur())
+  //                               : notificationsModel.route == "Kandidat"
+  //                                   ? Get.to(Kandidat())
+  //                                   : Get.to(HistoryAbsen());
+  // } else {
+  //   notificationsModel.route == "Cuti"
+  //       ? Get.to(DetailPersetujuanCuti(
+  //           emId: notificationsModel.emIdPengaju.toString(),
+  //           title: "Cuti",
+  //           idxDetail: notificationsModel.id.toString(),
+  //           delegasi: notificationsModel.delegasi.toString(),
+  //         ))
+  //       : notificationsModel.route == "Izin"
+  //           ? Get.to(DetailPersetujuanIzin(
+  //               emId: notificationsModel.emIdPengaju.toString(),
+  //               title: "Izin",
+  //               idxDetail: notificationsModel.id.toString(),
+  //               delegasi: notificationsModel.delegasi.toString(),
+  //             ))
+  //           : notificationsModel.route == "Tugas Luar"
+  //               ? Get.to(DetailPersetujuanTugasLuar(
+  //                   emId: notificationsModel.emIdPengaju.toString(),
+  //                   title: "Tugas Luar",
+  //                   idxDetail: notificationsModel.id.toString(),
+  //                   delegasi: notificationsModel.delegasi.toString(),
+  //                 ))
+  //               : notificationsModel.route == "Dinas Luar"
+  //                   ? Get.to(DetailPersetujuanTugasLuar(
+  //                       emId: notificationsModel.emIdPengaju.toString(),
+  //                       title: "Dinas Luar",
+  //                       idxDetail: notificationsModel.id.toString(),
+  //                       delegasi: notificationsModel.delegasi.toString(),
+  //                     ))
+  //                   : notificationsModel.route == "Klaim"
+  //                       ? Get.to(DetailPersetujuanKlaim(
+  //                           emId: notificationsModel.emIdPengaju.toString(),
+  //                           title: "Klaim",
+  //                           idxDetail: notificationsModel.id.toString(),
+  //                           delegasi: notificationsModel.delegasi.toString(),
+  //                         ))
+  //                       : notificationsModel.route == "Payroll"
+  //                           ? Get.to(DetailPersetujuanPayroll(
+  //                               emId: notificationsModel.emIdPengaju.toString(),
+  //                               title: "Payroll",
+  //                               idxDetail: notificationsModel.id.toString(),
+  //                               delegasi:
+  //                                   notificationsModel.delegasi.toString(),
+  //                             ))
+  //                           : notificationsModel.route == "Absensi"
+  //                               ? Get.to(DetailPersetujuanAbsensi(
+  //                                   emId: notificationsModel.emIdPengaju
+  //                                       .toString(),
+  //                                   title: "Absensi",
+  //                                   idxDetail: notificationsModel.id.toString(),
+  //                                   delegasi:
+  //                                       notificationsModel.delegasi.toString(),
+  //                                 ))
+  //                               : Get.to(DetailPersetujuanAbsensi(
+  //                                   emId: notificationsModel.emIdPengaju
+  //                                       .toString(),
+  //                                   title: "Absensi",
+  //                                   idxDetail: notificationsModel.id.toString(),
+  //                                   delegasi:
+  //                                       notificationsModel.delegasi.toString(),
+  //                                 ));
+  // }
 }
 
 void onDidReceiveLocalNotification(
@@ -966,15 +1002,49 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
         title: 'Aplikasi Operasional Siscom',
         theme: ThemeData(
+          colorScheme: ColorScheme.light(
+            primary: Constanst.onPrimary,
+            onPrimary: Constanst.colorWhite,
+            onSurface: Constanst.fgPrimary,
+            surface: Constanst.colorWhite,
+          ),
+          visualDensity: VisualDensity.standard,
+          dialogTheme: const DialogTheme(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+            ),
+          ),
+          primaryColor: Constanst.fgPrimary,
           textTheme: GoogleFonts.poppinsTextTheme(
-            Theme.of(context).textTheme,
+            Theme.of(context).textTheme.apply(
+                  bodyColor: Constanst.fgPrimary,
+                  displayColor: Constanst.fgPrimary,
+                ),
+          ),
+          dialogBackgroundColor: Constanst.colorWhite,
+          canvasColor: Colors.white,
+          hintColor: Constanst.onPrimary,
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              foregroundColor: Constanst.onPrimary,
+            ),
+          ),
+          datePickerTheme: DatePickerThemeData(
+            backgroundColor: Constanst.colorWhite,
+            headerBackgroundColor: Constanst.onPrimary,
+            dayStyle: TextStyle(color: Constanst.fgPrimary),
+            // selectedDayStyle: TextStyle(color: Constanst.colorWhite),
+            // todayBackgroundColor: Constanst.fgPrimary,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+            ),
           ),
         ),
-        localizationsDelegates: [
+        localizationsDelegates: const [
           GlobalWidgetsLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
         ],
-        supportedLocales: [
+        supportedLocales: const [
           Locale('en'),
         ],
         debugShowCheckedModeBanner: false,
@@ -1039,7 +1109,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       child: Container(
                         alignment: Alignment.bottomCenter,
                         child: Padding(
-                          padding: EdgeInsets.only(bottom: 20),
+                          padding: const EdgeInsets.only(bottom: 20),
                           child: Text(
                               "© Copyright 2022 PT. Shan Informasi Sistem\nBuilld Version 2022.10.17",
                               textAlign: TextAlign.center,

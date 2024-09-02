@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -131,8 +131,8 @@ class _PPh21pageState extends State<PPh21page> {
                                     var tahun = array[0];
 
                                     controller.tahun.value = int.parse(tahun);
-                                     
-                                        controller.fetchSlipGaji();
+
+                                    controller.fetchSlipGaji();
                                   }
                                 },
                               );
@@ -214,8 +214,6 @@ class _PPh21pageState extends State<PPh21page> {
           month: data.monthNumber,
           year: controller.tahun,
         ));
-
-       
       },
       child: Container(
         padding: EdgeInsets.only(bottom: 12, top: 12),

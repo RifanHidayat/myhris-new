@@ -2,7 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -1477,7 +1477,7 @@ class AbsenController extends GetxController {
       var latDefault = listLatLang[0];
       var langDefault = listLatLang[1];
       var to = Point(double.parse(latDefault), double.parse(langDefault));
-      double distance = SphericalUtils.computeDistanceBetween(from, to);
+      num distance = SphericalUtils.computeDistanceBetween(from, to);
       print('Distance: $distance meters');
       var filter = double.parse((distance).toStringAsFixed(0));
       if (filter <= double.parse(defaultRadius)) {
@@ -3333,7 +3333,7 @@ class AbsenController extends GetxController {
         //     title: typeNotifFcm,
         //     message: description,
         //     tokens: fcmTokenDelegasi);
-        UtilsAlert.showToast("Berhasil kirim delegasi");
+        // UtilsAlert.showToast("Berhasil kirim delegasi");
       }
     });
   }

@@ -520,11 +520,8 @@ class _DashboardState extends State<Dashboard> {
                                                       child: Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                    .fromLTRB(
-                                                                8.0,
-                                                                3.0,
-                                                                8.0,
-                                                                3.0),
+                                                                .fromLTRB(8.0,
+                                                                3.0, 8.0, 3.0),
                                                         child: Text(
                                                           "Lihat semua",
                                                           style: GoogleFonts.inter(
@@ -599,11 +596,8 @@ class _DashboardState extends State<Dashboard> {
                                                       child: Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                    .fromLTRB(
-                                                                8.0,
-                                                                3.0,
-                                                                8.0,
-                                                                3.0),
+                                                                .fromLTRB(8.0,
+                                                                3.0, 8.0, 3.0),
                                                         child: Text(
                                                           "Lihat semua",
                                                           style: GoogleFonts.inter(
@@ -680,11 +674,8 @@ class _DashboardState extends State<Dashboard> {
                                                       child: Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                    .fromLTRB(
-                                                                8.0,
-                                                                3.0,
-                                                                8.0,
-                                                                3.0),
+                                                                .fromLTRB(8.0,
+                                                                3.0, 8.0, 3.0),
                                                         child: Text(
                                                           "Lihat semua",
                                                           style: GoogleFonts.inter(
@@ -810,9 +801,8 @@ class _DashboardState extends State<Dashboard> {
                 ? Row(
                     children: [
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           Get.to(HistoryChat());
-
                         },
                         child: Padding(
                             padding: EdgeInsets.only(right: 5),
@@ -825,7 +815,8 @@ class _DashboardState extends State<Dashboard> {
                                     radius: 7,
                                     backgroundColor: Colors.red,
                                     child: TextLabell(
-                                      text: chatController.jumlahChat.value.toString(),
+                                      text: chatController.jumlahChat.value
+                                          .toString(),
                                       color: Colors.black,
                                     ),
                                   ),
@@ -848,8 +839,8 @@ class _DashboardState extends State<Dashboard> {
                 : Row(
                     children: [
                       InkWell(
-                        onTap: (){
-                  Get.to(HistoryChat());
+                        onTap: () {
+                          Get.to(HistoryChat());
                         },
                         child: Padding(
                             padding: EdgeInsets.only(right: 5),
@@ -861,7 +852,7 @@ class _DashboardState extends State<Dashboard> {
                                   Obx(
                                     () => CircleAvatar(
                                       radius: 7,
-                                      backgroundColor:Colors.red,
+                                      backgroundColor: Colors.red,
                                       child: TextLabell(
                                         text: chatController.jumlahChat.value
                                             .toString(),
@@ -1151,7 +1142,7 @@ class _DashboardState extends State<Dashboard> {
                                 onTap: () {
                                   if (controllerAbsensi.absenStatus.value ==
                                       true) {
-                                    if (controller.wfhstatus.value == true) {
+                                    if (controller.wfhstatus.value) {
                                       UtilsAlert.showToast(
                                           "Menunggu status wfh anda di approve");
                                       return;
@@ -1336,7 +1327,7 @@ class _DashboardState extends State<Dashboard> {
                                                               .absenStatus.value
                                                           ? Constanst.fgPrimary
                                                           : const Color
-                                                                  .fromARGB(168,
+                                                              .fromARGB(168,
                                                               166, 167, 158)),
                                                 ),
                                               ),
@@ -1601,7 +1592,7 @@ class _DashboardState extends State<Dashboard> {
                                                                   .wfhstatus
                                                                   .value
                                                           ? const Color
-                                                                  .fromARGB(168,
+                                                              .fromARGB(168,
                                                               166, 167, 158)
                                                           : controllerAbsensi
                                                                   .absenStatus
@@ -1609,7 +1600,7 @@ class _DashboardState extends State<Dashboard> {
                                                               ? Constanst
                                                                   .fgPrimary
                                                               : const Color
-                                                                      .fromARGB(
+                                                                  .fromARGB(
                                                                   168,
                                                                   166,
                                                                   167,
@@ -1638,18 +1629,15 @@ class _DashboardState extends State<Dashboard> {
                                                                     .wfhstatus
                                                                     .value
                                                             ? const Color
-                                                                    .fromARGB(
-                                                                168,
-                                                                166,
-                                                                167,
-                                                                158)
+                                                                .fromARGB(168,
+                                                                166, 167, 158)
                                                             : controllerAbsensi
                                                                     .absenStatus
                                                                     .value
                                                                 ? Constanst
                                                                     .fgPrimary
                                                                 : const Color
-                                                                        .fromARGB(
+                                                                    .fromARGB(
                                                                     168,
                                                                     166,
                                                                     167,
@@ -2189,7 +2177,7 @@ class _DashboardState extends State<Dashboard> {
                 }),
             DotsIndicator(
               dotsCount: controller.bannerDashboard.value.length,
-              position: double.parse("${controller.indexBanner.value}"),
+              position: int.parse("${controller.indexBanner.value}"),
               decorator: DotsDecorator(
                 size: const Size.square(6.0),
                 activeColor: Constanst.infoLight,
@@ -2327,8 +2315,10 @@ class _DashboardState extends State<Dashboard> {
                                                       ? 30.0
                                                       : 30.0),
                       child: InkWell(
-                        onTap: () => controller.routePageDashboard(controller
-                            .menuShowInMain[0]['menu'][idxMenu]['url']),
+                        onTap: () => controller.routePageDashboard(
+                            controller.menuShowInMain[0]['menu'][idxMenu]
+                                ['url'],
+                            null),
                         highlightColor: Colors.white,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -2444,8 +2434,10 @@ class _DashboardState extends State<Dashboard> {
                     var namaMenu = controller.menuShowInMain[index]['menu']
                         [idxMenu]['nama'];
                     return InkWell(
-                      onTap: () => controller.routePageDashboard(controller
-                          .menuShowInMain[index]['menu'][idxMenu]['url']),
+                      onTap: () => controller.routePageDashboard(
+                          controller.menuShowInMain[index]['menu'][idxMenu]
+                              ['url'],
+                          null),
                       highlightColor: Colors.white,
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -2631,8 +2623,6 @@ class _DashboardState extends State<Dashboard> {
                 }),
           );
   }
-
-  
 
   Widget listEmployeeUltah() {
     return SizedBox(
@@ -2864,20 +2854,20 @@ class _DashboardState extends State<Dashboard> {
     //   'em_id': AppData.informasiUser![0].em_id
     // }));
 
-  
-
-
-
     // channel.stream.listen((message) {
-  
-    //   final decodedMessage = jsonDecode(message);    
+    //   print('ambil data websoket');
+    //   final decodedMessage = jsonDecode(message);
+
     //   if (decodedMessage['type'] == 'count') {
-    //    // print('total chat ${decodedMessage['data'][0]['total']}');
+    //     // print('total chat ${decodedMessage['data'][0]['total']}');
     //     chatController.jumlahChat.value = decodedMessage['data'][0]['total'];
     //   }
 
-    
-
+    //   if (decodedMessage['type'] == 'fetchHistory') {
+    //     print('total chat ${decodedMessage['data']}');
+    //     // print('total chat ${decodedMessage['data'][0]['total']}');
+    //     // chatController.jumlahChat.value = decodedMessage['data'][0]['total'];
+    //   }
     // });
 
     _checkversion();

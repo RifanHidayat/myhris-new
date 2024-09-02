@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -396,7 +396,7 @@ class LaporanLemburController extends GetxController {
           return SafeArea(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
-                      child: SingleChildScrollView(
+              child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -442,7 +442,8 @@ class LaporanLemburController extends GetxController {
                           children: List.generate(departementAkses.value.length,
                               (index) {
                             var id = departementAkses.value[index]['id'];
-                            var dep_name = departementAkses.value[index]['name'];
+                            var dep_name =
+                                departementAkses.value[index]['name'];
                             return InkWell(
                               onTap: () {
                                 idDepartemenTerpilih.value = "$id";
@@ -481,14 +482,18 @@ class LaporanLemburController extends GetxController {
                                               decoration: BoxDecoration(
                                                   border: Border.all(
                                                       width: 2,
-                                                      color: Constanst.onPrimary),
+                                                      color:
+                                                          Constanst.onPrimary),
                                                   borderRadius:
-                                                      BorderRadius.circular(10)),
+                                                      BorderRadius.circular(
+                                                          10)),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(3),
+                                                padding:
+                                                    const EdgeInsets.all(3),
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                      color: Constanst.onPrimary,
+                                                      color:
+                                                          Constanst.onPrimary,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               10)),
@@ -498,7 +503,8 @@ class LaporanLemburController extends GetxController {
                                           )
                                         : InkWell(
                                             onTap: () {
-                                              idDepartemenTerpilih.value = "$id";
+                                              idDepartemenTerpilih.value =
+                                                  "$id";
                                               namaDepartemenTerpilih.value =
                                                   dep_name;
                                               departemen.value.text =
@@ -522,11 +528,14 @@ class LaporanLemburController extends GetxController {
                                               decoration: BoxDecoration(
                                                   border: Border.all(
                                                       width: 1,
-                                                      color: Constanst.onPrimary),
+                                                      color:
+                                                          Constanst.onPrimary),
                                                   borderRadius:
-                                                      BorderRadius.circular(10)),
+                                                      BorderRadius.circular(
+                                                          10)),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(2),
+                                                padding:
+                                                    const EdgeInsets.all(2),
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                       borderRadius:

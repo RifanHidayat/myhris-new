@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -1774,7 +1774,12 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
           var signoutTime =
               controller.listLaporanBelumAbsen[index]['signout_time'];
           var signNote = controller.listLaporanBelumAbsen[index]['signin_note'];
-          var image = controller.listLaporanFilter.value[index]['image'];
+          var image = (index < controller.listLaporanFilter.length &&
+                  controller.listLaporanFilter[index] != null &&
+                  controller.listLaporanFilter[index]['image'] != null)
+              ? controller.listLaporanFilter[index]['image']
+              : '';
+          // var image = controller.listLaporanFilter.value[index]['image'];
           print(controller.listLaporanBelumAbsen[index]['data']);
           return
               // controller.listLaporanBelumAbsen[index]['data']

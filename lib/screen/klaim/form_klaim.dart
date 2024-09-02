@@ -2,7 +2,7 @@
 import 'dart:io';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -493,7 +493,7 @@ class _FormKlaimState extends State<FormKlaim> {
                     ),
                     TextField(
                       inputFormatters: [
-                        CurrencyTextInputFormatter(
+                        CurrencyTextInputFormatter.currency(
                           locale: 'id',
                           symbol: 'Rp ',
                           decimalDigits: 0,
