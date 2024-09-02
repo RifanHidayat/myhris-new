@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -483,7 +483,7 @@ class _FormKasbonState extends State<FormKasbon> {
                     ),
                     TextField(
                       inputFormatters: [
-                        CurrencyTextInputFormatter(
+                        CurrencyTextInputFormatter.currency(
                           locale: 'id',
                           symbol: 'Rp ',
                           decimalDigits: 0,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/slip_gaji.controller.dart';
@@ -16,7 +16,6 @@ import 'package:siscom_operasional/utils/year_picker.dart';
 
 // }
 
-
 class SlipGaji extends StatefulWidget {
   const SlipGaji({super.key});
 
@@ -25,9 +24,9 @@ class SlipGaji extends StatefulWidget {
 }
 
 class _SlipGajiState extends State<SlipGaji> {
-   var controller = Get.put(SlipGajiController());
+  var controller = Get.put(SlipGajiController());
 
-   @override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -37,7 +36,6 @@ class _SlipGajiState extends State<SlipGaji> {
 
   @override
   Widget build(BuildContext context) {
-    
     var startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
     var endDate = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
     return Scaffold(
@@ -54,13 +52,12 @@ class _SlipGajiState extends State<SlipGaji> {
           children: [
             //heeader
             Container(
-              decoration:  BoxDecoration(
-                color:Constanst.colorPrimary
-                // image: DecorationImage(
-                //   image: AssetImage("assets/bg_header_slip_gaji.png"),
-                //   fit: BoxFit.cover,
-                // ),
-              ),
+              decoration: BoxDecoration(color: Constanst.colorPrimary
+                  // image: DecorationImage(
+                  //   image: AssetImage("assets/bg_header_slip_gaji.png"),
+                  //   fit: BoxFit.cover,
+                  // ),
+                  ),
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(24),
               child: Column(

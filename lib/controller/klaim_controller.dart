@@ -510,13 +510,13 @@ class KlaimController extends GetxController {
     if (statusForm.value == false) {
       body['activity_name'] =
           "Membuat Pengajuan Klaim. alasan = ${catatan.value.text}";
-      var connect = Api.connectionApi("post", body, "insert-emp_claim");
+      var connect = Api.connectionApi("post", body, "klaim");
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
           if (valueBody['status'] == true) {
-            kirimNotifikasiToReportTo(
-                getFullName, tanggalKlaim.value.text, getEmid, "Klaim");
+            // kirimNotifikasiToReportTo(
+            //     getFullName, tanggalKlaim.value.text, getEmid, "Klaim");
             Navigator.pop(Get.context!);
             var pesan1 = "Pengajuan klaim berhasil dibuat";
             var pesan2 =

@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,6 +27,7 @@ class _TugasLuarState extends State<TugasLuar> {
   final controller = Get.put(TugasLuarController());
   var controllerGlobal = Get.put(GlobalController());
   final dashboardController = Get.put(DashboardController());
+  var idx = 0;
 
   @override
   void initState() {
@@ -34,6 +35,42 @@ class _TugasLuarState extends State<TugasLuar> {
     Api().checkLogin();
     controller.loadDataTugasLuar();
     controller.loadDataDinasLuar();
+    if (Get.arguments != null) {
+      idx = Get.arguments;
+    }
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (controller.listTugasLuar.isNotEmpty) {
+        for (var item in controller.listTugasLuar.value) {
+          if (item['id'] == idx) {
+            var alasanReject = item['alasan_reject'] ?? "";
+            var approve;
+            if (item['approve2_by'] == "" ||
+                item['approve2_by'] == "null" ||
+                item['approve2_by'] == null) {
+              approve = item['approve_by'];
+            } else {
+              approve = item['approve2_by'];
+            }
+            controller.showDetailRiwayat(
+                "Tugas Luar", item, approve, alasanReject);
+          }
+        }
+      } else if (controller.listDinasLuar.isNotEmpty) {
+        for (var item in controller.listDinasLuar.value) {
+          var alasanReject = item['alasan_reject'] ?? "";
+          var approve_by;
+          if (item['apply2_by'] == "" ||
+              item['apply2_by'] == "null" ||
+              item['apply2_by'] == null) {
+            approve_by = item['apply_by'];
+          } else {
+            approve_by = item['apply2_by'];
+          }
+          controller.showDetailRiwayat(
+              "Dinas Luar", item, approve_by, alasanReject);
+        }
+      }
+    });
   }
 
   Future<void> refreshData() async {
@@ -1221,11 +1258,14 @@ class _TugasLuarState extends State<TugasLuar> {
                 child: InkWell(
                   customBorder: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8))),
-                  onTap: () => controller.showDetailRiwayat(
-                      "Tugas Luar",
-                      controller.listTugasLuar.value[index],
-                      approve,
-                      alasanReject),
+                  onTap: () {
+                    print("woy:${controller.listTugasLuar.value[index]}");
+                    controller.showDetailRiwayat(
+                        "Tugas Luar",
+                        controller.listTugasLuar.value[index],
+                        approve,
+                        alasanReject);
+                  },
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 16, right: 16, top: 12, bottom: 8),

@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,12 +28,34 @@ class _LemburState extends State<Lembur> {
   final controller = Get.put(LemburController());
   var controllerGlobal = Get.put(GlobalController());
   final dashboardController = Get.put(DashboardController());
+  var idx = 0;
 
   @override
   void initState() {
+    super.initState();
     Api().checkLogin();
     controller.loadDataLembur();
-    super.initState();
+    if (Get.arguments != null) {
+      idx = Get.arguments;
+    }
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (controller.listLembur.isNotEmpty) {
+        for (var item in controller.listLembur.value) {
+          if (item['id'] == idx) {
+            var alasanReject = item['alasan_reject'] ?? "";
+            var approve;
+            if (item['approve2_by'] == "" ||
+                item['approve2_by'] == "null" ||
+                item['approve2_by'] == null) {
+              approve = item['approve_by'];
+            } else {
+              approve = item['approve2_by'];
+            }
+            controller.showDetailLembur(item, approve, alasanReject);
+          }
+        }
+      }
+    });
   }
 
   Future<void> refreshData() async {

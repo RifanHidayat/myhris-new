@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/setting_controller.dart';
 import 'package:siscom_operasional/screen/chatting/chat.dart';
 import 'package:siscom_operasional/screen/chatting/chat_page.dart';
@@ -48,8 +49,9 @@ class _HistoryChatState extends State<HistoryChat> {
     // }));
     controller.searchController.clear();
     controller.searchControllerEmployee.clear();
-    controller.getEmployee();
+    controller.getEmployeeNew();
     controller.getAllEmployee();
+
     // channel.stream.listen((message) {
     //   print('ambil data websoket');
     //   final decodedMessage = jsonDecode(message);
@@ -74,6 +76,7 @@ class _HistoryChatState extends State<HistoryChat> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
+            controller.getAllEmployee();
             showBottomCustomer(context);
             // Aksi saat tombol ditekan
             print('FAB pressed');
@@ -111,7 +114,7 @@ class _HistoryChatState extends State<HistoryChat> {
                   // controller.report();
                   // },
                   onChanged: (value) {
-                    controller.isLoading.value=true;
+                    controller.isLoading.value = true;
                     controller.getEmployee();
 
                     // print(controller.searchController.text);
@@ -200,13 +203,12 @@ class _HistoryChatState extends State<HistoryChat> {
                 size: 24,
               ),
               onPressed: controller.isSearching.value
-                  ? (){
+                  ? () {
                       controller.toggleSearch();
                       controller.searchController.clear();
-                    controller.isLoading.value=true;
-                    controller.getEmployee();
-                  
-                  }
+                      controller.isLoading.value = true;
+                      controller.getEmployee();
+                    }
                   : Get.back,
               // onPressed: () {
               //   controller.cari.value.text = "";
@@ -256,36 +258,35 @@ class _HistoryChatState extends State<HistoryChat> {
                   child:
                       // : infoEmployeeList(),
                       Container(
-                    child: Obx(() =>controller.isLoading.value==true?Center(
-                              child:
-                                  CircularProgressIndicator()): StreamBuilder<List<dynamic>>(
-                      stream: getApiDataStream(), // Stream dari API
-                      builder: (context, snapshot) {
-
-                        
-                        if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData || controller.isLoading.value==true) {
-                          return Center(
-                              child:
-                                  CircularProgressIndicator()); // Menunggu data
-                        } else {
-                          final data = snapshot.data!;
-                          return infoEmployeeList(data);
-                          // return ListView.builder(
-                          //   itemCount: data.length,
-                          //   itemBuilder: (context, index) {
-                          //     final item = data[index];
-                          //     return ListTile(
-                          //       title: Text(item
-                          //           .toString()), // Sesuaikan dengan struktur data
-                          //     );
-                          //   },
-                          // );
-                        }
-                      },
-                    )),
+                    child: Obx(() => controller.isLoading.value == true
+                        ? Center(child: CircularProgressIndicator())
+                        : StreamBuilder<List<dynamic>>(
+                            stream: getApiDataStream(), // Stream dari API
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData ||
+                                  controller.isLoading.value == true) {
+                                return Center(
+                                    child:
+                                        CircularProgressIndicator()); // Menunggu data
+                              } else {
+                                final data = snapshot.data!;
+                                return infoEmployeeList(data);
+                                // return ListView.builder(
+                                //   itemCount: data.length,
+                                //   itemBuilder: (context, index) {
+                                //     final item = data[index];
+                                //     return ListTile(
+                                //       title: Text(item
+                                //           .toString()), // Sesuaikan dengan struktur data
+                                //     );
+                                //   },
+                                // );
+                              }
+                            },
+                          )),
                   ),
                 )
               ],
@@ -393,11 +394,11 @@ class _HistoryChatState extends State<HistoryChat> {
 
       yield data; // Kirim data melalui stream
       // Jika ingin melakukan polling secara periodik:
-      while (true) {
-        await Future.delayed(Duration(seconds: 1)); // Poll setiap 10 detik
-        final data = await controller.getEmployee();
-        yield data;
-      }
+      // while (true) {
+      //   await Future.delayed(Duration(seconds: 1)); // Poll setiap 10 detik
+      //   final data = await controller.getEmployee();
+      //   yield data;
+      // }
     } catch (e) {
       yield []; // Kirimkan daftar kosong atau tangani error dengan cara lain
     }
@@ -409,6 +410,8 @@ class _HistoryChatState extends State<HistoryChat> {
         itemCount: data.length,
         itemBuilder: (context, index) {
           var full_name = data[index]['full_name'];
+          var dibaca = data[index]['dibaca'];
+          var status = data[index]['status'];
           var image = data[index]['em_image'];
           var title = data[index]['job_title'];
           var emId = data[index]['em_id'];
@@ -417,6 +420,16 @@ class _HistoryChatState extends State<HistoryChat> {
           var emIdPenerima = data[index]['em_id_penerima'];
           var jumlah = data[index]['jumlah'];
           var waktu = data[index]['waktu'];
+
+          var lampiran = data[index]['lampiran'];
+          var tipeLampiran = data[index]['tipe_lampiran'];
+          var tanggal = DateTime.parse(DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(data[index]['tanggal'])));
+
+          var dateNow =
+              DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
+
+          int differenceInDays = dateNow.difference(tanggal).inDays;
 
           return InkWell(
             onTap: () {
@@ -508,13 +521,33 @@ class _HistoryChatState extends State<HistoryChat> {
                                             color: Constanst.fgPrimary,
                                             fontWeight: FontWeight.w500),
                                       ),
-                                      Text(
-                                        "$waktu",
-                                        style: GoogleFonts.inter(
-                                            fontSize: 12,
-                                            color: Constanst.fgPrimary,
-                                            fontWeight: FontWeight.w400),
-                                      ),
+                                      differenceInDays == 0
+                                          ? Text(
+                                              "$waktu",
+                                              style: GoogleFonts.inter(
+                                                  fontSize: 12,
+                                                  color: Constanst.fgPrimary,
+                                                  fontWeight: FontWeight.w400),
+                                            )
+                                          : differenceInDays == 1
+                                              ? Text(
+                                                  "Kemarin",
+                                                  style: GoogleFonts.inter(
+                                                      fontSize: 12,
+                                                      color:
+                                                          Constanst.fgPrimary,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                )
+                                              : Text(
+                                                  "${DateFormat('dd/MM/yyyy').format(tanggal)}",
+                                                  style: GoogleFonts.inter(
+                                                      fontSize: 12,
+                                                      color:
+                                                          Constanst.fgPrimary,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
                                     ],
                                   ),
                                   const SizedBox(height: 4),
@@ -526,30 +559,108 @@ class _HistoryChatState extends State<HistoryChat> {
                                   //       fontWeight: FontWeight.w400),
                                   // ),
                                   //  const SizedBox(height: 4),
-                                  emId == emIdPengirim
+                                  emId != emIdPengirim
                                       ? Row(
                                           children: [
-                                            Icon(Icons.check),
-                                            Text(
-                                              "$pesan",
-                                              style: GoogleFonts.inter(
-                                                  fontSize: 12,
-                                                  color: Constanst.fgSecondary,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
+                                            dibaca.toString() == '1'
+                                                ? Icon(
+                                                    Icons.check,
+                                                    size: 15,
+                                                    color: Constanst.color5,
+                                                  )
+                                                : Icon(
+                                                    Icons.check,
+                                                    size: 15,
+                                                    color: Constanst.Secondary,
+                                                  ),
+                                            status.toString() == '0'
+                                                ? Text(
+                                                    " Pesan ini telah dihapus",
+                                                    style: GoogleFonts.inter(
+                                                        fontSize: 12,
+                                                        color: Constanst
+                                                            .fgSecondary,
+                                                        fontStyle:
+                                                            FontStyle.italic,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  )
+                                                : tipeLampiran == '.png'
+                                                    ? Row(
+                                                        children: [
+                                                          Icon(Icons.image),
+                                                          SizedBox(
+                                                            width: 8,
+                                                          ),
+                                                          Text(
+                                                            "${pesan == "" ? "Foto " : pesan}",
+                                                            style: GoogleFonts.inter(
+                                                                fontSize: 12,
+                                                                color: Constanst
+                                                                    .fgSecondary,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : Text(
+                                                        " $pesan",
+                                                        style: GoogleFonts.inter(
+                                                            fontSize: 12,
+                                                            color: Constanst
+                                                                .fgSecondary,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                      ),
                                           ],
                                         )
                                       : Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              "$pesan",
-                                              style: GoogleFonts.inter(
-                                                  fontSize: 12,
-                                                  color: Constanst.fgSecondary,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
+                                            status.toString() == '0'
+                                                ? Text(
+                                                    " Pesan ini telah dihapus",
+                                                    style: GoogleFonts.inter(
+                                                        fontSize: 12,
+                                                        color: Constanst
+                                                            .fgSecondary,
+                                                        fontStyle:
+                                                            FontStyle.italic,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  )
+                                                : tipeLampiran == '.png'
+                                                    ? Row(
+                                                        children: [
+                                                          Icon(Icons.image),
+                                                          SizedBox(
+                                                            width: 4,
+                                                          ),
+                                                          Text(
+                                                            " ${pesan == "" ? "Foto " : pesan}",
+                                                            style: GoogleFonts.inter(
+                                                                fontSize: 12,
+                                                                color: Constanst
+                                                                    .fgSecondary,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : Text(
+                                                        " $pesan",
+                                                        style: GoogleFonts.inter(
+                                                            fontSize: 12,
+                                                            color: Constanst
+                                                                .fgSecondary,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                      ),
                                             jumlah.toString().trim() == '0'
                                                 ? SizedBox()
                                                 : CircleAvatar(
@@ -648,7 +759,8 @@ class _HistoryChatState extends State<HistoryChat> {
                       () => AppBar(
                         backgroundColor: Colors.white,
                         elevation: 0,
-                        leadingWidth: controller.isSearchingEmployee.value ? 50 : 0,
+                        leadingWidth:
+                            controller.isSearchingEmployee.value ? 50 : 0,
                         titleSpacing: 0,
                         centerTitle:
                             controller.isSearchingEmployee.value ? true : false,
@@ -736,7 +848,10 @@ class _HistoryChatState extends State<HistoryChat> {
                                     child: Container(),
                                   )
                                 : IconButton(
-                                    icon: Icon(Iconsax.search_normal,color: Colors.black,),
+                                    icon: Icon(
+                                      Iconsax.search_normal,
+                                      color: Colors.black,
+                                    ),
                                     onPressed: controller.toggleSearchEmployee,
                                   ),
                           ),
@@ -744,14 +859,16 @@ class _HistoryChatState extends State<HistoryChat> {
                         leading: Obx(
                           () => IconButton(
                             icon: controller.isSearchingEmployee.value
-                                ? Icon(Iconsax.arrow_left,color: Colors.black,)
+                                ? Icon(
+                                    Iconsax.arrow_left,
+                                    color: Colors.black,
+                                  )
                                 : Container(),
-                            onPressed: (){
-                                controller.toggleSearchEmployee();
-                                controller.searchControllerEmployee.clear();
-                                controller.getAllEmployee();
+                            onPressed: () {
+                              controller.toggleSearchEmployee();
+                              controller.searchControllerEmployee.clear();
+                              controller.getAllEmployee();
                             },
-                          
                           ),
                         ),
                       ),
@@ -768,7 +885,6 @@ class _HistoryChatState extends State<HistoryChat> {
                 physics: const BouncingScrollPhysics(),
                 child: Obx(() => controller.isLoadingEnployee.value
                     ? SizedBox(
-                      
                         child: SizedBox(
                           height: double.maxFinite,
                           child: Align(
@@ -780,7 +896,6 @@ class _HistoryChatState extends State<HistoryChat> {
                                 children: [
                                   CircularProgressIndicator(
                                     color: Constanst.onPrimary,
-                                   
                                   ),
                                   SizedBox(
                                     height: 15,
@@ -831,7 +946,7 @@ class _HistoryChatState extends State<HistoryChat> {
                                       onTap: () {
                                         print('tes');
                                         Get.back();
-                                    Get.to(    ChatPage(
+                                        Get.to(ChatPage(
                                           webSocketChannel:
                                               IOWebSocketChannel.connect(
                                                   Uri.parse(Api.webSocket)),

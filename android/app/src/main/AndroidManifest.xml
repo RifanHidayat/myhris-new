@@ -82,9 +82,10 @@
     
 
           <service
-            android:name="com.siscom.siscomhris.flutter_background_service.Servicee"
+            android:name="com.siscom.siscomhris.flutter_background_service.BackgroundService"
             android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true"/>
+            android:exported="true"
+            android:foregroundServiceType="location|dataSync|connectedDevice"/>
         <receiver android:name="com.example.yourapp.MyReceiver"
             android:exported="true"
             android:enabled="true">

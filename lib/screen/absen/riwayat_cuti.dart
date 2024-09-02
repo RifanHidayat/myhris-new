@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -25,12 +25,34 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
   final controller = Get.put(CutiController());
   var controllerGlobal = Get.put(GlobalController());
   final dashboardController = Get.put(DashboardController());
+  var idx = 0;
 
   @override
   void initState() {
+    super.initState();
     Api().checkLogin();
     controller.loadDataAjuanCuti();
-    super.initState();
+    if (Get.arguments != null) {
+      idx = Get.arguments;
+    }
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (controller.listHistoryAjuan.isNotEmpty) {
+        for (var item in controller.listHistoryAjuan.value) {
+          if (item['id'] == idx) {
+            var alasanReject = item['alasan_reject'] ?? "";
+            var apply_by;
+            if (item['apply2_by'] == "" ||
+                item['apply2_by'] == "null" ||
+                item['apply2_by'] == null) {
+              apply_by = item['apply_by'];
+            } else {
+              apply_by = item['apply2_by'];
+            }
+            controller.showDetailRiwayat(item, apply_by, alasanReject);
+          }
+        }
+      }
+    });
   }
 
   Future<void> refreshData() async {

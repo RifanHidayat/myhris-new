@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:siscom_operasional/model/message_chat.dart';
 import 'package:siscom_operasional/services/request.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
@@ -17,9 +18,10 @@ class ChatController extends GetxController {
   var searchController = TextEditingController();
   var searchControllerEmployee = TextEditingController();
   var cari = TextEditingController().obs;
+  var statuspengiriman = true.obs;
 
   var isSelectionMode = false.obs;
-  var selectedMessage = Rxn<dynamic>();
+  var selectedMessage = Rxn<Message>();
   var isPressed = false.obs;
 
   void toggleSearch() {
@@ -43,28 +45,6 @@ class ChatController extends GetxController {
 
   var infoEmployee = [].obs;
   var infoAllEmployee = [].obs;
-// void getCount() async{
-
-//   var emId=AppData.informasiUser==null || AppData.informasiUser!.isEmpty || AppData.informasiUser==""?"":AppData.informasiUser![0].em_id ;
-//   try{
-// var data=await Request(url: '/chatting/employee-history/count',params: '&em_id=${emId}').get();
-
-//   var response=jsonDecode(data.body);
-
-//   if (data.statusCode==200){
-//     jumlahChat.value=response['total'];
-
-//   }else{
-//      jumlahChat.value=0;
-
-//   }
-//   }catch(e){
-//     print(e);
-//     jumlahChat.value=0;
-
-//   }
-
-// }
 
   void getCount() async {
     var emId = AppData.informasiUser == null ||
@@ -102,10 +82,34 @@ class ChatController extends GetxController {
     print('masuk sini history chat new ${response}');
 
     if (data.statusCode == 200) {
+      isLoading.value = false;
       return response;
       infoEmployee.value = response['data'];
       print('berhasil ambil data chat ${response['data']}');
     } else {
+      isLoading.value = false;
+      throw Exception('Failed to load data');
+    }
+  }
+
+  void getEmployeeNew() async {
+    print('masuk sini history chat new  newnew ');
+
+    var data = await Request(
+            url: 'chatting/employee-history',
+            params:
+                '&em_id=${AppData.informasiUser![0].em_id}&search=${searchController.value.text}')
+        .get();
+    var response = jsonDecode(data.body);
+    print('masuk sini history chat new ${response}');
+
+    if (data.statusCode == 200) {
+      isLoading.value = false;
+      // return response;
+      infoEmployee.value = response;
+      print('berhasil ambil data chat ${response}');
+    } else {
+      isLoading.value = false;
       throw Exception('Failed to load data');
     }
   }
@@ -149,6 +153,7 @@ class ChatController extends GetxController {
   }
 
   void tekanLamaPesan(dynamic messageData) {
+    print('Tahan pesan new ${messageData}');
     if (isSelectionMode.value) return;
 
     isSelectionMode.value = true;

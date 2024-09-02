@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -391,7 +391,7 @@ class LaporanKlaimController extends GetxController {
           return SafeArea(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
-                     child: SingleChildScrollView(
+              child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -434,8 +434,8 @@ class LaporanKlaimController extends GetxController {
                     SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
                       child: Column(
-                        children:
-                            List.generate(departementAkses.value.length, (index) {
+                        children: List.generate(departementAkses.value.length,
+                            (index) {
                           var id = departementAkses.value[index]['id'];
                           var dep_name = departementAkses.value[index]['name'];
                           return InkWell(
@@ -456,7 +456,8 @@ class LaporanKlaimController extends GetxController {
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     dep_name,
@@ -506,7 +507,8 @@ class LaporanKlaimController extends GetxController {
                                               aksiCariLaporan();
                                             } else {
                                               cariLaporanPengajuanTanggal(
-                                                  pilihTanggalFilterAjuan.value);
+                                                  pilihTanggalFilterAjuan
+                                                      .value);
                                             }
                                           },
                                           child: Container(

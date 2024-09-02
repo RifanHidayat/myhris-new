@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'dart:isolate';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
@@ -37,15 +38,15 @@ class MyTaskHandler extends TaskHandler {
 
   @override
   Future<void> onEvent(DateTime timestamp, SendPort? sendPort) async {
-    FlutterForegroundTask.updateService(
-      notificationTitle: 'SISCOM HRIS',
-      notificationText: 'Running...',
-    );
+    // FlutterForegroundTask.updateService(
+    //   notificationTitle: 'SISCOM HRIS',
+    //   notificationText: 'Running...',
+    // );
 
     // Send data to the main isolate.
-    sendPort?.send(_eventCount);
+    // sendPort?.send(_eventCount);
 
-    _eventCount++;
+    // _eventCount++;
   }
 
   @override
@@ -172,6 +173,8 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
         notificationText: 'Tap to return to the app',
         callback: startCallback,
       );
+      final service = FlutterBackgroundService();
+      service.startService();
     }
 
     ReceivePort? receivePort;
@@ -183,6 +186,8 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
   }
 
   Future<bool> _stopForegroundTask() async {
+    final service = FlutterBackgroundService();
+    service.invoke("stopService");
     return await FlutterForegroundTask.stopService();
   }
 

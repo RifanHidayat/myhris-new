@@ -48,14 +48,14 @@ class CustomDialog extends StatelessWidget {
             children: <Widget>[
               Text(
                 title!,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               SizedBox(
                 height: 16,
               ),
               Text(
                 content!,
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),
               buttonStatus == 1

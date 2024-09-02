@@ -91,7 +91,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
             titleSpacing: 0,
             centerTitle: true,
             title: Obx(() => Text(
-              controller.viewTugasLuar.value
+              controller.viewTugasLuar.value 
                   ? "Form Tugas Luar"
                   : "Form Dinas Luar ",
               style: GoogleFonts.inter(

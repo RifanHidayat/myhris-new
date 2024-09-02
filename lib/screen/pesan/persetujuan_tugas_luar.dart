@@ -23,8 +23,7 @@ class PersetujuanTugasLuar extends StatefulWidget {
 
 class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
   var controller = Get.put(ApprovalController());
-  
-  
+
   var controllerGlobal = Get.put(GlobalController());
 
   @override
@@ -191,7 +190,7 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
             Get.back();
             return true;
           },
-          child:SafeArea(
+          child: SafeArea(
               child: Obx(() => DefaultTabController(
                     length: 2,
                     child: Column(
@@ -613,6 +612,7 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   onTap: () {
+                    print("wkwkwk: $typeAjuan $emIdPengaju $delegasi $idx");
                     Get.to(DetailPersetujuanTugasLuar(
                       emId: emIdPengaju,
                       title: typeAjuan,
@@ -776,8 +776,7 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                               color: Constanst.border,
                             ),
                           ),
-                           _approval(index)
-                              
+                          _approval(index)
 
                           // namaApprove1 == "" || leave_status == "Pending"
                           //     ? const SizedBox()
@@ -828,13 +827,11 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
     );
   }
 
-
-      
   Widget _approval(index) {
     var data = controller.listData[index];
-    var namaApprove1 = controller.listData.value[index]['nama_approve1']??"";
-    var namaApprove2 = controller.listData.value[index]['nama_approve2']??"";
-    var leave_status = controller.listData.value[index]['leave_status']??"";
+    var namaApprove1 = controller.listData.value[index]['nama_approve1'] ?? "";
+    var namaApprove2 = controller.listData.value[index]['nama_approve2'] ?? "";
+    var leave_status = controller.listData.value[index]['leave_status'] ?? "";
 
     if (leave_status == "Rejected") {
       return Container(
@@ -930,8 +927,8 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
       );
     }
 
-    if (leave_status=="Approve2"){
-          return Container(
+    if (leave_status == "Approve2") {
+      return Container(
         child: namaApprove1 == ""
             ? const SizedBox()
             : Row(
@@ -1161,8 +1158,7 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
         });
   }
 
-
-    Widget singgleApproval(data) {
+  Widget singgleApproval(data) {
     var text = "";
     if (data['approve_status'] == "Pending") {
       text = "Pending Approval";
@@ -1248,9 +1244,7 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
     if (data['approve_status'] == "Rejected") {
       text = "Rejected By - ${data['nama_approve1']}";
     }
-   
-   
-   
+
     if (data['approve_status'] == "Approve") {
       text = "Approve 1 By - ${data['nama_approve1']}";
 
@@ -1262,7 +1256,8 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
       }
 
       if (data['approve2_status'] == "Approve") {
-        text2 = "Approved 2 By - ${data['nama_approve2']} ${data['approve2_status'] }";
+        text2 =
+            "Approved 2 By - ${data['nama_approve2']} ${data['approve2_status']}";
       }
     }
     return Container(
@@ -1322,19 +1317,21 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                       ),
                     ],
                   ),
-                  
                   data['approve_status'] == "Approve"
                       ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                    padding: EdgeInsets.only(left:2.5,top: 2,bottom: 2),
-                    child: Container(
-                      height: 30,
-                      child:  VerticalDivider(color: Constanst.Secondary,),
-                    ),
-                  ),
-                          Padding(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 2.5, top: 2, bottom: 2),
+                              child: Container(
+                                height: 30,
+                                child: VerticalDivider(
+                                  color: Constanst.Secondary,
+                                ),
+                              ),
+                            ),
+                            Padding(
                               padding: EdgeInsets.only(top: 0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1363,7 +1360,8 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                                   // ),
                                   const SizedBox(width: 8),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text("${text2} ",
                                           style: GoogleFonts.inter(
@@ -1376,8 +1374,8 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
                                 ],
                               ),
                             ),
-                        ],
-                      )
+                          ],
+                        )
                       : SizedBox(),
                 ],
               ),
@@ -1387,7 +1385,4 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
       ),
     );
   }
-
-
-  
 }

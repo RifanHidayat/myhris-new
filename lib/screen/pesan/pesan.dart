@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:siscom_operasional/controller/approval_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_lembur.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
@@ -19,7 +22,7 @@ class Pesan extends StatefulWidget {
 
 class _PesanState extends State<Pesan> {
   final controller = Get.put(PesanController());
-
+  @override
   Future<void> refreshData() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
@@ -522,6 +525,13 @@ class _PesanState extends State<Pesan> {
                                   .value[index]['notifikasi'][idx]['status'];
                               var view = controller.listNotifikasi.value[index]
                                   ['notifikasi'][idx]['view'];
+                              var emId = controller.listNotifikasi.value[index]
+                                  ['notifikasi'][idx]['em_id'];
+                              var emIdPengaju =
+                                  controller.listNotifikasi.value[index]
+                                      ['notifikasi'][idx]['em_id_pengajuan'];
+                              var idDetail = controller.listNotifikasi
+                                  .value[index]['notifikasi'][idx]['idx'];
                               return Column(
                                 children: [
                                   Container(
@@ -533,10 +543,29 @@ class _PesanState extends State<Pesan> {
                                     ),
                                     child: InkWell(
                                       onTap: () {
-                                        if (view == 0) {
-                                          controller.aksilihatNotif(idNotif);
-                                        } else {
-                                          controller.redirectToPage(urlRoute);
+                                        print(
+                                            "wkwkwk: ${controller.listNotifikasi.value[index]['notifikasi'][idx]}");
+                                        if (emIdPengaju !=
+                                                AppData
+                                                    .informasiUser![0].em_id &&
+                                            idDetail != null) {
+                                          if (view == 0) {
+                                            controller.aksilihatNotif(idNotif);
+                                          }
+                                          controller.routeApprovalNotif(
+                                            title: titleNotif,
+                                            emIdPengaju: emIdPengaju.toString(),
+                                            idx: idDetail.toString(),
+                                            delegasi: emId.toString(),
+                                            url: urlRoute,
+                                          );
+                                        } else if (emIdPengaju.toString() ==
+                                            AppData.informasiUser![0].em_id) {
+                                          if (view == 0) {
+                                            controller.aksilihatNotif(idNotif);
+                                          }
+                                          controller.redirectToPage(
+                                              urlRoute, idDetail);
                                         }
                                       },
                                       child: Padding(
