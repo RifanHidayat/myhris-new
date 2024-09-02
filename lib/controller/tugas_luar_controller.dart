@@ -768,7 +768,7 @@ class TugasLuarController extends GetxController {
     if (statusForm.value == false) {
       body['activity_name'] =
           "Membuat Pengajuan Tugas Luar. alasan = ${catatan.value.text}";
-      var connect = Api.connectionApi("post", body, "insert-emp_labor");
+      var connect = Api.connectionApi("post", body, "tugas-luar");
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
@@ -784,8 +784,8 @@ class TugasLuarController extends GetxController {
                 stringWaktu,
                 1,
                 typeNotifFcm);
-            kirimNotifikasiToReportTo(getFullName, finalTanggalPengajuan,
-                getEmid, "Tugas Luar", stringWaktu);
+            // kirimNotifikasiToReportTo(getFullName, finalTanggalPengajuan,
+            //     getEmid, "Tugas Luar", stringWaktu);
             Navigator.pop(Get.context!);
             var pesan1 = "Pengajuan Tugas Luar berhasil di buat";
             var pesan2 =

@@ -389,34 +389,34 @@ class InfoKaryawan extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Expanded(
-                              flex: 15,
-                              child: InkWell(
-                                onTap: () {
-                                  // chattingCtr.emIdUser.value=emId.toString();
-                                  // Get.to(ChattingPage(title: title,fullName: full_name,image: image,em_id:emId ,));
-                                  Get.to(
-                                    ChatPage(
-                                      webSocketChannel:
-                                          IOWebSocketChannel.connect(
-                                              Uri.parse(Api.webSocket)),
-                                      fullNamePenerima: full_name,
-                                      emIdPengirim:
-                                          AppData.informasiUser![0].em_id,
-                                      emIdPenerima: emId,
-                                      imageProfil: image,
-                                      title: title,
-                                    ),
-                                  );
-                                  print(AppData.informasiUser![0].em_id);
-                                  print(full_name);
-                                  print(emId);
-                                  print(image);
-                                },
-                                child: const Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Icon(Iconsax.message)),
-                              ))
+                          // Expanded(
+                          //     flex: 15,
+                          //     child: InkWell(
+                          //       onTap: () {
+                          //         // chattingCtr.emIdUser.value=emId.toString();
+                          //         // Get.to(ChattingPage(title: title,fullName: full_name,image: image,em_id:emId ,));
+                          //         Get.to(
+                          //           ChatPage(
+                          //             webSocketChannel:
+                          //                 IOWebSocketChannel.connect(
+                          //                     Uri.parse(Api.webSocket)),
+                          //             fullNamePenerima: full_name,
+                          //             emIdPengirim:
+                          //                 AppData.informasiUser![0].em_id,
+                          //             emIdPenerima: emId,
+                          //             imageProfil: image,
+                          //             title: title,
+                          //           ),
+                          //         );
+                          //         print(AppData.informasiUser![0].em_id);
+                          //         print(full_name);
+                          //         print(emId);
+                          //         print(image);
+                          //       },
+                          //       child: const Align(
+                          //           alignment: Alignment.centerRight,
+                          //           child: Icon(Iconsax.message)),
+                          //     ))
                         ],
                       ),
                       const SizedBox(height: 12),

@@ -117,6 +117,7 @@ class _BerhasilPengajuanState extends State<BerhasilPengajuan> {
                       ),
                       child: ElevatedButton(
                         onPressed: () {
+                          print(widget.dataBerhasil[3]);
                           controllerGlobal
                               .showDataPilihAtasan(widget.dataBerhasil[3]);
                         },
