@@ -14,6 +14,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/main.dart';
@@ -119,7 +120,7 @@ class _LiveTrackingState extends State<LiveTracking> {
     // _startLocationsUpdatesStream();
 
     BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(size: Size(1, 1)),
+      const ImageConfiguration(size: Size(1, 1)),
       'assets/avatar_default.png',
     ).then((onValue) {
       destinationIcon = onValue;
@@ -150,6 +151,7 @@ class _LiveTrackingState extends State<LiveTracking> {
     print("informasiUser ${emId}");
 
     controllerTracking.isTracking();
+    controllerTracking.refreshPage();
 
     print(
         "dapatttt isViewTracking ${AppData.informasiUser![0].isViewTracking}");
@@ -305,70 +307,66 @@ class _LiveTrackingState extends State<LiveTracking> {
                     )
               : Container()
           : Container(),
-      body: RefreshIndicator(
-        onRefresh: refreshData,
-        child: Column(
-          children: [
-            Expanded(
-              child:
-                  //  controllerTracking.latUser.value == 0.0 ||
-                  //         controllerTracking.langUser.value == 0.0 ||
-                  //         controllerTracking.alamatUserFoto.value == ""
-                  //     ? const SizedBox(
-                  //         height: 50,
-                  //         child: Center(
-                  //           child: SizedBox(
-                  //               width: 35,
-                  //               height: 35,
-                  //               child: CircularProgressIndicator(strokeWidth: 3)),
-                  //         ),
-                  //       )
-                  //     :
-                  Stack(
-                alignment: Alignment.topCenter,
-                children: <Widget>[
-                  SlidingUpPanel(
-                    maxHeight: _panelHeightOpen,
-                    minHeight: _panelHeightClosed,
-                    controller: panelController,
-                    backdropTapClosesPanel: false,
-                    parallaxEnabled: true,
-                    backdropEnabled: false,
-                    parallaxOffset: .5,
-                    defaultPanelState: panel,
-                    renderPanelSheet: false,
-                    // panelSnapping: false,
-                    // isDraggable: controllerTracking.bagikanlokasi.value ==
-                    //         "tidak aktif"
-                    //     ? false
-                    //     : true,
-                    isDraggable: false,
-                    backdropOpacity: 0.0,
-                    body: _body(),
-                    panelBuilder: (sc) => _panel(sc),
-                    onPanelOpened: () {
-                      controllerTracking.isMapsDetail.value = true;
-                      print('object');
-                    },
-                    onPanelClosed: () {
-                      controllerTracking.isMapsDetail.value = false;
-                      print('object');
-                    },
-                    // color: Colors.transparent,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(18.0),
-                        topRight: Radius.circular(18.0)),
-                    onPanelSlide: (double pos) => setState(() {
-                      _fabHeight =
-                          pos * (_panelHeightOpen - _panelHeightClosed) +
-                              _initFabHeight;
-                    }),
-                  ),
-                ],
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child:
+                //  controllerTracking.latUser.value == 0.0 ||
+                //         controllerTracking.langUser.value == 0.0 ||
+                //         controllerTracking.alamatUserFoto.value == ""
+                //     ? const SizedBox(
+                //         height: 50,
+                //         child: Center(
+                //           child: SizedBox(
+                //               width: 35,
+                //               height: 35,
+                //               child: CircularProgressIndicator(strokeWidth: 3)),
+                //         ),
+                //       )
+                //     :
+                Stack(
+              alignment: Alignment.topCenter,
+              children: <Widget>[
+                SlidingUpPanel(
+                  maxHeight: _panelHeightOpen,
+                  minHeight: _panelHeightClosed,
+                  controller: panelController,
+                  backdropTapClosesPanel: false,
+                  parallaxEnabled: true,
+                  backdropEnabled: false,
+                  parallaxOffset: .5,
+                  defaultPanelState: panel,
+                  renderPanelSheet: false,
+                  // panelSnapping: false,
+                  // isDraggable: controllerTracking.bagikanlokasi.value ==
+                  //         "tidak aktif"
+                  //     ? false
+                  //     : true,
+                  isDraggable: false,
+                  backdropOpacity: 0.0,
+                  body: _body(),
+                  panelBuilder: (sc) => _panel(sc),
+                  onPanelOpened: () {
+                    controllerTracking.isMapsDetail.value = true;
+                    print('object');
+                  },
+                  onPanelClosed: () {
+                    controllerTracking.isMapsDetail.value = false;
+                    print('object');
+                  },
+                  // color: Colors.transparent,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(18.0),
+                      topRight: Radius.circular(18.0)),
+                  onPanelSlide: (double pos) => setState(() {
+                    _fabHeight = pos * (_panelHeightOpen - _panelHeightClosed) +
+                        _initFabHeight;
+                  }),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -376,7 +374,7 @@ class _LiveTrackingState extends State<LiveTracking> {
   Widget _body() {
     return Obx(
       () => controllerTracking.isLoadingDetailTracking.value
-          ? Center(
+          ? const Center(
               child: SizedBox(
                   width: 35,
                   height: 35,
@@ -407,7 +405,7 @@ class _LiveTrackingState extends State<LiveTracking> {
                         onMapCreated: onMapCreated,
                         polylines: polylines,
                       ),
-                      Positioned(
+                      const Positioned(
                         bottom: 10,
                         child: Column(
                           children: [],
@@ -441,9 +439,9 @@ class _LiveTrackingState extends State<LiveTracking> {
       setState(() {
         markers.add(
           Marker(
-            markerId: MarkerId("source"),
+            markerId: const MarkerId("source"),
             position: locations.first,
-            infoWindow: InfoWindow(title: "Source"),
+            infoWindow: const InfoWindow(title: "Source"),
             icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueGreen), // Ikon titik awal
           ),
@@ -468,7 +466,7 @@ class _LiveTrackingState extends State<LiveTracking> {
         //   ),
         // );
         polylines.add(Polyline(
-          polylineId: PolylineId('route1'),
+          polylineId: const PolylineId('route1'),
           visible: true,
           points: locations,
           color: Colors.blue,
@@ -484,7 +482,7 @@ class _LiveTrackingState extends State<LiveTracking> {
   void getMarker() {
     markers.add(Marker(
         //add first marker
-        markerId: MarkerId("1"),
+        markerId: const MarkerId("1"),
         icon: destinationIcon ?? BitmapDescriptor.defaultMarker,
         // icon: ,
         position: LatLng(
@@ -493,7 +491,7 @@ class _LiveTrackingState extends State<LiveTracking> {
         )));
 
     circles.add(Circle(
-      circleId: CircleId("1"),
+      circleId: const CircleId("1"),
       center: LatLng(
         double.parse(controllerTracking.latUser.toString()),
         double.parse(controllerTracking.langUser.toString()),
@@ -506,7 +504,7 @@ class _LiveTrackingState extends State<LiveTracking> {
   }
 
   Widget _panel(ScrollController sc) {
-    print(panelController.panelPosition.toString());
+    print("woi: ${panelController.panelPosition.toString()}");
 
     return MediaQuery.removePadding(
         context: context,
@@ -514,13 +512,22 @@ class _LiveTrackingState extends State<LiveTracking> {
         removeBottom: true,
         child: Container(
           color: Colors.transparent,
-          child: ListView(
-            controller: sc,
-            children: <Widget>[
-              panelController.panelPosition > 0.2
-                  ? _expandedWidget()
-                  : _previewWidget()
-            ],
+          child: Obx(
+            () => SmartRefresher(
+              enablePullUp: controllerTracking.hasMore.value,
+              enablePullDown: true,
+              onRefresh: () => refreshData(),
+              onLoading: () => controllerTracking.loadNextPage(),
+              controller: controllerTracking.refreshController,
+              child: ListView(
+                controller: sc,
+                children: <Widget>[
+                  panelController.panelPosition > 0.2
+                      ? _expandedWidget()
+                      : _previewWidget()
+                ],
+              ),
+            ),
           ),
         ));
   }
@@ -659,10 +666,10 @@ class _LiveTrackingState extends State<LiveTracking> {
                 child: Obx(
                   () => ElevatedButton(
                     onPressed: () async {
-                  // initializeService();
+                      // initializeService();
                       if (controllerTracking.bagikanlokasi.value ==
                           "tidak aktif") {
-                           // FlutterBackgroundService().invoke("setAsBackground");
+                        // FlutterBackgroundService().invoke("setAsBackground");
                         print(controllerTracking.latUser.value);
                         print(controllerTracking.langUser.value);
 
@@ -691,7 +698,7 @@ class _LiveTrackingState extends State<LiveTracking> {
 
                         setState(() {});
                       } else {
-                          //FlutterBackgroundService().stopService();
+                        //FlutterBackgroundService().stopService();
                         controllerTracking.bagikanlokasi.value = "tidak aktif";
                         // await LocationDao().clear();
                         // await _getLocations();
@@ -707,7 +714,6 @@ class _LiveTrackingState extends State<LiveTracking> {
                             "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
 
                         // final service = FlutterBackgroundService();
-                      
 
                         // service.invoke("stopService");
 
@@ -860,19 +866,21 @@ class _LiveTrackingState extends State<LiveTracking> {
             //   color: Colors.blue,
             // )
             Obx(
-              () => controllerTracking.isLoadingDetailTracking.value
-                  ? const Padding(
-                      padding: EdgeInsets.only(top: 130.0),
-                      child: Center(
-                        child: SizedBox(
-                            width: 35,
-                            height: 35,
-                            child: CircularProgressIndicator(strokeWidth: 3)),
-                      ),
-                    )
-                  : listHistoryControl(),
+              () =>
+                  // controllerTracking.isLoadingDetailTracking.value
+                  //       ? const Padding(
+                  //           padding: EdgeInsets.only(top: 130.0),
+                  //           child: Center(
+                  //             child: SizedBox(
+                  //                 width: 35,
+                  //                 height: 35,
+                  //                 child: CircularProgressIndicator(strokeWidth: 3)),
+                  //           ),
+                  //         )
+                  //       :
+                  listHistoryControl(),
             ),
-            const SizedBox(height: 16.0)
+            // const SizedBox(height: 16.0)
           ],
         ),
       ),
@@ -1106,208 +1114,209 @@ class _LiveTrackingState extends State<LiveTracking> {
   }
 
   Widget listHistoryControl() {
-    return ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: controllerTracking.detailTrackings.length,
-        itemBuilder: (context, index) {
-          // var alamat =
-          //     "Komplek City Resort Residence Rukan Malibu Blok J. 75-77";
-          // var lokasi = _locations[index];
-          // List<String> splitData = lokasi.split("*");
-          // var tanggal_waktu = splitData[0];
-          // var latitude = splitData[1];
-          // var longitude = splitData[2];
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 152.0, top: 10),
+      child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: controllerTracking.detailTrackings.length,
+          itemBuilder: (context, index) {
+            // var alamat =
+            //     "Komplek City Resort Residence Rukan Malibu Blok J. 75-77";
+            // var lokasi = _locations[index];
+            // List<String> splitData = lokasi.split("*");
+            // var tanggal_waktu = splitData[0];
+            // var latitude = splitData[1];
+            // var longitude = splitData[2];
 
-          // String time =
-          //     DateFormat('HH : mm : ss').format(DateTime.parse(tanggal_waktu));
+            // String time =
+            //     DateFormat('HH : mm : ss').format(DateTime.parse(tanggal_waktu));
 
-          final data = controllerTracking.detailTrackings[index];
-          // print("long ${data.longlat.split(",")[0]}");
-          // print("lat ${data.longlat.split(",")[1]}");
-          locations.add(LatLng(double.parse(data.longlat.split(",")[1]),
-              double.parse(data.longlat.split(",")[0])));
+            final data = controllerTracking.detailTrackings[index];
+            // print("long ${data.longlat.split(",")[0]}");
+            // print("lat ${data.longlat.split(",")[1]}");
+            locations.add(LatLng(double.parse(data.longlat.split(",")[1]),
+                double.parse(data.longlat.split(",")[0])));
 
-          // print('Address1: $address1');
-          // final lat = 37.7749; // Contoh latitude
-          // final lng = -122.4194; // Contoh longitude
+            // print('Address1: $address1');
+            // final lat = 37.7749; // Contoh latitude
+            // final lng = -122.4194; // Contoh longitude
 
-          // final address = controllerTracking.getAddressFromLatLng(
-          //     double.parse(latitude), double.parse(longitude));
-          // print('Address: $address');
+            // final address = controllerTracking.getAddressFromLatLng(
+            //     double.parse(latitude), double.parse(longitude));
+            // print('Address: $address');
 
-          return InkWell(
-            onTap: () {
-              // Get.to(DetailTracking(
-              //   emId: emId,
-              // ));
-            },
-            child: Padding(
-              padding:
-                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 0.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
-                        child: index == 0
-                            ? Container(
-                                height: 4,
-                              )
-                            : Container(
-                                color: Constanst.fgBorder,
-                                width: 2,
-                                height: 4,
-                              ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
-                        child: index == 0
-                            ? Container(
-                                height: 4,
-                              )
-                            : Container(
-                                color: Constanst.fgBorder,
-                                width: 2,
-                                height: 4,
-                              ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
-                        child: index == 0
-                            ? Container(
-                                height: 4,
-                              )
-                            : Container(
-                                color: Constanst.fgBorder,
-                                width: 2,
-                                height: 4,
-                              ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
-                        child: index == 0
-                            ? Container(
-                                height: 4,
-                              )
-                            : Container(
-                                color: Constanst.fgBorder,
-                                width: 2,
-                                height: 4,
-                              ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100)),
-                            color: index == 0
-                                ? Constanst.infoLight1
-                                : Constanst.colorNeutralBgSecondary),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Container(
-                            width: 12,
-                            height: 12,
-                            decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(100)),
-                                color: index == 0
-                                    ? Constanst.infoLight
-                                    : Constanst.colorNeutralFgTertiary),
+            return InkWell(
+              onTap: () {
+                // Get.to(DetailTracking(
+                //   emId: emId,
+                // ));
+                print(controllerTracking.detailTrackings.length);
+              },
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 0.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
+                          child: index == 0
+                              ? Container(
+                                  height: 4,
+                                )
+                              : Container(
+                                  color: Constanst.fgBorder,
+                                  width: 2,
+                                  height: 4,
+                                ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
+                          child: index == 0
+                              ? Container(
+                                  height: 4,
+                                )
+                              : Container(
+                                  color: Constanst.fgBorder,
+                                  width: 2,
+                                  height: 4,
+                                ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
+                          child: index == 0
+                              ? Container(
+                                  height: 4,
+                                )
+                              : Container(
+                                  color: Constanst.fgBorder,
+                                  width: 2,
+                                  height: 4,
+                                ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
+                          child: index == 0
+                              ? Container(
+                                  height: 4,
+                                )
+                              : Container(
+                                  color: Constanst.fgBorder,
+                                  width: 2,
+                                  height: 4,
+                                ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(100)),
+                              color: index == 0
+                                  ? Constanst.infoLight1
+                                  : Constanst.colorNeutralBgSecondary),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(100)),
+                                  color: index == 0
+                                      ? Constanst.infoLight
+                                      : Constanst.colorNeutralFgTertiary),
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
-                        child: index == 11 - 1
-                            ? Container(
-                                height: 4,
-                              )
-                            : Container(
-                                color: Constanst.fgBorder,
-                                width: 2,
-                                height: 4,
-                              ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
-                        child: index == 11 - 1
-                            ? Container(
-                                height: 4,
-                              )
-                            : Container(
-                                color: Constanst.fgBorder,
-                                width: 2,
-                                height: 4,
-                              ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
-                        child: index == 11 - 1
-                            ? Container(
-                                height: 4,
-                              )
-                            : Container(
-                                color: Constanst.fgBorder,
-                                width: 2,
-                                height: 4,
-                              ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
-                        child: index == 11 - 1
-                            ? Container(
-                                height: 4,
-                              )
-                            : Container(
-                                color: Constanst.fgBorder,
-                                width: 2,
-                                height: 4,
-                              ),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 16, bottom: 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            data.time.replaceFirst(':', ' : '),
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
-                                color: Constanst.fgPrimary),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            data.address,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: Constanst.fgSecondary),
-                          ),
-                        ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
+                          child: index == 11 - 1
+                              ? Container(
+                                  height: 4,
+                                )
+                              : Container(
+                                  color: Constanst.fgBorder,
+                                  width: 2,
+                                  height: 4,
+                                ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
+                          child: index == 11 - 1
+                              ? Container(
+                                  height: 4,
+                                )
+                              : Container(
+                                  color: Constanst.fgBorder,
+                                  width: 2,
+                                  height: 4,
+                                ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
+                          child: index == 11 - 1
+                              ? Container(
+                                  height: 4,
+                                )
+                              : Container(
+                                  color: Constanst.fgBorder,
+                                  width: 2,
+                                  height: 4,
+                                ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
+                          child: index == 11 - 1
+                              ? Container(
+                                  height: 4,
+                                )
+                              : Container(
+                                  color: Constanst.fgBorder,
+                                  width: 2,
+                                  height: 4,
+                                ),
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 16, bottom: 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data.time.replaceFirst(':', ' : '),
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              data.address,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Constanst.fgSecondary),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Icon(Iconsax.arrow_right_3,
-                      color: Constanst.fgSecondary, size: 20),
-                ],
+                    Icon(Iconsax.arrow_right_3,
+                        color: Constanst.fgSecondary, size: 20),
+                  ],
+                ),
               ),
-            ),
-          );
-        });
+            );
+          }),
+    );
   }
-  
-
-  
 }

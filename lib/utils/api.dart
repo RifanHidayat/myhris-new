@@ -209,12 +209,11 @@ class ApiRequest {
   }
 
   Future<http.Response> post() async {
-    print(params);
     print(temParams);
     if (temParams != null) {
       params.addAll(temParams);
     }
-
+    print(params);
     print("basic ${basicUrl + url}");
     return await http
         .post(Uri.parse(basicUrl + url).replace(queryParameters: params),

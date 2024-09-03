@@ -70,7 +70,10 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                 color: Constanst.fgPrimary,
                 size: 24,
               ),
-              onPressed: Get.back,
+              onPressed: () {
+                absenController.clearData();
+                Get.back();
+              },
             ),
           ),
         ),

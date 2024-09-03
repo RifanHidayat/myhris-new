@@ -566,6 +566,10 @@ class _PesanState extends State<Pesan> {
                                           }
                                           controller.redirectToPage(
                                               urlRoute, idDetail);
+                                        }else{
+                                         if (view == 0) {
+                                            controller.aksilihatNotif(idNotif);
+                                          }
                                         }
                                       },
                                       child: Padding(

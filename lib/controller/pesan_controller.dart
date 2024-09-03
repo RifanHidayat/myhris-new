@@ -697,13 +697,13 @@ class PesanController extends GetxController {
     required String url,
   }) async {
     // print("lalala: $url");
-    if (title == "Persetujuan Lembur" || url == "Lembur") {
+    if (title == "Pengajuan Lembur" || url == "Lembur") {
       await controllerApproval.startLoadData(
           'Lembur',
           bulanSelectedSearchHistory.value,
           tahunSelectedSearchHistory.value,
           'persetujuan');
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.to(() => DetailPersetujuanLembur(
               emId: emIdPengaju,
               title: 'Lembur',
@@ -714,7 +714,7 @@ class PesanController extends GetxController {
     } else if (title == "Approval Cuti" || url == "Cuti") {
       controllerApproval.startLoadData('Cuti', bulanSelectedSearchHistory.value,
           tahunSelectedSearchHistory.value, 'persetujuan');
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.to(() => DetailPersetujuanCuti(
               emId: emIdPengaju,
               title: 'Cuti',
@@ -730,7 +730,7 @@ class PesanController extends GetxController {
           bulanSelectedSearchHistory.value,
           tahunSelectedSearchHistory.value,
           'persetujuan');
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.to(() => DetailPersetujuanIzin(
               emId: emIdPengaju,
               title: 'Tidak Hadir',
@@ -744,7 +744,7 @@ class PesanController extends GetxController {
           bulanSelectedSearchHistory.value,
           tahunSelectedSearchHistory.value,
           'persetujuan');
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.to(() => DetailPersetujuanTugasLuar(
               emId: emIdPengaju,
               title: 'Tugas Luar',
@@ -752,13 +752,13 @@ class PesanController extends GetxController {
               delegasi: delegasi,
             ));
       });
-    } else if (url == "DinasLuar") {
+    } else if (title == "Pengajuan" || url == "DinasLuar") {
       controllerApproval.startLoadData(
           'Dinas Luar',
           bulanSelectedSearchHistory.value,
           tahunSelectedSearchHistory.value,
           'persetujuan');
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.to(() => DetailPersetujuanDinasLuar(
               emId: emIdPengaju,
               title: 'Dinas Luar',
@@ -772,7 +772,7 @@ class PesanController extends GetxController {
           bulanSelectedSearchHistory.value,
           tahunSelectedSearchHistory.value,
           'persetujuan');
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.to(() => DetailPersetujuanKlaim(
               emId: emIdPengaju,
               title: 'Klaim',
@@ -786,7 +786,7 @@ class PesanController extends GetxController {
           bulanSelectedSearchHistory.value,
           tahunSelectedSearchHistory.value,
           'persetujuan');
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.to(() => DetailPersetujuanPayroll(
               emId: emIdPengaju,
               title: 'Payroll',
@@ -800,7 +800,7 @@ class PesanController extends GetxController {
           bulanSelectedSearchHistory.value,
           tahunSelectedSearchHistory.value,
           'persetujuan');
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.to(() => DetailPersetujuanAbsensi(
               emId: emIdPengaju,
               title: 'Absensi',
@@ -811,7 +811,7 @@ class PesanController extends GetxController {
     } else if (title == "Approval WFH" || url == "WFH") {
       controllerApproval.startLoadData('WFH', bulanSelectedSearchHistory.value,
           tahunSelectedSearchHistory.value, 'persetujuan');
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.to(() => DetailPersetujuanWfh(
               emId: emIdPengaju,
               title: "WFH",
@@ -825,7 +825,7 @@ class PesanController extends GetxController {
           bulanSelectedSearchHistory.value,
           tahunSelectedSearchHistory.value,
           'persetujuan');
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Get.to(() => DetailPersetujuanKasbon(
               emId: emIdPengaju,
               title: "Kasbon",
