@@ -62,7 +62,7 @@ class CutiController extends GetxController {
   var durasiIzin = 0.obs;
   var jumlahData = 0.obs;
 
-  var isBackDate="0".obs;
+  var isBackDate = "0".obs;
 
   var tempNamaStatus1 = "Semua Status".obs;
 
@@ -265,7 +265,7 @@ class CutiController extends GetxController {
           dateSelected.value = getFirst['select_date'];
           allowMinus.value = getFirst['allow_minus'];
           isRequiredFile.value = getFirst['upload_file'].toString();
-           isBackDate.value= getFirst['back_date'].toString();
+          isBackDate.value = getFirst['back_date'].toString();
         } else {
           var getFirst = allTipe.value
               .firstWhere((element) => element['id'] == typeIdEdit.value);
@@ -274,7 +274,7 @@ class CutiController extends GetxController {
           dateSelected.value = getFirst['select_date'];
           allowMinus.value = getFirst['allow_minus'];
           isRequiredFile.value = getFirst['upload_file'].toString();
-           isBackDate.value= getFirst['back_date'].toString();
+          isBackDate.value = getFirst['back_date'].toString();
         }
 
         this.allTipe.refresh();
@@ -815,12 +815,12 @@ class CutiController extends GetxController {
                   stringTanggal,
                   typeNotifFcm,
                   pesan);
-              if (item['token_notif'] != null) {
-                globalCt.kirimNotifikasiFcm(
-                    title: typeNotifFcm,
-                    message: pesan,
-                    tokens: item['token_notif']);
-              }
+              // if (item['token_notif'] != null) {
+              //   globalCt.kirimNotifikasiFcm(
+              //       title: typeNotifFcm,
+              //       message: pesan,
+              //       tokens: item['token_notif']);
+              // }
             }
 
             Get.offAll(BerhasilPengajuan(

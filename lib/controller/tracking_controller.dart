@@ -23,6 +23,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
@@ -95,6 +96,12 @@ class TrackingController extends GetxController {
 
   var userTerpilih = [].obs;
   var kontrolHistory = [].obs;
+
+  var offset = 0.obs;
+  var limit = 10.obs;
+  var hasMore = true.obs;
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: true);
 
   List<LatLng> locations = [
     // const LatLng(-6.142492997069779, 106.73685778167766), // Lokasi awal
@@ -1211,12 +1218,31 @@ class TrackingController extends GetxController {
     }
   }
 
+  Future<void> refreshPage() async {
+    detailTrackings.clear();
+    refreshController.resetNoData();
+    offset.value = 0;
+    limit.value = 10;
+    hasMore.value = true;
+    detailTracking(emIdEmployee: '');
+    refreshController.refreshCompleted();
+  }
+
+  Future<void> loadNextPage() async {
+    if (hasMore.value == true) {
+      offset.value += limit.value;
+      detailTracking(emIdEmployee: '');
+      refreshController.loadComplete();
+    } else {
+      refreshController.loadNoData();
+    }
+  }
+
   void detailTracking({tanggal, emIdEmployee}) async {
-    // detailTrackings.value = DetailTrackingModel.fromJsonToList([]);
-    // isLoadingDetailTracking.value = true;
+    if (isLoadingDetailTracking.value || !hasMore.value) return;
+
     isLoadingDetailTracking.value = true;
-    // isLoadingDetailTracking2.value = true;
-    // isLoadingDetailTracking3.value = true;
+    print("haha: offset=${offset.value}&limit=${limit.value}");
 
     Map<String, dynamic> body = {
       'tanggal':
@@ -1226,41 +1252,33 @@ class TrackingController extends GetxController {
               ? ''
               : AppData.informasiUser![0].em_id
           : emIdEmployee,
-      // 'em_id_employee': 'SIS202305048',
       'database': AppData.selectedDatabase,
     };
-    print('parameter 21 ${body}');
+
     try {
-      var response =
-          await ApiRequest(url: "employee-tracking-detail", body: body).post();
-      print('parameter ${response}');
-      var resp = jsonDecode(response.body);
+      var connect = Api.connectionApi("post", body, "employee-tracking-detail",
+          params: "&offset=${offset.value}&limit=${limit.value}");
+      connect.then((dynamic res) {
+        if (res.statusCode == 200) {
+          var resp = jsonDecode(res.body);
+          var newItems = DetailTrackingModel.fromJsonToList(resp['data']);
 
-      print('parameter 22${resp}');
+          if (newItems.length < limit.value) {
+            hasMore.value = false;
+          }
+          detailTrackings.value.addAll(newItems);
+          // detailTrackings.value = detailTrackings.reversed.toList();
 
-      if (response.statusCode == 200) {
-        print('parameter 23${resp}');
-
-        detailTrackings.value =
-            DetailTrackingModel.fromJsonToList(resp['data']);
-        detailTrackings.value = detailTrackings.reversed.toList();
-        isLoadingDetailTracking.value = false;
-        // isLoadingDetailTracking2.value = false;
-        // isLoadingDetailTracking3.value = false;
-        isMapsDetail.value = true;
-      } else {
-        detailTrackings.value = [];
-        isLoadingDetailTracking.value = false;
-        // isLoadingDetailTracking2.value = false;
-        // isLoadingDetailTracking3.value = false;
-      }
-      // Get.back();
+          isLoadingDetailTracking.value = false;
+          isMapsDetail.value = true;
+        } else {
+          hasMore.value = false;
+          isLoadingDetailTracking.value = false;
+        }
+      });
     } catch (e) {
       print(e);
-      detailTrackings.value = [];
       isLoadingDetailTracking.value = false;
-      // isLoadingDetailTracking2.value = false;
-      // isLoadingDetailTracking3.value = false;
     }
   }
 

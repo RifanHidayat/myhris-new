@@ -290,7 +290,9 @@ void onStart(ServiceInstance service) async {
         desiredAccuracy: LocationAccuracy.high);
     // print('lat :${position.latitude.toString()}');
     // print('long :${position.latitude.toString()}');
-    trackingTimer ??= Timer.periodic(Duration(minutes: int.parse(time ?? "2")),
+    trackingTimer ??= Timer.periodic(
+        Duration(
+            minutes: int.parse(time ?? "2")), //minutes: int.parse(time ?? "2")
         (timer) async {
       controllerTracking.tracking(
           position.latitude.toString(), position.longitude.toString());
@@ -605,7 +607,7 @@ void _handleMessage(RemoteMessage message) async {
   final route = messageData['route'];
 
   await Future.delayed(const Duration(seconds: 7));
-  // UtilsAlert.showToast("handle: $messageData");
+  UtilsAlert.showToast("handle: $messageData");
   switch (route) {
     case 'pesan':
       Get.to(
@@ -620,26 +622,38 @@ void _handleMessage(RemoteMessage message) async {
         ),
       );
       break;
-    case 'Pesan':
+    case 'Lembur':
+    case 'Cuti':
+    case 'Izin':
+    case 'TugasLuar':
+    case 'DinasLuar':
+    case 'Klaim':
+    case 'Payroll':
+    case 'Absensi':
+    case 'WFH':
+    case 'Kasbon':
+      // controllerPesan.loadNotifikasi();
       final controllerTab = Get.find<TabbController>();
       controllerTab.currentIndex.value = 3;
-      var emIdPengaju = "00000000124";
-      await Future.delayed(const Duration(milliseconds: 500), () {
-        if (emIdPengaju != AppData.informasiUser![0].em_id) {
+      var emIdPengaju = messageData['em_id_pengajuan'];
+      var idx = messageData['idx'];
+      await Future.delayed(const Duration(seconds: 3), () {
+        if (emIdPengaju != AppData.informasiUser![0].em_id && idx != null) {
           controllerPesan.routeApprovalNotif(
-              emIdPengaju: emIdPengaju,
-              title: "Pengajuan Lembur",
-              idx: '26',
-              delegasi: AppData.informasiUser![0].em_id,
-              url: "Lembur");
+            emIdPengaju: emIdPengaju,
+            title: route,
+            idx: idx,
+            delegasi: AppData.informasiUser![0].em_id,
+            url: route,
+          );
         } else if (emIdPengaju == AppData.informasiUser![0].em_id) {
-          controllerPesan.redirectToPage("Lembur", null);
+          controllerPesan.redirectToPage(route, null);
         }
       });
       break;
     default:
       final controllerTab = Get.find<TabbController>();
-      controllerTab.currentIndex.value = 1;
+      controllerTab.currentIndex.value = 0;
   }
 }
 
@@ -680,26 +694,37 @@ Future onSelectNotification(notificationResponse) async {
         ),
       );
       break;
-    case 'Pesan':
+    case 'Lembur':
+    case 'Cuti':
+    case 'Izin':
+    case 'TugasLuar':
+    case 'DinasLuar':
+    case 'Klaim':
+    case 'Payroll':
+    case 'Absensi':
+    case 'WFH':
+    case 'Kasbon':
       final controllerTab = Get.find<TabbController>();
       controllerTab.currentIndex.value = 3;
-      var emIdPengaju = "00000000124";
-      await Future.delayed(const Duration(milliseconds: 500), () {
-        if (emIdPengaju != AppData.informasiUser![0].em_id) {
+      var emIdPengaju = message['em_id_pengajuan'];
+      var idx = message['idx'];
+      await Future.delayed(const Duration(seconds: 2), () {
+        if (emIdPengaju != AppData.informasiUser![0].em_id && idx != null) {
           controllerPesan.routeApprovalNotif(
-              emIdPengaju: emIdPengaju,
-              title: "Pengajuan Lembur",
-              idx: '26',
-              delegasi: AppData.informasiUser![0].em_id,
-              url: "Lembur");
+            emIdPengaju: emIdPengaju,
+            title: route,
+            idx: idx,
+            delegasi: AppData.informasiUser![0].em_id,
+            url: route,
+          );
         } else if (emIdPengaju == AppData.informasiUser![0].em_id) {
-          controllerPesan.redirectToPage("TidakHadir", null);
+          controllerPesan.redirectToPage(route, null);
         }
       });
       break;
     default:
       final controllerTab = Get.find<TabbController>();
-      controllerTab.currentIndex.value = 1;
+      controllerTab.currentIndex.value = 0;
   }
 
   // Gunakan map untuk membuat objek

@@ -3233,19 +3233,30 @@ class AbsenController extends GetxController {
           //     pesan,
           //     'Approval Absensi');
 
-          if (item['token_notif'] != null) {
-            globalCt.kirimNotifikasiFcm(
-              title: typeNotifFcm,
-              message: pesan,
-              tokens: item['token_notif'],
-            );
-          }
+          // if (item['token_notif'] != null) {
+          //   globalCt.kirimNotifikasiFcm(
+          //     title: typeNotifFcm,
+          //     message: pesan,
+          //     tokens: item['token_notif'],
+          //   );
+          // }
         }
         UtilsAlert.showToast("${valueBody['message']}");
       } else {
         UtilsAlert.showToast("${valueBody['message']}");
       }
     });
+    clearData();
+  }
+
+  void clearData() {
+    tglAjunan.value = "";
+    catataanAjuan.clear();
+    checkinAjuan2.value = "";
+    checkoutAjuan2.value = "";
+    placeCoordinateCheckin.clear();
+    placeCoordinateCheckout.clear();
+    imageAjuan.value = "";
   }
 
   void kirimNotifikasiToReportTo(
@@ -3272,8 +3283,14 @@ class AbsenController extends GetxController {
     });
   }
 
-  void kirimNotifikasiToDelegasi(getFullName, convertTanggalBikinPengajuan,
-      validasiDelegasiSelected, fcmTokenDelegasi, stringWaktu, typeNotifFcm,nomorAjuan) {
+  void kirimNotifikasiToDelegasi(
+      getFullName,
+      convertTanggalBikinPengajuan,
+      validasiDelegasiSelected,
+      fcmTokenDelegasi,
+      stringWaktu,
+      typeNotifFcm,
+      nomorAjuan) {
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
     // var description =

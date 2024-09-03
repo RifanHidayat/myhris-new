@@ -393,10 +393,12 @@ class KlaimController extends GetxController {
         catatan.value.text == "" ||
         tanggalTerpilih.value == "") {
       UtilsAlert.showToast("Lengkapi form *");
-    } else if (totalKlaim.value.text == "Rp" ||
-        totalKlaim.value.text == "Rp 0") {
-      UtilsAlert.showToast("Nominal klaim tidak bisa 0");
-    } else {
+    }
+    // else if (totalKlaim.value.text == "Rp" ||
+    //     totalKlaim.value.text == "Rp 0") {
+    //   UtilsAlert.showToast("Nominal klaim tidak bisa 0");
+    // }
+    else {
       if (uploadFile.value == true) {
         // UtilsAlert.loadingSimpanData(Get.context!, "Sedang Menyimpan File");
         // var connectUpload = await Api.connectionApiUploadFile(
@@ -545,12 +547,12 @@ class KlaimController extends GetxController {
                   typeNotifFcm,
                   pesan);
 
-              if (item['token_notif'] != null) {
-                globalCt.kirimNotifikasiFcm(
-                    title: typeNotifFcm,
-                    message: pesan,
-                    tokens: item['token_notif']);
-              }
+              // if (item['token_notif'] != null) {
+              //   globalCt.kirimNotifikasiFcm(
+              //       title: typeNotifFcm,
+              //       message: pesan,
+              //       tokens: item['token_notif']);
+              // }
             }
             Get.offAll(BerhasilPengajuan(
               dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
