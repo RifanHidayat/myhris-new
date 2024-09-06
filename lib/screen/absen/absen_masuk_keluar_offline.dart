@@ -19,14 +19,15 @@ import 'package:siscom_operasional/utils/constans.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class AbsenMasukKeluar extends StatefulWidget {
+class AbsenMasukKeluarOffline extends StatefulWidget {
   final status;
-  AbsenMasukKeluar({super.key, this.status});
+  AbsenMasukKeluarOffline({super.key, this.status});
   @override
-  _AbsenMasukKeluarState createState() => _AbsenMasukKeluarState();
+  _AbsenMasukKeluarOfflineState createState() =>
+      _AbsenMasukKeluarOfflineState();
 }
 
-class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
+class _AbsenMasukKeluarOfflineState extends State<AbsenMasukKeluarOffline> {
   final double _initFabHeight = 120.0;
   double _fabHeight = 0;
   double _panelHeightOpen = 0;
@@ -48,14 +49,14 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
   int minExtent = 150;
   int maxExtend = 250;
 
+  @override
   void initState() {
     Api().checkLogin();
-    controller.getPlaceCoordinate();
-    // TODO: implement initState
+    // controller.getPlaceCoordinate();
     super.initState();
     controller.deskripsiAbsen.clear();
     BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(size: Size(1, 1)),
+      const ImageConfiguration(size: Size(1, 1)),
       'assets/avatar_default.png',
     ).then((onValue) {
       destinationIcon = onValue;
@@ -63,7 +64,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
 
     controller.absenSelfie();
 
-    controller.getPlaceCoordinate();
+    controller.getPlaceCoordinateOffline();
 
     _fabHeight = _initFabHeight;
   }
@@ -71,7 +72,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
   void getMarker() {
     markers.add(Marker(
         //add first marker
-        markerId: MarkerId("1"),
+        markerId: const MarkerId("1"),
         icon: destinationIcon ?? BitmapDescriptor.defaultMarker,
         // icon: ,
         position: LatLng(
@@ -80,7 +81,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
         )));
 
     circles.add(Circle(
-      circleId: CircleId("1"),
+      circleId: const CircleId("1"),
       center: LatLng(
         double.parse(controller.latUser.toString()),
         double.parse(controller.langUser.toString()),
@@ -103,6 +104,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
         elevation: 2,
         leading: IconButton(
           onPressed: () {
+            // Get.back();
             controller.removeAll();
             controllerDashboard.onInit();
             Get.offAll(InitScreen());
@@ -134,7 +136,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                   //             zoom: 20)
                   //         //17 is new zoom level
                   //         ));
-                  controller.refreshPage();
+                  controller.refreshPageOffline();
                 },
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -156,13 +158,13 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
         return controller.latUser.value == 0.0 ||
                 controller.langUser.value == 0.0 ||
                 controller.alamatUserFoto.value == ""
-            ? SizedBox(
+            ? const SizedBox(
                 height: 50,
                 child: Center(
                   child: SizedBox(
-                      child: CircularProgressIndicator(strokeWidth: 3),
                       width: 35,
-                      height: 35),
+                      height: 35,
+                      child: CircularProgressIndicator(strokeWidth: 3)),
                 ),
               )
             : Stack(
@@ -183,7 +185,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                     body: _body(),
                     panelBuilder: (sc) => _panel(sc),
                     // color: Colors.transparent,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(18.0),
                         topRight: Radius.circular(18.0)),
                     onPanelSlide: (double pos) => setState(() {
@@ -224,19 +226,19 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
       children: <Widget>[
         Container(
           padding: const EdgeInsets.all(16.0),
-          child: Icon(
-            icon,
-            color: Colors.white,
-          ),
           decoration:
               BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [
-            BoxShadow(
+            const BoxShadow(
               color: Color.fromRGBO(0, 0, 0, 0.15),
               blurRadius: 8.0,
             )
           ]),
+          child: Icon(
+            icon,
+            color: Colors.white,
+          ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 12.0,
         ),
         Text(label),
@@ -246,7 +248,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
 
   Widget _body() {
     getMarker();
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       child: Stack(
@@ -267,7 +269,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
               });
             },
           ),
-          Positioned(
+          const Positioned(
             bottom: 10,
             child: Column(
               children: [],
@@ -284,7 +286,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
       height: MediaQuery.of(Get.context!).size.height * .8,
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.only(bottom: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.end,
@@ -293,7 +295,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Container(
-                  padding: EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.only(right: 10),
                   alignment: Alignment.centerRight,
                   child: InkWell(
                     onTap: () {
@@ -311,7 +313,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Padding(
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Icon(
                             Iconsax.gps,
                             color: HexColor('#868FA0'),
@@ -322,8 +324,8 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
               ],
             ),
             Padding(
-              padding: EdgeInsets.only(left: 10, right: 10),
-              child: Container(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: SizedBox(
                 width: MediaQuery.of(Get.context!).size.width,
                 child: Card(
                   shape: RoundedRectangleBorder(
@@ -344,20 +346,20 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                             // Image.asset(
                             //     "assets/ic_location.png"),
                             ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Lokasi kamu saat ini",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
-                            Container(
+                            SizedBox(
                               width:
                                   MediaQuery.of(Get.context!).size.width * 0.7,
                               child: Text(
@@ -378,8 +380,8 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 10, right: 10),
-              child: Container(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: SizedBox(
                 width: MediaQuery.of(Get.context!).size.width,
                 child: Card(
                   shape: RoundedRectangleBorder(
@@ -406,12 +408,12 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                     panelController.close();
                                   });
                                 },
-                                child: Icon(Icons.keyboard_arrow_down,
+                                child: const Icon(Icons.keyboard_arrow_down,
                                     size: 30, color: Colors.grey),
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Row(
@@ -431,7 +433,8 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                               Expanded(
                                 flex: 90,
                                 child: Padding(
-                                    padding: EdgeInsets.only(left: 8, top: 3),
+                                    padding:
+                                        const EdgeInsets.only(left: 8, top: 3),
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -439,7 +442,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                         Expanded(
                                           child: Text(
                                               controller.timeString.value,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontWeight: FontWeight.bold)),
                                         ),
                                         Expanded(
@@ -447,16 +450,23 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                     "Absen Masuk"
                                                 ? Container(
                                                     decoration: BoxDecoration(
-                                                      color: Color.fromARGB(
-                                                          156, 223, 253, 223),
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              156,
+                                                              223,
+                                                              253,
+                                                              223),
                                                       borderRadius: Constanst
                                                           .borderStyle1,
                                                     ),
-                                                    margin: EdgeInsets.only(
-                                                        left: 8),
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            left: 8),
                                                     child: Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10, right: 10),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 10,
+                                                              right: 10),
                                                       child: Text(
                                                         widget.status,
                                                         textAlign:
@@ -468,16 +478,23 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                   )
                                                 : Container(
                                                     decoration: BoxDecoration(
-                                                      color: Color.fromARGB(
-                                                          156, 241, 171, 171),
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              156,
+                                                              241,
+                                                              171,
+                                                              171),
                                                       borderRadius: Constanst
                                                           .borderStyle1,
                                                     ),
-                                                    margin: EdgeInsets.only(
-                                                        left: 8),
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            left: 8),
                                                     child: Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 10, right: 10),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 10,
+                                                              right: 10),
                                                       child: Text(
                                                         widget.status,
                                                         textAlign:
@@ -492,7 +509,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Row(
@@ -514,15 +531,16 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                               Expanded(
                                 flex: 90,
                                 child: Padding(
-                                  padding: EdgeInsets.only(left: 8, top: 3),
+                                  padding:
+                                      const EdgeInsets.only(left: 8, top: 3),
                                   child: Text(controller.dateNow.value,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold)),
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Row(
@@ -542,11 +560,10 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                     //     "assets/ic_location.png"),
                                     ),
                               ),
-                              Expanded(
+                              const Expanded(
                                   flex: 90,
                                   child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(left: 8, top: 3),
+                                    padding: EdgeInsets.only(left: 8, top: 3),
                                     child: Text("Tipe lokasi",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold)),
@@ -554,7 +571,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                               Expanded(
                                 flex: 90,
                                 child: Padding(
-                                  padding: EdgeInsets.only(left: 8),
+                                  padding: const EdgeInsets.only(left: 8),
                                   child: Container(
                                     decoration: BoxDecoration(
                                         borderRadius: Constanst.borderStyle2,
@@ -580,8 +597,8 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                 value: value,
                                                 child: Text(
                                                   value,
-                                                  style:
-                                                      TextStyle(fontSize: 10),
+                                                  style: const TextStyle(
+                                                      fontSize: 10),
                                                 ),
                                               );
                                             }).toList(),
@@ -601,7 +618,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Row(
@@ -619,13 +636,13 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                     // Image.asset("assets/ic_note.png"),
                                     ),
                               ),
-                              Expanded(
+                              const Expanded(
                                 flex: 90,
                                 child: Text("Catatan",
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold)),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 90,
                               ),
                               Expanded(
@@ -640,7 +657,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                         borderRadius: Constanst.borderStyle2,
                                         border: Border.all(
                                             width: 1.0,
-                                            color: Color.fromARGB(
+                                            color: const Color.fromARGB(
                                                 255, 211, 205, 205))),
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 8),
@@ -654,7 +671,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                             hintText: "Tambahkan Catatan"),
                                         keyboardType: TextInputType.multiline,
                                         textInputAction: TextInputAction.done,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 10.0,
                                             height: 2.0,
                                             color: Colors.black),
@@ -667,7 +684,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                           ),
                           Obx(
                             () => controller.isLoaingAbsensi.value == true
-                                ? Container(
+                                ? SizedBox(
                                     width:
                                         MediaQuery.of(Get.context!).size.width,
                                     child: ElevatedButton(
@@ -684,13 +701,13 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           8.0),
-                                                  side: BorderSide(color: Colors.white)))),
+                                                  side: const BorderSide(color: Colors.white)))),
                                       onPressed: () {
                                         // controllerDashboard
                                         //     .widgetButtomSheetAktifCamera(
                                         //         'checkTracking');
                                       },
-                                      child: Container(
+                                      child: SizedBox(
                                           width: 20,
                                           height: 20,
                                           child: CircularProgressIndicator(
@@ -698,7 +715,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                           )),
                                     ),
                                   )
-                                : Container(
+                                : SizedBox(
                                     width:
                                         MediaQuery.of(Get.context!).size.width,
                                     child: ElevatedButton(
@@ -715,7 +732,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           8.0),
-                                                  side: BorderSide(color: Colors.white)))),
+                                                  side: const BorderSide(color: Colors.white)))),
                                       onPressed: () async {
                                         // Mendapatkan informasi paket aplikasi pihak ketiga
                                         final packageInfo =
@@ -735,8 +752,8 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                 .widgetButtomSheetAktifCamera(
                                                     type: 'checkTracking');
                                       },
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
+                                      child: const Padding(
+                                        padding: EdgeInsets.only(
                                             top: 12,
                                             bottom: 12,
                                             left: 20,
@@ -782,13 +799,13 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
+                    const Expanded(
                       flex: 90,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -805,18 +822,18 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                         flex: 10,
                         child: InkWell(
                           onTap: () => Navigator.pop(Get.context!),
-                          child: Icon(
+                          child: const Icon(
                             Iconsax.close_circle,
                             color: Colors.red,
                           ),
                         ))
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 12,
                 ),
-                Divider(),
-                SizedBox(
+                const Divider(),
+                const SizedBox(
                   height: 14,
                 ),
                 InkWell(
@@ -849,7 +866,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                 hintText: "Tambahkan Catatan"),
                             keyboardType: TextInputType.multiline,
                             textInputAction: TextInputAction.done,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 12.0,
                                 height: 2.0,
                                 color: Colors.black),
@@ -859,7 +876,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 )
               ],
@@ -872,13 +889,13 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
 
   Widget _previewWidget() {
     return Container(
-      padding: EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
-            padding: EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10),
             alignment: Alignment.centerRight,
             child: InkWell(
               onTap: () {
@@ -896,7 +913,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Icon(
                         Iconsax.gps,
                         color: HexColor('#868FA0'),
@@ -904,8 +921,8 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            child: Container(
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: SizedBox(
               width: MediaQuery.of(Get.context!).size.width,
               child: Card(
                 shape: RoundedRectangleBorder(
@@ -926,20 +943,20 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                           // Image.asset(
                           //     "assets/ic_location.png"),
                           ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             "Lokasi kamu saat ini",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(Get.context!).size.width * 0.7,
                             child: Text(
                               controller.alamatUserFoto.value
@@ -959,7 +976,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 10, right: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: Column(
               children: [
                 Card(
@@ -973,14 +990,14 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                           onTap: () {
                             panelController.open();
                           },
-                          child: Container(
+                          child: SizedBox(
                             width: MediaQuery.of(context).size.width,
                             child: Center(
                               child: InkWell(
                                 onTap: () {
                                   panelController.open();
                                 },
-                                child: Icon(Icons.keyboard_arrow_up,
+                                child: const Icon(Icons.keyboard_arrow_up,
                                     size: 30, color: Colors.grey),
                               ),
                             ),
@@ -992,7 +1009,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                       // ),
                       Obx(
                         () => controller.isLoaingAbsensi.value == true
-                            ? Container(
+                            ? SizedBox(
                                 width: MediaQuery.of(Get.context!).size.width,
                                 child: ElevatedButton(
                                   style: ButtonStyle(
@@ -1007,14 +1024,14 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                           RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
-                                              side: BorderSide(
+                                              side: const BorderSide(
                                                   color: Colors.white)))),
                                   onPressed: () {
                                     // controllerDashboard
                                     //     .widgetButtomSheetAktifCamera(
                                     //         'checkTracking');
                                   },
-                                  child: Container(
+                                  child: SizedBox(
                                       width: 20,
                                       height: 20,
                                       child: CircularProgressIndicator(
@@ -1023,7 +1040,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                 ),
                               )
                             : Container(
-                                padding: EdgeInsets.only(
+                                padding: const EdgeInsets.only(
                                     left: 20, right: 20, bottom: 10),
                                 width: MediaQuery.of(Get.context!).size.width,
                                 child: ElevatedButton(
@@ -1039,15 +1056,16 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                           RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
-                                              side: BorderSide(
+                                              side: const BorderSide(
                                                   color: Colors.white)))),
                                   onPressed: () {
-                                    controllerDashboard
-                                        .widgetButtomSheetAktifCamera(
-                                            type: 'checkTracking');
+                                    // controllerDashboard
+                                    //     .widgetButtomSheetAktifCamera(
+                                    //         type: 'checkTracking');
+                                    print("absen");
                                   },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
+                                  child: const Padding(
+                                    padding: EdgeInsets.only(
                                         top: 12,
                                         bottom: 12,
                                         left: 20,

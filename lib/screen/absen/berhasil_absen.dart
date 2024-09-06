@@ -9,6 +9,7 @@ import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
+import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/berhasil_controller.dart';
 import 'package:siscom_operasional/screen/absen/camera_view_register.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
@@ -86,19 +87,22 @@ class BerhasilAbsensi extends StatefulWidget {
 class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
   var controller = Get.put(AbsenController());
   var controllerBerhasil = Get.put(BerhasilController());
+  final authController = Get.put(AuthController());
   Timer? time;
   Location location = new Location();
 
   @override
   void initState() {
-    _initForegroundTask();
-    _ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((_) async {
-      // You can get the previous ReceivePort without restarting the service.
-      if (await FlutterForegroundTask.isRunningService) {
-        final newReceivePort = await FlutterForegroundTask.receivePort;
-        _registerReceivePort(newReceivePort);
-      }
-    });
+    if (authController.isConnected.value) {
+      _initForegroundTask();
+      _ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((_) async {
+        // You can get the previous ReceivePort without restarting the service.
+        if (await FlutterForegroundTask.isRunningService) {
+          final newReceivePort = await FlutterForegroundTask.receivePort;
+          _registerReceivePort(newReceivePort);
+        }
+      });
+    }
     super.initState();
   }
 
@@ -345,37 +349,42 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                       side: BorderSide(color: Colors.white)))),
           onPressed: () async {
             AbsenController().removeAll();
-            String checkUserKontrol =
-                await controllerBerhasil.checkUserKontrol();
-            print("datta absen " + checkUserKontrol);
+            if (authController.isConnected.value) {
+              String checkUserKontrol =
+                  await controllerBerhasil.checkUserKontrol();
+              print("datta absen " + checkUserKontrol);
 
-            if (widget.dataBerhasil![2] == 1) {
-              if (checkUserKontrol.toString() != '0') {
-                _startForegroundTask();
-                AbsenController().removeAll();
-                Get.offAll(InitScreen());
-                if (absenControllre.isTracking.value == 1) {
-                  absenControllre.activeTracking.value = 1;
+              if (widget.dataBerhasil![2] == 1) {
+                if (checkUserKontrol.toString() != '0') {
+                  _startForegroundTask();
+                  AbsenController().removeAll();
+                  Get.offAll(InitScreen());
+                  if (absenControllre.isTracking.value == 1) {
+                    absenControllre.activeTracking.value = 1;
+                  } else {
+                    absenControllre.activeTracking.value = 0;
+                  }
                 } else {
                   absenControllre.activeTracking.value = 0;
+
+                  AbsenController().removeAll();
+                  Get.offAll(InitScreen());
                 }
               } else {
-                absenControllre.activeTracking.value = 0;
-
-                AbsenController().removeAll();
-                Get.offAll(InitScreen());
+                if (checkUserKontrol != '0') {
+                  _stopForegroundTask();
+                  Location location = new Location();
+                  location.enableBackgroundMode(enable: false);
+                  AbsenController().removeAll();
+                  Get.offAll(InitScreen());
+                } else {
+                  AbsenController().removeAll();
+                  Get.offAll(InitScreen());
+                }
               }
             } else {
-              if (checkUserKontrol != '0') {
-                _stopForegroundTask();
-                Location location = new Location();
-                location.enableBackgroundMode(enable: false);
-                AbsenController().removeAll();
-                Get.offAll(InitScreen());
-              } else {
-                AbsenController().removeAll();
-                Get.offAll(InitScreen());
-              }
+              AbsenController().removeAll();
+              Get.offAll(InitScreen());
             }
           },
           child: Padding(

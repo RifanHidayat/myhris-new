@@ -108,7 +108,7 @@ class LaporanIzinController extends GetxController {
     var connect = Api.connectionApi("get", {}, "all_department");
     connect.then((dynamic res) {
       if (res == false) {
-        UtilsAlert.koneksiBuruk();
+        //UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
@@ -438,7 +438,8 @@ class LaporanIzinController extends GetxController {
                           children: List.generate(departementAkses.value.length,
                               (index) {
                             var id = departementAkses.value[index]['id'];
-                            var dep_name = departementAkses.value[index]['name'];
+                            var dep_name =
+                                departementAkses.value[index]['name'];
                             return InkWell(
                               onTap: () {
                                 idDepartemenTerpilih.value = "$id";
@@ -477,14 +478,18 @@ class LaporanIzinController extends GetxController {
                                               decoration: BoxDecoration(
                                                   border: Border.all(
                                                       width: 2,
-                                                      color: Constanst.onPrimary),
+                                                      color:
+                                                          Constanst.onPrimary),
                                                   borderRadius:
-                                                      BorderRadius.circular(10)),
+                                                      BorderRadius.circular(
+                                                          10)),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(3),
+                                                padding:
+                                                    const EdgeInsets.all(3),
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                      color: Constanst.onPrimary,
+                                                      color:
+                                                          Constanst.onPrimary,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               10)),
@@ -494,7 +499,8 @@ class LaporanIzinController extends GetxController {
                                           )
                                         : InkWell(
                                             onTap: () {
-                                              idDepartemenTerpilih.value = "$id";
+                                              idDepartemenTerpilih.value =
+                                                  "$id";
                                               namaDepartemenTerpilih.value =
                                                   dep_name;
                                               departemen.value.text =
@@ -518,11 +524,14 @@ class LaporanIzinController extends GetxController {
                                               decoration: BoxDecoration(
                                                   border: Border.all(
                                                       width: 1,
-                                                      color: Constanst.onPrimary),
+                                                      color:
+                                                          Constanst.onPrimary),
                                                   borderRadius:
-                                                      BorderRadius.circular(10)),
+                                                      BorderRadius.circular(
+                                                          10)),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(2),
+                                                padding:
+                                                    const EdgeInsets.all(2),
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                       borderRadius:
@@ -1254,21 +1263,23 @@ class LaporanIzinController extends GetxController {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
-                                 detailData['input_time'].toString() =="2"?   Text(
-                                    "$jamAjuan sd $sampaiJamAjuan",
-                                    style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Constanst.fgPrimary,
-                                    ),
-                                  ): Text(
-                                    " $sampaiJamAjuan",
-                                    style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Constanst.fgPrimary,
-                                    ),
-                                  ),
+                                  detailData['input_time'].toString() == "2"
+                                      ? Text(
+                                          "$jamAjuan sd $sampaiJamAjuan",
+                                          style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                            color: Constanst.fgPrimary,
+                                          ),
+                                        )
+                                      : Text(
+                                          " $sampaiJamAjuan",
+                                          style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                            color: Constanst.fgPrimary,
+                                          ),
+                                        ),
                                 ],
                               )
                             : const SizedBox(),

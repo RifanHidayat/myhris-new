@@ -325,7 +325,7 @@ class TrackingController extends GetxController {
     var connect = Api.connectionApi("get", {}, "all_department");
     connect.then((dynamic res) {
       if (res == false) {
-        UtilsAlert.koneksiBuruk();
+        //UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
@@ -444,7 +444,7 @@ class TrackingController extends GetxController {
     connect.then((dynamic res) {
       if (res == false) {
         print("errror");
-        UtilsAlert.koneksiBuruk();
+        //UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           print("Place cordinate 200" + res.body.toString());
@@ -1239,10 +1239,10 @@ class TrackingController extends GetxController {
   }
 
   void detailTracking({tanggal, emIdEmployee}) async {
-    if (isLoadingDetailTracking.value || !hasMore.value) return;
+    // if (isLoadingDetailTracking.value || !hasMore.value) return;
 
-    isLoadingDetailTracking.value = true;
-    print("haha: offset=${offset.value}&limit=${limit.value}");
+    // isLoadingDetailTracking.value = true;
+    // print("haha: offset=${offset.value}&limit=${limit.value}");
 
     Map<String, dynamic> body = {
       'tanggal':
@@ -1262,18 +1262,19 @@ class TrackingController extends GetxController {
         if (res.statusCode == 200) {
           var resp = jsonDecode(res.body);
           var newItems = DetailTrackingModel.fromJsonToList(resp['data']);
-
-          if (newItems.length < limit.value) {
+          if (newItems.isEmpty) {
+            print("yo kesini");
             hasMore.value = false;
           }
-          detailTrackings.value.addAll(newItems);
+          print("pajang: ${newItems.length}");
+          detailTrackings.addAll(newItems);
           // detailTrackings.value = detailTrackings.reversed.toList();
 
-          isLoadingDetailTracking.value = false;
+          // isLoadingDetailTracking.value = false;
           isMapsDetail.value = true;
         } else {
           hasMore.value = false;
-          isLoadingDetailTracking.value = false;
+          // isLoadingDetailTracking.value = false;
         }
       });
     } catch (e) {
@@ -3105,7 +3106,7 @@ class TrackingController extends GetxController {
     var connect = Api.connectionApi("get", "", "setting_shift");
     connect.then((dynamic res) {
       if (res == false) {
-        UtilsAlert.koneksiBuruk();
+        //UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);

@@ -8,6 +8,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/setting_controller.dart';
+import 'package:siscom_operasional/screen/absen/camera_view_location.dart';
 import 'package:siscom_operasional/screen/akun/change_log.dart';
 import 'package:siscom_operasional/screen/akun/edit_password.dart';
 import 'package:siscom_operasional/screen/akun/face_recognigration.dart';
@@ -419,7 +420,9 @@ class _SettingState extends State<Setting> {
             child: InkWell(
               customBorder: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12))),
-              onTap: () => Get.to(InfoKaryawan()),
+              onTap: () => authController.isConnected.value
+                  ? Get.to(InfoKaryawan())
+                  : UtilsAlert.showDialogCheckInternet(),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -578,7 +581,9 @@ class _SettingState extends State<Setting> {
           ),
         ),
         InkWell(
-          onTap: () => Get.to(EditPassword()),
+          onTap: () => authController.isConnected.value
+              ? Get.to(EditPassword())
+              : UtilsAlert.showDialogCheckInternet(),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 12.0, 20.0, 12.0),
             child: Column(
@@ -622,7 +627,9 @@ class _SettingState extends State<Setting> {
           ),
         ),
         InkWell(
-          onTap: () => Get.to(FaceRecognition()),
+          onTap: () => authController.isConnected.value
+              ? Get.to(FaceRecognition())
+              : UtilsAlert.showDialogCheckInternet(),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 12.0, 20.0, 12.0),
             child: Column(
@@ -688,7 +695,9 @@ class _SettingState extends State<Setting> {
           ),
         ),
         InkWell(
-          onTap: () => Get.to(ChangeLogPage()),
+          onTap: () => authController.isConnected.value
+              ? Get.to(ChangeLogPage())
+              : UtilsAlert.showDialogCheckInternet(),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 12.0, 20.0, 12.0),
             child: Column(

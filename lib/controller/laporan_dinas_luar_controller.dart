@@ -87,7 +87,7 @@ class LaporanDinasLuarController extends GetxController {
     var connect = Api.connectionApi("get", {}, "all_department");
     connect.then((dynamic res) {
       if (res == false) {
-        UtilsAlert.koneksiBuruk();
+        //UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
@@ -372,7 +372,7 @@ class LaporanDinasLuarController extends GetxController {
           //       EdgeInsets.fromLTRB(0, AppBar().preferredSize.height, 0, 0),
           return Padding(
             padding: const EdgeInsets.only(left: 16, right: 16),
-                      child: SingleChildScrollView(
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -435,9 +435,10 @@ class LaporanDinasLuarController extends GetxController {
                                       const EdgeInsets.only(top: 5, bottom: 5),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: "$id" == idDepartemenTerpilih.value
-                                            ? Constanst.colorPrimary
-                                            : Colors.transparent,
+                                        color:
+                                            "$id" == idDepartemenTerpilih.value
+                                                ? Constanst.colorPrimary
+                                                : Colors.transparent,
                                         borderRadius: Constanst
                                             .styleBoxDecoration1.borderRadius,
                                         border: Border.all(
