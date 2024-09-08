@@ -26,10 +26,12 @@ import 'package:siscom_operasional/controller/lembur_controller.dart';
 import 'package:siscom_operasional/controller/tab_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/controller/tugas_luar_controller.dart';
+import 'package:siscom_operasional/database/sqlite/sqlite_database_helper.dart';
 import 'package:siscom_operasional/model/menu.dart';
 import 'package:siscom_operasional/model/menu_dashboard_model.dart';
 import 'package:google_maps_utils/google_maps_utils.dart' as maps;
 import 'package:siscom_operasional/model/user_model.dart';
+import 'package:siscom_operasional/screen/absen/absesi_location.dart';
 import 'package:siscom_operasional/screen/absen/camera_view.dart';
 import 'package:siscom_operasional/screen/absen/form/form_lembur.dart';
 import 'package:siscom_operasional/screen/absen/form/form_pengajuan_izin.dart';
@@ -112,6 +114,7 @@ class DashboardController extends GetxController {
   var employeeUltah = [].obs;
   var employeeTidakHadir = [].obs;
   var menuShowInMain = [].obs;
+  var menuShowInMainNew = [].obs;
   var menuShowInMainUtama = [].obs;
   var isPauseCamera = true;
   var jumlahData = 0.obs;
@@ -164,75 +167,119 @@ class DashboardController extends GetxController {
     //   dashboardMenu();
     // }
     //  getUserInfo();
+    print("loginnn: ${AppData.isLogin}");
 
     super.onInit();
   }
 
   void initData() async {
-    dashboardStatusAbsen.value = AppData.statusAbsen;
-    // DateTime startDate = await NTP.now();
+    if (authController.isConnected.value) {
+      dashboardStatusAbsen.value = AppData.statusAbsen;
+      // DateTime startDate = await NTP.now();
 
-    DateTime startDate = DateTime.now();
-    var emId;
-    Future.delayed(const Duration(seconds: 1), () {
-      if (AppData.informasiUser != null && AppData.informasiUser!.isNotEmpty) {
-        emId = AppData.informasiUser![0].em_id.toString();
-        checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), emId);
-      } else {
-        print("Informasi user tidak tersedia.");
+      DateTime startDate = DateTime.now();
+      var emId;
+      Future.delayed(const Duration(seconds: 1), () {
+        if (AppData.informasiUser != null &&
+            AppData.informasiUser!.isNotEmpty) {
+          emId = AppData.informasiUser![0].em_id.toString();
+          checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), emId);
+        } else {
+          print("Informasi user tidak tersedia.");
+        }
+      });
+      updateWorkTime();
+      getBannerDashboard();
+      updateInformasiUser();
+      getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
+      getMenuDashboard();
+      loadMenuShowInMain();
+      loadMenuShowInMainUtama();
+      getInformasiDashboard();
+      getEmployeeBelumAbsen();
+      timeString.value = formatDateTime(startDate);
+      dateNow.value = dateNoww(startDate);
+
+      Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
+      getSizeDevice();
+      checkStatusPermission();
+      checkHakAkses();
+    } else {
+      dashboardStatusAbsen.value = AppData.statusAbsen;
+
+      DateTime startDate = DateTime.now();
+      getBannerDashboard();
+      getMenuDashboard();
+      loadMenuShowInMain();
+      loadMenuShowInMainUtama();
+      timeString.value = formatDateTime(startDate);
+      dateNow.value = dateNoww(startDate);
+
+      Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
+      getSizeDevice();
+      checkStatusPermission();
+      checkHakAkses();
+
+      var absenMasukKeluarOffline = await SqliteDatabaseHelper().getAbsensi();
+      if (absenMasukKeluarOffline != null) {
+        signinTime.value = absenMasukKeluarOffline!['signing_time'] != ""
+            ? absenMasukKeluarOffline['signing_time'].toString()
+            : "_ _:_ _:_ _";
+        signoutTime.value = absenMasukKeluarOffline['signout_time'] != ""
+            ? absenMasukKeluarOffline['signout_time'].toString()
+            : "_ _:_ _:_ _";
+        if (absenMasukKeluarOffline['signing_time'].toString() != "") {
+          absenControllre.absenStatus.value = true;
+          AppData.statusAbsen = true;
+          AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+        } else if (absenMasukKeluarOffline['signing_time'].toString() != "" &&
+            absenMasukKeluarOffline['signout_time'].toString() != "") {
+          absenControllre.absenStatus.value = false;
+          AppData.statusAbsen = false;
+          AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+        }
+        print(signinTime.value);
       }
-    });
-    updateWorkTime();
-    getBannerDashboard();
-    updateInformasiUser();
-    getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
-    getMenuDashboard();
-    loadMenuShowInMain();
-    loadMenuShowInMainUtama();
-    getInformasiDashboard();
-    getEmployeeBelumAbsen();
-    timeString.value = formatDateTime(startDate);
-    dateNow.value = dateNoww(startDate);
-
-    Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
-    getSizeDevice();
-    checkStatusPermission();
-    checkHakAkses();
+    }
   }
 
   void popUpRefresh(BuildContext context) async {
-    if (context.mounted) {
-      final maxWidth = MediaQuery.of(context).size.width;
-      Get.defaultDialog(
-        // backgroundColor: AppColors.surface,
-        radius: 8,
-        title: "",
-        contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-        content: SizedBox(
-          width: maxWidth,
-          child: Column(
-            children: [
-              const Text(
-                'Anda harus merefresh lokasi terlebih dahulu!',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: maxWidth * 0.5,
-                child: TextButton(
-                  child: const Text('Refresh'),
-                  onPressed: () async {
-                    Get.back();
-                    controllerAbsensi.refreshPage();
-                    update();
-                  },
-                ),
-              ),
-            ],
+    showGeneralDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      barrierColor: Colors.black54, // space around dialog
+      transitionDuration: Duration(milliseconds: 200),
+      transitionBuilder: (context, a1, a2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+              parent: a1,
+              curve: Curves.elasticOut,
+              reverseCurve: Curves.easeOutCubic),
+          child: CustomDialog(
+            // our custom dialog
+            title: "Informasi",
+            content: "Anda harus merefresh lokasi terlebih dahulu!",
+            positiveBtnText: "Refresh",
+            style: 1,
+            buttonStatus: 1,
+            positiveBtnPressed: () async {
+              controllerAbsensi.statusDeteksi2.value = false;
+              Get.back();
+              if (!authController.isConnected.value) {
+                controllerAbsensi.refreshPageOffline();
+              } else {
+                controllerAbsensi.refreshPage();
+              }
+              update();
+            },
           ),
-        ),
-      );
-    }
+        );
+      },
+      pageBuilder: (BuildContext context, Animation animation,
+          Animation secondaryAnimation) {
+        return null!;
+      },
+    );
   }
 
   void checkAbsenUser(convert, getEmid) {
@@ -379,6 +426,116 @@ class DashboardController extends GetxController {
         }
       });
     });
+  }
+
+  void widgetButtomSheetOfflineAbsen(
+      {required String title, required String status}) {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(12.0),
+        ),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Koneksi Anda Terputus",
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.fgPrimary,
+                              fontSize: 16),
+                        ),
+                        InkWell(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: const Icon(Icons.close))
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Constanst.infoLight1,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Iconsax.info_circle5,
+                            color: Constanst.colorPrimary,
+                            size: 26,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              "Anda yakin ingin melakukan absen secara offline?",
+                              textAlign: TextAlign.left,
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          Get.back();
+                          controllerAbsensi.titleAbsen.value = title;
+                          Get.to(AbsensiLocation(
+                            status: status,
+                          ));
+                        },
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.colorWhite,
+                            backgroundColor: Constanst.colorPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 0,
+                            // padding: EdgeInsets.zero,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                          child: Text(
+                            'Ya',
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.colorWhite,
+                                fontSize: 15),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void widgetButtomSheetWfhDelete() {
@@ -1019,7 +1176,7 @@ class DashboardController extends GetxController {
     var connect = Api.connectionApi("get", {}, "all_department");
     connect.then((dynamic res) {
       if (res == false) {
-        UtilsAlert.koneksiBuruk();
+        // UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
@@ -1279,7 +1436,7 @@ class DashboardController extends GetxController {
     Future.delayed(const Duration(seconds: 1), () {
       connect.then((dynamic res) {
         if (res == false) {
-          UtilsAlert.koneksiBuruk();
+          // UtilsAlert.koneksiBuruk();
         } else {
           if (res.statusCode == 200) {
             var valueBody = jsonDecode(res.body);
@@ -1342,119 +1499,233 @@ class DashboardController extends GetxController {
     }
   }
 
-  void loadMenuShowInMain() {
-    menuShowInMain.value.clear();
-    var connect = Api.connectionApi("get", {}, "menu_dashboard",
-        params: "&em_id=${AppData.informasiUser![0].em_id}");
-    Future.delayed(const Duration(seconds: 1), () {
-      connect.then((dynamic res) {
-        if (res == false) {
-          UtilsAlert.koneksiBuruk();
-        } else {
-          absenControllre.showButtonlaporan.value = false;
-          controllerIzin.showButtonlaporan.value = false;
-          controllerLembur.showButtonlaporan.value = false;
+  void loadMenuShowInMain() async {
+    if (authController.isConnected.value) {
+      menuShowInMain.value.clear();
+      var connect = Api.connectionApi("get", {}, "menu_dashboard",
+          params: "&em_id=${AppData.informasiUser![0].em_id}");
+      Future.delayed(const Duration(seconds: 1), () {
+        connect.then((dynamic res) async {
+          if (res == false) {
+            // UtilsAlert.koneksiBuruk();
+          } else {
+            absenControllre.showButtonlaporan.value = false;
+            controllerIzin.showButtonlaporan.value = false;
+            controllerLembur.showButtonlaporan.value = false;
 
-          controllerTugasLuar.showButtonlaporan.value = false;
-          controllerKlaim.showButtonlaporan.value = false;
-          controllerCuti.showButtonlaporan.value = false;
+            controllerTugasLuar.showButtonlaporan.value = false;
+            controllerKlaim.showButtonlaporan.value = false;
+            controllerCuti.showButtonlaporan.value = false;
 
-          if (res.statusCode == 200) {
-            var valueBody = jsonDecode(res.body);
-            var temporary = valueBody['data'];
+            if (res.statusCode == 200) {
+              var valueBody = jsonDecode(res.body);
+              var temporary = valueBody['data'];
 
-            List tempData = temporary;
+              List tempData = temporary;
 
-            print("data temporary ${temporary}");
-            for (var element in tempData[0]['menu']) {
-              print("Nama Menu ${element['nama']}");
-              if (element['nama'] == "Absensi") {
-                absenControllre.showButtonlaporan.value = true;
+              print("data temporary ${temporary}");
+
+              List<Map<String, dynamic>> menus = [];
+
+              for (var element in tempData[0]['menu']) {
+                print("Nama Menu ${element['nama']}");
+
+                // menyimpan ke sqlite
+                menus.add({
+                  'id': element['id'],
+                  'nama': element['nama'],
+                  'url': element['url'],
+                  'gambar': element['gambar'],
+                  'status': element['status'],
+                });
+
+                if (element['nama'] == "Absensi") {
+                  absenControllre.showButtonlaporan.value = true;
+                }
+
+                if (element['nama'].toString().trim() == "Izin") {
+                  print("masuk sini ${element['nama'].toString().trim()}");
+                  controllerIzin.showButtonlaporan.value = true;
+                }
+
+                if (element['nama'] == "Lembur") {
+                  controllerLembur.showButtonlaporan.value = true;
+                }
+                if (element['nama'] == "Cuti") {
+                  controllerCuti.showButtonlaporan.value = true;
+                }
+                if (element['nama'] == "Tugas Luar") {
+                  controllerTugasLuar.showButtonlaporan.value = true;
+                }
+                if (element['nama'] == "Klaim") {
+                  controllerKlaim.showButtonlaporan.value = true;
+                }
               }
 
-              if (element['nama'].toString().trim() == "Izin") {
-                print("masuk sini ${element['nama'].toString().trim()}");
-                controllerIzin.showButtonlaporan.value = true;
-              }
+              SqliteDatabaseHelper().insertMenus(menus);
 
-              if (element['nama'] == "Lembur") {
-                controllerLembur.showButtonlaporan.value = true;
-              }
-              if (element['nama'] == "Cuti") {
-                controllerCuti.showButtonlaporan.value = true;
-              }
-              if (element['nama'] == "Tugas Luar") {
-                controllerTugasLuar.showButtonlaporan.value = true;
-              }
-              if (element['nama'] == "Klaim") {
-                controllerKlaim.showButtonlaporan.value = true;
-              }
+              menuShowInMain.value = menus;
+              menuShowInMainNew.value = temporary;
             }
-
-            menuShowInMain.value = temporary;
           }
-        }
+        });
       });
-    });
+    } else {
+      menuShowInMain.value.clear();
+      absenControllre.showButtonlaporan.value = false;
+      controllerIzin.showButtonlaporan.value = false;
+      controllerLembur.showButtonlaporan.value = false;
+
+      controllerTugasLuar.showButtonlaporan.value = false;
+      controllerKlaim.showButtonlaporan.value = false;
+      controllerCuti.showButtonlaporan.value = false;
+
+      var menusUtama = await SqliteDatabaseHelper().getMenus();
+
+      for (var element in menusUtama) {
+        print("Nama Menu ${element['nama']}");
+
+        if (element['nama'] == "Absensi") {
+          absenControllre.showButtonlaporan.value = true;
+        }
+
+        if (element['nama'].toString().trim() == "Izin") {
+          print("masuk sini ${element['nama'].toString().trim()}");
+          controllerIzin.showButtonlaporan.value = true;
+        }
+
+        if (element['nama'] == "Lembur") {
+          controllerLembur.showButtonlaporan.value = true;
+        }
+        if (element['nama'] == "Cuti") {
+          controllerCuti.showButtonlaporan.value = true;
+        }
+        if (element['nama'] == "Tugas Luar") {
+          controllerTugasLuar.showButtonlaporan.value = true;
+        }
+        if (element['nama'] == "Klaim") {
+          controllerKlaim.showButtonlaporan.value = true;
+        }
+      }
+      menuShowInMain.value = menusUtama;
+    }
   }
 
-  void loadMenuShowInMainUtama() {
-    showPengumuman.value = false;
-    showPkwt.value = false;
-    showUlangTahun.value = false;
-    showLaporan.value = false;
-    menuShowInMain.value.clear();
-    var connect = Api.connectionApi("get", {}, "menu_dashboard_utama",
-        params: "&em_id=${AppData.informasiUser![0].em_id}");
-    Future.delayed(const Duration(seconds: 1), () {
-      connect.then((dynamic res) {
-        if (res == false) {
-          UtilsAlert.koneksiBuruk();
-        } else {
-          if (res.statusCode == 200) {
-            var valueBody = jsonDecode(res.body);
-            print("daftar menu utama ${valueBody['data']} ");
-            var temporary = valueBody['data'];
-            menuShowInMainUtama.value = temporary;
-            if (menuShowInMainUtama.isNotEmpty) {
-              List menuPengumuman = menuShowInMainUtama
-                  .where((p0) =>
-                      p0['url'].toString().toLowerCase().trim() ==
-                      "InfoHrd".toLowerCase().toString().trim())
-                  .toList();
-              List menuPkwt = menuShowInMainUtama
-                  .where((p0) =>
-                      p0['url'].toString().toLowerCase().trim() ==
-                      "PKWT".toLowerCase().toString().trim())
-                  .toList();
-              List menuUlangtahun = menuShowInMainUtama
-                  .where((p0) =>
-                      p0['url'].toString().toLowerCase().trim() ==
-                      "UlangTahun".toLowerCase().toString().trim())
-                  .toList();
-              List menuLaporan = menuShowInMainUtama
-                  .where((p0) =>
-                      p0['url'].toString().toLowerCase().trim() ==
-                      "Laporan".toLowerCase().toString().trim())
-                  .toList();
+  void loadMenuShowInMainUtama() async {
+    if (authController.isConnected.value) {
+      showPengumuman.value = false;
+      showPkwt.value = false;
+      showUlangTahun.value = false;
+      showLaporan.value = false;
+      // menuShowInMain.value.clear();
+      var connect = Api.connectionApi("get", {}, "menu_dashboard_utama",
+          params: "&em_id=${AppData.informasiUser![0].em_id}");
+      Future.delayed(const Duration(seconds: 1), () {
+        connect.then((dynamic res) async {
+          if (res == false) {
+            // UtilsAlert.koneksiBuruk();
+          } else {
+            if (res.statusCode == 200) {
+              var valueBody = jsonDecode(res.body);
 
-              if (menuPengumuman.isNotEmpty) {
-                showPengumuman.value = true;
+              var temporary = valueBody['data'];
+
+              List<Map<String, dynamic>> menusUtama = [];
+              for (var element in temporary) {
+                menusUtama.add({
+                  'id': element['id'],
+                  'nama': element['nama'],
+                  'url': element['url'],
+                  'gambar': element['gambar'],
+                  'status': element['status'],
+                });
               }
-              if (menuPkwt.isNotEmpty) {
-                showPkwt.value = true;
-              }
-              if (menuUlangtahun.isNotEmpty) {
-                showUlangTahun.value = true;
-              }
-              if (menuLaporan.isNotEmpty) {
-                showLaporan.value = true;
+              SqliteDatabaseHelper().insertMenusUtama(menusUtama);
+
+              menuShowInMainUtama.value = menusUtama;
+
+              if (menuShowInMainUtama.isNotEmpty) {
+                List menuPengumuman = menuShowInMainUtama
+                    .where((p0) =>
+                        p0['url'].toString().toLowerCase().trim() ==
+                        "InfoHrd".toLowerCase().toString().trim())
+                    .toList();
+                List menuPkwt = menuShowInMainUtama
+                    .where((p0) =>
+                        p0['url'].toString().toLowerCase().trim() ==
+                        "PKWT".toLowerCase().toString().trim())
+                    .toList();
+                List menuUlangtahun = menuShowInMainUtama
+                    .where((p0) =>
+                        p0['url'].toString().toLowerCase().trim() ==
+                        "UlangTahun".toLowerCase().toString().trim())
+                    .toList();
+                List menuLaporan = menuShowInMainUtama
+                    .where((p0) =>
+                        p0['url'].toString().toLowerCase().trim() ==
+                        "Laporan".toLowerCase().toString().trim())
+                    .toList();
+
+                if (menuPengumuman.isNotEmpty) {
+                  showPengumuman.value = true;
+                }
+                if (menuPkwt.isNotEmpty) {
+                  showPkwt.value = true;
+                }
+                if (menuUlangtahun.isNotEmpty) {
+                  showUlangTahun.value = true;
+                }
+                if (menuLaporan.isNotEmpty) {
+                  showLaporan.value = true;
+                }
               }
             }
           }
-        }
+        });
       });
-    });
+    } else {
+      // menuShowInMain.value.clear();
+      var menusUtama = await SqliteDatabaseHelper().getMenusUtama();
+      menuShowInMainUtama.value = menusUtama;
+
+      print("mehehe: ${menuShowInMainUtama.value}");
+
+      if (menuShowInMainUtama.isNotEmpty) {
+        List menuPengumuman = menuShowInMainUtama
+            .where((p0) =>
+                p0['url'].toString().toLowerCase().trim() ==
+                "InfoHrd".toLowerCase().toString().trim())
+            .toList();
+        List menuPkwt = menuShowInMainUtama
+            .where((p0) =>
+                p0['url'].toString().toLowerCase().trim() ==
+                "PKWT".toLowerCase().toString().trim())
+            .toList();
+        List menuUlangtahun = menuShowInMainUtama
+            .where((p0) =>
+                p0['url'].toString().toLowerCase().trim() ==
+                "UlangTahun".toLowerCase().toString().trim())
+            .toList();
+        List menuLaporan = menuShowInMainUtama
+            .where((p0) =>
+                p0['url'].toString().toLowerCase().trim() ==
+                "Laporan".toLowerCase().toString().trim())
+            .toList();
+
+        if (menuPengumuman.isNotEmpty) {
+          showPengumuman.value = true;
+        }
+        if (menuPkwt.isNotEmpty) {
+          showPkwt.value = true;
+        }
+        if (menuUlangtahun.isNotEmpty) {
+          showUlangTahun.value = true;
+        }
+        if (menuLaporan.isNotEmpty) {
+          showLaporan.value = true;
+        }
+      }
+    }
   }
 
   void getInformasiDashboard() async {
@@ -1465,7 +1736,7 @@ class DashboardController extends GetxController {
         print("masuk sini 1");
 
         if (res == false) {
-          UtilsAlert.koneksiBuruk();
+          // UtilsAlert.koneksiBuruk();
         } else {
           if (res.statusCode == 200) {
             var valueBody = jsonDecode(res.body);
@@ -1562,23 +1833,40 @@ class DashboardController extends GetxController {
   //   });
   // }
 
-  void getBannerDashboard() {
-    bannerDashboard.value.clear();
-    // var connect = Api.connectionApi("get", {}, "banner_dashboard");
-    var connect = Api.connectionApi("get", {}, "banner_from_finance");
-    Future.delayed(const Duration(seconds: 1), () {
-      connect.then((dynamic res) {
-        if (res == false) {
-          UtilsAlert.koneksiBuruk();
-        } else {
-          if (res.statusCode == 200) {
-            var valueBody = jsonDecode(res.body);
-            bannerDashboard.value = valueBody['data'];
-            bannerDashboard.refresh();
+  void getBannerDashboard() async {
+    if (authController.isConnected.value) {
+      bannerDashboard.value.clear();
+      // var connect = Api.connectionApi("get", {}, "banner_dashboard");
+      var connect = Api.connectionApi("get", {}, "banner_from_finance");
+      Future.delayed(const Duration(seconds: 1), () {
+        connect.then((dynamic res) {
+          if (res == false) {
+            // UtilsAlert.koneksiBuruk();
+          } else {
+            if (res.statusCode == 200) {
+              var valueBody = jsonDecode(res.body);
+
+              var banners = List<Map<String, dynamic>>.from(
+                  valueBody['data'].map((banner) => {
+                        'id': banner['id'],
+                        'img': banner['img'],
+                      }));
+
+              SqliteDatabaseHelper().insertBanners(banners);
+
+              bannerDashboard.value = banners;
+              bannerDashboard.refresh();
+            }
           }
-        }
+        });
       });
-    });
+    } else {
+      bannerDashboard.value.clear();
+      var banners = await SqliteDatabaseHelper().getBanners();
+      bannerDashboard.value = banners;
+      print(" banner :${bannerDashboard.value}");
+      bannerDashboard.refresh();
+    }
   }
 
   void _getTime() async {
@@ -1973,8 +2261,13 @@ class DashboardController extends GetxController {
                                       false &&
                                   controllerAbsensi.statusDeteksi2.value ==
                                       false) {
-                                controllerAbsensi.kirimDataAbsensi(
-                                    typewfh: typewfh);
+                                if (authController.isConnected.value) {
+                                  controllerAbsensi.kirimDataAbsensi(
+                                      typewfh: typewfh);
+                                } else {
+                                  controllerAbsensi.kirimDataAbsensiOffline(
+                                      typewfh: typewfh);
+                                }
                               } else if (controllerAbsensi
                                           .statusDeteksi.value ==
                                       false &&
@@ -2789,8 +3082,8 @@ class DashboardController extends GetxController {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(menuShowInMain.length, (index) {
-                  var data = menuShowInMain[index];
+                children: List.generate(menuShowInMainNew.length, (index) {
+                  var data = menuShowInMainNew[index];
                   return data['menu'].length <= 0
                       ? const SizedBox()
                       : InkWell(

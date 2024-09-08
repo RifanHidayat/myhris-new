@@ -19,9 +19,11 @@ import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/main.dart';
 import 'package:siscom_operasional/model/user_model.dart';
+import 'package:siscom_operasional/screen/absen/camera_view_location.dart';
 import 'package:siscom_operasional/screen/kontrol/riwayat_live_tracking.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:image/image.dart' as img;
 
@@ -133,7 +135,7 @@ class _LiveTrackingState extends State<LiveTracking> {
     _fabHeight = _initFabHeight;
 
     controllerTracking.alamatUserFoto.value = "";
-    controllerTracking.detailTracking(emIdEmployee: '');
+    // controllerTracking.detailTracking(emIdEmployee: '');
 
     controllerTracking.detailTrackings.value.forEach((element) {
       var long = element.longlat.split(",")[0];
@@ -196,7 +198,7 @@ class _LiveTrackingState extends State<LiveTracking> {
   @override
   void initState() {
     super.initState();
-    refreshData();
+    // refreshData();
     _checkForFakeGps();
   }
 
@@ -373,48 +375,41 @@ class _LiveTrackingState extends State<LiveTracking> {
 
   Widget _body() {
     return Obx(
-      () => controllerTracking.isLoadingDetailTracking.value
-          ? const Center(
-              child: SizedBox(
-                  width: 35,
-                  height: 35,
-                  child: CircularProgressIndicator(strokeWidth: 3)),
-            )
-          : controllerTracking.bagikanlokasi.value != "tidak aktif"
-              ? SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: Stack(
-                    children: [
-                      GoogleMap(
-                        mapType: MapType.normal,
-                        // initialCameraPosition: _kGooglePlex,
-                        markers: markers,
-                        circles: circles,
-                        zoomControlsEnabled: false,
-                        initialCameraPosition: CameraPosition(
-                            // target: LatLng(controllerTracking.latUser.value,
-                            //     controllerTracking.langUser.value),
-                            target: locations.first,
-                            zoom: 16.3),
-                        // onMapCreated: (GoogleMapController controller) {
-                        //   setState(() {
-                        //     mapController = controller;
-                        //   });
-                        // },
-                        onMapCreated: onMapCreated,
-                        polylines: polylines,
-                      ),
-                      const Positioned(
-                        bottom: 10,
-                        child: Column(
-                          children: [],
-                        ),
-                      )
-                    ],
+      () => controllerTracking.bagikanlokasi.value != "tidak aktif"
+          ? SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Stack(
+                children: [
+                  GoogleMap(
+                    mapType: MapType.normal,
+                    // initialCameraPosition: _kGooglePlex,
+                    markers: markers,
+                    circles: circles,
+                    zoomControlsEnabled: false,
+                    initialCameraPosition: CameraPosition(
+                        // target: LatLng(controllerTracking.latUser.value,
+                        //     controllerTracking.langUser.value),
+                        target: locations.first,
+                        zoom: 16.3),
+                    // onMapCreated: (GoogleMapController controller) {
+                    //   setState(() {
+                    //     mapController = controller;
+                    //   });
+                    // },
+                    onMapCreated: onMapCreated,
+                    polylines: polylines,
                   ),
-                )
-              : Container(),
+                  const Positioned(
+                    bottom: 10,
+                    child: Column(
+                      children: [],
+                    ),
+                  )
+                ],
+              ),
+            )
+          : Container(),
     );
   }
 
@@ -666,70 +661,75 @@ class _LiveTrackingState extends State<LiveTracking> {
                 child: Obx(
                   () => ElevatedButton(
                     onPressed: () async {
-                      // initializeService();
-                      if (controllerTracking.bagikanlokasi.value ==
-                          "tidak aktif") {
-                        // FlutterBackgroundService().invoke("setAsBackground");
-                        print(controllerTracking.latUser.value);
-                        print(controllerTracking.langUser.value);
+                      if (authController.isConnected.value) {
+                        // initializeService();
+                        if (controllerTracking.bagikanlokasi.value ==
+                            "tidak aktif") {
+                          // FlutterBackgroundService().invoke("setAsBackground");
+                          print(controllerTracking.latUser.value);
+                          print(controllerTracking.langUser.value);
 
-                        // controllerTracking.bagikanlokasi.value = "tidak aktif";
-                        // Get.to(BagikanLokasi());
-                        // controllerTracking.absenSelfie();
-                        controllerTracking.bagikanlokasi.value = "aktif";
-                        // await BackgroundLocationTrackerManager.startTracking();
-                        controllerTracking.updateStatus('1');
+                          // controllerTracking.bagikanlokasi.value = "tidak aktif";
+                          // Get.to(BagikanLokasi());
+                          // controllerTracking.absenSelfie();
+                          controllerTracking.bagikanlokasi.value = "aktif";
+                          // await BackgroundLocationTrackerManager.startTracking();
+                          controllerTracking.updateStatus('1');
 
-                        setState(() =>
-                            controllerTracking.isTrackingLokasi.value = true);
+                          setState(() =>
+                              controllerTracking.isTrackingLokasi.value = true);
 
-                        controllerTracking.detailTracking(emIdEmployee: '');
+                          controllerTracking.detailTracking(emIdEmployee: '');
 
-                        // AppData.informasiUser![0].is_tracking = "1";
-                        controllerDashboard.updateInformasiUser();
-                        print(
-                            "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
-                        print('hidup');
+                          // AppData.informasiUser![0].is_tracking = "1";
+                          controllerDashboard.updateInformasiUser();
+                          print(
+                              "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
+                          print('hidup');
 
-                        // final service = FlutterBackgroundService();
-                        // var isRunning = await service.isRunning();
+                          // final service = FlutterBackgroundService();
+                          // var isRunning = await service.isRunning();
 
-                        // service.startService();
+                          // service.startService();
 
-                        setState(() {});
+                          setState(() {});
+                        } else {
+                          //FlutterBackgroundService().stopService();
+                          controllerTracking.bagikanlokasi.value =
+                              "tidak aktif";
+                          // await LocationDao().clear();
+                          // await _getLocations();
+                          // await BackgroundLocationTrackerManager.stopTracking();
+                          controllerTracking.updateStatus('0');
+
+                          setState(() => controllerTracking
+                              .isTrackingLokasi.value = false);
+
+                          // AppData.informasiUser![0].is_tracking = "0";
+                          controllerDashboard.updateInformasiUser();
+                          print(
+                              "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
+
+                          // final service = FlutterBackgroundService();
+
+                          // service.invoke("stopService");
+
+                          setState(() {});
+                          // controllerTracking.latUser.value = 0.0;
+                          // controllerTracking.langUser.value = 0.0;
+                          // controllerTracking.alamatUserFoto.value = "";
+                        }
+
+                        // if (  controllerTracking.isTrackingLokasi.value) {
+                        //   controllerTracking.getPosisition();
+                        // } else {
+                        //   await BackgroundLocationTrackerManager
+                        //       .startTracking();
+                        //   setState(() =>   controllerTracking.isTrackingLokasi.value = true);
+                        // }
                       } else {
-                        //FlutterBackgroundService().stopService();
-                        controllerTracking.bagikanlokasi.value = "tidak aktif";
-                        // await LocationDao().clear();
-                        // await _getLocations();
-                        // await BackgroundLocationTrackerManager.stopTracking();
-                        controllerTracking.updateStatus('0');
-
-                        setState(() =>
-                            controllerTracking.isTrackingLokasi.value = false);
-
-                        // AppData.informasiUser![0].is_tracking = "0";
-                        controllerDashboard.updateInformasiUser();
-                        print(
-                            "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
-
-                        // final service = FlutterBackgroundService();
-
-                        // service.invoke("stopService");
-
-                        setState(() {});
-                        // controllerTracking.latUser.value = 0.0;
-                        // controllerTracking.langUser.value = 0.0;
-                        // controllerTracking.alamatUserFoto.value = "";
+                        UtilsAlert.showDialogCheckInternet();
                       }
-
-                      // if (  controllerTracking.isTrackingLokasi.value) {
-                      //   controllerTracking.getPosisition();
-                      // } else {
-                      //   await BackgroundLocationTrackerManager
-                      //       .startTracking();
-                      //   setState(() =>   controllerTracking.isTrackingLokasi.value = true);
-                      // }
                     },
                     style: ElevatedButton.styleFrom(
                         foregroundColor: Constanst.colorWhite,
@@ -866,19 +866,7 @@ class _LiveTrackingState extends State<LiveTracking> {
             //   color: Colors.blue,
             // )
             Obx(
-              () =>
-                  // controllerTracking.isLoadingDetailTracking.value
-                  //       ? const Padding(
-                  //           padding: EdgeInsets.only(top: 130.0),
-                  //           child: Center(
-                  //             child: SizedBox(
-                  //                 width: 35,
-                  //                 height: 35,
-                  //                 child: CircularProgressIndicator(strokeWidth: 3)),
-                  //           ),
-                  //         )
-                  //       :
-                  listHistoryControl(),
+              () => listHistoryControl(),
             ),
             // const SizedBox(height: 16.0)
           ],
@@ -1115,7 +1103,7 @@ class _LiveTrackingState extends State<LiveTracking> {
 
   Widget listHistoryControl() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 152.0, top: 10),
+      padding: const EdgeInsets.only(bottom: 155.0, top: 10),
       child: ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,

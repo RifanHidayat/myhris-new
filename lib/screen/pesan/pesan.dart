@@ -451,232 +451,233 @@ class _PesanState extends State<Pesan> {
   }
 
   Widget screenNotifikasi() {
-    return controller.listNotifikasi.value.isEmpty
-        ? Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  'assets/amico.svg',
-                  height: 250,
-                  width: 250,
+    return RefreshIndicator(
+      onRefresh: refreshData,
+      child: controller.listNotifikasi.value.isEmpty
+          ? SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.7,
+                alignment: Alignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/amico.svg',
+                      height: 250,
+                      width: 250,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      "Anda tidak memiliki Notifikasi",
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          color: Constanst.fgPrimary,
+                          fontSize: 16),
+                    ),
+                    const SizedBox(height: 32),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  "Anda tidak memiliki Notifikasi",
-                  style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w500,
-                      color: Constanst.fgPrimary,
-                      fontSize: 16),
-                ),
-                const SizedBox(height: 32),
-              ],
-            ),
-          )
-        : RefreshIndicator(
-            onRefresh: refreshData,
-            child: ListView.builder(
-                itemCount: controller.listNotifikasi.value.length,
-                physics: controller.listNotifikasi.value.length <= 10
-                    ? const AlwaysScrollableScrollPhysics()
-                    : const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  var tanggalNotif =
-                      controller.listNotifikasi.value[index]['tanggal'];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(16.0, 24.0, 0.0, 4.0),
-                        child: Text(
-                          // Constanst.convertDate(tanggalNotif.toString()),
-                          // tanggalNotif,
-                          tanggalNotif == "Hari ini"
-                              ? tanggalNotif
-                              : Constanst.convertDate6(DateFormat('dd-MM-yyyy')
-                                  .parseStrict(tanggalNotif)
-                                  .toString()),
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              color: Constanst.fgSecondary,
-                              fontSize: 14),
-                        ),
+              ),
+            )
+          : ListView.builder(
+              itemCount: controller.listNotifikasi.value.length,
+              physics: controller.listNotifikasi.value.length <= 10
+                  ? const AlwaysScrollableScrollPhysics()
+                  : const BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                var tanggalNotif =
+                    controller.listNotifikasi.value[index]['tanggal'];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16.0, 24.0, 0.0, 4.0),
+                      child: Text(
+                        // Constanst.convertDate(tanggalNotif.toString()),
+                        // tanggalNotif,
+                        tanggalNotif == "Hari ini"
+                            ? tanggalNotif
+                            : Constanst.convertDate6(DateFormat('dd-MM-yyyy')
+                                .parseStrict(tanggalNotif)
+                                .toString()),
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            color: Constanst.fgSecondary,
+                            fontSize: 14),
                       ),
-                      Obx(
-                        () => ListView.builder(
-                            itemCount: controller.listNotifikasi
-                                .value[index]['notifikasi'].length,
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (context, idx) {
-                              var idNotif = controller.listNotifikasi
-                                  .value[index]['notifikasi'][idx]['id'];
-                              var titleNotif = controller.listNotifikasi
-                                  .value[index]['notifikasi'][idx]['title'];
-                              var deskripsiNotif = controller.listNotifikasi
-                                  .value[index]['notifikasi'][idx]['deskripsi'];
-                              var urlRoute = controller.listNotifikasi
-                                  .value[index]['notifikasi'][idx]['url'];
-                              var jam = controller.listNotifikasi.value[index]
-                                  ['notifikasi'][idx]['jam'];
-                              var statusNotif = controller.listNotifikasi
-                                  .value[index]['notifikasi'][idx]['status'];
-                              var view = controller.listNotifikasi.value[index]
-                                  ['notifikasi'][idx]['view'];
-                              var emId = controller.listNotifikasi.value[index]
-                                  ['notifikasi'][idx]['em_id'];
-                              var emIdPengaju =
-                                  controller.listNotifikasi.value[index]
-                                      ['notifikasi'][idx]['em_id_pengajuan'];
-                              var idDetail = controller.listNotifikasi
-                                  .value[index]['notifikasi'][idx]['idx'];
-                              return Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: view == 0
-                                          ? Constanst.colorButton2
-                                          : Colors.transparent,
-                                      borderRadius: Constanst.borderStyle1,
-                                    ),
-                                    child: InkWell(
-                                      onTap: () {
-                                        print(
-                                            "wkwkwk: ${controller.listNotifikasi.value[index]['notifikasi'][idx]}");
-                                        if (emIdPengaju !=
-                                                AppData
-                                                    .informasiUser![0].em_id &&
-                                            idDetail != null) {
-                                          if (view == 0) {
-                                            controller.aksilihatNotif(idNotif);
-                                          }
-                                          controller.routeApprovalNotif(
-                                            title: titleNotif,
-                                            emIdPengaju: emIdPengaju.toString(),
-                                            idx: idDetail.toString(),
-                                            delegasi: emId.toString(),
-                                            url: urlRoute,
-                                          );
-                                        } else if (emIdPengaju.toString() ==
-                                            AppData.informasiUser![0].em_id) {
-                                          if (view == 0) {
-                                            controller.aksilihatNotif(idNotif);
-                                          }
-                                          controller.redirectToPage(
-                                              urlRoute, idDetail);
-                                        }else{
-                                         if (view == 0) {
-                                            controller.aksilihatNotif(idNotif);
-                                          }
+                    ),
+                    Obx(
+                      () => ListView.builder(
+                          itemCount: controller
+                              .listNotifikasi.value[index]['notifikasi'].length,
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemBuilder: (context, idx) {
+                            var idNotif = controller.listNotifikasi.value[index]
+                                ['notifikasi'][idx]['id'];
+                            var titleNotif = controller.listNotifikasi
+                                .value[index]['notifikasi'][idx]['title'];
+                            var deskripsiNotif = controller.listNotifikasi
+                                .value[index]['notifikasi'][idx]['deskripsi'];
+                            var urlRoute = controller.listNotifikasi
+                                .value[index]['notifikasi'][idx]['url'];
+                            var jam = controller.listNotifikasi.value[index]
+                                ['notifikasi'][idx]['jam'];
+                            var statusNotif = controller.listNotifikasi
+                                .value[index]['notifikasi'][idx]['status'];
+                            var view = controller.listNotifikasi.value[index]
+                                ['notifikasi'][idx]['view'];
+                            var emId = controller.listNotifikasi.value[index]
+                                ['notifikasi'][idx]['em_id'];
+                            var emIdPengaju =
+                                controller.listNotifikasi.value[index]
+                                    ['notifikasi'][idx]['em_id_pengajuan'];
+                            var idDetail = controller.listNotifikasi
+                                .value[index]['notifikasi'][idx]['idx'];
+                            return Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: view == 0
+                                        ? Constanst.colorButton2
+                                        : Colors.transparent,
+                                    borderRadius: Constanst.borderStyle1,
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      print(
+                                          "wkwkwk: ${controller.listNotifikasi.value[index]['notifikasi'][idx]}");
+                                      if (emIdPengaju !=
+                                              AppData.informasiUser![0].em_id &&
+                                          idDetail != null) {
+                                        if (view == 0) {
+                                          controller.aksilihatNotif(idNotif);
                                         }
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            16.0, 12.0, 16.0, 12.0),
-                                        child: IntrinsicHeight(
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              statusNotif == 1
-                                                  ? Icon(
-                                                      Iconsax.tick_circle,
-                                                      color: Constanst.color5,
-                                                      size: 24,
-                                                    )
-                                                  : statusNotif == 2
-                                                      ? Icon(
-                                                          Iconsax.sms5,
+                                        controller.routeApprovalNotif(
+                                          title: titleNotif,
+                                          emIdPengaju: emIdPengaju.toString(),
+                                          idx: idDetail.toString(),
+                                          delegasi: emId.toString(),
+                                          url: urlRoute,
+                                        );
+                                      } else if (emIdPengaju.toString() ==
+                                          AppData.informasiUser![0].em_id) {
+                                        if (view == 0) {
+                                          controller.aksilihatNotif(idNotif);
+                                        }
+                                        controller.redirectToPage(
+                                            urlRoute, idDetail);
+                                      } else {
+                                        if (view == 0) {
+                                          controller.aksilihatNotif(idNotif);
+                                        }
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          16.0, 12.0, 16.0, 12.0),
+                                      child: IntrinsicHeight(
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            statusNotif == 1
+                                                ? Icon(
+                                                    Iconsax.tick_circle,
+                                                    color: Constanst.color5,
+                                                    size: 24,
+                                                  )
+                                                : statusNotif == 2
+                                                    ? Icon(
+                                                        Iconsax.sms5,
+                                                        color: Constanst
+                                                            .fgSecondary,
+                                                        size: 24,
+                                                      )
+                                                    : statusNotif == 0
+                                                        ? Icon(
+                                                            Iconsax
+                                                                .close_circle,
+                                                            color: Constanst
+                                                                .color4,
+                                                            size: 24,
+                                                          )
+                                                        : const SizedBox(),
+                                            const SizedBox(width: 12),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 5),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            titleNotif,
+                                                            style: GoogleFonts.inter(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Constanst
+                                                                    .fgPrimary,
+                                                                fontSize: 16),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      deskripsiNotif,
+                                                      style: GoogleFonts.inter(
+                                                          fontWeight:
+                                                              FontWeight.w400,
                                                           color: Constanst
                                                               .fgSecondary,
-                                                          size: 24,
-                                                        )
-                                                      : statusNotif == 0
-                                                          ? Icon(
-                                                              Iconsax
-                                                                  .close_circle,
-                                                              color: Constanst
-                                                                  .color4,
-                                                              size: 24,
-                                                            )
-                                                          : const SizedBox(),
-                                              const SizedBox(width: 12),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 5),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Expanded(
-                                                            child: Text(
-                                                              titleNotif,
-                                                              style: GoogleFonts.inter(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Constanst
-                                                                      .fgPrimary,
-                                                                  fontSize: 16),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(height: 4),
-                                                      Text(
-                                                        deskripsiNotif,
-                                                        style: GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            color: Constanst
-                                                                .fgSecondary,
-                                                            fontSize: 14),
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Text(
-                                                        "$jam WIB",
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                        style: GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            color: Constanst
-                                                                .fgSecondary,
-                                                            fontSize: 14),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                          fontSize: 14),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Text(
+                                                      "$jam WIB",
+                                                      textAlign:
+                                                          TextAlign.right,
+                                                      style: GoogleFonts.inter(
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Constanst
+                                                              .fgSecondary,
+                                                          fontSize: 14),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
                                   ),
-                                  Divider(
-                                    thickness: 1,
-                                    height: 0,
-                                    color: Constanst.fgBorder,
-                                  ),
-                                ],
-                              );
-                            }),
-                      ),
-                    ],
-                  );
-                }),
-          );
+                                ),
+                                Divider(
+                                  thickness: 1,
+                                  height: 0,
+                                  color: Constanst.fgBorder,
+                                ),
+                              ],
+                            );
+                          }),
+                    ),
+                  ],
+                );
+              }),
+    );
   }
 
   Widget pickDate() {
@@ -758,219 +759,230 @@ class _PesanState extends State<Pesan> {
   }
 
   Widget screenPersetujuan() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 24),
-        pickDate(),
-        const SizedBox(height: 8),
-        Obx(
-          () => controller.statusScreenInfoApproval.value == true
-              ? Center(
-                  child: Column(
-                    children: [
-                      const CircularProgressIndicator(strokeWidth: 3),
-                      const SizedBox(height: 8),
-                      Text(controller.stringLoading.value),
-                    ],
-                  ),
-                )
-              : Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: refreshData,
-                    child: ListView.builder(
-                        itemCount:
-                            controller.dataScreenPersetujuan.value.length,
-                        shrinkWrap: true,
-                        physics: const BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          var title = controller
-                              .dataScreenPersetujuan.value[index]['title'];
-                          var jumlah = controller.dataScreenPersetujuan
-                              .value[index]['jumlah_approve'];
-                          return
-                              // title == 'Dinas Luar'
-                              //     ? Container() :
-                              InkWell(
-                            // highlightColor: Colors.white,
-                            onTap: () => controller.routeApproval(
-                                controller.dataScreenPersetujuan.value[index]),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      12.0, 12.0, 19.0, 12.0),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          SvgPicture.asset(
+    return RefreshIndicator(
+      onRefresh: refreshData,
+      child: Obx(
+        () => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 24),
+            pickDate(),
+            const SizedBox(height: 8),
+            Expanded(
+              child: controller.dataScreenPersetujuan.value.isEmpty
+                  ? ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          alignment: Alignment.center,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/amico.svg',
+                                height: 250,
+                                width: 250,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                "Tidak ada data persetujuan",
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16),
+                              ),
+                              const SizedBox(height: 32),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  : ListView.builder(
+                      itemCount: controller.dataScreenPersetujuan.value.length,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        var title = controller
+                            .dataScreenPersetujuan.value[index]['title'];
+                        var jumlah = controller.dataScreenPersetujuan
+                            .value[index]['jumlah_approve'];
+                        return InkWell(
+                          onTap: () => controller.routeApproval(
+                              controller.dataScreenPersetujuan.value[index]),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    12.0, 12.0, 19.0, 12.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          title == 'Cuti'
+                                              ? 'assets/5_cuti.svg'
+                                              : title == 'Lembur'
+                                                  ? 'assets/4_lembur.svg'
+                                                  : title == 'Tidak Hadir'
+                                                      ? 'assets/3_izin.svg'
+                                                      : title == 'Tugas Luar'
+                                                          ? 'assets/6_tugas_luar.svg'
+                                                          : title ==
+                                                                  'Dinas Luar'
+                                                              ? 'assets/6_tugas_luar.svg'
+                                                              : title == 'Klaim'
+                                                                  ? 'assets/7_klaim.svg'
+                                                                  : title ==
+                                                                          'Payroll'
+                                                                      ? 'assets/3_izin.svg'
+                                                                      : title ==
+                                                                              'Absensi'
+                                                                          ? 'assets/2_absen.svg'
+                                                                          : 'assets/3_izin.svg',
+                                          height: 35,
+                                          width: 35,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 12),
+                                          child: Text(
                                             title == 'Cuti'
-                                                ? 'assets/5_cuti.svg'
+                                                ? 'Persetujuan Cuti'
                                                 : title == 'Lembur'
-                                                    ? 'assets/4_lembur.svg'
+                                                    ? 'Persetujuan Lembur'
                                                     : title == 'Tidak Hadir'
-                                                        ? 'assets/3_izin.svg'
+                                                        ? 'Persetujuan Izin'
                                                         : title == 'Tugas Luar'
-                                                            ? 'assets/6_tugas_luar.svg'
+                                                            ? 'Persetujuan Tugas Luar'
                                                             : title ==
                                                                     'Dinas Luar'
-                                                                ? 'assets/6_tugas_luar.svg'
+                                                                ? 'Persetujuan Dinas Luar'
                                                                 : title ==
                                                                         'Klaim'
-                                                                    ? 'assets/7_klaim.svg'
+                                                                    ? 'Persetujuan Klaim'
                                                                     : title ==
                                                                             'Payroll'
-                                                                        ? 'assets/3_izin.svg'
+                                                                        ? 'Persetujuan Payroll'
                                                                         : title ==
                                                                                 'Absensi'
-                                                                            ? 'assets/2_absen.svg'
-                                                                            : 'assets/3_izin.svg',
-                                            height: 35,
-                                            width: 35,
+                                                                            ? 'Persetujuan Absensi'
+                                                                            : title == 'WFH'
+                                                                                ? 'Persetujuan WFH'
+                                                                                : 'Persetujuan Kasbon',
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                color: Constanst.fgPrimary,
+                                                fontSize: 16),
                                           ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 12),
-                                            child: Text(
-                                              title == 'Cuti'
-                                                  ? 'Persetujuan Cuti'
-                                                  : title == 'Lembur'
-                                                      ? 'Persetujuan Lembur'
-                                                      : title == 'Tidak Hadir'
-                                                          ? 'Persetujuan Izin'
-                                                          : title ==
-                                                                  'Tugas Luar'
-                                                              ? 'Persetujuan Tugas Luar'
-                                                              : title ==
-                                                                      'Dinas Luar'
-                                                                  ? 'Persetujuan Dinas Luar'
-                                                                  : title ==
-                                                                          'Klaim'
-                                                                      ? 'Persetujuan Klaim'
-                                                                      : title ==
-                                                                              'Payroll'
-                                                                          ? 'Persetujuan Payroll'
-                                                                          : title == 'Absensi'
-                                                                              ? 'Persetujuan Absensi'
-                                                                              : title == 'WFH'
-                                                                                  ? 'Persetujuan WFH'
-                                                                                  : 'Persetujuan Kasbon',
-                                              style: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Constanst.fgPrimary,
-                                                  fontSize: 16),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      // title == 'Cuti'
-                                      //     ? Icon(
-                                      //         Iconsax.calendar_remove,
-                                      //         color: Constanst.colorPrimary,
-                                      //       )
-                                      //     : title == 'Lembur'
-                                      //         ? Icon(
-                                      //             Iconsax.clock,
-                                      //             color: Constanst.colorPrimary,
-                                      //           )
-                                      //         : title == 'Tidak Hadir'
-                                      //             ? Icon(
-                                      //                 Iconsax.clipboard_close,
-                                      //                 color:
-                                      //                     Constanst.colorPrimary,
-                                      //               )
-                                      //             : title == 'Tugas Luar'
-                                      //                 ? Icon(
-                                      //                     Iconsax.send_2,
-                                      //                     color: Constanst
-                                      //                         .colorPrimary,
-                                      //                   )
-                                      //                 : title == 'Dinas Luar'
-                                      //                     ? Icon(
-                                      //                         Iconsax.airplane,
-                                      //                         color: Constanst
-                                      //                             .colorPrimary,
-                                      //                       )
-                                      //                     : title == 'Klaim'
-                                      //                         ? Icon(
-                                      //                             Iconsax.receipt,
-                                      //                             color: Constanst
-                                      //                                 .colorPrimary,
-                                      //                           )
-                                      //                         : title == 'Payroll'
-                                      //                             ? Icon(
-                                      //                                 Iconsax
-                                      //                                     .receipt,
-                                      //                                 color: Constanst
-                                      //                                     .colorPrimary,
-                                      //                               )
-                                      //                             : title ==
-                                      //                                     'Absensi'
-                                      //                                 ? Icon(
-                                      //                                     Iconsax
-                                      //                                         .receipt,
-                                      //                                     color: Constanst
-                                      //                                         .colorPrimary,
-                                      //                                   )
-                                      //                                 : const SizedBox(),
-
-                                      Row(
-                                        children: [
-                                          Container(
-                                            height: 22,
-                                            width: 22,
-                                            decoration: BoxDecoration(
-                                                color: Constanst
-                                                    .colorStateDangerBg,
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                  Radius.circular(100.0),
-                                                ),
-                                                border: Border.all(
-                                                  width: 1.0,
-                                                  color: Constanst
-                                                      .colorStateDangerBorder,
-                                                )),
-                                            child: Center(
-                                              child: Text(
-                                                jumlah,
-                                                style: GoogleFonts.inter(
-                                                    color: Constanst
-                                                        .colorStateOnDangerBg,
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.w500),
+                                        ),
+                                      ],
+                                    ),
+                                    // title == 'Cuti'
+                                    //     ? Icon(
+                                    //         Iconsax.calendar_remove,
+                                    //         color: Constanst.colorPrimary,
+                                    //       )
+                                    //     : title == 'Lembur'
+                                    //         ? Icon(
+                                    //             Iconsax.clock,
+                                    //             color: Constanst.colorPrimary,
+                                    //           )
+                                    //         : title == 'Tidak Hadir'
+                                    //             ? Icon(
+                                    //                 Iconsax.clipboard_close,
+                                    //                 color:
+                                    //                     Constanst.colorPrimary,
+                                    //               )
+                                    //             : title == 'Tugas Luar'
+                                    //                 ? Icon(
+                                    //                     Iconsax.send_2,
+                                    //                     color: Constanst
+                                    //                         .colorPrimary,
+                                    //                   )
+                                    //                 : title == 'Dinas Luar'
+                                    //                     ? Icon(
+                                    //                         Iconsax.airplane,
+                                    //                         color: Constanst
+                                    //                             .colorPrimary,
+                                    //                       )
+                                    //                     : title == 'Klaim'
+                                    //                         ? Icon(
+                                    //                             Iconsax.receipt,
+                                    //                             color: Constanst
+                                    //                                 .colorPrimary,
+                                    //                           )
+                                    //                         : title == 'Payroll'
+                                    //                             ? Icon(
+                                    //                                 Iconsax
+                                    //                                     .receipt,
+                                    //                                 color: Constanst
+                                    //                                     .colorPrimary,
+                                    //                               )
+                                    //                             : title ==
+                                    //                                     'Absensi'
+                                    //                                 ? Icon(
+                                    //                                     Iconsax
+                                    //                                         .receipt,
+                                    //                                     color: Constanst
+                                    //                                         .colorPrimary,
+                                    //                                   )
+                                    //                                 : const SizedBox(),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          height: 22,
+                                          width: 22,
+                                          decoration: BoxDecoration(
+                                              color:
+                                                  Constanst.colorStateDangerBg,
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                Radius.circular(100.0),
                                               ),
+                                              border: Border.all(
+                                                width: 1.0,
+                                                color: Constanst
+                                                    .colorStateDangerBorder,
+                                              )),
+                                          child: Center(
+                                            child: Text(
+                                              jumlah,
+                                              style: GoogleFonts.inter(
+                                                  color: Constanst
+                                                      .colorStateOnDangerBg,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500),
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0),
-                                            child: Icon(
-                                              Icons.arrow_forward_ios,
-                                              color: Constanst.colorText2,
-                                              size: 18,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: Icon(
+                                            Icons.arrow_forward_ios,
+                                            color: Constanst.colorText2,
+                                            size: 18,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        }),
-                  ),
-                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 // import 'package:background_location_tracker/background_location_tracker.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 // import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
@@ -10,6 +12,7 @@ import 'package:ntp/ntp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
+import 'package:siscom_operasional/database/sqlite/sqlite_database_helper.dart';
 import 'package:siscom_operasional/model/database.dart';
 import 'package:siscom_operasional/model/user_model.dart';
 import 'package:siscom_operasional/screen/absen/camera_view_register.dart';
@@ -44,6 +47,55 @@ class AuthController extends GetxController {
 
   var controllerAbsnsi = Get.put(AbsenController());
   final controllerTracking = Get.put(TrackingController());
+  var isConnected = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    Connectivity().onConnectivityChanged.listen((result) async {
+      if (result[0].toString() == "${ConnectivityResult.none}") {
+        print('Tidak ada koneksi internet');
+        isConnected.value = false;
+      } else {
+        try {
+          final result = await InternetAddress.lookup('google.com');
+          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+            // Cek kualitas koneksi dengan melakukan ping ke server
+            final stopwatch = Stopwatch()..start();
+            final socket = await Socket.connect('google.com', 80,
+                timeout: const Duration(seconds: 3));
+            socket.destroy();
+            stopwatch.stop();
+
+            final ping = stopwatch.elapsedMilliseconds;
+
+            if (ping > 1000) {
+              print('Koneksi internet jelek');
+              isConnected.value = false;
+            } else {
+              isConnected.value = true;
+              if (AppData.isLogin == true) {
+                await sendOfflineData();
+                var absenMasukKeluarOffline =
+                    await SqliteDatabaseHelper().getAbsensi();
+                if (absenMasukKeluarOffline != null) {
+                  sendAbsensiOffline();
+                  await SqliteDatabaseHelper().deleteAbsensi();
+                }
+              }
+              print('Terhubung ke internet dengan koneksi baik');
+            }
+          } else {
+            print('Tidak ada koneksi internet');
+            isConnected.value = false;
+          }
+        } on SocketException catch (_) {
+          print('Tidak ada koneksi internet');
+          isConnected.value = false;
+        }
+      }
+    });
+  }
 
   @override
   void onReady() {
@@ -55,6 +107,40 @@ class AuthController extends GetxController {
     print("perusaan ${AppData.selectedPerusahan}");
     selectedDb.value = AppData.selectedDatabase;
     super.onReady();
+  }
+
+  void sendAbsensiOffline() async {
+    var absenMasukKeluarOffline = await SqliteDatabaseHelper().getAbsensi();
+
+    var body = {
+      'em_id': AppData.informasiUser![0].em_id.toString(),
+      'atten_date': absenMasukKeluarOffline!['atten_date'].toString(),
+      'signin_time': absenMasukKeluarOffline['signing_time'].toString(),
+      'place_in': absenMasukKeluarOffline['place_in'].toString(),
+      'signin_longlat': absenMasukKeluarOffline['signin_longlat'].toString(),
+      'signin_pict': absenMasukKeluarOffline['signin_pict'].toString(),
+      'signin_note': absenMasukKeluarOffline['signin_note'].toString(),
+      'signin_addr': absenMasukKeluarOffline['signin_addr'].toString(),
+      'signout_time': absenMasukKeluarOffline['signout_time'].toString(),
+      'place_out': absenMasukKeluarOffline['place_out'].toString(),
+      'signout_longlat': absenMasukKeluarOffline['signout_longlat'].toString(),
+      'signout_pict': absenMasukKeluarOffline['signout_pict'].toString(),
+      'signout_note': absenMasukKeluarOffline['signout_note'].toString(),
+      'signout_addr': absenMasukKeluarOffline['signout_addr'].toString(),
+    };
+
+    print("beb: $body");
+    print("beb2: ${absenMasukKeluarOffline['signout_time']}");
+
+    var connect = Api.connectionApi("post", body, "attendance-offiline");
+    connect.then((dynamic res) {
+      print("ahh: ${res.statusCode}");
+      if (res.statusCode == 200) {
+        print("Alhamdulillah");
+      } else {
+        UtilsAlert.showToast("terjadi kesalhan");
+      }
+    });
   }
 
   bool validateEmail(String? value) {
@@ -100,10 +186,373 @@ class AuthController extends GetxController {
 
   Future<void> loginUser() async {
     final box = GetStorage();
+    var connectivityResult = await Connectivity().checkConnectivity();
+    var offline =
+        (connectivityResult[0].toString() == "${ConnectivityResult.none}");
+
+    if (offline) {
+      String? savedEmail = AppData.emailUser;
+      String? savedPassword = AppData.passwordUser;
+      if (savedEmail == email.value.text &&
+          savedPassword == password.value.text) {
+        AppData.isLogin = true;
+        fillLastLoginUserNew(
+            AppData.informasiUser![0].em_id, AppData.informasiUser);
+        checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+            AppData.informasiUser![0].em_id);
+        UtilsAlert.showToast("Login offline berhasil");
+      } else {
+        UtilsAlert.showToast("Login offline gagal, data tidak cocok");
+      }
+    } else {
+      var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+      //  var fcm_registration_token = "1";
+      // print("fcmtoken ${fcm_registration_token}");
+      UtilsAlert.showLoadingIndicator(Get.context!);
+      Map<String, dynamic> body = {
+        'email': email.value.text,
+        'password': password.value.text,
+        'token_notif': fcm_registration_token,
+        'database': selectedDb.value
+      };
+      var connect = Api.connectionApi("post", body, "login");
+      connect.then((dynamic res) async {
+        var valueBody = jsonDecode(res.body);
+        print('data login ${valueBody}');
+        if (valueBody['status'] == false) {
+          UtilsAlert.showToast(valueBody['message']);
+          Navigator.pop(Get.context!);
+        } else {
+          print("nama database ${selectedDb.value}");
+          AppData.selectedDatabase = selectedDb.value;
+          AppData.selectedPerusahan = selectedPerusahaan.value;
+
+          List<UserModel> getData = [];
+
+          var lastLoginUser = "";
+          var getEmId = "";
+          var getAktif = "";
+          var idMobile = "";
+
+          print("data login 2 new new ${valueBody['data']}");
+          var isBackDateSakit = "0";
+          var isBackDateIzin = "0";
+          var isBackDateCuti = "0";
+          var isBackDateTugasLuar = "0";
+          var isBackDateDinasLuar = "0";
+          var isBackDateLembur = "0";
+
+          for (var element in valueBody['data']) {
+            if (element['back_date'] == "" || element['back_date'] == null) {
+            } else {
+              List isBackDates = element['back_date'].toString().split(',');
+              isBackDateSakit = isBackDates[0].toString();
+              isBackDateIzin = isBackDates[1].toString();
+              isBackDateCuti = isBackDates[2].toString();
+              isBackDateTugasLuar = isBackDates[3].toString();
+              isBackDateDinasLuar = isBackDates[4].toString();
+              isBackDateLembur = isBackDates[5].toString();
+
+              print("data back date ");
+              print("1 ${isBackDates[0].toString()}");
+              print("2 ${isBackDates[1].toString()}");
+              print("3 ${isBackDates[2].toString()}");
+              print("4 ${isBackDates[3].toString()}");
+              print(
+                  "dinas luar ${isBackDates[4].toString()} ${isBackDateDinasLuar}");
+              print("6 ${isBackDates[5].toString()}");
+            }
+            var data = UserModel(
+                isBackDateSakit: isBackDateSakit,
+                isBackDateIzin: isBackDateIzin,
+                isBackDateCuti: isBackDateCuti,
+                isBackDateTugasLuar: isBackDateTugasLuar,
+                isBackDateDinasLuar: isBackDateDinasLuar,
+                isBackDateLembur: isBackDateLembur,
+                em_id: element['em_id'] ?? "",
+                des_id: element['des_id'] ?? 0,
+                dep_id: element['dep_id'] ?? 0,
+                dep_group: element['dep_group'] ?? 0,
+                full_name: element['full_name'] ?? "",
+                em_email: element['em_email'] ?? "",
+                em_phone: element['em_phone'] ?? "",
+                em_birthday: element['em_birthday'] ?? "1999-09-09",
+                em_gender: element['em_gender'] ?? "",
+                em_image: element['em_image'] ?? "",
+                em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+                em_status: element['em_status'] ?? "",
+                em_blood_group: element['em_blood_group'] ?? "",
+                posisi: element['posisi'] ?? "",
+                emp_jobTitle: element['emp_jobTitle'] ?? "",
+                emp_departmen: element['emp_departmen'] ?? "",
+                em_control: element['em_control'] ?? 0,
+                em_control_acess: element['em_control_access'] ?? 0,
+                emp_att_working: element['emp_att_working'] ?? 0,
+                em_hak_akses: element['em_hak_akses'] ?? "",
+                beginPayroll: element['begin_payroll'] ?? 1,
+                endPayroll: element['end_payroll'] ?? 31,
+                branchName: element['branch_name'] ?? "",
+                startTime: element['time_attendance'].toString().split(',')[0],
+                endTime: element['time_attendance'].toString().split(',')[1],
+                nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
+                nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
+                timeIn: element['time_in'] ?? "",
+                timeOut: element['time_out'] ?? "",
+                interval: element['interval'],
+                interval_tracking: element['interval_tracking'],
+                isViewTracking: element['is_view_tracking'],
+                is_tracking: element['is_tracking']
+                //   startTime: "00:01",
+                // endTime: "23:59",
+                );
+
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString(
+                "interval_tracking", element['interval_tracking'].toString());
+            await prefs.setString("em_id", element['em_id'].toString());
+
+            print('data login ${data}');
+
+            if (element['file_face'] == "" || element['file_face'] == null) {
+              box.write("face_recog", false);
+            } else {
+              box.write("face_recog", true);
+            }
+            getData.add(data);
+            AppData.informasiUser = getData;
+            lastLoginUser = "${element['last_login']}";
+            getEmId = "${element['em_id']}";
+            getAktif = "${element['status_aktif']}";
+
+            AppData.isLogin = true;
+            AppData.setFcmToken = fcm_registration_token.toString();
+            print(element.toString());
+
+            if (AppData.informasiUser![0].is_tracking.toString() == '1') {
+              controllerTracking.bagikanlokasi.value = "aktif";
+              // await BackgroundLocationTrackerManager.startTracking();
+              // final service = FlutterBackgroundService();
+              // FlutterBackgroundService().invoke("setAsBackground");
+
+              // service.startService();
+              controllerTracking.updateStatus('1');
+              controllerTracking.isTrackingLokasi.value = true;
+              // controllerTracking.detailTracking(emIdEmployee: '');
+              print(
+                  "startTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
+            } else {
+              controllerTracking.bagikanlokasi.value = "tidak aktif";
+              // await LocationDao().clear();
+              // await _getLocations();
+              // await BackgroundLocationTrackerManager.stopTracking();
+              // final service = FlutterBackgroundService();
+              // FlutterBackgroundService().invoke("setAsBackground");
+
+              // service.invoke("stopService");
+              controllerTracking.updateStatus('0');
+              controllerTracking.isTrackingLokasi.value = false;
+              print(
+                  "stopTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
+            }
+          }
+
+          if (getAktif == "ACTIVE") {
+            if (lastLoginUser == "" ||
+                lastLoginUser == "null" ||
+                lastLoginUser == null ||
+                lastLoginUser == "0000-00-00 00:00:00") {
+              fillLastLoginUserNew(getEmId, getData);
+              checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                  AppData.informasiUser![0].em_id);
+            } else {
+              AppData.emailUser = email.value.text;
+              AppData.passwordUser = password.value.text;
+
+              var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
+              var dateNow = DateTime.now();
+              var convert = DateFormat('dd-MM-yyyy').format(dateNow);
+
+              if (convert != filterLastLogin) {
+                fillLastLoginUserNew(getEmId, getData);
+                checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                    AppData.informasiUser![0].em_id);
+              } else {
+                //  UtilsAlert.showToast("Anda telah masuk di perangkat lain");
+                Navigator.pop(Get.context!);
+                validasiLogin();
+              }
+            }
+          } else {
+            UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
+            Navigator.pop(Get.context!);
+          }
+        }
+      });
+    }
+  }
+
+  Future<void> loginUser1() async {
+    final box = GetStorage();
+    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+    //  var fcm_registration_token = "1";
+
+    //  print("fcmtoken ${fcm_registration_token}");
+
+    UtilsAlert.showLoadingIndicator(Get.context!);
+    Map<String, dynamic> body = {
+      'email': email.value.text,
+      'password': password.value.text,
+      'token_notif': fcm_registration_token,
+      'database': selectedDb.value
+    };
+    var connect = Api.connectionApi("post", body, "login");
+    connect.then((dynamic res) async {
+      var valueBody = jsonDecode(res.body);
+      print('data login 2 new ${valueBody}');
+      if (valueBody['status'] == false) {
+        UtilsAlert.showToast(valueBody['message']);
+        Navigator.pop(Get.context!);
+      } else {
+        AppData.selectedDatabase = selectedDb.value;
+        AppData.selectedPerusahan = selectedPerusahaan.value;
+
+        List<UserModel> getData = [];
+
+        var lastLoginUser = "";
+        var getEmId = "";
+        var getAktif = "";
+        var idMobile = "";
+
+        var isBackDateSakit = "0";
+        var isBackDateIzin = "0";
+        var isBackDateCuti = "0";
+
+        var isBackDateTugasLuar = "0";
+        var isBackDateDinasLuar = "0";
+        var isBackDateLembur = "0";
+
+        for (var element in valueBody['data']) {
+          if (element['back_date'] == "" || element['back_date'] == null) {
+          } else {
+            List isBackDates = element['back_date'].toString().split(',');
+            isBackDateSakit = isBackDates[0].toString();
+            isBackDateIzin = isBackDates[1].toString();
+            isBackDateCuti = isBackDates[2].toString();
+
+            isBackDateTugasLuar = isBackDates[3].toString();
+            isBackDateDinasLuar = isBackDates[4].toString();
+            isBackDateLembur = isBackDates[5].toString();
+          }
+          var data = UserModel(
+              isBackDateSakit: isBackDateSakit,
+              isBackDateIzin: isBackDateIzin,
+              isBackDateCuti: isBackDateCuti,
+              isBackDateTugasLuar: isBackDateTugasLuar,
+              isBackDateDinasLuar: isBackDateDinasLuar,
+              isBackDateLembur: isBackDateLembur,
+              em_id: element['em_id'] ?? "",
+              des_id: element['des_id'] ?? 0,
+              dep_id: element['dep_id'] ?? 0,
+              dep_group: element['dep_group'] ?? 0,
+              full_name: element['full_name'] ?? "",
+              em_email: element['em_email'] ?? "",
+              em_phone: element['em_phone'] ?? "",
+              em_birthday: element['em_birthday'] ?? "1999-09-09",
+              em_gender: element['em_gender'] ?? "",
+              em_image: element['em_image'] ?? "",
+              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+              em_status: element['em_status'] ?? "",
+              em_blood_group: element['em_blood_group'] ?? "",
+              posisi: element['posisi'] ?? "",
+              emp_jobTitle: element['emp_jobTitle'] ?? "",
+              emp_departmen: element['emp_departmen'] ?? "",
+              em_control: element['em_control'] ?? 0,
+              em_control_acess: element['em_control_access'] ?? 0,
+              emp_att_working: element['emp_att_working'] ?? 0,
+              em_hak_akses: element['em_hak_akses'] ?? "",
+              beginPayroll: element['begin_payroll'] ?? 1,
+              endPayroll: element['end_payroll'] ?? 31,
+              branchName: element['branch_name'] ?? "",
+              startTime: element['time_attendance'].toString().split(',')[0],
+              endTime: element['time_attendance'].toString().split(',')[1],
+              nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
+              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
+              timeIn: element['time_in'] ?? "",
+              timeOut: element['time_out'] ?? "",
+              interval: element['interval'],
+              interval_tracking: element['interval_tracking'],
+              isViewTracking: element['is_view_tracking'],
+              is_tracking: element['is_tracking']
+              // startTime: "00:01",
+              // endTime: "23:59",
+              );
+
+          if (element['file_face'] == "" || element['file_face'] == null) {
+            box.write("face_recog", false);
+          } else {
+            box.write("face_recog", true);
+          }
+          getData.add(data);
+          AppData.informasiUser = getData;
+          lastLoginUser = "${element['last_login']}";
+          getEmId = "${element['em_id']}";
+          getAktif = "${element['status_aktif']}";
+
+          AppData.isLogin = true;
+          print(element.toString());
+          AppData.setFcmToken = fcm_registration_token.toString();
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString(
+              "interval_tracking", element['interval_tracking'].toString());
+          await prefs.setString("em_id", element['em_id'].toString());
+        }
+
+        if (getAktif == "ACTIVE") {
+          AppData.emailUser = email.value.text;
+          AppData.passwordUser = password.value.text;
+          fillLastLoginUserNew(getEmId, getData);
+          checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+              AppData.informasiUser![0].em_id);
+        } else {
+          UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
+          Navigator.pop(Get.context!);
+        }
+      }
+    });
+  }
+
+  void fillLastLoginUser(getEmId, getData) {
+    var now = DateTime.now();
+
+    var jam = "${DateFormat('yyyy-MM-dd HH:mm:ss').format(now)}";
+    Map<String, dynamic> body = {
+      'last_login': jam,
+      'em_id': getEmId,
+      'database': AppData.selectedDatabase
+    };
+    var connect = Api.connectionApi("post", body, "edit_last_login");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print(valueBody['data']);
+        if (valueBody['status'] == true) {
+          var dateNow = DateTime.now();
+          var convert = DateFormat('yyyy-MM-dd').format(dateNow);
+          checkAbsenUser(convert, getEmId);
+          AppData.emailUser = email.value.text;
+          AppData.passwordUser = password.value.text;
+          AppData.informasiUser = getData;
+        }
+      }
+    });
+  }
+
+  Future<void> sendOfflineData() async {
+    final box = GetStorage();
     var fcm_registration_token = await FirebaseMessaging.instance.getToken();
     //  var fcm_registration_token = "1";
     // print("fcmtoken ${fcm_registration_token}");
-    UtilsAlert.showLoadingIndicator(Get.context!);
+    // UtilsAlert.showLoadingIndicator(Get.context!);
     Map<String, dynamic> body = {
       'email': email.value.text,
       'password': password.value.text,
@@ -130,7 +579,7 @@ class AuthController extends GetxController {
         var idMobile = "";
 
         print("data login 2 new new ${valueBody['data']}");
-       var isBackDateSakit = "0";
+        var isBackDateSakit = "0";
         var isBackDateIzin = "0";
         var isBackDateCuti = "0";
         var isBackDateTugasLuar = "0";
@@ -148,21 +597,22 @@ class AuthController extends GetxController {
             isBackDateDinasLuar = isBackDates[4].toString();
             isBackDateLembur = isBackDates[5].toString();
 
-          print("data back date ");
-               print("1 ${isBackDates[0].toString()}");
-               print("2 ${isBackDates[1].toString()}");
-               print("3 ${isBackDates[2].toString()}");
-               print("4 ${isBackDates[3].toString()}");
-               print("dinas luar ${isBackDates[4].toString()} ${isBackDateDinasLuar}");
-               print("6 ${isBackDates[5].toString()}");
+            print("data back date ");
+            print("1 ${isBackDates[0].toString()}");
+            print("2 ${isBackDates[1].toString()}");
+            print("3 ${isBackDates[2].toString()}");
+            print("4 ${isBackDates[3].toString()}");
+            print(
+                "dinas luar ${isBackDates[4].toString()} ${isBackDateDinasLuar}");
+            print("6 ${isBackDates[5].toString()}");
           }
           var data = UserModel(
-            isBackDateSakit: isBackDateSakit,
-            isBackDateIzin: isBackDateIzin,
-            isBackDateCuti: isBackDateCuti,
-            isBackDateTugasLuar: isBackDateTugasLuar,
-            isBackDateDinasLuar: isBackDateDinasLuar,
-            isBackDateLembur: isBackDateLembur,
+              isBackDateSakit: isBackDateSakit,
+              isBackDateIzin: isBackDateIzin,
+              isBackDateCuti: isBackDateCuti,
+              isBackDateTugasLuar: isBackDateTugasLuar,
+              isBackDateDinasLuar: isBackDateDinasLuar,
+              isBackDateLembur: isBackDateLembur,
               em_id: element['em_id'] ?? "",
               des_id: element['des_id'] ?? 0,
               dep_id: element['dep_id'] ?? 0,
@@ -200,11 +650,10 @@ class AuthController extends GetxController {
               // endTime: "23:59",
               );
 
-
-               final prefs = await SharedPreferences.getInstance();
-                    await prefs.setString("interval_tracking", element['interval_tracking'].toString());
-                    await prefs.setString("em_id", element['em_id'].toString());
-
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString(
+              "interval_tracking", element['interval_tracking'].toString());
+          await prefs.setString("em_id", element['em_id'].toString());
 
           print('data login ${data}');
 
@@ -266,16 +715,10 @@ class AuthController extends GetxController {
             var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
             var dateNow = DateTime.now();
             var convert = DateFormat('dd-MM-yyyy').format(dateNow);
-
-            if (convert != filterLastLogin) {
-              fillLastLoginUserNew(getEmId, getData);
-              checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                  AppData.informasiUser![0].em_id);
-            } else {
-              //  UtilsAlert.showToast("Anda telah masuk di perangkat lain");
-              Navigator.pop(Get.context!);
-              validasiLogin();
-            }
+            fillLastLoginUserOffline(getEmId, getData);
+            checkAbsenUserOffline(
+                DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                AppData.informasiUser![0].em_id);
           }
         } else {
           UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
@@ -285,197 +728,80 @@ class AuthController extends GetxController {
     });
   }
 
-  Future<void> loginUser1() async {
-    final box = GetStorage();
-    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
-    //  var fcm_registration_token = "1";
-
-    //  print("fcmtoken ${fcm_registration_token}");
-
-    UtilsAlert.showLoadingIndicator(Get.context!);
-    Map<String, dynamic> body = {
-      'email': email.value.text,
-      'password': password.value.text,
-      'token_notif': fcm_registration_token,
-      'database': selectedDb.value
-    };
-    var connect = Api.connectionApi("post", body, "login");
-    connect.then((dynamic res) async {
-      var valueBody = jsonDecode(res.body);
-      print('data login 2 new ${valueBody}');
-      if (valueBody['status'] == false) {
-        UtilsAlert.showToast(valueBody['message']);
-        Navigator.pop(Get.context!);
-      } else {
-        AppData.selectedDatabase = selectedDb.value;
-        AppData.selectedPerusahan = selectedPerusahaan.value;
-
-        List<UserModel> getData = [];
-
-        var lastLoginUser = "";
-        var getEmId = "";
-        var getAktif = "";
-        var idMobile = "";
-        
-        var isBackDateSakit = "0";
-        var isBackDateIzin = "0";
-        var isBackDateCuti = "0";
-        
-        var isBackDateTugasLuar = "0";
-        var isBackDateDinasLuar = "0";
-        var isBackDateLembur = "0";
-
-        for (var element in valueBody['data']) {
-          
-          if (element['back_date'] == "" || element['back_date'] == null) {
-          } else {
-            List isBackDates = element['back_date'].toString().split(',');
-             isBackDateSakit = isBackDates[0].toString();
-            isBackDateIzin = isBackDates[1].toString();
-            isBackDateCuti = isBackDates[2].toString();
-        
-            isBackDateTugasLuar = isBackDates[3].toString();
-            isBackDateDinasLuar = isBackDates[4].toString();
-            isBackDateLembur = isBackDates[5].toString();
-          }
-          var data = UserModel(
-           isBackDateSakit: isBackDateSakit,
-            isBackDateIzin: isBackDateIzin,
-            isBackDateCuti: isBackDateCuti,
-            isBackDateTugasLuar: isBackDateTugasLuar,
-            isBackDateDinasLuar: isBackDateDinasLuar,
-            isBackDateLembur: isBackDateLembur,
-              em_id: element['em_id'] ?? "",
-              des_id: element['des_id'] ?? 0,
-              dep_id: element['dep_id'] ?? 0,
-              dep_group: element['dep_group'] ?? 0,
-              full_name: element['full_name'] ?? "",
-              em_email: element['em_email'] ?? "",
-              em_phone: element['em_phone'] ?? "",
-              em_birthday: element['em_birthday'] ?? "1999-09-09",
-              em_gender: element['em_gender'] ?? "",
-              em_image: element['em_image'] ?? "",
-              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-              em_status: element['em_status'] ?? "",
-              em_blood_group: element['em_blood_group'] ?? "",
-              posisi: element['posisi'] ?? "",
-              emp_jobTitle: element['emp_jobTitle'] ?? "",
-              emp_departmen: element['emp_departmen'] ?? "",
-              em_control: element['em_control'] ?? 0,
-              em_control_acess: element['em_control_access'] ?? 0,
-              emp_att_working: element['emp_att_working'] ?? 0,
-              em_hak_akses: element['em_hak_akses'] ?? "",
-              beginPayroll: element['begin_payroll'] ?? 1,
-              endPayroll: element['end_payroll'] ?? 31,
-              branchName: element['branch_name'] ?? "",
-              startTime: element['time_attendance'].toString().split(',')[0],
-              endTime: element['time_attendance'].toString().split(',')[1],
-              nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
-              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
-              timeIn: element['time_in'] ?? "",
-              timeOut: element['time_out'] ?? "",
-              interval: element['interval'],
-              interval_tracking: element['interval_tracking'],
-              isViewTracking: element['is_view_tracking'],
-              is_tracking: element['is_tracking']
-              // startTime: "00:01",
-              // endTime: "23:59",
-              );
-
-          if (element['file_face'] == "" || element['file_face'] == null) {
-            box.write("face_recog", false);
-          } else {
-            box.write("face_recog", true);
-          }
-          getData.add(data);
-          AppData.informasiUser = getData;
-          lastLoginUser = "${element['last_login']}";
-          getEmId = "${element['em_id']}";
-          getAktif = "${element['status_aktif']}";
-
-          AppData.isLogin = true;
-          print(element.toString());
-          AppData.setFcmToken = fcm_registration_token.toString();
-             final prefs = await SharedPreferences.getInstance();
-  await prefs.setString("interval_tracking", element['interval_tracking'].toString());
-    await prefs.setString("em_id", element['em_id'].toString());
-        }
-
-        if (getAktif == "ACTIVE") {
-          AppData.emailUser = email.value.text;
-          AppData.passwordUser = password.value.text;
-          fillLastLoginUserNew(getEmId, getData);
-          checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-              AppData.informasiUser![0].em_id);
-        } else {
-          UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
-          Navigator.pop(Get.context!);
-        }
-      }
-    });
-  }
-
-  void fillLastLoginUser(getEmId, getData) {
+  void fillLastLoginUserNew(getEmId, getData) async {
     var now = DateTime.now();
-
     var jam = "${DateFormat('yyyy-MM-dd HH:mm:ss').format(now)}";
+    var connectivityResult = await Connectivity().checkConnectivity();
+    var offline =
+        (connectivityResult[0].toString() == "${ConnectivityResult.none}");
+
     Map<String, dynamic> body = {
       'last_login': jam,
       'em_id': getEmId,
       'database': AppData.selectedDatabase
     };
-    var connect = Api.connectionApi("post", body, "edit_last_login");
-    connect.then((dynamic res) {
-      if (res.statusCode == 200) {
-        var valueBody = jsonDecode(res.body);
-        print(valueBody['data']);
-        if (valueBody['status'] == true) {
-          var dateNow = DateTime.now();
-          var convert = DateFormat('yyyy-MM-dd').format(dateNow);
-          checkAbsenUser(convert, getEmId);
-          AppData.emailUser = email.value.text;
-          AppData.passwordUser = password.value.text;
-          AppData.informasiUser = getData;
+
+    if (offline) {
+      AppData.emailUser = email.value.text;
+      AppData.passwordUser = password.value.text;
+      AppData.informasiUser = getData;
+      isautoLogout.value = false;
+    } else {
+      var connect = Api.connectionApi("post", body, "edit_last_login");
+      connect.then((dynamic res) {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          print(valueBody['data']);
+          if (valueBody['status'] == true) {
+            checkAbsenUser(DateFormat('yyyy-MM-dd').format(now), getEmId);
+            AppData.emailUser = email.value.text;
+            AppData.passwordUser = password.value.text;
+            AppData.informasiUser = getData;
+            isautoLogout.value = false;
+          }
         }
-      }
-    });
+      });
+    }
   }
 
-  void fillLastLoginUserNew(getEmId, getData) {
+  void fillLastLoginUserOffline(getEmId, getData) async {
     var now = DateTime.now();
-
     var jam = "${DateFormat('yyyy-MM-dd HH:mm:ss').format(now)}";
+    var connectivityResult = await Connectivity().checkConnectivity();
+    var offline =
+        (connectivityResult[0].toString() == "${ConnectivityResult.none}");
+
     Map<String, dynamic> body = {
       'last_login': jam,
       'em_id': getEmId,
       'database': AppData.selectedDatabase
     };
-    var connect = Api.connectionApi("post", body, "edit_last_login");
-    connect.then((dynamic res) {
-      if (res.statusCode == 200) {
-        var valueBody = jsonDecode(res.body);
-        print(valueBody['data']);
-        if (valueBody['status'] == true) {
-          var dateNow = DateTime.now();
-          var convert = DateFormat('yyyy-MM-dd').format(dateNow);
 
-          checkAbsenUser(convert, getEmId);
-
-          AppData.emailUser = email.value.text;
-          AppData.passwordUser = password.value.text;
-          AppData.informasiUser = getData;
-          isautoLogout.value = false;
+    if (offline) {
+      AppData.emailUser = email.value.text;
+      AppData.passwordUser = password.value.text;
+      AppData.informasiUser = getData;
+      isautoLogout.value = false;
+    } else {
+      var connect = Api.connectionApi("post", body, "edit_last_login");
+      connect.then((dynamic res) {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          print(valueBody['data']);
+          if (valueBody['status'] == true) {
+            checkAbsenUserOffline(
+                DateFormat('yyyy-MM-dd').format(now), getEmId);
+            AppData.emailUser = email.value.text;
+            AppData.passwordUser = password.value.text;
+            AppData.informasiUser = getData;
+            isautoLogout.value = false;
+          }
         }
-      }
-    });
+      });
+    }
   }
 
-  void checkAbsenUser(convert, getEmid) {
-
-
-
-  
-
+  void checkAbsenUser(convert, getEmid) async {
     // skema menggunakan jam reset
     messageNewPassword.value = "";
     print("view last absen user 3");
@@ -490,17 +816,12 @@ class AuthController extends GetxController {
         minute: int.parse(
             AppData.informasiUser![0].startTime.toString().split(':')[1]));
 
-
-
     TimeOfDay waktu2 = TimeOfDay(
         hour: int.parse(
             AppData.informasiUser![0].endTime.toString().split(':')[0]),
         minute: int.parse(AppData.informasiUser![0].endTime
             .toString()
             .split(':')[1])); // Waktu kedua
-
-
-
 
     int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
     int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
@@ -524,7 +845,7 @@ class AuthController extends GetxController {
         endTime = AppData.informasiUser![0].startTime;
 
         startDate = DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(Duration(days: -1)));
+            .format(DateTime.now().add(const Duration(days: -1)));
 
         endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       } else {
@@ -532,7 +853,7 @@ class AuthController extends GetxController {
         endTime = AppData.informasiUser![0].startTime;
 
         endDate = DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(Duration(days: 1)));
+            .format(DateTime.now().add(const Duration(days: 1)));
 
         startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       }
@@ -544,63 +865,176 @@ class AuthController extends GetxController {
       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       print("Waktu 1 sama dengan waktu 2");
     }
-    Map<String, dynamic> body = {
-      'atten_date': DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: -1))),
-      'em_id': getEmid,
-      'database': AppData.selectedDatabase,
-      'start_date': startDate,
-      'end_date': endDate,
-      'start_time': startTime,
-      'end_time': endTime,
-    };
+    var connectivityResult = await Connectivity().checkConnectivity();
+    var offline =
+        (connectivityResult[0].toString() == "${ConnectivityResult.none}");
 
-    print("param view last absen ${body}");
+    if (offline) {
+      isautoLogout.value = false;
+      Get.offAll(InitScreen());
+    } else {
+      Map<String, dynamic> body = {
+        'atten_date': DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(const Duration(days: -1))),
+        'em_id': getEmid,
+        'database': AppData.selectedDatabase,
+        'start_date': startDate,
+        'end_date': endDate,
+        'start_time': startTime,
+        'end_time': endTime,
+      };
 
-    var connect = Api.connectionApi("post", body, "view_last_absen_user2");
+      print("param view last absen ${body}");
 
-    connect.then((dynamic res)async {
-      if (res.statusCode == 200) {
-        var valueBody = jsonDecode(res.body);
-        print("data login ${valueBody}");
-        var data = valueBody['data'];
-       
-  var date= AppData.informasiUser![0].startTime.toString().split(':');
-  var date2= AppData.informasiUser![0].startTime.toString().split(':');
+      var connect = Api.connectionApi("post", body, "view_last_absen_user2");
 
- //skema pertama
-        if (data.isEmpty) {
-          isautoLogout.value = false;
-          signoutTime.value = '00:00:00';
-          signinTime.value = '00:00:00';
-          AppData.statusAbsen = false;
-          Get.offAll(InitScreen());
-        } else {
-          isautoLogout.value = false;
-          AppData.statusAbsen =
-              data[0]['signout_time'] == "00:00:00" ? true : false;
+      connect.then((dynamic res) async {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          print("data login ${valueBody}");
+          var data = valueBody['data'];
 
-          signoutTime.value = data[0]['signout_time'].toString();
-          signinTime.value = data[0]['signin_time'].toString();
+          var date = AppData.informasiUser![0].startTime.toString().split(':');
+          var date2 = AppData.informasiUser![0].startTime.toString().split(':');
 
-          Get.offAll(InitScreen());
+          //skema pertama
+          if (data.isEmpty) {
+            isautoLogout.value = false;
+            signoutTime.value = '00:00:00';
+            signinTime.value = '00:00:00';
+            AppData.statusAbsen = false;
+            Get.offAll(InitScreen());
+          } else {
+            isautoLogout.value = false;
+            AppData.statusAbsen =
+                data[0]['signout_time'] == "00:00:00" ? true : false;
+
+            signoutTime.value = data[0]['signout_time'].toString();
+            signinTime.value = data[0]['signin_time'].toString();
+            print("ini login: ${AppData.isLogin}");
+            Get.offAll(InitScreen());
+          }
         }
-
-
-
-      
-      
-
-
-
-      }
-    });
-
-
+      });
+    }
     //sekema tidak menggunakan jam reset
+  }
 
+  void checkAbsenUserOffline(convert, getEmid) async {
+    // skema menggunakan jam reset
+    messageNewPassword.value = "";
+    print("view last absen user 3");
+    print("tes ${AppData.informasiUser![0].startTime.toString()}");
+    var startTime = "";
+    var endTime = "";
+    var startDate = "";
+    var endDate = "";
+    TimeOfDay waktu1 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[0]),
+        minute: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[1]));
 
+    TimeOfDay waktu2 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].endTime.toString().split(':')[0]),
+        minute: int.parse(AppData.informasiUser![0].endTime
+            .toString()
+            .split(':')[1])); // Waktu kedua
 
+    int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+    int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+
+    //alur normal
+    if (totalMinutes1 < totalMinutes2) {
+      startTime = AppData.informasiUser![0].startTime;
+      endTime = AppData.informasiUser![0].endTime;
+
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+      //alur beda hari
+    } else if (totalMinutes1 > totalMinutes2) {
+      var waktu3 =
+          TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+      int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+      if (totalMinutes2 > totalMinutes3) {
+        startTime = AppData.informasiUser![0].endTime;
+        endTime = AppData.informasiUser![0].startTime;
+
+        startDate = DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(const Duration(days: -1)));
+
+        endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      } else {
+        startTime = AppData.informasiUser![0].endTime;
+        endTime = AppData.informasiUser![0].startTime;
+
+        endDate = DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(const Duration(days: 1)));
+
+        startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      }
+    } else {
+      startTime = AppData.informasiUser![0].startTime;
+      endTime = AppData.informasiUser![0].endTime;
+
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      print("Waktu 1 sama dengan waktu 2");
+    }
+    var connectivityResult = await Connectivity().checkConnectivity();
+    var offline =
+        (connectivityResult[0].toString() == "${ConnectivityResult.none}");
+
+    if (offline) {
+      isautoLogout.value = false;
+      Get.offAll(InitScreen());
+    } else {
+      Map<String, dynamic> body = {
+        'atten_date': DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(const Duration(days: -1))),
+        'em_id': getEmid,
+        'database': AppData.selectedDatabase,
+        'start_date': startDate,
+        'end_date': endDate,
+        'start_time': startTime,
+        'end_time': endTime,
+      };
+
+      print("param view last absen ${body}");
+
+      var connect = Api.connectionApi("post", body, "view_last_absen_user2");
+
+      connect.then((dynamic res) async {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          print("data login ${valueBody}");
+          var data = valueBody['data'];
+
+          var date = AppData.informasiUser![0].startTime.toString().split(':');
+          var date2 = AppData.informasiUser![0].startTime.toString().split(':');
+
+          //skema pertama
+          if (data.isEmpty) {
+            isautoLogout.value = false;
+            signoutTime.value = '00:00:00';
+            signinTime.value = '00:00:00';
+            AppData.statusAbsen = false;
+          } else {
+            isautoLogout.value = false;
+            AppData.statusAbsen =
+                data[0]['signout_time'] == "00:00:00" ? true : false;
+
+            signoutTime.value = data[0]['signout_time'].toString();
+            signinTime.value = data[0]['signin_time'].toString();
+            print("ini login: ${AppData.isLogin}");
+          }
+        }
+      });
+    }
+    //sekema tidak menggunakan jam reset
   }
 
   //   void checkAbsenUser(convert, getEmid) {
@@ -675,7 +1109,7 @@ class AuthController extends GetxController {
       barrierDismissible: false,
       context: Get.context!,
       barrierColor: Colors.black54, // space around dialog
-      transitionDuration: Duration(milliseconds: 200),
+      transitionDuration: const Duration(milliseconds: 200),
       transitionBuilder: (context, a1, a2, child) {
         return ScaleTransition(
           scale: CurvedAnimation(
@@ -690,19 +1124,19 @@ class AuthController extends GetxController {
               children: <Widget>[
                 Container(
                   // Bottom rectangular box
-                  margin: EdgeInsets.only(
+                  margin: const EdgeInsets.only(
                       top: 25), // to push the box half way below circle
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                       top: 30, left: 20, right: 20), // spacing inside the box
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      TextLabell(
+                      const TextLabell(
                         text: "Oops! Anda telah login di perangkat lain.",
                         weight: FontWeight.bold,
                         size: 14,
@@ -711,15 +1145,15 @@ class AuthController extends GetxController {
                       //   "Oops! Anda telah login di perangkat lain.",
                       //   style: Theme.of(context).textTheme.headline6,
                       // ),
-                      SizedBox(
+                      const SizedBox(
                         height: 8,
                       ),
-                      TextLabell(
+                      const TextLabell(
                         text:
                             "Tetap masuk akan mengakibatkan akun Anda keluar dari perangkat lain.",
                         size: 14,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 8,
                       ),
                       Row(
@@ -729,19 +1163,20 @@ class AuthController extends GetxController {
                             child: InkWell(
                               onTap: () => Get.back(),
                               child: Container(
-                                padding: EdgeInsets.only(top: 10, bottom: 10),
+                                padding:
+                                    const EdgeInsets.only(top: 10, bottom: 10),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
                                         width: 1, color: Constanst.border)),
-                                child: Center(
+                                child: const Center(
                                     child: TextLabell(
                                   text: "Batal",
                                 )),
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
                           Expanded(
@@ -751,13 +1186,14 @@ class AuthController extends GetxController {
                                 loginUser1();
                               },
                               child: Container(
-                                padding: EdgeInsets.only(top: 10, bottom: 10),
+                                padding:
+                                    const EdgeInsets.only(top: 10, bottom: 10),
                                 decoration: BoxDecoration(
                                     color: Constanst.colorPrimary,
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
                                         width: 1, color: Constanst.border)),
-                                child: Center(
+                                child: const Center(
                                     child: TextLabell(
                                   text: "Tetap Masuk",
                                   color: Colors.white,
@@ -767,7 +1203,7 @@ class AuthController extends GetxController {
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       )
                       // Text(

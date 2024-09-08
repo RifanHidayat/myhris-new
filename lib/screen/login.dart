@@ -33,6 +33,26 @@ class Login extends StatelessWidget {
                       image: AssetImage('assets/vector_login.png'),
                       fit: BoxFit.cover)),
             ),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: Obx(() {
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: controller.isConnected.value
+                        ? Constanst.color5
+                        : Constanst.color4,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    controller.isConnected.value ? "Online" : "Offline",
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                );
+              }),
+            ),
             Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: SingleChildScrollView(
@@ -285,7 +305,7 @@ class Login extends StatelessWidget {
                           alignment: Alignment.centerRight,
                           child: InkWell(
                               onTap: () {
-                                Get.to(LupaPassword());
+                                Get.to(const LupaPassword());
                               },
                               child: TextLabell(
                                 text: "Lupa password ?",
@@ -349,7 +369,7 @@ class Login extends StatelessWidget {
                         //     ),
                         //   ),
                         // ),
-                        SizedBox(
+                        const SizedBox(
                           height: 5,
                         ),
                         // Container(
@@ -361,7 +381,7 @@ class Login extends StatelessWidget {
                         //         color: Color.fromARGB(255, 18, 134, 230)),
                         //   ),
                         // ),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         TextButton(
@@ -383,7 +403,7 @@ class Login extends StatelessWidget {
                               controller.loginUser();
                             }
                           },
-                          child: Center(
+                          child: const Center(
                             child: Padding(
                               padding: EdgeInsets.only(
                                   left: 15, right: 15, top: 6, bottom: 6),
@@ -394,7 +414,7 @@ class Login extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 8,
                         ),
                         Center(
@@ -404,7 +424,7 @@ class Login extends StatelessWidget {
                                 fontSize: 10, color: Constanst.color1),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         // SizedBox(
@@ -449,10 +469,10 @@ class Login extends StatelessWidget {
         minChildSize: 1,
         builder: (BuildContext context, ScrollController scrollController) {
           return Container(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+            decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20))),
             child: Container(
@@ -465,10 +485,12 @@ class Login extends StatelessWidget {
                           text: "Pilih Perusahaan",
                           weigh: FontWeight.bold,
                           size: 14.0),
-                      InkWell(onTap: () => Get.back(), child: Icon(Icons.close))
+                      InkWell(
+                          onTap: () => Get.back(),
+                          child: const Icon(Icons.close))
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
 
@@ -482,7 +504,7 @@ class Login extends StatelessWidget {
                                   controller.databases.length, (index) {
                                 var data = controller.databases[index];
                                 return InkWell(
-                                  onTap: () async{
+                                  onTap: () async {
                                     controller.databases.forEach((element) {
                                       element.isSelected = false;
                                     });
@@ -494,10 +516,10 @@ class Login extends StatelessWidget {
                                     controller.perusahaan.text = data.name;
 
                                     AppData.selectedDatabase = data.dbname;
-                                    
-  final prefs = await SharedPreferences.getInstance();
- prefs.setString('dbname',data.dbname);
 
+                                    final prefs =
+                                        await SharedPreferences.getInstance();
+                                    prefs.setString('dbname', data.dbname);
 
                                     Get.back();
                                   },
@@ -537,8 +559,8 @@ class Login extends StatelessWidget {
                                                                       .colorPrimary)),
                                                           child: Padding(
                                                             padding:
-                                                                EdgeInsets.all(
-                                                                    3),
+                                                                const EdgeInsets
+                                                                    .all(3),
                                                             child: Container(
                                                               decoration:
                                                                   BoxDecoration(
@@ -572,8 +594,8 @@ class Login extends StatelessWidget {
                                                                       .blackSurface)),
                                                           child: Padding(
                                                             padding:
-                                                                EdgeInsets.all(
-                                                                    3),
+                                                                const EdgeInsets
+                                                                    .all(3),
                                                             child: Container(
                                                               decoration:
                                                                   BoxDecoration(
@@ -592,10 +614,10 @@ class Login extends StatelessWidget {
                                             )
                                           ],
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 12,
                                         ),
-                                        Divider()
+                                        const Divider()
                                       ],
                                     ),
                                   ),

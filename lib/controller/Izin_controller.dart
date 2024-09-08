@@ -135,7 +135,7 @@ class IzinController extends GetxController {
     var connect = Api.connectionApi("get", {}, "all_department");
     connect.then((dynamic res) {
       if (res == false) {
-        UtilsAlert.koneksiBuruk();
+        //UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
@@ -364,41 +364,44 @@ class IzinController extends GetxController {
     };
     var connect = Api.connectionApi("post", body, "employee-divisi");
     allEmployeeDelegasi.value.insert(0, "NONE");
-    connect.then((dynamic res) {
-      if (res == false) {
-        UtilsAlert.koneksiBuruk();
-      } else {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          var data = valueBody['data'];
-          for (var element in data) {
-            if (element['status'] == 'ACTIVE') {
-              var fullName = element['full_name'] ?? "";
-              String namaUser = "$fullName";
+    Future.delayed(Duration(seconds: 1), () {
+      connect.then((dynamic res) {
+        if (res == false) {
+          //UtilsAlert.koneksiBuruk();
+        } else {
+          if (res.statusCode == 200) {
+            var valueBody = jsonDecode(res.body);
+            var data = valueBody['data'];
+            for (var element in data) {
+              if (element['status'] == 'ACTIVE') {
+                var fullName = element['full_name'] ?? "";
+                String namaUser = "$fullName";
 
-              if (namaUser != full_name) {
-                allEmployeeDelegasi.value.add(namaUser);
+                if (namaUser != full_name) {
+                  allEmployeeDelegasi.value.add(namaUser);
+                }
+                allEmployee.value.add(element);
               }
-              allEmployee.value.add(element);
             }
-          }
-          if (idEditFormTidakMasukKerja == "") {
-            List data = valueBody['data'];
-            var listFirst = data
-                .where((element) => element['full_name'] != full_name)
-                .toList()
-                .first;
-            // var fullName = listFirst['full_name'] ?? "";
-            var fullName = allEmployeeDelegasi.value[0];
-            String namaUserPertama = "$fullName";
-            selectedDropdownFormTidakMasukKerjaDelegasi.value = namaUserPertama;
-          }
+            if (idEditFormTidakMasukKerja == "") {
+              List data = valueBody['data'];
+              // var listFirst = data
+              //     .where((element) => element['full_name'] != full_name)
+              //     .toList()
+              //     .first;
+              // var fullName = listFirst['full_name'] ?? "";
+              var fullName = allEmployeeDelegasi.value[0];
+              String namaUserPertama = "$fullName";
+              selectedDropdownFormTidakMasukKerjaDelegasi.value =
+                  namaUserPertama;
+            }
 
-          this.allEmployee.refresh();
-          this.allEmployeeDelegasi.refresh();
-          this.selectedDropdownFormTidakMasukKerjaDelegasi.refresh();
+            this.allEmployee.refresh();
+            this.allEmployeeDelegasi.refresh();
+            this.selectedDropdownFormTidakMasukKerjaDelegasi.refresh();
+          }
         }
-      }
+      });
     });
   }
 

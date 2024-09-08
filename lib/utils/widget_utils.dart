@@ -588,4 +588,37 @@ class UtilsAlert {
     //   },
     // );
   }
+
+  static showDialogCheckInternet() {
+    showGeneralDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      barrierColor: Colors.black54, // space around dialog
+      transitionDuration: Duration(milliseconds: 200),
+      transitionBuilder: (context, a1, a2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+              parent: a1,
+              curve: Curves.elasticOut,
+              reverseCurve: Curves.easeOutCubic),
+          child: CustomDialog(
+            // our custom dialog
+            title: "Peringatan Internet",
+            content:
+                "Periksan atau nyalakan internet anda untuk mengakses menu ini",
+            positiveBtnText: "Kembali",
+            style: 1,
+            buttonStatus: 1,
+            positiveBtnPressed: () async {
+              Get.back();
+            },
+          ),
+        );
+      },
+      pageBuilder: (BuildContext context, Animation animation,
+          Animation secondaryAnimation) {
+        return null!;
+      },
+    );
+  }
 }

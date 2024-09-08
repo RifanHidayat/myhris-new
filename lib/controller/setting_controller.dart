@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 // import 'package:background_location_tracker/background_location_tracker.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
@@ -89,51 +90,86 @@ class SettingController extends GetxController {
     super.onReady();
   }
 
-  logout() {
-    showGeneralDialog(
-      barrierDismissible: false,
-      context: Get.context!,
-      barrierColor: Colors.black54, // space around dialog
-      transitionDuration: Duration(milliseconds: 200),
-      transitionBuilder: (context, a1, a2, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(
-              parent: a1,
-              curve: Curves.elasticOut,
-              reverseCurve: Curves.easeOutCubic),
-          child: CustomDialog(
-            // our custom dialog
-            title: "Peringatan",
-            content: "Yakin Keluar Akun",
-            positiveBtnText: "Keluar",
-            negativeBtnText: "Kembali",
-            style: 1,
-            buttonStatus: 1,
-            positiveBtnPressed: () async {
-              AppData.isLogin = false;
-              UtilsAlert.loadingSimpanData(context, "Tunggu Sebentar...");
-              aksiEditLastLogin();
-              //fungsi stopTracking
-              controllerTracking.bagikanlokasi.value = "tidak aktif";
-              // await LocationDao().clear();
-              // await _getLocations();
-              // await BackgroundLocationTrackerManager.stopTracking();
-              final service = FlutterBackgroundService();
-              // FlutterBackgroundService().invoke("setAsBackground");
+  logout() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    var offline =
+        (connectivityResult[0].toString() == "${ConnectivityResult.none}");
+    if (offline) {
+      showGeneralDialog(
+        barrierDismissible: false,
+        context: Get.context!,
+        barrierColor: Colors.black54, // space around dialog
+        transitionDuration: Duration(milliseconds: 200),
+        transitionBuilder: (context, a1, a2, child) {
+          return ScaleTransition(
+            scale: CurvedAnimation(
+                parent: a1,
+                curve: Curves.elasticOut,
+                reverseCurve: Curves.easeOutCubic),
+            child: CustomDialog(
+              // our custom dialog
+              title: "Peringatan",
+              content: "Periksa atau nyalakan internet anda untuk keluar akun",
+              positiveBtnText: "Kembali",
+              style: 1,
+              buttonStatus: 1,
+              positiveBtnPressed: () async {
+                Get.back();
+              },
+            ),
+          );
+        },
+        pageBuilder: (BuildContext context, Animation animation,
+            Animation secondaryAnimation) {
+          return null!;
+        },
+      );
+    } else {
+      showGeneralDialog(
+        barrierDismissible: false,
+        context: Get.context!,
+        barrierColor: Colors.black54, // space around dialog
+        transitionDuration: Duration(milliseconds: 200),
+        transitionBuilder: (context, a1, a2, child) {
+          return ScaleTransition(
+            scale: CurvedAnimation(
+                parent: a1,
+                curve: Curves.elasticOut,
+                reverseCurve: Curves.easeOutCubic),
+            child: CustomDialog(
+              // our custom dialog
+              title: "Peringatan",
+              content: "Yakin Keluar Akun",
+              positiveBtnText: "Keluar",
+              negativeBtnText: "Kembali",
+              style: 1,
+              buttonStatus: 1,
+              positiveBtnPressed: () async {
+                AppData.isLogin = false;
+                UtilsAlert.loadingSimpanData(context, "Tunggu Sebentar...");
+                aksiEditLastLogin();
+                //fungsi stopTracking
+                controllerTracking.bagikanlokasi.value = "tidak aktif";
+                // await LocationDao().clear();
+                // await _getLocations();
+                // await BackgroundLocationTrackerManager.stopTracking();
+                final service = FlutterBackgroundService();
+                // FlutterBackgroundService().invoke("setAsBackground");
 
-              service.invoke("stopService");
-              controllerTracking.isTrackingLokasi.value = false;
-              print(
-                  "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
-            },
-          ),
-        );
-      },
-      pageBuilder: (BuildContext context, Animation animation,
-          Animation secondaryAnimation) {
-        return null!;
-      },
-    );
+                service.invoke("stopService");
+                controllerTracking.isTrackingLokasi.value = false;
+                print(
+                    "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
+              },
+            ),
+          );
+        },
+        pageBuilder: (BuildContext context, Animation animation,
+            Animation secondaryAnimation) {
+          return null!;
+        },
+      );
+    }
   }
 
   void aksiEditLastLogin() {
@@ -149,7 +185,7 @@ class SettingController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         print(valueBody['data']);
-        AppData.informasiUser = null;
+        // AppData.informasiUser = null;
         Navigator.pop(Get.context!);
         _stopForegroundTask();
         Get.offAll(Login());
@@ -161,7 +197,7 @@ class SettingController extends GetxController {
   validateAuth(code) {
     print("kode validate");
     if (code == 401) {
-      AppData.informasiUser = null;
+      // AppData.informasiUser = null;
       Navigator.pop(Get.context!);
       _stopForegroundTask();
       Get.offAll(Login());
@@ -359,7 +395,7 @@ class SettingController extends GetxController {
     var connect = Api.connectionApi("get", {}, "faq");
     connect.then((dynamic res) {
       if (res == false) {
-        UtilsAlert.koneksiBuruk();
+        //UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);

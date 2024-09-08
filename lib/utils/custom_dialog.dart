@@ -14,7 +14,7 @@ class CustomDialog extends StatelessWidget {
     @required this.title,
     @required this.content,
     @required this.positiveBtnText,
-    @required this.negativeBtnText,
+    this.negativeBtnText,
     @required this.positiveBtnPressed,
     @required this.style,
     @required this.buttonStatus,
@@ -58,31 +58,21 @@ class CustomDialog extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),
-              buttonStatus == 1
-                  ? ButtonBar(
-                      buttonMinWidth: 100,
-                      alignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        TextButton(
-                          child: Text(negativeBtnText!),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                        TextButton(
-                          child: Text(positiveBtnText!),
-                          onPressed: positiveBtnPressed,
-                        ),
-                      ],
-                    )
-                  : ButtonBar(
-                      buttonMinWidth: 100,
-                      alignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        TextButton(
-                          child: Text(negativeBtnText!),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
+              ButtonBar(
+                buttonMinWidth: 100,
+                alignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  if (negativeBtnText != null)
+                    TextButton(
+                      child: Text(negativeBtnText!),
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
+                  TextButton(
+                    child: Text(positiveBtnText!),
+                    onPressed: positiveBtnPressed,
+                  ),
+                ],
+              ),
             ],
           ),
         ),

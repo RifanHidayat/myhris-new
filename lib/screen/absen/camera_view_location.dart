@@ -12,15 +12,18 @@ import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import 'package:siscom_operasional/controller/absen_controller.dart';
+import 'package:siscom_operasional/controller/auth_controller.dart';
 
 import 'package:siscom_operasional/main.dart';
 import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
+import 'package:siscom_operasional/screen/absen/absen_masuk_keluar_offline.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'dart:math' as math;
 
 enum ScreenMode { liveFeed, gallery }
 
 final AbsenController absenControllre = Get.put(AbsenController());
+final authController = Get.put(AuthController());
 
 class CameraViewLocation extends StatefulWidget {
   CameraViewLocation(
@@ -71,7 +74,7 @@ class _CameraViewState extends State<CameraViewLocation> {
   @override
   void initState() {
     super.initState();
-    controllerAbsensi.pauseCamera.value=false;
+    controllerAbsensi.pauseCamera.value = false;
 
     _imagePicker = ImagePicker();
 
@@ -157,11 +160,9 @@ class _CameraViewState extends State<CameraViewLocation> {
       XFile picture = await _controller!.takePicture();
       var bytes = File(picture.path).readAsBytesSync();
       absenControllre.base64fotoUser.value = base64Encode(bytes);
-      controllerAbsensi.pauseCamera.value=true;
+      controllerAbsensi.pauseCamera.value = true;
 
-    _controller!.pausePreview();
-
-  
+      _controller!.pausePreview();
 
       // if (widget.status == "registration") {
       //   Get.back();
@@ -259,73 +260,97 @@ class _CameraViewState extends State<CameraViewLocation> {
                         }
                       },
                     )),
-              Obx(() => controllerAbsensi.pauseCamera.value==false?  Positioned(
-                  bottom: 20,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: InkWell(
-                        onTap: () {
-                          takePicture();
-                        },
-                        child: Container(
+                Obx(
+                  () => controllerAbsensi.pauseCamera.value == false
+                      ? Positioned(
+                          bottom: 20,
                           child: Container(
-                            width: 75,
-                            height: 75,
-                            decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(50)),
-                            child: Padding(
-                              padding: EdgeInsets.all(5),
-                              child: Container(
-                                width: 70,
-                                height: 70,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(50)),
+                            width: MediaQuery.of(context).size.width,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: InkWell(
+                                onTap: () {
+                                  takePicture();
+                                },
+                                child: Container(
+                                  child: Container(
+                                    width: 75,
+                                    height: 75,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.5),
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5),
+                                      child: Container(
+                                        width: 70,
+                                        height: 70,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
+                        )
+                      : const SizedBox(),
+                ),
+                Obx(() => controllerAbsensi.pauseCamera.value == true
+                    ? Positioned(
+                        bottom: 20,
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                  onTap: () {
+                                    controllerAbsensi.pauseCamera.value = false;
+                                    _controller!.resumePreview();
+                                  },
+                                  child: const Icon(
+                                    Iconsax.close_circle,
+                                    color: Colors.white,
+                                    size: 35,
+                                  )),
+                              InkWell(
+                                  onTap: () {
+                                    Get.back();
+                                    if (!authController.isConnected.value) {
+                                      Get.to(AbsenMasukKeluarOffline(
+                                        status: widget.status == 'masuk'
+                                            ? "Absen Masuk"
+                                            : "Absen Keluar",
+                                      ));
+                                    } else {
+                                      Navigator.push(
+                                        Get.context!,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AbsenMasukKeluar(
+                                                  status:
+                                                      widget.status == 'masuk'
+                                                          ? "Absen Masuk"
+                                                          : "Absen Keluar",
+                                                )),
+                                      );
+                                    }
+                                  },
+                                  child: const Icon(
+                                    Iconsax.tick_circle,
+                                    color: Colors.white,
+                                    size: 35,
+                                  ))
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ):SizedBox(),),
-            Obx(() =>   controllerAbsensi.pauseCamera.value==true? Positioned(
-                  bottom: 20,
-                  child: Container(
-                    padding: EdgeInsets.only(left: 20,right: 20),
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                          onTap: (){
-                          controllerAbsensi.pauseCamera.value=false;
-                           _controller!.resumePreview();
-                          },
-                          child: Icon(Iconsax.close_circle,color: Colors.white,size: 35,)),
-                        InkWell(
-                          onTap: (){
-                            Get.back();
-                                Navigator.push(
-        Get.context!,
-        MaterialPageRoute(
-            builder: (context) => AbsenMasukKeluar(
-                  status:
-                      widget.status == 'masuk' ? "Absen Masuk" : "Absen Keluar",
-                )),
-      );
-      
-
-                          },
-                          child: Icon(Iconsax.tick_circle,color: Colors.white,size: 35,))
-                        
-                      ],
-                    ),
-                  ),
-                ):SizedBox())
+                      )
+                    : const SizedBox())
               ],
             )));
   }
@@ -344,21 +369,21 @@ class _CameraViewState extends State<CameraViewLocation> {
                 ],
               ),
             )
-          : Icon(
+          : const Icon(
               Icons.image,
               size: 200,
             ),
       Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ElevatedButton(
-          child: Text('From Gallery'),
+          child: const Text('From Gallery'),
           onPressed: () => _getImage(ImageSource.gallery),
         ),
       ),
       Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ElevatedButton(
-          child: Text('Take a picture'),
+          child: const Text('Take a picture'),
           onPressed: () => _getImage(ImageSource.camera),
         ),
       ),
