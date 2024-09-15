@@ -182,7 +182,7 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   // await Geolocator.requestPermission();
-  // await initializeService();
+  await initializeService();
   runApp(const MyApp());
   //await DatabaseService.database;
 }
