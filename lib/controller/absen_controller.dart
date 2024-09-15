@@ -34,6 +34,7 @@ import 'package:siscom_operasional/model/absen_model.dart';
 import 'package:siscom_operasional/model/shift_model.dart';
 import 'package:siscom_operasional/screen/absen/berhasil_absen.dart';
 import 'package:siscom_operasional/screen/absen/berhasil_registrasi.dart';
+import 'package:siscom_operasional/screen/absen/camera_view_location.dart';
 import 'package:siscom_operasional/screen/absen/detail_absen.dart';
 import 'package:siscom_operasional/screen/absen/face_id_registration.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_absen.dart';
@@ -183,6 +184,8 @@ class AbsenController extends GetxController {
   var failured = "".obs;
   RxString absenSuccess = "0".obs;
 
+  var coordinate = false.obs;
+
   @override
   void onReady() async {
     getTimeNow();
@@ -303,7 +306,7 @@ class AbsenController extends GetxController {
     });
   }
 
-  void getPlaceCoordinate() {
+  Future<void> getPlaceCoordinate() async {
     // placeCoordinate.clear();
 
     placeCoordinateDropdown.value.clear();
@@ -312,9 +315,12 @@ class AbsenController extends GetxController {
     connect.then((dynamic res) {
       if (res == false) {
         print("errror");
+        coordinate.value = true;
+        getPlaceCoordinateOffline();
         //UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
+          coordinate.value = false;
           print("Place cordinate 200" + res.body.toString());
           var valueBody = jsonDecode(res.body);
 
@@ -377,89 +383,14 @@ class AbsenController extends GetxController {
           print(res.body.toString());
         }
       }
+    }).catchError((error) {
+      coordinate.value = true;
+      getPlaceCoordinateOffline();
     });
   }
 
   void getPlaceCoordinateOffline() async {
-    // placeCoordinate.clear();
-    // var body = '''{
-    //   "status": true,
-    //   "message": "Kombinasi email & password Anda Salah",
-    //   "data": [
-    //     {
-    //       "id": 27,
-    //       "place": "KMI JAKARTA - MARKETING OFFICE",
-    //       "place_longlat": "-6.208271171913666, 106.82118168418194",
-    //       "place_radius": 700,
-    //       "branch_id": 1,
-    //       "trx": "",
-    //       "isFilterView": 1,
-    //       "isActive": 1,
-    //       "created_by": "WAN",
-    //       "created_on": "2023-12-05T17:02:49.000Z",
-    //       "modified_by": "S12",
-    //       "modified_on": "2024-07-26T08:57:09.000Z"
-    //     },
-    //     {
-    //       "id": 28,
-    //       "place": "KMI CIKARANG - FACTORY",
-    //       "place_longlat": "-6.283302948734317, 107.1566038899085",
-    //       "place_radius": 700,
-    //       "branch_id": 1,
-    //       "trx": "",
-    //       "isFilterView": 1,
-    //       "isActive": 1,
-    //       "created_by": "S12",
-    //       "created_on": "2023-12-11T14:50:18.000Z",
-    //       "modified_by": "S12",
-    //       "modified_on": "2023-12-19T10:35:00.000Z"
-    //     },
-    //     {
-    //       "id": 32,
-    //       "place": "LOKASI NON-RADIUS",
-    //       "place_longlat": "",
-    //       "place_radius": 0,
-    //       "branch_id": 4,
-    //       "trx": "",
-    //       "isFilterView": 1,
-    //       "isActive": 1,
-    //       "created_by": "S12",
-    //       "created_on": "2024-01-24T17:34:41.000Z",
-    //       "modified_by": null,
-    //       "modified_on": null
-    //     },
-    //     {
-    //       "id": 33,
-    //       "place": "SISCOM",
-    //       "place_longlat": "-6.134603832875501, 106.73564035889532",
-    //       "place_radius": 500,
-    //       "branch_id": 4,
-    //       "trx": "",
-    //       "isFilterView": 1,
-    //       "isActive": 1,
-    //       "created_by": "S12",
-    //       "created_on": "2024-07-25T10:36:52.000Z",
-    //       "modified_by": "S12",
-    //       "modified_on": "2024-07-25T15:08:43.000Z"
-    //     },
-    //     {
-    //       "id": 35,
-    //       "place": "WFH",
-    //       "place_longlat": "",
-    //       "place_radius": 0,
-    //       "branch_id": 0,
-    //       "trx": "",
-    //       "isFilterView": 1,
-    //       "isActive": 1,
-    //       "created_by": "S12",
-    //       "created_on": "2024-09-02T10:09:21.000Z",
-    //       "modified_by": "S12",
-    //       "modified_on": "2024-09-02T10:09:27.000Z"
-    //     }
-    //   ]
-    // }''';
     var body = await SqliteDatabaseHelper().getTipeLokasi();
-    print("ini body: $body");
 
     placeCoordinateDropdown.value.clear();
     if (typeAbsen.value == 1) {
@@ -486,9 +417,7 @@ class AbsenController extends GetxController {
     }
     List filter = [];
     for (var element in body) {
-      if (element['isFilterView'] == 1) {
-        filter.add(element);
-      }
+      filter.add(element);
     }
 
     // placeCoordinate.clear();
@@ -497,58 +426,29 @@ class AbsenController extends GetxController {
     placeCoordinate.refresh();
   }
 
-  void getPlaceCoordinate1() {
-    print("place coordinates refresh");
-    UtilsAlert.showLoadingIndicator(Get.context!);
-    placeCoordinate.clear();
-    placeCoordinateDropdown.value.clear();
+  Future<void> offlineToOnline() async {
+    if (authController.isConnected.value) {
+      coordinate.value = false;
+    }
+  }
 
+  Future<void> getPlaceCoordinate1() async {
     var connect = Api.connectionApi("get", {}, "places_coordinate",
         params: "&id=${AppData.informasiUser![0].em_id}");
 
     connect.then((dynamic res) {
       if (res == false) {
         print("error");
+        coordinate.value = true;
         // UtilsAlert.koneksiBuruk();
-        Get.back();
       } else {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-
-          selectedType.value = valueBody['data'][0]['place'];
-          for (var element in valueBody['data']) {
-            placeCoordinateDropdown.value.add(element['place']);
-          }
-
-          List filter = [];
-          for (var element in valueBody['data']) {
-            if (element['isFilterView'] == 1) {
-              filter.add(element);
-            }
-          }
-
-          // Menyimpan data tipe lokasi ke SQLite
-          List<Map<String, dynamic>> tipeLokasiList = [];
-          for (var element in valueBody['data']) {
-            tipeLokasiList.add({
-              'id': element['id'],
-              'place': element['place'],
-              'place_longlat': element['place_longlat'],
-              'place_radius': element['place_radius'],
-            });
-          }
-
-          SqliteDatabaseHelper().insertTipeLokasi(tipeLokasiList);
-
-          placeCoordinate.value = filter;
-          placeCoordinate.refresh();
-          Get.back();
-        } else {
-          print("Place coordinate != 200: " + res.body.toString());
-          Get.back();
-        }
+        print("sukses");
+        coordinate.value = false;
       }
+    }).catchError((error) {
+      coordinate.value = true;
     });
+    ;
   }
 
   void getPlaceCoordinateCheckin() {
@@ -1504,11 +1404,21 @@ class AbsenController extends GetxController {
                 ],
               ));
             } else {
-              UtilsAlert.showToast("terjadi kesalhan");
+              UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+                  positiveBtnPressed: () {
+                kirimDataAbsensiOffline(typewfh: typewfh);
+              });
               isLoaingAbsensi.value = false;
               Get.back();
               //error
             }
+          }).catchError((error) {
+            isLoaingAbsensi.value = false;
+            Get.back();
+            UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+                positiveBtnPressed: () {
+              kirimDataAbsensiOffline(typewfh: typewfh);
+            });
           });
         }
       } else {
@@ -1580,11 +1490,20 @@ class AbsenController extends GetxController {
               ],
             ));
           } else {
-            UtilsAlert.showToast("terjadi kesalhan");
-
             isLoaingAbsensi.value = false;
             Get.back();
+            UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+                positiveBtnPressed: () {
+              kirimDataAbsensiOffline(typewfh: typewfh);
+            });
           }
+        }).catchError((error) {
+          isLoaingAbsensi.value = false;
+          Get.back();
+          UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+              positiveBtnPressed: () {
+            kirimDataAbsensiOffline(typewfh: typewfh);
+          });
         });
       }
     }
@@ -1598,62 +1517,118 @@ class AbsenController extends GetxController {
     //     absenStatus.value = false;
     // AppData.statusAbsen = false;
     // AppData.dateLastAbsen = tanggalUserFoto.value;
-    if (typeAbsen.value == 1) {
-      absenStatus.value = true;
-      AppData.statusAbsen = true;
-      AppData.dateLastAbsen = tanggalUserFoto.value;
+    var statusPosisi = await validasiRadius();
+    if (statusPosisi == true) {
+      if (typeAbsen.value == 1) {
+        absenStatus.value = true;
+        AppData.statusAbsen = true;
+        AppData.dateLastAbsen = tanggalUserFoto.value;
 
-      Map<String, dynamic> absensi = {
-        'em_id': AppData.informasiUser![0].em_id,
-        'atten_date': tanggalUserFoto.value,
-        'signing_time': timeString.value,
-        'place_in': selectedType.value,
-        'signin_longlat': latLangAbsen,
-        'signin_note': deskripsiAbsen.value.text,
-        'signin_addr': alamatUserFoto.value,
-        'signout_time': "",
-        'place_out': "",
-        'signout_longlat': "",
-        'signout_note': "",
-        'signout_addr': "",
-        'signout_pict': "",
-        'signin_pict': base64fotoUser.value,
-      };
+        Map<String, dynamic> absensi = {
+          'em_id': AppData.informasiUser![0].em_id,
+          'atten_date': tanggalUserFoto.value,
+          'signing_time': timeString.value,
+          'place_in': selectedType.value,
+          'signin_longlat': latLangAbsen,
+          'signin_note': deskripsiAbsen.value.text,
+          'signin_addr': alamatUserFoto.value,
+          'signout_time': "",
+          'place_out': "",
+          'signout_longlat': "",
+          'signout_note': "",
+          'signout_addr': "",
+          'signout_pict': "",
+          'signin_pict': base64fotoUser.value,
+        };
 
-      SqliteDatabaseHelper().insertAbsensi(absensi, () {
-        Get.to(BerhasilAbsensi(
-          dataBerhasil: [
-            titleAbsen.value,
-            timeString.value,
-            typeAbsen.value,
-            intervalControl.value
-          ],
-        ));
-      }, (error) {
-        Get.snackbar("Error", error);
-      });
-    } else {
-      absenStatus.value = false;
-      AppData.statusAbsen = false;
-      AppData.dateLastAbsen = tanggalUserFoto.value;
+        AppData.signingTime = timeString.value;
+        AppData.statusAbsenOffline = true;
+        AppData.signoutTime = "";
+        AppData.textPendingMasuk = true;
 
-      SqliteDatabaseHelper().updateAbsensi({
-        'signout_time': timeString.value,
-        'place_out': selectedType.value,
-        'signout_longlat': latLangAbsen,
-        'signout_pict': base64fotoUser.value,
-        'signout_note': deskripsiAbsen.value.text,
-        'signout_addr': alamatUserFoto.value,
-      }).then((rowsUpdated) {
-        Get.to(BerhasilAbsensi(
-          dataBerhasil: [
-            titleAbsen.value,
-            timeString.value,
-            typeAbsen.value,
-            intervalControl.value
-          ],
-        ));
-      });
+        SqliteDatabaseHelper().deleteAbsensi().then((_) {
+          SqliteDatabaseHelper().insertAbsensi(absensi, () {
+            authController.kirims.value = false;
+            Get.to(BerhasilAbsensi(
+              dataBerhasil: [
+                titleAbsen.value,
+                timeString.value,
+                typeAbsen.value,
+                intervalControl.value,
+              ],
+            ));
+          }, (error) {
+            // Tampilkan error jika insertAbsensi gagal
+            Get.snackbar("Error", error);
+          });
+        }).catchError((error) {
+          // Jika terjadi kesalahan pada penghapusan absensi
+          Get.snackbar("Error", "Gagal menghapus absensi: $error");
+        });
+      } else {
+        absenStatus.value = false;
+        AppData.statusAbsen = false;
+        AppData.dateLastAbsen = tanggalUserFoto.value;
+
+        AppData.signoutTime = timeString.value;
+        AppData.statusAbsenOffline = true;
+        AppData.textPendingKeluar = true;
+
+        var absenMasukKeluarOffline = await SqliteDatabaseHelper().getAbsensi();
+
+        if (absenMasukKeluarOffline != null) {
+          SqliteDatabaseHelper().updateAbsensi({
+            'signout_time': timeString.value,
+            'place_out': selectedType.value,
+            'signout_longlat': latLangAbsen,
+            'signout_pict': base64fotoUser.value,
+            'signout_note': deskripsiAbsen.value.text,
+            'signout_addr': alamatUserFoto.value,
+          }).then((rowsUpdated) {
+            authController.kirims.value == false;
+            Get.to(BerhasilAbsensi(
+              dataBerhasil: [
+                titleAbsen.value,
+                timeString.value,
+                typeAbsen.value,
+                intervalControl.value
+              ],
+            ));
+          });
+        } else {
+          Map<String, dynamic> absensi = {
+            'em_id': AppData.informasiUser![0].em_id,
+            'atten_date': tanggalUserFoto.value,
+            'signing_time': "",
+            'place_in': "",
+            'signin_longlat': "",
+            'signin_note': "",
+            'signin_addr': "",
+            'signout_time': timeString.value,
+            'place_out': selectedType.value,
+            'signout_longlat': latLangAbsen,
+            'signout_pict': base64fotoUser.value,
+            'signout_note': deskripsiAbsen.value.text,
+            'signout_addr': alamatUserFoto.value,
+            'signin_pict': "",
+          };
+
+          SqliteDatabaseHelper().insertAbsensi(absensi, () {
+            authController.kirims.value = false;
+            Get.to(BerhasilAbsensi(
+              dataBerhasil: [
+                titleAbsen.value,
+                timeString.value,
+                typeAbsen.value,
+                intervalControl.value,
+              ],
+            ));
+          }, (error) {
+            // Tampilkan error jika insertAbsensi gagal
+            Get.snackbar("Error", error);
+          });
+        }
+      }
     }
   }
 
@@ -1718,11 +1693,13 @@ class AbsenController extends GetxController {
                 title: "Info",
                 content:
                     "Jarak radius untuk melakukan absen adalah $defaultRadius m",
-                positiveBtnText: "",
-                negativeBtnText: "OK",
+                positiveBtnText: "Ok",
+                // negativeBtnText: "OK",
                 style: 2,
                 buttonStatus: 2,
-                positiveBtnPressed: () {},
+                positiveBtnPressed: () {
+                  Get.back();
+                },
               ),
             );
           },

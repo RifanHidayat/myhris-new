@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:new_version_plus/new_version_plus.dart';
+import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/setting_controller.dart';
 import 'package:siscom_operasional/screen/absen/camera_view_location.dart';
@@ -29,6 +30,7 @@ class Setting extends StatefulWidget {
 class _SettingState extends State<Setting> {
   final controller = Get.put(SettingController());
   final controllerDashboard = Get.put(DashboardController());
+  final authController = Get.put(AuthController());
   var faceRecog = false;
   var namaVersi = "...".obs;
 
@@ -148,8 +150,29 @@ class _SettingState extends State<Setting> {
               const SizedBox(height: 50)
             ],
           )
-        : Column(
+        : Stack(
             children: [
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Obx(() {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: authController.isConnected.value
+                              ? Constanst.color5
+                              : Constanst.color4,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ),
               InkWell(
                 customBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12))),

@@ -354,33 +354,38 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                   await controllerBerhasil.checkUserKontrol();
               print("datta absen " + checkUserKontrol);
 
-              if (widget.dataBerhasil![2] == 1) {
-                if (checkUserKontrol.toString() != '0') {
-                  _startForegroundTask();
-                  AbsenController().removeAll();
-                  Get.offAll(InitScreen());
-                  if (absenControllre.isTracking.value == 1) {
-                    absenControllre.activeTracking.value = 1;
+              try {
+                if (widget.dataBerhasil![2] == 1) {
+                  if (checkUserKontrol.toString() != '0') {
+                    _startForegroundTask();
+                    AbsenController().removeAll();
+                    Get.offAll(InitScreen());
+                    if (absenControllre.isTracking.value == 1) {
+                      absenControllre.activeTracking.value = 1;
+                    } else {
+                      absenControllre.activeTracking.value = 0;
+                    }
                   } else {
                     absenControllre.activeTracking.value = 0;
+
+                    AbsenController().removeAll();
+                    Get.offAll(InitScreen());
                   }
                 } else {
-                  absenControllre.activeTracking.value = 0;
-
-                  AbsenController().removeAll();
-                  Get.offAll(InitScreen());
+                  if (checkUserKontrol != '0') {
+                    _stopForegroundTask();
+                    Location location = new Location();
+                    location.enableBackgroundMode(enable: false);
+                    AbsenController().removeAll();
+                    Get.offAll(InitScreen());
+                  } else {
+                    AbsenController().removeAll();
+                    Get.offAll(InitScreen());
+                  }
                 }
-              } else {
-                if (checkUserKontrol != '0') {
-                  _stopForegroundTask();
-                  Location location = new Location();
-                  location.enableBackgroundMode(enable: false);
-                  AbsenController().removeAll();
-                  Get.offAll(InitScreen());
-                } else {
-                  AbsenController().removeAll();
-                  Get.offAll(InitScreen());
-                }
+              } catch (e) {
+                AbsenController().removeAll();
+                Get.offAll(InitScreen());
               }
             } else {
               AbsenController().removeAll();

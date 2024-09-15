@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:siscom_operasional/controller/absen_controller.dart';
+import 'package:siscom_operasional/screen/absen/camera_view.dart';
+import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 
@@ -56,10 +59,7 @@ class BerhasilController extends GetxController {
   }
 
   Future<String> checkUserKontrol() {
-  
-  
-  
-     print("check user kontrol");
+    print("check user kontrol");
     Map<String, dynamic> body = {
       'val': 'em_id',
       'cari': AppData.informasiUser![0].em_id,
@@ -69,9 +69,10 @@ class BerhasilController extends GetxController {
       var valueBody = jsonDecode(res.body);
       var emKontrol = "${valueBody['data'][0]['em_control']}";
       return "$emKontrol";
+    }).catchError((error) {
+      AbsenController().removeAll();
+      Get.offAll(InitScreen());
     });
     return kontrolString;
   }
-
-
 }

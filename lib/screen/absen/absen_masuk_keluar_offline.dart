@@ -10,9 +10,11 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
+import 'package:siscom_operasional/screen/absen/camera_view_location.dart';
 import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
@@ -104,10 +106,11 @@ class _AbsenMasukKeluarOfflineState extends State<AbsenMasukKeluarOffline> {
         elevation: 2,
         leading: IconButton(
           onPressed: () {
-            // Get.back();
-            controller.removeAll();
-            controllerDashboard.onInit();
-            Get.offAll(InitScreen());
+            Get.back();
+            Get.back();
+            // controller.removeAll();
+            // controllerDashboard.onInit();
+            // Get.offAll(InitScreen());
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -115,6 +118,23 @@ class _AbsenMasukKeluarOfflineState extends State<AbsenMasukKeluarOffline> {
           ),
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: Obx(() {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: authController.isConnected.value
+                        ? Constanst.color5
+                        : Constanst.color4,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                );
+              }),
+            ),
+          ),
           Container(
             decoration: BoxDecoration(
                 color: Constanst.grey, borderRadius: BorderRadius.circular(25)),
@@ -750,7 +770,7 @@ class _AbsenMasukKeluarOfflineState extends State<AbsenMasukKeluarOffline> {
                                                 .widgetButtomSheetWfh()
                                             : controllerDashboard
                                                 .widgetButtomSheetAktifCamera(
-                                                    type: 'checkTracking');
+                                                    type: 'offlineAbsensi');
                                       },
                                       child: const Padding(
                                         padding: EdgeInsets.only(
@@ -1059,10 +1079,9 @@ class _AbsenMasukKeluarOfflineState extends State<AbsenMasukKeluarOffline> {
                                               side: const BorderSide(
                                                   color: Colors.white)))),
                                   onPressed: () {
-                                    // controllerDashboard
-                                    //     .widgetButtomSheetAktifCamera(
-                                    //         type: 'checkTracking');
-                                    print("absen");
+                                    controllerDashboard
+                                        .widgetButtomSheetAktifCamera(
+                                            type: 'offlineAbsensi');
                                   },
                                   child: const Padding(
                                     padding: EdgeInsets.only(

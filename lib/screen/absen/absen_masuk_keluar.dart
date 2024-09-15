@@ -10,6 +10,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
+import 'package:siscom_operasional/screen/absen/camera_view_location.dart';
 import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
@@ -17,6 +18,7 @@ import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AbsenMasukKeluar extends StatefulWidget {
@@ -50,7 +52,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
 
   void initState() {
     Api().checkLogin();
-    controller.getPlaceCoordinate();
+    // controller.getPlaceCoordinate();
     // TODO: implement initState
     super.initState();
     controller.deskripsiAbsen.clear();
@@ -64,6 +66,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
     controller.absenSelfie();
 
     controller.getPlaceCoordinate();
+    controller.getPlaceCoordinate1();
 
     _fabHeight = _initFabHeight;
   }
@@ -103,9 +106,11 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
         elevation: 2,
         leading: IconButton(
           onPressed: () {
-            controller.removeAll();
-            controllerDashboard.onInit();
-            Get.offAll(InitScreen());
+            Get.back();
+            Get.back();
+            // controller.removeAll();
+            // controllerDashboard.onInit();
+            // Get.offAll(InitScreen());
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -113,6 +118,23 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
           ),
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: Obx(() {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: authController.isConnected.value
+                        ? Constanst.color5
+                        : Constanst.color4,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                );
+              }),
+            ),
+          ),
           Container(
             decoration: BoxDecoration(
                 color: Constanst.grey, borderRadius: BorderRadius.circular(25)),
@@ -135,6 +157,9 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                   //         //17 is new zoom level
                   //         ));
                   controller.refreshPage();
+                  if (!authController.isConnected.value) {
+                    controller.getPlaceCoordinate();
+                  }
                 },
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -717,23 +742,60 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                           8.0),
                                                   side: BorderSide(color: Colors.white)))),
                                       onPressed: () async {
-                                        // Mendapatkan informasi paket aplikasi pihak ketiga
-                                        final packageInfo =
-                                            await PackageInfo.fromPlatform();
-                                        //for (var package in packageInfo) {
-                                        print('tes');
+                                        await controller.offlineToOnline();
+                                        await controller.getPlaceCoordinate1();
+                                        if (controller.coordinate.value ==
+                                            true) {
+                                          UtilsAlert
+                                              .showCheckOfflineAbsensiKesalahanServer(
+                                                  positiveBtnPressed: () {
+                                            Get.back();
+                                            controller.selectedType.value
+                                                            .toString() ==
+                                                        "WFH" &&
+                                                    widget.status ==
+                                                        "Absen Masuk"
+                                                ? controllerDashboard
+                                                    .widgetButtomSheetWfh()
+                                                : controllerDashboard
+                                                    .widgetButtomSheetAktifCamera(
+                                                        type: 'checkTracking');
+                                          });
+                                        } else if (!authController
+                                            .isConnected.value) {
+                                          UtilsAlert.showCheckOfflineAbsensi(
+                                              positiveBtnPressed: () {
+                                            Get.back();
+                                            controller.selectedType.value
+                                                            .toString() ==
+                                                        "WFH" &&
+                                                    widget.status ==
+                                                        "Absen Masuk"
+                                                ? controllerDashboard
+                                                    .widgetButtomSheetWfh()
+                                                : controllerDashboard
+                                                    .widgetButtomSheetAktifCamera(
+                                                        type: 'checkTracking');
+                                          });
+                                        } else {
+                                          final packageInfo =
+                                              await PackageInfo.fromPlatform();
+                                          //for (var package in packageInfo) {
+                                          print('tes');
 
-                                        print(controller.selectedType.value);
-                                        // controller.selectedType.value = "WFH";
-                                        controller.selectedType.value
-                                                        .toString() ==
-                                                    "WFH" &&
-                                                widget.status == "Absen Masuk"
-                                            ? controllerDashboard
-                                                .widgetButtomSheetWfh()
-                                            : controllerDashboard
-                                                .widgetButtomSheetAktifCamera(
-                                                    type: 'checkTracking');
+                                          print(controller.selectedType.value);
+                                          // controller.selectedType.value = "WFH";
+                                          controller.selectedType.value
+                                                          .toString() ==
+                                                      "WFH" &&
+                                                  widget.status == "Absen Masuk"
+                                              ? controllerDashboard
+                                                  .widgetButtomSheetWfh()
+                                              : controllerDashboard
+                                                  .widgetButtomSheetAktifCamera(
+                                                      type: 'checkTracking');
+                                        }
+                                        // Mendapatkan informasi paket aplikasi pihak ketiga
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.only(
