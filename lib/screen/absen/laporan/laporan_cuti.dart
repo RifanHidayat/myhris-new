@@ -207,7 +207,7 @@ class _LaporanCutiState extends State<LaporanCuti> {
                     // controller.bulanDanTahunNow.value == ""
                     //     ? SizedBox()
                     //     : pencarianData(),
-                    filterData(),
+                    // filterData(),
                     const SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.only(left: 16, right: 16),

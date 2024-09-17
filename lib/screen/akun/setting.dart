@@ -2,9 +2,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
+import 'package:siscom_operasional/controller/aktifitas_controller.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/setting_controller.dart';
@@ -17,6 +20,10 @@ import 'package:siscom_operasional/screen/akun/personal_info.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:siscom_operasional/utils/widget_utils.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
+import 'package:siscom_operasional/utils/constans.dart';
+import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -78,9 +85,19 @@ class _SettingState extends State<Setting> {
                     width: MediaQuery.of(context).size.width,
                     child: Obx(() => Padding(
                           padding: const EdgeInsets.only(
-                              left: 16, right: 16, top: 16, bottom: 16),
+                            left: 16,
+                            right: 16,
+                            top: 16,
+                          ),
                           child: firstLine(),
                         )),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  infoPeriode(),
+                  SizedBox(
+                    height: 16,
                   ),
                   lineInfoPengguna(),
                   Container(
@@ -155,6 +172,7 @@ class _SettingState extends State<Setting> {
                     borderRadius: BorderRadius.all(Radius.circular(12))),
                 onTap: () => Get.to(PersonalInfo()),
                 child: Container(
+                    width: 380,
                     decoration: BoxDecoration(
                         border: Border.all(
                           color: Constanst.fgBorder,
@@ -560,6 +578,116 @@ class _SettingState extends State<Setting> {
                 ),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget infoPeriode() {
+    return Container(
+      width: 380,
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Constanst.fgBorder,
+          width: 1.0,
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.calendar_today, color: Colors.blue),
+              SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Periode",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                  Obx(() => Text(
+                        "${controller.beginPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      )),
+                  Obx(() => Text(
+                        "Dari ${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      )),
+                ],
+              ),
+            ],
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Colors.grey,
+              size: 16,
+            ),
+            onPressed: () {
+              DatePicker.showPicker(
+                Get.context!,
+                pickerModel: CustomMonthPicker(
+                  minTime: DateTime(2020, 1, 1),
+                  maxTime: DateTime(2050, 1, 1),
+                  currentTime: DateTime.now(),
+                ),
+                onConfirm: (time) {
+                  if (time != null) {
+                    print("$time");
+                    var filter = DateFormat('yyyy-MM').format(time);
+                    DateTime previousMonthDate =
+                        DateTime(time.year, time.month - 1, time.day);
+
+                    var array = filter.split('-');
+                    var bulan = array[1];
+                    var tahun = array[0];
+                    controller.stringBulan.value =
+                        DateFormat('MMMM').format(time);
+                    controller.endPayroll.value =
+                        DateFormat('MMMM').format(time);
+
+                    controller.bulanEnd.value = DateFormat('MM').format(time);
+
+                    if (AppData.informasiUser![0].beginPayroll == 1) {
+                      controller.beginPayroll.value =
+                          DateFormat('MMMM').format(time);
+                      controller.bulanStart.value =
+                          DateFormat('MM').format(time);
+                    } else {
+                      controller.beginPayroll.value =
+                          DateFormat('MMMM').format(previousMonthDate);
+                      controller.bulanStart.value =
+                          DateFormat('MM').format(previousMonthDate);
+                    }
+                    AppData.startPeriode = "${AppData.informasiUser![0].beginPayroll.toString().padLeft(2,'0')}-$bulan-$tahun";
+                    AppData.endPeriode = "${AppData.informasiUser![0].endPayroll.toString().padLeft(2,'0')}-$bulan-$tahun";
+                    controller.bulanSelectedSearchHistory.value = bulan;
+                    controller.tahunSelectedSearchHistory.value = tahun;
+                    controller.bulanDanTahunNow.value = "$bulan-$tahun";
+                    controller.bulanSelectedSearchHistory.refresh();
+                    controller.tahunSelectedSearchHistory.refresh();
+                    controller.bulanDanTahunNow.refresh();
+                    controller.stringBulan.refresh();
+                  }
+                },
+              );
+            },
           ),
         ],
       ),

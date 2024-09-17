@@ -319,10 +319,10 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         //   ],
                                         // ),
                                         // const SizedBox(height: 16),
-                                        controller.bulanDanTahunNow.value == ""
-                                            ? const SizedBox()
-                                            : pickDate(),
-                                        const SizedBox(height: 16),
+                                        // controller.bulanDanTahunNow.value == ""
+                                        //     ? const SizedBox()
+                                        //     : pickDate(),
+                                        // const SizedBox(height: 16),
                                         // Row(
                                         //   mainAxisAlignment:
                                         //       MainAxisAlignment.start,
@@ -368,11 +368,11 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                     child: Column(
                                       children: [
                                         const SizedBox(height: 12),
-                                        controller.bulanDanTahunNowPengajuan
-                                                    .value ==
-                                                ""
-                                            ? const SizedBox()
-                                            : pickDateBulanDanTahun(),
+                                        // controller.bulanDanTahunNowPengajuan
+                                        //             .value ==
+                                        //         ""
+                                        //     ? const SizedBox()
+                                        //     : pickDateBulanDanTahun(),
                                         const SizedBox(height: 16),
                                         Flexible(
                                             child: Obx(
@@ -473,284 +473,284 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
     );
   }
 
-  Widget pickDate() {
-    String getDateRange(String dateString) {
-      // Parsing string menjadi objek DateTime
-      DateTime parsedDate = DateFormat("MM-yyyy").parseStrict(dateString);
+  // Widget pickDate() {
+  //   String getDateRange(String dateString) {
+  //     // Parsing string menjadi objek DateTime
+  //     DateTime parsedDate = DateFormat("MM-yyyy").parseStrict(dateString);
 
-      // Mendapatkan rentang tanggal dari 1 hingga hari terakhir bulan
-      DateTime firstDayOfMonth = DateTime(parsedDate.year, parsedDate.month, 1);
-      DateTime lastDayOfMonth =
-          DateTime(parsedDate.year, parsedDate.month + 1, 0);
+  //     // Mendapatkan rentang tanggal dari 1 hingga hari terakhir bulan
+  //     DateTime firstDayOfMonth = DateTime(parsedDate.year, parsedDate.month, 1);
+  //     DateTime lastDayOfMonth =
+  //         DateTime(parsedDate.year, parsedDate.month + 1, 0);
 
-      // Memformat rentang tanggal
-      String formattedDateRange =
-          '${DateFormat('d MMMM', 'id').format(firstDayOfMonth)} sd ${DateFormat('d MMMM yyyy', 'id').format(lastDayOfMonth)}';
+  //     // Memformat rentang tanggal
+  //     String formattedDateRange =
+  //         '${DateFormat('d MMMM', 'id').format(firstDayOfMonth)} sd ${DateFormat('d MMMM yyyy', 'id').format(lastDayOfMonth)}';
 
-      return formattedDateRange;
-    }
+  //     return formattedDateRange;
+  //   }
 
-    String lastDayOfMonth = getDateRange(controller.bulanDanTahunNow.value);
+  //   String lastDayOfMonth = getDateRange(controller.bulanDanTahunNow.value);
 
-    return InkWell(
-      customBorder: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(100))),
-      onTap: () async {
-        print("kesini");
-        DatePicker.showPicker(
-          context,
-          pickerModel: CustomMonthPicker(
-            minTime: DateTime(2020, 1, 1),
-            maxTime: DateTime(2050, 1, 1),
-            currentTime: DateTime(
-                int.parse(controller.tahunSelectedSearchHistory.value),
-                int.parse(controller.bulanSelectedSearchHistory.value),
-                1),
-          ),
-          onConfirm: (time) {
-            if (time != null) {
-              print("$time");
-              var filter = DateFormat('yyyy-MM').format(time);
-              var array = filter.split('-');
-              var bulan = array[1];
-              var tahun = array[0];
-              controller.bulanSelectedSearchHistory.value = bulan;
-              controller.tahunSelectedSearchHistory.value = tahun;
-              controller.bulanDanTahunNow.value = "$bulan-$tahun";
-              this.controller.bulanSelectedSearchHistory.refresh();
-              this.controller.tahunSelectedSearchHistory.refresh();
-              this.controller.bulanDanTahunNow.refresh();
-              controller.loadHistoryAbsenUser();
-            }
-          },
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(100),
-            ),
-            border: Border.all(color: Constanst.fgBorder)),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    Constanst.convertDateBulanDanTahun(
-                        controller.bulanDanTahunNow.value),
-                    style: GoogleFonts.inter(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: Constanst.fgSecondary),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Icon(
-                  Iconsax.arrow_down_1,
-                  size: 18,
-                  color: Constanst.fgPrimary,
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-      // child: Container(
-      //   decoration: BoxDecoration(
-      //       borderRadius: const BorderRadius.all(Radius.circular(12)),
-      //       border: Border.all(color: const Color(0xffD5DBE5))),
-      //   child: Padding(
-      //     padding: const EdgeInsets.fromLTRB(
-      //       12.0,
-      //       8.0,
-      //       12.0,
-      //       12.0,
-      //     ),
-      //     child: Row(
-      //       crossAxisAlignment: CrossAxisAlignment.center,
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: [
-      //         Column(
-      //           crossAxisAlignment: CrossAxisAlignment.start,
-      //           children: [
-      //             Text(
-      //               "Periode",
-      //               style: GoogleFonts.inter(
-      //                   fontSize: 16,
-      //                   fontWeight: FontWeight.w500,
-      //                   color: Constanst.fgPrimary),
-      //             ),
-      //             const SizedBox(height: 4),
-      //             Text(
-      //               lastDayOfMonth,
-      //               style: GoogleFonts.inter(
-      //                   fontSize: 14,
-      //                   fontWeight: FontWeight.w400,
-      //                   color: Constanst.fgSecondary),
-      //             ),
-      //           ],
-      //         ),
-      //         Container(
-      //           alignment: Alignment.topRight,
-      //           child: Padding(
-      //             padding: const EdgeInsets.only(right: 10),
-      //             child: Icon(
-      //               Iconsax.arrow_down_1,
-      //               size: 18,
-      //               color: Constanst.fgSecondary,
-      //             ),
-      //           ),
-      //         )
-      //       ],
-      //     ),
-      //   ),
-      // ),
-    );
-  }
+  //   return InkWell(
+  //     customBorder: const RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.all(Radius.circular(100))),
+  //     onTap: () async {
+  //       print("kesini");
+  //       DatePicker.showPicker(
+  //         context,
+  //         pickerModel: CustomMonthPicker(
+  //           minTime: DateTime(2020, 1, 1),
+  //           maxTime: DateTime(2050, 1, 1),
+  //           currentTime: DateTime(
+  //               int.parse(controller.tahunSelectedSearchHistory.value),
+  //               int.parse(controller.bulanSelectedSearchHistory.value),
+  //               1),
+  //         ),
+  //         onConfirm: (time) {
+  //           if (time != null) {
+  //             print("$time");
+  //             var filter = DateFormat('yyyy-MM').format(time);
+  //             var array = filter.split('-');
+  //             var bulan = array[1];
+  //             var tahun = array[0];
+  //             controller.bulanSelectedSearchHistory.value = bulan;
+  //             controller.tahunSelectedSearchHistory.value = tahun;
+  //             controller.bulanDanTahunNow.value = "$bulan-$tahun";
+  //             this.controller.bulanSelectedSearchHistory.refresh();
+  //             this.controller.tahunSelectedSearchHistory.refresh();
+  //             this.controller.bulanDanTahunNow.refresh();
+  //             controller.loadHistoryAbsenUser();
+  //           }
+  //         },
+  //       );
+  //     },
+  //     child: Container(
+  //       decoration: BoxDecoration(
+  //           borderRadius: const BorderRadius.all(
+  //             Radius.circular(100),
+  //           ),
+  //           border: Border.all(color: Constanst.fgBorder)),
+  //       child: Padding(
+  //         padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+  //         child: SingleChildScrollView(
+  //           scrollDirection: Axis.horizontal,
+  //           child: Row(
+  //             children: [
+  //               Padding(
+  //                 padding: const EdgeInsets.only(left: 10),
+  //                 child: Text(
+  //                   Constanst.convertDateBulanDanTahun(
+  //                       controller.bulanDanTahunNow.value),
+  //                   style: GoogleFonts.inter(
+  //                       fontWeight: FontWeight.w500,
+  //                       fontSize: 14,
+  //                       color: Constanst.fgSecondary),
+  //                 ),
+  //               ),
+  //               const SizedBox(width: 4),
+  //               Icon(
+  //                 Iconsax.arrow_down_1,
+  //                 size: 18,
+  //                 color: Constanst.fgPrimary,
+  //               )
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //     // child: Container(
+  //     //   decoration: BoxDecoration(
+  //     //       borderRadius: const BorderRadius.all(Radius.circular(12)),
+  //     //       border: Border.all(color: const Color(0xffD5DBE5))),
+  //     //   child: Padding(
+  //     //     padding: const EdgeInsets.fromLTRB(
+  //     //       12.0,
+  //     //       8.0,
+  //     //       12.0,
+  //     //       12.0,
+  //     //     ),
+  //     //     child: Row(
+  //     //       crossAxisAlignment: CrossAxisAlignment.center,
+  //     //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     //       children: [
+  //     //         Column(
+  //     //           crossAxisAlignment: CrossAxisAlignment.start,
+  //     //           children: [
+  //     //             Text(
+  //     //               "Periode",
+  //     //               style: GoogleFonts.inter(
+  //     //                   fontSize: 16,
+  //     //                   fontWeight: FontWeight.w500,
+  //     //                   color: Constanst.fgPrimary),
+  //     //             ),
+  //     //             const SizedBox(height: 4),
+  //     //             Text(
+  //     //               lastDayOfMonth,
+  //     //               style: GoogleFonts.inter(
+  //     //                   fontSize: 14,
+  //     //                   fontWeight: FontWeight.w400,
+  //     //                   color: Constanst.fgSecondary),
+  //     //             ),
+  //     //           ],
+  //     //         ),
+  //     //         Container(
+  //     //           alignment: Alignment.topRight,
+  //     //           child: Padding(
+  //     //             padding: const EdgeInsets.only(right: 10),
+  //     //             child: Icon(
+  //     //               Iconsax.arrow_down_1,
+  //     //               size: 18,
+  //     //               color: Constanst.fgSecondary,
+  //     //             ),
+  //     //           ),
+  //     //         )
+  //     //       ],
+  //     //     ),
+  //     //   ),
+  //     // ),
+  //   );
+  // }
 
-  Widget pickDateBulanDanTahun() {
-    return Row(
-      children: [
-        InkWell(
-          customBorder: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(100))),
-          onTap: () async {
-            print("kesini printnya");
-            DatePicker.showPicker(
-              context,
-              pickerModel: CustomMonthPicker(
-                minTime: DateTime(2020, 1, 1),
-                maxTime: DateTime(2050, 1, 1),
-                currentTime: DateTime(
-                    int.parse(
-                        controller.tahunSelectedSearchHistoryPengajuan.value),
-                    int.parse(
-                        controller.bulanSelectedSearchHistoryPengajuan.value),
-                    1),
-              ),
-              onConfirm: (time) {
-                if (time != null) {
-                  print("$time");
-                  var filter = DateFormat('yyyy-MM').format(time);
-                  var array = filter.split('-');
-                  var bulan = array[1];
-                  var tahun = array[0];
-                  controller.bulanSelectedSearchHistoryPengajuan.value = bulan;
-                  controller.tahunSelectedSearchHistoryPengajuan.value = tahun;
-                  controller.bulanDanTahunNowPengajuan.value = "$bulan-$tahun";
-                  this.controller.bulanSelectedSearchHistoryPengajuan.refresh();
-                  this.controller.tahunSelectedSearchHistoryPengajuan.refresh();
-                  this.controller.bulanDanTahunNowPengajuan.refresh();
-                  controller.dataPengajuanAbsensi();
-                }
-              },
-            );
-          },
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(100),
-                ),
-                border: Border.all(color: Constanst.fgBorder)),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      Constanst.convertDateBulanDanTahun(
-                          controller.bulanDanTahunNowPengajuan.value),
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: Constanst.fgSecondary),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Icon(
-                    Iconsax.arrow_down_1,
-                    size: 18,
-                    color: Constanst.fgPrimary,
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 4),
-        // InkWell(
-        //   customBorder: const RoundedRectangleBorder(
-        //       borderRadius: BorderRadius.all(Radius.circular(100))),
-        //   onTap: () async {
-        //     print("kesini");
-        //     DatePicker.showPicker(
-        //       context,
-        //       pickerModel: CustomMonthPicker(
-        //         minTime: DateTime(2020, 1, 1),
-        //         maxTime: DateTime(2050, 1, 1),
-        //         currentTime: DateTime.now(),
-        //       ),
-        //       onConfirm: (time) {
-        //         if (time != null) {
-        //           print("$time");
-        //           var filter = DateFormat('yyyy-MM').format(time);
-        //           var array = filter.split('-');
-        //           var bulan = array[1];
-        //           var tahun = array[0];
-        //           controller.bulanSelectedSearchHistoryPengajuan.value = bulan;
-        //           controller.tahunSelectedSearchHistoryPengajuan.value = tahun;
-        //           controller.bulanDanTahunNowPengajuan.value = "$bulan-$tahun";
-        //           this.controller.bulanSelectedSearchHistoryPengajuan.refresh();
-        //           this.controller.tahunSelectedSearchHistoryPengajuan.refresh();
-        //           this.controller.bulanDanTahunNowPengajuan.refresh();
-        //           controller.dataPengajuanAbsensi();
-        //         }
-        //       },
-        //     );
-        //   },
-        //   child: Container(
-        //     decoration: BoxDecoration(
-        //         color: Colors.white,
-        //         borderRadius: const BorderRadius.all(
-        //           Radius.circular(100),
-        //         ),
-        //         border: Border.all(color: Constanst.fgBorder)),
-        //     child: Padding(
-        //       padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-        //       child: Row(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           Padding(
-        //             padding: const EdgeInsets.only(left: 10),
-        //             child: Text(
-        //               Constanst.convertDateBulanDanTahun(
-        //                   controller.bulanDanTahunNowPengajuan.value),
-        //               style: GoogleFonts.inter(
-        //                   fontWeight: FontWeight.w500,
-        //                   fontSize: 14,
-        //                   color: Constanst.fgSecondary),
-        //             ),
-        //           ),
-        //           const SizedBox(width: 4),
-        //           Icon(
-        //             Iconsax.arrow_down_1,
-        //             size: 18,
-        //             color: Constanst.fgPrimary,
-        //           )
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // ),
-      ],
-    );
-  }
+  // Widget pickDateBulanDanTahun() {
+  //   return Row(
+  //     children: [
+  //       InkWell(
+  //         customBorder: const RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.all(Radius.circular(100))),
+  //         onTap: () async {
+  //           print("kesini printnya");
+  //           DatePicker.showPicker(
+  //             context,
+  //             pickerModel: CustomMonthPicker(
+  //               minTime: DateTime(2020, 1, 1),
+  //               maxTime: DateTime(2050, 1, 1),
+  //               currentTime: DateTime(
+  //                   int.parse(
+  //                       controller.tahunSelectedSearchHistoryPengajuan.value),
+  //                   int.parse(
+  //                       controller.bulanSelectedSearchHistoryPengajuan.value),
+  //                   1),
+  //             ),
+  //             onConfirm: (time) {
+  //               if (time != null) {
+  //                 print("$time");
+  //                 var filter = DateFormat('yyyy-MM').format(time);
+  //                 var array = filter.split('-');
+  //                 var bulan = array[1];
+  //                 var tahun = array[0];
+  //                 controller.bulanSelectedSearchHistoryPengajuan.value = bulan;
+  //                 controller.tahunSelectedSearchHistoryPengajuan.value = tahun;
+  //                 controller.bulanDanTahunNowPengajuan.value = "$bulan-$tahun";
+  //                 this.controller.bulanSelectedSearchHistoryPengajuan.refresh();
+  //                 this.controller.tahunSelectedSearchHistoryPengajuan.refresh();
+  //                 this.controller.bulanDanTahunNowPengajuan.refresh();
+  //                 controller.dataPengajuanAbsensi();
+  //               }
+  //             },
+  //           );
+  //         },
+  //         child: Container(
+  //           decoration: BoxDecoration(
+  //               borderRadius: const BorderRadius.all(
+  //                 Radius.circular(100),
+  //               ),
+  //               border: Border.all(color: Constanst.fgBorder)),
+  //           child: Padding(
+  //             padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+  //             child: Row(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Padding(
+  //                   padding: const EdgeInsets.only(left: 10),
+  //                   child: Text(
+  //                     Constanst.convertDateBulanDanTahun(
+  //                         controller.bulanDanTahunNowPengajuan.value),
+  //                     style: GoogleFonts.inter(
+  //                         fontWeight: FontWeight.w500,
+  //                         fontSize: 14,
+  //                         color: Constanst.fgSecondary),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(width: 4),
+  //                 Icon(
+  //                   Iconsax.arrow_down_1,
+  //                   size: 18,
+  //                   color: Constanst.fgPrimary,
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //       const SizedBox(width: 4),
+  //       // InkWell(
+  //       //   customBorder: const RoundedRectangleBorder(
+  //       //       borderRadius: BorderRadius.all(Radius.circular(100))),
+  //       //   onTap: () async {
+  //       //     print("kesini");
+  //       //     DatePicker.showPicker(
+  //       //       context,
+  //       //       pickerModel: CustomMonthPicker(
+  //       //         minTime: DateTime(2020, 1, 1),
+  //       //         maxTime: DateTime(2050, 1, 1),
+  //       //         currentTime: DateTime.now(),
+  //       //       ),
+  //       //       onConfirm: (time) {
+  //       //         if (time != null) {
+  //       //           print("$time");
+  //       //           var filter = DateFormat('yyyy-MM').format(time);
+  //       //           var array = filter.split('-');
+  //       //           var bulan = array[1];
+  //       //           var tahun = array[0];
+  //       //           controller.bulanSelectedSearchHistoryPengajuan.value = bulan;
+  //       //           controller.tahunSelectedSearchHistoryPengajuan.value = tahun;
+  //       //           controller.bulanDanTahunNowPengajuan.value = "$bulan-$tahun";
+  //       //           this.controller.bulanSelectedSearchHistoryPengajuan.refresh();
+  //       //           this.controller.tahunSelectedSearchHistoryPengajuan.refresh();
+  //       //           this.controller.bulanDanTahunNowPengajuan.refresh();
+  //       //           controller.dataPengajuanAbsensi();
+  //       //         }
+  //       //       },
+  //       //     );
+  //       //   },
+  //       //   child: Container(
+  //       //     decoration: BoxDecoration(
+  //       //         color: Colors.white,
+  //       //         borderRadius: const BorderRadius.all(
+  //       //           Radius.circular(100),
+  //       //         ),
+  //       //         border: Border.all(color: Constanst.fgBorder)),
+  //       //     child: Padding(
+  //       //       padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+  //       //       child: Row(
+  //       //         crossAxisAlignment: CrossAxisAlignment.start,
+  //       //         children: [
+  //       //           Padding(
+  //       //             padding: const EdgeInsets.only(left: 10),
+  //       //             child: Text(
+  //       //               Constanst.convertDateBulanDanTahun(
+  //       //                   controller.bulanDanTahunNowPengajuan.value),
+  //       //               style: GoogleFonts.inter(
+  //       //                   fontWeight: FontWeight.w500,
+  //       //                   fontSize: 14,
+  //       //                   color: Constanst.fgSecondary),
+  //       //             ),
+  //       //           ),
+  //       //           const SizedBox(width: 4),
+  //       //           Icon(
+  //       //             Iconsax.arrow_down_1,
+  //       //             size: 18,
+  //       //             color: Constanst.fgPrimary,
+  //       //           )
+  //       //         ],
+  //       //       ),
+  //       //     ),
+  //       //   ),
+  //       // ),
+  //     ],
+  //   );
+  // }
 
   Widget listAbsen() {
     return ListView.builder(

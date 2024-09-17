@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -67,7 +68,23 @@ class SettingController extends GetxController {
 
   var apiController = Get.put(ApiController());
   var authController = Get.put(AuthController());
-
+// datedata
+  var bulanSelectedSearchHistory = "".obs;
+  var tahunSelectedSearchHistory = "".obs;
+  var bulanDanTahunNow = "".obs;
+  var stringPersenAbsenTepatWaktu = "".obs;
+  var stringBulan = "".obs;
+  var beginPayroll = "".obs;
+  var endPayroll = "".obs;
+  var beginBulan = "".obs;
+  var endBulanBulan = "".obs;
+  var statusPencarian = false.obs;
+  var statusFormPencarian = false.obs;
+  var visibleWidget = false.obs;
+  var bulanStart = "".obs;
+  var bulanEnd = "".obs;
+  var tahunStart = "".obs;
+//
   RxBool isSearching = false.obs;
   var searchController = TextEditingController();
 
@@ -82,12 +99,50 @@ class SettingController extends GetxController {
 
   @override
   void onReady() async {
+    getTimeNow();
     toRouteSimpanData();
     getPusatBantuan();
     allDepartement();
     getUserInfo();
     checkSelesaiKontrak();
     super.onReady();
+  }
+
+  void getTimeNow() {
+    var dt = DateTime.now();
+    bulanSelectedSearchHistory.value = "${dt.month}";
+    tahunSelectedSearchHistory.value = "${dt.year}";
+    bulanDanTahunNow.value = "${dt.month}-${dt.year}";
+    stringBulan.value = "${DateFormat('MMMM').format(dt)}";
+    beginPayroll.value = "${DateFormat('MMMM').format(dt)}";
+    endPayroll.value = "${DateFormat('MMMM').format(dt)}";
+    var startPeriode = DateFormat('yyyy-MM-dd').format(dt);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(dt);
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
+    var satuBulanKemudian = DateTime(dt.year, dt.month + 1, dt.day);
+    if (DateTime.parse(beginPayroll.value).isAfter(DateTime.parse(endPayroll.value))){
+      dt = satuBulanKemudian;
+    }
+    DateTime previousMonthDate = DateTime(dt.year, dt.month - 1, dt.day);
+
+    if (AppData.informasiUser![0].beginPayroll == 1) {
+      beginPayroll.value = "${DateFormat('MMMM').format(dt)}";
+      bulanStart.value = "${DateFormat('MM').format(dt)}";
+    } else {
+      beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
+      bulanStart.value = "${DateFormat('MM').format(previousMonthDate)}";
+    }
+
+    stringBulan.refresh();
+    beginPayroll.refresh();
+    endPayroll.refresh();
+    bulanSelectedSearchHistory.refresh();
+    tahunSelectedSearchHistory.refresh();
+    bulanDanTahunNow.refresh();
+    bulanEnd.refresh();
+    bulanStart.refresh();
+    tahunStart.refresh();
   }
 
   logout() async {
@@ -180,7 +235,7 @@ class SettingController extends GetxController {
       'last_login': '0000-00-00 00:00:00',
       'em_id': getEmid
     };
-    var connect = Api.connectionApi("post", body, "edit_last_login_clear");
+    var connect = Api.connectionApi("post", body, "edit_last_login_clear",);
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -246,7 +301,7 @@ class SettingController extends GetxController {
       'em_gender': jenisKelamin.value,
       'em_blood_group': golonganDarah.value
     };
-    var connect = Api.connectionApi("post", body, "edit-employee");
+    var connect = Api.connectionApi("post", body, "edit-employee",);
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -296,7 +351,7 @@ class SettingController extends GetxController {
     var depId = idDepartemenTerpilih.value;
 
     Map<String, dynamic> body = {'dep_id': depId};
-    var connect = Api.connectionApi("post", body, "cari_informasi_employee");
+    var connect = Api.connectionApi("post", body, "cari_informasi_employee",);
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -330,7 +385,7 @@ class SettingController extends GetxController {
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {'val': 'em_id', 'cari': '$getEmid'};
-    var connect = Api.connectionApi("post", body, "whereOnce-employee_history");
+    var connect = Api.connectionApi("post", body, "whereOnce-employee_history",);
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -367,7 +422,7 @@ class SettingController extends GetxController {
         'password_lama': passwordLama.value.text,
         'password_baru': passwordBaru.value.text
       };
-      var connect = Api.connectionApi("post", body, "validasiGantiPassword");
+      var connect = Api.connectionApi("post", body, "validasiGantiPassword",);
       connect.then((dynamic res) async {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
@@ -392,7 +447,7 @@ class SettingController extends GetxController {
 
   void getPusatBantuan() {
     listPusatBantuan.value.clear();
-    var connect = Api.connectionApi("get", {}, "faq");
+    var connect = Api.connectionApi("get", {}, "faq",);
     connect.then((dynamic res) {
       if (res == false) {
         //UtilsAlert.koneksiBuruk();
@@ -1015,7 +1070,7 @@ class SettingController extends GetxController {
     };
     print(body);
 
-    var connect = Api.connectionApi("post", body, "edit_foto_user");
+    var connect = Api.connectionApi("post", body, "edit_foto_user",);
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);

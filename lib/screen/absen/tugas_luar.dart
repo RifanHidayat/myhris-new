@@ -274,7 +274,7 @@ class _TugasLuarState extends State<TugasLuar> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      pickDate(),
+                      // pickDate(),
                       const SizedBox(width: 4),
                       status(),
                       const SizedBox(width: 4),

@@ -54,11 +54,19 @@ class Api {
       urlImage + "/${AppData.selectedDatabase}/face_recog/";
 
   static Future connectionApi(String typeConnect, valFormData, String url,
-      {params = ""}) async {
+      {params = "", String? startPeriode, String? endPeriode}) async {
+
+
+    // if (startPeriode != null && endPeriode != null) {
+    //   params += "&start_date=$startPeriode&endPeriode=$endPeriode";
+    // }
+
     print("params" + params);
     // var getUrl = basicUrl + url + '?database=demohr' + params;
-    var getUrl =
-        basicUrl + url + "?database=${AppData.selectedDatabase}" + params;
+    var getUrl = basicUrl +
+        url +
+        "?database=${AppData.selectedDatabase}&start_periode=${AppData.startPeriode}&end_periode=${AppData.endPeriode}" +
+        params;
     print("url ${getUrl}");
     Map<String, String> headers = {
       'Authorization': basicAuth,
@@ -112,7 +120,9 @@ class Api {
   }
 
   static Future connectionApiUploadFile(String url, File newFile) async {
-    var getUrl = basicUrl + url + "?database=${AppData.selectedDatabase}";
+    var getUrl = basicUrl +
+        url +
+        "?database=${AppData.selectedDatabase}&start_date=${AppData.startPeriode}&endPeriode=${AppData.endPeriode}";
 
     Map<String, String> headers = {
       'Authorization': basicAuth,
@@ -200,7 +210,10 @@ class ApiRequest {
     if (temParams != null) {
       headers.addAll(temParams);
     }
-
+ params.addAll({
+      "startPeriode":AppData.startPeriode,
+      "endPeriode":AppData.endPeriode
+    });
     print(basicUrl + url);
     return await http
         .get(Uri.parse(basicUrl + url).replace(queryParameters: headers),
@@ -213,6 +226,10 @@ class ApiRequest {
     if (temParams != null) {
       params.addAll(temParams);
     }
+     params.addAll({
+      "startPeriode":AppData.startPeriode,
+      "endPeriode":AppData.endPeriode
+    });
     print(params);
     print("basic ${basicUrl + url}");
     return await http
@@ -227,7 +244,10 @@ class ApiRequest {
     if (temParams != null) {
       headers.addAll(temParams);
     }
-
+ params.addAll({
+      "startPeriode":AppData.startPeriode,
+      "endPeriode":AppData.endPeriode
+    });
     print(basicUrl + url);
     return await http
         .patch(Uri.parse(basicUrl + url).replace(queryParameters: headers),
@@ -244,7 +264,10 @@ class ApiRequest {
     if (temParams != null) {
       headers.addAll(temParams);
     }
-
+ params.addAll({
+      "startPeriode":AppData.startPeriode,
+      "endPeriode":AppData.endPeriode
+    });
     print(basicUrl + url);
     return await http
         .delete(Uri.parse(basicUrl + url).replace(queryParameters: headers),
