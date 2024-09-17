@@ -267,7 +267,7 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                                 //     child: pencarianData(),
                                 //   ),
                                 // ),
-                                pickDate(),
+                                // pickDate(),
                                 const SizedBox(width: 4),
                                 status()
                               ],

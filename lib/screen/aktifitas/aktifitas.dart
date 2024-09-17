@@ -8,7 +8,11 @@ import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:siscom_operasional/controller/aktifitas_controller.dart';
+
+import 'package:siscom_operasional/controller/setting_controller.dart';
+
 import 'package:siscom_operasional/controller/auth_controller.dart';
+
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
@@ -17,7 +21,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class Aktifitas extends StatelessWidget {
   final controller = Get.put(AktifitasController());
+
+  final stcontroller = Get.put(SettingController());
+
   final authController = Get.put(AuthController());
+
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -636,81 +644,81 @@ class Aktifitas extends StatelessWidget {
             InkWell(
               customBorder: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(100))),
-              onTap: () {
-                DatePicker.showPicker(
-                  Get.context!,
-                  pickerModel: CustomMonthPicker(
-                    minTime: DateTime(2020, 1, 1),
-                    maxTime: DateTime(2050, 1, 1),
-                    currentTime: DateTime.now(),
-                  ),
-                  onConfirm: (time) {
-                    if (time != null) {
-                      print("$time");
-                      var filter = DateFormat('yyyy-MM').format(time);
-                      DateTime previousMonthDate =
-                          DateTime(time.year, time.month - 1, time.day);
+              // onTap: () {
+              //   DatePicker.showPicker(
+              //     Get.context!,
+              //     pickerModel: CustomMonthPicker(
+              //       minTime: DateTime(2020, 1, 1),
+              //       maxTime: DateTime(2050, 1, 1),
+              //       currentTime: DateTime.now(),
+              //     ),
+              //     onConfirm: (time) {
+              //       if (time != null) {
+              //         print("$time");
+              //         var filter = DateFormat('yyyy-MM').format(time);
+              //         DateTime previousMonthDate =
+              //             DateTime(time.year, time.month - 1, time.day);
 
-                      var array = filter.split('-');
-                      var bulan = array[1];
-                      var tahun = array[0];
-                      controller.stringBulan.value =
-                          DateFormat('MMMM').format(time);
-                      controller.endPayroll.value =
-                          DateFormat('MMMM').format(time);
+              //         var array = filter.split('-');
+              //         var bulan = array[1];
+              //         var tahun = array[0];
+              //         controller.stringBulan.value =
+              //             DateFormat('MMMM').format(time);
+              //         controller.endPayroll.value =
+              //             DateFormat('MMMM').format(time);
 
-                      controller.bulanEnd.value = DateFormat('MM').format(time);
+              //         controller.bulanEnd.value = DateFormat('MM').format(time);
 
-                      if (AppData.informasiUser![0].beginPayroll == 1) {
-                        controller.beginPayroll.value =
-                            DateFormat('MMMM').format(time);
-                        controller.bulanStart.value =
-                            DateFormat('MM').format(time);
-                      } else {
-                        controller.beginPayroll.value =
-                            DateFormat('MMMM').format(previousMonthDate);
-                        controller.bulanStart.value =
-                            DateFormat('MM').format(previousMonthDate);
-                      }
-                      controller.bulanSelectedSearchHistory.value = bulan;
-                      controller.tahunSelectedSearchHistory.value = tahun;
-                      controller.bulanDanTahunNow.value = "$bulan-$tahun";
-                      this.controller.bulanSelectedSearchHistory.refresh();
-                      this.controller.tahunSelectedSearchHistory.refresh();
-                      this.controller.bulanDanTahunNow.refresh();
-                      this.controller.stringBulan.refresh();
-                      controller.getInformasiAktivitas();
-                    }
-                  },
-                );
-              },
+              //         if (AppData.informasiUser![0].beginPayroll == 1) {
+              //           controller.beginPayroll.value =
+              //               DateFormat('MMMM').format(time);
+              //           controller.bulanStart.value =
+              //               DateFormat('MM').format(time);
+              //         } else {
+              //           controller.beginPayroll.value =
+              //               DateFormat('MMMM').format(previousMonthDate);
+              //           controller.bulanStart.value =
+              //               DateFormat('MM').format(previousMonthDate);
+              //         }
+              //         controller.bulanSelectedSearchHistory.value = bulan;
+              //         controller.tahunSelectedSearchHistory.value = tahun;
+              //         controller.bulanDanTahunNow.value = "$bulan-$tahun";
+              //         this.controller.bulanSelectedSearchHistory.refresh();
+              //         this.controller.tahunSelectedSearchHistory.refresh();
+              //         this.controller.bulanDanTahunNow.refresh();
+              //         this.controller.stringBulan.refresh();
+              //         controller.getInformasiAktivitas();
+              //       }
+              //     },
+              //   );
+              // },
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
                     border: Border.all(color: Constanst.fgBorder)),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        Constanst.convertDateBulanDanTahun(
-                            controller.bulanDanTahunNow.value),
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.inter(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
-                            color: Constanst.fgPrimary),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(
-                        Iconsax.arrow_down_1,
-                        size: 18,
-                        color: Constanst.fgPrimary,
-                      )
-                    ],
-                  ),
-                ),
+                // child: Padding(
+                //   padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                //   child: Row(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Text(
+                //         Constanst.convertDateBulanDanTahun(
+                //             controller.bulanDanTahunNow.value),
+                //         overflow: TextOverflow.ellipsis,
+                //         style: GoogleFonts.inter(
+                //             fontWeight: FontWeight.w500,
+                //             fontSize: 12,
+                //             color: Constanst.fgPrimary),
+                //       ),
+                //       const SizedBox(width: 4),
+                //       Icon(
+                //         Iconsax.arrow_down_1,
+                //         size: 18,
+                //         color: Constanst.fgPrimary,
+                //       )
+                //     ],
+                //   ),
+                // ),
               ),
             )
           ],
@@ -850,7 +858,7 @@ class Aktifitas extends StatelessWidget {
                           //       fontSize: 12),
                           // ),
                           Text(
-                            "Dari ${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
+                            "Dari ${AppData.informasiUser![0].beginPayroll} ${stcontroller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${stcontroller.endPayroll.value} ${stcontroller.tahunSelectedSearchHistory.value}",
                             style: GoogleFonts.inter(
                                 fontWeight: FontWeight.w400,
                                 color: Constanst.fgSecondary,

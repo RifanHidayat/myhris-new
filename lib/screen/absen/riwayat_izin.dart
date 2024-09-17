@@ -262,7 +262,7 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            pickDate(),
+                            // pickDate(),
                             const SizedBox(width: 4),
                             status(),
                             const SizedBox(width: 4),
@@ -394,66 +394,66 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
     return monthFormat.format(date);
   }
 
-  Widget pickDate() {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(100)),
-          border: Border.all(color: Constanst.fgBorder)),
-      child: InkWell(
-        customBorder: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(100))),
-        onTap: () {
-          DatePicker.showPicker(
-            Get.context!,
-            pickerModel: CustomMonthPicker(
-              minTime: DateTime(2020, 1, 1),
-              maxTime: DateTime(2050, 1, 1),
-              currentTime: DateTime.parse(
-                  "${controller.tahunSelectedSearchHistory.value}-${controller.bulanSelectedSearchHistory.value}-01"),
-            ),
-            onConfirm: (time) {
-              if (time != null) {
-                print("$time");
-                var filter = DateFormat('yyyy-MM').format(time);
-                var array = filter.split('-');
-                var bulan = array[1];
-                var tahun = array[0];
-                controller.bulanSelectedSearchHistory.value = bulan;
-                controller.tahunSelectedSearchHistory.value = tahun;
-                controller.bulanDanTahunNow.value = "$bulan-$tahun";
-                controller.loadDataAjuanIzin();
-                this.controller.bulanSelectedSearchHistory.refresh();
-                this.controller.tahunSelectedSearchHistory.refresh();
-                this.controller.bulanDanTahunNow.refresh();
-              }
-            },
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "${getMonthName(int.parse(controller.bulanSelectedSearchHistory.value))} ${controller.tahunSelectedSearchHistory.value}",
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                  color: Constanst.fgSecondary,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Icon(
-                Iconsax.arrow_down_1,
-                size: 18,
-                color: Constanst.fgSecondary,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget pickDate() {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //         borderRadius: const BorderRadius.all(Radius.circular(100)),
+  //         border: Border.all(color: Constanst.fgBorder)),
+  //     child: InkWell(
+  //       customBorder: const RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.all(Radius.circular(100))),
+  //       onTap: () {
+  //         DatePicker.showPicker(
+  //           Get.context!,
+  //           pickerModel: CustomMonthPicker(
+  //             minTime: DateTime(2020, 1, 1),
+  //             maxTime: DateTime(2050, 1, 1),
+  //             currentTime: DateTime.parse(
+  //                 "${controller.tahunSelectedSearchHistory.value}-${controller.bulanSelectedSearchHistory.value}-01"),
+  //           ),
+  //           onConfirm: (time) {
+  //             if (time != null) {
+  //               print("$time");
+  //               var filter = DateFormat('yyyy-MM').format(time);
+  //               var array = filter.split('-');
+  //               var bulan = array[1];
+  //               var tahun = array[0];
+  //               controller.bulanSelectedSearchHistory.value = bulan;
+  //               controller.tahunSelectedSearchHistory.value = tahun;
+  //               controller.bulanDanTahunNow.value = "$bulan-$tahun";
+  //               controller.loadDataAjuanIzin();
+  //               this.controller.bulanSelectedSearchHistory.refresh();
+  //               this.controller.tahunSelectedSearchHistory.refresh();
+  //               this.controller.bulanDanTahunNow.refresh();
+  //             }
+  //           },
+  //         );
+  //       },
+  //       child: Padding(
+  //         padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+  //         child: Row(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             Text(
+  //               "${getMonthName(int.parse(controller.bulanSelectedSearchHistory.value))} ${controller.tahunSelectedSearchHistory.value}",
+  //               style: GoogleFonts.inter(
+  //                 fontWeight: FontWeight.w500,
+  //                 fontSize: 14,
+  //                 color: Constanst.fgSecondary,
+  //               ),
+  //             ),
+  //             const SizedBox(width: 4),
+  //             Icon(
+  //               Iconsax.arrow_down_1,
+  //               size: 18,
+  //               color: Constanst.fgSecondary,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // Widget listTypeTidakMasuk() {
   //   return SizedBox(
