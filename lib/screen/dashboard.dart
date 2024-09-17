@@ -188,6 +188,12 @@ class _DashboardState extends State<Dashboard> {
                                           type: 'loadfirst');
                                     } else {
                                       print("masuk absen user");
+                                      if (controller.absenOfflineStatus.value ==
+                                          true) {
+                                        UtilsAlert.showToast(
+                                            "Menunggu status absensi anda di approve");
+                                        return;
+                                      }
                                       // Get.offAll(AbsenMasukKeluar(
                                       //   status: "Absen Masuk",
                                       //   type: 1,
@@ -200,13 +206,22 @@ class _DashboardState extends State<Dashboard> {
                                         print("masuk sini");
                                       } else {
                                         if (!authController.isConnected.value) {
-                                          controllerAbsensi.titleAbsen.value =
-                                              "Absen masuk";
-                                          controllerAbsensi.typeAbsen.value = 1;
-                                          controller
-                                              .widgetButtomSheetOfflineAbsen(
-                                                  title: "Absen masuk",
-                                                  status: "masuk");
+                                          if (controller
+                                                  .absenOfflineStatus.value ==
+                                              true) {
+                                            UtilsAlert.showToast(
+                                                "Menunggu status absensi anda di approve");
+                                            return;
+                                          } else {
+                                            controllerAbsensi.titleAbsen.value =
+                                                "Absen masuk";
+                                            controllerAbsensi.typeAbsen.value =
+                                                1;
+                                            controller
+                                                .widgetButtomSheetOfflineAbsen(
+                                                    title: "Absen masuk",
+                                                    status: "masuk");
+                                          }
                                         } else {
                                           controllerAbsensi.titleAbsen.value =
                                               "Absen masuk";
@@ -287,16 +302,8 @@ class _DashboardState extends State<Dashboard> {
                                   });
                                 });
                               } else {
-                                if (!authController.isConnected.value) {
-                                  controllerAbsensi.titleAbsen.value =
-                                      "Absen masuk";
-                                  controllerAbsensi.typeAbsen.value = 1;
-                                  controller.widgetButtomSheetOfflineAbsen(
-                                      title: "Absen masuk", status: "masuk");
-                                } else {
-                                  controllerAbsensi
-                                      .widgetButtomSheetFaceRegistrattion();
-                                }
+                                controllerAbsensi
+                                    .widgetButtomSheetFaceRegistrattion();
                               }
                             }
                           }
@@ -306,15 +313,26 @@ class _DashboardState extends State<Dashboard> {
                                   "Absen Masuk terlebih dahulu");
                             } else {
                               if (!authController.isConnected.value) {
+                                // if (controller.absenOfflineStatusDua.value ==
+                                //     true) {
+                                //   UtilsAlert.showToast(
+                                //       "Menunggu status absensi anda di approve");
+                                //   return;
+                                // } else {
                                 controllerAbsensi.getPlaceCoordinate();
                                 controllerAbsensi.titleAbsen.value =
                                     "Absen Keluar";
                                 controllerAbsensi.typeAbsen.value = 2;
                                 controller.widgetButtomSheetOfflineAbsen(
-                                  title: "Absen Keluar",
-                                  status: "keluar",
-                                );
+                                    title: "Absen Keluar", status: "keluar");
+                                // }
                               } else {
+                                if (controller.absenOfflineStatus.value ==
+                                    true) {
+                                  UtilsAlert.showToast(
+                                      "Menunggu status absensi anda di approve");
+                                  return;
+                                }
                                 var dataUser = AppData.informasiUser;
                                 var faceRecog = dataUser![0].face_recog;
 
@@ -394,19 +412,8 @@ class _DashboardState extends State<Dashboard> {
                                   //   });
                                   // }
                                 } else {
-                                  if (!authController.isConnected.value) {
-                                    controllerAbsensi.getPlaceCoordinate();
-                                    controllerAbsensi.titleAbsen.value =
-                                        "Absen Keluar";
-                                    controllerAbsensi.typeAbsen.value = 2;
-                                    controller.widgetButtomSheetOfflineAbsen(
-                                      title: "Absen Keluar",
-                                      status: "keluar",
-                                    );
-                                  } else {
-                                    controllerAbsensi
-                                        .widgetButtomSheetFaceRegistrattion();
-                                  }
+                                  controllerAbsensi
+                                      .widgetButtomSheetFaceRegistrattion();
                                 }
                               }
                             }
@@ -469,10 +476,11 @@ class _DashboardState extends State<Dashboard> {
                   child: Padding(
                     padding: EdgeInsets.only(
                         top: _isVisible
-                            ? controller.status.value == "[]" &&
-                                    controller.wfhstatus.value
-                                ? 272.0
-                                : 252.0
+                            ? (controller.status.value == "[]" &&
+                                        controller.wfhstatus.value) ||
+                                    (controller.absenOfflineStatus.value)
+                                ? 280.0
+                                : 255.0
                             : 175.0),
                     child: Container(
                       decoration: BoxDecoration(
@@ -502,10 +510,12 @@ class _DashboardState extends State<Dashboard> {
                               //     ? const SizedBox()
                               //     : listModul(),
                               const SizedBox(height: 16),
-                              controller.menuShowInMain.value.isEmpty
-                                  ? UtilsAlert.shimmerMenuDashboard(
-                                      Get.context!)
-                                  : MenuDashboard(),
+                              !authController.isConnected.value
+                                  ? MenuDashboard()
+                                  : controller.menuShowInMain.value.isEmpty
+                                      ? UtilsAlert.shimmerMenuDashboard(
+                                          Get.context!)
+                                      : MenuDashboard(),
                               authController.isConnected.value
                                   ? cardFormPengajuan()
                                   : Container(),
@@ -1220,7 +1230,8 @@ class _DashboardState extends State<Dashboard> {
                               borderRadius: const BorderRadius.only(
                                 bottomLeft: Radius.circular(15.0),
                               ),
-                              color: !controllerAbsensi.absenStatus.value
+                              color: !controllerAbsensi.absenStatus.value &&
+                                      !controller.pendingSignoutApr.value
                                   ? Constanst.colorWhite
                                   : Constanst.colorNonAktif,
                               child: InkWell(
@@ -1264,6 +1275,13 @@ class _DashboardState extends State<Dashboard> {
                                                     type: 'loadfirst');
                                           } else {
                                             print("masuk absen user");
+                                            if (controller
+                                                    .absenOfflineStatus.value ==
+                                                true) {
+                                              UtilsAlert.showToast(
+                                                  "Menunggu status absensi anda di approve");
+                                              return;
+                                            }
                                             // Get.offAll(AbsenMasukKeluar(
                                             //   status: "Absen Masuk",
                                             //   type: 1,
@@ -1278,15 +1296,23 @@ class _DashboardState extends State<Dashboard> {
                                             } else {
                                               if (!authController
                                                   .isConnected.value) {
-                                                controllerAbsensi.titleAbsen
-                                                    .value = "Absen masuk";
-
-                                                controllerAbsensi
-                                                    .typeAbsen.value = 1;
-                                                controller
-                                                    .widgetButtomSheetOfflineAbsen(
-                                                        title: "Absen masuk",
-                                                        status: "masuk");
+                                                if (controller
+                                                        .absenOfflineStatus
+                                                        .value ==
+                                                    true) {
+                                                  UtilsAlert.showToast(
+                                                      "Menunggu status absensi anda di approve");
+                                                  return;
+                                                } else {
+                                                  controllerAbsensi.titleAbsen
+                                                      .value = "Absen masuk";
+                                                  controllerAbsensi
+                                                      .typeAbsen.value = 1;
+                                                  controller
+                                                      .widgetButtomSheetOfflineAbsen(
+                                                          title: "Absen masuk",
+                                                          status: "masuk");
+                                                }
                                               } else {
                                                 controllerAbsensi.titleAbsen
                                                     .value = "Absen masuk";
@@ -1369,19 +1395,8 @@ class _DashboardState extends State<Dashboard> {
                                         });
                                       });
                                     } else {
-                                      if (!authController.isConnected.value) {
-                                        controllerAbsensi.titleAbsen.value =
-                                            "Absen masuk";
-
-                                        controllerAbsensi.typeAbsen.value = 1;
-                                        controller
-                                            .widgetButtomSheetOfflineAbsen(
-                                                title: "Absen masuk",
-                                                status: "masuk");
-                                      } else {
-                                        controllerAbsensi
-                                            .widgetButtomSheetFaceRegistrattion();
-                                      }
+                                      controllerAbsensi
+                                          .widgetButtomSheetFaceRegistrattion();
                                     }
                                   }
                                 },
@@ -1401,7 +1416,9 @@ class _DashboardState extends State<Dashboard> {
                                           Icon(
                                             Iconsax.login5,
                                             color: !controllerAbsensi
-                                                    .absenStatus.value
+                                                        .absenStatus.value &&
+                                                    !controller
+                                                        .pendingSignoutApr.value
                                                 ? Constanst.color5
                                                 : const Color.fromARGB(
                                                     168, 166, 167, 158),
@@ -1418,7 +1435,11 @@ class _DashboardState extends State<Dashboard> {
                                                     fontWeight: FontWeight.w500,
                                                     fontSize: 16,
                                                     color: !controllerAbsensi
-                                                            .absenStatus.value
+                                                                .absenStatus
+                                                                .value &&
+                                                            !controller
+                                                                .pendingSignoutApr
+                                                                .value
                                                         ? Constanst.fgPrimary
                                                         : const Color.fromARGB(
                                                             168,
@@ -1447,7 +1468,11 @@ class _DashboardState extends State<Dashboard> {
                                                           FontWeight.w500,
                                                       fontSize: 16,
                                                       color: !controllerAbsensi
-                                                              .absenStatus.value
+                                                                  .absenStatus
+                                                                  .value &&
+                                                              !controller
+                                                                  .pendingSignoutApr
+                                                                  .value
                                                           ? Constanst.fgPrimary
                                                           : const Color
                                                               .fromARGB(168,
@@ -1492,6 +1517,82 @@ class _DashboardState extends State<Dashboard> {
                                                                           .fgPrimary
                                                                       : Constanst
                                                                           .color4),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  : Container(),
+                                              (controller.absenOfflineStatus
+                                                              .value &&
+                                                          absenControllre
+                                                              .absenStatus
+                                                              .value) ||
+                                                      controller
+                                                          .pendingSigninApr
+                                                          .value
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 4.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          // Icon(
+                                                          //   Iconsax.timer,
+                                                          //   color: Constanst
+                                                          //       .color3,
+                                                          //   size: 15,
+                                                          // ),
+                                                          // SizedBox(width: 2),
+                                                          Obx(
+                                                            () => Row(
+                                                              children: [
+                                                                Text(
+                                                                  // controller
+                                                                  //     .status.value,
+                                                                  controller
+                                                                          .textPendingMasuk
+                                                                          .value
+                                                                      ? "Pending Absensi"
+                                                                      : "Pending Approval",
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .inter(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontSize: 9,
+                                                                    color: Constanst
+                                                                        .color4,
+                                                                  ),
+                                                                ),
+                                                                Visibility(
+                                                                  visible: controller
+                                                                      .textPendingMasuk
+                                                                      .value,
+                                                                  child: Row(
+                                                                    children: [
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            2,
+                                                                      ),
+                                                                      Icon(
+                                                                        Iconsax
+                                                                            .clock,
+                                                                        size: 8,
+                                                                        color: Constanst
+                                                                            .color4,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ),
                                                         ],
@@ -1560,7 +1661,8 @@ class _DashboardState extends State<Dashboard> {
                               color: controller.status.value == "[]" &&
                                       controller.wfhstatus.value
                                   ? Constanst.colorWhite
-                                  : controllerAbsensi.absenStatus.value
+                                  : controllerAbsensi.absenStatus.value &&
+                                          !controller.pendingSignoutApr.value
                                       ? Constanst.colorWhite
                                       : Constanst.colorNonAktif,
                               borderRadius: const BorderRadius.only(
@@ -1573,6 +1675,11 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                 ),
                                 onTap: () {
+                                  if (controller.pendingSignoutApr.value) {
+                                    UtilsAlert.showToast(
+                                        "Menunggu status absensi anda di approve");
+                                    return;
+                                  }
                                   if (!controllerAbsensi.absenStatus.value) {
                                     UtilsAlert.showToast(
                                         "Absen Masuk terlebih dahulu");
@@ -1582,6 +1689,13 @@ class _DashboardState extends State<Dashboard> {
                                         "Abeen WFH beluum di approve");
                                   } else {
                                     if (!authController.isConnected.value) {
+                                      // if (controller
+                                      //         .absenOfflineStatusDua.value ==
+                                      //     true) {
+                                      //   UtilsAlert.showToast(
+                                      //       "Menunggu status absensi anda di approve");
+                                      //   return;
+                                      // } else {
                                       controllerAbsensi.getPlaceCoordinate();
                                       controllerAbsensi.titleAbsen.value =
                                           "Absen Keluar";
@@ -1589,7 +1703,15 @@ class _DashboardState extends State<Dashboard> {
                                       controller.widgetButtomSheetOfflineAbsen(
                                           title: "Absen Keluar",
                                           status: "keluar");
+                                      // }
                                     } else {
+                                      if (controller.absenOfflineStatus.value ==
+                                          true) {
+                                        UtilsAlert.showToast(
+                                            "Menunggu status absensi anda di approve");
+                                        return;
+                                      }
+
                                       var dataUser = AppData.informasiUser;
                                       var faceRecog = dataUser![0].face_recog;
 
@@ -1671,20 +1793,8 @@ class _DashboardState extends State<Dashboard> {
                                         //   });
                                         // }
                                       } else {
-                                        if (!authController.isConnected.value) {
-                                          controllerAbsensi
-                                              .getPlaceCoordinate();
-                                          controllerAbsensi.titleAbsen.value =
-                                              "Absen Keluar";
-                                          controllerAbsensi.typeAbsen.value = 2;
-                                          controller
-                                              .widgetButtomSheetOfflineAbsen(
-                                                  title: "Absen Keluar",
-                                                  status: "keluar");
-                                        } else {
-                                          controllerAbsensi
-                                              .widgetButtomSheetFaceRegistrattion();
-                                        }
+                                        controllerAbsensi
+                                            .widgetButtomSheetFaceRegistrattion();
                                       }
                                     }
                                   }
@@ -1755,18 +1865,24 @@ class _DashboardState extends State<Dashboard> {
                                                   () => Text(
                                                     !authController
                                                             .isConnected.value
-                                                        ? "_ _:_ _:_ _"
-                                                        : controller.status
-                                                                    .value ==
-                                                                "[]"
-                                                            ? "_ _:_ _:_ _"
-                                                            : controller.signoutTime
+                                                        ? controller.signoutTime
                                                                         .value ==
-                                                                    "00:00:00"
-                                                                ? "_ _:_ _:_ _"
-                                                                : controller
-                                                                    .signoutTime
-                                                                    .value,
+                                                                    "00:00:00" ||
+                                                                controller
+                                                                        .signoutTime
+                                                                        .value ==
+                                                                    "null"
+                                                            ? "_ _:_ _:_ _"
+                                                            : controller
+                                                                .signoutTime
+                                                                .value
+                                                        : controller.signoutTime
+                                                                    .value ==
+                                                                "00:00:00"
+                                                            ? "_ _:_ _:_ _"
+                                                            : controller
+                                                                .signoutTime
+                                                                .value,
                                                     style: GoogleFonts.inter(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -1799,6 +1915,83 @@ class _DashboardState extends State<Dashboard> {
                                                             .wfhstatus.value
                                                     ? Container(
                                                         height: 20,
+                                                      )
+                                                    : Container(),
+                                                (controller.absenOfflineStatus
+                                                                .value &&
+                                                            !absenControllre
+                                                                .absenStatus
+                                                                .value) ||
+                                                        controller
+                                                            .pendingSignoutApr
+                                                            .value
+                                                    ? Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(top: 4.0),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            // Icon(
+                                                            //   Iconsax.timer,
+                                                            //   color: Constanst
+                                                            //       .color3,
+                                                            //   size: 15,
+                                                            // ),
+                                                            // SizedBox(width: 2),
+                                                            Obx(
+                                                              () => Row(
+                                                                children: [
+                                                                  Text(
+                                                                    // controller
+                                                                    //     .status.value,
+                                                                    controller
+                                                                            .textPendingKeluar
+                                                                            .value
+                                                                        ? "Pending Absensi"
+                                                                        : "Pending Approval",
+                                                                    style: GoogleFonts
+                                                                        .inter(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontSize:
+                                                                          9,
+                                                                      color: Constanst
+                                                                          .color4,
+                                                                    ),
+                                                                  ),
+                                                                  Visibility(
+                                                                    visible: controller
+                                                                        .textPendingKeluar
+                                                                        .value,
+                                                                    child: Row(
+                                                                      children: [
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              2,
+                                                                        ),
+                                                                        Icon(
+                                                                          Iconsax
+                                                                              .clock,
+                                                                          size:
+                                                                              8,
+                                                                          color:
+                                                                              Constanst.color4,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       )
                                                     : Container()
                                               ],
@@ -2320,6 +2513,12 @@ class _DashboardState extends State<Dashboard> {
                                       return UtilsAlert.shimmerBannerDashboard(
                                           Get.context!);
                                     },
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'assets/bnr1.png',
+                                        fit: BoxFit.fill,
+                                      );
+                                    },
                                   )
                                 : Image.asset(
                                     'assets/bnr1.png', // Gambar dari asset jika tidak ada koneksi
@@ -2360,8 +2559,8 @@ class _DashboardState extends State<Dashboard> {
             return InkWell(
               onTap: () => controller.changePageModul(modul[index]['index']),
               child: Container(
-                padding: EdgeInsets.only(left: 8, right: 8),
-                margin: EdgeInsets.only(left: 8, right: 8),
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                margin: const EdgeInsets.only(left: 8, right: 8),
                 decoration: BoxDecoration(
                   color: modul[index]['status'] == false
                       ? Colors.transparent
@@ -2578,8 +2777,8 @@ class _DashboardState extends State<Dashboard> {
             return Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: GridView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.all(0),
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(0),
                   itemCount:
                       controller.menuShowInMain.value[index]['menu'].length,
                   scrollDirection: Axis.vertical,
@@ -2629,7 +2828,7 @@ class _DashboardState extends State<Dashboard> {
                                               value: downloadProgress.progress),
                                         ),
                                         errorWidget: (context, url, error) =>
-                                            SizedBox(),
+                                            const SizedBox(),
                                         fit: BoxFit.cover,
                                         width: 32,
                                         height: 32,
@@ -2642,7 +2841,7 @@ class _DashboardState extends State<Dashboard> {
                                     height: 32,
                                     width: 32,
                                   ),
-                            SizedBox(
+                            const SizedBox(
                               height: 3,
                             ),
                             Center(
@@ -2976,18 +3175,6 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    if (authController.isConnected.value) {
-      absenControllre.absenStatus.value = AppData.statusAbsen;
-      authController.signinTime.value = controller.signinTime.value;
-      authController.signoutTime.value = controller.signoutTime.value;
-      Future.delayed(const Duration(milliseconds: 500), () {
-        absenControllre.absenStatus.value = AppData.statusAbsen;
-        authController.signinTime.value = controller.signinTime.value;
-        authController.signoutTime.value = controller.signoutTime.value;
-        // absenControllre.absenStatus.value =
-        //     controller.dashboardStatusAbsen.value;
-      });
-    }
     // controller.updateInformasiUser();
     //controller.initData();
     absenControllre.getTimeNow();
@@ -3035,11 +3222,22 @@ class _DashboardState extends State<Dashboard> {
     absenControllre.getPosisition();
     absenControllre.getPlaceCoordinate();
     print("interval ${AppData.informasiUser![0].interval.toString()}");
+    // _setTime();
     // } else {
     //   final service = FlutterBackgroundService();
     //   service.invoke("stopService");
     //   controller.initData();
     // }
+  }
+
+  void _setTime() async {
+    Future.delayed(const Duration(milliseconds: 500), () {
+      absenControllre.absenStatus.value = AppData.statusAbsen;
+      authController.signinTime.value = controller.signinTime.value;
+      authController.signoutTime.value = controller.signoutTime.value;
+      // absenControllre.absenStatus.value =
+      //     controller.dashboardStatusAbsen.value;
+    });
   }
 
   void _checkversion() async {

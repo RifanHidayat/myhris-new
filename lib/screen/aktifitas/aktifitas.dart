@@ -8,7 +8,11 @@ import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:siscom_operasional/controller/aktifitas_controller.dart';
+
 import 'package:siscom_operasional/controller/setting_controller.dart';
+
+import 'package:siscom_operasional/controller/auth_controller.dart';
+
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
@@ -17,7 +21,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class Aktifitas extends StatelessWidget {
   final controller = Get.put(AktifitasController());
+
   final stcontroller = Get.put(SettingController());
+
+  final authController = Get.put(AuthController());
+
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,6 +130,23 @@ class Aktifitas extends StatelessWidget {
                           fontSize: 20),
                     ),
               actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Obx(() {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: authController.isConnected.value
+                              ? Constanst.color5
+                              : Constanst.color4,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
                 controller.statusFormPencarian.value
                     ? Padding(
                         padding: const EdgeInsets.only(right: 16.0),

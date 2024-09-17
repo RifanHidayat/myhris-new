@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
+import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_lembur.dart';
@@ -22,6 +23,7 @@ class Pesan extends StatefulWidget {
 
 class _PesanState extends State<Pesan> {
   final controller = Get.put(PesanController());
+  final authController = Get.put(AuthController());
   @override
   Future<void> refreshData() async {
     await Future.delayed(Duration(seconds: 2));
@@ -61,6 +63,25 @@ class _PesanState extends State<Pesan> {
                   fontWeight: FontWeight.w500,
                   fontSize: 20),
             ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: Obx(() {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: authController.isConnected.value
+                            ? Constanst.color5
+                            : Constanst.color4,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
           ),
         ),
       ),

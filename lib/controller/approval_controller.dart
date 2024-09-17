@@ -51,6 +51,11 @@ class ApprovalController extends GetxController {
   var saldo = 0.obs;
   var limitTransaksi = 0.obs;
 
+  var startTime = "".obs;
+  var endTime = "".obs;
+  var startDate = "".obs;
+  var endDate = "".obs;
+
   void showInputCari() {
     statusCari.value = !statusCari.value;
   }
@@ -391,7 +396,13 @@ class ApprovalController extends GetxController {
             'approve_date': element['approve_date'],
             'status': element['status'],
             'approve_status': element['approve_status'],
-            'approve2_status': element['approve2_status']
+            'approve2_status': element['approve2_status'],
+            'catatan_masuk': element['catatan_masuk'],
+            'catatan_keluar': element['catatan_keluar'],
+            'lokasi_masuk': element['lokasi_masuk'],
+            'lokasi_keluar': element['lokasi_keluar'],
+            'foto_masuk': element['foto_masuk'],
+            'foto_keluar': element['foto_keluar'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -1824,6 +1835,70 @@ class ApprovalController extends GetxController {
     });
   }
 
+  void checkTime() {
+    TimeOfDay waktu1 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[0]),
+        minute: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[1]));
+
+    TimeOfDay waktu2 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].endTime.toString().split(':')[0]),
+        minute: int.parse(AppData.informasiUser![0].endTime
+            .toString()
+            .split(':')[1])); // Waktu kedua
+
+    int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+    int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+
+    //alur normal
+    if (totalMinutes1 < totalMinutes2) {
+      startTime.value = AppData.informasiUser![0].startTime;
+      endTime.value = AppData.informasiUser![0].endTime;
+
+      startDate.value = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate.value = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+      //alur beda hari
+    } else if (totalMinutes1 > totalMinutes2) {
+      var waktu3 =
+          TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+      int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+      if (totalMinutes2 > totalMinutes3) {
+        print("masuk sini view las user");
+        startTime.value = AppData.informasiUser![0].endTime;
+        endTime.value = AppData.informasiUser![0].startTime;
+
+        startTime.value = AppData.informasiUser![0].endTime;
+        endTime.value = AppData.informasiUser![0].startTime;
+
+        startDate.value = DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(const Duration(days: -1)));
+
+        endDate.value = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      } else {
+        print("masuk sini view las user 2");
+        startTime.value = AppData.informasiUser![0].endTime;
+        endTime.value = AppData.informasiUser![0].startTime;
+
+        endDate.value = DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(const Duration(days: 2)));
+
+        startDate.value = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      }
+    } else {
+      startTime.value = AppData.informasiUser![0].startTime;
+      endTime.value = AppData.informasiUser![0].endTime;
+
+      startDate.value = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate.value = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      print(
+          "Waktu 1 sama dengan waktu 2 new ${totalMinutes1}  ${totalMinutes2}");
+    }
+  }
+
   Future<bool>? approvalAbsensi(
       {required date,
       required status,
@@ -1841,6 +1916,7 @@ class ApprovalController extends GetxController {
       leaveStatus,
       pola,
       pilihan}) {
+    checkTime();
     print("status leave ${leaveStatus}");
     UtilsAlert.showLoadingIndicator(Get.context!);
     var emId = AppData.informasiUser![0].em_id;
@@ -1923,7 +1999,11 @@ class ApprovalController extends GetxController {
       "approve_by2": applyBy2,
       "approve_date2": applyDate2,
       "approve_status": applyStatus ?? "Pending",
-      "approve2_status": apply2Status
+      "approve2_status": apply2Status,
+      "startTime": startTime.value,
+      "endTime": endTime.value,
+      "startDate": startDate.value,
+      "endDate": endDate.value,
     };
     print("body approve new 2 ${body}");
 

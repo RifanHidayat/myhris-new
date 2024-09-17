@@ -146,10 +146,10 @@ class SettingController extends GetxController {
   }
 
   logout() async {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    var offline =
-        (connectivityResult[0].toString() == "${ConnectivityResult.none}");
-    if (offline) {
+    // var connectivityResult = await Connectivity().checkConnectivity();
+    // var offline =
+    //     (connectivityResult[0].toString() == "${ConnectivityResult.none}");
+    if (!authController.isConnected.value) {
       showGeneralDialog(
         barrierDismissible: false,
         context: Get.context!,
@@ -164,7 +164,8 @@ class SettingController extends GetxController {
             child: CustomDialog(
               // our custom dialog
               title: "Peringatan",
-              content: "Periksa atau nyalakan internet anda untuk keluar akun",
+              content:
+                  "Menunggu indikator menjadi hijau untuk keluar akun mohon periksa internet anda",
               positiveBtnText: "Kembali",
               style: 1,
               buttonStatus: 1,

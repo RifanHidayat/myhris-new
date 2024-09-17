@@ -49,6 +49,14 @@ class SqliteDatabaseHelper {
       )
     ''');
 
+    // await db.execute('''
+    //   CREATE TABLE absensi_dua (
+    //     signing_time TEXT,
+    //     signout_time TEXT,
+    //     status Text
+    //   )
+    // ''');
+
     // Membuat table menu
     await db.execute('''
       CREATE TABLE menu (
@@ -189,7 +197,13 @@ class SqliteDatabaseHelper {
 
   Future<void> deleteAbsensi() async {
     final db = await database;
-    await db.delete('absensi');
+    try {
+      await db.rawDelete(
+          'DELETE FROM absensi WHERE id = (SELECT MIN(id) FROM absensi)');
+      print('Data teratas berhasil dihapus');
+    } catch (e) {
+      print('Error saat menghapus data teratas: $e');
+    }
   }
 
   Future<Map<String, dynamic>?> getAbsensi() async {
@@ -200,4 +214,42 @@ class SqliteDatabaseHelper {
     }
     return null;
   }
+
+  //absensi dua
+  // Future<void> insertAbsensiDua(Map<String, dynamic> absensi,
+  //     Function onSuccess, Function onError) async {
+  //   final db = await database;
+  //   try {
+  //     int rowId = await db.insert('absensi_dua', absensi);
+  //     if (rowId > 0) {
+  //       onSuccess();
+  //     } else {
+  //       onError("Gagal menyimpan data");
+  //     }
+  //   } catch (e) {
+  //     onError(e.toString());
+  //   }
+  // }
+
+  // Future<int> updateAbsensiDua(Map<String, dynamic> absensi) async {
+  //   final db = await database;
+  //   return await db.update(
+  //     'absensi_dua',
+  //     absensi,
+  //   );
+  // }
+
+  // Future<void> deleteAbsensiDua() async {
+  //   final db = await database;
+  //   await db.delete('absensi_dua');
+  // }
+
+  // Future<Map<String, dynamic>?> getAbsensiDua() async {
+  //   final db = await database;
+  //   var result = await db.query('absensi_dua');
+  //   if (result.isNotEmpty) {
+  //     return result.first;
+  //   }
+  //   return null;
+  // }
 }

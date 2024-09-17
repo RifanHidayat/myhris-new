@@ -229,6 +229,23 @@ class _LiveTrackingState extends State<LiveTracking> {
               fontSize: 20),
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: Obx(() {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: authController.isConnected.value
+                        ? Constanst.color5
+                        : Constanst.color4,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                );
+              }),
+            ),
+          ),
           IconButton(
             icon: Icon(
               Iconsax.document_text,
@@ -728,7 +745,7 @@ class _LiveTrackingState extends State<LiveTracking> {
                         //   setState(() =>   controllerTracking.isTrackingLokasi.value = true);
                         // }
                       } else {
-                        UtilsAlert.showDialogCheckInternet();
+                        UtilsAlert.showDialogCheckServer();
                       }
                     },
                     style: ElevatedButton.styleFrom(

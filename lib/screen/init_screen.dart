@@ -379,10 +379,9 @@ class _InitScreenState extends State<InitScreen> {
               child: CustomNavigationBar(
                 currentIndex: controller.currentIndex.value,
                 onTap: (index) {
-                  setState(() {
-                    controller.currentIndex.value = index;
-                    controller.onClickItem(index);
-                  });
+                  controller.currentIndex.value = index;
+                  controller.onClickItem(index);
+                  controller.update();
                 },
                 bubbleCurve: Curves.linear,
                 scaleCurve: Curves.linear,
