@@ -10,7 +10,16 @@ class AppData {
   static set isOnboarding(bool value) =>
       LocalStorage.saveToDisk('isOnboarding', value);
 
+   static set  startPeriode(String value) =>
+      LocalStorage.saveToDisk('startPeriode', value);
+
+ static set endPeriode(String value) =>
+      LocalStorage.saveToDisk('endPeriode', value);
+
+// static set  periode(String value) =>
+//       LocalStorage.saveToDisk('periode', value);
   static set statusAbsen(bool value) =>
+
       LocalStorage.saveToDisk('statusAbsen', value);
   static set kodeVerifikasi(String value) =>
       LocalStorage.saveToDisk('kodeVerifikasi', value);
@@ -84,6 +93,21 @@ class AppData {
     return false;
   }
 
+   static String get startPeriode {
+    if (LocalStorage.getFromDisk('startPeriode') != null) {
+      return LocalStorage.getFromDisk('startPeriode');
+    }
+    return "";
+  }
+   static String get endPeriode {
+    if (LocalStorage.getFromDisk('endPeriode') != null) {
+      return LocalStorage.getFromDisk('endPeriode');
+    }
+    return "";
+  }
+   static bool get isOnboarding {
+
+
   static bool get statusAbsenOffline {
     if (LocalStorage.getFromDisk('statusAbsenOffline') != null) {
       return LocalStorage.getFromDisk('statusAbsenOffline');
@@ -134,6 +158,7 @@ class AppData {
   }
 
   static bool get isOnboarding {
+
     if (LocalStorage.getFromDisk('isOnboarding') != null) {
       return LocalStorage.getFromDisk('isOnboarding');
     }

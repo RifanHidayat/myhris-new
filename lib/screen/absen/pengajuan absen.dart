@@ -1,22 +1,15 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
-import 'package:siscom_operasional/screen/absen/pengajuan%20absen_berhasil.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
-import 'package:siscom_operasional/utils/month_year_picker.dart';
-import 'package:siscom_operasional/utils/date_picker.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
@@ -32,7 +25,6 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     absenController.resetData();
   }
@@ -147,7 +139,21 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                             return;
                           }
                         }
-                        absenController.nextKirimPengajuan('Status');
+                        // var getNomorAjuanTerakhir =
+                        //     absenController..value;
+                        // var status = "pending";
+                        // absenController.kirimPengajuan(
+                        //     getNomorAjuanTerakhir, status);
+                        // Get.snackbar("tets: $getNomorAjuanTerakhir", "pp");
+                        var abs = absenController.addressMasuk.value;
+                        var absk = absenController.addressKeluar.value;
+                        var absenklr = absenController.absenKeluarLongLat.value;
+                        var absenmsk = absenController.absenLongLatMasuk.value;
+                      absenController.nextKirimPengajuan("status");
+                      print("addressmasuk: $abs");
+                      print("addresskeluar: $absk");
+                      print("absnmsk: $absenmsk");
+                      print("absnklr: $absenklr");
                       },
                       style: ElevatedButton.styleFrom(
                           foregroundColor: Constanst.colorWhite,
@@ -1117,7 +1123,12 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                               });
 
                               data['is_selected'] = true;
-                              absenController.placeCoordinateCheckin.refresh();
+                             absenController.placeCoordinateCheckin.refresh();
+                              absenController.absenLongLatMasuk.value = data['place_longlat'].toString().split(",");
+                              print(absenController.absenLongLatMasuk);
+                              print(data);
+                              absenController.convertLatLongListToAddressesin(
+                                  data['place_longlat'].toString().split(","));
                               Get.back();
                             },
                             child: Padding(
@@ -1278,6 +1289,11 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
 
                               data['is_selected'] = true;
                               absenController.placeCoordinateCheckout.refresh();
+                              absenController.convertLatLongListToAddresses(
+                                  data['place_longlat'].toString().split(","));
+                              absenController.absenKeluarLongLat.value =
+                                  data['place_longlat'].toString().split(",");
+                              print("data ce : ${data}");
                               Get.back();
                             },
                             child: Padding(

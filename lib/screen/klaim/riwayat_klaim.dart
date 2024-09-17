@@ -260,7 +260,7 @@ class _KlaimState extends State<Klaim> {
                     : Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          pickDate(),
+                          // pickDate(),
                           const SizedBox(width: 4),
                           status()
                         ],

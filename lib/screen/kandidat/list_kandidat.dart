@@ -189,7 +189,7 @@ class _KandidatState extends State<Kandidat> {
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      filterBulan(),
+                      // filterBulan(),
                       const SizedBox(width: 4),
                       !controller.viewWidgetPilihDepartement.value
                           ? const SizedBox()
