@@ -589,6 +589,39 @@ class UtilsAlert {
     // );
   }
 
+  static showDialogCheckServer() {
+    showGeneralDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      barrierColor: Colors.black54, // space around dialog
+      transitionDuration: Duration(milliseconds: 200),
+      transitionBuilder: (context, a1, a2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+              parent: a1,
+              curve: Curves.elasticOut,
+              reverseCurve: Curves.easeOutCubic),
+          child: CustomDialog(
+            // our custom dialog
+            title: "Peringatan",
+            content:
+                "Mohon maaf terjadi kesalahan sistem bisa refresh secara berkala",
+            positiveBtnText: "Kembali",
+            style: 1,
+            buttonStatus: 1,
+            positiveBtnPressed: () async {
+              Get.back();
+            },
+          ),
+        );
+      },
+      pageBuilder: (BuildContext context, Animation animation,
+          Animation secondaryAnimation) {
+        return null!;
+      },
+    );
+  }
+
   static showDialogCheckInternet() {
     showGeneralDialog(
       barrierDismissible: false,
@@ -605,13 +638,79 @@ class UtilsAlert {
             // our custom dialog
             title: "Peringatan Internet",
             content:
-                "Periksan atau nyalakan internet anda untuk mengakses menu ini",
+                "Menunggu indikator menjadi hijau untuk mengakses menu ini mohon periksan internet anda",
             positiveBtnText: "Kembali",
             style: 1,
             buttonStatus: 1,
             positiveBtnPressed: () async {
               Get.back();
             },
+          ),
+        );
+      },
+      pageBuilder: (BuildContext context, Animation animation,
+          Animation secondaryAnimation) {
+        return null!;
+      },
+    );
+  }
+
+  static showCheckOfflineAbsensi(
+      {required void Function()? positiveBtnPressed}) {
+    showGeneralDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      barrierColor: Colors.black54, // space around dialog
+      transitionDuration: Duration(milliseconds: 200),
+      transitionBuilder: (context, a1, a2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+              parent: a1,
+              curve: Curves.elasticOut,
+              reverseCurve: Curves.easeOutCubic),
+          child: CustomDialog(
+            // our custom dialog
+            title: "Informasi",
+            content:
+                "Menunggu indikator hijau atau anda yakin ingin absensi secara offline? \n\nKeterangan: Absen offline membutuhkan approval",
+            positiveBtnText: "Absensi Offline",
+            negativeBtnText: "Kembali",
+            style: 1,
+            buttonStatus: 1,
+            positiveBtnPressed: positiveBtnPressed,
+          ),
+        );
+      },
+      pageBuilder: (BuildContext context, Animation animation,
+          Animation secondaryAnimation) {
+        return null!;
+      },
+    );
+  }
+
+  static showCheckOfflineAbsensiKesalahanServer(
+      {required void Function()? positiveBtnPressed}) {
+    showGeneralDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      barrierColor: Colors.black54, // space around dialog
+      transitionDuration: Duration(milliseconds: 200),
+      transitionBuilder: (context, a1, a2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+              parent: a1,
+              curve: Curves.elasticOut,
+              reverseCurve: Curves.easeOutCubic),
+          child: CustomDialog(
+            // our custom dialog
+            title: "Informasi",
+            content:
+                "Terjadi kesalahan, Apakah ingin absensi secara offline? \n\nKeterangan: Absen offline membutuhkan approval",
+            positiveBtnText: "Absensi Offline",
+            negativeBtnText: "Kembali",
+            style: 1,
+            buttonStatus: 1,
+            positiveBtnPressed: positiveBtnPressed,
           ),
         );
       },

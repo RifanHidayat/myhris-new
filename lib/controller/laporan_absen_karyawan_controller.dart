@@ -33,7 +33,7 @@ class LaporanAbsenKaryawanController extends GetxController {
     var bulan = listPeriode[0];
     var tahun = listPeriode[1];
     detailRiwayat.value.clear();
-    
+
     Map<String, dynamic> body = {
       'em_id': emIdKaryawan.value,
       'bulan': bulan,
@@ -68,10 +68,10 @@ class LaporanAbsenKaryawanController extends GetxController {
           List finalAllData = new List.from(dataAbsen)
             ..addAll(finalFilterPengajuan);
 
-          finalAllData.sort((a, b) {
-            return DateTime.parse(b['atten_date'])
-                .compareTo(DateTime.parse(a['atten_date']));
-          });
+          // finalAllData.sort((a, b) {
+          //   return DateTime.parse(b['atten_date'])
+          //       .compareTo(DateTime.parse(a['atten_date']));
+          // });
           detailRiwayat.value = finalAllData;
           AlldetailRiwayat.value = finalAllData;
         }

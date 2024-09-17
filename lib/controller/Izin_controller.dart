@@ -417,6 +417,8 @@ class IzinController extends GetxController {
   }
 
   void loadTypeSakit() {
+    allTipeFormTidakMasukKerja1.value.clear();
+    allTipeFormTidakMasukKerja.value.clear();
     isLoadingzin.value = true;
     showTipe.value = false;
     allTipe.value.clear();
