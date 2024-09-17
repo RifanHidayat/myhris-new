@@ -1787,7 +1787,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         DateFormat('yyyy-MM-dd')
                                             .parse(index.date)),
                                     style: GoogleFonts.inter(
-                                      fontSize: 10,
+                                      fontSize: 8,
                                       fontWeight: FontWeight.w400,
                                       color: Constanst.fgPrimary,
                                     )),
@@ -1809,7 +1809,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         DateFormat('yyyy-MM-dd')
                                             .parse(index.date)),
                                     style: GoogleFonts.inter(
-                                      fontSize: 10,
+                                      fontSize: 8,
                                       fontWeight: FontWeight.w400,
                                       color: Colors.red,
                                     )),

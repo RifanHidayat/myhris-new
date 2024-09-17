@@ -306,6 +306,20 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
           }
         }
       }
+
+      if (controller.detailData[0]['status'] == "Pending" ||
+          controller.detailData[0]['approve_status'] == "Pending" ||
+          controller.detailData[0]['approve_status'] == "Pending" ||
+          (controller.detailData[0]['approve2_status'] == "Pending" &&
+              controller.detailData[0]['approve_status'] != "Rejected")) {
+        if (controller.detailData[0]['em_report_to']
+            .toString()
+            .contains(emId)) {
+          controller.showButton.value = true;
+        }
+      } else {
+        controller.showButton.value = false;
+      }
     }
 
     if (controller.detailData[0]['type'].toString().toLowerCase() ==
@@ -1927,59 +1941,77 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                         //     ),
                         //   ],
                         // ),
-
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                          child: Divider(
-                            thickness: 1,
-                            height: 0,
-                            color: Constanst.border,
+                        Visibility(
+                          visible:
+                              controller.detailData[0]['lokasi_masuk'] != "",
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, bottom: 12.0),
+                                child: Divider(
+                                  thickness: 1,
+                                  height: 0,
+                                  color: Constanst.border,
+                                ),
+                              ),
+                              Text(
+                                "Lokasi Masuk",
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgSecondary,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "${controller.detailData[0]['lokasi_masuk']} (${controller.detailData[0]['place_in']})",
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16),
+                              ),
+                            ],
                           ),
                         ),
-                        Text(
-                          "Lokasi Masuk",
-                          style: GoogleFonts.inter(
-                              color: Constanst.fgSecondary,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "${controller.detailData[0]['lokasi_keluar']} (${controller.detailData[0]['place_in']})",
-                          style: GoogleFonts.inter(
-                              color: Constanst.fgPrimary,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16),
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                          child: Divider(
-                            thickness: 1,
-                            height: 0,
-                            color: Constanst.border,
+                        Visibility(
+                          visible:
+                              controller.detailData[0]['lokasi_keluar'] != "",
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, bottom: 12.0),
+                                child: Divider(
+                                  thickness: 1,
+                                  height: 0,
+                                  color: Constanst.border,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () => print(
+                                    controller.detailData[0]['lokasi_keluar']),
+                                child: Text(
+                                  "Lokasi Keluar",
+                                  style: GoogleFonts.inter(
+                                      color: Constanst.fgSecondary,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14),
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "${controller.detailData[0]['lokasi_keluar']} (${controller.detailData[0]['place_out']})",
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16),
+                              ),
+                            ],
                           ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            print(controller.detailData[0]);
-                          },
-                          child: Text(
-                            "Lokasi Keluar",
-                            style: GoogleFonts.inter(
-                                color: Constanst.fgSecondary,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "${controller.detailData[0]['lokasi_keluar']} (${controller.detailData[0]['place_out']})",
-                          style: GoogleFonts.inter(
-                              color: Constanst.fgPrimary,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16),
                         ),
 
                         Column(
@@ -2108,16 +2140,13 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                         //               ),
 
                         Visibility(
-                          visible: controller.detailData[0]['foto_masuk'] !=
-                                  "" ||
-                              controller.detailData[0]['foto_masuk'] != null,
+                          visible: controller.detailData[0]['foto_masuk'] != "",
                           child: fotoWidget(title: "masuk"),
                         ),
 
                         Visibility(
-                          visible: controller.detailData[0]['foto_keluar'] !=
-                                  "" ||
-                              controller.detailData[0]['foto_keluar'] != null,
+                          visible:
+                              controller.detailData[0]['foto_keluar'] != "",
                           child: fotoWidget(title: "keluar"),
                         ),
 

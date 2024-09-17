@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
@@ -13,6 +14,7 @@ import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
+import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class Pesan extends StatefulWidget {
   final bool status;
@@ -570,6 +572,7 @@ class _PesanState extends State<Pesan> {
                                     onTap: () {
                                       print(
                                           "wkwkwk: ${controller.listNotifikasi.value[index]['notifikasi'][idx]}");
+
                                       if (emIdPengaju !=
                                               AppData.informasiUser![0].em_id &&
                                           idDetail != null) {
@@ -582,6 +585,7 @@ class _PesanState extends State<Pesan> {
                                           idx: idDetail.toString(),
                                           delegasi: emId.toString(),
                                           url: urlRoute,
+                                          context: context,
                                         );
                                       } else if (emIdPengaju.toString() ==
                                           AppData.informasiUser![0].em_id) {

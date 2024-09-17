@@ -638,7 +638,7 @@ class UtilsAlert {
             // our custom dialog
             title: "Peringatan Internet",
             content:
-                "Menunggu indikator menjadi hijau untuk mengakses menu ini mohon periksan internet anda",
+                "Menunggu indikator menjadi hijau untuk mengakses menu ini mohon periksa internet anda",
             positiveBtnText: "Kembali",
             style: 1,
             buttonStatus: 1,

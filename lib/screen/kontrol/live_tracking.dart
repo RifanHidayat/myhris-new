@@ -745,7 +745,7 @@ class _LiveTrackingState extends State<LiveTracking> {
                         //   setState(() =>   controllerTracking.isTrackingLokasi.value = true);
                         // }
                       } else {
-                        UtilsAlert.showDialogCheckServer();
+                        UtilsAlert.showDialogCheckInternet();
                       }
                     },
                     style: ElevatedButton.styleFrom(
