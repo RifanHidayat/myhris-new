@@ -813,13 +813,15 @@ class PesanController extends GetxController {
       );
     } else if (title == "Approval Absensi" || url == "Absensi") {
       loadAndNavigate(
-          'Absensi',
-          () => DetailPersetujuanAbsensi(
-              emId: emIdPengaju,
-              title: 'Absensi',
-              idxDetail: idx,
-              delegasi: delegasi),
-          idx);
+        'Absensi',
+        () => DetailPersetujuanAbsensi(
+            emId: emIdPengaju,
+            title: 'Absensi',
+            idxDetail: idx,
+            delegasi: delegasi),
+        idx,
+        context,
+      );
     } else if (title == "Approval WFH" || url == "WFH") {
       loadAndNavigate(
         'WFH',
