@@ -812,31 +812,14 @@ class PesanController extends GetxController {
         context,
       );
     } else if (title == "Approval Absensi" || url == "Absensi") {
-      // loadAndNavigate(
-      //     'Absensi',
-      //     () => DetailPersetujuanAbsensi(
-      //         emId: emIdPengaju,
-      //         title: 'Absensi',
-      //         idxDetail: idx,
-      //         delegasi: delegasi),
-      //     idx);
-      controllerApproval.startLoadData(
+      loadAndNavigate(
           'Absensi',
-          bulanSelectedSearchHistory.value,
-          tahunSelectedSearchHistory.value,
-          'persetujuan');
-
-      Future.delayed(const Duration(seconds: 1), () {
-        for (var element in controllerApproval.listData) {
-          print("element['id']: ${element['id']}");
-        }
-        Get.to(() => DetailPersetujuanAbsensi(
+          () => DetailPersetujuanAbsensi(
               emId: emIdPengaju,
               title: 'Absensi',
               idxDetail: idx,
-              delegasi: delegasi,
-            ));
-      });
+              delegasi: delegasi),
+          idx);
     } else if (title == "Approval WFH" || url == "WFH") {
       loadAndNavigate(
         'WFH',
