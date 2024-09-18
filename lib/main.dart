@@ -9,17 +9,17 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:geocoding/geocoding.dart';
+// import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/controller/tab_controller.dart';
-import 'package:siscom_operasional/screen/pesan/detail_persetujuan_lembur.dart';
+// import 'package:siscom_operasional/screen/pesan/detail_persetujuan_lembur.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
@@ -28,22 +28,22 @@ import 'package:siscom_operasional/controller/tracking_controller.dart';
 
 import 'package:siscom_operasional/fireabase_option.dart';
 import 'package:siscom_operasional/model/notification.dart';
-import 'package:siscom_operasional/screen/absen/history_absen.dart';
-import 'package:siscom_operasional/screen/absen/lembur.dart';
-import 'package:siscom_operasional/screen/absen/riwayat_cuti.dart';
-import 'package:siscom_operasional/screen/absen/riwayat_izin.dart';
-import 'package:siscom_operasional/screen/absen/tugas_luar.dart';
+// import 'package:siscom_operasional/screen/absen/history_absen.dart';
+// import 'package:siscom_operasional/screen/absen/lembur.dart';
+// import 'package:siscom_operasional/screen/absen/riwayat_cuti.dart';
+// import 'package:siscom_operasional/screen/absen/riwayat_izin.dart';
+// import 'package:siscom_operasional/screen/absen/tugas_luar.dart';
 import 'package:siscom_operasional/screen/chatting/chat_page.dart';
 
-import 'package:siscom_operasional/screen/init_screen.dart';
-import 'package:siscom_operasional/screen/kandidat/list_kandidat.dart';
-import 'package:siscom_operasional/screen/klaim/riwayat_klaim.dart';
-import 'package:siscom_operasional/screen/pesan/detail_persetujuan_absensi.dart';
-import 'package:siscom_operasional/screen/pesan/detail_persetujuan_cuti.dart';
-import 'package:siscom_operasional/screen/pesan/detail_persetujuan_izin.dart';
-import 'package:siscom_operasional/screen/pesan/detail_persetujuan_klaim.dart';
-import 'package:siscom_operasional/screen/pesan/detail_persetujuan_payroll.dart';
-import 'package:siscom_operasional/screen/pesan/detail_persetujuan_tugas_luar.dart';
+// import 'package:siscom_operasional/screen/init_screen.dart';
+// import 'package:siscom_operasional/screen/kandidat/list_kandidat.dart';
+// import 'package:siscom_operasional/screen/klaim/riwayat_klaim.dart';
+// import 'package:siscom_operasional/screen/pesan/detail_persetujuan_absensi.dart';
+// import 'package:siscom_operasional/screen/pesan/detail_persetujuan_cuti.dart';
+// import 'package:siscom_operasional/screen/pesan/detail_persetujuan_izin.dart';
+// import 'package:siscom_operasional/screen/pesan/detail_persetujuan_klaim.dart';
+// import 'package:siscom_operasional/screen/pesan/detail_persetujuan_payroll.dart';
+// import 'package:siscom_operasional/screen/pesan/detail_persetujuan_tugas_luar.dart';
 import 'package:siscom_operasional/utils/api.dart';
 
 import 'package:siscom_operasional/utils/constans.dart';
@@ -55,14 +55,14 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'package:sqflite/sqflite.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:sqflite/sqflite.dart';
 import 'package:web_socket_channel/io.dart';
-import 'database/database_services.dart';
+// import 'database/database_services.dart';
 import 'utils/app_data.dart';
 
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:percent_indicator/percent_indicator.dart';
+// import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:percent_indicator/percent_indicator.dart';
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -371,7 +371,7 @@ Future<void> initializeService() async {
     ),
   );
 
-  service.startService();
+  // service.startService();
 }
 
 // to ensure this executed
@@ -639,7 +639,7 @@ void _handleMessage(RemoteMessage message) async {
       var idx = messageData['idx'];
       await Future.delayed(const Duration(seconds: 3), () {
         if (emIdPengaju != AppData.informasiUser![0].em_id && idx != null) {
-          controllerPesan.routeApprovalNotif(
+          controllerPesan.routeApprovalNotifFCm(
             emIdPengaju: emIdPengaju,
             title: route,
             idx: idx,
@@ -710,7 +710,7 @@ Future onSelectNotification(notificationResponse) async {
       var idx = message['idx'];
       await Future.delayed(const Duration(seconds: 2), () {
         if (emIdPengaju != AppData.informasiUser![0].em_id && idx != null) {
-          controllerPesan.routeApprovalNotif(
+          controllerPesan.routeApprovalNotifFCm(
             emIdPengaju: emIdPengaju,
             title: route,
             idx: idx,

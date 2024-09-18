@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
@@ -13,6 +14,7 @@ import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
+import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class Pesan extends StatefulWidget {
   final bool status;
@@ -24,15 +26,25 @@ class Pesan extends StatefulWidget {
 class _PesanState extends State<Pesan> {
   final controller = Get.put(PesanController());
   final authController = Get.put(AuthController());
-  @override
+
   Future<void> refreshData() async {
     await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      var dashboardController = Get.find<DashboardController>();
-      dashboardController.updateInformasiUser();
-      controller.clearFilter();
-      controller.onReady();
-    });
+    var dashboardController = Get.find<DashboardController>();
+    dashboardController.updateInformasiUser();
+    controller.clearFilter();
+    controller.getTimeNow();
+    controller.loadNotifikasi();
+    // setState(() {
+
+    // });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // refreshData();
+    controller.getTimeNow();
+    controller.loadNotifikasi();
   }
 
   @override
@@ -474,230 +486,249 @@ class _PesanState extends State<Pesan> {
   Widget screenNotifikasi() {
     return RefreshIndicator(
       onRefresh: refreshData,
-      child: controller.listNotifikasi.value.isEmpty
-          ? SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.7,
-                alignment: Alignment.center,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/amico.svg',
-                      height: 250,
-                      width: 250,
+      child: controller.isLoading.value
+          ? UtilsAlert.shimmerNotifikasiInbox(context)
+          : controller.listNotifikasi.value.isEmpty
+              ? SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    alignment: Alignment.center,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/amico.svg',
+                          height: 250,
+                          width: 250,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          "Anda tidak memiliki Notifikasi",
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.fgPrimary,
+                              fontSize: 16),
+                        ),
+                        const SizedBox(height: 32),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "Anda tidak memiliki Notifikasi",
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w500,
-                          color: Constanst.fgPrimary,
-                          fontSize: 16),
-                    ),
-                    const SizedBox(height: 32),
-                  ],
-                ),
-              ),
-            )
-          : ListView.builder(
-              itemCount: controller.listNotifikasi.value.length,
-              physics: controller.listNotifikasi.value.length <= 10
-                  ? const AlwaysScrollableScrollPhysics()
-                  : const BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                var tanggalNotif =
-                    controller.listNotifikasi.value[index]['tanggal'];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16.0, 24.0, 0.0, 4.0),
-                      child: Text(
-                        // Constanst.convertDate(tanggalNotif.toString()),
-                        // tanggalNotif,
-                        tanggalNotif == "Hari ini"
-                            ? tanggalNotif
-                            : Constanst.convertDate6(DateFormat('dd-MM-yyyy')
-                                .parseStrict(tanggalNotif)
-                                .toString()),
-                        style: GoogleFonts.inter(
-                            fontWeight: FontWeight.w500,
-                            color: Constanst.fgSecondary,
-                            fontSize: 14),
-                      ),
-                    ),
-                    Obx(
-                      () => ListView.builder(
-                          itemCount: controller
-                              .listNotifikasi.value[index]['notifikasi'].length,
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, idx) {
-                            var idNotif = controller.listNotifikasi.value[index]
-                                ['notifikasi'][idx]['id'];
-                            var titleNotif = controller.listNotifikasi
-                                .value[index]['notifikasi'][idx]['title'];
-                            var deskripsiNotif = controller.listNotifikasi
-                                .value[index]['notifikasi'][idx]['deskripsi'];
-                            var urlRoute = controller.listNotifikasi
-                                .value[index]['notifikasi'][idx]['url'];
-                            var jam = controller.listNotifikasi.value[index]
-                                ['notifikasi'][idx]['jam'];
-                            var statusNotif = controller.listNotifikasi
-                                .value[index]['notifikasi'][idx]['status'];
-                            var view = controller.listNotifikasi.value[index]
-                                ['notifikasi'][idx]['view'];
-                            var emId = controller.listNotifikasi.value[index]
-                                ['notifikasi'][idx]['em_id'];
-                            var emIdPengaju =
-                                controller.listNotifikasi.value[index]
-                                    ['notifikasi'][idx]['em_id_pengajuan'];
-                            var idDetail = controller.listNotifikasi
-                                .value[index]['notifikasi'][idx]['idx'];
-                            return Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: view == 0
-                                        ? Constanst.colorButton2
-                                        : Colors.transparent,
-                                    borderRadius: Constanst.borderStyle1,
-                                  ),
-                                  child: InkWell(
-                                    onTap: () {
-                                      print(
-                                          "wkwkwk: ${controller.listNotifikasi.value[index]['notifikasi'][idx]}");
-                                      if (emIdPengaju !=
-                                              AppData.informasiUser![0].em_id &&
-                                          idDetail != null) {
-                                        if (view == 0) {
-                                          controller.aksilihatNotif(idNotif);
-                                        }
-                                        controller.routeApprovalNotif(
-                                          title: titleNotif,
-                                          emIdPengaju: emIdPengaju.toString(),
-                                          idx: idDetail.toString(),
-                                          delegasi: emId.toString(),
-                                          url: urlRoute,
-                                        );
-                                      } else if (emIdPengaju.toString() ==
-                                          AppData.informasiUser![0].em_id) {
-                                        if (view == 0) {
-                                          controller.aksilihatNotif(idNotif);
-                                        }
-                                        controller.redirectToPage(
-                                            urlRoute, idDetail);
-                                      } else {
-                                        if (view == 0) {
-                                          controller.aksilihatNotif(idNotif);
-                                        }
-                                      }
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          16.0, 12.0, 16.0, 12.0),
-                                      child: IntrinsicHeight(
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            statusNotif == 1
-                                                ? Icon(
-                                                    Iconsax.tick_circle,
-                                                    color: Constanst.color5,
-                                                    size: 24,
-                                                  )
-                                                : statusNotif == 2
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: controller.listNotifikasi.value.length,
+                  physics: controller.listNotifikasi.value.length <= 10
+                      ? const AlwaysScrollableScrollPhysics()
+                      : const BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    var tanggalNotif =
+                        controller.listNotifikasi.value[index]['tanggal'];
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(16.0, 24.0, 0.0, 4.0),
+                          child: Text(
+                            // Constanst.convertDate(tanggalNotif.toString()),
+                            // tanggalNotif,
+                            tanggalNotif == "Hari ini"
+                                ? tanggalNotif
+                                : Constanst.convertDate6(
+                                    DateFormat('dd-MM-yyyy')
+                                        .parseStrict(tanggalNotif)
+                                        .toString()),
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.fgSecondary,
+                                fontSize: 14),
+                          ),
+                        ),
+                        Obx(
+                          () => ListView.builder(
+                              itemCount: controller.listNotifikasi
+                                  .value[index]['notifikasi'].length,
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, idx) {
+                                var idNotif = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['id'];
+                                var titleNotif = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['title'];
+                                var deskripsiNotif =
+                                    controller.listNotifikasi.value[index]
+                                        ['notifikasi'][idx]['deskripsi'];
+                                var urlRoute = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['url'];
+                                var jam = controller.listNotifikasi.value[index]
+                                    ['notifikasi'][idx]['jam'];
+                                var statusNotif = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['status'];
+                                var view = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['view'];
+                                var emId = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['em_id'];
+                                var emIdPengaju =
+                                    controller.listNotifikasi.value[index]
+                                        ['notifikasi'][idx]['em_id_pengajuan'];
+                                var idDetail = controller.listNotifikasi
+                                    .value[index]['notifikasi'][idx]['idx'];
+                                return Column(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: view == 0
+                                            ? Constanst.colorButton2
+                                            : Colors.transparent,
+                                        borderRadius: Constanst.borderStyle1,
+                                      ),
+                                      child: InkWell(
+                                        onTap: () {
+                                          print(
+                                              "wkwkwk: ${controller.listNotifikasi.value[index]['notifikasi'][idx]}");
+
+                                          if (emIdPengaju !=
+                                                  AppData.informasiUser![0]
+                                                      .em_id &&
+                                              idDetail != null) {
+                                            if (view == 0) {
+                                              controller
+                                                  .aksilihatNotif(idNotif);
+                                            }
+                                            controller.routeApprovalNotif(
+                                              title: titleNotif,
+                                              emIdPengaju:
+                                                  emIdPengaju.toString(),
+                                              idx: idDetail.toString(),
+                                              delegasi: emId.toString(),
+                                              url: urlRoute,
+                                              context: context,
+                                            );
+                                          } else if (emIdPengaju.toString() ==
+                                              AppData.informasiUser![0].em_id) {
+                                            if (view == 0) {
+                                              controller
+                                                  .aksilihatNotif(idNotif);
+                                            }
+                                            controller.redirectToPage(
+                                                urlRoute, idDetail);
+                                          } else {
+                                            if (view == 0) {
+                                              controller
+                                                  .aksilihatNotif(idNotif);
+                                            }
+                                          }
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              16.0, 12.0, 16.0, 12.0),
+                                          child: IntrinsicHeight(
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                statusNotif == 1
                                                     ? Icon(
-                                                        Iconsax.sms5,
-                                                        color: Constanst
-                                                            .fgSecondary,
+                                                        Iconsax.tick_circle,
+                                                        color: Constanst.color5,
                                                         size: 24,
                                                       )
-                                                    : statusNotif == 0
+                                                    : statusNotif == 2
                                                         ? Icon(
-                                                            Iconsax
-                                                                .close_circle,
+                                                            Iconsax.sms5,
                                                             color: Constanst
-                                                                .color4,
+                                                                .fgSecondary,
                                                             size: 24,
                                                           )
-                                                        : const SizedBox(),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 5),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
+                                                        : statusNotif == 0
+                                                            ? Icon(
+                                                                Iconsax
+                                                                    .close_circle,
+                                                                color: Constanst
+                                                                    .color4,
+                                                                size: 24,
+                                                              )
+                                                            : const SizedBox(),
+                                                const SizedBox(width: 12),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 5),
+                                                    child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            titleNotif,
-                                                            style: GoogleFonts.inter(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Constanst
-                                                                    .fgPrimary,
-                                                                fontSize: 16),
-                                                          ),
+                                                        Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Expanded(
+                                                              child: Text(
+                                                                titleNotif,
+                                                                style: GoogleFonts.inter(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: Constanst
+                                                                        .fgPrimary,
+                                                                    fontSize:
+                                                                        16),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 4),
+                                                        Text(
+                                                          deskripsiNotif,
+                                                          style: GoogleFonts.inter(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: Constanst
+                                                                  .fgSecondary,
+                                                              fontSize: 14),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        Text(
+                                                          "$jam WIB",
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                          style: GoogleFonts.inter(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: Constanst
+                                                                  .fgSecondary,
+                                                              fontSize: 14),
                                                         ),
                                                       ],
                                                     ),
-                                                    const SizedBox(height: 4),
-                                                    Text(
-                                                      deskripsiNotif,
-                                                      style: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: Constanst
-                                                              .fgSecondary,
-                                                          fontSize: 14),
-                                                    ),
-                                                    const SizedBox(height: 8),
-                                                    Text(
-                                                      "$jam WIB",
-                                                      textAlign:
-                                                          TextAlign.right,
-                                                      style: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: Constanst
-                                                              .fgSecondary,
-                                                          fontSize: 14),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                Divider(
-                                  thickness: 1,
-                                  height: 0,
-                                  color: Constanst.fgBorder,
-                                ),
-                              ],
-                            );
-                          }),
-                    ),
-                  ],
-                );
-              }),
+                                    Divider(
+                                      thickness: 1,
+                                      height: 0,
+                                      color: Constanst.fgBorder,
+                                    ),
+                                  ],
+                                );
+                              }),
+                        ),
+                      ],
+                    );
+                  }),
     );
   }
 

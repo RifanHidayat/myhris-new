@@ -183,7 +183,6 @@ class DashboardController extends GetxController {
   }
 
   void initData() async {
-    final box = GetStorage();
     absenMasukKeluarOffline.value = await SqliteDatabaseHelper().getAbsensi();
     print("heii:${absenMasukKeluarOffline.value}");
     // SqliteDatabaseHelper().deleteAbsensi();
@@ -225,12 +224,12 @@ class DashboardController extends GetxController {
       checkStatusPermission();
       checkHakAkses();
     } else {
+      GetStorage().write("face_recog", true);
       // authController.login.value = false;
       print("kondisi: ${authController.isConnected.value}");
       dashboardStatusAbsen.value = AppData.statusAbsen;
 
       DateTime startDate = DateTime.now();
-      box.write("face_recog", true);
       getBannerDashboard();
       // getMenuDashboard();
       loadMenuShowInMain();
@@ -1619,96 +1618,93 @@ class DashboardController extends GetxController {
     var getEmid = dataUser![0].em_id;
     var body = {'em_id': getEmid};
     var connect = Api.connectionApi("post", body, "refresh_employee");
-    Future.delayed(const Duration(milliseconds: 500), () {
-      connect.then((dynamic res) async {
-        var valueBody = jsonDecode(res.body);
-        print("data refresh employee ${valueBody}");
+    connect.then((dynamic res) async {
+      var valueBody = jsonDecode(res.body);
+      print("data refresh employee ${valueBody}");
 
-        if (valueBody['status'] == false) {
-          UtilsAlert.showToast(valueBody['message']);
-          Navigator.pop(Get.context!);
-        } else {
-          print("data employee baru new ${valueBody['data']}");
-          AppData.informasiUser = null;
-          List<UserModel> getData = [];
-          var isBackDateSakit = "0";
-          var isBackDateIzin = "0";
-          var isBackDateCuti = "0";
-          var isBackDateTugasLuar = "0";
-          var isBackDateDinasLuar = "0";
-          var isBackDateLembur = "0";
+      if (valueBody['status'] == false) {
+        UtilsAlert.showToast(valueBody['message']);
+        Navigator.pop(Get.context!);
+      } else {
+        print("data employee baru new ${valueBody['data']}");
+        AppData.informasiUser = null;
+        List<UserModel> getData = [];
+        var isBackDateSakit = "0";
+        var isBackDateIzin = "0";
+        var isBackDateCuti = "0";
+        var isBackDateTugasLuar = "0";
+        var isBackDateDinasLuar = "0";
+        var isBackDateLembur = "0";
 
-          for (var element in valueBody['data']) {
-            if (element['back_date'] == "" || element['back_date'] == null) {
-            } else {
-              List isBackDates = element['back_date'].toString().split(',');
-              isBackDateSakit = isBackDates[0].toString();
-              isBackDateIzin = isBackDates[1].toString();
-              isBackDateCuti = isBackDates[2].toString();
-              isBackDateTugasLuar = isBackDates[3].toString();
-              isBackDateDinasLuar = isBackDates[4].toString();
-              isBackDateLembur = isBackDates[5].toString();
-            }
-            var data = UserModel(
-                isBackDateSakit: isBackDateSakit,
-                isBackDateIzin: isBackDateIzin,
-                isBackDateCuti: isBackDateCuti,
-                isBackDateTugasLuar: isBackDateTugasLuar,
-                isBackDateDinasLuar: isBackDateDinasLuar,
-                isBackDateLembur: isBackDateLembur,
-                em_id: element['em_id'] ?? "",
-                des_id: element['des_id'] ?? 0,
-                dep_id: element['dep_id'] ?? 0,
-                dep_group: element['dep_group'] ?? 0,
-                full_name: element['full_name'] ?? "",
-                em_email: element['em_email'] ?? "",
-                em_phone: element['em_phone'] ?? "",
-                em_birthday: element['em_birthday'] ?? "1999-09-09",
-                em_gender: element['em_gender'] ?? "",
-                em_image: element['em_image'] ?? "",
-                em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-                em_status: element['em_status'] ?? "",
-                em_blood_group: element['em_blood_group'] ?? "",
-                posisi: element['posisi'] ?? "",
-                emp_jobTitle: element['emp_jobTitle'] ?? "",
-                emp_departmen: element['emp_departmen'] ?? "",
-                em_control: element['em_control'] ?? 0,
-                em_control_acess: element['em_control_access'] ?? 0,
-                emp_att_working: element['emp_att_working'] ?? 0,
-                em_hak_akses: element['em_hak_akses'] ?? "",
-                beginPayroll: element['begin_payroll'],
-                endPayroll: element['end_payroll'],
-                startTime: element['time_attendance'].toString().split(',')[0],
-                endTime: element['time_attendance'].toString().split(',')[1],
-                branchName: element['branch_name'],
-                nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'],
-                nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'],
-                timeIn: element['time_in'],
-                interval: element['interval'],
-                timeOut: element['time_out'],
-                interval_tracking: element['interval_tracking'],
-                isViewTracking: element['is_view_tracking'],
-                is_tracking: element['is_tracking']);
-            print(element['posisi']);
-            getData.add(data);
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.setString(
-                "interval_tracking", element['interval_tracking'].toString());
-            await prefs.setString("em_id", element['em_id'].toString());
-            await prefs.setString("", element['em_id'].toString());
-
-            print(
-                "interval tracking ${element['interval_tracking'].toString()}");
+        for (var element in valueBody['data']) {
+          if (element['back_date'] == "" || element['back_date'] == null) {
+          } else {
+            List isBackDates = element['back_date'].toString().split(',');
+            isBackDateSakit = isBackDates[0].toString();
+            isBackDateIzin = isBackDates[1].toString();
+            isBackDateCuti = isBackDates[2].toString();
+            isBackDateTugasLuar = isBackDates[3].toString();
+            isBackDateDinasLuar = isBackDates[4].toString();
+            isBackDateLembur = isBackDates[5].toString();
           }
-          AppData.informasiUser = getData;
+          var data = UserModel(
+              isBackDateSakit: isBackDateSakit,
+              isBackDateIzin: isBackDateIzin,
+              isBackDateCuti: isBackDateCuti,
+              isBackDateTugasLuar: isBackDateTugasLuar,
+              isBackDateDinasLuar: isBackDateDinasLuar,
+              isBackDateLembur: isBackDateLembur,
+              em_id: element['em_id'] ?? "",
+              des_id: element['des_id'] ?? 0,
+              dep_id: element['dep_id'] ?? 0,
+              dep_group: element['dep_group'] ?? 0,
+              full_name: element['full_name'] ?? "",
+              em_email: element['em_email'] ?? "",
+              em_phone: element['em_phone'] ?? "",
+              em_birthday: element['em_birthday'] ?? "1999-09-09",
+              em_gender: element['em_gender'] ?? "",
+              em_image: element['em_image'] ?? "",
+              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+              em_status: element['em_status'] ?? "",
+              em_blood_group: element['em_blood_group'] ?? "",
+              posisi: element['posisi'] ?? "",
+              emp_jobTitle: element['emp_jobTitle'] ?? "",
+              emp_departmen: element['emp_departmen'] ?? "",
+              em_control: element['em_control'] ?? 0,
+              em_control_acess: element['em_control_access'] ?? 0,
+              emp_att_working: element['emp_att_working'] ?? 0,
+              em_hak_akses: element['em_hak_akses'] ?? "",
+              beginPayroll: element['begin_payroll'],
+              endPayroll: element['end_payroll'],
+              startTime: element['time_attendance'].toString().split(',')[0],
+              endTime: element['time_attendance'].toString().split(',')[1],
+              branchName: element['branch_name'],
+              nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'],
+              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'],
+              timeIn: element['time_in'],
+              interval: element['interval'],
+              timeOut: element['time_out'],
+              interval_tracking: element['interval_tracking'],
+              isViewTracking: element['is_view_tracking'],
+              is_tracking: element['is_tracking']);
+          print(element['posisi']);
+          getData.add(data);
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString(
+              "interval_tracking", element['interval_tracking'].toString());
+          await prefs.setString("em_id", element['em_id'].toString());
+          await prefs.setString("", element['em_id'].toString());
 
-          getUserInfo();
-
-          controllerTracking.isLoadingDetailTracking.value = false;
-          controllerTracking.isTracking();
+          print("interval tracking ${element['interval_tracking'].toString()}");
         }
-        //   Api().validateAuth(res.statusCode );
-      });
+        AppData.informasiUser = getData;
+
+        getUserInfo();
+
+        controllerTracking.isLoadingDetailTracking.value = false;
+        controllerTracking.isTracking();
+      }
+      //   Api().validateAuth(res.statusCode );
     });
   }
 

@@ -37,40 +37,40 @@ class _TugasLuarState extends State<TugasLuar> {
     controller.loadDataDinasLuar();
     if (Get.arguments != null) {
       idx = Get.arguments;
-    }
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (controller.listTugasLuar.isNotEmpty) {
-        for (var item in controller.listTugasLuar.value) {
-          if (item['id'] == idx) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (controller.listTugasLuar.isNotEmpty) {
+          for (var item in controller.listTugasLuar.value) {
+            if (item['id'] == idx) {
+              var alasanReject = item['alasan_reject'] ?? "";
+              var approve;
+              if (item['approve2_by'] == "" ||
+                  item['approve2_by'] == "null" ||
+                  item['approve2_by'] == null) {
+                approve = item['approve_by'];
+              } else {
+                approve = item['approve2_by'];
+              }
+              controller.showDetailRiwayat(
+                  "Tugas Luar", item, approve, alasanReject);
+            }
+          }
+        } else if (controller.listDinasLuar.isNotEmpty) {
+          for (var item in controller.listDinasLuar.value) {
             var alasanReject = item['alasan_reject'] ?? "";
-            var approve;
-            if (item['approve2_by'] == "" ||
-                item['approve2_by'] == "null" ||
-                item['approve2_by'] == null) {
-              approve = item['approve_by'];
+            var approve_by;
+            if (item['apply2_by'] == "" ||
+                item['apply2_by'] == "null" ||
+                item['apply2_by'] == null) {
+              approve_by = item['apply_by'];
             } else {
-              approve = item['approve2_by'];
+              approve_by = item['apply2_by'];
             }
             controller.showDetailRiwayat(
-                "Tugas Luar", item, approve, alasanReject);
+                "Dinas Luar", item, approve_by, alasanReject);
           }
         }
-      } else if (controller.listDinasLuar.isNotEmpty) {
-        for (var item in controller.listDinasLuar.value) {
-          var alasanReject = item['alasan_reject'] ?? "";
-          var approve_by;
-          if (item['apply2_by'] == "" ||
-              item['apply2_by'] == "null" ||
-              item['apply2_by'] == null) {
-            approve_by = item['apply_by'];
-          } else {
-            approve_by = item['apply2_by'];
-          }
-          controller.showDetailRiwayat(
-              "Dinas Luar", item, approve_by, alasanReject);
-        }
-      }
-    });
+      });
+    }
   }
 
   Future<void> refreshData() async {

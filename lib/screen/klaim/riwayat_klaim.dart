@@ -35,25 +35,26 @@ class _KlaimState extends State<Klaim> {
     controller.loadDataKlaim();
     if (Get.arguments != null) {
       idx = Get.arguments;
-    }
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (controller.listKlaim.isNotEmpty) {
-        for (var item in controller.listKlaim.value) {
-          if (item['id'] == idx) {
-            var alasanReject = item['alasan_reject'] ?? "";
-            var approve;
-            if (item['approve2_by'] == "" ||
-                item['approve2_by'] == "null" ||
-                item['approve2_by'] == null) {
-              approve = item['approve_by'];
-            } else {
-              approve = item['approve2_by'];
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (controller.listKlaim.isNotEmpty) {
+          for (var item in controller.listKlaim.value) {
+            if (item['id'] == idx) {
+              var alasanReject = item['alasan_reject'] ?? "";
+              var approve;
+              if (item['approve2_by'] == "" ||
+                  item['approve2_by'] == "null" ||
+                  item['approve2_by'] == null) {
+                approve = item['approve_by'];
+              } else {
+                approve = item['approve2_by'];
+              }
+              controller.showDetailRiwayat(item, approve, alasanReject);
             }
-            controller.showDetailRiwayat(item, approve, alasanReject);
           }
         }
-      }
-    });
+      });
+    }
+
     super.initState();
   }
 
