@@ -1536,7 +1536,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
     var signOutLongLat = index.signout_longlat ?? '';
     var regType = index.reqType ?? 0;
     var attenDate = index.atten_date ?? "";
-    var batasJam = "08:30:00";
+    // var batasJam = "08:30:00";
     var statusView;
     if (placeIn != "") {
       statusView =
@@ -1545,8 +1545,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
     var listJamMasuk = (jamMasuk!.split(':'));
     var listJamKeluar = (jamKeluar!.split(':'));
 
-    var waktuMasuk = "$attenDate $jamMasuk";
-    var batasWaktu = "$attenDate $batasJam";
+    // var waktuMasuk = "$attenDate $jamMasuk";
+    // var batasWaktu = "$attenDate $batasJam";
 // Pastikan formatnya benar sebelum parsing
     // var perhitunganJamMasuk1 =
     //     830 - int.parse("${listJamMasuk[0]}${listJamMasuk[1]}");
@@ -1898,7 +1898,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                     //     ada asen
                     Column(
                         children: [
-                          index.atten_date == "" || index.atten_date == null
+                          index.atten_date != "" || index.atten_date != null
                               ?
                               //tidak ada absen
                               index.namaHariLibur != null
@@ -2051,29 +2051,29 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  (DateTime.parse(waktuMasuk)
-                                          .isAfter(DateTime.parse(batasWaktu)))
-                                      ? Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 12.0, bottom: 4.0),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Iconsax.info_circle,
-                                                size: 15,
-                                                color: Constanst.infoLight,
-                                              ),
-                                              const SizedBox(
-                                                width: 8,
-                                              ),
-                                              const TextLabell(
-                                                text: "Terlambat",
-                                                weight: FontWeight.w400,
-                                                size: 11.0,
-                                              ),
-                                            ],
-                                          ))
-                                      : Container(),
+                                  // (DateTime.parse(waktuMasuk)
+                                  //         .isAfter(DateTime.parse(batasWaktu)))
+                                  //     ? Padding(
+                                  //         padding: const EdgeInsets.only(
+                                  //             left: 12.0, bottom: 4.0),
+                                  //         child: Row(
+                                  //           children: [
+                                  //             Icon(
+                                  //               Iconsax.info_circle,
+                                  //               size: 15,
+                                  //               color: Constanst.infoLight,
+                                  //             ),
+                                  //             const SizedBox(
+                                  //               width: 8,
+                                  //             ),
+                                  //             const TextLabell(
+                                  //               text: "Terlambat",
+                                  //               weight: FontWeight.w400,
+                                  //               size: 11.0,
+                                  //             ),
+                                  //           ],
+                                  //         ))
+                                  //     : Container(),
                                   Row(
                                     children: [
                                       Expanded(

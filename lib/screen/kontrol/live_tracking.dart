@@ -696,7 +696,11 @@ class _LiveTrackingState extends State<LiveTracking> {
                           setState(() =>
                               controllerTracking.isTrackingLokasi.value = true);
 
-                          controllerTracking.detailTracking(emIdEmployee: '');
+                          // controllerTracking.detailTrackings.clear();
+
+                          // controllerTracking.detailTracking(emIdEmployee: '');
+
+                          // controllerTracking.refreshPage();
 
                           // AppData.informasiUser![0].is_tracking = "1";
                           controllerDashboard.updateInformasiUser();

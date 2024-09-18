@@ -558,6 +558,39 @@ class UtilsAlert {
     );
   }
 
+  static shimmerNotifikasiInbox(BuildContext context) {
+    return ListView.builder(
+      itemCount: 8, // Jumlah item shimmer yang ingin ditampilkan
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Column(
+            children: [
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  width: double.infinity,
+                  height: 100.0, // Tinggi persegi panjang shimmer
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius:
+                        BorderRadius.circular(5.0), // Sudut melengkung
+                  ),
+                ),
+              ),
+              SizedBox(height: 8.0), // Jarak antara persegi panjang dan divider
+              Divider(
+                color: Colors.grey[300], // Warna divider
+                thickness: 1.0,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   static koneksiBuruk() {
     UtilsAlert.showToast("Periksa koneksi internet anda");
     // showGeneralDialog(

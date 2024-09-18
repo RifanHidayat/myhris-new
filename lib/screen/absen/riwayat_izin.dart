@@ -35,25 +35,25 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
     // controller.changeTypeSelected(2);
     if (Get.arguments != null) {
       idx = Get.arguments;
-    }
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (controller.listHistoryAjuan.isNotEmpty) {
-        for (var item in controller.listHistoryAjuan.value) {
-          if (item['id'] == idx) {
-            var alasanReject = item['alasan_reject'] ?? "";
-            var approve_by;
-            if (item['apply2_by'] == "" ||
-                item['apply2_by'] == "null" ||
-                item['apply2_by'] == null) {
-              approve_by = item['apply_by'];
-            } else {
-              approve_by = item['apply2_by'];
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (controller.listHistoryAjuan.isNotEmpty) {
+          for (var item in controller.listHistoryAjuan.value) {
+            if (item['id'] == idx) {
+              var alasanReject = item['alasan_reject'] ?? "";
+              var approve_by;
+              if (item['apply2_by'] == "" ||
+                  item['apply2_by'] == "null" ||
+                  item['apply2_by'] == null) {
+                approve_by = item['apply_by'];
+              } else {
+                approve_by = item['apply2_by'];
+              }
+              controller.showDetailRiwayat(item, approve_by, alasanReject);
             }
-            controller.showDetailRiwayat(item, approve_by, alasanReject);
           }
         }
-      }
-    });
+      });
+    }
   }
 
   Future<void> refreshData() async {

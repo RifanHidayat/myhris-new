@@ -37,25 +37,25 @@ class _LemburState extends State<Lembur> {
     controller.loadDataLembur();
     if (Get.arguments != null) {
       idx = Get.arguments;
-    }
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (controller.listLembur.isNotEmpty) {
-        for (var item in controller.listLembur.value) {
-          if (item['id'] == idx) {
-            var alasanReject = item['alasan_reject'] ?? "";
-            var approve;
-            if (item['approve2_by'] == "" ||
-                item['approve2_by'] == "null" ||
-                item['approve2_by'] == null) {
-              approve = item['approve_by'];
-            } else {
-              approve = item['approve2_by'];
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (controller.listLembur.isNotEmpty) {
+          for (var item in controller.listLembur.value) {
+            if (item['id'] == idx) {
+              var alasanReject = item['alasan_reject'] ?? "";
+              var approve;
+              if (item['approve2_by'] == "" ||
+                  item['approve2_by'] == "null" ||
+                  item['approve2_by'] == null) {
+                approve = item['approve_by'];
+              } else {
+                approve = item['approve2_by'];
+              }
+              controller.showDetailLembur(item, approve, alasanReject);
             }
-            controller.showDetailLembur(item, approve, alasanReject);
           }
         }
-      }
-    });
+      });
+    }
   }
 
   Future<void> refreshData() async {

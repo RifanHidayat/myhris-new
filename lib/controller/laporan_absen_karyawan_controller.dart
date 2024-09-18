@@ -139,8 +139,8 @@ class LaporanAbsenKaryawanController extends GetxController {
             print('data list ${element} tes');
           });
         }
-        // this.detailRiwayat.refresh();
-        // this.AlldetailRiwayat.refresh();
+        this.historyAbsen.refresh();
+        this.tempHistoryAbsen.refresh();
       }
     });
   }
@@ -185,8 +185,8 @@ class LaporanAbsenKaryawanController extends GetxController {
   //         tampung.add(element);
   //       }
   //     }
-  //     loading.value =
-  //         tampung.length == 0 ? "Data tidak tersedia" : "Memuat data...";
+  // loading.value =
+  //     tampung.length == 0 ? "Data tidak tersedia" : "Memuat data...";
   //     var seen = Set<String>();
   //     List t =
   //         tampung.where((country) => seen.add(country['atten_date'])).toList();
@@ -228,4 +228,138 @@ class LaporanAbsenKaryawanController extends GetxController {
   //     this.detailRiwayat.refresh();
   //   }
   // }
+
+  void filterData(String value) {
+    historyAbsen.clear();
+
+    switch (value) {
+      case '0': // Semua Riwayat
+        prosesLoad.value = true;
+        historyAbsen.value = tempHistoryAbsen.toList();
+        Set<String> seenDates = {};
+        historyAbsen.value = historyAbsen.where((event) {
+          if (seenDates.contains(event.date)) {
+            return false;
+          } else {
+            seenDates.add(event.date);
+            return true;
+          }
+        }).toList();
+
+        historyAbsen.value.forEach((element) {
+          var data = tempHistoryAbsen
+              .where((p0) => p0.date == element.date)
+              .where((p0) => p0.id != element.id)
+              .toList();
+          if (data.length > 0) {
+            element.turunan = data;
+          } else {
+            element.turunan = [];
+          }
+        });
+        prosesLoad.value = false;
+        break;
+      case '1': // Terlambat absen masuk (signin_time > 08:30)
+        prosesLoad.value = true;
+        historyAbsen.value = tempHistoryAbsen
+            .where((element) => _isLateSignin(element.signin_time.toString()))
+            .toList();
+        Set<String> seenDates = {};
+        historyAbsen.value = historyAbsen.where((event) {
+          if (seenDates.contains(event.date)) {
+            return false;
+          } else {
+            seenDates.add(event.date);
+            return true;
+          }
+        }).toList();
+
+        historyAbsen.value.forEach((element) {
+          var data = tempHistoryAbsen
+              .where((p0) => p0.date == element.date)
+              .where((p0) => p0.id != element.id)
+              .toList();
+          if (data.length > 0) {
+            element.turunan = data;
+          } else {
+            element.turunan = [];
+          }
+        });
+        loading.value =
+            historyAbsen.isEmpty ? "Data tidak tersedia" : "Memuat data...";
+        prosesLoad.value = false;
+        break;
+      case '2': // Pulang lebih lama (signout_time > 18:00)
+        prosesLoad.value = true;
+        historyAbsen.value = tempHistoryAbsen
+            .where((element) => _isLateSignout(element.signout_time.toString()))
+            .toList();
+        Set<String> seenDates = {};
+        historyAbsen.value = historyAbsen.where((event) {
+          if (seenDates.contains(event.date)) {
+            return false;
+          } else {
+            seenDates.add(event.date);
+            return true;
+          }
+        }).toList();
+
+        historyAbsen.value.forEach((element) {
+          var data = tempHistoryAbsen
+              .where((p0) => p0.date == element.date)
+              .where((p0) => p0.id != element.id)
+              .toList();
+          if (data.length > 0) {
+            element.turunan = data;
+          } else {
+            element.turunan = [];
+          }
+        });
+        loading.value =
+            historyAbsen.isEmpty ? "Data tidak tersedia" : "Memuat data...";
+        prosesLoad.value = false;
+        break;
+      case '3': // Tidak absen keluar (signout_time == "00:00:00")
+        prosesLoad.value = true;
+        historyAbsen.value = tempHistoryAbsen
+            .where((element) => element.signout_time == "00:00:00")
+            .toList();
+        Set<String> seenDates = {};
+        historyAbsen.value = historyAbsen.where((event) {
+          if (seenDates.contains(event.date)) {
+            return false;
+          } else {
+            seenDates.add(event.date);
+            return true;
+          }
+        }).toList();
+
+        historyAbsen.value.forEach((element) {
+          var data = tempHistoryAbsen
+              .where((p0) => p0.date == element.date)
+              .where((p0) => p0.id != element.id)
+              .toList();
+          if (data.length > 0) {
+            element.turunan = data;
+          } else {
+            element.turunan = [];
+          }
+        });
+        loading.value =
+            historyAbsen.isEmpty ? "Data tidak tersedia" : "Memuat data...";
+        prosesLoad.value = false;
+        break;
+    }
+
+    historyAbsen.refresh();
+    historyAbsenShow.refresh();
+  }
+
+  bool _isLateSignin(String signinTime) {
+    return signinTime.compareTo("08:30:00") > 0;
+  }
+
+  bool _isLateSignout(String signoutTime) {
+    return signoutTime.compareTo("18:00:00") > 0;
+  }
 }

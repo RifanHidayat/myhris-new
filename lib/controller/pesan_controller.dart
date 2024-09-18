@@ -693,7 +693,6 @@ class PesanController extends GetxController {
 
   Future<void> loadAndNavigate(String approvalType,
       Widget Function() detailPage, String idx, BuildContext context) async {
-    isLoading.value = true;
     UtilsAlert.loadingSimpanData(context, "Tunggu Sebentar..");
     await controllerApproval.startLoadData(
         approvalType,
@@ -720,7 +719,6 @@ class PesanController extends GetxController {
           Get.to(detailPage());
         });
       }
-      isLoading.value = false;
     });
   }
 
@@ -1018,6 +1016,7 @@ class PesanController extends GetxController {
   }
 
   void loadNotifikasi() {
+    isLoading.value = true;
     listNotifikasi.value.clear();
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
@@ -1050,7 +1049,10 @@ class PesanController extends GetxController {
         }
         this.listNotifikasi.refresh();
         hitungNotifikasiBelumDibaca();
+        isLoading.value = false;
       }
+    }).catchError((error) {
+      isLoading.value = false;
     });
   }
 

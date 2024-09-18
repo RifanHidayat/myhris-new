@@ -1511,7 +1511,7 @@ class TrackingController extends GetxController {
 
       updateStatus('1');
 
-      detailTracking(emIdEmployee: '');
+      // detailTracking(emIdEmployee: '');
 
       // AppData.informasiUser![0].is_tracking = "1";
       // controllerDashboard.updateInformasiUser();

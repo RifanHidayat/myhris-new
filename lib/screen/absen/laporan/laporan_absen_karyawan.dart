@@ -79,117 +79,123 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Row(
-                  //   children: [
-                  //     InkWell(
-                  //       customBorder: const RoundedRectangleBorder(
-                  //           borderRadius:
-                  //               BorderRadius.all(Radius.circular(100))),
-                  //       onTap: () async {
-                  //         await showMenu(
-                  //           context: context,
-                  //           position:
-                  //               const RelativeRect.fromLTRB(17, 235, 17, 0),
-                  //           shape: RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(8.0),
-                  //           ),
-                  //           // initialValue: controller.selectedTypeLembur.value,
-                  //           items: [
-                  //             PopupMenuItem(
-                  //                 value: "0",
-                  //                 onTap: () {
-                  //                   controller.tempNamaStatus1.value =
-                  //                       "Semua Riwayat";
-                  //                   controller.filterData('0');
-                  //                 },
-                  //                 child: Text(
-                  //                   "Semua Riwayat",
-                  //                   style: GoogleFonts.inter(
-                  //                       fontSize: 16.0,
-                  //                       color: Constanst.fgPrimary,
-                  //                       fontWeight: FontWeight.w500),
-                  //                 )),
-                  //             PopupMenuItem(
-                  //                 value: "1",
-                  //                 onTap: () {
-                  //                   controller.tempNamaStatus1.value =
-                  //                       "Terlambat absen masuk";
-                  //                   controller.filterData('1');
-                  //                 },
-                  //                 child: Text(
-                  //                   "Terlambat absen masuk",
-                  //                   style: GoogleFonts.inter(
-                  //                       fontSize: 16.0,
-                  //                       color: Constanst.fgPrimary,
-                  //                       fontWeight: FontWeight.w500),
-                  //                 )),
-                  //             PopupMenuItem(
-                  //                 value: "2",
-                  //                 onTap: () {
-                  //                   controller.tempNamaStatus1.value =
-                  //                       "Pulang lebih lama";
-                  //                   controller.filterData('2');
-                  //                 },
-                  //                 child: Text(
-                  //                   "Pulang lebih lama",
-                  //                   style: GoogleFonts.inter(
-                  //                       fontSize: 16.0,
-                  //                       color: Constanst.fgPrimary,
-                  //                       fontWeight: FontWeight.w500),
-                  //                 )),
-                  //             PopupMenuItem(
-                  //                 value: "3",
-                  //                 onTap: () {
-                  //                   controller.tempNamaStatus1.value =
-                  //                       "Tidak absen keluar";
-                  //                   controller.filterData('3');
-                  //                 },
-                  //                 child: Text(
-                  //                   "Tidak absen keluar",
-                  //                   style: GoogleFonts.inter(
-                  //                       fontSize: 16.0,
-                  //                       color: Constanst.fgPrimary,
-                  //                       fontWeight: FontWeight.w500),
-                  //                 ))
-                  //           ],
-                  //         );
-                  //       },
-                  //       child: Container(
-                  //         decoration: BoxDecoration(
-                  //             borderRadius: BorderRadius.circular(100),
-                  //             border: Border.all(color: Constanst.border)),
-                  //         child: Padding(
-                  //           padding: const EdgeInsets.only(
-                  //               top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
-                  //           child: Row(
-                  //             children: [
-                  //               Row(
-                  //                 crossAxisAlignment: CrossAxisAlignment.start,
-                  //                 children: [
-                  //                   Text(
-                  //                     controller.tempNamaStatus1.value,
-                  //                     style: GoogleFonts.inter(
-                  //                         color: Constanst.fgSecondary,
-                  //                         fontSize: 14,
-                  //                         fontWeight: FontWeight.w500),
-                  //                   ),
-                  //                   Padding(
-                  //                     padding: const EdgeInsets.only(left: 4),
-                  //                     child: Icon(
-                  //                       Iconsax.arrow_down_1,
-                  //                       color: Constanst.fgSecondary,
-                  //                       size: 18,
-                  //                     ),
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  Obx(
+                    () => Row(
+                      children: [
+                        InkWell(
+                          customBorder: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100))),
+                          onTap: () async {
+                            await showMenu(
+                              context: context,
+                              position:
+                                  const RelativeRect.fromLTRB(17, 150, 17, 0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              // initialValue: controller.selectedTypeLembur.value,
+                              items: [
+                                PopupMenuItem(
+                                    value: "0",
+                                    onTap: () {
+                                      controller.tempNamaStatus1.value =
+                                          "Semua Riwayat";
+                                      controller.filterData('0');
+                                    },
+                                    child: Text(
+                                      "Semua Riwayat",
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16.0,
+                                          color: Constanst.fgPrimary,
+                                          fontWeight: FontWeight.w500),
+                                    )),
+                                PopupMenuItem(
+                                    value: "1",
+                                    onTap: () {
+                                      controller.tempNamaStatus1.value =
+                                          "Terlambat absen masuk";
+                                      controller.filterData('1');
+                                    },
+                                    child: Text(
+                                      "Terlambat absen masuk",
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16.0,
+                                          color: Constanst.fgPrimary,
+                                          fontWeight: FontWeight.w500),
+                                    )),
+                                PopupMenuItem(
+                                    value: "2",
+                                    onTap: () {
+                                      controller.tempNamaStatus1.value =
+                                          "Pulang lebih lama";
+                                      controller.filterData('2');
+                                    },
+                                    child: Text(
+                                      "Pulang lebih lama",
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16.0,
+                                          color: Constanst.fgPrimary,
+                                          fontWeight: FontWeight.w500),
+                                    )),
+                                PopupMenuItem(
+                                    value: "3",
+                                    onTap: () {
+                                      controller.tempNamaStatus1.value =
+                                          "Tidak absen keluar";
+                                      controller.filterData('3');
+                                    },
+                                    child: Text(
+                                      "Tidak absen keluar",
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16.0,
+                                          color: Constanst.fgPrimary,
+                                          fontWeight: FontWeight.w500),
+                                    ))
+                              ],
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                border: Border.all(color: Constanst.border)),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 8.0,
+                                  bottom: 8.0,
+                                  left: 12.0,
+                                  right: 12.0),
+                              child: Row(
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        controller.tempNamaStatus1.value,
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 4),
+                                        child: Icon(
+                                          Iconsax.arrow_down_1,
+                                          color: Constanst.fgSecondary,
+                                          size: 18,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1619,7 +1625,7 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
                     //     ada asen
                     Column(
                         children: [
-                          index.atten_date == "" || index.atten_date == null
+                          index.atten_date != "" || index.atten_date != null
                               ?
                               //tidak ada absen
                               index.namaHariLibur != null
