@@ -28,7 +28,7 @@ class UtilsAlert {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return const AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(15.0))),
             content: Column(
@@ -60,7 +60,7 @@ class UtilsAlert {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(15.0))),
             content: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -87,7 +87,7 @@ class UtilsAlert {
                                 color: Constanst.colorPrimary,
                               )),
                             ),
-                            Padding(
+                            const Padding(
                               padding: EdgeInsets.only(left: 8, top: 5),
                               child: Text(
                                 "Info",
@@ -106,7 +106,7 @@ class UtilsAlert {
                             onTap: () {
                               Navigator.pop(Get.context!);
                             },
-                            child: Icon(
+                            child: const Icon(
                               Iconsax.close_circle,
                               color: Colors.red,
                             ),
@@ -115,7 +115,7 @@ class UtilsAlert {
                       )
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 6,
                   ),
                   Text(
@@ -133,7 +133,7 @@ class UtilsAlert {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(15.0))),
             content: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -141,7 +141,7 @@ class UtilsAlert {
                 children: [
                   Row(
                     children: [
-                      Expanded(
+                      const Expanded(
                         flex: 20,
                         child: Padding(
                             child: CircularProgressIndicator(strokeWidth: 3),
@@ -152,10 +152,10 @@ class UtilsAlert {
                         child: Padding(
                             child: Text(
                               text,
-                              style: TextStyle(fontSize: 14),
+                              style: const TextStyle(fontSize: 14),
                               textAlign: TextAlign.center,
                             ),
-                            padding: EdgeInsets.all(8)),
+                            padding: const EdgeInsets.all(8)),
                       )
                     ],
                   )
@@ -170,7 +170,7 @@ class UtilsAlert {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(15.0))),
             content: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -185,17 +185,17 @@ class UtilsAlert {
                               Iconsax.tick_circle,
                               color: Constanst.colorPrimary,
                             ),
-                            padding: EdgeInsets.all(8)),
+                            padding: const EdgeInsets.all(8)),
                       ),
                       Expanded(
                         flex: 80,
                         child: Padding(
                             child: Text(
                               text,
-                              style: TextStyle(fontSize: 14),
+                              style: const TextStyle(fontSize: 14),
                               textAlign: TextAlign.center,
                             ),
-                            padding: EdgeInsets.all(8)),
+                            padding: const EdgeInsets.all(8)),
                       )
                     ],
                   )
@@ -219,12 +219,12 @@ class UtilsAlert {
                   Container(
                     width: 40,
                     height: 40,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.grey,
                       shape: BoxShape.circle,
                     ),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(left: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -551,7 +551,7 @@ class UtilsAlert {
       child: Shimmer.fromColors(
           baseColor: Colors.grey.shade300,
           highlightColor: Colors.grey.shade100,
-          child: SizedBox(
+          child: const SizedBox(
             height: 100,
             child: Card(child: ListTile(title: Text(''))),
           )),
@@ -559,35 +559,286 @@ class UtilsAlert {
   }
 
   static shimmerNotifikasiInbox(BuildContext context) {
-    return ListView.builder(
-      itemCount: 8, // Jumlah item shimmer yang ingin ditampilkan
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Column(
-            children: [
-              Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
-                child: Container(
-                  width: double.infinity,
-                  height: 100.0, // Tinggi persegi panjang shimmer
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius:
-                        BorderRadius.circular(5.0), // Sudut melengkung
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.only(top: 20.0, left: 16, right: 16),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Container(
+              width: 150,
+              height: 12,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(3),
+              ),
+            ),
+          ),
+        ),
+        // const SizedBox(height: 8),
+        Expanded(
+          child: ListView.builder(
+            itemCount: 8, // Sesuaikan jumlah shimmer
+            itemBuilder: (context, index) {
+              return Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Icon shimmer
+                          Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Baris shimmer untuk pengajuan
+                                Container(
+                                  width: 200,
+                                  height: 12,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                // Baris shimmer untuk deskripsi
+                                Container(
+                                  width: double.infinity,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                                const SizedBox(height: 3),
+                                Container(
+                                  width: double.infinity,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                                const SizedBox(height: 3),
+                                Container(
+                                  width: 150,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                // Baris shimmer untuk waktu
+                                Container(
+                                  width: 100,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                        height:
+                            8.0), // Jarak antara persegi panjang dan divider
+                    Divider(
+                      color: Colors.grey[300], // Warna divider
+                      thickness: 1.0,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  static Widget homeShimmer() {
+    return Padding(
+      padding:
+          const EdgeInsets.only(left: 16.0, right: 16, top: 35, bottom: 16),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Shimmer untuk waktu dan profil bagian atas
+            Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Row(
+                children: [
+                  // Waktu shimmer
+                  Container(
+                    width: 80,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(2.0), // Sudut melengkung
+                    ),
                   ),
+                  const Spacer(),
+                  // Profile image shimmer
+                  const CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+            // Nama dan jabatan shimmer
+            Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 150,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(3.0), // Sudut melengkung
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: 100,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(2.0), // Sudut melengkung
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Kotak besar untuk absensi
+            Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                width: double.infinity,
+                height: 150,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16.0), // Sudut melengkung
                 ),
               ),
-              SizedBox(height: 8.0), // Jarak antara persegi panjang dan divider
-              Divider(
-                color: Colors.grey[300], // Warna divider
-                thickness: 1.0,
+            ),
+            const SizedBox(height: 16),
+            // Menu cepat
+            shimmerMenuDashboard(Get.context!),
+            const SizedBox(height: 8),
+            //pengajuan laporan
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: SizedBox(
+                    width: MediaQuery.of(Get.context!).size.width * 0.45,
+                    height: 80,
+                    child: Card(child: ListTile(title: Text(''))),
+                  ),
+                ),
+                Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: SizedBox(
+                    width: MediaQuery.of(Get.context!).size.width * 0.45,
+                    height: 80,
+                    child: Card(child: ListTile(title: Text(''))),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            //banner
+            shimmerBannerDashboard(Get.context!),
+            const SizedBox(height: 24),
+            // Informasi shimmer
+            Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 120,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(2.0), // Sudut melengkung
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(18.0), // Sudut melengkung
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: 120,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(52.0), // Sudut melengkung
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(18.0), // Sudut melengkung
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -627,7 +878,7 @@ class UtilsAlert {
       barrierDismissible: false,
       context: Get.context!,
       barrierColor: Colors.black54, // space around dialog
-      transitionDuration: Duration(milliseconds: 200),
+      transitionDuration: const Duration(milliseconds: 200),
       transitionBuilder: (context, a1, a2, child) {
         return ScaleTransition(
           scale: CurvedAnimation(
@@ -660,7 +911,7 @@ class UtilsAlert {
       barrierDismissible: false,
       context: Get.context!,
       barrierColor: Colors.black54, // space around dialog
-      transitionDuration: Duration(milliseconds: 200),
+      transitionDuration: const Duration(milliseconds: 200),
       transitionBuilder: (context, a1, a2, child) {
         return ScaleTransition(
           scale: CurvedAnimation(
@@ -694,7 +945,7 @@ class UtilsAlert {
       barrierDismissible: false,
       context: Get.context!,
       barrierColor: Colors.black54, // space around dialog
-      transitionDuration: Duration(milliseconds: 200),
+      transitionDuration: const Duration(milliseconds: 200),
       transitionBuilder: (context, a1, a2, child) {
         return ScaleTransition(
           scale: CurvedAnimation(
@@ -727,7 +978,7 @@ class UtilsAlert {
       barrierDismissible: false,
       context: Get.context!,
       barrierColor: Colors.black54, // space around dialog
-      transitionDuration: Duration(milliseconds: 200),
+      transitionDuration: const Duration(milliseconds: 200),
       transitionBuilder: (context, a1, a2, child) {
         return ScaleTransition(
           scale: CurvedAnimation(

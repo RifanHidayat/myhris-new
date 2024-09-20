@@ -44,6 +44,10 @@ class UserModel {
   var isBackDateTugasLuar;
   var isBackDateDinasLuar;
   var isBackDateLembur;
+  var tanggalBerakhirKontrak;
+  var sisaKontrak;
+  var lamaBekerja;
+  var lamaBekerjaFormat;
 
   UserModel({
     this.em_id,
@@ -87,6 +91,10 @@ class UserModel {
     this.isBackDateTugasLuar,
     this.isBackDateDinasLuar,
     this.isBackDateLembur,
+    this.tanggalBerakhirKontrak,
+    this.sisaKontrak,
+    this.lamaBekerja,
+    this.lamaBekerjaFormat,
   });
 
   Map<String, dynamic> toMap() {
@@ -130,52 +138,61 @@ class UserModel {
       "is_back_date_cuti": isBackDateCuti,
       "is_back_date_dinas_luar": isBackDateDinasLuar,
       "is_back_date_lembur": isBackDateLembur,
-        "is_back_date_tugas_luar": isBackDateTugasLuar,
+      "is_back_date_tugas_luar": isBackDateTugasLuar,
+      "tanggal_berakhir_kontrak": tanggalBerakhirKontrak,
+      "sisa_kontrak": sisaKontrak,
+      "lama_bekerja": lamaBekerja,
+      "lama_bekerja_format": lamaBekerjaFormat,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-        em_id: map['em_id'],
-        des_id: map['des_id'],
-        dep_id: map['dep_id'],
-        dep_group: map['dep_group'],
-        full_name: map['full_name'],
-        em_email: map['em_email'],
-        em_phone: map['em_phone'],
-        em_birthday: map['em_birthday'],
-        em_gender: map['em_gender'],
-        em_image: map['em_image'],
-        em_joining_date: map['em_joining_date'],
-        em_status: map['em_status'],
-        em_blood_group: map['em_blood_group'],
-        posisi: map['posisi'],
-        emp_jobTitle: map['emp_jobTitle'],
-        emp_departmen: map['emp_departmen'],
-        em_control: map['em_control'],
-        em_control_acess: map['em_control_acess'],
-        emp_att_working: map['emp_att_working'],
-        face_recog: map['face_recog'],
-        branchName: map['branch_name'],
-        endPayroll: map['end_payroll'],
-        startTime: map['start_time'],
-        endTime: map['end_time'],
-        beginPayroll: map['begin_payroll'],
-        em_hak_akses: map['em_hak_akses'],
-        nomorBpjsKesehatan: map['nomor_bpjs_kesehatan'],
-        nomorBpjsTenagakerja: map['nomor_bpjs_tenagakerja'],
-        interval: map['interval'],
-        timeIn: map['time_in'],
-        timeOut: map['time_out'],
-        interval_tracking: map['interval_tracking'],
-        isViewTracking: map['is_view_tracking'],
-        isBackDateSakit: map['is_back_date_sakit'],
-        isBackDateIzin: map['is_back_date_izin'],
-        isBackDateCuti: map['is_back_date_cuti'],
-        isBackDateTugasLuar: map['is_back_date_tugas_luar'],
-        isBackDateDinasLuar: map['is_back_date_dinas_luar'],
-        isBackDateLembur: map['is_back_date_lembur'],
-        is_tracking: map['is_tracking']);
+      em_id: map['em_id'],
+      des_id: map['des_id'],
+      dep_id: map['dep_id'],
+      dep_group: map['dep_group'],
+      full_name: map['full_name'],
+      em_email: map['em_email'],
+      em_phone: map['em_phone'],
+      em_birthday: map['em_birthday'],
+      em_gender: map['em_gender'],
+      em_image: map['em_image'],
+      em_joining_date: map['em_joining_date'],
+      em_status: map['em_status'],
+      em_blood_group: map['em_blood_group'],
+      posisi: map['posisi'],
+      emp_jobTitle: map['emp_jobTitle'],
+      emp_departmen: map['emp_departmen'],
+      em_control: map['em_control'],
+      em_control_acess: map['em_control_acess'],
+      emp_att_working: map['emp_att_working'],
+      face_recog: map['face_recog'],
+      branchName: map['branch_name'],
+      endPayroll: map['end_payroll'],
+      startTime: map['start_time'],
+      endTime: map['end_time'],
+      beginPayroll: map['begin_payroll'],
+      em_hak_akses: map['em_hak_akses'],
+      nomorBpjsKesehatan: map['nomor_bpjs_kesehatan'],
+      nomorBpjsTenagakerja: map['nomor_bpjs_tenagakerja'],
+      interval: map['interval'],
+      timeIn: map['time_in'],
+      timeOut: map['time_out'],
+      interval_tracking: map['interval_tracking'],
+      isViewTracking: map['is_view_tracking'],
+      isBackDateSakit: map['is_back_date_sakit'],
+      isBackDateIzin: map['is_back_date_izin'],
+      isBackDateCuti: map['is_back_date_cuti'],
+      isBackDateTugasLuar: map['is_back_date_tugas_luar'],
+      isBackDateDinasLuar: map['is_back_date_dinas_luar'],
+      isBackDateLembur: map['is_back_date_lembur'],
+      is_tracking: map['is_tracking'],
+      tanggalBerakhirKontrak: map['tanggal_berakhir_kontrak'],
+      sisaKontrak: map['sisa_kontrak'],
+      lamaBekerja: map['lama_bekerja'],
+      lamaBekerjaFormat: map['lama_bekerja_format'],
+    );
   }
 
   String toJson() => json.encode(toMap());

@@ -603,7 +603,6 @@ class _PesanState extends State<Pesan> {
                                               idx: idDetail.toString(),
                                               delegasi: emId.toString(),
                                               url: urlRoute,
-                                              context: context,
                                             );
                                           } else if (emIdPengaju.toString() ==
                                               AppData.informasiUser![0].em_id) {

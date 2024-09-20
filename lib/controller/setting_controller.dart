@@ -124,7 +124,6 @@ class SettingController extends GetxController {
 //     DateTime previousMonthDate =
 //         DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
 
-
 //     if (AppData.informasiUser![0].beginPayroll >
 //         AppData.informasiUser![0].endPayroll) {
 //       beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
@@ -148,73 +147,69 @@ class SettingController extends GetxController {
 //     tahunStart.refresh();
 //   }
 
+  void setDate(DateTime date) {
+    var defaultDate = date;
 
+    DateTime tanggalAwalBulan =
+        DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+    // Get.snackbar(
+    //   "Periode: ${DateFormat('yyyy MMMM dd').format(tanggalAwalBulan)}",
+    //   "sampai ${DateFormat('yyyy MMMM dd').format(tanggalAkhirBulan)}",
+    // );
 
+    bulanSelectedSearchHistory.value = "${defaultDate.month}";
+    tahunSelectedSearchHistory.value = "${defaultDate.year}";
+    bulanDanTahunNow.value = "${defaultDate.month}-${defaultDate.year}";
+    stringBulan.value = "${DateFormat('MMMM').format(defaultDate)}";
+    beginPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
+    endPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
 
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+    var startPeriode = DateFormat('yyyy MMMM dd').format(sp);
+    var endPeriode = DateFormat('yyyy MMMM dd').format(ep);
 
- void setDate(DateTime date) {
-  var defaultDate = date;
+    Get.snackbar(
+      "Mulai Payroll: ${startPeriode}",
+      "Selesai Payroll: ${endPeriode}",
+    );
 
-  DateTime tanggalAwalBulan = DateTime(defaultDate.year, defaultDate.month, 1);
-  DateTime tanggalAkhirBulan = DateTime(defaultDate.year, defaultDate.month + 1, 0); 
-  // Get.snackbar(
-  //   "Periode: ${DateFormat('yyyy MMMM dd').format(tanggalAwalBulan)}",
-  //   "sampai ${DateFormat('yyyy MMMM dd').format(tanggalAkhirBulan)}",
-  // );
-
-  bulanSelectedSearchHistory.value = "${defaultDate.month}";
-  tahunSelectedSearchHistory.value = "${defaultDate.year}";
-  bulanDanTahunNow.value = "${defaultDate.month}-${defaultDate.year}";
-  stringBulan.value = "${DateFormat('MMMM').format(defaultDate)}";
-  beginPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
-  endPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
-
-  DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-  DateTime ep = DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-  var startPeriode = DateFormat('yyyy MMMM dd').format(sp);
-  var endPeriode = DateFormat('yyyy MMMM dd').format(ep);
-
-  Get.snackbar(
-    "Mulai Payroll: ${startPeriode}",
-    "Selesai Payroll: ${endPeriode}",
-  );
-
-  DateTime previousMonthDate = DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-
-
-    
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
 
     if (AppData.informasiUser![0].beginPayroll == 1) {
-      beginPayroll.value = "${DateFormat('MMMM').format(dt)}";
-      bulanStart.value = "${DateFormat('MM').format(dt)}";
+      beginPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
+      bulanStart.value = "${DateFormat('MM').format(defaultDate)}";
     } else {
       beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
       bulanStart.value = "${DateFormat('MM').format(previousMonthDate)}";
     }
 
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
+      bulanStart.value = "${DateFormat('MM').format(previousMonthDate)}";
+    } else {
+      beginPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
+      bulanStart.value = "${DateFormat('MM').format(defaultDate)}";
+    }
 
-  if (AppData.informasiUser![0].beginPayroll > AppData.informasiUser![0].endPayroll) {
-    beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
-    bulanStart.value = "${DateFormat('MM').format(previousMonthDate)}";
-  } else {
-    beginPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
-    bulanStart.value = "${DateFormat('MM').format(defaultDate)}";
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
+
+    stringBulan.refresh();
+    beginPayroll.refresh();
+    endPayroll.refresh();
+    bulanSelectedSearchHistory.refresh();
+    tahunSelectedSearchHistory.refresh();
+    bulanDanTahunNow.refresh();
+    bulanEnd.refresh();
+    bulanStart.refresh();
+    tahunStart.refresh();
   }
-
-  AppData.startPeriode = startPeriode;
-  AppData.endPeriode = endPeriode;
-  
-  stringBulan.refresh();
-  beginPayroll.refresh();
-  endPayroll.refresh();
-  bulanSelectedSearchHistory.refresh();
-  tahunSelectedSearchHistory.refresh();
-  bulanDanTahunNow.refresh();
-  bulanEnd.refresh();
-  bulanStart.refresh();
-  tahunStart.refresh();
-}
 
   logout() async {
     // var connectivityResult = await Connectivity().checkConnectivity();
@@ -1329,5 +1324,230 @@ class SettingController extends GetxController {
             ),
           );
         });
+  }
+
+  void lineInfoPenggunaKontrak() async {
+    showGeneralDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      barrierColor: Colors.black54, // space around dialog
+      transitionDuration: const Duration(milliseconds: 200),
+      transitionBuilder: (context, a1, a2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+              parent: a1,
+              curve: Curves.elasticOut,
+              reverseCurve: Curves.easeOutCubic),
+          child: Dialog(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              // margin: const EdgeInsets.only(
+              //     top: 0), // Memastikan kotak berada di bawah lingkaran
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.only(
+                right: 16,
+                left: 16,
+                bottom: 32,
+                top: 8,
+              ), // Memberi jarak di dalam kotak
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment
+                        .center, // Sejajarkan semua elemen secara vertikal
+                    children: [
+                      Image.asset(
+                        "assets/icon_kontrak.png",
+                        width: 24,
+                        height: 24,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        // Memastikan teks bisa meluas dan tidak terpotong
+                        child: Text(
+                          "Reminder",
+                          style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 17,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          size: 20,
+                          color: Constanst.fgPrimary,
+                        ),
+                        onPressed: () {
+                          Get.back(); // Menutup dialog ketika ikon 'x' ditekan
+                        },
+                        padding:
+                            EdgeInsets.zero, // Menghilangkan padding default
+                        constraints:
+                            const BoxConstraints(), // Mengatur ulang constraints agar ukuran minimal
+                      ),
+                    ],
+                  ),
+                  Divider(
+                    thickness: 1,
+                    height: 0,
+                    color: Constanst.fgBorder,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Pastikan Anda tidak melewati batas waktu penting! kontrak kerja Anda akan segera berakhir",
+                    style: GoogleFonts.inter(
+                      color: Constanst.fgPrimary,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment
+                        .center, // Sejajarkan semua elemen secara vertikal
+                    children: [
+                      Image.asset(
+                        "assets/waktu_tersisa.png",
+                        width: 24,
+                        height: 24,
+                      ),
+                      const SizedBox(width: 8),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Waktu Tersisa",
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgSecondary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            AppData.informasiUser![0].sisaKontrak.toString() !=
+                                    "0"
+                                ? AppData.informasiUser![0].sisaKontrak
+                                    .toString()
+                                : "-",
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgPrimary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Divider(
+                    thickness: 1,
+                    height: 0,
+                    color: Constanst.fgBorder,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment
+                        .center, // Sejajarkan semua elemen secara vertikal
+                    children: [
+                      Image.asset(
+                        "assets/lama_bekerja.png",
+                        width: 24,
+                        height: 24,
+                      ),
+                      const SizedBox(width: 8),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Lama Bekerja",
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgSecondary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            AppData.informasiUser![0].lamaBekerjaFormat
+                                .toString(),
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgPrimary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Divider(
+                    thickness: 1,
+                    height: 0,
+                    color: Constanst.fgBorder,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment
+                        .center, // Sejajarkan semua elemen secara vertikal
+                    children: [
+                      Image.asset(
+                        "assets/tanggal_berakhir.png",
+                        width: 24,
+                        height: 24,
+                      ),
+                      const SizedBox(width: 8),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Tanggal Berakhir",
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgSecondary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            AppData.informasiUser![0].tanggalBerakhirKontrak
+                                        .toString() !=
+                                    ""
+                                ? AppData
+                                    .informasiUser![0].tanggalBerakhirKontrak
+                                : "-",
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgPrimary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      pageBuilder: (BuildContext context, Animation animation,
+          Animation secondaryAnimation) {
+        return null!;
+      },
+    );
   }
 }
