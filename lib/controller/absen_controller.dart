@@ -221,7 +221,7 @@ class AbsenController extends GetxController {
     });
   }
 
-  void getTimeNow() {
+  Future<void> getTimeNow() async {
     var dt = DateTime.now();
     bulanSelectedSearchHistory.value = "${dt.month}";
     tahunSelectedSearchHistory.value = "${dt.year}";
@@ -539,40 +539,10 @@ class AbsenController extends GetxController {
     try {
       //  for (var coordinates in latLongList) {
       double latitude = double.parse(latLongList[0].toString());
-      double longitude =  double.parse(latLongList[1].toString());
+      double longitude = double.parse(latLongList[1].toString());
 
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latitude, longitude);
-      if (placemarks.isNotEmpty) {
-        var place = placemarks.first;
-          var addressData = {
-          'name': place.name ?? '',
-          'locality': place.locality ?? '',
-          'postalCode': place.postalCode ?? '',
-          'country': place.country ?? '',
-          "street":place.street??'',
-          'subLocality':place.subLocality??'',
-          'subAdministrativeArea':place.subAdministrativeArea??'',
-          'administrativeArea':place.administrativeArea??''
-        };
-String formattedAddress = "${place.street}, ${place.name}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.postalCode}";
-addressKeluar.value = formattedAddress;
-      } else {
-        
-      }
-      //  }
-    } catch (e) {
-    }
-  }
-
-   Future<void> convertLatLongListToAddressesin(latLongList) async {
-    // absenLongLatMasuk.clear();
-    try {
-      //  for (var coordinates in latLongList) {
-      double latitude = double.parse(latLongList[0].toString());
-      double longitude =  double.parse(latLongList[1].toString());
-
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
         var place = placemarks.first;
         var addressData = {
@@ -580,19 +550,46 @@ addressKeluar.value = formattedAddress;
           'locality': place.locality ?? '',
           'postalCode': place.postalCode ?? '',
           'country': place.country ?? '',
-          "street":place.street??'',
-          'subLocality':place.subLocality??'',
-          'subAdministrativeArea':place.subAdministrativeArea??'',
-          'administrativeArea':place.administrativeArea??''
+          "street": place.street ?? '',
+          'subLocality': place.subLocality ?? '',
+          'subAdministrativeArea': place.subAdministrativeArea ?? '',
+          'administrativeArea': place.administrativeArea ?? ''
         };
-String formattedAddress = "${place.street}, ${place.name}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.postalCode}";
-addressMasuk.value = formattedAddress;
-      } else {
-        
-      }
+        String formattedAddress =
+            "${place.street}, ${place.name}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.postalCode}";
+        addressKeluar.value = formattedAddress;
+      } else {}
       //  }
-    } catch (e) {
-    }
+    } catch (e) {}
+  }
+
+  Future<void> convertLatLongListToAddressesin(latLongList) async {
+    // absenLongLatMasuk.clear();
+    try {
+      //  for (var coordinates in latLongList) {
+      double latitude = double.parse(latLongList[0].toString());
+      double longitude = double.parse(latLongList[1].toString());
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        var place = placemarks.first;
+        var addressData = {
+          'name': place.name ?? '',
+          'locality': place.locality ?? '',
+          'postalCode': place.postalCode ?? '',
+          'country': place.country ?? '',
+          "street": place.street ?? '',
+          'subLocality': place.subLocality ?? '',
+          'subAdministrativeArea': place.subAdministrativeArea ?? '',
+          'administrativeArea': place.administrativeArea ?? ''
+        };
+        String formattedAddress =
+            "${place.street}, ${place.name}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.postalCode}";
+        addressMasuk.value = formattedAddress;
+      } else {}
+      //  }
+    } catch (e) {}
   }
 
 // latlong convert
@@ -1137,7 +1134,7 @@ addressMasuk.value = formattedAddress;
     return DateFormat('yyyy-MM-dd').format(dateTime);
   }
 
-  void getPosisition() async {
+  Future<void> getPosisition() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     try {
@@ -3099,7 +3096,7 @@ addressMasuk.value = formattedAddress;
     // });
   }
 
-  void employeDetail() {
+  Future<void> employeDetail() async {
     print("load detail employee");
     // UtilsAlert.showLoadingIndicator(Get.context!);
     var dataUser = AppData.informasiUser;
@@ -3179,7 +3176,7 @@ addressMasuk.value = formattedAddress;
     });
   }
 
-  void userShift() {
+  Future<void> userShift() async {
     // UtilsAlert.showLoadingIndicator(Get.context!);
     var dataUser = AppData.informasiUser;
     final box = GetStorage();
@@ -3423,10 +3420,10 @@ addressMasuk.value = formattedAddress;
   void kirimPengajuan(getNomorAjuanTerakhir, status) {
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
-      "address_masuk":addressMasuk.value.toString(),
-      "address_keluar":addressKeluar.value.toString(),
-      "absen_LongLat_Masuk":absenLongLatMasuk.value.toString(),
-      "absenKeluarLongLat":absenKeluarLongLat.value.toString(),
+      "address_masuk": addressMasuk.value.toString(),
+      "address_keluar": addressKeluar.value.toString(),
+      "absen_LongLat_Masuk": absenLongLatMasuk.value.toString(),
+      "absenKeluarLongLat": absenKeluarLongLat.value.toString(),
       "em_id": emId,
       'date': tglAjunan.value,
       'bulan':
@@ -3630,7 +3627,7 @@ addressMasuk.value = formattedAddress;
   }
 
   void nextKirimPengajuan(status) async {
-  // absenMasukKeluar.value = placeCoordinateCheckout.value;
+    // absenMasukKeluar.value = placeCoordinateCheckout.value;
     // if (tglAjunan.value == "") {
     //   UtilsAlert.showToast("Tanggal belum dipilih");
     //   return;

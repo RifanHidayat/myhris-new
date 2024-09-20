@@ -151,6 +151,7 @@ class DashboardController extends GetxController {
 
   var absenOfflineStatus = false.obs;
   // var absenOfflineStatusDua = false.obs;
+  var isLoading = false.obs;
 
   GoogleMapController? mapController;
 
@@ -182,7 +183,7 @@ class DashboardController extends GetxController {
     super.onInit();
   }
 
-  void initData() async {
+  Future<void> initData() async {
     absenMasukKeluarOffline.value = await SqliteDatabaseHelper().getAbsensi();
     print("heii:${absenMasukKeluarOffline.value}");
     // SqliteDatabaseHelper().deleteAbsensi();
@@ -224,6 +225,7 @@ class DashboardController extends GetxController {
       checkStatusPermission();
       checkHakAkses();
     } else {
+      isLoading.value = false;
       GetStorage().write("face_recog", true);
       // authController.login.value = false;
       print("kondisi: ${authController.isConnected.value}");
@@ -377,7 +379,7 @@ class DashboardController extends GetxController {
     );
   }
 
-  void checkAbsenUser(convert, getEmid) {
+  Future<void> checkAbsenUser(convert, getEmid) async {
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
     var startTime = "";
     var endTime = "";
@@ -644,6 +646,8 @@ class DashboardController extends GetxController {
           AppData.signoutTime = signoutTime.value;
           print("hasil signinTime ${signinTime.value}");
           print("hasil signinTime ${signoutTime.value}");
+        } else {
+          isLoading.value = false;
         }
       }).catchError((error) async {
         absenMasukKeluarOffline.value =
@@ -732,6 +736,7 @@ class DashboardController extends GetxController {
           }
           // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
         }
+        isLoading.value = false;
       });
     });
   }
@@ -1080,7 +1085,7 @@ class DashboardController extends GetxController {
     });
   }
 
-  // void checkAbsenUser(convert, getEmid) {
+  // Future<void> checkAbsenUser(convert, getEmid) {
   //   print("view last absen user");
   //   print("tes ${AppData.informasiUser![0].startTime.toString()}");
   //   var startTime = "";
@@ -1179,7 +1184,7 @@ class DashboardController extends GetxController {
   //   });
   // }
 
-  //void checkAbsenUser(convert, getEmid) async {
+  //Future<void> checkAbsenUser(convert, getEmid) async {
   //   // Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
   //   // print(body);
   //   print("view last absen user");
@@ -1323,7 +1328,7 @@ class DashboardController extends GetxController {
   //   // }
   //}
 
-  //   void checkAbsenUser(convert, getEmid) async {
+  //   Future<void> checkAbsenUser(convert, getEmid) async {
   //   // Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
   //   // print(body);
   //   print("view last absen user");
@@ -1475,7 +1480,7 @@ class DashboardController extends GetxController {
     }
   }
 
-  void getDepartemen() {
+  Future<void> getDepartemen() async {
     controllerAbsensi.showButtonlaporan.value = false;
     print("get departement ${controllerAbsensi.showButtonlaporan.value}");
     departementAkses.value = [];
@@ -1538,7 +1543,7 @@ class DashboardController extends GetxController {
     });
   }
 
-  void kirimNotification({
+  Future<void> kirimNotification({
     title,
     body,
     token,
@@ -1546,7 +1551,7 @@ class DashboardController extends GetxController {
     tahun,
   }) async {}
 
-  void getUserInfo() {
+  Future<void> getUserInfo() async {
     var userTampung = AppData.informasiUser!
         .map((element) => {
               'em_id': element.em_id,
@@ -1582,7 +1587,7 @@ class DashboardController extends GetxController {
     getDepartemen();
   }
 
-  void checkHakAkses() {
+  Future<void> checkHakAkses() async {
     var dataUser = AppData.informasiUser;
     var hakAkses = dataUser![0].em_hak_akses;
     print("ini hak akses $hakAkses");
@@ -1595,7 +1600,7 @@ class DashboardController extends GetxController {
     this.viewInformasiSisaKontrak.refresh();
   }
 
-  void checkStatusPermission() {
+  Future<void> checkStatusPermission() async {
     var statusCamera = Permission.camera.status;
     statusCamera.then((value) {
       if (value != PermissionStatus.granted) {
@@ -1611,7 +1616,7 @@ class DashboardController extends GetxController {
     });
   }
 
-  void updateInformasiUser() {
+  Future<void> updateInformasiUser() async {
     controllerTracking.isLoadingDetailTracking.value = true;
     print("informasi hak akseesss");
     var dataUser = AppData.informasiUser;
@@ -1648,45 +1653,50 @@ class DashboardController extends GetxController {
             isBackDateLembur = isBackDates[5].toString();
           }
           var data = UserModel(
-              isBackDateSakit: isBackDateSakit,
-              isBackDateIzin: isBackDateIzin,
-              isBackDateCuti: isBackDateCuti,
-              isBackDateTugasLuar: isBackDateTugasLuar,
-              isBackDateDinasLuar: isBackDateDinasLuar,
-              isBackDateLembur: isBackDateLembur,
-              em_id: element['em_id'] ?? "",
-              des_id: element['des_id'] ?? 0,
-              dep_id: element['dep_id'] ?? 0,
-              dep_group: element['dep_group'] ?? 0,
-              full_name: element['full_name'] ?? "",
-              em_email: element['em_email'] ?? "",
-              em_phone: element['em_phone'] ?? "",
-              em_birthday: element['em_birthday'] ?? "1999-09-09",
-              em_gender: element['em_gender'] ?? "",
-              em_image: element['em_image'] ?? "",
-              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-              em_status: element['em_status'] ?? "",
-              em_blood_group: element['em_blood_group'] ?? "",
-              posisi: element['posisi'] ?? "",
-              emp_jobTitle: element['emp_jobTitle'] ?? "",
-              emp_departmen: element['emp_departmen'] ?? "",
-              em_control: element['em_control'] ?? 0,
-              em_control_acess: element['em_control_access'] ?? 0,
-              emp_att_working: element['emp_att_working'] ?? 0,
-              em_hak_akses: element['em_hak_akses'] ?? "",
-              beginPayroll: element['begin_payroll'],
-              endPayroll: element['end_payroll'],
-              startTime: element['time_attendance'].toString().split(',')[0],
-              endTime: element['time_attendance'].toString().split(',')[1],
-              branchName: element['branch_name'],
-              nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'],
-              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'],
-              timeIn: element['time_in'],
-              interval: element['interval'],
-              timeOut: element['time_out'],
-              interval_tracking: element['interval_tracking'],
-              isViewTracking: element['is_view_tracking'],
-              is_tracking: element['is_tracking']);
+            isBackDateSakit: isBackDateSakit,
+            isBackDateIzin: isBackDateIzin,
+            isBackDateCuti: isBackDateCuti,
+            isBackDateTugasLuar: isBackDateTugasLuar,
+            isBackDateDinasLuar: isBackDateDinasLuar,
+            isBackDateLembur: isBackDateLembur,
+            em_id: element['em_id'] ?? "",
+            des_id: element['des_id'] ?? 0,
+            dep_id: element['dep_id'] ?? 0,
+            dep_group: element['dep_group'] ?? 0,
+            full_name: element['full_name'] ?? "",
+            em_email: element['em_email'] ?? "",
+            em_phone: element['em_phone'] ?? "",
+            em_birthday: element['em_birthday'] ?? "1999-09-09",
+            em_gender: element['em_gender'] ?? "",
+            em_image: element['em_image'] ?? "",
+            em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+            em_status: element['em_status'] ?? "",
+            em_blood_group: element['em_blood_group'] ?? "",
+            posisi: element['posisi'] ?? "",
+            emp_jobTitle: element['emp_jobTitle'] ?? "",
+            emp_departmen: element['emp_departmen'] ?? "",
+            em_control: element['em_control'] ?? 0,
+            em_control_acess: element['em_control_access'] ?? 0,
+            emp_att_working: element['emp_att_working'] ?? 0,
+            em_hak_akses: element['em_hak_akses'] ?? "",
+            beginPayroll: element['begin_payroll'],
+            endPayroll: element['end_payroll'],
+            startTime: element['time_attendance'].toString().split(',')[0],
+            endTime: element['time_attendance'].toString().split(',')[1],
+            branchName: element['branch_name'],
+            nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'],
+            nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'],
+            timeIn: element['time_in'],
+            interval: element['interval'],
+            timeOut: element['time_out'],
+            interval_tracking: element['interval_tracking'],
+            isViewTracking: element['is_view_tracking'],
+            is_tracking: element['is_tracking'],
+            tanggalBerakhirKontrak: element['tanggal_berakhir_kontrak'],
+            sisaKontrak: element['sisa_kontrak'],
+            lamaBekerja: element['lama_bekerja'],
+            lamaBekerjaFormat: element['lama_bekerja_format'],
+          );
           print(element['posisi']);
           getData.add(data);
           final prefs = await SharedPreferences.getInstance();
@@ -1708,7 +1718,7 @@ class DashboardController extends GetxController {
     });
   }
 
-  void updateWorkTime() {
+  Future<void> updateWorkTime() async {
     print("informasi hak akses work schdule");
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser == null || dataUser == "null" || dataUser == ""
@@ -1735,13 +1745,14 @@ class DashboardController extends GetxController {
     });
   }
 
-  void getMenuDashboard() {
+  Future<void> getMenuDashboard() async {
     finalMenu.value.clear();
     var connect = Api.connectionApi("get", {}, "getMenu");
     Future.delayed(const Duration(seconds: 1), () {
       connect.then((dynamic res) {
         if (res == false) {
           // UtilsAlert.koneksiBuruk();
+          isLoading.value = false;
         } else {
           if (res.statusCode == 200) {
             var valueBody = jsonDecode(res.body);
@@ -1781,11 +1792,13 @@ class DashboardController extends GetxController {
             // print(dataFinal);
           }
         }
+      }).catchError((error) {
+        isLoading.value = false;
       });
     });
   }
 
-  void getSizeDevice() {
+  Future<void> getSizeDevice() async {
     double width = MediaQuery.of(Get.context!).size.width;
     double height = MediaQuery.of(Get.context!).size.height;
     tinggiHp.value = height;
@@ -1804,7 +1817,7 @@ class DashboardController extends GetxController {
     }
   }
 
-  void loadMenuShowInMain() async {
+  Future<void> loadMenuShowInMain() async {
     if (authController.isConnected.value) {
       menuShowInMain.value.clear();
       var connect = Api.connectionApi("get", {}, "menu_dashboard",
@@ -1954,7 +1967,7 @@ class DashboardController extends GetxController {
     }
   }
 
-  void loadMenuShowInMainUtama() async {
+  Future<void> loadMenuShowInMainUtama() async {
     if (authController.isConnected.value) {
       showPengumuman.value = false;
       showPkwt.value = false;
@@ -2024,48 +2037,50 @@ class DashboardController extends GetxController {
               }
             }
           }
-        }).catchError((error) async {
-          var menusUtama = await SqliteDatabaseHelper().getMenusUtama();
-          menuShowInMainUtama.value = menusUtama;
+        }).catchError(
+          (error) async {
+            var menusUtama = await SqliteDatabaseHelper().getMenusUtama();
+            menuShowInMainUtama.value = menusUtama;
 
-          print("mehehe: ${menuShowInMainUtama.value}");
+            print("mehehe: ${menuShowInMainUtama.value}");
 
-          if (menuShowInMainUtama.isNotEmpty) {
-            List menuPengumuman = menuShowInMainUtama
-                .where((p0) =>
-                    p0['url'].toString().toLowerCase().trim() ==
-                    "InfoHrd".toLowerCase().toString().trim())
-                .toList();
-            List menuPkwt = menuShowInMainUtama
-                .where((p0) =>
-                    p0['url'].toString().toLowerCase().trim() ==
-                    "PKWT".toLowerCase().toString().trim())
-                .toList();
-            List menuUlangtahun = menuShowInMainUtama
-                .where((p0) =>
-                    p0['url'].toString().toLowerCase().trim() ==
-                    "UlangTahun".toLowerCase().toString().trim())
-                .toList();
-            List menuLaporan = menuShowInMainUtama
-                .where((p0) =>
-                    p0['url'].toString().toLowerCase().trim() ==
-                    "Laporan".toLowerCase().toString().trim())
-                .toList();
+            if (menuShowInMainUtama.isNotEmpty) {
+              List menuPengumuman = menuShowInMainUtama
+                  .where((p0) =>
+                      p0['url'].toString().toLowerCase().trim() ==
+                      "InfoHrd".toLowerCase().toString().trim())
+                  .toList();
+              List menuPkwt = menuShowInMainUtama
+                  .where((p0) =>
+                      p0['url'].toString().toLowerCase().trim() ==
+                      "PKWT".toLowerCase().toString().trim())
+                  .toList();
+              List menuUlangtahun = menuShowInMainUtama
+                  .where((p0) =>
+                      p0['url'].toString().toLowerCase().trim() ==
+                      "UlangTahun".toLowerCase().toString().trim())
+                  .toList();
+              List menuLaporan = menuShowInMainUtama
+                  .where((p0) =>
+                      p0['url'].toString().toLowerCase().trim() ==
+                      "Laporan".toLowerCase().toString().trim())
+                  .toList();
 
-            if (menuPengumuman.isNotEmpty) {
-              showPengumuman.value = true;
+              if (menuPengumuman.isNotEmpty) {
+                showPengumuman.value = true;
+              }
+              if (menuPkwt.isNotEmpty) {
+                showPkwt.value = true;
+              }
+              if (menuUlangtahun.isNotEmpty) {
+                showUlangTahun.value = true;
+              }
+              if (menuLaporan.isNotEmpty) {
+                showLaporan.value = true;
+              }
             }
-            if (menuPkwt.isNotEmpty) {
-              showPkwt.value = true;
-            }
-            if (menuUlangtahun.isNotEmpty) {
-              showUlangTahun.value = true;
-            }
-            if (menuLaporan.isNotEmpty) {
-              showLaporan.value = true;
-            }
-          }
-        });
+          },
+        );
       });
     } else {
       // menuShowInMain.value.clear();
@@ -2112,7 +2127,7 @@ class DashboardController extends GetxController {
     }
   }
 
-  void getInformasiDashboard() async {
+  Future<void> getInformasiDashboard() async {
     print("masuk sini");
     var connect = Api.connectionApi("get", {}, "notice");
     Future.delayed(const Duration(seconds: 1), () {
@@ -2146,7 +2161,7 @@ class DashboardController extends GetxController {
     });
   }
 
-  void getEmployeeUltah(dt) {
+  Future<void> getEmployeeUltah(dt) async {
     employeeUltah.value.clear();
     print("ulang tahun ${dt}");
     var tanggal =
@@ -2167,7 +2182,7 @@ class DashboardController extends GetxController {
     });
   }
 
-  void getEmployeeBelumAbsen() {
+  Future<void> getEmployeeBelumAbsen() async {
     var dt = DateTime.now();
     var tanggal = "${DateFormat('yyyy-MM-dd').format(dt)}";
     Map<String, dynamic> body = {'atten_date': tanggal, 'status': "0"};
@@ -2195,7 +2210,7 @@ class DashboardController extends GetxController {
     });
   }
 
-  // void getMenuDashboard() {
+  // Future<void> getMenuDashboard() {
   //   print("jalan 1");
   //   var connect = Api.connectionApi("get", {}, "menu_dashboard");
   //   connect.then((dynamic res) {
@@ -2217,7 +2232,7 @@ class DashboardController extends GetxController {
   //   });
   // }
 
-  void getBannerDashboard() async {
+  Future<void> getBannerDashboard() async {
     if (authController.isConnected.value) {
       bannerDashboard.value.clear();
       // var connect = Api.connectionApi("get", {}, "banner_dashboard");
@@ -2263,7 +2278,7 @@ class DashboardController extends GetxController {
     }
   }
 
-  void _getTime() async {
+  Future<void> _getTime() async {
     // DateTime startDate = await NTP.now();
     DateTime startDate = DateTime.now();
     final DateTime now = startDate;
@@ -2352,7 +2367,7 @@ class DashboardController extends GetxController {
     }
   }
 
-  void changePageModul(page) {
+  Future<void> changePageModul(page) async {
     selectedPageView.value = page;
     for (var element in menuShowInMain.value) {
       if (element['index'] == page) {
@@ -3280,7 +3295,7 @@ class DashboardController extends GetxController {
     );
   }
 
-  // void widgetButtomSheetFormLaporan() {
+  // Future<void> widgetButtomSheetFormLaporan() {
   //   showModalBottomSheet(
   //     context: Get.context!,
   //     isScrollControlled: true,

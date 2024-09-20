@@ -74,6 +74,9 @@ class AppData {
       LocalStorage.saveToDisk('textPendingKeluar', value);
 
   static set loginOffline(bool value) =>
+      LocalStorage.saveToDisk('loginOffline', value);
+
+  static set firsLogin(bool value) =>
       LocalStorage.saveToDisk('firsLogin', value);
 
   static set infoSettingApp(List<SettingAppModel>? value) {
@@ -149,6 +152,13 @@ class AppData {
   }
 
   static bool get loginOffline {
+    if (LocalStorage.getFromDisk('loginOffline') != null) {
+      return LocalStorage.getFromDisk('loginOffline');
+    }
+    return false;
+  }
+
+  static bool get firsLogin {
     if (LocalStorage.getFromDisk('firsLogin') != null) {
       return LocalStorage.getFromDisk('firsLogin');
     }

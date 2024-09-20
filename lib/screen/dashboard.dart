@@ -81,26 +81,28 @@ class _DashboardState extends State<Dashboard> {
   final WebSocketChannel channel =
       WebSocketChannel.connect(Uri.parse(Api.webSocket));
   Future<void> refreshData() async {
+    controller.isLoading.value = true;
     controller.refreshPagesStatus.value = true;
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() {
-      controller.updateInformasiUser();
-      controllerBpj.employeDetaiBpjs();
-      controllerAbsensi.employeDetail();
-
-      controller.onInit();
-
-      controllerAbsensi.userShift();
-      controller.initData();
+    // setState(() {
+    Future.wait([
+      controller.updateInformasiUser(),
+      controllerBpj.employeDetaiBpjs(),
+      controllerAbsensi.employeDetail(),
+      controllerAbsensi.userShift(),
+      controller.initData(),
       Future.delayed(const Duration(milliseconds: 500), () {
         absenControllre.absenStatus.value = AppData.statusAbsen;
         authController.signinTime.value = controller.signinTime.value;
         authController.signoutTime.value = controller.signoutTime.value;
         // absenControllre.absenStatus.value =
         //     controller.dashboardStatusAbsen.value;
-      });
-      tabbController.checkuserinfo();
-    });
+      }),
+      tabbController.checkuserinfo(),
+    ]);
+    await Future.delayed(const Duration(seconds: 2));
+    controller.onInit();
+    controller.isLoading.value = false;
+    // });
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -441,361 +443,398 @@ class _DashboardState extends State<Dashboard> {
             return true;
           },
           child: Obx(
-            () => Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    // height: MediaQuery.of(context).size.height * 0.4,
-                    decoration: BoxDecoration(
-                        color: Constanst.greyLight50,
-                        image: const DecorationImage(
-                            alignment: Alignment.topCenter,
-                            image: AssetImage('assets/bg_vector.png'),
-                            fit: BoxFit.cover)),
-                    child: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16),
-                        child: Column(
-                          children: [
-                            informasiUser(),
-                            // controller.refreshPagesStatus.value
-                            //     ? UtilsAlert.shimmerInfoPersonal(Get.context!)
-                            //     : Obx(() => informasiUser()),
-                            const SizedBox(height: 16),
-                            cardInfoAbsen(),
-                            const SizedBox(height: 48),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SafeArea(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        top: _isVisible
-                            ? (controller.status.value == "[]" &&
-                                        controller.wfhstatus.value) ||
-                                    (controller.absenOfflineStatus.value)
-                                ? 280.0
-                                : 255.0
-                            : 175.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Constanst.colorWhite,
-                        borderRadius: Constanst.borderStyle3,
-                      ),
-                      child: RefreshIndicator(
-                        onRefresh: refreshData,
-                        child: SingleChildScrollView(
-                          controller: _scrollController,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          // physics: ClampingScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 12),
-                              Center(
-                                child: Container(
-                                    height: 7,
-                                    width: 48,
-                                    decoration: BoxDecoration(
-                                      color: Constanst.colorNeutralBgTertiary,
-                                      borderRadius: Constanst.borderStyle3,
-                                    )),
+            () => controller.isLoading.value
+                ? UtilsAlert.homeShimmer()
+                : Stack(
+                    children: [
+                      Positioned(
+                        top: 0,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          // height: MediaQuery.of(context).size.height * 0.4,
+                          decoration: BoxDecoration(
+                              color: Constanst.greyLight50,
+                              image: const DecorationImage(
+                                  alignment: Alignment.topCenter,
+                                  image: AssetImage('assets/bg_vector.png'),
+                                  fit: BoxFit.cover)),
+                          child: SafeArea(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 16, right: 16),
+                              child: Column(
+                                children: [
+                                  informasiUser(),
+                                  // controller.refreshPagesStatus.value
+                                  //     ? UtilsAlert.shimmerInfoPersonal(Get.context!)
+                                  //     : Obx(() => informasiUser()),
+                                  const SizedBox(height: 16),
+                                  cardInfoAbsen(),
+                                  const SizedBox(height: 48),
+                                ],
                               ),
-                              // controller.menuShowInMain.value.isEmpty
-                              //     ? const SizedBox()
-                              //     : listModul(),
-                              const SizedBox(height: 16),
-                              !authController.isConnected.value
-                                  ? MenuDashboard()
-                                  : controller.menuShowInMain.value.isEmpty
-                                      ? UtilsAlert.shimmerMenuDashboard(
-                                          Get.context!)
-                                      : MenuDashboard(),
-                              authController.isConnected.value
-                                  ? cardFormPengajuan()
-                                  : Container(),
-                              const SizedBox(height: 16),
-                              controller.bannerDashboard.value.isEmpty
-                                  ? const SizedBox()
-                                  : sliderBanner(),
-                              const SizedBox(height: 10),
-
-                              controller.showPengumuman.value == false
-                                  ? const SizedBox()
-                                  : controller.informasiDashboard.value.isEmpty
-                                      ? const SizedBox()
-                                      : Column(
-                                          children: [
-                                            Container(
-                                              width: double.infinity,
-                                              height: 6,
-                                              color: Constanst
-                                                  .colorNeutralBgSecondary,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 16.0,
-                                                  top: 16.0,
-                                                  right: 8.0),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "Informasi",
-                                                    style: GoogleFonts.inter(
-                                                        color:
-                                                            Constanst.fgPrimary,
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                  Material(
-                                                    color: Constanst.colorWhite,
-                                                    child: InkWell(
-                                                      customBorder:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius: Constanst
-                                                            .borderStyle5,
-                                                      ),
-                                                      onTap: () =>
-                                                          Get.to(Informasi(
-                                                        index: 0,
-                                                      )),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .fromLTRB(8.0,
-                                                                3.0, 8.0, 3.0),
-                                                        child: Text(
-                                                          "Lihat semua",
-                                                          style: GoogleFonts.inter(
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              color: Constanst
-                                                                  .infoLight),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-                              controller.showPengumuman.value == false
-                                  ? const SizedBox()
-                                  : controller.informasiDashboard.value.isEmpty
-                                      ? const SizedBox()
-                                      : listInformasi(),
-
-                              controller.showPkwt.value == false
-                                  ? const SizedBox()
-                                  : controllerGlobal
-                                          .employeeSisaCuti.value.isEmpty
-                                      ? const SizedBox()
-                                      : Column(
-                                          children: [
-                                            Container(
-                                              width: double.infinity,
-                                              height: 6,
-                                              color: Constanst
-                                                  .colorNeutralBgSecondary,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 16.0,
-                                                  top: 16.0,
-                                                  right: 8.0),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "Reminder PKWT",
-                                                    style: GoogleFonts.inter(
-                                                        color:
-                                                            Constanst.fgPrimary,
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                  Material(
-                                                    color: Constanst.colorWhite,
-                                                    child: InkWell(
-                                                      customBorder:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius: Constanst
-                                                            .borderStyle5,
-                                                      ),
-                                                      onTap: () =>
-                                                          Get.to(Informasi(
-                                                        index: 3,
-                                                      )),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .fromLTRB(8.0,
-                                                                3.0, 8.0, 3.0),
-                                                        child: Text(
-                                                          "Lihat semua",
-                                                          style: GoogleFonts.inter(
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              color: Constanst
-                                                                  .infoLight),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                              controller.showPkwt.value == false
-                                  ? const SizedBox()
-                                  : controllerGlobal.employeeSisaCuti.isEmpty
-                                      ? const SizedBox()
-                                      : const SizedBox(height: 8),
-                              controller.showPkwt.value == false
-                                  ? const SizedBox()
-                                  : controllerGlobal.employeeSisaCuti.isEmpty
-                                      ? const SizedBox()
-                                      : listReminderPkwt(),
-                              const SizedBox(height: 16),
-
-                              controller.showUlangTahun.value
-                                  ? controller.employeeUltah.isEmpty
-                                      ? const SizedBox()
-                                      : Column(
-                                          children: [
-                                            Container(
-                                              width: double.infinity,
-                                              height: 6,
-                                              color: Constanst
-                                                  .colorNeutralBgSecondary,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 16.0,
-                                                  top: 16.0,
-                                                  right: 8.0),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "Ulang tahun bulan ini",
-                                                    style: GoogleFonts.inter(
-                                                        color:
-                                                            Constanst.fgPrimary,
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                  Material(
-                                                    color: Constanst.colorWhite,
-                                                    child: InkWell(
-                                                      customBorder:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius: Constanst
-                                                            .borderStyle5,
-                                                      ),
-                                                      onTap: () => Get.to(
-                                                        Informasi(index: 1),
-                                                      ),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .fromLTRB(8.0,
-                                                                3.0, 8.0, 3.0),
-                                                        child: Text(
-                                                          "Lihat semua",
-                                                          style: GoogleFonts.inter(
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              color: Constanst
-                                                                  .infoLight),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                  : Container(),
-                              controller.employeeUltah.isEmpty
-                                  ? const SizedBox()
-                                  : const SizedBox(height: 8),
-                              controller.showUlangTahun.value == true
-                                  ? controller.employeeUltah.isEmpty
-                                      ? const SizedBox()
-                                      : listEmployeeUltah()
-                                  : const SizedBox(),
-                              controller.showUlangTahun.value == true
-                                  ? controller.employeeUltah.isEmpty
-                                      ? Container(height: 180)
-                                      : const SizedBox(height: 20)
-                                  : const SizedBox(),
-                            ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                )
+                      SafeArea(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              top: _isVisible
+                                  ? (controller.status.value == "[]" &&
+                                              controller.wfhstatus.value) ||
+                                          (controller.absenOfflineStatus.value)
+                                      ? 280.0
+                                      : 255.0
+                                  : 175.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Constanst.colorWhite,
+                              borderRadius: Constanst.borderStyle3,
+                            ),
+                            child: RefreshIndicator(
+                              onRefresh: refreshData,
+                              child: SingleChildScrollView(
+                                controller: _scrollController,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                // physics: ClampingScrollPhysics(),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 12),
+                                    Center(
+                                      child: Container(
+                                          height: 7,
+                                          width: 48,
+                                          decoration: BoxDecoration(
+                                            color: Constanst
+                                                .colorNeutralBgTertiary,
+                                            borderRadius:
+                                                Constanst.borderStyle3,
+                                          )),
+                                    ),
+                                    // controller.menuShowInMain.value.isEmpty
+                                    //     ? const SizedBox()
+                                    //     : listModul(),
+                                    const SizedBox(height: 16),
+                                    controller.menuShowInMain.value.isEmpty
+                                        ? UtilsAlert.shimmerMenuDashboard(
+                                            Get.context!)
+                                        : MenuDashboard(),
+                                    // MenuDashboard(),
+                                    authController.isConnected.value
+                                        ? cardFormPengajuan()
+                                        : Container(),
+                                    const SizedBox(height: 16),
+                                    controller.bannerDashboard.value.isEmpty
+                                        ? const SizedBox()
+                                        : sliderBanner(),
+                                    // sliderBanner(),
+                                    const SizedBox(height: 10),
 
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 5, right: 5),
-                //   child: Row(
-                //     crossAxisAlignment: CrossAxisAlignment.start,
-                //     children: [
-                //       Expanded(
-                //         child: Text(
-                //           "Menu",
-                //           style: TextStyle(
-                //               fontWeight: FontWeight.bold, fontSize: 14),
-                //         ),
-                //       ),
-                //       Expanded(
-                //         child: Text(
-                //           "Lihat semua",
-                //           textAlign: TextAlign.right,
-                //           style: TextStyle(
-                //               fontWeight: FontWeight.bold,
-                //               color: Constanst.colorPrimary,
-                //               fontSize: 10),
-                //         ),
-                //       )
-                //     ],
-                //   ),
-                // ),
-              ],
-            ),
+                                    controller.showPengumuman.value == false
+                                        ? const SizedBox()
+                                        : controller.informasiDashboard.value
+                                                .isEmpty
+                                            ? const SizedBox()
+                                            : Column(
+                                                children: [
+                                                  Container(
+                                                    width: double.infinity,
+                                                    height: 6,
+                                                    color: Constanst
+                                                        .colorNeutralBgSecondary,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 16.0,
+                                                            top: 16.0,
+                                                            right: 8.0),
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          "Informasi",
+                                                          style: GoogleFonts.inter(
+                                                              color: Constanst
+                                                                  .fgPrimary,
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
+                                                        Material(
+                                                          color: Constanst
+                                                              .colorWhite,
+                                                          child: InkWell(
+                                                            customBorder:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  Constanst
+                                                                      .borderStyle5,
+                                                            ),
+                                                            onTap: () => Get.to(
+                                                                Informasi(
+                                                              index: 0,
+                                                            )),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .fromLTRB(
+                                                                      8.0,
+                                                                      3.0,
+                                                                      8.0,
+                                                                      3.0),
+                                                              child: Text(
+                                                                "Lihat semua",
+                                                                style: GoogleFonts.inter(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: Constanst
+                                                                        .infoLight),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+
+                                    controller.showPengumuman.value == false
+                                        ? const SizedBox()
+                                        : controller.informasiDashboard.value
+                                                .isEmpty
+                                            ? const SizedBox()
+                                            : listInformasi(),
+
+                                    controller.showPkwt.value == false
+                                        ? const SizedBox()
+                                        : controllerGlobal
+                                                .employeeSisaCuti.value.isEmpty
+                                            ? const SizedBox()
+                                            : Column(
+                                                children: [
+                                                  Container(
+                                                    width: double.infinity,
+                                                    height: 6,
+                                                    color: Constanst
+                                                        .colorNeutralBgSecondary,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 16.0,
+                                                            top: 16.0,
+                                                            right: 8.0),
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          "Reminder PKWT",
+                                                          style: GoogleFonts.inter(
+                                                              color: Constanst
+                                                                  .fgPrimary,
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
+                                                        Material(
+                                                          color: Constanst
+                                                              .colorWhite,
+                                                          child: InkWell(
+                                                            customBorder:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  Constanst
+                                                                      .borderStyle5,
+                                                            ),
+                                                            onTap: () => Get.to(
+                                                                Informasi(
+                                                              index: 3,
+                                                            )),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .fromLTRB(
+                                                                      8.0,
+                                                                      3.0,
+                                                                      8.0,
+                                                                      3.0),
+                                                              child: Text(
+                                                                "Lihat semua",
+                                                                style: GoogleFonts.inter(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: Constanst
+                                                                        .infoLight),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                    controller.showPkwt.value == false
+                                        ? const SizedBox()
+                                        : controllerGlobal
+                                                .employeeSisaCuti.isEmpty
+                                            ? const SizedBox()
+                                            : const SizedBox(height: 8),
+                                    controller.showPkwt.value == false
+                                        ? const SizedBox()
+                                        : controllerGlobal
+                                                .employeeSisaCuti.isEmpty
+                                            ? const SizedBox()
+                                            : listReminderPkwt(),
+                                    const SizedBox(height: 16),
+
+                                    controller.showUlangTahun.value
+                                        ? controller.employeeUltah.isEmpty
+                                            ? const SizedBox()
+                                            : Column(
+                                                children: [
+                                                  Container(
+                                                    width: double.infinity,
+                                                    height: 6,
+                                                    color: Constanst
+                                                        .colorNeutralBgSecondary,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 16.0,
+                                                            top: 16.0,
+                                                            right: 8.0),
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          "Ulang tahun bulan ini",
+                                                          style: GoogleFonts.inter(
+                                                              color: Constanst
+                                                                  .fgPrimary,
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
+                                                        Material(
+                                                          color: Constanst
+                                                              .colorWhite,
+                                                          child: InkWell(
+                                                            customBorder:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  Constanst
+                                                                      .borderStyle5,
+                                                            ),
+                                                            onTap: () => Get.to(
+                                                              Informasi(
+                                                                  index: 1),
+                                                            ),
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .fromLTRB(
+                                                                      8.0,
+                                                                      3.0,
+                                                                      8.0,
+                                                                      3.0),
+                                                              child: Text(
+                                                                "Lihat semua",
+                                                                style: GoogleFonts.inter(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: Constanst
+                                                                        .infoLight),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                        : Container(),
+                                    controller.employeeUltah.isEmpty
+                                        ? const SizedBox()
+                                        : const SizedBox(height: 8),
+                                    controller.showUlangTahun.value == true
+                                        ? controller.employeeUltah.isEmpty
+                                            ? const SizedBox()
+                                            : listEmployeeUltah()
+                                        : const SizedBox(),
+                                    controller.showUlangTahun.value == true
+                                        ? controller.employeeUltah.isEmpty
+                                            ? Container(height: 180)
+                                            : const SizedBox(height: 20)
+                                        : const SizedBox(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left: 5, right: 5),
+                      //   child: Row(
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     children: [
+                      //       Expanded(
+                      //         child: Text(
+                      //           "Menu",
+                      //           style: TextStyle(
+                      //               fontWeight: FontWeight.bold, fontSize: 14),
+                      //         ),
+                      //       ),
+                      //       Expanded(
+                      //         child: Text(
+                      //           "Lihat semua",
+                      //           textAlign: TextAlign.right,
+                      //           style: TextStyle(
+                      //               fontWeight: FontWeight.bold,
+                      //               color: Constanst.colorPrimary,
+                      //               fontSize: 10),
+                      //         ),
+                      //       )
+                      //     ],
+                      //   ),
+                      // ),
+                    ],
+                  ),
           ),
         ),
       ),
@@ -2529,7 +2568,7 @@ class _DashboardState extends State<Dashboard> {
                   );
                 }),
             DotsIndicator(
-              dotsCount: controller.bannerDashboard.value.length,
+              dotsCount: controller.bannerDashboard.length,
               position: int.parse("${controller.indexBanner.value}"),
               decorator: DotsDecorator(
                 size: const Size.square(6.0),
@@ -3177,13 +3216,14 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     // controller.updateInformasiUser();
     //controller.initData();
-    absenControllre.getTimeNow();
+    // absenControllre.getTimeNow();
 
     // controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
     //     AppData.informasiUser![0].em_id);
-    controllerBpj.employeDetaiBpjs();
+    // controllerBpj.employeDetaiBpjs();
 
-    controller.initData();
+    // controller.initData();
+    _setIsloading();
 
     // Api().checkLogin();
     // Add a listener to the scroll controller
@@ -3219,9 +3259,9 @@ class _DashboardState extends State<Dashboard> {
     // });
 
     _checkversion();
-    absenControllre.getPosisition();
-    absenControllre.getPlaceCoordinate();
-    print("interval ${AppData.informasiUser![0].interval.toString()}");
+    // absenControllre.getPosisition();
+    // absenControllre.getPlaceCoordinate();
+    print("intervallll ${AppData.informasiUser![0].interval.toString()}");
     // _setTime();
     // } else {
     //   final service = FlutterBackgroundService();
@@ -3238,6 +3278,29 @@ class _DashboardState extends State<Dashboard> {
       // absenControllre.absenStatus.value =
       //     controller.dashboardStatusAbsen.value;
     });
+  }
+
+  void _setIsloading() async {
+    controller.isLoading.value = true;
+    if (AppData.firsLogin == true) {
+      absenControllre.getTimeNow();
+      controllerBpj.employeDetaiBpjs();
+      controller.initData();
+      absenControllre.getPosisition();
+      absenControllre.getPlaceCoordinate();
+      await Future.delayed(const Duration(seconds: 4));
+    } else {
+      await Future.wait([
+        absenControllre.getTimeNow(),
+        controllerBpj.employeDetaiBpjs(),
+        controller.initData(),
+        absenControllre.getPosisition(),
+        absenControllre.getPlaceCoordinate(),
+      ]);
+    }
+    await Future.delayed(const Duration(seconds: 1));
+    controller.isLoading.value = false;
+    AppData.firsLogin = false;
   }
 
   void _checkversion() async {

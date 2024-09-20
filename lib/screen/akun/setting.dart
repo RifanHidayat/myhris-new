@@ -81,58 +81,63 @@ class _SettingState extends State<Setting> {
           child: SafeArea(
             child: SizedBox(
               height: MediaQuery.of(context).size.height,
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Obx(() => Padding(
-                          padding: const EdgeInsets.only(
-                            left: 16,
-                            right: 16,
-                            top: 16,
-                          ),
-                          child: firstLine(),
-                        )),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  infoPeriode(),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  lineInfoPengguna(),
-                  Container(
-                      height: 6,
-                      width: double.infinity,
-                      color: Constanst.colorNeutralBgSecondary),
-                  linePengaturan(),
-                  Container(
-                      height: 6,
-                      width: double.infinity,
-                      color: Constanst.colorNeutralBgSecondary),
-                  lineLainnya(),
-                  Container(
-                      height: 6,
-                      width: double.infinity,
-                      color: Constanst.colorNeutralBgSecondary),
-                  const SizedBox(height: 16),
-                  Text(
-                    "© Copyright 2022 PT. Shan Informasi Sistem",
-                    style: GoogleFonts.inter(
-                        color: Constanst.colorNeutralFgTertiary,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "Build Version 2023.12.20",
-                    style: GoogleFonts.inter(
-                        color: Constanst.colorNeutralFgTertiary,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12),
-                  ),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Obx(() => Padding(
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              right: 16,
+                              top: 16,
+                            ),
+                            child: firstLine(),
+                          )),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, right: 16),
+                      child: infoPeriode(),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    lineInfoPengguna(),
+                    Container(
+                        height: 6,
+                        width: double.infinity,
+                        color: Constanst.colorNeutralBgSecondary),
+                    linePengaturan(),
+                    Container(
+                        height: 6,
+                        width: double.infinity,
+                        color: Constanst.colorNeutralBgSecondary),
+                    lineLainnya(),
+                    Container(
+                        height: 6,
+                        width: double.infinity,
+                        color: Constanst.colorNeutralBgSecondary),
+                    const SizedBox(height: 16),
+                    Text(
+                      "© Copyright 2022 PT. Shan Informasi Sistem",
+                      style: GoogleFonts.inter(
+                          color: Constanst.colorNeutralFgTertiary,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Build Version 2023.12.20",
+                      style: GoogleFonts.inter(
+                          color: Constanst.colorNeutralFgTertiary,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12),
+                    ),
+                  ],
+                ),
               ),
             ),
           )),
@@ -526,14 +531,14 @@ class _SettingState extends State<Setting> {
             child: InkWell(
               customBorder: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12))),
-              // onTap: () => Get.to(InfoKaryawan()),
+              onTap: () => controller.lineInfoPenggunaKontrak(),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Constanst.fgBorder,
                     width: 1.0,
                   ),
-                  color: Constanst.colorNonAktif,
+                  // color: Constanst.colorNonAktif,
                   borderRadius: const BorderRadius.all(Radius.circular(12)),
                 ),
                 child: Padding(
@@ -552,49 +557,74 @@ class _SettingState extends State<Setting> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Kontrak 1",
+                              AppData.informasiUser![0].em_status
+                                      .toString()[0]
+                                      .toUpperCase() +
+                                  AppData.informasiUser![0].em_status
+                                      .toString()
+                                      .substring(1)
+                                      .toLowerCase(),
                               style: GoogleFonts.inter(
-                                  color:
-                                      const Color.fromARGB(168, 166, 167, 158),
+                                  color: Constanst.fgPrimary,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 14),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
                             const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                Text(
-                                  "12-12-2023",
-                                  style: GoogleFonts.inter(
-                                      color: const Color.fromARGB(
-                                          168, 166, 167, 158),
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 12),
-                                ),
-                                Text(
-                                  " • ",
-                                  style: GoogleFonts.inter(
-                                      color: const Color.fromARGB(
-                                          168, 166, 167, 158),
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 7),
-                                ),
-                                Text(
-                                  "5hr",
-                                  style: GoogleFonts.inter(
-                                      color: const Color.fromARGB(
-                                          168, 166, 167, 158),
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 12),
-                                ),
-                              ],
-                            ),
+                            AppData.informasiUser![0].tanggalBerakhirKontrak !=
+                                    ""
+                                ? Row(
+                                    children: [
+                                      Text(
+                                        AppData.informasiUser![0]
+                                            .tanggalBerakhirKontrak
+                                            .toString(),
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 12),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                      Text(
+                                        " • ",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 7),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                      Text(
+                                        AppData.informasiUser![0]
+                                            .tanggalBerakhirKontrak
+                                            .toString(),
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 7),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ],
+                                  )
+                                : Text(
+                                    "-",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
                           ],
                         ),
                       ),
-                      const Icon(
+                      Icon(
                         Icons.arrow_forward_ios_rounded,
                         size: 16,
-                        color: Color.fromARGB(168, 166, 167, 158),
+                        color: Constanst.fgSecondary,
                       ),
                     ],
                   ),
@@ -651,66 +681,72 @@ class _SettingState extends State<Setting> {
                           color: Colors.grey,
                           fontSize: 12,
                         ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       )),
                 ],
               ),
             ],
           ),
-          IconButton(
-            icon: Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: Colors.grey,
-              size: 16,
-            ),
-            onPressed: () {
-              DatePicker.showPicker(
-                Get.context!,
-                pickerModel: CustomMonthPicker(
-                  minTime: DateTime(2020, 1, 1),
-                  maxTime: DateTime(2050, 1, 1),
-                  currentTime: DateTime.now(),
-                ),
-                onConfirm: (time) {
-                  if (time != null) {
-                    print("$time");
-                    var filter = DateFormat('yyyy-MM').format(time);
-                    DateTime previousMonthDate =
-                        DateTime(time.year, time.month - 1, time.day);
+          Expanded(
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Colors.grey,
+                size: 16,
+              ),
+              onPressed: () {
+                DatePicker.showPicker(
+                  Get.context!,
+                  pickerModel: CustomMonthPicker(
+                    minTime: DateTime(2020, 1, 1),
+                    maxTime: DateTime(2050, 1, 1),
+                    currentTime: DateTime.now(),
+                  ),
+                  onConfirm: (time) {
+                    if (time != null) {
+                      print("$time");
+                      var filter = DateFormat('yyyy-MM').format(time);
+                      DateTime previousMonthDate =
+                          DateTime(time.year, time.month - 1, time.day);
 
-                    var array = filter.split('-');
-                    var bulan = array[1];
-                    var tahun = array[0];
-                    controller.stringBulan.value =
-                        DateFormat('MMMM').format(time);
-                    controller.endPayroll.value =
-                        DateFormat('MMMM').format(time);
-
-                    controller.bulanEnd.value = DateFormat('MM').format(time);
-
-                    if (AppData.informasiUser![0].beginPayroll == 1) {
-                      controller.beginPayroll.value =
+                      var array = filter.split('-');
+                      var bulan = array[1];
+                      var tahun = array[0];
+                      controller.stringBulan.value =
                           DateFormat('MMMM').format(time);
-                      controller.bulanStart.value =
-                          DateFormat('MM').format(time);
-                    } else {
-                      controller.beginPayroll.value =
-                          DateFormat('MMMM').format(previousMonthDate);
-                      controller.bulanStart.value =
-                          DateFormat('MM').format(previousMonthDate);
+                      controller.endPayroll.value =
+                          DateFormat('MMMM').format(time);
+
+                      controller.bulanEnd.value = DateFormat('MM').format(time);
+
+                      if (AppData.informasiUser![0].beginPayroll == 1) {
+                        controller.beginPayroll.value =
+                            DateFormat('MMMM').format(time);
+                        controller.bulanStart.value =
+                            DateFormat('MM').format(time);
+                      } else {
+                        controller.beginPayroll.value =
+                            DateFormat('MMMM').format(previousMonthDate);
+                        controller.bulanStart.value =
+                            DateFormat('MM').format(previousMonthDate);
+                      }
+                      AppData.startPeriode =
+                          "${AppData.informasiUser![0].beginPayroll.toString().padLeft(2, '0')}-$bulan-$tahun";
+                      AppData.endPeriode =
+                          "${AppData.informasiUser![0].endPayroll.toString().padLeft(2, '0')}-$bulan-$tahun";
+                      controller.bulanSelectedSearchHistory.value = bulan;
+                      controller.tahunSelectedSearchHistory.value = tahun;
+                      controller.bulanDanTahunNow.value = "$bulan-$tahun";
+                      controller.bulanSelectedSearchHistory.refresh();
+                      controller.tahunSelectedSearchHistory.refresh();
+                      controller.bulanDanTahunNow.refresh();
+                      controller.stringBulan.refresh();
                     }
-                    AppData.startPeriode = "${AppData.informasiUser![0].beginPayroll.toString().padLeft(2,'0')}-$bulan-$tahun";
-                    AppData.endPeriode = "${AppData.informasiUser![0].endPayroll.toString().padLeft(2,'0')}-$bulan-$tahun";
-                    controller.bulanSelectedSearchHistory.value = bulan;
-                    controller.tahunSelectedSearchHistory.value = tahun;
-                    controller.bulanDanTahunNow.value = "$bulan-$tahun";
-                    controller.bulanSelectedSearchHistory.refresh();
-                    controller.tahunSelectedSearchHistory.refresh();
-                    controller.bulanDanTahunNow.refresh();
-                    controller.stringBulan.refresh();
-                  }
-                },
-              );
-            },
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),

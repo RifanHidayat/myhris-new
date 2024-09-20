@@ -41,7 +41,7 @@ class TabbController extends GetxController {
     super.onReady();
   }
 
-  void checkuserinfo() {
+  Future<void> checkuserinfo() async {
     var dataUser = AppData.informasiUser;
     var getKontrolAkses = "${dataUser![0].em_control_acess}";
     var getKontrol = "${dataUser![0].em_control}";

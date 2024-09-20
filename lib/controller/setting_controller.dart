@@ -121,7 +121,8 @@ class SettingController extends GetxController {
     AppData.startPeriode = startPeriode;
     AppData.endPeriode = endPeriode;
     var satuBulanKemudian = DateTime(dt.year, dt.month + 1, dt.day);
-    if (DateTime.parse(beginPayroll.value).isAfter(DateTime.parse(endPayroll.value))){
+    if (DateTime.parse(beginPayroll.value)
+        .isAfter(DateTime.parse(endPayroll.value))) {
       dt = satuBulanKemudian;
     }
     DateTime previousMonthDate = DateTime(dt.year, dt.month - 1, dt.day);
@@ -228,6 +229,231 @@ class SettingController extends GetxController {
     }
   }
 
+  void lineInfoPenggunaKontrak() async {
+    showGeneralDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      barrierColor: Colors.black54, // space around dialog
+      transitionDuration: const Duration(milliseconds: 200),
+      transitionBuilder: (context, a1, a2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+              parent: a1,
+              curve: Curves.elasticOut,
+              reverseCurve: Curves.easeOutCubic),
+          child: Dialog(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              // margin: const EdgeInsets.only(
+              //     top: 0), // Memastikan kotak berada di bawah lingkaran
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.only(
+                right: 16,
+                left: 16,
+                bottom: 32,
+                top: 8,
+              ), // Memberi jarak di dalam kotak
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment
+                        .center, // Sejajarkan semua elemen secara vertikal
+                    children: [
+                      Image.asset(
+                        "assets/icon_kontrak.png",
+                        width: 24,
+                        height: 24,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        // Memastikan teks bisa meluas dan tidak terpotong
+                        child: Text(
+                          "Reminder",
+                          style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 17,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          size: 20,
+                          color: Constanst.fgPrimary,
+                        ),
+                        onPressed: () {
+                          Get.back(); // Menutup dialog ketika ikon 'x' ditekan
+                        },
+                        padding:
+                            EdgeInsets.zero, // Menghilangkan padding default
+                        constraints:
+                            const BoxConstraints(), // Mengatur ulang constraints agar ukuran minimal
+                      ),
+                    ],
+                  ),
+                  Divider(
+                    thickness: 1,
+                    height: 0,
+                    color: Constanst.fgBorder,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Pastikan Anda tidak melewati batas waktu penting! kontrak kerja Anda akan segera berakhir",
+                    style: GoogleFonts.inter(
+                      color: Constanst.fgPrimary,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment
+                        .center, // Sejajarkan semua elemen secara vertikal
+                    children: [
+                      Image.asset(
+                        "assets/waktu_tersisa.png",
+                        width: 24,
+                        height: 24,
+                      ),
+                      const SizedBox(width: 8),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Waktu Tersisa",
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgSecondary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            AppData.informasiUser![0].sisaKontrak.toString() !=
+                                    "0"
+                                ? AppData.informasiUser![0].sisaKontrak
+                                    .toString()
+                                : "-",
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgPrimary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Divider(
+                    thickness: 1,
+                    height: 0,
+                    color: Constanst.fgBorder,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment
+                        .center, // Sejajarkan semua elemen secara vertikal
+                    children: [
+                      Image.asset(
+                        "assets/lama_bekerja.png",
+                        width: 24,
+                        height: 24,
+                      ),
+                      const SizedBox(width: 8),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Lama Bekerja",
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgSecondary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            AppData.informasiUser![0].lamaBekerjaFormat
+                                .toString(),
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgPrimary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Divider(
+                    thickness: 1,
+                    height: 0,
+                    color: Constanst.fgBorder,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment
+                        .center, // Sejajarkan semua elemen secara vertikal
+                    children: [
+                      Image.asset(
+                        "assets/tanggal_berakhir.png",
+                        width: 24,
+                        height: 24,
+                      ),
+                      const SizedBox(width: 8),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Tanggal Berakhir",
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgSecondary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            AppData.informasiUser![0].tanggalBerakhirKontrak
+                                        .toString() !=
+                                    ""
+                                ? AppData
+                                    .informasiUser![0].tanggalBerakhirKontrak
+                                : "-",
+                            style: GoogleFonts.inter(
+                              color: Constanst.fgPrimary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      pageBuilder: (BuildContext context, Animation animation,
+          Animation secondaryAnimation) {
+        return null!;
+      },
+    );
+  }
+
   void aksiEditLastLogin() {
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
@@ -236,7 +462,11 @@ class SettingController extends GetxController {
       'last_login': '0000-00-00 00:00:00',
       'em_id': getEmid
     };
-    var connect = Api.connectionApi("post", body, "edit_last_login_clear",);
+    var connect = Api.connectionApi(
+      "post",
+      body,
+      "edit_last_login_clear",
+    );
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -302,7 +532,11 @@ class SettingController extends GetxController {
       'em_gender': jenisKelamin.value,
       'em_blood_group': golonganDarah.value
     };
-    var connect = Api.connectionApi("post", body, "edit-employee",);
+    var connect = Api.connectionApi(
+      "post",
+      body,
+      "edit-employee",
+    );
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -352,7 +586,11 @@ class SettingController extends GetxController {
     var depId = idDepartemenTerpilih.value;
 
     Map<String, dynamic> body = {'dep_id': depId};
-    var connect = Api.connectionApi("post", body, "cari_informasi_employee",);
+    var connect = Api.connectionApi(
+      "post",
+      body,
+      "cari_informasi_employee",
+    );
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -386,7 +624,11 @@ class SettingController extends GetxController {
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {'val': 'em_id', 'cari': '$getEmid'};
-    var connect = Api.connectionApi("post", body, "whereOnce-employee_history",);
+    var connect = Api.connectionApi(
+      "post",
+      body,
+      "whereOnce-employee_history",
+    );
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -423,7 +665,11 @@ class SettingController extends GetxController {
         'password_lama': passwordLama.value.text,
         'password_baru': passwordBaru.value.text
       };
-      var connect = Api.connectionApi("post", body, "validasiGantiPassword",);
+      var connect = Api.connectionApi(
+        "post",
+        body,
+        "validasiGantiPassword",
+      );
       connect.then((dynamic res) async {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
@@ -448,7 +694,11 @@ class SettingController extends GetxController {
 
   void getPusatBantuan() {
     listPusatBantuan.value.clear();
-    var connect = Api.connectionApi("get", {}, "faq",);
+    var connect = Api.connectionApi(
+      "get",
+      {},
+      "faq",
+    );
     connect.then((dynamic res) {
       if (res == false) {
         //UtilsAlert.koneksiBuruk();
@@ -1071,7 +1321,11 @@ class SettingController extends GetxController {
     };
     print(body);
 
-    var connect = Api.connectionApi("post", body, "edit_foto_user",);
+    var connect = Api.connectionApi(
+      "post",
+      body,
+      "edit_foto_user",
+    );
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);

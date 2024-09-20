@@ -89,7 +89,7 @@ class BpjsController extends GetxController {
     }
   }
 
-  void employeDetaiBpjs() {
+  Future<void> employeDetaiBpjs() async {
     print("employee detail bpjs");
     var dataUser = AppData.informasiUser;
     final box = GetStorage();

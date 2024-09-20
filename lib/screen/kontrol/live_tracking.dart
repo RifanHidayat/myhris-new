@@ -708,10 +708,10 @@ class _LiveTrackingState extends State<LiveTracking> {
                               "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
                           print('hidup');
 
-                          // final service = FlutterBackgroundService();
+                          final service = FlutterBackgroundService();
                           // var isRunning = await service.isRunning();
 
-                          // service.startService();
+                          service.startService();
 
                           setState(() {});
                         } else {
@@ -731,9 +731,9 @@ class _LiveTrackingState extends State<LiveTracking> {
                           print(
                               "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
 
-                          // final service = FlutterBackgroundService();
+                          final service = FlutterBackgroundService();
 
-                          // service.invoke("stopService");
+                          service.invoke("stopService");
 
                           setState(() {});
                           // controllerTracking.latUser.value = 0.0;

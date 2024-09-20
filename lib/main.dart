@@ -639,7 +639,7 @@ void _handleMessage(RemoteMessage message) async {
       var idx = messageData['idx'];
       await Future.delayed(const Duration(seconds: 3), () {
         if (emIdPengaju != AppData.informasiUser![0].em_id && idx != null) {
-          controllerPesan.routeApprovalNotifFCm(
+          controllerPesan.routeApprovalNotif(
             emIdPengaju: emIdPengaju,
             title: route,
             idx: idx,
@@ -710,7 +710,7 @@ Future onSelectNotification(notificationResponse) async {
       var idx = message['idx'];
       await Future.delayed(const Duration(seconds: 2), () {
         if (emIdPengaju != AppData.informasiUser![0].em_id && idx != null) {
-          controllerPesan.routeApprovalNotifFCm(
+          controllerPesan.routeApprovalNotif(
             emIdPengaju: emIdPengaju,
             title: route,
             idx: idx,
