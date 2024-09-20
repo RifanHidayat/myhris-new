@@ -126,6 +126,10 @@ class SettingController extends GetxController {
     }
     DateTime previousMonthDate = DateTime(dt.year, dt.month - 1, dt.day);
 
+
+
+    
+
     if (AppData.informasiUser![0].beginPayroll == 1) {
       beginPayroll.value = "${DateFormat('MMMM').format(dt)}";
       bulanStart.value = "${DateFormat('MM').format(dt)}";
