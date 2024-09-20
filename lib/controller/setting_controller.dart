@@ -124,6 +124,7 @@ class SettingController extends GetxController {
 //     DateTime previousMonthDate =
 //         DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
 
+
 //     if (AppData.informasiUser![0].beginPayroll >
 //         AppData.informasiUser![0].endPayroll) {
 //       beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
@@ -179,6 +180,19 @@ class SettingController extends GetxController {
   );
 
   DateTime previousMonthDate = DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+
+
+    
+
+    if (AppData.informasiUser![0].beginPayroll == 1) {
+      beginPayroll.value = "${DateFormat('MMMM').format(dt)}";
+      bulanStart.value = "${DateFormat('MM').format(dt)}";
+    } else {
+      beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
+      bulanStart.value = "${DateFormat('MM').format(previousMonthDate)}";
+    }
+
 
   if (AppData.informasiUser![0].beginPayroll > AppData.informasiUser![0].endPayroll) {
     beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";

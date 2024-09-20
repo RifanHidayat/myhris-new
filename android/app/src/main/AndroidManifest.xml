@@ -9,9 +9,9 @@
     <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" /> -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_..." />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -81,11 +81,16 @@
         </receiver>
     
 
-          <service
+        <service
             android:name="com.siscom.siscomhris.flutter_background_service.BackgroundService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:foregroundServiceType="location|dataSync"/>
+
+        <service
+            android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="location|dataSync|connectedDevice"/>
+            android:name=".BackgroundService"
+            android:stopWithTask="false"/>
+
         <receiver android:name="com.example.yourapp.MyReceiver"
             android:exported="true"
             android:enabled="true">

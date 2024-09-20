@@ -131,10 +131,8 @@ class AuthController extends GetxController {
         }
       }
     } catch (e) {
-      print("test: ${AppData.isLogin} dan ${AppData.loginOffline}");
       print('Tidak bisa melakukan koneksi ke internet');
       isConnected.value = false;
-      _cancelTimer();
     }
   }
 
@@ -731,8 +729,8 @@ class AuthController extends GetxController {
 
           AppData.emailUser = email.value.text;
           AppData.passwordUser = password.value.text;
-          fillLastLoginUserOffline(getEmId, getData);
-          checkAbsenUserOffline(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          fillLastLoginUserNew(getEmId, getData);
+          checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
               AppData.informasiUser![0].em_id);
 
           if (getAktif == "ACTIVE") {

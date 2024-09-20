@@ -34,25 +34,25 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
     controller.loadDataAjuanCuti();
     if (Get.arguments != null) {
       idx = Get.arguments;
-    }
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (controller.listHistoryAjuan.isNotEmpty) {
-        for (var item in controller.listHistoryAjuan.value) {
-          if (item['id'] == idx) {
-            var alasanReject = item['alasan_reject'] ?? "";
-            var apply_by;
-            if (item['apply2_by'] == "" ||
-                item['apply2_by'] == "null" ||
-                item['apply2_by'] == null) {
-              apply_by = item['apply_by'];
-            } else {
-              apply_by = item['apply2_by'];
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (controller.listHistoryAjuan.isNotEmpty) {
+          for (var item in controller.listHistoryAjuan.value) {
+            if (item['id'] == idx) {
+              var alasanReject = item['alasan_reject'] ?? "";
+              var apply_by;
+              if (item['apply2_by'] == "" ||
+                  item['apply2_by'] == "null" ||
+                  item['apply2_by'] == null) {
+                apply_by = item['apply_by'];
+              } else {
+                apply_by = item['apply2_by'];
+              }
+              controller.showDetailRiwayat(item, apply_by, alasanReject);
             }
-            controller.showDetailRiwayat(item, apply_by, alasanReject);
           }
         }
-      }
-    });
+      });
+    }
   }
 
   Future<void> refreshData() async {
