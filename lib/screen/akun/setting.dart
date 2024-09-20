@@ -55,6 +55,7 @@ class _SettingState extends State<Setting> {
   @override
   void initState() {
     super.initState();
+
     getFace();
     _checkversion();
   }
@@ -638,120 +639,247 @@ class _SettingState extends State<Setting> {
   }
 
   Widget infoPeriode() {
-    return Container(
-      width: 380,
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Constanst.fgBorder,
-          width: 1.0,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.calendar_today, color: Colors.blue),
-              SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Periode",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    ),
-                  ),
-                  Obx(() => Text(
-                        "${controller.beginPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      )),
-                  Obx(() => Text(
-                        "Dari ${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      )),
-                ],
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        var selectedDate =
+            "${controller.tahunSelectedSearchHistory.value}-${controller.bulanEnd.value}-01";
+        DateTime parsedDate;
+        try {
+          parsedDate = DateTime.parse(selectedDate);
+        } catch (e) {
+          parsedDate = DateTime.now();
+        }
+
+        var formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+        print("Formatted date: $formattedDate");
+
+        DatePicker.showPicker(
+          Get.context!,
+          pickerModel: CustomMonthPicker(
+            minTime: DateTime(2020, 1, 1),
+            maxTime: DateTime(2050, 1, 1),
+            currentTime: parsedDate,
           ),
-          Expanded(
-            child: IconButton(
-              icon: Icon(
+          onConfirm: (time) {
+            // if (time != null) {
+            //   print("$time");
+            //   var filter = DateFormat('yyyy-MM').format(time);
+            //   DateTime previousMonthDate =
+            //       DateTime(time.year, time.month - 1, time.day);
+
+            //   var array = filter.split('-');
+            //   var bulan = array[1];
+            //   var tahun = array[0];
+            //   controller.stringBulan.value =
+            //       DateFormat('MMMM').format(time);
+            //   controller.endPayroll.value =
+            //       DateFormat('MMMM').format(time);
+
+            //   controller.bulanEnd.value = DateFormat('MM').format(time);
+
+            //   if (AppData.informasiUser![0].beginPayroll == 1) {
+            //     controller.beginPayroll.value =
+            //         DateFormat('MMMM').format(time);
+            //     controller.bulanStart.value =
+            //         DateFormat('MM').format(time);
+            //   } else {
+            //     controller.beginPayroll.value =
+            //         DateFormat('MMMM').format(previousMonthDate);
+            //     controller.bulanStart.value =
+            //         DateFormat('MM').format(previousMonthDate);
+            //   }
+            //   // AppData.startPeriode =
+            //   //     "${AppData.informasiUser![0].beginPayroll.toString().padLeft(2, '0')}-$bulan-$tahun";
+            //   // AppData.endPeriode =
+            //   //     "${AppData.informasiUser![0].endPayroll.toString().padLeft(2, '0')}-$bulan-$tahun";
+            //   controller.bulanSelectedSearchHistory.value = bulan;
+            //   controller.tahunSelectedSearchHistory.value = tahun;
+            //   controller.bulanDanTahunNow.value = "$bulan-$tahun";
+            //   controller.bulanSelectedSearchHistory.refresh();
+            //   controller.tahunSelectedSearchHistory.refresh();
+            //   controller.bulanDanTahunNow.refresh();
+            //   controller.stringBulan.refresh();
+            // }
+            controller.setDate(DateTime.parse(time.toString()));
+          },
+        );
+      },
+      child: Container(
+        width: 380,
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Constanst.fgBorder,
+            width: 1.0,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.calendar_today, color: Colors.blue),
+                SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Periode",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Obx(() => Text(
+                          "${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        )),
+                    Obx(() => Text(
+                          "Dari ${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        )),
+                  ],
+                ),
+              ],
+            ),
+            Expanded(
+              child: Icon(
                 Icons.arrow_forward_ios_rounded,
                 color: Colors.grey,
                 size: 16,
               ),
-              onPressed: () {
-                DatePicker.showPicker(
-                  Get.context!,
-                  pickerModel: CustomMonthPicker(
-                    minTime: DateTime(2020, 1, 1),
-                    maxTime: DateTime(2050, 1, 1),
-                    currentTime: DateTime.now(),
-                  ),
-                  onConfirm: (time) {
-                    if (time != null) {
-                      print("$time");
-                      var filter = DateFormat('yyyy-MM').format(time);
-                      DateTime previousMonthDate =
-                          DateTime(time.year, time.month - 1, time.day);
-
-                      var array = filter.split('-');
-                      var bulan = array[1];
-                      var tahun = array[0];
-                      controller.stringBulan.value =
-                          DateFormat('MMMM').format(time);
-                      controller.endPayroll.value =
-                          DateFormat('MMMM').format(time);
-
-                      controller.bulanEnd.value = DateFormat('MM').format(time);
-
-                      if (AppData.informasiUser![0].beginPayroll == 1) {
-                        controller.beginPayroll.value =
-                            DateFormat('MMMM').format(time);
-                        controller.bulanStart.value =
-                            DateFormat('MM').format(time);
-                      } else {
-                        controller.beginPayroll.value =
-                            DateFormat('MMMM').format(previousMonthDate);
-                        controller.bulanStart.value =
-                            DateFormat('MM').format(previousMonthDate);
-                      }
-                      AppData.startPeriode =
-                          "${AppData.informasiUser![0].beginPayroll.toString().padLeft(2, '0')}-$bulan-$tahun";
-                      AppData.endPeriode =
-                          "${AppData.informasiUser![0].endPayroll.toString().padLeft(2, '0')}-$bulan-$tahun";
-                      controller.bulanSelectedSearchHistory.value = bulan;
-                      controller.tahunSelectedSearchHistory.value = tahun;
-                      controller.bulanDanTahunNow.value = "$bulan-$tahun";
-                      controller.bulanSelectedSearchHistory.refresh();
-                      controller.tahunSelectedSearchHistory.refresh();
-                      controller.bulanDanTahunNow.refresh();
-                      controller.stringBulan.refresh();
-                    }
-                  },
-                );
-              },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+
+// Widget showReminderr(){
+//   return Center(
+//         child: ElevatedButton(
+//           onPressed: () {
+//             showDialog(
+//               context: context,
+//               builder: (BuildContext context) {
+//                 return Dialog(
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(15.0),
+//                   ),
+//                   child: Padding(
+//                     padding: const EdgeInsets.all(16.0),
+//                     child: Column(
+//                       mainAxisSize: MainAxisSize.min,
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Row(
+//                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                           children: [
+//                             Text(
+//                               "Reminder",
+//                               style: TextStyle(
+//                                 fontSize: 20,
+//                                 fontWeight: FontWeight.bold,
+//                               ),
+//                             ),
+//                             IconButton(
+//                               icon: Icon(Icons.close),
+//                               onPressed: () {
+//                                 Navigator.of(context).pop();
+//                               },
+//                             ),
+//                           ],
+//                         ),
+//                         SizedBox(height: 8),
+//                         Text(
+//                           "Pastikan Anda tidak melewatkan batas waktu penting! Kontrak kerja Anda akan segera berakhir",
+//                           style: TextStyle(fontSize: 14),
+//                         ),
+//                         SizedBox(height: 16),
+//                         Row(
+//                           children: [
+//                             Icon(Icons.hourglass_bottom, color: Colors.blue),
+//                             SizedBox(width: 8),
+//                             Text(
+//                               "Waktu tersisa",
+//                               style: TextStyle(fontSize: 16),
+//                             ),
+//                             Spacer(),
+//                             Obx(() => Text(
+//                               "${controller.waktuTersisa.value} hari",
+//                               style: TextStyle(fontSize: 16),
+//                             )),
+//                           ],
+//                         ),
+//                         Divider(),
+//                         Row(
+//                           children: [
+//                             Icon(Icons.work, color: Colors.blue),
+//                             SizedBox(width: 8),
+//                             Text(
+//                               "Lama Bekerja",
+//                               style: TextStyle(fontSize: 16),
+//                             ),
+//                             Spacer(),
+//                             Obx(() => Text(
+//                               "${controller.lamaBekerja.value} Bulan",
+//                               style: TextStyle(fontSize: 16),
+//                             )),
+//                           ],
+//                         ),
+//                         Divider(),
+//                         Row(
+//                           children: [
+//                             Icon(Icons.calendar_today, color: Colors.blue),
+//                             SizedBox(width: 8),
+//                             Text(
+//                               "Tanggal berakhir",
+//                               style: TextStyle(fontSize: 16),
+//                             ),
+//                             Spacer(),
+//                             Obx(() {
+//                               var formattedDate = DateFormat('dd MMM yyyy').format(controller.tanggalBerakhir.value);
+//                               return Text(
+//                                 formattedDate,
+//                                 style: TextStyle(fontSize: 16),
+//                               );
+//                             }),
+//                           ],
+//                         ),
+//                         SizedBox(height: 16),
+//                         Center(
+//                           child: ElevatedButton(
+//                             onPressed: () {
+//                               // Aksi ketika tombol "Lihat Data" ditekan
+//                               Navigator.of(context).pop();
+//                             },
+//                             child: Text("Lihat Data"),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 );
+//               },
+//             );
+//           },
+//           child: Text("Tampilkan Reminder"),
+//         ),
+//       ),
+//   }
+// }
 
   Widget linePengaturan() {
     return Column(
