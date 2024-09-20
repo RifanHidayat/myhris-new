@@ -99,7 +99,8 @@ class SettingController extends GetxController {
 
   @override
   void onReady() async {
-    getTimeNow();
+    setDate(DateTime.now());
+    // getTimeNow();
     toRouteSimpanData();
     getPusatBantuan();
     allDepartement();
@@ -108,23 +109,77 @@ class SettingController extends GetxController {
     super.onReady();
   }
 
-  void getTimeNow() {
-    var dt = DateTime.now();
-    bulanSelectedSearchHistory.value = "${dt.month}";
-    tahunSelectedSearchHistory.value = "${dt.year}";
-    bulanDanTahunNow.value = "${dt.month}-${dt.year}";
-    stringBulan.value = "${DateFormat('MMMM').format(dt)}";
-    beginPayroll.value = "${DateFormat('MMMM').format(dt)}";
-    endPayroll.value = "${DateFormat('MMMM').format(dt)}";
-    var startPeriode = DateFormat('yyyy-MM-dd').format(dt);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(dt);
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
-    var satuBulanKemudian = DateTime(dt.year, dt.month + 1, dt.day);
-    if (DateTime.parse(beginPayroll.value).isAfter(DateTime.parse(endPayroll.value))){
-      dt = satuBulanKemudian;
-    }
-    DateTime previousMonthDate = DateTime(dt.year, dt.month - 1, dt.day);
+//  void setDate(date) {
+//     var defaultDate = date;
+//     bulanSelectedSearchHistory.value = "${defaultDate.month}";
+//     tahunSelectedSearchHistory.value = "${defaultDate.year}";
+//     bulanDanTahunNow.value = "${defaultDate.month}-${defaultDate.year}";
+//     stringBulan.value = "${DateFormat('MMMM').format(defaultDate)}";
+//     beginPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
+//     endPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
+//     DateTime sp = DateTime.parse(beginPayroll.value);
+//     DateTime ep = DateTime.parse(endPayroll.value);
+//     var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+//     var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+//     DateTime previousMonthDate =
+//         DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+
+//     if (AppData.informasiUser![0].beginPayroll >
+//         AppData.informasiUser![0].endPayroll) {
+//       beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
+//       bulanStart.value = "${DateFormat('MM').format(previousMonthDate)}";
+//     } else {
+//       beginPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
+//       bulanStart.value = "${DateFormat('MM').format(defaultDate)}";
+//     }
+//     // startPeriode = AppData.startPeriode;
+//     // endPeriode = AppData.endPeriode;
+//     AppData.startPeriode = "$tahunSelectedSearchHistory-$beginPayroll-$bulanStart";
+//     AppData.endPeriode = "$tahunSelectedSearchHistory-$endPeriode-$bulanEnd";
+//     stringBulan.refresh();
+//     beginPayroll.refresh();
+//     endPayroll.refresh();
+//     bulanSelectedSearchHistory.refresh();
+//     tahunSelectedSearchHistory.refresh();
+//     bulanDanTahunNow.refresh();
+//     bulanEnd.refresh();
+//     bulanStart.refresh();
+//     tahunStart.refresh();
+//   }
+
+
+
+
+
+ void setDate(DateTime date) {
+  var defaultDate = date;
+
+  DateTime tanggalAwalBulan = DateTime(defaultDate.year, defaultDate.month, 1);
+  DateTime tanggalAkhirBulan = DateTime(defaultDate.year, defaultDate.month + 1, 0); 
+  // Get.snackbar(
+  //   "Periode: ${DateFormat('yyyy MMMM dd').format(tanggalAwalBulan)}",
+  //   "sampai ${DateFormat('yyyy MMMM dd').format(tanggalAkhirBulan)}",
+  // );
+
+  bulanSelectedSearchHistory.value = "${defaultDate.month}";
+  tahunSelectedSearchHistory.value = "${defaultDate.year}";
+  bulanDanTahunNow.value = "${defaultDate.month}-${defaultDate.year}";
+  stringBulan.value = "${DateFormat('MMMM').format(defaultDate)}";
+  beginPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
+  endPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
+
+  DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+  DateTime ep = DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+  var startPeriode = DateFormat('yyyy MMMM dd').format(sp);
+  var endPeriode = DateFormat('yyyy MMMM dd').format(ep);
+
+  Get.snackbar(
+    "Mulai Payroll: ${startPeriode}",
+    "Selesai Payroll: ${endPeriode}",
+  );
+
+  DateTime previousMonthDate = DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
 
 
 
@@ -138,16 +193,28 @@ class SettingController extends GetxController {
       bulanStart.value = "${DateFormat('MM').format(previousMonthDate)}";
     }
 
-    stringBulan.refresh();
-    beginPayroll.refresh();
-    endPayroll.refresh();
-    bulanSelectedSearchHistory.refresh();
-    tahunSelectedSearchHistory.refresh();
-    bulanDanTahunNow.refresh();
-    bulanEnd.refresh();
-    bulanStart.refresh();
-    tahunStart.refresh();
+
+  if (AppData.informasiUser![0].beginPayroll > AppData.informasiUser![0].endPayroll) {
+    beginPayroll.value = "${DateFormat('MMMM').format(previousMonthDate)}";
+    bulanStart.value = "${DateFormat('MM').format(previousMonthDate)}";
+  } else {
+    beginPayroll.value = "${DateFormat('MMMM').format(defaultDate)}";
+    bulanStart.value = "${DateFormat('MM').format(defaultDate)}";
   }
+
+  AppData.startPeriode = startPeriode;
+  AppData.endPeriode = endPeriode;
+  
+  stringBulan.refresh();
+  beginPayroll.refresh();
+  endPayroll.refresh();
+  bulanSelectedSearchHistory.refresh();
+  tahunSelectedSearchHistory.refresh();
+  bulanDanTahunNow.refresh();
+  bulanEnd.refresh();
+  bulanStart.refresh();
+  tahunStart.refresh();
+}
 
   logout() async {
     // var connectivityResult = await Connectivity().checkConnectivity();
@@ -232,6 +299,15 @@ class SettingController extends GetxController {
     }
   }
 
+  void dateMin(dateInput) {
+    var dtnw = DateTime.now();
+    var satuBulanKemudian = DateTime(dtnw.year, dtnw.month - 1, dtnw.day);
+    if (DateTime.parse(beginPayroll.value)
+        .isAfter(DateTime.parse(endPayroll.value))) {
+      dtnw = satuBulanKemudian;
+    }
+  }
+
   void aksiEditLastLogin() {
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
@@ -240,7 +316,11 @@ class SettingController extends GetxController {
       'last_login': '0000-00-00 00:00:00',
       'em_id': getEmid
     };
-    var connect = Api.connectionApi("post", body, "edit_last_login_clear",);
+    var connect = Api.connectionApi(
+      "post",
+      body,
+      "edit_last_login_clear",
+    );
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -306,7 +386,11 @@ class SettingController extends GetxController {
       'em_gender': jenisKelamin.value,
       'em_blood_group': golonganDarah.value
     };
-    var connect = Api.connectionApi("post", body, "edit-employee",);
+    var connect = Api.connectionApi(
+      "post",
+      body,
+      "edit-employee",
+    );
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -356,7 +440,11 @@ class SettingController extends GetxController {
     var depId = idDepartemenTerpilih.value;
 
     Map<String, dynamic> body = {'dep_id': depId};
-    var connect = Api.connectionApi("post", body, "cari_informasi_employee",);
+    var connect = Api.connectionApi(
+      "post",
+      body,
+      "cari_informasi_employee",
+    );
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -390,7 +478,11 @@ class SettingController extends GetxController {
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {'val': 'em_id', 'cari': '$getEmid'};
-    var connect = Api.connectionApi("post", body, "whereOnce-employee_history",);
+    var connect = Api.connectionApi(
+      "post",
+      body,
+      "whereOnce-employee_history",
+    );
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -427,7 +519,11 @@ class SettingController extends GetxController {
         'password_lama': passwordLama.value.text,
         'password_baru': passwordBaru.value.text
       };
-      var connect = Api.connectionApi("post", body, "validasiGantiPassword",);
+      var connect = Api.connectionApi(
+        "post",
+        body,
+        "validasiGantiPassword",
+      );
       connect.then((dynamic res) async {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
@@ -452,7 +548,11 @@ class SettingController extends GetxController {
 
   void getPusatBantuan() {
     listPusatBantuan.value.clear();
-    var connect = Api.connectionApi("get", {}, "faq",);
+    var connect = Api.connectionApi(
+      "get",
+      {},
+      "faq",
+    );
     connect.then((dynamic res) {
       if (res == false) {
         //UtilsAlert.koneksiBuruk();
@@ -1075,7 +1175,11 @@ class SettingController extends GetxController {
     };
     print(body);
 
-    var connect = Api.connectionApi("post", body, "edit_foto_user",);
+    var connect = Api.connectionApi(
+      "post",
+      body,
+      "edit_foto_user",
+    );
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
