@@ -147,6 +147,10 @@ class SettingController extends GetxController {
 //     tahunStart.refresh();
 //   }
 
+
+
+
+
  void setDate(DateTime date) {
   var defaultDate = date;
 
