@@ -837,6 +837,8 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
                         this.controller.bulanSelectedSearchHistory.refresh();
                         this.controller.tahunSelectedSearchHistory.refresh();
                         this.controller.bulanDanTahunNow.refresh();
+
+                        controller.date.value = time;
                         controller.aksiCariLaporan();
                       }
                     },

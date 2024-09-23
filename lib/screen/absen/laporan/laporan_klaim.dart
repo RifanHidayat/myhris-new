@@ -204,7 +204,7 @@ class _LaporanKlaimState extends State<LaporanKlaim> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 16),
-                    // filterData(),
+                    filterData(),
                     const SizedBox(height: 16),
                     // InkWell(
                     //   onTap: () {
@@ -341,6 +341,7 @@ class _LaporanKlaimState extends State<LaporanKlaim> {
                       this.controller.bulanDanTahunNow.refresh();
                       controller.statusFilterWaktu.value = 0;
                       // Navigator.pop(Get.context!);
+                      controller.date.value = time;
                       controller.aksiCariLaporan();
                     }
                   },

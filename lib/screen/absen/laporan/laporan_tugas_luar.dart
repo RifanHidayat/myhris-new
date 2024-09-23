@@ -194,7 +194,7 @@ class _LaporanTugasLuarState extends State<LaporanTugasLuar> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 16),
-                    // filterData(),
+                    filterData(),
                     const SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.only(left: 16, right: 16),
@@ -566,6 +566,7 @@ class _LaporanTugasLuarState extends State<LaporanTugasLuar> {
                       this.controller.bulanDanTahunNow.refresh();
                       controller.statusFilterWaktu.value = 0;
                       // Navigator.pop(Get.context!);
+                      controller.date.value = time;
                       controller.aksiCariLaporan();
                     }
                   },

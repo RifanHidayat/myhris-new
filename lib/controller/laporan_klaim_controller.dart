@@ -87,7 +87,7 @@ class LaporanKlaimController extends GetxController {
   }
 
   void getTimeNow() {
-    var dt = DateTime.now();
+    var dt = DateTime.parse(AppData.endPeriode);
     var outputFormat1 = DateFormat('MM');
     var outputFormat2 = DateFormat('yyyy');
     bulanSelectedSearchHistory.value = outputFormat1.format(dt);
@@ -159,7 +159,36 @@ class LaporanKlaimController extends GetxController {
     });
   }
 
+  var date = DateTime.now().obs;
+
   void aksiCariLaporan() async {
+    var defaultDate = date.value;
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
+
     statusLoadingSubmitLaporan.value = true;
     allNameLaporanTidakhadir.value.clear();
     Map<String, dynamic> body = {
@@ -189,6 +218,9 @@ class LaporanKlaimController extends GetxController {
         }
       }
     });
+
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void cariLaporanPengajuanTanggal(tanggalTerpilih) async {
