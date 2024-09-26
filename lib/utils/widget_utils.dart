@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
@@ -1002,6 +1003,37 @@ class UtilsAlert {
           Animation secondaryAnimation) {
         return null!;
       },
+    );
+  }
+
+  static Widget infoContainer(String title) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Constanst.infoLight1,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.all(12.0),
+      child: Row(
+        children: [
+          Icon(
+            Iconsax.info_circle5,
+            color: Constanst.colorPrimary,
+            size: 26,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              title,
+              textAlign: TextAlign.left,
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.w400,
+                color: Constanst.fgSecondary,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -149,6 +149,11 @@ class SettingController extends GetxController {
 
   void setDate(DateTime date) {
     var defaultDate = date;
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
 
     DateTime tanggalAwalBulan =
         DateTime(defaultDate.year, defaultDate.month, 1);
@@ -192,10 +197,10 @@ class SettingController extends GetxController {
     AppData.startPeriode = startPeriode;
     AppData.endPeriode = endPeriode;
 
-    Get.snackbar(
-      "Mulai Payroll: ${startPeriode}",
-      "Selesai Payroll: ${endPeriode}",
-    );
+    // Get.snackbar(
+    //   "Mulai Payroll: ${startPeriode}",
+    //   "Selesai Payroll: ${endPeriode}",
+    // );
 
     stringBulan.refresh();
     beginPayroll.refresh();
@@ -1323,6 +1328,13 @@ class SettingController extends GetxController {
         });
   }
 
+  String formatDate(String dateString) {
+    DateTime dateTime = DateTime.parse(dateString);
+    String formattedDate = DateFormat('d MMMM yyyy', 'id_ID').format(dateTime);
+
+    return formattedDate;
+  }
+
   void lineInfoPenggunaKontrak() async {
     showGeneralDialog(
       barrierDismissible: false,
@@ -1401,7 +1413,7 @@ class SettingController extends GetxController {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Pastikan Anda tidak melewati batas waktu penting! kontrak kerja Anda akan segera berakhir",
+                    "Pastikan Anda tidak melewati batas waktu penting!",
                     style: GoogleFonts.inter(
                       color: Constanst.fgPrimary,
                       fontWeight: FontWeight.w500,
@@ -1432,9 +1444,10 @@ class SettingController extends GetxController {
                             ),
                           ),
                           Text(
-                            AppData.informasiUser![0].sisaKontrak.toString() !=
-                                    "0"
-                                ? AppData.informasiUser![0].sisaKontrak
+                            AppData.informasiUser![0].sisaKontrakFormat
+                                        .toString() !=
+                                    "null"
+                                ? AppData.informasiUser![0].sisaKontrakFormat
                                     .toString()
                                 : "-",
                             style: GoogleFonts.inter(
@@ -1522,8 +1535,9 @@ class SettingController extends GetxController {
                             AppData.informasiUser![0].tanggalBerakhirKontrak
                                         .toString() !=
                                     ""
-                                ? AppData
+                                ? formatDate(AppData
                                     .informasiUser![0].tanggalBerakhirKontrak
+                                    .toString())
                                 : "-",
                             style: GoogleFonts.inter(
                               color: Constanst.fgPrimary,

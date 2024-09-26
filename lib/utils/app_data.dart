@@ -9,16 +9,14 @@ class AppData {
   // SET
   static set isOnboarding(bool value) =>
       LocalStorage.saveToDisk('isOnboarding', value);
-         static set  startPeriode(String value) =>
+  static set startPeriode(String value) =>
       LocalStorage.saveToDisk('startPeriode', value);
 
- static set endPeriode(String value) =>
+  static set endPeriode(String value) =>
       LocalStorage.saveToDisk('endPeriode', value);
 
 // static set  periode(String value) =>
 //       LocalStorage.saveToDisk('periode', value);
-
-
 
   static set statusAbsen(bool value) =>
       LocalStorage.saveToDisk('statusAbsen', value);
@@ -76,8 +74,8 @@ class AppData {
   static set loginOffline(bool value) =>
       LocalStorage.saveToDisk('loginOffline', value);
 
-  static set firsLogin(bool value) =>
-      LocalStorage.saveToDisk('firsLogin', value);
+  // static set firsLogin(bool value) =>
+  //     LocalStorage.saveToDisk('firsLogin', value);
 
   static set infoSettingApp(List<SettingAppModel>? value) {
     if (value != null) {
@@ -96,13 +94,15 @@ class AppData {
     }
     return false;
   }
-     static String get startPeriode {
+
+  static String get startPeriode {
     if (LocalStorage.getFromDisk('startPeriode') != null) {
       return LocalStorage.getFromDisk('startPeriode');
     }
     return "";
   }
-   static String get endPeriode {
+
+  static String get endPeriode {
     if (LocalStorage.getFromDisk('endPeriode') != null) {
       return LocalStorage.getFromDisk('endPeriode');
     }
@@ -158,12 +158,12 @@ class AppData {
     return false;
   }
 
-  static bool get firsLogin {
-    if (LocalStorage.getFromDisk('firsLogin') != null) {
-      return LocalStorage.getFromDisk('firsLogin');
-    }
-    return false;
-  }
+  // static bool get firsLogin {
+  //   if (LocalStorage.getFromDisk('firsLogin') != null) {
+  //     return LocalStorage.getFromDisk('firsLogin');
+  //   }
+  //   return false;
+  // }
 
   static bool get isOnboarding {
     if (LocalStorage.getFromDisk('isOnboarding') != null) {

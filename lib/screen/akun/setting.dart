@@ -107,6 +107,32 @@ class _SettingState extends State<Setting> {
                       height: 16,
                     ),
                     lineInfoPengguna(),
+                    Visibility(
+                      visible:
+                          int.parse(AppData.informasiUser![0].sisaKontrak) <=
+                                  60 &&
+                              AppData.informasiUser![0].tanggalBerakhirKontrak
+                                      .toString() !=
+                                  "",
+                      child: InkWell(
+                        onTap: () => authController.isConnected.value
+                            ? controller.lineInfoPenggunaKontrak()
+                            : UtilsAlert.showDialogCheckInternet(),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 16.0, right: 16),
+                              child: UtilsAlert.infoContainer(
+                                  "Kontrak kerja Anda akan segera berakhir dalam ${AppData.informasiUser![0].sisaKontrakFormat.toString()} lagi"),
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     Container(
                         height: 6,
                         width: double.infinity,
@@ -532,7 +558,9 @@ class _SettingState extends State<Setting> {
             child: InkWell(
               customBorder: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12))),
-              onTap: () => controller.lineInfoPenggunaKontrak(),
+              onTap: () => authController.isConnected.value
+                  ? controller.lineInfoPenggunaKontrak()
+                  : UtilsAlert.showDialogCheckInternet(),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(

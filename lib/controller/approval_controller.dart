@@ -95,6 +95,8 @@ class ApprovalController extends GetxController {
             titleAppbar.value = title;
             bulanSelected.value = bulan;
             tahunSelected.value = tahun;
+            jumlahCuti.value = 0;
+            this.jumlahCuti.refresh();
             if (title == "Cuti") {
               loadDataCuti(status);
             } else if (title == "Lembur") {

@@ -151,6 +151,10 @@ class LaporanTidakHadirController extends GetxController {
   }
 
   var date = DateTime.now().obs;
+  var startPeriode = "".obs;
+  var endPeriode = "".obs;
+  var tempStartPeriode = "".obs;
+  var tempEndPeriode = "".obs;
 
   void aksiCariLaporan() async {
     var defaultDate = date.value;
@@ -160,25 +164,31 @@ class LaporanTidakHadirController extends GetxController {
     DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
     DateTime ep =
         DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+    startPeriode.value = DateFormat('yyyy-MM-dd').format(sp);
+    endPeriode.value = DateFormat('yyyy-MM-dd').format(ep);
 
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
+    tempStartPeriode.value = AppData.startPeriode;
+    tempEndPeriode.value = AppData.endPeriode;
 
     if (AppData.informasiUser![0].beginPayroll >
         AppData.informasiUser![0].endPayroll) {
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
+      startPeriode.value = DateFormat('yyyy-MM-dd').format(DateTime(
+          defaultDate.year,
+          defaultDate.month - 1,
+          AppData.informasiUser![0].beginPayroll));
+      endPeriode.value = DateFormat('yyyy-MM-dd').format(DateTime(
+          defaultDate.year,
+          defaultDate.month,
+          AppData.informasiUser![0].endPayroll));
     } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+      startPeriode.value = DateFormat('yyyy-MM-dd').format(DateTime(
+          defaultDate.year,
+          defaultDate.month,
+          AppData.informasiUser![0].beginPayroll));
     }
 
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
+    AppData.startPeriode = startPeriode.value;
+    AppData.endPeriode = endPeriode.value;
 
     statusLoadingSubmitLaporan.value = true;
     allNameLaporanTidakhadir.value.clear();
@@ -210,8 +220,8 @@ class LaporanTidakHadirController extends GetxController {
       }
     });
 
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
+    AppData.startPeriode = tempStartPeriode.value;
+    AppData.endPeriode = tempEndPeriode.value;
   }
 
   void cariLaporanPengajuanTanggal(tanggalTerpilih) async {
@@ -287,6 +297,8 @@ class LaporanTidakHadirController extends GetxController {
   }
 
   void loadDataTidakHadirEmployee(emId, bulan, tahun, title) {
+    AppData.startPeriode = startPeriode.value;
+    AppData.endPeriode = endPeriode.value;
     listDetailLaporanEmployee.value.clear();
     Map<String, dynamic> body = {
       'em_id': emId,
@@ -311,6 +323,8 @@ class LaporanTidakHadirController extends GetxController {
         typeAjuanRefresh("Semua");
       }
     });
+    AppData.startPeriode = tempStartPeriode.value;
+    AppData.endPeriode = tempEndPeriode.value;
   }
 
   void typeAjuanRefresh(name) {

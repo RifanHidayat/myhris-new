@@ -27,6 +27,7 @@ import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
+import 'package:http/http.dart' as http;
 
 class AuthController extends GetxController {
   var username = TextEditingController().obs;
@@ -86,59 +87,104 @@ class AuthController extends GetxController {
         _cancelTimer();
       } else {
         await _checkConnection();
-        timer = Timer.periodic(const Duration(seconds: 3), (Timer t) async {
-          await _checkConnection();
+        // isConnected.value = true;
+        timer = Timer.periodic(const Duration(seconds: 5), (Timer t) async {
+          _checkConnection();
         });
       }
     });
   }
 
+  // Future<void> _checkConnection() async {
+  //   try {
+  //     final result = await InternetAddress.lookup('google.com');
+  //     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+  //       final stopwatch = Stopwatch()..start();
+  //       final socket = await Socket.connect('google.com', 443,
+  //           timeout: const Duration(seconds: 5));
+  //       socket.destroy();
+  //       stopwatch.stop();
+
+  //       final ping = stopwatch.elapsedMilliseconds;
+
+  //       if (ping > 800) {
+  //         print('Koneksi internet jelek $ping');
+  //         isConnected.value = false;
+  //       } else {
+  //         print('Koneksi internet baik $ping');
+  //         isConnected.value = true;
+  //         if (AppData.isLogin == true) {
+  //           if (AppData.loginOffline == true) {
+  //             if (AppData.emailUser != '') {
+  //               await sendDataUserOflline();
+  //             }
+  //           }
+
+  //           var absenMasukKeluarOffline =
+  //               await SqliteDatabaseHelper().getAbsensi();
+  //           print("absenMasukKeluarOffline : $absenMasukKeluarOffline");
+  //           if (absenMasukKeluarOffline != null) {
+  //             if (kirims.value == false) {
+  //               sendAbsensiOffline();
+  //             }
+  //           }
+  //           // }
+  //         }
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print('Error saat mencoba koneksi: $e');
+  //     isConnected.value = false;
+  //     _cancelTimer();
+  //     checking();
+  //   }
+  // }
+
   Future<void> _checkConnection() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        final stopwatch = Stopwatch()..start();
-        final socket = await Socket.connect('google.com', 80,
-            timeout: Duration(seconds: 2));
-        socket.destroy();
-        stopwatch.stop();
+    // try {
+    final response = await http.get(Uri.parse('https://www.google.com'));
+    print(response.statusCode);
 
-        final ping = stopwatch.elapsedMilliseconds;
+    if (response.statusCode == 200) {
+      // Jika respons berhasil
+      // final ping =
+      //     response.contentLength;
 
-        if (ping > 300) {
-          print('Koneksi internet jelek');
-          isConnected.value = false;
-        } else {
-          print('Koneksi internet baik');
-          isConnected.value = true;
-          if (AppData.isLogin == true) {
-            if (AppData.loginOffline == true) {
-              if (AppData.emailUser != '') {
-                await sendDataUserOflline();
-              }
-            }
+      print('Koneksi internet baik');
+      isConnected.value = true;
 
-            var absenMasukKeluarOffline =
-                await SqliteDatabaseHelper().getAbsensi();
-            print("absenMasukKeluarOffline : $absenMasukKeluarOffline");
-            if (absenMasukKeluarOffline != null) {
-              if (kirims.value == false) {
-                sendAbsensiOffline();
-              }
-            }
-            // }
+      if (AppData.isLogin == true) {
+        if (AppData.loginOffline == true) {
+          if (AppData.emailUser != '') {
+            await sendDataUserOflline();
+          }
+        }
+
+        var absenMasukKeluarOffline = await SqliteDatabaseHelper().getAbsensi();
+        print("absenMasukKeluarOffline : $absenMasukKeluarOffline");
+        if (absenMasukKeluarOffline != null) {
+          if (kirims.value == false) {
+            sendAbsensiOffline();
           }
         }
       }
-    } catch (e) {
-      print('Tidak bisa melakukan koneksi ke internet');
+    } else {
+      // Jika status code tidak 200
+      print('Koneksi internet jelek, status code: ${response.statusCode}');
       isConnected.value = false;
     }
+    // }
+    // catch (e) {
+    //   print('Error saat mencoba koneksi: $e');
+    //   isConnected.value = false;
+    //   _cancelTimer();
+    //   checking();
+    // }
   }
 
   void _cancelTimer() {
     timer!.cancel();
-    // timer = null;
+    timer = null;
   }
 
   void sendAbsensiOffline() async {
