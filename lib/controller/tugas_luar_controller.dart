@@ -806,15 +806,15 @@ class TugasLuarController extends GetxController {
                 pesan =
                     "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan DINAS LUAR dengan nomor ajuan ${getNomorAjuanTerakhir}";
               }
-              kirimNotifikasiToDelegasi1(
-                  getFullName,
-                  finalTanggalPengajuan,
-                  validasiDelegasiSelected,
-                  validasiDelegasiSelectedToken,
-                  stringWaktu,
-                  1,
-                  typeNotifFcm,
-                  pesan);
+              // kirimNotifikasiToDelegasi1(
+              //     getFullName,
+              //     finalTanggalPengajuan,
+              //     validasiDelegasiSelected,
+              //     validasiDelegasiSelectedToken,
+              //     stringWaktu,
+              //     1,
+              //     typeNotifFcm,
+              //     pesan);
               // if (item['token_notif'] != null) {
               //   globalCt.kirimNotifikasiFcm(
               //       title: typeNotifFcm,
@@ -925,8 +925,8 @@ class TugasLuarController extends GetxController {
                 stringWaktu,
                 2,
                 typeNotifFcm);
-            kirimNotifikasiToReportTo(getFullName, convertTanggalBikinPengajuan,
-                getEmid, "Dinas Luar", stringWaktu);
+            // kirimNotifikasiToReportTo(getFullName, convertTanggalBikinPengajuan,
+            //     getEmid, "Dinas Luar", stringWaktu);
             Navigator.pop(Get.context!);
 
             var pesan1 = "Pengajuan Dinas Luar berhasil di buat";
@@ -947,15 +947,15 @@ class TugasLuarController extends GetxController {
                 pesan =
                     "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan TUGAS LUAR dengan nomor ajuan ${getNomorAjuanTerakhir}";
               }
-              kirimNotifikasiToDelegasi1(
-                  getFullName,
-                  convertTanggalBikinPengajuan,
-                  item['em_id'],
-                  validasiDelegasiSelected,
-                  stringWaktu,
-                  2,
-                  typeNotifFcm,
-                  pesan);
+              // kirimNotifikasiToDelegasi1(
+              //     getFullName,
+              //     convertTanggalBikinPengajuan,
+              //     item['em_id'],
+              //     validasiDelegasiSelected,
+              //     stringWaktu,
+              //     2,
+              //     typeNotifFcm,
+              //     pesan);
 
               // if (item['token_notif'] != null) {
               //   globalCt.kirimNotifikasiFcm(
