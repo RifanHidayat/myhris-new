@@ -174,7 +174,7 @@ class GlobalController extends GetxController {
   showDataPilihAtasan(dataEmployee) async {
     UtilsAlert.showLoadingIndicator(Get.context!);
     await getLoadsysData();
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(seconds: 1));
     Get.back();
     showModalBottomSheet(
         context: Get.context!,
