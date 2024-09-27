@@ -1263,7 +1263,7 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
     var signOutLongLat = index.signout_longlat ?? '';
     var regType = index.reqType ?? 0;
     var attenDate = index.atten_date ?? "";
-    var batasJam = "08:30:00";
+    var batasJam = index.jamKerja.toString();
     var statusView;
     if (placeIn != "") {
       statusView =
@@ -1742,8 +1742,7 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
                                                           '0'
                                                       ? Padding(
                                                           padding:
-                                                              const EdgeInsets
-                                                                  .only(
+                                                              const EdgeInsets.only(
                                                                   top: 12),
                                                           child: Row(
                                                             children: [
@@ -1767,7 +1766,40 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
                                                               ),
                                                             ],
                                                           ))
-                                                      : const SizedBox()
+                                                      : (index.jamKerja.toString() !=
+                                                                  "null") &&
+                                                              DateTime.parse(
+                                                                      waktuMasuk)
+                                                                  .isAfter(
+                                                                      DateTime.parse(
+                                                                          batasWaktu))
+                                                          ? Padding(
+                                                              padding:
+                                                                  const EdgeInsets.only(
+                                                                      top: 12),
+                                                              child: Row(
+                                                                children: [
+                                                                  Icon(
+                                                                    Iconsax
+                                                                        .info_circle,
+                                                                    size: 15,
+                                                                    color: Constanst
+                                                                        .infoLight,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 10,
+                                                                  ),
+                                                                  const TextLabell(
+                                                                    text:
+                                                                        "Terlambat",
+                                                                    weight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    size: 11.0,
+                                                                  ),
+                                                                ],
+                                                              ))
+                                                          : const SizedBox()
                               : const SizedBox(),
                           Padding(
                             padding: const EdgeInsets.only(top: 12, bottom: 1),
@@ -1778,29 +1810,6 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // (DateTime.parse(waktuMasuk)
-                                  //         .isAfter(DateTime.parse(batasWaktu)))
-                                  //     ? Padding(
-                                  //         padding: const EdgeInsets.only(
-                                  //             left: 12.0, bottom: 4.0),
-                                  //         child: Row(
-                                  //           children: [
-                                  //             Icon(
-                                  //               Iconsax.info_circle,
-                                  //               size: 15,
-                                  //               color: Constanst.infoLight,
-                                  //             ),
-                                  //             const SizedBox(
-                                  //               width: 8,
-                                  //             ),
-                                  //             const TextLabell(
-                                  //               text: "Terlambat",
-                                  //               weight: FontWeight.w400,
-                                  //               size: 11.0,
-                                  //             ),
-                                  //           ],
-                                  //         ))
-                                  //     : Container(),
                                   Row(
                                     children: [
                                       Expanded(

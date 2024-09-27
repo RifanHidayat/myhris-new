@@ -626,9 +626,7 @@ class _SettingState extends State<Setting> {
                                         maxLines: 1,
                                       ),
                                       Text(
-                                        AppData.informasiUser![0]
-                                            .tanggalBerakhirKontrak
-                                            .toString(),
+                                        AppData.informasiUser![0].sisaKontrak,
                                         style: GoogleFonts.inter(
                                             color: Constanst.fgSecondary,
                                             fontWeight: FontWeight.w500,

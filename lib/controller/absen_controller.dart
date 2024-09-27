@@ -1867,6 +1867,7 @@ class AbsenController extends GetxController {
                 namaDinasLuar: el['dinas_luar'],
                 offDay: el['off_date'],
                 namaHariLibur: el['hari_libur'],
+                jamKerja: el['jam_kerja'],
                 statusView: el['status_view'] ?? false));
             tempHistoryAbsen.value = historyAbsen.value;
             // historyAbsen.value.add(AbsenModel(
@@ -1895,6 +1896,9 @@ class AbsenController extends GetxController {
             //     atttype: el['atttype'] ?? 0));
           }
 
+          for (var element in tempHistoryAbsen) {
+            print("nah: ${element.atten_date} dan ${element.jamKerja}");
+          }
           //historyAbsenShow.value = historyAbsen;
           // Set<String> seenDates = {};
           // historyAbsen.value = historyAbsen.where((event) {
@@ -2153,6 +2157,7 @@ class AbsenController extends GetxController {
                 namaDinasLuar: el['dinas_luar'],
                 offDay: el['off_date'],
                 namaHariLibur: el['hari_libur'],
+                jamKerja: el['jam_kerja'],
                 statusView: el['status_view'] ?? false));
             tempHistoryAbsen.value = historyAbsen.value;
             // historyAbsen.value.add(AbsenModel(

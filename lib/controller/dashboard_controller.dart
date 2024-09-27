@@ -1694,6 +1694,7 @@ class DashboardController extends GetxController {
             is_tracking: element['is_tracking'],
             tanggalBerakhirKontrak: element['tanggal_berakhir_kontrak'],
             sisaKontrak: element['sisa_kontrak'],
+            sisaKontrakFormat: element['sisa_kontrak_format'],
             lamaBekerja: element['lama_bekerja'],
             lamaBekerjaFormat: element['lama_bekerja_format'],
           );

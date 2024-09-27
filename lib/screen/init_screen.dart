@@ -157,13 +157,14 @@ class _InitScreenState extends State<InitScreen> {
               width: 23,
             ),
             Visibility(
-              visible: controllerPesan.jumlahPersetujuan.value.toString() != "0",
+              visible:
+                  controllerPesan.jumlahPersetujuan.value.toString() != "0",
               child: Positioned(
-                top: -2,
-                right: -5,
+                top: 0,
+                right: 0,
                 child: Container(
-                  height: 22,
-                  width: 22,
+                  height: 18,
+                  width: 18,
                   decoration: BoxDecoration(
                     color: Constanst.colorStateDangerBg,
                     borderRadius: const BorderRadius.all(
@@ -182,7 +183,7 @@ class _InitScreenState extends State<InitScreen> {
                             : "${controllerPesan.jumlahPersetujuan.value}",
                         style: GoogleFonts.inter(
                           color: Constanst.colorStateOnDangerBg,
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -201,13 +202,14 @@ class _InitScreenState extends State<InitScreen> {
               width: 23,
             ),
             Visibility(
-              visible: controllerPesan.jumlahPersetujuan.value.toString() != "0",
+              visible:
+                  controllerPesan.jumlahPersetujuan.value.toString() != "0",
               child: Positioned(
-                top: -2,
-                right: -5,
+                top: 0,
+                right: 0,
                 child: Container(
-                  height: 22,
-                  width: 22,
+                  height: 18,
+                  width: 18,
                   decoration: BoxDecoration(
                     color: Constanst.colorStateDangerBg,
                     borderRadius: const BorderRadius.all(
@@ -226,7 +228,7 @@ class _InitScreenState extends State<InitScreen> {
                             : "${controllerPesan.jumlahPersetujuan.value}",
                         style: GoogleFonts.inter(
                           color: Constanst.colorStateOnDangerBg,
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -366,13 +368,14 @@ class _InitScreenState extends State<InitScreen> {
               width: 23,
             ),
             Visibility(
-              visible: controllerPesan.jumlahPersetujuan.value.toString() != "0",
+              visible:
+                  controllerPesan.jumlahPersetujuan.value.toString() != "0",
               child: Positioned(
-                top: -2,
-                right: -5,
+                top: 0,
+                right: 0,
                 child: Container(
-                  height: 22,
-                  width: 22,
+                  height: 18,
+                  width: 18,
                   decoration: BoxDecoration(
                     color: Constanst.colorStateDangerBg,
                     borderRadius: const BorderRadius.all(
@@ -391,7 +394,7 @@ class _InitScreenState extends State<InitScreen> {
                             : "${controllerPesan.jumlahPersetujuan.value}",
                         style: GoogleFonts.inter(
                           color: Constanst.colorStateOnDangerBg,
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -410,13 +413,14 @@ class _InitScreenState extends State<InitScreen> {
               width: 23,
             ),
             Visibility(
-              visible: controllerPesan.jumlahPersetujuan.value.toString() != "0",
+              visible:
+                  controllerPesan.jumlahPersetujuan.value.toString() != "0",
               child: Positioned(
-                top: -2,
-                right: -5,
+                top: 0,
+                right: 0,
                 child: Container(
-                  height: 22,
-                  width: 22,
+                  height: 18,
+                  width: 18,
                   decoration: BoxDecoration(
                     color: Constanst.colorStateDangerBg,
                     borderRadius: const BorderRadius.all(
@@ -435,7 +439,7 @@ class _InitScreenState extends State<InitScreen> {
                             : "${controllerPesan.jumlahPersetujuan.value}",
                         style: GoogleFonts.inter(
                           color: Constanst.colorStateOnDangerBg,
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
