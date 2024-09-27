@@ -392,420 +392,420 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
               //                 ),
               //               )
               //             : Container(),
-              InkWell(
-                customBorder: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(100))),
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(16.0),
-                      ),
-                    ),
-                    builder: (BuildContext context) {
-                      return SafeArea(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(16, 18, 16, 18),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Pilih Tipe Izin",
-                                      style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 18,
-                                        color: Constanst.fgPrimary,
-                                      ),
-                                    ),
-                                    InkWell(
-                                        customBorder:
-                                            const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8))),
-                                        onTap: () =>
-                                            Navigator.pop(Get.context!),
-                                        child: Icon(
-                                          Icons.close,
-                                          size: 26,
-                                          color: Constanst.fgSecondary,
-                                        ))
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                                child: Divider(
-                                  thickness: 1,
-                                  height: 0,
-                                  color: Constanst.border,
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  controller.clearPencarian();
-                                  controller.statusLoadingSubmitLaporan.value =
-                                      true;
-                                  controller.tempNamaTipe1.value = "Absensi";
+              // InkWell(
+              //   customBorder: const RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.all(Radius.circular(100))),
+              //   onTap: () {
+              //     showModalBottomSheet(
+              //       context: context,
+              //       shape: const RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.vertical(
+              //           top: Radius.circular(16.0),
+              //         ),
+              //       ),
+              //       builder: (BuildContext context) {
+              //         return SafeArea(
+              //           child: ClipRRect(
+              //             borderRadius: BorderRadius.circular(16.0),
+              //             child: Column(
+              //               crossAxisAlignment: CrossAxisAlignment.start,
+              //               mainAxisSize: MainAxisSize.min,
+              //               children: [
+              //                 Padding(
+              //                   padding:
+              //                       const EdgeInsets.fromLTRB(16, 18, 16, 18),
+              //                   child: Row(
+              //                     crossAxisAlignment: CrossAxisAlignment.center,
+              //                     mainAxisAlignment:
+              //                         MainAxisAlignment.spaceBetween,
+              //                     children: [
+              //                       Text(
+              //                         "Pilih Tipe Izin",
+              //                         style: GoogleFonts.inter(
+              //                           fontWeight: FontWeight.w500,
+              //                           fontSize: 18,
+              //                           color: Constanst.fgPrimary,
+              //                         ),
+              //                       ),
+              //                       InkWell(
+              //                           customBorder:
+              //                               const RoundedRectangleBorder(
+              //                                   borderRadius: BorderRadius.all(
+              //                                       Radius.circular(8))),
+              //                           onTap: () =>
+              //                               Navigator.pop(Get.context!),
+              //                           child: Icon(
+              //                             Icons.close,
+              //                             size: 26,
+              //                             color: Constanst.fgSecondary,
+              //                           ))
+              //                     ],
+              //                   ),
+              //                 ),
+              //                 Padding(
+              //                   padding:
+              //                       const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              //                   child: Divider(
+              //                     thickness: 1,
+              //                     height: 0,
+              //                     color: Constanst.border,
+              //                   ),
+              //                 ),
+              //                 InkWell(
+              //                   onTap: () {
+              //                     controller.clearPencarian();
+              //                     controller.statusLoadingSubmitLaporan.value =
+              //                         true;
+              //                     controller.tempNamaTipe1.value = "Absensi";
 
-                                  controller.getPlaceCoordinate();
-                                  controller.tempNamaLaporan1.value = "";
-                                  controller.onReady();
-                                  Get.back();
-                                },
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 16, 16, 16),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const SizedBox(width: 16),
-                                          Text(
-                                            "Absensi",
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                              color: Constanst.fgPrimary,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      controller.tempNamaTipe1.value ==
-                                              "Absensi"
-                                          ? Container(
-                                              height: 20,
-                                              width: 20,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 2,
-                                                      color:
-                                                          Constanst.onPrimary),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(3),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color:
-                                                          Constanst.onPrimary,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                ),
-                                              ),
-                                            )
-                                          : InkWell(
-                                              onTap: () {
-                                                controller.clearPencarian();
-                                                controller
-                                                    .statusLoadingSubmitLaporan
-                                                    .value = true;
-                                                controller.tempNamaTipe1.value =
-                                                    "Absensi";
+              //                     controller.getPlaceCoordinate();
+              //                     controller.tempNamaLaporan1.value = "";
+              //                     controller.onReady();
+              //                     Get.back();
+              //                   },
+              //                   child: Padding(
+              //                     padding:
+              //                         const EdgeInsets.fromLTRB(0, 16, 16, 16),
+              //                     child: Row(
+              //                       mainAxisAlignment:
+              //                           MainAxisAlignment.spaceBetween,
+              //                       children: [
+              //                         Row(
+              //                           children: [
+              //                             const SizedBox(width: 16),
+              //                             Text(
+              //                               "Absensi",
+              //                               style: GoogleFonts.inter(
+              //                                 fontWeight: FontWeight.w500,
+              //                                 fontSize: 16,
+              //                                 color: Constanst.fgPrimary,
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                         controller.tempNamaTipe1.value ==
+              //                                 "Absensi"
+              //                             ? Container(
+              //                                 height: 20,
+              //                                 width: 20,
+              //                                 decoration: BoxDecoration(
+              //                                     border: Border.all(
+              //                                         width: 2,
+              //                                         color:
+              //                                             Constanst.onPrimary),
+              //                                     borderRadius:
+              //                                         BorderRadius.circular(
+              //                                             10)),
+              //                                 child: Padding(
+              //                                   padding:
+              //                                       const EdgeInsets.all(3),
+              //                                   child: Container(
+              //                                     decoration: BoxDecoration(
+              //                                         color:
+              //                                             Constanst.onPrimary,
+              //                                         borderRadius:
+              //                                             BorderRadius.circular(
+              //                                                 10)),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                             : InkWell(
+              //                                 onTap: () {
+              //                                   controller.clearPencarian();
+              //                                   controller
+              //                                       .statusLoadingSubmitLaporan
+              //                                       .value = true;
+              //                                   controller.tempNamaTipe1.value =
+              //                                       "Absensi";
 
-                                                controller.getPlaceCoordinate();
-                                                controller.tempNamaLaporan1
-                                                    .value = "";
-                                                controller.onReady();
-                                                Get.back();
-                                              },
-                                              child: Container(
-                                                height: 20,
-                                                width: 20,
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        width: 1,
-                                                        color: Constanst
-                                                            .onPrimary),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(2),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10)),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  controller.clearPencarian();
-                                  controller.statusLoadingSubmitLaporan.value =
-                                      true;
-                                  controller.tempNamaTipe1.value =
-                                      "Belum Absen";
-                                  controller.pilihTanggalTelatAbsen.value =
-                                      DateTime.now();
-                                  controller.filterBelumAbsen();
-                                  controller.aksiEmployeeBelumAbsen(
-                                      "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
-                                  controller.onReady();
-                                  Get.back();
-                                },
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 16, 16, 16),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const SizedBox(width: 16),
-                                          Text(
-                                            "Tidak/Belum Absen",
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                              color: Constanst.fgPrimary,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      controller.tempNamaTipe1.value ==
-                                              "Belum Absen"
-                                          ? Container(
-                                              height: 20,
-                                              width: 20,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 2,
-                                                      color:
-                                                          Constanst.onPrimary),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(3),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color:
-                                                          Constanst.onPrimary,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                ),
-                                              ),
-                                            )
-                                          : InkWell(
-                                              onTap: () {
-                                                controller.clearPencarian();
-                                                controller
-                                                    .statusLoadingSubmitLaporan
-                                                    .value = true;
-                                                controller.tempNamaTipe1.value =
-                                                    "Belum Absen";
-                                                controller
-                                                    .pilihTanggalTelatAbsen
-                                                    .value = DateTime.now();
-                                                controller.filterBelumAbsen();
-                                                controller.aksiEmployeeBelumAbsen(
-                                                    "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
-                                                controller.onReady();
-                                                Get.back();
-                                              },
-                                              child: Container(
-                                                height: 20,
-                                                width: 20,
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        width: 1,
-                                                        color: Constanst
-                                                            .onPrimary),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(2),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10)),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  controller.clearPencarian();
-                                  controller.statusLoadingSubmitLaporan.value =
-                                      true;
-                                  controller.tempNamaTipe1.value =
-                                      "Absen Terlambat";
-                                  controller.pilihTanggalTelatAbsen.value =
-                                      DateTime.now();
-                                  controller.filterAbsenTelat();
-                                  controller.aksiEmployeeTerlambatAbsen(
-                                      "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
-                                  controller.onReady();
-                                  Get.back();
-                                },
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 16, 16, 16),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const SizedBox(width: 16),
-                                          Text(
-                                            "Absen Terlambat",
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                              color: Constanst.fgPrimary,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      controller.tempNamaTipe1.value ==
-                                              "Absen Terlambat"
-                                          ? Container(
-                                              height: 20,
-                                              width: 20,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 2,
-                                                      color:
-                                                          Constanst.onPrimary),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(3),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color:
-                                                          Constanst.onPrimary,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                ),
-                                              ),
-                                            )
-                                          : InkWell(
-                                              onTap: () {
-                                                controller.clearPencarian();
-                                                controller
-                                                    .statusLoadingSubmitLaporan
-                                                    .value = true;
-                                                controller.tempNamaTipe1.value =
-                                                    "Absen Terlambat";
-                                                controller
-                                                    .pilihTanggalTelatAbsen
-                                                    .value = DateTime.now();
-                                                controller.filterAbsenTelat();
-                                                controller
-                                                    .aksiEmployeeTerlambatAbsen(
-                                                        "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
-                                                controller.onReady();
-                                                Get.back();
-                                              },
-                                              child: Container(
-                                                height: 20,
-                                                width: 20,
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        width: 1,
-                                                        color: Constanst
-                                                            .onPrimary),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(2),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10)),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ).then((value) {
-                    print('Bottom sheet closed');
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      border: Border.all(color: Constanst.border)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
-                    child: Row(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              controller.tempNamaTipe1.value,
-                              style: GoogleFonts.inter(
-                                  color: Constanst.fgSecondary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4),
-                              child: Icon(
-                                Iconsax.arrow_down_1,
-                                color: Constanst.fgSecondary,
-                                size: 18,
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 4),
+              //                                   controller.getPlaceCoordinate();
+              //                                   controller.tempNamaLaporan1
+              //                                       .value = "";
+              //                                   controller.onReady();
+              //                                   Get.back();
+              //                                 },
+              //                                 child: Container(
+              //                                   height: 20,
+              //                                   width: 20,
+              //                                   decoration: BoxDecoration(
+              //                                       border: Border.all(
+              //                                           width: 1,
+              //                                           color: Constanst
+              //                                               .onPrimary),
+              //                                       borderRadius:
+              //                                           BorderRadius.circular(
+              //                                               10)),
+              //                                   child: Padding(
+              //                                     padding:
+              //                                         const EdgeInsets.all(2),
+              //                                     child: Container(
+              //                                       decoration: BoxDecoration(
+              //                                           borderRadius:
+              //                                               BorderRadius
+              //                                                   .circular(10)),
+              //                                     ),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 InkWell(
+              //                   onTap: () {
+              //                     controller.clearPencarian();
+              //                     controller.statusLoadingSubmitLaporan.value =
+              //                         true;
+              //                     controller.tempNamaTipe1.value =
+              //                         "Belum Absen";
+              //                     controller.pilihTanggalTelatAbsen.value =
+              //                         DateTime.now();
+              //                     controller.filterBelumAbsen();
+              //                     controller.aksiEmployeeBelumAbsen(
+              //                         "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
+              //                     controller.onReady();
+              //                     Get.back();
+              //                   },
+              //                   child: Padding(
+              //                     padding:
+              //                         const EdgeInsets.fromLTRB(0, 16, 16, 16),
+              //                     child: Row(
+              //                       mainAxisAlignment:
+              //                           MainAxisAlignment.spaceBetween,
+              //                       children: [
+              //                         Row(
+              //                           children: [
+              //                             const SizedBox(width: 16),
+              //                             Text(
+              //                               "Tidak/Belum Absen",
+              //                               style: GoogleFonts.inter(
+              //                                 fontWeight: FontWeight.w500,
+              //                                 fontSize: 16,
+              //                                 color: Constanst.fgPrimary,
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                         controller.tempNamaTipe1.value ==
+              //                                 "Belum Absen"
+              //                             ? Container(
+              //                                 height: 20,
+              //                                 width: 20,
+              //                                 decoration: BoxDecoration(
+              //                                     border: Border.all(
+              //                                         width: 2,
+              //                                         color:
+              //                                             Constanst.onPrimary),
+              //                                     borderRadius:
+              //                                         BorderRadius.circular(
+              //                                             10)),
+              //                                 child: Padding(
+              //                                   padding:
+              //                                       const EdgeInsets.all(3),
+              //                                   child: Container(
+              //                                     decoration: BoxDecoration(
+              //                                         color:
+              //                                             Constanst.onPrimary,
+              //                                         borderRadius:
+              //                                             BorderRadius.circular(
+              //                                                 10)),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                             : InkWell(
+              //                                 onTap: () {
+              //                                   controller.clearPencarian();
+              //                                   controller
+              //                                       .statusLoadingSubmitLaporan
+              //                                       .value = true;
+              //                                   controller.tempNamaTipe1.value =
+              //                                       "Belum Absen";
+              //                                   controller
+              //                                       .pilihTanggalTelatAbsen
+              //                                       .value = DateTime.now();
+              //                                   controller.filterBelumAbsen();
+              //                                   controller.aksiEmployeeBelumAbsen(
+              //                                       "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
+              //                                   controller.onReady();
+              //                                   Get.back();
+              //                                 },
+              //                                 child: Container(
+              //                                   height: 20,
+              //                                   width: 20,
+              //                                   decoration: BoxDecoration(
+              //                                       border: Border.all(
+              //                                           width: 1,
+              //                                           color: Constanst
+              //                                               .onPrimary),
+              //                                       borderRadius:
+              //                                           BorderRadius.circular(
+              //                                               10)),
+              //                                   child: Padding(
+              //                                     padding:
+              //                                         const EdgeInsets.all(2),
+              //                                     child: Container(
+              //                                       decoration: BoxDecoration(
+              //                                           borderRadius:
+              //                                               BorderRadius
+              //                                                   .circular(10)),
+              //                                     ),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 InkWell(
+              //                   onTap: () {
+              //                     controller.clearPencarian();
+              //                     controller.statusLoadingSubmitLaporan.value =
+              //                         true;
+              //                     controller.tempNamaTipe1.value =
+              //                         "Absen Terlambat";
+              //                     controller.pilihTanggalTelatAbsen.value =
+              //                         DateTime.now();
+              //                     controller.filterAbsenTelat();
+              //                     controller.aksiEmployeeTerlambatAbsen(
+              //                         "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
+              //                     controller.onReady();
+              //                     Get.back();
+              //                   },
+              //                   child: Padding(
+              //                     padding:
+              //                         const EdgeInsets.fromLTRB(0, 16, 16, 16),
+              //                     child: Row(
+              //                       mainAxisAlignment:
+              //                           MainAxisAlignment.spaceBetween,
+              //                       children: [
+              //                         Row(
+              //                           children: [
+              //                             const SizedBox(width: 16),
+              //                             Text(
+              //                               "Absen Terlambat",
+              //                               style: GoogleFonts.inter(
+              //                                 fontWeight: FontWeight.w500,
+              //                                 fontSize: 16,
+              //                                 color: Constanst.fgPrimary,
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                         controller.tempNamaTipe1.value ==
+              //                                 "Absen Terlambat"
+              //                             ? Container(
+              //                                 height: 20,
+              //                                 width: 20,
+              //                                 decoration: BoxDecoration(
+              //                                     border: Border.all(
+              //                                         width: 2,
+              //                                         color:
+              //                                             Constanst.onPrimary),
+              //                                     borderRadius:
+              //                                         BorderRadius.circular(
+              //                                             10)),
+              //                                 child: Padding(
+              //                                   padding:
+              //                                       const EdgeInsets.all(3),
+              //                                   child: Container(
+              //                                     decoration: BoxDecoration(
+              //                                         color:
+              //                                             Constanst.onPrimary,
+              //                                         borderRadius:
+              //                                             BorderRadius.circular(
+              //                                                 10)),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                             : InkWell(
+              //                                 onTap: () {
+              //                                   controller.clearPencarian();
+              //                                   controller
+              //                                       .statusLoadingSubmitLaporan
+              //                                       .value = true;
+              //                                   controller.tempNamaTipe1.value =
+              //                                       "Absen Terlambat";
+              //                                   controller
+              //                                       .pilihTanggalTelatAbsen
+              //                                       .value = DateTime.now();
+              //                                   controller.filterAbsenTelat();
+              //                                   controller
+              //                                       .aksiEmployeeTerlambatAbsen(
+              //                                           "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
+              //                                   controller.onReady();
+              //                                   Get.back();
+              //                                 },
+              //                                 child: Container(
+              //                                   height: 20,
+              //                                   width: 20,
+              //                                   decoration: BoxDecoration(
+              //                                       border: Border.all(
+              //                                           width: 1,
+              //                                           color: Constanst
+              //                                               .onPrimary),
+              //                                       borderRadius:
+              //                                           BorderRadius.circular(
+              //                                               10)),
+              //                                   child: Padding(
+              //                                     padding:
+              //                                         const EdgeInsets.all(2),
+              //                                     child: Container(
+              //                                       decoration: BoxDecoration(
+              //                                           borderRadius:
+              //                                               BorderRadius
+              //                                                   .circular(10)),
+              //                                     ),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 )
+              //               ],
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     ).then((value) {
+              //       print('Bottom sheet closed');
+              //     });
+              //   },
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(100),
+              //         border: Border.all(color: Constanst.border)),
+              //     child: Padding(
+              //       padding: const EdgeInsets.only(
+              //           top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
+              //       child: Row(
+              //         children: [
+              //           Row(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: [
+              //               Text(
+              //                 controller.tempNamaTipe1.value,
+              //                 style: GoogleFonts.inter(
+              //                     color: Constanst.fgSecondary,
+              //                     fontSize: 14,
+              //                     fontWeight: FontWeight.w500),
+              //               ),
+              //               Padding(
+              //                 padding: const EdgeInsets.only(left: 4),
+              //                 child: Icon(
+              //                   Iconsax.arrow_down_1,
+              //                   color: Constanst.fgSecondary,
+              //                   size: 18,
+              //                 ),
+              //               )
+              //             ],
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(width: 4),
               InkWell(
                 customBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(100))),

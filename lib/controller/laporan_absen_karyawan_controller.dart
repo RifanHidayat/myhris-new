@@ -91,6 +91,7 @@ class LaporanAbsenKaryawanController extends GetxController {
                 namaDinasLuar: el['dinas_luar'],
                 offDay: el['off_date'],
                 namaHariLibur: el['hari_libur'],
+                jamKerja: el['jam_kerja'],
                 statusView: el['status_view'] ?? false));
             tempHistoryAbsen.value = historyAbsen.value;
             // historyAbsen.value.add(AbsenModel(
@@ -283,7 +284,8 @@ class LaporanAbsenKaryawanController extends GetxController {
       case '1': // Terlambat absen masuk (signin_time > 08:30)
         prosesLoad.value = true;
         historyAbsen.value = tempHistoryAbsen
-            .where((element) => _isLateSignin(element.signin_time.toString()))
+            .where((element) => _isLateSignin(
+                element.signin_time.toString(), element.jamKerja.toString()))
             .toList();
         Set<String> seenDates = {};
         historyAbsen.value = historyAbsen.where((event) {
@@ -376,8 +378,8 @@ class LaporanAbsenKaryawanController extends GetxController {
     historyAbsenShow.refresh();
   }
 
-  bool _isLateSignin(String signinTime) {
-    return signinTime.compareTo("08:30:00") > 0;
+  bool _isLateSignin(String signinTime, String jamKerja) {
+    return signinTime.compareTo(jamKerja) > 0;
   }
 
   bool _isLateSignout(String signoutTime) {
