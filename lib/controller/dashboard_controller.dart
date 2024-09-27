@@ -2676,9 +2676,17 @@ class DashboardController extends GetxController {
                                     !absenControllre.coordinate.value) {
                                   controllerAbsensi.kirimDataAbsensi(
                                       typewfh: typewfh);
-                                } else {
+                                } else if (absenControllre.coordinate.value ==
+                                    true) {
                                   controllerAbsensi.kirimDataAbsensiOffline(
                                       typewfh: typewfh);
+                                } else {
+                                  UtilsAlert.showCheckOfflineAbsensi(
+                                      positiveBtnPressed: () {
+                                    Get.back();
+                                    controllerAbsensi.kirimDataAbsensiOffline(
+                                        typewfh: typewfh);
+                                  });
                                 }
                               } else if (controllerAbsensi
                                           .statusDeteksi.value ==
