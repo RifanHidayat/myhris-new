@@ -1474,8 +1474,17 @@ class ApprovalController extends GetxController {
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
           print('berhasil sampai sini edit emp labor');
-          insertNotifikasi(dataEditFinal, statusPengajuan, tanggalNow, dt,
-              pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow);
+          var pesanController = Get.find<PesanController>();
+          pesanController.loadApproveInfo();
+          startLoadData(titleAppbar.value, bulanSelected.value,
+              tahunSelected.value, 'persetujuan');
+          Navigator.pop(Get.context!);
+          Navigator.pop(Get.context!);
+          UtilsAlert.showToast(
+              "Pengajuan ${detailData[0]['type']} berhasil di $statusPengajuan");
+          Get.back();
+          // insertNotifikasi(dataEditFinal, statusPengajuan, tanggalNow, dt,
+          //     pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow);
         }
       });
     }

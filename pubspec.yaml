@@ -187,7 +187,7 @@ dependencies:
   location: ^6.0.2
   currency_text_input_formatter: ^2.2.3
   draggable_bottom_sheet: ^1.0.2
-  flutter_background_service: ^5.0.10
+  # flutter_background_service: ^5.0.10
   connectivity_plus: ^6.0.5
   # flutter_internet_speed_test: ^1.0.1
   # dart_ping: ^9.0.1
