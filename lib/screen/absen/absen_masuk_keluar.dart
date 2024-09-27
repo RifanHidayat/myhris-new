@@ -775,7 +775,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                     .widgetButtomSheetWfh()
                                                 : controllerDashboard
                                                     .widgetButtomSheetAktifCamera(
-                                                        type: 'checkTracking');
+                                                        type: 'offlineAbsensi');
                                           });
                                         } else {
                                           final packageInfo =
