@@ -1795,7 +1795,7 @@ class AbsenController extends GetxController {
 
     var getEmpId = dataUser![0].em_id;
     print(getEmpId);
-    var defaultDate = DateTime.now();
+    var defaultDate = DateTime.parse(AppData.endPeriode);
 
     if (AppData.informasiUser![0].beginPayroll != 1 &&
         defaultDate.day > AppData.informasiUser![0].endPayroll) {
