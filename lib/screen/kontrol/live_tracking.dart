@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -195,11 +195,16 @@ class _LiveTrackingState extends State<LiveTracking> {
         androidInfo.version.sdkInt! >= 23;
   }
 
+  // static const locationChannel =
+  //     MethodChannel('com.example/backgroundservice/location_channel');
+
   @override
   void initState() {
     super.initState();
+    // locationChannel
+    //     .setMethodCallHandler(controllerTracking.handleLocationUpdates);
     // refreshData();
-    _checkForFakeGps();
+    // _checkForFakeGps();
   }
 
   @override
@@ -703,15 +708,15 @@ class _LiveTrackingState extends State<LiveTracking> {
                           // controllerTracking.refreshPage();
 
                           // AppData.informasiUser![0].is_tracking = "1";
-                          controllerDashboard.updateInformasiUser();
+                          await controllerDashboard.updateInformasiUser();
                           print(
                               "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
                           print('hidup');
 
-                          final service = FlutterBackgroundService();
+                          // final service = FlutterBackgroundService();
                           // var isRunning = await service.isRunning();
 
-                          service.startService();
+                          // service.startService();
 
                           setState(() {});
                         } else {
@@ -727,13 +732,13 @@ class _LiveTrackingState extends State<LiveTracking> {
                               .isTrackingLokasi.value = false);
 
                           // AppData.informasiUser![0].is_tracking = "0";
-                          controllerDashboard.updateInformasiUser();
+                          await controllerDashboard.updateInformasiUser();
                           print(
                               "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
 
-                          final service = FlutterBackgroundService();
+                          // final service = FlutterBackgroundService();
 
-                          service.invoke("stopService");
+                          // service.invoke("stopService");
 
                           setState(() {});
                           // controllerTracking.latUser.value = 0.0;

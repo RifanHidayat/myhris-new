@@ -5,7 +5,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -3302,6 +3302,8 @@ class _DashboardState extends State<Dashboard> {
     absenControllre.getTimeNow();
     controllerBpj.employeDetaiBpjs();
     controller.initData();
+    controllerAbsensi.employeDetail();
+    controllerAbsensi.userShift();
     absenControllre.getPosisition();
     absenControllre.getPlaceCoordinate();
     controllerPesan.getTimeNow();

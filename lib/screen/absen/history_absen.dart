@@ -1644,6 +1644,10 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
 
     var waktuMasuk = "$attenDate $jamMasuk";
     var batasWaktu = "$attenDate $batasJam";
+
+    if (index.turunan!.isNotEmpty) {
+      waktuMasuk = "$attenDate ${index.turunan!.last.signin_time}";
+    }
 // Pastikan formatnya benar sebelum parsing
     // var perhitunganJamMasuk1 =
     //     830 - int.parse("${listJamMasuk[0]}${listJamMasuk[1]}");
@@ -2142,8 +2146,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                                       "") &&
                                                               DateTime.parse(
                                                                       waktuMasuk)
-                                                                  .isAfter(DateTime.parse(
-                                                                      batasWaktu))
+                                                                  .isAfter(DateTime.parse(batasWaktu)
+                                                                      .add(const Duration(minutes: 1)))
                                                           ? Padding(
                                                               padding: const EdgeInsets.only(top: 12),
                                                               child: Row(

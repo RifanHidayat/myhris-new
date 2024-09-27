@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 // import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -277,10 +277,11 @@ class SettingController extends GetxController {
                 // await LocationDao().clear();
                 // await _getLocations();
                 // await BackgroundLocationTrackerManager.stopTracking();
-                final service = FlutterBackgroundService();
+                // final service = FlutterBackgroundService();
                 // FlutterBackgroundService().invoke("setAsBackground");
 
-                service.invoke("stopService");
+                // service.invoke("stopService");
+                // controllerTracking.stopService();
                 controllerTracking.isTrackingLokasi.value = false;
                 print(
                     "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");

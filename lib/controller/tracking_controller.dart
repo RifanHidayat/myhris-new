@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geocoding/geocoding.dart';
@@ -17,7 +17,7 @@ import 'package:iconsax/iconsax.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:io' show Platform;
+// import 'dart:io' show Platform;
 import 'dart:math';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -63,6 +63,11 @@ import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 import '../main.dart';
 
 class TrackingController extends GetxController {
+  var location = 'Unknown'.obs;
+  var isServiceStarted = false.obs;
+  static const platform = MethodChannel('com.example/backgroundservice');
+  static const locationChannel =
+      MethodChannel('com.example/backgroundservice/location_channel');
   @override
   void onInit() async {
     // checkIsLogin();
@@ -1151,7 +1156,7 @@ class TrackingController extends GetxController {
   //   // });
   // }
 
-  void tracking(String latitude, String longitude) async {
+  Future<void> tracking(String latitude, String longitude) async {
     print("Masuk Sini tracking");
     final prefs = await SharedPreferences.getInstance();
     var emId = prefs.getString('em_id');
@@ -1217,6 +1222,48 @@ class TrackingController extends GetxController {
       // Get.back();
     }
   }
+
+  Future<void> startService(int interval) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? listData = prefs.getStringList('informasiUser') ?? [];
+    List<UserModel> userModel =
+        listData.map((e) => UserModel.fromMap(jsonDecode(e))).toList();
+
+    var apiUrl =
+        await ApiRequest(url: "employee-tracking-insert").sringApiPost();
+    print("apiUrl: $apiUrl");
+    try {
+      await platform.invokeMethod('startService', {
+        'interval': interval,
+        'apiUrl': apiUrl.toString(),
+        'emId': userModel.isNotEmpty
+            ? userModel[0].em_id.toString()
+            : "tidak dapat",
+        'database': prefs.getString('selectedDatabase').toString(),
+        'basicAuth': ApiRequest.basicAuth.toString(),
+      });
+    } on PlatformException catch (e) {
+      print("Failed to start service: '${e.message}'.");
+    }
+  }
+
+  Future<void> stopService() async {
+    try {
+      await platform.invokeMethod('stopService');
+    } on PlatformException catch (e) {
+      print("Failed to stop service: '${e.message}'.");
+    }
+  }
+
+  // Future<void> handleLocationUpdates(MethodCall call) async {
+  //   print("dapat disini");
+  //   if (call.method == "sendLocation") {
+  //     print("dapat disini");
+  //     var latitude = call.arguments['latitude'].toString();
+  //     var longitude = call.arguments['longitude'].toString();
+  //     tracking(latitude, longitude);
+  //   }
+  // }
 
   Future<void> refreshPage() async {
     detailTrackings.clear();
@@ -1502,7 +1549,8 @@ class TrackingController extends GetxController {
   }
 
   Future<void> isTracking() async {
-    final service = FlutterBackgroundService();
+    // final service = FlutterBackgroundService();
+    // final prefs = await SharedPreferences.getInstance();
     print("isTracking new new new ${AppData.informasiUser![0].is_tracking}");
     if (AppData.informasiUser![0].is_tracking.toString() == "1") {
       bagikanlokasi.value = "aktif";
@@ -1519,7 +1567,10 @@ class TrackingController extends GetxController {
       // var isRunning = await service.isRunning();
 
       // Timer.periodic(const Duration(seconds: 1), (timer) async {
-      service.startService();
+      // service.startService();
+      // var interval = prefs.getString('interval_tracking');
+      // var intervalMilliseconds = int.parse(interval!) * 60000;
+      // startService(intervalMilliseconds);
 
       print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
       print('hidup');
@@ -1542,7 +1593,8 @@ class TrackingController extends GetxController {
       //   final service = FlutterBackgroundService();
       //  // var isRunning = await service.isRunning();
 
-      service.invoke("stopService");
+      // service.invoke("stopService");
+      // stopService();
 
       print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
       print(

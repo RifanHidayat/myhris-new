@@ -5,7 +5,7 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_controller.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -243,8 +243,8 @@ class DashboardController extends GetxController {
       getSizeDevice();
       checkStatusPermission();
       checkHakAkses();
-      final service = FlutterBackgroundService();
-      service.invoke("stopService");
+      // final service = FlutterBackgroundService();
+      // service.invoke("stopService");
 
       absenMasukKeluarOffline.value = await SqliteDatabaseHelper().getAbsensi();
       // var absenMasukKeluarOfflineDua =

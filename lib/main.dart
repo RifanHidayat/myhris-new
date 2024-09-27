@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
 // import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -259,128 +259,128 @@ Future<void> main() async {
 // }
 
 // proses tracking
-@pragma('vm:entry-point')
-void onStart(ServiceInstance service) async {
-  final controllerTracking = Get.put(TrackingController());
-  final prefs = await SharedPreferences.getInstance();
-  var time = prefs.getString('interval_tracking');
-  Timer? trackingTimer;
+// @pragma('vm:entry-point')
+// void onStart(ServiceInstance service) async {
+//   final controllerTracking = Get.put(TrackingController());
+//   final prefs = await SharedPreferences.getInstance();
+//   var time = prefs.getString('interval_tracking');
+//   Timer? trackingTimer;
 
-  DartPluginRegistrant.ensureInitialized();
+//   DartPluginRegistrant.ensureInitialized();
 
-  if (service is AndroidServiceInstance) {
-    service.on('setAsForeground').listen((event) {
-      service.setAsForegroundService();
-    });
+//   if (service is AndroidServiceInstance) {
+//     service.on('setAsForeground').listen((event) {
+//       service.setAsForegroundService();
+//     });
 
-    service.on('setAsBackground').listen((event) {
-      service.setAsBackgroundService();
-    });
-  }
+//     service.on('setAsBackground').listen((event) {
+//       service.setAsBackgroundService();
+//     });
+//   }
 
-  service.on('stopService').listen((event) {
-    service.stopSelf();
-    flutterLocalNotificationsPlugin.cancel(888);
-    trackingTimer?.cancel();
-    trackingTimer = null;
-  });
+//   service.on('stopService').listen((event) {
+//     service.stopSelf();
+//     flutterLocalNotificationsPlugin.cancel(888);
+//     trackingTimer?.cancel();
+//     trackingTimer = null;
+//   });
 
-  Timer.periodic(const Duration(seconds: 1), (timer) async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    // print('lat :${position.latitude.toString()}');
-    // print('long :${position.latitude.toString()}');
-    trackingTimer ??= Timer.periodic(
-        Duration(
-            minutes: int.parse(time ?? "2")), //minutes: int.parse(time ?? "2")
-        (timer) async {
-      controllerTracking.tracking(
-          position.latitude.toString(), position.longitude.toString());
-    });
+//   Timer.periodic(const Duration(seconds: 1), (timer) async {
+//     Position position = await Geolocator.getCurrentPosition(
+//         desiredAccuracy: LocationAccuracy.high);
+//     // print('lat :${position.latitude.toString()}');
+//     // print('long :${position.latitude.toString()}');
+//     trackingTimer ??= Timer.periodic(
+//         Duration(
+//             minutes: int.parse(time ?? "2")), //minutes: int.parse(time ?? "2")
+//         (timer) async {
+//       controllerTracking.tracking(
+//           position.latitude.toString(), position.longitude.toString());
+//     });
 
-    if (service is AndroidServiceInstance) {
-      service.setForegroundNotificationInfo(
-        title: "Background Service",
-        content: "Updated at date ${DateTime.now()}",
-      );
-    }
+//     if (service is AndroidServiceInstance) {
+//       service.setForegroundNotificationInfo(
+//         title: "Background Service",
+//         content: "Updated at date ${DateTime.now()}",
+//       );
+//     }
 
-    flutterLocalNotificationsPlugin.show(
-      888,
-      'Background Service',
-      'Service Update at date ${DateTime.now()}',
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'my_foreground',
-          'MY FOREGROUND SERVICE',
-          channelDescription:
-              'This channel is used for important notifications.',
-          importance: Importance.low,
-          priority: Priority.low,
-          ongoing: true,
-        ),
-      ),
-    );
+//     flutterLocalNotificationsPlugin.show(
+//       888,
+//       'Background Service',
+//       'Service Update at date ${DateTime.now()}',
+//       const NotificationDetails(
+//         android: AndroidNotificationDetails(
+//           'my_foreground',
+//           'MY FOREGROUND SERVICE',
+//           channelDescription:
+//               'This channel is used for important notifications.',
+//           importance: Importance.low,
+//           priority: Priority.low,
+//           ongoing: true,
+//         ),
+//       ),
+//     );
 
-    // print(
-    //     'FLUTTER BACKGROUND SERVICE: ${DateTime.now()} ${AppData.emailUser} -- email ${prefs.getString('selectedDatabase')}');
+//     // print(
+//     //     'FLUTTER BACKGROUND SERVICE: ${DateTime.now()} ${AppData.emailUser} -- email ${prefs.getString('selectedDatabase')}');
 
-    service.invoke('updateLocation', {
-      "latitude": position.latitude.toString(),
-      "longitude": position.longitude.toString(),
-      "timestamp": DateTime.now().toIso8601String(),
-    });
-  });
-}
+//     service.invoke('updateLocation', {
+//       "latitude": position.latitude.toString(),
+//       "longitude": position.longitude.toString(),
+//       "timestamp": DateTime.now().toIso8601String(),
+//     });
+//   });
+// }
 
-Future<void> initializeService() async {
-  final service = FlutterBackgroundService();
+// Future<void> initializeService() async {
+//   final service = FlutterBackgroundService();
 
-  // OPTIONAL, using custom notification channel id
-  const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'my_foreground', // id
-    'MY FOREGROUND SERVICE', // title
-    description:
-        'This channel is used for important notifications.', // description
-    importance: Importance.low, // default is low, other value is high
-  );
+//   // OPTIONAL, using custom notification channel id
+//   const AndroidNotificationChannel channel = AndroidNotificationChannel(
+//     'my_foreground', // id
+//     'MY FOREGROUND SERVICE', // title
+//     description:
+//         'This channel is used for important notifications.', // description
+//     importance: Importance.low, // default is low, other value is high
+//   );
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+//   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+//       FlutterLocalNotificationsPlugin();
 
-  // Create the notification channel
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+//   // Create the notification channel
+//   await flutterLocalNotificationsPlugin
+//       .resolvePlatformSpecificImplementation<
+//           AndroidFlutterLocalNotificationsPlugin>()
+//       ?.createNotificationChannel(channel);
 
-  await service.configure(
-    androidConfiguration: AndroidConfiguration(
-      onStart: onStart,
-      autoStart: true,
-      isForegroundMode: true,
-      notificationChannelId: channel.id,
-      initialNotificationTitle: 'Background Service',
-      initialNotificationContent: 'Service is running',
-      foregroundServiceNotificationId: 888,
-    ),
-    iosConfiguration: IosConfiguration(
-      autoStart: true,
-      onForeground: onStart,
-      onBackground: onIosBackground,
-    ),
-  );
+//   await service.configure(
+//     androidConfiguration: AndroidConfiguration(
+//       onStart: onStart,
+//       autoStart: true,
+//       isForegroundMode: true,
+//       notificationChannelId: channel.id,
+//       initialNotificationTitle: 'Background Service',
+//       initialNotificationContent: 'Service is running',
+//       foregroundServiceNotificationId: 888,
+//     ),
+//     iosConfiguration: IosConfiguration(
+//       autoStart: true,
+//       onForeground: onStart,
+//       onBackground: onIosBackground,
+//     ),
+//   );
 
-  // service.startService();
-}
+//    service.startService();
+// }
 
 // to ensure this executed
 // run app from xcode, then from xcode menu, select Simulate Background Fetch
-bool onIosBackground(ServiceInstance service) {
-  WidgetsFlutterBinding.ensureInitialized();
-  print('FLUTTER BACKGROUND FETCH');
-  return true;
-}
+// bool onIosBackground(ServiceInstance service) {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   print('FLUTTER BACKGROUND FETCH');
+//   return true;
+// }
 // @pragma('vm:entry-point')
 // void onStart(ServiceInstance service) async {
 //   // Only available for flutter 3.0.0 and later

@@ -212,34 +212,34 @@ class _DetailPersetujuanWfhState extends State<DetailPersetujuanWfh> {
                     Get.context!, "Proses $stringPilihan pengajuan");
                 controller.aksiMenyetujui(pilihan);
               }
-              controllerGlobal.kirimNotifikasi(
-                  title: 'WFH',
-                  status: 'approve',
-                  pola: controllerGlobal.valuePolaPersetujuan.value.toString(),
-                  statusApproval: controller.valuePolaPersetujuan == 1 ||
-                          controller.valuePolaPersetujuan == "1"
-                      ? "1"
-                      : controller.valuePolaPersetujuan == 2 ||
-                              controller.valuePolaPersetujuan == "2"
-                          ? controller.detailData[0]['nama_approve1'] == "" ||
-                                  controller.detailData[0]['nama_approve1'] ==
-                                      "null" ||
-                                  controller.detailData[0]['nama_approve1'] ==
-                                      null
-                              ? "1"
-                              : "2"
-                          : "1",
-                  emId: em_id,
-                  nomor: controller.detailData[0]['nomor_ajuan'],
-                  emIdApproval1: controller.detailData[0]['em_report_to'],
-                  emIdApproval2: controller.detailData[0]['em_report2_to'] ==
-                              "" ||
-                          controller.detailData[0]['em_report2_to'] == "null" ||
-                          controller.detailData[0]['em_report2_to'] == null
-                      ? controller.detailData[0]['em_report_to']
-                      : controller.detailData[0]['em_report2_to'],
-                  delegasi: widget.delegasi,
-                  id: widget.idxDetail);
+              // controllerGlobal.kirimNotifikasi(
+              //     title: 'WFH',
+              //     status: 'approve',
+              //     pola: controllerGlobal.valuePolaPersetujuan.value.toString(),
+              //     statusApproval: controller.valuePolaPersetujuan == 1 ||
+              //             controller.valuePolaPersetujuan == "1"
+              //         ? "1"
+              //         : controller.valuePolaPersetujuan == 2 ||
+              //                 controller.valuePolaPersetujuan == "2"
+              //             ? controller.detailData[0]['nama_approve1'] == "" ||
+              //                     controller.detailData[0]['nama_approve1'] ==
+              //                         "null" ||
+              //                     controller.detailData[0]['nama_approve1'] ==
+              //                         null
+              //                 ? "1"
+              //                 : "2"
+              //             : "1",
+              //     emId: em_id,
+              //     nomor: controller.detailData[0]['nomor_ajuan'],
+              //     emIdApproval1: controller.detailData[0]['em_report_to'],
+              //     emIdApproval2: controller.detailData[0]['em_report2_to'] ==
+              //                 "" ||
+              //             controller.detailData[0]['em_report2_to'] == "null" ||
+              //             controller.detailData[0]['em_report2_to'] == null
+              //         ? controller.detailData[0]['em_report_to']
+              //         : controller.detailData[0]['em_report2_to'],
+              //     delegasi: widget.delegasi,
+              //     id: widget.idxDetail);
             },
           ),
         );
