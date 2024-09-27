@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
 import 'package:siscom_operasional/screen/absen/detail_absen.dart';
@@ -284,8 +285,8 @@ class LaporanAbsenKaryawanController extends GetxController {
       case '1': // Terlambat absen masuk (signin_time > 08:30)
         prosesLoad.value = true;
         historyAbsen.value = tempHistoryAbsen
-            .where((element) => _isLateSignin(
-                element.signin_time.toString(), element.jamKerja.toString()))
+            .where((element) => _isLateSignin(element.signin_time.toString(),
+                tambahSatuMenit(element.jamKerja.toString())))
             .toList();
         Set<String> seenDates = {};
         historyAbsen.value = historyAbsen.where((event) {
@@ -376,6 +377,22 @@ class LaporanAbsenKaryawanController extends GetxController {
 
     historyAbsen.refresh();
     historyAbsenShow.refresh();
+  }
+
+  String tambahSatuMenit(String waktu) {
+    // Inisialisasi formatter untuk format jam
+    DateFormat format = DateFormat("HH:mm:ss");
+
+    // Parsing string ke DateTime
+    DateTime time = format.parse(waktu);
+
+    // Tambahkan 1 menit
+    DateTime updatedTime = time.add(Duration(minutes: 1));
+
+    // Ubah kembali ke format string
+    String updatedTimeStr = format.format(updatedTime);
+
+    return updatedTimeStr;
   }
 
   bool _isLateSignin(String signinTime, String jamKerja) {

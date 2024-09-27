@@ -1692,9 +1692,8 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
                                               ))
                                           : index.namaCuti != null
                                               ? Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 12),
+                                                  padding: const EdgeInsets.only(
+                                                      top: 12),
                                                   child: Row(
                                                     children: [
                                                       Icon(
@@ -1742,7 +1741,8 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
                                                           '0'
                                                       ? Padding(
                                                           padding:
-                                                              const EdgeInsets.only(
+                                                              const EdgeInsets
+                                                                  .only(
                                                                   top: 12),
                                                           child: Row(
                                                             children: [
@@ -1770,13 +1770,11 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
                                                                   "null") &&
                                                               DateTime.parse(
                                                                       waktuMasuk)
-                                                                  .isAfter(
-                                                                      DateTime.parse(
-                                                                          batasWaktu))
+                                                                  .isAfter(DateTime.parse(
+                                                                          batasWaktu)
+                                                                      .add(const Duration(minutes: 1)))
                                                           ? Padding(
-                                                              padding:
-                                                                  const EdgeInsets.only(
-                                                                      top: 12),
+                                                              padding: const EdgeInsets.only(top: 12),
                                                               child: Row(
                                                                 children: [
                                                                   Icon(

@@ -2143,7 +2143,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                               DateTime.parse(
                                                                       waktuMasuk)
                                                                   .isAfter(DateTime.parse(
-                                                                      batasWaktu))
+                                                                      batasWaktu).add(const Duration(minutes: 1)))
                                                           ? Padding(
                                                               padding: const EdgeInsets.only(top: 12),
                                                               child: Row(
