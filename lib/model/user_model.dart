@@ -46,6 +46,7 @@ class UserModel {
   var isBackDateLembur;
   var tanggalBerakhirKontrak;
   var sisaKontrak;
+  var sisaKontrakFormat;
   var lamaBekerja;
   var lamaBekerjaFormat;
 
@@ -93,6 +94,7 @@ class UserModel {
     this.isBackDateLembur,
     this.tanggalBerakhirKontrak,
     this.sisaKontrak,
+    this.sisaKontrakFormat,
     this.lamaBekerja,
     this.lamaBekerjaFormat,
   });
@@ -141,6 +143,7 @@ class UserModel {
       "is_back_date_tugas_luar": isBackDateTugasLuar,
       "tanggal_berakhir_kontrak": tanggalBerakhirKontrak,
       "sisa_kontrak": sisaKontrak,
+      "sisa_kontrak_format": sisaKontrakFormat,
       "lama_bekerja": lamaBekerja,
       "lama_bekerja_format": lamaBekerjaFormat,
     };
@@ -190,6 +193,7 @@ class UserModel {
       is_tracking: map['is_tracking'],
       tanggalBerakhirKontrak: map['tanggal_berakhir_kontrak'],
       sisaKontrak: map['sisa_kontrak'],
+      sisaKontrakFormat: map['sisa_kontrak_format'],
       lamaBekerja: map['lama_bekerja'],
       lamaBekerjaFormat: map['lama_bekerja_format'],
     );

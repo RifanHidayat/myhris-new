@@ -99,6 +99,7 @@ class _DashboardState extends State<Dashboard> {
       }),
       tabbController.checkuserinfo(),
     ]);
+    controllerPesan.getTimeNow();
     await Future.delayed(const Duration(seconds: 2));
     controller.onInit();
     controller.isLoading.value = false;
@@ -3282,25 +3283,31 @@ class _DashboardState extends State<Dashboard> {
 
   void _setIsloading() async {
     controller.isLoading.value = true;
-    if (AppData.firsLogin == true) {
-      absenControllre.getTimeNow();
-      controllerBpj.employeDetaiBpjs();
-      controller.initData();
-      absenControllre.getPosisition();
-      absenControllre.getPlaceCoordinate();
-      await Future.delayed(const Duration(seconds: 4));
-    } else {
-      await Future.wait([
-        absenControllre.getTimeNow(),
-        controllerBpj.employeDetaiBpjs(),
-        controller.initData(),
-        absenControllre.getPosisition(),
-        absenControllre.getPlaceCoordinate(),
-      ]);
-    }
-    await Future.delayed(const Duration(seconds: 1));
+    // if (AppData.firsLogin == true) {
+    //   absenControllre.getTimeNow();
+    //   controllerBpj.employeDetaiBpjs();
+    //   controller.initData();
+    //   absenControllre.getPosisition();
+    //   absenControllre.getPlaceCoordinate();rcq
+    //   await Future.delayed(const Duration(seconds: 4));
+    // } else {
+    //   await Future.wait([
+    //     absenControllre.getTimeNow(),
+    //     controllerBpj.employeDetaiBpjs(),
+    //     controller.initData(),
+    //     absenControllre.getPosisition(),
+    //     absenControllre.getPlaceCoordinate(),
+    //   ]);
+    // }
+    absenControllre.getTimeNow();
+    controllerBpj.employeDetaiBpjs();
+    controller.initData();
+    absenControllre.getPosisition();
+    absenControllre.getPlaceCoordinate();
+    controllerPesan.getTimeNow();
+    await Future.delayed(const Duration(seconds: 2));
     controller.isLoading.value = false;
-    AppData.firsLogin = false;
+    // AppData.firsLogin = false;
   }
 
   void _checkversion() async {

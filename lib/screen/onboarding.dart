@@ -19,7 +19,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   onBoardingInActive() {
     AppData.isOnboarding = true;
-    AppData.firsLogin = true;
   }
 
   List<Map<String, String>> onboardingData = [

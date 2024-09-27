@@ -11,6 +11,7 @@ import 'package:siscom_operasional/screen/absen/laporan/laporan_absen.dart';
 import 'package:siscom_operasional/screen/absen/pengajuan%20absen.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
@@ -36,6 +37,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
   void initState() {
     super.initState();
     Api().checkLogin();
+    controller.getTimeNow();
     controller.loadHistoryAbsenUser();
     controller.dataPengajuanAbsensi();
   }
@@ -161,7 +163,12 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const SizedBox(height: 12.0),
+                                        const SizedBox(height: 12),
+                                        filterData(),
+                                        const SizedBox(height: 8),
+                                        UtilsAlert.infoContainer(
+                                            "${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}"),
+                                        const SizedBox(height: 12),
                                         // Row(
                                         //   children: [
                                         //     Expanded(
@@ -819,6 +826,96 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
 
           return tampilan2(controller.historyAbsen.value[index]);
         });
+  }
+
+  Widget filterData() {
+    return Obx(
+      () => Padding(
+        padding: const EdgeInsets.only(right: 16),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              InkWell(
+                customBorder: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(100))),
+                onTap: () {
+                  DatePicker.showPicker(
+                    Get.context!,
+                    pickerModel: CustomMonthPicker(
+                      minTime: DateTime(2000, 1, 1),
+                      maxTime: DateTime(2100, 1, 1),
+                      currentTime: DateTime(
+                          int.parse(
+                              controller.tahunSelectedSearchHistory.value),
+                          int.parse(
+                              controller.bulanSelectedSearchHistory.value),
+                          1),
+                    ),
+                    onConfirm: (time) {
+                      if (time != null) {
+                        print("$time");
+                        controller.filterLokasiKoordinate.value = "Lokasi";
+                        controller.selectedViewFilterAbsen.value = 0;
+                        var filter = DateFormat('yyyy-MM').format(time);
+                        var array = filter.split('-');
+                        var bulan = array[1];
+                        var tahun = array[0];
+                        controller.bulanSelectedSearchHistory.value = bulan;
+                        controller.tahunSelectedSearchHistory.value = tahun;
+                        controller.bulanDanTahunNow.value = "$bulan-$tahun";
+                        this.controller.bulanSelectedSearchHistory.refresh();
+                        this.controller.tahunSelectedSearchHistory.refresh();
+                        this.controller.bulanDanTahunNow.refresh();
+
+                        controller.date.value = time;
+                        controller.loadHistoryAbsenUserFilter();
+                      }
+                    },
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      border: Border.all(color: Constanst.border)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
+                    child: Row(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              Constanst.convertDateBulanDanTahun(
+                                  controller.bulanDanTahunNow.value),
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: Icon(
+                                Iconsax.arrow_down_1,
+                                color: Constanst.fgSecondary,
+                                size: 18,
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget listPengajuan() {

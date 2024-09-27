@@ -26,7 +26,8 @@ class GlobalController extends GetxController {
     super.onReady();
   }
 
-  void getLoadsysData() {
+  Future<void> getLoadsysData() async {
+    sysData.clear();
     var connect = Api.connectionApi("get", "", "sysdata");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -170,7 +171,11 @@ class GlobalController extends GetxController {
     });
   }
 
-  showDataPilihAtasan(dataEmployee) {
+  showDataPilihAtasan(dataEmployee) async {
+    UtilsAlert.showLoadingIndicator(Get.context!);
+    await getLoadsysData();
+    await Future.delayed(const Duration(seconds: 1));
+    Get.back();
     showModalBottomSheet(
         context: Get.context!,
         isScrollControlled: true,

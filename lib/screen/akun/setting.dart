@@ -96,17 +96,43 @@ class _SettingState extends State<Setting> {
                             child: firstLine(),
                           )),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 16,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0, right: 16),
                       child: infoPeriode(),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 16,
                     ),
                     lineInfoPengguna(),
+                    Visibility(
+                      visible:
+                          int.parse(AppData.informasiUser![0].sisaKontrak) <=
+                                  60 &&
+                              AppData.informasiUser![0].tanggalBerakhirKontrak
+                                      .toString() !=
+                                  "",
+                      child: InkWell(
+                        onTap: () => authController.isConnected.value
+                            ? controller.lineInfoPenggunaKontrak()
+                            : UtilsAlert.showDialogCheckInternet(),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 16.0, right: 16),
+                              child: UtilsAlert.infoContainer(
+                                  "Kontrak kerja Anda akan segera berakhir dalam ${AppData.informasiUser![0].sisaKontrakFormat.toString()} lagi"),
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     Container(
                         height: 6,
                         width: double.infinity,
@@ -532,7 +558,9 @@ class _SettingState extends State<Setting> {
             child: InkWell(
               customBorder: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12))),
-              onTap: () => controller.lineInfoPenggunaKontrak(),
+              onTap: () => authController.isConnected.value
+                  ? controller.lineInfoPenggunaKontrak()
+                  : UtilsAlert.showDialogCheckInternet(),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -641,6 +669,11 @@ class _SettingState extends State<Setting> {
   Widget infoPeriode() {
     return GestureDetector(
       onTap: () {
+        var dt = DateTime.parse(AppData.endPeriode);
+        var outputFormat1 = DateFormat('MM');
+        var outputFormat2 = DateFormat('yyyy');
+        controller.bulanEnd.value = outputFormat1.format(dt);
+        controller.tahunSelectedSearchHistory.value = outputFormat2.format(dt);
         var selectedDate =
             "${controller.tahunSelectedSearchHistory.value}-${controller.bulanEnd.value}-01";
         DateTime parsedDate;
@@ -706,7 +739,7 @@ class _SettingState extends State<Setting> {
       },
       child: Container(
         width: 380,
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -720,12 +753,12 @@ class _SettingState extends State<Setting> {
           children: [
             Row(
               children: [
-                Icon(Icons.calendar_today, color: Colors.blue),
-                SizedBox(width: 8),
+                const Icon(Icons.calendar_today, color: Colors.blue),
+                const SizedBox(width: 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Periode",
                       style: TextStyle(
                         color: Colors.grey,
@@ -735,7 +768,7 @@ class _SettingState extends State<Setting> {
                     ),
                     Obx(() => Text(
                           "${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -743,7 +776,7 @@ class _SettingState extends State<Setting> {
                         )),
                     Obx(() => Text(
                           "Dari ${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}",
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
                           ),
@@ -754,7 +787,7 @@ class _SettingState extends State<Setting> {
                 ),
               ],
             ),
-            Expanded(
+            const Expanded(
               child: Icon(
                 Icons.arrow_forward_ios_rounded,
                 color: Colors.grey,

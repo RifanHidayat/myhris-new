@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
 import 'package:siscom_operasional/screen/absen/detail_absen.dart';
 import 'package:siscom_operasional/utils/api.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class LaporanAbsenKaryawanController extends GetxController {
@@ -30,12 +32,17 @@ class LaporanAbsenKaryawanController extends GetxController {
     loadHistoryAbsenEmployee();
   }
 
+  var controller = Get.put(AbsenController());
+
   void loadHistoryAbsenEmployee() {
     var listPeriode = bulanSelected.value.split("-");
     var bulan = listPeriode[0];
     var tahun = listPeriode[1];
     historyAbsen.clear();
     historyAbsenShow.clear();
+
+    AppData.startPeriode = controller.startPeriode.value;
+    AppData.endPeriode = controller.endPeriode.value;
 
     Map<String, dynamic> body = {
       'em_id': emIdKaryawan.value,
@@ -113,15 +120,26 @@ class LaporanAbsenKaryawanController extends GetxController {
           }
 
           //historyAbsenShow.value = historyAbsen;
-          Set<String> seenDates = {};
-          historyAbsen.value = historyAbsen.where((event) {
-            if (seenDates.contains(event.date)) {
-              return false;
-            } else {
-              seenDates.add(event.date);
-              return true;
+          // Set<String> seenDates = {};
+          // historyAbsen.value = historyAbsen.where((event) {
+          //   if (seenDates.contains(event.date)) {
+          //     return false;
+          //   } else {
+          //     seenDates.add(event.date);
+          //     return true;
+          //   }
+          // }).toList();
+
+          Map<String, AbsenModel> highestIdPerDate = {};
+
+          for (var event in historyAbsen) {
+            if (!highestIdPerDate.containsKey(event.date) ||
+                event.id! > highestIdPerDate[event.date]!.id!) {
+              highestIdPerDate[event.date] = event;
             }
-          }).toList();
+          }
+
+          historyAbsen.value = highestIdPerDate.values.toList();
 
           historyAbsen.value.forEach((element) {
             print("masuk sini");
@@ -129,7 +147,8 @@ class LaporanAbsenKaryawanController extends GetxController {
             var data = tempHistoryAbsen
                 .where((p0) => p0.date == element.date)
                 .where((p0) => p0.id != element.id)
-                .toList();
+                .toList()
+              ..sort((a, b) => b.id!.compareTo(a.id as num));
             if (data.length > 0) {
               element.turunan = data;
             } else {
@@ -143,6 +162,8 @@ class LaporanAbsenKaryawanController extends GetxController {
         this.tempHistoryAbsen.refresh();
       }
     });
+    AppData.startPeriode = controller.tempStartPeriode.value;
+    AppData.endPeriode = controller.tempEndPeriode.value;
   }
 
   void showTurunan(tanggal) {

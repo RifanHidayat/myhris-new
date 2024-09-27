@@ -55,8 +55,6 @@ class Api {
 
   static Future connectionApi(String typeConnect, valFormData, String url,
       {params = "", String? startPeriode, String? endPeriode}) async {
-
-
     // if (startPeriode != null && endPeriode != null) {
     //   params += "&start_date=$startPeriode&endPeriode=$endPeriode";
     // }
@@ -210,9 +208,9 @@ class ApiRequest {
     if (temParams != null) {
       headers.addAll(temParams);
     }
- params.addAll({
-      "startPeriode":AppData.startPeriode,
-      "endPeriode":AppData.endPeriode
+    params.addAll({
+      "startPeriode": AppData.startPeriode,
+      "endPeriode": AppData.endPeriode
     });
     print(basicUrl + url);
     return await http
@@ -226,9 +224,9 @@ class ApiRequest {
     if (temParams != null) {
       params.addAll(temParams);
     }
-     params.addAll({
-      "startPeriode":AppData.startPeriode,
-      "endPeriode":AppData.endPeriode
+    params.addAll({
+      "startPeriode": AppData.startPeriode,
+      "endPeriode": AppData.endPeriode
     });
     print(params);
     print("basic ${basicUrl + url}");
@@ -244,9 +242,9 @@ class ApiRequest {
     if (temParams != null) {
       headers.addAll(temParams);
     }
- params.addAll({
-      "startPeriode":AppData.startPeriode,
-      "endPeriode":AppData.endPeriode
+    params.addAll({
+      "startPeriode": AppData.startPeriode,
+      "endPeriode": AppData.endPeriode
     });
     print(basicUrl + url);
     return await http
@@ -264,14 +262,33 @@ class ApiRequest {
     if (temParams != null) {
       headers.addAll(temParams);
     }
- params.addAll({
-      "startPeriode":AppData.startPeriode,
-      "endPeriode":AppData.endPeriode
+    params.addAll({
+      "startPeriode": AppData.startPeriode,
+      "endPeriode": AppData.endPeriode
     });
     print(basicUrl + url);
     return await http
         .delete(Uri.parse(basicUrl + url).replace(queryParameters: headers),
             body: jsonEncode(body), headers: headers)
         .timeout(Duration(minutes: 3));
+  }
+
+  Future<String> sringApiPost() async {
+    print(temParams);
+    if (temParams != null) {
+      params.addAll(temParams);
+    }
+    params.addAll({
+      "startPeriode": AppData.startPeriode,
+      "endPeriode": AppData.endPeriode,
+    });
+
+    // Membangun URL lengkap
+    final completeUrl =
+        Uri.parse(basicUrl + url).replace(queryParameters: params).toString();
+    print("Complete URL: $completeUrl");
+
+    // Kembalikan URL lengkap
+    return completeUrl;
   }
 }

@@ -2,6 +2,7 @@ import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:siscom_operasional/controller/pesan_controller.dart';
 // import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:siscom_operasional/controller/tab_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
@@ -23,6 +24,7 @@ class InitScreen extends StatefulWidget {
 class _InitScreenState extends State<InitScreen> {
   final controller = Get.put(TabbController());
   final controllerTracking = Get.put(TrackingController());
+  final controllerPesan = Get.put(PesanController());
 
   // int _currentIndex = 0;
 
@@ -147,17 +149,93 @@ class _InitScreenState extends State<InitScreen> {
         ),
       ),
       CustomNavigationBarItem(
-        selectedIcon: SvgPicture.asset(
-          'assets/inbox_fill.svg',
-          // color: Constanst.onPrimary,
-          height: 23,
-          width: 23,
+        selectedIcon: Stack(
+          children: [
+            SvgPicture.asset(
+              'assets/inbox_fill.svg',
+              height: 23,
+              width: 23,
+            ),
+            Visibility(
+              visible: controllerPesan.jumlahPersetujuan.value.toString() != "0",
+              child: Positioned(
+                top: -2,
+                right: -5,
+                child: Container(
+                  height: 22,
+                  width: 22,
+                  decoration: BoxDecoration(
+                    color: Constanst.colorStateDangerBg,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(100.0),
+                    ),
+                    border: Border.all(
+                      width: 1.0,
+                      color: Constanst.colorStateDangerBorder,
+                    ),
+                  ),
+                  child: Center(
+                    child: Obx(
+                      () => Text(
+                        "${controllerPesan.jumlahPersetujuan.value}".length > 2
+                            ? '${"${controllerPesan.jumlahPersetujuan.value}".substring(0, 2)}+'
+                            : "${controllerPesan.jumlahPersetujuan.value}",
+                        style: GoogleFonts.inter(
+                          color: Constanst.colorStateOnDangerBg,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-        icon: SvgPicture.asset(
-          'assets/inbox.svg',
-          // color: Constanst.colorNeutralFgTertiary,
-          height: 23,
-          width: 23,
+        icon: Stack(
+          children: [
+            SvgPicture.asset(
+              'assets/inbox.svg',
+              height: 23,
+              width: 23,
+            ),
+            Visibility(
+              visible: controllerPesan.jumlahPersetujuan.value.toString() != "0",
+              child: Positioned(
+                top: -2,
+                right: -5,
+                child: Container(
+                  height: 22,
+                  width: 22,
+                  decoration: BoxDecoration(
+                    color: Constanst.colorStateDangerBg,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(100.0),
+                    ),
+                    border: Border.all(
+                      width: 1.0,
+                      color: Constanst.colorStateDangerBorder,
+                    ),
+                  ),
+                  child: Center(
+                    child: Obx(
+                      () => Text(
+                        "${controllerPesan.jumlahPersetujuan.value}".length > 2
+                            ? '${"${controllerPesan.jumlahPersetujuan.value}".substring(0, 2)}+'
+                            : "${controllerPesan.jumlahPersetujuan.value}",
+                        style: GoogleFonts.inter(
+                          color: Constanst.colorStateOnDangerBg,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         selectedTitle: Text(
           "Inbox",
@@ -280,17 +358,93 @@ class _InitScreenState extends State<InitScreen> {
         ),
       ),
       CustomNavigationBarItem(
-        selectedIcon: SvgPicture.asset(
-          'assets/inbox_fill.svg',
-          // color: Constanst.onPrimary,
-          height: 23,
-          width: 23,
+        selectedIcon: Stack(
+          children: [
+            SvgPicture.asset(
+              'assets/inbox_fill.svg',
+              height: 23,
+              width: 23,
+            ),
+            Visibility(
+              visible: controllerPesan.jumlahPersetujuan.value.toString() != "0",
+              child: Positioned(
+                top: -2,
+                right: -5,
+                child: Container(
+                  height: 22,
+                  width: 22,
+                  decoration: BoxDecoration(
+                    color: Constanst.colorStateDangerBg,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(100.0),
+                    ),
+                    border: Border.all(
+                      width: 1.0,
+                      color: Constanst.colorStateDangerBorder,
+                    ),
+                  ),
+                  child: Center(
+                    child: Obx(
+                      () => Text(
+                        "${controllerPesan.jumlahPersetujuan.value}".length > 2
+                            ? '${"${controllerPesan.jumlahPersetujuan.value}".substring(0, 2)}+'
+                            : "${controllerPesan.jumlahPersetujuan.value}",
+                        style: GoogleFonts.inter(
+                          color: Constanst.colorStateOnDangerBg,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-        icon: SvgPicture.asset(
-          'assets/inbox.svg',
-          // color: Constanst.colorNeutralFgTertiary,
-          height: 23,
-          width: 23,
+        icon: Stack(
+          children: [
+            SvgPicture.asset(
+              'assets/inbox.svg',
+              height: 23,
+              width: 23,
+            ),
+            Visibility(
+              visible: controllerPesan.jumlahPersetujuan.value.toString() != "0",
+              child: Positioned(
+                top: -2,
+                right: -5,
+                child: Container(
+                  height: 22,
+                  width: 22,
+                  decoration: BoxDecoration(
+                    color: Constanst.colorStateDangerBg,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(100.0),
+                    ),
+                    border: Border.all(
+                      width: 1.0,
+                      color: Constanst.colorStateDangerBorder,
+                    ),
+                  ),
+                  child: Center(
+                    child: Obx(
+                      () => Text(
+                        "${controllerPesan.jumlahPersetujuan.value}".length > 2
+                            ? '${"${controllerPesan.jumlahPersetujuan.value}".substring(0, 2)}+'
+                            : "${controllerPesan.jumlahPersetujuan.value}",
+                        style: GoogleFonts.inter(
+                          color: Constanst.colorStateOnDangerBg,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         selectedTitle: Text(
           "Inbox",

@@ -222,7 +222,7 @@ class AbsenController extends GetxController {
   }
 
   Future<void> getTimeNow() async {
-    var dt = DateTime.now();
+    var dt = DateTime.parse(AppData.endPeriode);
     bulanSelectedSearchHistory.value = "${dt.month}";
     tahunSelectedSearchHistory.value = "${dt.year}";
 
@@ -1782,6 +1782,10 @@ class AbsenController extends GetxController {
     }
   }
 
+  var date = DateTime.now().obs;
+  var beginPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
+  var endPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
+
   void loadHistoryAbsenUser() {
     print("masuk sini terbaru new");
     historyAbsen.value.clear();
@@ -1791,6 +1795,29 @@ class AbsenController extends GetxController {
 
     var getEmpId = dataUser![0].em_id;
     print(getEmpId);
+    var defaultDate = DateTime.parse(AppData.endPeriode);
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+    beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+    endPayroll.value = DateFormat('MMMM').format(defaultDate);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+    }
+
     var body = {
       'em_id': getEmpId,
       'bulan': bulanSelectedSearchHistory.value,
@@ -1869,31 +1896,45 @@ class AbsenController extends GetxController {
           }
 
           //historyAbsenShow.value = historyAbsen;
-          Set<String> seenDates = {};
-          historyAbsen.value = historyAbsen.where((event) {
-            if (seenDates.contains(event.date)) {
-              return false;
-            } else {
-              seenDates.add(event.date);
-              return true;
-            }
-          }).toList();
+          // Set<String> seenDates = {};
+          // historyAbsen.value = historyAbsen.where((event) {
+          //   if (seenDates.contains(event.date)) {
+          //     return false;
+          //   } else {
+          //     seenDates.add(event.date);
+          //     return true;
+          //   }
+          // }).toList();
 
-          historyAbsen.value.forEach((element) {
-            print("masuk sini");
+          Map<String, AbsenModel> highestIdPerDate = {};
+
+          for (var event in historyAbsen) {
+            if (!highestIdPerDate.containsKey(event.date) ||
+                event.id! > highestIdPerDate[event.date]!.id!) {
+              highestIdPerDate[event.date] = event;
+            }
+          }
+
+          historyAbsen.value = highestIdPerDate.values.toList();
+
+          for (var element in historyAbsen) {
+            print("masuk sini: $tempHistoryAbsen");
 
             var data = tempHistoryAbsen
                 .where((p0) => p0.date == element.date)
                 .where((p0) => p0.id != element.id)
-                .toList();
-            if (data.length > 0) {
+                .toList()
+              ..sort((a, b) => b.id!.compareTo(a.id as num));
+
+            print("data turunan: $data");
+            if (data.isNotEmpty) {
               element.turunan = data;
             } else {
               element.turunan = [];
             }
 
             print('data list ${element} tes');
-          });
+          }
 
           //  historyAbsenShow.toSet().toList();
           //  historyAbsenShow.forEach((element) {
@@ -2010,8 +2051,296 @@ class AbsenController extends GetxController {
     });
   }
 
+  void loadHistoryAbsenUserFilter() {
+    print("masuk sini terbaru new");
+    historyAbsen.value.clear();
+    historyAbsenShow.value.clear();
+
+    var dataUser = AppData.informasiUser;
+
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+
+    var defaultDate = date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+    beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+    endPayroll.value = DateFormat('MMMM').format(defaultDate);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
+
+    var body = {
+      'em_id': getEmpId,
+      'bulan': bulanSelectedSearchHistory.value,
+      'tahun': tahunSelectedSearchHistory.value,
+    };
+    print(body);
+    var connect = Api.connectionApi("post", body, "attendance");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print('data body ${valueBody}');
+        if (valueBody['status'] == true) {
+          List data = valueBody['data'];
+          loading.value =
+              data.length == 0 ? "Data tidak ditemukan" : "Memuat data...";
+          for (var el in data) {
+            historyAbsen.value.add(AbsenModel(
+                date: el['date'],
+                id: el['id'] ?? 0,
+                em_id: el['em_id'] ?? "",
+                atten_date: el['atten_date'] ?? "",
+                signin_time: el['signin_time'] ?? "",
+                signout_time: el['signout_time'] ?? "",
+                working_hour: el['working_hour'] ?? "",
+                place_in: el['place_in'] ?? "",
+                place_out: el['place_out'] ?? "",
+                absence: el['absence'] ?? "",
+                overtime: el['overtime'] ?? "",
+                earnleave: el['earnleave'] ?? "",
+                status: el['status'] ?? "",
+                signin_longlat: el['signin_longlat'] ?? "",
+                signout_longlat: el['signout_longlat'] ?? "",
+                att_type: el['att_type'] ?? "",
+                signin_pict: el['signin_pict'] ?? "",
+                signout_pict: el['signout_pict'] ?? "",
+                signin_note: el['signin_note'] ?? "",
+                signout_note: el['signout_note'] ?? "",
+                signin_addr: el['signin_addr'] ?? "",
+                signout_addr: el['signout_addr'] ?? "",
+                reqType: el['reg_type'] ?? 0,
+                atttype: el['atttype'] ?? 0,
+                namaLembur: el['lembur'],
+                namaTugasLuar: el['tugas_luar'],
+                namaCuti: el['cuti'],
+                namaSakit: el['sakit'],
+                namaIzin: el['izin'],
+                namaDinasLuar: el['dinas_luar'],
+                offDay: el['off_date'],
+                namaHariLibur: el['hari_libur'],
+                statusView: el['status_view'] ?? false));
+            tempHistoryAbsen.value = historyAbsen.value;
+            // historyAbsen.value.add(AbsenModel(
+            //     id: el['id'] ?? "",
+            //     em_id: el['em_id'] ?? "",
+            //     atten_date: el['atten_date'] ?? "",
+            //     signin_time: el['signin_time'] ?? "",
+            //     signout_time: el['signout_time'] ?? "",
+            //     working_hour: el['working_hour'] ?? "",
+            //     place_in: el['place_in'] ?? "",
+            //     place_out: el['place_out'] ?? "",
+            //     absence: el['absence'] ?? "",
+            //     overtime: el['overtime'] ?? "",
+            //     earnleave: el['earnleave'] ?? "",
+            //     status: el['status'] ?? "",
+            //     signin_longlat: el['signin_longlat'] ?? "",
+            //     signout_longlat: el['signout_longlat'] ?? "",
+            //     att_type: el['att_type'] ?? "",
+            //     signin_pict: el['signin_pict'] ?? "",
+            //     signout_pict: el['signout_pict'] ?? "",
+            //     signin_note: el['signin_note'] ?? "",
+            //     signout_note: el['signout_note'] ?? "",
+            //     signin_addr: el['signin_addr'] ?? "",
+            //     signout_addr: el['signout_addr'] ?? "",
+            //     reqType: el['reg_type'] ?? 0,
+            //     atttype: el['atttype'] ?? 0));
+          }
+
+          //historyAbsenShow.value = historyAbsen;
+          // Set<String> seenDates = {};
+          // historyAbsen.value = historyAbsen.where((event) {
+          //   if (seenDates.contains(event.date)) {
+          //     return false;
+          //   } else {
+          //     seenDates.add(event.date);
+          //     return true;
+          //   }
+          // }).toList();
+
+          Map<String, AbsenModel> highestIdPerDate = {};
+
+          for (var event in historyAbsen) {
+            if (!highestIdPerDate.containsKey(event.date) ||
+                event.id! > highestIdPerDate[event.date]!.id!) {
+              highestIdPerDate[event.date] = event;
+            }
+          }
+
+          historyAbsen.value = highestIdPerDate.values.toList();
+
+          for (var element in historyAbsen) {
+            print("masuk sini: $tempHistoryAbsen");
+
+            var data = tempHistoryAbsen
+                .where((p0) => p0.date == element.date)
+                .where((p0) => p0.id != element.id)
+                .toList()
+              ..sort((a, b) => b.id!.compareTo(a.id as num));
+
+            print("data turunan: $data");
+            if (data.isNotEmpty) {
+              element.turunan = data;
+            } else {
+              element.turunan = [];
+            }
+
+            print('data list ${element} tes');
+          }
+
+          //  historyAbsenShow.toSet().toList();
+          //  historyAbsenShow.forEach((element) {
+          //   var data=historyAbsenShow.where((p0) => p0['date']=element['date']).toList();
+          //   if (data.length>)
+
+          //  });
+
+          // if (historyAbsen.value.length != 0) {
+          //   var listTanggal = [];
+          //   var finalData = [];
+          //   for (var element in historyAbsen.value) {
+          //     listTanggal.add(element.date);
+          //   }
+          //   print("date new  ${listTanggal}");
+          //   listTanggal = listTanggal.toSet().toList();
+          //   for (var element in listTanggal) {
+          //     var valueTurunan = [];
+          //     var stringDateAdaTurunan = "";
+          //     for (var element1 in historyAbsen.value) {
+          //       if (element == element1.atten_date) {
+          //         print("ada turunan");
+          //         var dataTurunan = {
+          //           'id': element1.id,
+          //           'signin_time': element1.signin_time,
+          //           'signout_time': element1.signout_time,
+          //           'atten_date': element1.atten_date,
+          //           'place_in': element1.place_in,
+          //           'place_out': element1.place_out,
+          //           'signin_note': element1.signin_note,
+          //           'signin_longlat': element1.signin_longlat,
+          //           'signout_longlat': element1.signout_longlat,
+          //           'reg_type': element1.reqType
+          //         };
+          //         stringDateAdaTurunan = "${element1.atten_date}";
+          //         valueTurunan.add(dataTurunan);
+          //       }
+          //     }
+          //     List hasilFilter = [];
+          //     List hasilFilterPengajuan = [];
+          //     for (var element1 in valueTurunan) {
+          //       if (element1['place_in'] == 'pengajuan') {
+          //         hasilFilterPengajuan.add(element1);
+          //       } else {
+          //         hasilFilter.add(element1);
+          //       }
+          //     }
+          //     List hasilFinalPengajuan = [];
+          //     if (hasilFilterPengajuan.isNotEmpty) {
+          //       var data = hasilFilterPengajuan;
+          //       var seen = Set<String>();
+          //       List filter = data
+          //           .where((pengajuan) => seen.add(pengajuan['signin_note']))
+          //           .toList();
+          //       hasilFinalPengajuan = filter;
+          //     }
+          //     List finalAllData = new List.from(hasilFilter)
+          //       ..addAll(hasilFinalPengajuan);
+
+          //     var lengthTurunan = finalAllData.length == 1 ? false : true;
+
+          //     if (lengthTurunan == false) {
+          //       var data = {
+          //         'id': finalAllData[0]['id'],
+          //         'signin_time': finalAllData[0]['signin_time'],
+          //         'signout_time': finalAllData[0]['signout_time'],
+          //         'atten_date': finalAllData[0]['atten_date'],
+          //         'place_in': finalAllData[0]['place_in'],
+          //         'place_out': finalAllData[0]['place_out'],
+          //         'signin_note': finalAllData[0]['signin_note'],
+          //         'signin_longlat': finalAllData[0]['signin_longlat'],
+          //         'signout_longlat': finalAllData[0]['signout_longlat'],
+          //         'reg_type': finalAllData[0]['reg_type'],
+          //         'date':finalAllData[0]['date'],
+          //         'view_turunan': lengthTurunan,
+
+          //         'turunan': [],
+          //       };
+          //       finalData.add(data);
+          //     } else {
+          //       var data = {
+          //         'id': "",
+          //         'signout_time': "",
+          //         'atten_date': stringDateAdaTurunan,
+          //            'date':   stringDateAdaTurunan,
+          //         'place_in': "",
+          //         'place_out': "",
+          //         'signin_note': "",
+          //         'signin_longlat': "",
+          //         'signout_longlat': "",
+          //         'view_turunan': lengthTurunan,
+          //         'status_view': false,
+          //         'turunan': finalAllData,
+          //       };
+          //       stringDateAdaTurunan = "";
+          //       finalData.add(data);
+          //     }
+          //   }
+          //   // finalData.sort((a, b) {
+          //   //   return DateTime.parse(b['date'])
+          //   //       .compareTo(DateTime.parse(a['date']));
+          //   // });
+          //   historyAbsenShow.value = finalData;
+          //   print("data now now ${finalData}");
+          //    print("data now now now ${finalData.length}");
+          //   this.historyAbsenShow.refresh();
+
+          // // }
+          // this.historyAbsen.refresh();
+        } else {
+          loading.value = "Data tidak ditemukan";
+        }
+      }
+    });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
+  }
+
   void showTurunan(tanggal) {
-    for (var element in historyAbsenShow.value) {
+    for (var element in historyAbsenShow) {
       if (element['atten_date'] == tanggal) {
         if (element['status_view'] == false) {
           element['status_view'] = true;
@@ -2584,7 +2913,46 @@ class AbsenController extends GetxController {
     }
   }
 
+  var dateLaporan = DateTime.now().obs;
+  var startPeriode = "".obs;
+  var endPeriode = "".obs;
+  var tempStartPeriode = "".obs;
+  var tempEndPeriode = "".obs;
+
   void aksiCariLaporan() async {
+    var defaultDate = dateLaporan.value;
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+    startPeriode.value = DateFormat('yyyy-MM-dd').format(sp);
+    endPeriode.value = DateFormat('yyyy-MM-dd').format(ep);
+
+    tempStartPeriode.value = AppData.startPeriode;
+    tempEndPeriode.value = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      startPeriode.value = DateFormat('yyyy-MM-dd').format(DateTime(
+          defaultDate.year,
+          defaultDate.month - 1,
+          AppData.informasiUser![0].beginPayroll));
+      endPeriode.value = DateFormat('yyyy-MM-dd').format(DateTime(
+          defaultDate.year,
+          defaultDate.month,
+          AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      startPeriode.value = DateFormat('yyyy-MM-dd').format(DateTime(
+          defaultDate.year,
+          defaultDate.month,
+          AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode.value;
+    AppData.endPeriode = endPeriode.value;
+
     statusLoadingSubmitLaporan.value = true;
     listLaporanFilter.value.clear();
     Map<String, dynamic> body = {
@@ -2614,6 +2982,9 @@ class AbsenController extends GetxController {
         }
       }
     });
+
+    AppData.startPeriode = tempStartPeriode.value;
+    AppData.endPeriode = tempEndPeriode.value;
   }
 
   void cariLaporanAbsenTanggal(tanggal) {

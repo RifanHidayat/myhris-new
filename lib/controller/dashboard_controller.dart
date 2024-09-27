@@ -1746,7 +1746,7 @@ class DashboardController extends GetxController {
   }
 
   Future<void> getMenuDashboard() async {
-    finalMenu.value.clear();
+    finalMenu.clear();
     var connect = Api.connectionApi("get", {}, "getMenu");
     Future.delayed(const Duration(seconds: 1), () {
       connect.then((dynamic res) {
@@ -1819,11 +1819,12 @@ class DashboardController extends GetxController {
 
   Future<void> loadMenuShowInMain() async {
     if (authController.isConnected.value) {
-      menuShowInMain.value.clear();
+      menuShowInMain.clear();
       var connect = Api.connectionApi("get", {}, "menu_dashboard",
           params: "&em_id=${AppData.informasiUser![0].em_id}");
       Future.delayed(const Duration(seconds: 1), () {
         connect.then((dynamic res) async {
+          print("res.statusCode: ${res.statusCode}");
           if (res == false) {
             // UtilsAlert.koneksiBuruk();
           } else {
@@ -1887,7 +1888,7 @@ class DashboardController extends GetxController {
             }
           }
         }).catchError((error) async {
-          menuShowInMain.value.clear();
+          menuShowInMain.clear();
           absenControllre.showButtonlaporan.value = false;
           controllerIzin.showButtonlaporan.value = false;
           controllerLembur.showButtonlaporan.value = false;
@@ -1927,7 +1928,7 @@ class DashboardController extends GetxController {
         });
       });
     } else {
-      menuShowInMain.value.clear();
+      menuShowInMain.clear();
       absenControllre.showButtonlaporan.value = false;
       controllerIzin.showButtonlaporan.value = false;
       controllerLembur.showButtonlaporan.value = false;
@@ -2162,7 +2163,7 @@ class DashboardController extends GetxController {
   }
 
   Future<void> getEmployeeUltah(dt) async {
-    employeeUltah.value.clear();
+    employeeUltah.clear();
     print("ulang tahun ${dt}");
     var tanggal =
         "${DateFormat('yyyy-MM-dd').format(DateTime.parse(dt.toString()))}";
@@ -2234,14 +2235,14 @@ class DashboardController extends GetxController {
 
   Future<void> getBannerDashboard() async {
     if (authController.isConnected.value) {
-      bannerDashboard.value.clear();
+      bannerDashboard.clear();
       // var connect = Api.connectionApi("get", {}, "banner_dashboard");
       var connect = Api.connectionApi("get", {}, "banner_from_finance");
       Future.delayed(const Duration(seconds: 1), () {
         connect.then((dynamic res) async {
           if (res == false) {
             // UtilsAlert.koneksiBuruk();
-            bannerDashboard.value.clear();
+            bannerDashboard.clear();
             var banners = await SqliteDatabaseHelper().getBanners();
             bannerDashboard.value = banners;
             print(" banner :${bannerDashboard.value}");
@@ -2263,14 +2264,14 @@ class DashboardController extends GetxController {
             }
           }
         }).catchError((error) async {
-          bannerDashboard.value.clear();
+          bannerDashboard.clear();
           var banners = await SqliteDatabaseHelper().getBanners();
           bannerDashboard.value = banners;
           bannerDashboard.refresh();
         });
       });
     } else {
-      bannerDashboard.value.clear();
+      bannerDashboard.clear();
       var banners = await SqliteDatabaseHelper().getBanners();
       bannerDashboard.value = banners;
       print(" banner :${bannerDashboard.value}");

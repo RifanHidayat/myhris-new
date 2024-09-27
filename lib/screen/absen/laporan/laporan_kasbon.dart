@@ -324,6 +324,7 @@ class _LaporanKasbonState extends State<LaporanKasbon> {
                       this.controller.bulanDanTahunNow.refresh();
                       controller.statusFilterWaktu.value = 0;
                       // Navigator.pop(Get.context!);
+                      controller.date.value = time;
                       controller.aksiCariLaporan();
                     }
                   },
