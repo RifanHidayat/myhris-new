@@ -768,7 +768,7 @@ class _AbsenMasukKeluarOfflineState extends State<AbsenMasukKeluarOffline> {
                                                 widget.status == "Absen Masuk"
                                             ? controllerDashboard
                                                 .widgetButtomSheetWfh()
-                                            : controllerDashboard
+                                            : controller
                                                 .widgetButtomSheetLanjutkanOffline(
                                                     type: 'offlineAbsensi');
                                       },
@@ -1079,7 +1079,7 @@ class _AbsenMasukKeluarOfflineState extends State<AbsenMasukKeluarOffline> {
                                               side: const BorderSide(
                                                   color: Colors.white)))),
                                   onPressed: () {
-                                    controllerDashboard
+                                    controller
                                         .widgetButtomSheetLanjutkanOffline(
                                             type: 'offlineAbsensi');
                                   },
