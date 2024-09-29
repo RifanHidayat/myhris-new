@@ -67,6 +67,7 @@ import 'package:android_intent/flag.dart';
 class AbsenController extends GetxController {
   var globalCt = Get.put(GlobalController());
   final controllerTracking = Get.put(TrackingController());
+  final controllerDashboard = Get.put(DashboardController());
 
   PageController? pageViewFilterAbsen;
 
@@ -1475,7 +1476,9 @@ class AbsenController extends GetxController {
             } else {
               UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
                   positiveBtnPressed: () {
-                kirimDataAbsensiOffline(typewfh: typewfh);
+                // kirimDataAbsensiOffline(typewfh: typewfh);
+                controllerDashboard.widgetButtomSheetLanjutkanOffline(
+                    type: 'offlineAbsensi');
               });
               isLoaingAbsensi.value = false;
               Get.back();
@@ -1486,7 +1489,9 @@ class AbsenController extends GetxController {
             Get.back();
             UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
                 positiveBtnPressed: () {
-              kirimDataAbsensiOffline(typewfh: typewfh);
+              // kirimDataAbsensiOffline(typewfh: typewfh);
+              controllerDashboard.widgetButtomSheetLanjutkanOffline(
+                  type: 'offlineAbsensi');
             });
           });
         }
@@ -1563,7 +1568,9 @@ class AbsenController extends GetxController {
             Get.back();
             UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
                 positiveBtnPressed: () {
-              kirimDataAbsensiOffline(typewfh: typewfh);
+              // kirimDataAbsensiOffline(typewfh: typewfh);
+              controllerDashboard.widgetButtomSheetLanjutkanOffline(
+                  type: 'offlineAbsensi');
             });
           }
         }).catchError((error) {
@@ -1571,7 +1578,9 @@ class AbsenController extends GetxController {
           Get.back();
           UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
               positiveBtnPressed: () {
-            kirimDataAbsensiOffline(typewfh: typewfh);
+            // kirimDataAbsensiOffline(typewfh: typewfh);
+            controllerDashboard.widgetButtomSheetLanjutkanOffline(
+                type: 'offlineAbsensi');
           });
         });
       }
