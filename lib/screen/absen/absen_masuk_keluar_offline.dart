@@ -769,7 +769,7 @@ class _AbsenMasukKeluarOfflineState extends State<AbsenMasukKeluarOffline> {
                                             ? controllerDashboard
                                                 .widgetButtomSheetWfh()
                                             : controllerDashboard
-                                                .widgetButtomSheetAktifCamera(
+                                                .widgetButtomSheetLanjutkanOffline(
                                                     type: 'offlineAbsensi');
                                       },
                                       child: const Padding(
@@ -1080,7 +1080,7 @@ class _AbsenMasukKeluarOfflineState extends State<AbsenMasukKeluarOffline> {
                                                   color: Colors.white)))),
                                   onPressed: () {
                                     controllerDashboard
-                                        .widgetButtomSheetAktifCamera(
+                                        .widgetButtomSheetLanjutkanOffline(
                                             type: 'offlineAbsensi');
                                   },
                                   child: const Padding(

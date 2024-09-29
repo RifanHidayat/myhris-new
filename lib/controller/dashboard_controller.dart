@@ -345,7 +345,7 @@ class DashboardController extends GetxController {
       barrierDismissible: false,
       context: Get.context!,
       barrierColor: Colors.black54, // space around dialog
-      transitionDuration: Duration(milliseconds: 200),
+      transitionDuration: const Duration(milliseconds: 200),
       transitionBuilder: (context, a1, a2, child) {
         return ScaleTransition(
           scale: CurvedAnimation(
@@ -2678,14 +2678,23 @@ class DashboardController extends GetxController {
                                       typewfh: typewfh);
                                 } else if (absenControllre.coordinate.value ==
                                     true) {
-                                  controllerAbsensi.kirimDataAbsensiOffline(
-                                      typewfh: typewfh);
+                                  UtilsAlert
+                                      .showCheckOfflineAbsensiKesalahanServer(
+                                          positiveBtnPressed: () {
+                                    Get.back();
+                                    widgetButtomSheetLanjutkanOffline(
+                                        type: 'offlineAbsensi');
+                                  });
+                                  // controllerAbsensi.kirimDataAbsensiOffline(
+                                  //     typewfh: typewfh);
                                 } else {
                                   UtilsAlert.showCheckOfflineAbsensi(
                                       positiveBtnPressed: () {
                                     Get.back();
-                                    controllerAbsensi.kirimDataAbsensiOffline(
-                                        typewfh: typewfh);
+                                    widgetButtomSheetLanjutkanOffline(
+                                        type: 'offlineAbsensi');
+                                    // controllerAbsensi.kirimDataAbsensiOffline(
+                                    //     typewfh: typewfh);
                                   });
                                 }
                               } else if (controllerAbsensi
@@ -2697,8 +2706,108 @@ class DashboardController extends GetxController {
                                   popUpRefresh(context);
                                 }
                               }
-                            } else if (type == "offlineAbsensi") {
-                              // print("kesini dong");
+                            }
+                            // else if (type == "offlineAbsensi") {
+                            //   // print("kesini dong");
+                            //   Get.back();
+                            //   await controllerAbsensi.deteksiFakeGps(context);
+                            //   if (controllerAbsensi.statusDeteksi.value ==
+                            //           false &&
+                            //       controllerAbsensi.statusDeteksi2.value ==
+                            //           false) {
+                            //     controllerAbsensi.kirimDataAbsensiOffline(
+                            //         typewfh: typewfh);
+                            //   } else if (controllerAbsensi
+                            //               .statusDeteksi.value ==
+                            //           false &&
+                            //       controllerAbsensi.statusDeteksi2.value ==
+                            //           true) {
+                            //     if (context.mounted) {
+                            //       popUpRefresh(context);
+                            //     }
+                            //   }
+                            // }
+                            else {
+                              Navigator.pop(context);
+                              await Permission.camera.request();
+                              await Permission.location.request();
+                            }
+                          },
+                          colorButton: Constanst.colorButton1,
+                          colortext: Constanst.colorWhite,
+                          border: BorderRadius.circular(15.0),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void widgetButtomSheetLanjutkanOffline({type, typewfh}) {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 5, right: 5),
+                        //   child: Image.asset("assets/vector_map.png"),
+                        // ),
+                        const CircleAvatar(
+                          backgroundColor: Colors.red,
+                          maxRadius: 30.0,
+                          child: Icon(
+                            Iconsax.info_circle,
+                            color: Colors.white,
+                            size: 25,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          "Peringatan Absensi Offline",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        const SizedBox(height: 15),
+                        const Text(
+                          "Anda memilih Absensi Offline, absensi offline membutuhkan approval",
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 30),
+                        TextButtonWidget(
+                          title: "Lanjutkan",
+                          onTap: () async {
+                            if (type == "offlineAbsensi") {
+                              print('kesini');
                               Get.back();
                               await controllerAbsensi.deteksiFakeGps(context);
                               if (controllerAbsensi.statusDeteksi.value ==
