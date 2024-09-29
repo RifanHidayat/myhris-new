@@ -1473,13 +1473,14 @@ class AbsenController extends GetxController {
                 ],
               ));
             } else {
+              isLoaingAbsensi.value = false;
+              Get.back();
               UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
                   positiveBtnPressed: () {
                 // kirimDataAbsensiOffline(typewfh: typewfh);
                 widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+                Get.back();
               });
-              isLoaingAbsensi.value = false;
-              Get.back();
               //error
             }
           }).catchError((error) {
@@ -1489,6 +1490,7 @@ class AbsenController extends GetxController {
                 positiveBtnPressed: () {
               // kirimDataAbsensiOffline(typewfh: typewfh);
               widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+              Get.back();
             });
           });
         }
@@ -1567,6 +1569,7 @@ class AbsenController extends GetxController {
                 positiveBtnPressed: () {
               // kirimDataAbsensiOffline(typewfh: typewfh);
               widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+              Get.back();
             });
           }
         }).catchError((error) {
@@ -1576,6 +1579,7 @@ class AbsenController extends GetxController {
               positiveBtnPressed: () {
             // kirimDataAbsensiOffline(typewfh: typewfh);
             widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+            Get.back();
           });
         });
       }
