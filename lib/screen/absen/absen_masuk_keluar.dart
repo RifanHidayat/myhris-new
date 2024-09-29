@@ -772,7 +772,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                         "Absen Masuk"
                                                 ? controllerDashboard
                                                     .widgetButtomSheetWfh()
-                                                : controllerDashboard
+                                                : controller
                                                     .widgetButtomSheetLanjutkanOffline(
                                                         type: 'offlineAbsensi');
                                           });
@@ -788,7 +788,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                         "Absen Masuk"
                                                 ? controllerDashboard
                                                     .widgetButtomSheetWfh()
-                                                : controllerDashboard
+                                                : controller
                                                     .widgetButtomSheetLanjutkanOffline(
                                                         type: 'offlineAbsensi');
                                           });
@@ -1126,7 +1126,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                           .showCheckOfflineAbsensiKesalahanServer(
                                               positiveBtnPressed: () {
                                         Get.back();
-                                        controllerDashboard
+                                        controller
                                             .widgetButtomSheetLanjutkanOffline(
                                                 type: 'offlineAbsensi');
                                       });
@@ -1135,7 +1135,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                       UtilsAlert.showCheckOfflineAbsensi(
                                           positiveBtnPressed: () {
                                         Get.back();
-                                        controllerDashboard
+                                        controller
                                             .widgetButtomSheetLanjutkanOffline(
                                                 type: 'offlineAbsensi');
                                       });
