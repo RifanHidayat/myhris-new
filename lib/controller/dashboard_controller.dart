@@ -227,6 +227,7 @@ class DashboardController extends GetxController {
     } else {
       isLoading.value = false;
       GetStorage().write("face_recog", true);
+      final prefs = await SharedPreferences.getInstance();
       // authController.login.value = false;
       print("kondisi: ${authController.isConnected.value}");
       dashboardStatusAbsen.value = AppData.statusAbsen;
@@ -245,6 +246,7 @@ class DashboardController extends GetxController {
       checkHakAkses();
       // final service = FlutterBackgroundService();
       // service.invoke("stopService");
+      controllerTracking.stopService();
 
       absenMasukKeluarOffline.value = await SqliteDatabaseHelper().getAbsensi();
       // var absenMasukKeluarOfflineDua =
@@ -1889,43 +1891,44 @@ class DashboardController extends GetxController {
             }
           }
         }).catchError((error) async {
-          menuShowInMain.clear();
-          absenControllre.showButtonlaporan.value = false;
-          controllerIzin.showButtonlaporan.value = false;
-          controllerLembur.showButtonlaporan.value = false;
-
-          controllerTugasLuar.showButtonlaporan.value = false;
-          controllerKlaim.showButtonlaporan.value = false;
-          controllerCuti.showButtonlaporan.value = false;
-
           var menusUtama = await SqliteDatabaseHelper().getMenus();
+          if (menusUtama.isNotEmpty) {
+            menuShowInMain.clear();
+            absenControllre.showButtonlaporan.value = false;
+            controllerIzin.showButtonlaporan.value = false;
+            controllerLembur.showButtonlaporan.value = false;
 
-          for (var element in menusUtama) {
-            print("Nama Menu ${element['nama']}");
+            controllerTugasLuar.showButtonlaporan.value = false;
+            controllerKlaim.showButtonlaporan.value = false;
+            controllerCuti.showButtonlaporan.value = false;
 
-            if (element['nama'] == "Absensi") {
-              absenControllre.showButtonlaporan.value = true;
-            }
+            for (var element in menusUtama) {
+              print("Nama Menu ${element['nama']}");
 
-            if (element['nama'].toString().trim() == "Izin") {
-              print("masuk sini ${element['nama'].toString().trim()}");
-              controllerIzin.showButtonlaporan.value = true;
-            }
+              if (element['nama'] == "Absensi") {
+                absenControllre.showButtonlaporan.value = true;
+              }
 
-            if (element['nama'] == "Lembur") {
-              controllerLembur.showButtonlaporan.value = true;
+              if (element['nama'].toString().trim() == "Izin") {
+                print("masuk sini ${element['nama'].toString().trim()}");
+                controllerIzin.showButtonlaporan.value = true;
+              }
+
+              if (element['nama'] == "Lembur") {
+                controllerLembur.showButtonlaporan.value = true;
+              }
+              if (element['nama'] == "Cuti") {
+                controllerCuti.showButtonlaporan.value = true;
+              }
+              if (element['nama'] == "Tugas Luar") {
+                controllerTugasLuar.showButtonlaporan.value = true;
+              }
+              if (element['nama'] == "Klaim") {
+                controllerKlaim.showButtonlaporan.value = true;
+              }
             }
-            if (element['nama'] == "Cuti") {
-              controllerCuti.showButtonlaporan.value = true;
-            }
-            if (element['nama'] == "Tugas Luar") {
-              controllerTugasLuar.showButtonlaporan.value = true;
-            }
-            if (element['nama'] == "Klaim") {
-              controllerKlaim.showButtonlaporan.value = true;
-            }
+            menuShowInMain.value = menusUtama;
           }
-          menuShowInMain.value = menusUtama;
         });
       });
     } else {
@@ -2682,8 +2685,9 @@ class DashboardController extends GetxController {
                                       .showCheckOfflineAbsensiKesalahanServer(
                                           positiveBtnPressed: () {
                                     Get.back();
-                                    controllerAbsensi.widgetButtomSheetLanjutkanOffline(
-                                        type: 'offlineAbsensi');
+                                    controllerAbsensi
+                                        .widgetButtomSheetLanjutkanOffline(
+                                            type: 'offlineAbsensi');
                                   });
                                   // controllerAbsensi.kirimDataAbsensiOffline(
                                   //     typewfh: typewfh);
@@ -2691,8 +2695,9 @@ class DashboardController extends GetxController {
                                   UtilsAlert.showCheckOfflineAbsensi(
                                       positiveBtnPressed: () {
                                     Get.back();
-                                    controllerAbsensi.widgetButtomSheetLanjutkanOffline(
-                                        type: 'offlineAbsensi');
+                                    controllerAbsensi
+                                        .widgetButtomSheetLanjutkanOffline(
+                                            type: 'offlineAbsensi');
                                     // controllerAbsensi.kirimDataAbsensiOffline(
                                     //     typewfh: typewfh);
                                   });

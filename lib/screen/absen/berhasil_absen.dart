@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/berhasil_controller.dart';
+import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/screen/absen/camera_view_register.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
@@ -87,7 +88,8 @@ class BerhasilAbsensi extends StatefulWidget {
 class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
   var controller = Get.put(AbsenController());
   var controllerBerhasil = Get.put(BerhasilController());
-  final authController = Get.put(AuthController());
+  var authController = Get.put(AuthController());
+  var controllerTracking = Get.put(TrackingController());
   Timer? time;
   Location location = new Location();
 
@@ -251,6 +253,14 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
 
   // T? _ambiguate<T>(T? value) => value;
 
+  // Future<void> _startService() async {
+  //   controllerTracking.updateStatus('1');
+  // }
+
+  // Future<void> _stopService() async {
+  //   controllerTracking.updateStatus('0');
+  // }
+
   @override
   void dispose() {
     super.dispose();
@@ -358,6 +368,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                 if (widget.dataBerhasil![2] == 1) {
                   if (checkUserKontrol.toString() != '0') {
                     // _startForegroundTask();
+                    // _startService();
                     AbsenController().removeAll();
                     Get.offAll(InitScreen());
                     if (absenControllre.isTracking.value == 1) {
@@ -374,6 +385,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                 } else {
                   if (checkUserKontrol != '0') {
                     // _stopForegroundTask();
+                    // _stopService();
                     Location location = new Location();
                     location.enableBackgroundMode(enable: false);
                     AbsenController().removeAll();

@@ -162,7 +162,7 @@ class LaporanIzinController extends GetxController {
     });
   }
 
-  var date = DateTime.now().obs;
+  var date = DateTime.parse(AppData.endPeriode).obs;
   var startPeriode = "".obs;
   var endPeriode = "".obs;
   var tempStartPeriode = "".obs;

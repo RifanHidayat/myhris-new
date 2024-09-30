@@ -486,7 +486,7 @@ class _DashboardState extends State<Dashboard> {
                                               controller.wfhstatus.value) ||
                                           (controller.absenOfflineStatus.value)
                                       ? 280.0
-                                      : 255.0
+                                      : 265.0
                                   : 175.0),
                           child: Container(
                             decoration: BoxDecoration(

@@ -1514,7 +1514,7 @@ class TrackingController extends GetxController {
     }
   }
 
-  void updateStatus(String status) async {
+  Future<void> updateStatus(String status) async {
     Map<String, dynamic> body = {
       // 'tanggal': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
       // 'em_id': AppData.informasiUser == null || AppData.informasiUser!.isEmpty
