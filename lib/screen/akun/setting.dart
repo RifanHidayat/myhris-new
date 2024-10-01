@@ -113,7 +113,7 @@ class _SettingState extends State<Setting> {
                                   60 &&
                               AppData.informasiUser![0].tanggalBerakhirKontrak
                                       .toString() !=
-                                  "",
+                                  60,
                       child: InkWell(
                         onTap: () => authController.isConnected.value
                             ? controller.lineInfoPenggunaKontrak()
@@ -124,7 +124,7 @@ class _SettingState extends State<Setting> {
                               padding:
                                   const EdgeInsets.only(left: 16.0, right: 16),
                               child: UtilsAlert.infoContainer(
-                                  "Kontrak kerja Anda akan segera berakhir dalam ${AppData.informasiUser![0].sisaKontrakFormat.toString()} lagi"),
+                                  "Kontrak kerja Anda akan segera berakhir dalam ${AppData.informasiUser![0].sisaKontrak.toString()} hari lagi"),
                             ),
                             const SizedBox(
                               height: 16,
