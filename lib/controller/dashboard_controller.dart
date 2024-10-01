@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:new_version_plus/new_version_plus.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
@@ -140,7 +141,7 @@ class DashboardController extends GetxController {
   var deviceStatus = false.obs;
   var refreshPagesStatus = false.obs;
   var viewInformasiSisaKontrak = false.obs;
-
+  var statuz = "".obs;
   var timeIn = "".obs;
   var timeOut = "".obs;
   var absenMasukKeluarOffline = Rx<dynamic>(null);
@@ -181,6 +182,21 @@ class DashboardController extends GetxController {
     print("loginnn: ${AppData.isLogin}");
 
     super.onInit();
+  }
+
+  void versionCheck() async {
+    final newVersion = NewVersionPlus(
+      androidId: 'com.siscom.siscomhris',
+    );
+    final infoStatus = await newVersion.getVersionStatus();
+    statuz.value = infoStatus!.storeVersion;
+    // if (statuz.isEmpty) {
+    //   Get.snackbar("statuz versi :", " $statuz");
+    // } else {
+    //   Get.snackbar("berhasil", "Berhasil");
+    // }
+
+    //ttetfewugfwihw8fhwi fhps
   }
 
   Future<void> initData() async {
@@ -2682,8 +2698,9 @@ class DashboardController extends GetxController {
                                       .showCheckOfflineAbsensiKesalahanServer(
                                           positiveBtnPressed: () {
                                     Get.back();
-                                    controllerAbsensi.widgetButtomSheetLanjutkanOffline(
-                                        type: 'offlineAbsensi');
+                                    controllerAbsensi
+                                        .widgetButtomSheetLanjutkanOffline(
+                                            type: 'offlineAbsensi');
                                   });
                                   // controllerAbsensi.kirimDataAbsensiOffline(
                                   //     typewfh: typewfh);
@@ -2691,8 +2708,9 @@ class DashboardController extends GetxController {
                                   UtilsAlert.showCheckOfflineAbsensi(
                                       positiveBtnPressed: () {
                                     Get.back();
-                                    controllerAbsensi.widgetButtomSheetLanjutkanOffline(
-                                        type: 'offlineAbsensi');
+                                    controllerAbsensi
+                                        .widgetButtomSheetLanjutkanOffline(
+                                            type: 'offlineAbsensi');
                                     // controllerAbsensi.kirimDataAbsensiOffline(
                                     //     typewfh: typewfh);
                                   });
