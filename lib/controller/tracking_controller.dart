@@ -1223,29 +1223,29 @@ class TrackingController extends GetxController {
     }
   }
 
-  Future<void> startService(int interval) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? listData = prefs.getStringList('informasiUser') ?? [];
-    List<UserModel> userModel =
-        listData.map((e) => UserModel.fromMap(jsonDecode(e))).toList();
+  // Future<void> startService(int interval) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   List<String>? listData = prefs.getStringList('informasiUser') ?? [];
+  //   List<UserModel> userModel =
+  //       listData.map((e) => UserModel.fromMap(jsonDecode(e))).toList();
 
-    var apiUrl =
-        await ApiRequest(url: "employee-tracking-insert").sringApiPost();
-    print("apiUrl: $apiUrl");
-    try {
-      await platform.invokeMethod('startService', {
-        'interval': interval,
-        'apiUrl': apiUrl.toString(),
-        'emId': userModel.isNotEmpty
-            ? userModel[0].em_id.toString()
-            : "tidak dapat",
-        'database': prefs.getString('selectedDatabase').toString(),
-        'basicAuth': ApiRequest.basicAuth.toString(),
-      });
-    } on PlatformException catch (e) {
-      print("Failed to start service: '${e.message}'.");
-    }
-  }
+  //   var apiUrl =
+  //       await ApiRequest(url: "employee-tracking-insert").sringApiPost();
+  //   print("apiUrl: $apiUrl");
+  //   try {
+  //     await platform.invokeMethod('startService', {
+  //       'interval': interval,
+  //       'apiUrl': apiUrl.toString(),
+  //       'emId': userModel.isNotEmpty
+  //           ? userModel[0].em_id.toString()
+  //           : "tidak dapat",
+  //       'database': prefs.getString('selectedDatabase').toString(),
+  //       'basicAuth': ApiRequest.basicAuth.toString(),
+  //     });
+  //   } on PlatformException catch (e) {
+  //     print("Failed to start service: '${e.message}'.");
+  //   }
+  // }
 
   Future<void> stopService() async {
     try {
@@ -1550,7 +1550,7 @@ class TrackingController extends GetxController {
 
   Future<void> isTracking() async {
     // final service = FlutterBackgroundService();
-    // final prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     print("isTracking new new new ${AppData.informasiUser![0].is_tracking}");
     if (AppData.informasiUser![0].is_tracking.toString() == "1") {
       bagikanlokasi.value = "aktif";
@@ -1574,6 +1574,7 @@ class TrackingController extends GetxController {
 
       print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
       print('hidup');
+      print(interval);
       print(
           "startTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
     } else {
@@ -1594,7 +1595,7 @@ class TrackingController extends GetxController {
       //  // var isRunning = await service.isRunning();
 
       // service.invoke("stopService");
-      // stopService();
+      stopService();
 
       print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
       print(

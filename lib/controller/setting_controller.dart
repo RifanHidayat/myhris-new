@@ -281,7 +281,7 @@ class SettingController extends GetxController {
                 // FlutterBackgroundService().invoke("setAsBackground");
 
                 // service.invoke("stopService");
-                // controllerTracking.stopService();
+                controllerTracking.stopService();
                 controllerTracking.isTrackingLokasi.value = false;
                 print(
                     "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");

@@ -243,7 +243,7 @@ class DashboardController extends GetxController {
     } else {
       isLoading.value = false;
       GetStorage().write("face_recog", true);
-      final prefs = await SharedPreferences.getInstance();
+      // final prefs = await SharedPreferences.getInstance();
       // authController.login.value = false;
       print("kondisi: ${authController.isConnected.value}");
       dashboardStatusAbsen.value = AppData.statusAbsen;

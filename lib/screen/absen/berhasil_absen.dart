@@ -17,6 +17,7 @@ import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:location/location.dart';
+import 'package:siscom_operasional/utils/widget_utils.dart';
 
 // The callback function should always be a top-level function.
 // @pragma('vm:entry-point')
@@ -253,17 +254,15 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
 
   // T? _ambiguate<T>(T? value) => value;
 
-  // Future<void> _startService() async {
-  //   controllerTracking.updateStatus('1');
-  // }
-
-  // Future<void> _stopService() async {
-  //   controllerTracking.updateStatus('0');
-  // }
+  Future<void> _stopService() async {
+    await controllerTracking.updateStatus('0');
+  }
 
   @override
   void dispose() {
+    UtilsAlert.showLoadingIndicator(context);
     super.dispose();
+    Get.back();
   }
 
   Widget build(BuildContext context) {
@@ -368,7 +367,6 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                 if (widget.dataBerhasil![2] == 1) {
                   if (checkUserKontrol.toString() != '0') {
                     // _startForegroundTask();
-                    // _startService();
                     AbsenController().removeAll();
                     Get.offAll(InitScreen());
                     if (absenControllre.isTracking.value == 1) {
@@ -385,7 +383,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                 } else {
                   if (checkUserKontrol != '0') {
                     // _stopForegroundTask();
-                    // _stopService();
+                    _stopService();
                     Location location = new Location();
                     location.enableBackgroundMode(enable: false);
                     AbsenController().removeAll();
