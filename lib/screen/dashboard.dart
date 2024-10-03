@@ -191,12 +191,12 @@ class _DashboardState extends State<Dashboard> {
                                           type: 'loadfirst');
                                     } else {
                                       print("masuk absen user");
-                                      if (controller.absenOfflineStatus.value ==
-                                          true) {
-                                        UtilsAlert.showToast(
-                                            "Menunggu status absensi anda di approve");
-                                        return;
-                                      }
+                                      // if (controller.absenOfflineStatus.value ==
+                                      //     true) {
+                                      //   UtilsAlert.showToast(
+                                      //       "Menunggu status absensi anda di approve");
+                                      //   return;
+                                      // }
                                       // Get.offAll(AbsenMasukKeluar(
                                       //   status: "Absen Masuk",
                                       //   type: 1,
@@ -208,98 +208,98 @@ class _DashboardState extends State<Dashboard> {
                                       if (!validasiAbsenMasukUser) {
                                         print("masuk sini");
                                       } else {
-                                        if (!authController.isConnected.value) {
-                                          if (controller
-                                                  .absenOfflineStatus.value ==
-                                              true) {
-                                            UtilsAlert.showToast(
-                                                "Menunggu status absensi anda di approve");
-                                            return;
-                                          } else {
-                                            controllerAbsensi.titleAbsen.value =
-                                                "Absen masuk";
-                                            controllerAbsensi.typeAbsen.value =
-                                                1;
-                                            controller
-                                                .widgetButtomSheetOfflineAbsen(
-                                                    title: "Absen masuk",
-                                                    status: "masuk");
-                                          }
+                                        // if (!authController.isConnected.value) {
+                                        //   if (controller
+                                        //           .absenOfflineStatus.value ==
+                                        //       true) {
+                                        //     UtilsAlert.showToast(
+                                        //         "Menunggu status absensi anda di approve");
+                                        //     return;
+                                        //   } else {
+                                        //     controllerAbsensi.titleAbsen.value =
+                                        //         "Absen masuk";
+                                        //     controllerAbsensi.typeAbsen.value =
+                                        //         1;
+                                        //     controller
+                                        //         .widgetButtomSheetOfflineAbsen(
+                                        //             title: "Absen masuk",
+                                        //             status: "masuk");
+                                        //   }
+                                        // } else {
+                                        controllerAbsensi.titleAbsen.value =
+                                            "Absen masuk";
+
+                                        controllerAbsensi.typeAbsen.value = 1;
+
+                                        //begin image picker
+                                        // final getFoto = await ImagePicker()
+                                        //     .pickImage(
+                                        //         source: ImageSource.camera,
+                                        //         preferredCameraDevice:
+                                        //             CameraDevice.front,
+                                        //         imageQuality: 100,
+                                        //         maxHeight: 350,
+                                        //         maxWidth: 350);
+                                        // if (getFoto == null) {
+                                        //   UtilsAlert.showToast(
+                                        //       "Gagal mengambil gambar");
+                                        // } else {
+                                        //   // controllerAbsensi.facedDetection(
+                                        //   //     status: "registration",
+                                        //   //     absenStatus: "Absen Masuk",
+                                        //   //     img: getFoto.path,
+                                        //   //     type: "1");
+                                        //   Get.to(LoadingAbsen(
+                                        //     file: getFoto.path,
+                                        //     status: "detection",
+                                        //     statusAbsen: 'masuk',
+                                        //   ));
+                                        //   // Get.to(FaceidRegistration(
+                                        //   //   status: "registration",
+                                        //   // ));
+                                        // }
+                                        //end image picker
+
+                                        //begin face recognition
+                                        // Get.to(FaceDetectorView(
+                                        //   status: "masuk",
+                                        // ));
+                                        //end begin face recogniton
+
+                                        if (controllerAbsensi.regType.value ==
+                                            1) {
+                                          Get.to(AbsensiLocation(
+                                            status: "masuk",
+                                          ));
                                         } else {
-                                          controllerAbsensi.titleAbsen.value =
-                                              "Absen masuk";
-
-                                          controllerAbsensi.typeAbsen.value = 1;
-
-                                          //begin image picker
-                                          // final getFoto = await ImagePicker()
-                                          //     .pickImage(
-                                          //         source: ImageSource.camera,
-                                          //         preferredCameraDevice:
-                                          //             CameraDevice.front,
-                                          //         imageQuality: 100,
-                                          //         maxHeight: 350,
-                                          //         maxWidth: 350);
-                                          // if (getFoto == null) {
-                                          //   UtilsAlert.showToast(
-                                          //       "Gagal mengambil gambar");
-                                          // } else {
-                                          //   // controllerAbsensi.facedDetection(
-                                          //   //     status: "registration",
-                                          //   //     absenStatus: "Absen Masuk",
-                                          //   //     img: getFoto.path,
-                                          //   //     type: "1");
-                                          //   Get.to(LoadingAbsen(
-                                          //     file: getFoto.path,
-                                          //     status: "detection",
-                                          //     statusAbsen: 'masuk',
-                                          //   ));
-                                          //   // Get.to(FaceidRegistration(
-                                          //   //   status: "registration",
-                                          //   // ));
-                                          // }
-                                          //end image picker
-
-                                          //begin face recognition
-                                          // Get.to(FaceDetectorView(
-                                          //   status: "masuk",
-                                          // ));
-                                          //end begin face recogniton
-
-                                          if (controllerAbsensi.regType.value ==
-                                              1) {
-                                            Get.to(AbsensiLocation(
-                                              status: "masuk",
-                                            ));
-                                          } else {
-                                            Get.to(FaceDetectorView(
-                                              status: "masuk",
-                                            ));
-                                          }
-
-                                          // // controllerAbsensi.getPlaceCoordinate();
-                                          // ;
-                                          // controllerAbsensi.facedDetection(
-                                          //     status: "detection",
-                                          //     absenStatus: "masuk",
-                                          //     type: "1");
-
-                                          // var kalkulasiRadius =
-                                          //     controller.radiusNotOpen();
-                                          // Get.to(faceDetectionPage(
-                                          //   status: "masuk",
-                                          // ));
-                                          // kalkulasiRadius.then((value) {
-                                          //   print(value);
-                                          //   // if (value) {
-                                          //   //   controllerAbsensi.titleAbsen.value =
-                                          //   //       "Absen Masuk";
-                                          //   //   controllerAbsensi.typeAbsen.value = 1;
-                                          //   //   Get.offAll(faceDetectionPage());
-                                          //   //   // controllerAbsensi.absenSelfie();
-                                          //   // }
-                                          // });
+                                          Get.to(FaceDetectorView(
+                                            status: "masuk",
+                                          ));
                                         }
+
+                                        // // controllerAbsensi.getPlaceCoordinate();
+                                        // ;
+                                        // controllerAbsensi.facedDetection(
+                                        //     status: "detection",
+                                        //     absenStatus: "masuk",
+                                        //     type: "1");
+
+                                        // var kalkulasiRadius =
+                                        //     controller.radiusNotOpen();
+                                        // Get.to(faceDetectionPage(
+                                        //   status: "masuk",
+                                        // ));
+                                        // kalkulasiRadius.then((value) {
+                                        //   print(value);
+                                        //   // if (value) {
+                                        //   //   controllerAbsensi.titleAbsen.value =
+                                        //   //       "Absen Masuk";
+                                        //   //   controllerAbsensi.typeAbsen.value = 1;
+                                        //   //   Get.offAll(faceDetectionPage());
+                                        //   //   // controllerAbsensi.absenSelfie();
+                                        //   // }
+                                        // });
+                                        // }
                                       }
                                     }
                                   });
@@ -315,110 +315,110 @@ class _DashboardState extends State<Dashboard> {
                               UtilsAlert.showToast(
                                   "Absen Masuk terlebih dahulu");
                             } else {
-                              if (!authController.isConnected.value) {
-                                // if (controller.absenOfflineStatusDua.value ==
-                                //     true) {
-                                //   UtilsAlert.showToast(
-                                //       "Menunggu status absensi anda di approve");
-                                //   return;
-                                // } else {
+                              // if (!authController.isConnected.value) {
+                              //   // if (controller.absenOfflineStatusDua.value ==
+                              //   //     true) {
+                              //   //   UtilsAlert.showToast(
+                              //   //       "Menunggu status absensi anda di approve");
+                              //   //   return;
+                              //   // } else {
+                              //   controllerAbsensi.getPlaceCoordinate();
+                              //   controllerAbsensi.titleAbsen.value =
+                              //       "Absen Keluar";
+                              //   controllerAbsensi.typeAbsen.value = 2;
+                              //   controller.widgetButtomSheetOfflineAbsen(
+                              //       title: "Absen Keluar", status: "keluar");
+                              //   // }
+                              // } else {
+                              // if (controller.absenOfflineStatus.value ==
+                              //     true) {
+                              //   UtilsAlert.showToast(
+                              //       "Menunggu status absensi anda di approve");
+                              //   return;
+                              // }
+                              var dataUser = AppData.informasiUser;
+                              var faceRecog = dataUser![0].face_recog;
+
+                              if (GetStorage().read('face_recog') == true) {
                                 controllerAbsensi.getPlaceCoordinate();
                                 controllerAbsensi.titleAbsen.value =
                                     "Absen Keluar";
                                 controllerAbsensi.typeAbsen.value = 2;
-                                controller.widgetButtomSheetOfflineAbsen(
-                                    title: "Absen Keluar", status: "keluar");
+
+                                //begin image picker
+                                // final getFoto = await ImagePicker()
+                                //     .pickImage(
+                                //         source: ImageSource.camera,
+                                //         preferredCameraDevice:
+                                //             CameraDevice.front,
+                                //         imageQuality: 100,
+                                //         maxHeight: 350,
+                                //         maxWidth: 350);
+                                // if (getFoto == null) {
+                                //   UtilsAlert.showToast(
+                                //       "Gagal mengambil gambar");
+                                // } else {
+                                //   // controllerAbsensi.facedDetection(
+                                //   //     status: "registration",
+                                //   //     absenStatus: "Absen Masuk",
+                                //   //     img: getFoto.path,
+                                //   //     type: "1");
+                                //   Get.to(LoadingAbsen(
+                                //     file: getFoto.path,
+                                //     status: "detection",
+                                //     statusAbsen: 'keluar',
+                                //   ));
+                                //   // Get.to(FaceidRegistration(
+                                //   //   status: "registration",
+                                //   // ));
+                                // }
+                                //end image picker
+
+                                if (controllerAbsensi.regType.value == 1) {
+                                  Get.to(AbsensiLocation(
+                                    status: "keluar",
+                                  ));
+                                } else {
+                                  Get.to(FaceDetectorView(
+                                    status: "keluar",
+                                  ));
+                                }
+
+                                // controllerAbsensi.facedDetection(
+                                //     status: "detection",
+                                //     type: "2",
+                                // //     absenStatus: "keluar");
+                                // Get.to(faceDetectionPage(
+                                //   status: "keluar",
+                                // ));
+                                // Get.offAll(AbsenMasukKeluar(
+                                //   status: "Absen Keluar",
+                                //   type: 2,
+                                // ));
+                                // controllerAbsensi.absenSelfie();
+                                // var validasiAbsenMasukUser =
+                                //     controller.validasiAbsenMasukUser();
+                                // print(validasiAbsenMasukUser);
+                                // if (validasiAbsenMasukUser == false) {
+
+                                // } else {
+                                //   var kalkulasiRadius =
+                                //       controller.radiusNotOpen();
+                                //   kalkulasiRadius.then((value) {
+                                //     if (value) {
+                                //       controllerAbsensi.titleAbsen.value =
+                                //           "Absen Keluar";
+                                //       controllerAbsensi.typeAbsen.value = 2;
+                                //       Get.offAll(AbsenMasukKeluar());
+                                //       controllerAbsensi.absenSelfie();
+                                //     }
+                                //   });
                                 // }
                               } else {
-                                if (controller.absenOfflineStatus.value ==
-                                    true) {
-                                  UtilsAlert.showToast(
-                                      "Menunggu status absensi anda di approve");
-                                  return;
-                                }
-                                var dataUser = AppData.informasiUser;
-                                var faceRecog = dataUser![0].face_recog;
-
-                                if (GetStorage().read('face_recog') == true) {
-                                  controllerAbsensi.getPlaceCoordinate();
-                                  controllerAbsensi.titleAbsen.value =
-                                      "Absen Keluar";
-                                  controllerAbsensi.typeAbsen.value = 2;
-
-                                  //begin image picker
-                                  // final getFoto = await ImagePicker()
-                                  //     .pickImage(
-                                  //         source: ImageSource.camera,
-                                  //         preferredCameraDevice:
-                                  //             CameraDevice.front,
-                                  //         imageQuality: 100,
-                                  //         maxHeight: 350,
-                                  //         maxWidth: 350);
-                                  // if (getFoto == null) {
-                                  //   UtilsAlert.showToast(
-                                  //       "Gagal mengambil gambar");
-                                  // } else {
-                                  //   // controllerAbsensi.facedDetection(
-                                  //   //     status: "registration",
-                                  //   //     absenStatus: "Absen Masuk",
-                                  //   //     img: getFoto.path,
-                                  //   //     type: "1");
-                                  //   Get.to(LoadingAbsen(
-                                  //     file: getFoto.path,
-                                  //     status: "detection",
-                                  //     statusAbsen: 'keluar',
-                                  //   ));
-                                  //   // Get.to(FaceidRegistration(
-                                  //   //   status: "registration",
-                                  //   // ));
-                                  // }
-                                  //end image picker
-
-                                  if (controllerAbsensi.regType.value == 1) {
-                                    Get.to(AbsensiLocation(
-                                      status: "keluar",
-                                    ));
-                                  } else {
-                                    Get.to(FaceDetectorView(
-                                      status: "keluar",
-                                    ));
-                                  }
-
-                                  // controllerAbsensi.facedDetection(
-                                  //     status: "detection",
-                                  //     type: "2",
-                                  // //     absenStatus: "keluar");
-                                  // Get.to(faceDetectionPage(
-                                  //   status: "keluar",
-                                  // ));
-                                  // Get.offAll(AbsenMasukKeluar(
-                                  //   status: "Absen Keluar",
-                                  //   type: 2,
-                                  // ));
-                                  // controllerAbsensi.absenSelfie();
-                                  // var validasiAbsenMasukUser =
-                                  //     controller.validasiAbsenMasukUser();
-                                  // print(validasiAbsenMasukUser);
-                                  // if (validasiAbsenMasukUser == false) {
-
-                                  // } else {
-                                  //   var kalkulasiRadius =
-                                  //       controller.radiusNotOpen();
-                                  //   kalkulasiRadius.then((value) {
-                                  //     if (value) {
-                                  //       controllerAbsensi.titleAbsen.value =
-                                  //           "Absen Keluar";
-                                  //       controllerAbsensi.typeAbsen.value = 2;
-                                  //       Get.offAll(AbsenMasukKeluar());
-                                  //       controllerAbsensi.absenSelfie();
-                                  //     }
-                                  //   });
-                                  // }
-                                } else {
-                                  controllerAbsensi
-                                      .widgetButtomSheetFaceRegistrattion();
-                                }
+                                controllerAbsensi
+                                    .widgetButtomSheetFaceRegistrattion();
                               }
+                              // }
                             }
                           },
                     label: Text(
@@ -483,8 +483,7 @@ class _DashboardState extends State<Dashboard> {
                           padding: EdgeInsets.only(
                               top: _isVisible
                                   ? (controller.status.value == "[]" &&
-                                              controller.wfhstatus.value) ||
-                                          (controller.absenOfflineStatus.value)
+                                          controller.wfhstatus.value)
                                       ? 280.0
                                       : 265.0
                                   : 175.0),
@@ -523,9 +522,10 @@ class _DashboardState extends State<Dashboard> {
                                             Get.context!)
                                         : MenuDashboard(),
                                     // MenuDashboard(),
-                                    authController.isConnected.value
-                                        ? cardFormPengajuan()
-                                        : Container(),
+                                    // authController.isConnected.value
+                                    // ?
+                                    cardFormPengajuan(),
+                                    // : Container(),
                                     const SizedBox(height: 16),
                                     controller.bannerDashboard.value.isEmpty
                                         ? const SizedBox()
@@ -943,23 +943,23 @@ class _DashboardState extends State<Dashboard> {
             AppData.informasiUser![0].em_image == ""
                 ? Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Obx(() {
-                            return Container(
-                              decoration: BoxDecoration(
-                                color: authController.isConnected.value
-                                    ? Constanst.color5
-                                    : Constanst.color4,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            );
-                          }),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(right: 5),
+                      //   child: SizedBox(
+                      //     width: 20,
+                      //     height: 20,
+                      //     child: Obx(() {
+                      //       return Container(
+                      //         decoration: BoxDecoration(
+                      //           color: authController.isConnected.value
+                      //               ? Constanst.color5
+                      //               : Constanst.color4,
+                      //           borderRadius: BorderRadius.circular(20),
+                      //         ),
+                      //       );
+                      //     }),
+                      //   ),
+                      // ),
                       // InkWell(
                       //   onTap: () {
                       //     Get.to(HistoryChat());
@@ -1000,23 +1000,23 @@ class _DashboardState extends State<Dashboard> {
                     padding: const EdgeInsets.only(left: 16.0),
                     child: Row(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: Obx(() {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  color: authController.isConnected.value
-                                      ? Constanst.color5
-                                      : Constanst.color4,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              );
-                            }),
-                          ),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(right: 5),
+                        //   child: SizedBox(
+                        //     width: 18,
+                        //     height: 18,
+                        //     child: Obx(() {
+                        //       return Container(
+                        //         decoration: BoxDecoration(
+                        //           color: authController.isConnected.value
+                        //               ? Constanst.color5
+                        //               : Constanst.color4,
+                        //           borderRadius: BorderRadius.circular(20),
+                        //         ),
+                        //       );
+                        //     }),
+                        //   ),
+                        // ),
                         // InkWell(
                         //   onTap: () {
                         //     Get.to(HistoryChat());
@@ -1356,13 +1356,13 @@ class _DashboardState extends State<Dashboard> {
                                                     type: 'loadfirst');
                                           } else {
                                             print("masuk absen user");
-                                            if (controller
-                                                    .absenOfflineStatus.value ==
-                                                true) {
-                                              UtilsAlert.showToast(
-                                                  "Menunggu status absensi anda di approve");
-                                              return;
-                                            }
+                                            // if (controller
+                                            //         .absenOfflineStatus.value ==
+                                            //     true) {
+                                            //   UtilsAlert.showToast(
+                                            //       "Menunggu status absensi anda di approve");
+                                            //   return;
+                                            // }
                                             // Get.offAll(AbsenMasukKeluar(
                                             //   status: "Absen Masuk",
                                             //   type: 1,
@@ -1375,102 +1375,102 @@ class _DashboardState extends State<Dashboard> {
                                             if (!validasiAbsenMasukUser) {
                                               print("masuk sini");
                                             } else {
-                                              if (!authController
-                                                  .isConnected.value) {
-                                                if (controller
-                                                        .absenOfflineStatus
-                                                        .value ==
-                                                    true) {
-                                                  UtilsAlert.showToast(
-                                                      "Menunggu status absensi anda di approve");
-                                                  return;
-                                                } else {
-                                                  controllerAbsensi.titleAbsen
-                                                      .value = "Absen masuk";
-                                                  controllerAbsensi
-                                                      .typeAbsen.value = 1;
-                                                  controller
-                                                      .widgetButtomSheetOfflineAbsen(
-                                                          title: "Absen masuk",
-                                                          status: "masuk");
-                                                }
+                                              // if (!authController
+                                              //     .isConnected.value) {
+                                              //   if (controller
+                                              //           .absenOfflineStatus
+                                              //           .value ==
+                                              //       true) {
+                                              //     UtilsAlert.showToast(
+                                              //         "Menunggu status absensi anda di approve");
+                                              //     return;
+                                              //   } else {
+                                              //     controllerAbsensi.titleAbsen
+                                              //         .value = "Absen masuk";
+                                              //     controllerAbsensi
+                                              //         .typeAbsen.value = 1;
+                                              //     controller
+                                              //         .widgetButtomSheetOfflineAbsen(
+                                              //             title: "Absen masuk",
+                                              //             status: "masuk");
+                                              //   }
+                                              // } else {
+                                              controllerAbsensi.titleAbsen
+                                                  .value = "Absen masuk";
+
+                                              controllerAbsensi
+                                                  .typeAbsen.value = 1;
+
+                                              //begin image picker
+                                              // final getFoto = await ImagePicker()
+                                              //     .pickImage(
+                                              //         source: ImageSource.camera,
+                                              //         preferredCameraDevice:
+                                              //             CameraDevice.front,
+                                              //         imageQuality: 100,
+                                              //         maxHeight: 350,
+                                              //         maxWidth: 350);
+                                              // if (getFoto == null) {
+                                              //   UtilsAlert.showToast(
+                                              //       "Gagal mengambil gambar");
+                                              // } else {
+                                              //   // controllerAbsensi.facedDetection(
+                                              //   //     status: "registration",
+                                              //   //     absenStatus: "Absen Masuk",
+                                              //   //     img: getFoto.path,
+                                              //   //     type: "1");
+                                              //   Get.to(LoadingAbsen(
+                                              //     file: getFoto.path,
+                                              //     status: "detection",
+                                              //     statusAbsen: 'masuk',
+                                              //   ));
+                                              //   // Get.to(FaceidRegistration(
+                                              //   //   status: "registration",
+                                              //   // ));
+                                              // }
+                                              //end image picker
+
+                                              //begin face recognition
+                                              // Get.to(FaceDetectorView(
+                                              //   status: "masuk",
+                                              // ));
+                                              //end begin face recogniton
+
+                                              if (controllerAbsensi
+                                                      .regType.value ==
+                                                  1) {
+                                                Get.to(AbsensiLocation(
+                                                  status: "masuk",
+                                                ));
                                               } else {
-                                                controllerAbsensi.titleAbsen
-                                                    .value = "Absen masuk";
-
-                                                controllerAbsensi
-                                                    .typeAbsen.value = 1;
-
-                                                //begin image picker
-                                                // final getFoto = await ImagePicker()
-                                                //     .pickImage(
-                                                //         source: ImageSource.camera,
-                                                //         preferredCameraDevice:
-                                                //             CameraDevice.front,
-                                                //         imageQuality: 100,
-                                                //         maxHeight: 350,
-                                                //         maxWidth: 350);
-                                                // if (getFoto == null) {
-                                                //   UtilsAlert.showToast(
-                                                //       "Gagal mengambil gambar");
-                                                // } else {
-                                                //   // controllerAbsensi.facedDetection(
-                                                //   //     status: "registration",
-                                                //   //     absenStatus: "Absen Masuk",
-                                                //   //     img: getFoto.path,
-                                                //   //     type: "1");
-                                                //   Get.to(LoadingAbsen(
-                                                //     file: getFoto.path,
-                                                //     status: "detection",
-                                                //     statusAbsen: 'masuk',
-                                                //   ));
-                                                //   // Get.to(FaceidRegistration(
-                                                //   //   status: "registration",
-                                                //   // ));
-                                                // }
-                                                //end image picker
-
-                                                //begin face recognition
-                                                // Get.to(FaceDetectorView(
-                                                //   status: "masuk",
-                                                // ));
-                                                //end begin face recogniton
-
-                                                if (controllerAbsensi
-                                                        .regType.value ==
-                                                    1) {
-                                                  Get.to(AbsensiLocation(
-                                                    status: "masuk",
-                                                  ));
-                                                } else {
-                                                  Get.to(FaceDetectorView(
-                                                    status: "masuk",
-                                                  ));
-                                                }
-
-                                                // // controllerAbsensi.getPlaceCoordinate();
-                                                // ;
-                                                // controllerAbsensi.facedDetection(
-                                                //     status: "detection",
-                                                //     absenStatus: "masuk",
-                                                //     type: "1");
-
-                                                // var kalkulasiRadius =
-                                                //     controller.radiusNotOpen();
-                                                // Get.to(faceDetectionPage(
-                                                //   status: "masuk",
-                                                // ));
-                                                // kalkulasiRadius.then((value) {
-                                                //   print(value);
-                                                //   // if (value) {
-                                                //   //   controllerAbsensi.titleAbsen.value =
-                                                //   //       "Absen Masuk";
-                                                //   //   controllerAbsensi.typeAbsen.value = 1;
-                                                //   //   Get.offAll(faceDetectionPage());
-                                                //   //   // controllerAbsensi.absenSelfie();
-                                                //   // }
-                                                // });
+                                                Get.to(FaceDetectorView(
+                                                  status: "masuk",
+                                                ));
                                               }
+
+                                              // // controllerAbsensi.getPlaceCoordinate();
+                                              // ;
+                                              // controllerAbsensi.facedDetection(
+                                              //     status: "detection",
+                                              //     absenStatus: "masuk",
+                                              //     type: "1");
+
+                                              // var kalkulasiRadius =
+                                              //     controller.radiusNotOpen();
+                                              // Get.to(faceDetectionPage(
+                                              //   status: "masuk",
+                                              // ));
+                                              // kalkulasiRadius.then((value) {
+                                              //   print(value);
+                                              //   // if (value) {
+                                              //   //   controllerAbsensi.titleAbsen.value =
+                                              //   //       "Absen Masuk";
+                                              //   //   controllerAbsensi.typeAbsen.value = 1;
+                                              //   //   Get.offAll(faceDetectionPage());
+                                              //   //   // controllerAbsensi.absenSelfie();
+                                              //   // }
+                                              // });
+                                              // }
                                             }
                                           }
                                         });
@@ -1530,20 +1530,20 @@ class _DashboardState extends State<Dashboard> {
                                               ),
                                               Obx(
                                                 () => Text(
-                                                  !authController
-                                                          .isConnected.value
-                                                      ? controller.signinTime
-                                                                  .value ==
-                                                              "00:00:00"
-                                                          ? "_ _:_ _:_ _"
-                                                          : controller
-                                                              .signinTime.value
-                                                      : controller.signinTime
-                                                                  .value ==
-                                                              "00:00:00"
-                                                          ? "_ _:_ _:_ _"
-                                                          : controller
-                                                              .signinTime.value,
+                                                  // !authController
+                                                  //         .isConnected.value
+                                                  //     ? controller.signinTime
+                                                  //                 .value ==
+                                                  //             "00:00:00"
+                                                  //         ? "_ _:_ _:_ _"
+                                                  //         : controller
+                                                  //             .signinTime.value
+                                                  //     :
+                                                  controller.signinTime.value ==
+                                                          "00:00:00"
+                                                      ? "_ _:_ _:_ _"
+                                                      : controller
+                                                          .signinTime.value,
                                                   style: GoogleFonts.inter(
                                                       fontWeight:
                                                           FontWeight.w500,
@@ -1604,82 +1604,82 @@ class _DashboardState extends State<Dashboard> {
                                                       ),
                                                     )
                                                   : Container(),
-                                              (controller.absenOfflineStatus
-                                                              .value &&
-                                                          absenControllre
-                                                              .absenStatus
-                                                              .value) ||
-                                                      controller
-                                                          .pendingSigninApr
-                                                          .value
-                                                  ? Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 4.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          // Icon(
-                                                          //   Iconsax.timer,
-                                                          //   color: Constanst
-                                                          //       .color3,
-                                                          //   size: 15,
-                                                          // ),
-                                                          // SizedBox(width: 2),
-                                                          Obx(
-                                                            () => Row(
-                                                              children: [
-                                                                Text(
-                                                                  // controller
-                                                                  //     .status.value,
-                                                                  controller
-                                                                          .textPendingMasuk
-                                                                          .value
-                                                                      ? "Pending Absensi"
-                                                                      : "Pending Approval",
-                                                                  style:
-                                                                      GoogleFonts
-                                                                          .inter(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    fontSize: 9,
-                                                                    color: Constanst
-                                                                        .color4,
-                                                                  ),
-                                                                ),
-                                                                Visibility(
-                                                                  visible: controller
-                                                                      .textPendingMasuk
-                                                                      .value,
-                                                                  child: Row(
-                                                                    children: [
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            2,
-                                                                      ),
-                                                                      Icon(
-                                                                        Iconsax
-                                                                            .clock,
-                                                                        size: 8,
-                                                                        color: Constanst
-                                                                            .color4,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  : Container()
+                                              // (controller.absenOfflineStatus
+                                              //                 .value &&
+                                              //             absenControllre
+                                              //                 .absenStatus
+                                              //                 .value) ||
+                                              //         controller
+                                              //             .pendingSigninApr
+                                              //             .value
+                                              //     ? Padding(
+                                              //         padding:
+                                              //             const EdgeInsets.only(
+                                              //                 top: 4.0),
+                                              //         child: Row(
+                                              //           mainAxisAlignment:
+                                              //               MainAxisAlignment
+                                              //                   .spaceBetween,
+                                              //           crossAxisAlignment:
+                                              //               CrossAxisAlignment
+                                              //                   .center,
+                                              //           children: [
+                                              //             // Icon(
+                                              //             //   Iconsax.timer,
+                                              //             //   color: Constanst
+                                              //             //       .color3,
+                                              //             //   size: 15,
+                                              //             // ),
+                                              //             // SizedBox(width: 2),
+                                              //             Obx(
+                                              //               () => Row(
+                                              //                 children: [
+                                              //                   Text(
+                                              //                     // controller
+                                              //                     //     .status.value,
+                                              //                     controller
+                                              //                             .textPendingMasuk
+                                              //                             .value
+                                              //                         ? "Pending Absensi"
+                                              //                         : "Pending Approval",
+                                              //                     style:
+                                              //                         GoogleFonts
+                                              //                             .inter(
+                                              //                       fontWeight:
+                                              //                           FontWeight
+                                              //                               .w500,
+                                              //                       fontSize: 9,
+                                              //                       color: Constanst
+                                              //                           .color4,
+                                              //                     ),
+                                              //                   ),
+                                              //                   Visibility(
+                                              //                     visible: controller
+                                              //                         .textPendingMasuk
+                                              //                         .value,
+                                              //                     child: Row(
+                                              //                       children: [
+                                              //                         const SizedBox(
+                                              //                           width:
+                                              //                               2,
+                                              //                         ),
+                                              //                         Icon(
+                                              //                           Iconsax
+                                              //                               .clock,
+                                              //                           size: 8,
+                                              //                           color: Constanst
+                                              //                               .color4,
+                                              //                         ),
+                                              //                       ],
+                                              //                     ),
+                                              //                   ),
+                                              //                 ],
+                                              //               ),
+                                              //             ),
+                                              //           ],
+                                              //         ),
+                                              //       )
+                                              //     : Container()
                                             ],
                                           ),
                                         ],
@@ -1769,115 +1769,115 @@ class _DashboardState extends State<Dashboard> {
                                     UtilsAlert.showToast(
                                         "Abeen WFH beluum di approve");
                                   } else {
-                                    if (!authController.isConnected.value) {
-                                      // if (controller
-                                      //         .absenOfflineStatusDua.value ==
-                                      //     true) {
-                                      //   UtilsAlert.showToast(
-                                      //       "Menunggu status absensi anda di approve");
-                                      //   return;
-                                      // } else {
+                                    // if (!authController.isConnected.value) {
+                                    //   // if (controller
+                                    //   //         .absenOfflineStatusDua.value ==
+                                    //   //     true) {
+                                    //   //   UtilsAlert.showToast(
+                                    //   //       "Menunggu status absensi anda di approve");
+                                    //   //   return;
+                                    //   // } else {
+                                    //   controllerAbsensi.getPlaceCoordinate();
+                                    //   controllerAbsensi.titleAbsen.value =
+                                    //       "Absen Keluar";
+                                    //   controllerAbsensi.typeAbsen.value = 2;
+                                    //   controller.widgetButtomSheetOfflineAbsen(
+                                    //       title: "Absen Keluar",
+                                    //       status: "keluar");
+                                    //   // }
+                                    // } else {
+                                    // if (controller.absenOfflineStatus.value ==
+                                    //     true) {
+                                    //   UtilsAlert.showToast(
+                                    //       "Menunggu status absensi anda di approve");
+                                    //   return;
+                                    // }
+
+                                    var dataUser = AppData.informasiUser;
+                                    var faceRecog = dataUser![0].face_recog;
+
+                                    if (GetStorage().read('face_recog') ==
+                                        true) {
                                       controllerAbsensi.getPlaceCoordinate();
                                       controllerAbsensi.titleAbsen.value =
                                           "Absen Keluar";
                                       controllerAbsensi.typeAbsen.value = 2;
-                                      controller.widgetButtomSheetOfflineAbsen(
-                                          title: "Absen Keluar",
-                                          status: "keluar");
+
+                                      //begin image picker
+                                      // final getFoto = await ImagePicker()
+                                      //     .pickImage(
+                                      //         source: ImageSource.camera,
+                                      //         preferredCameraDevice:
+                                      //             CameraDevice.front,
+                                      //         imageQuality: 100,
+                                      //         maxHeight: 350,
+                                      //         maxWidth: 350);
+                                      // if (getFoto == null) {
+                                      //   UtilsAlert.showToast(
+                                      //       "Gagal mengambil gambar");
+                                      // } else {
+                                      //   // controllerAbsensi.facedDetection(
+                                      //   //     status: "registration",
+                                      //   //     absenStatus: "Absen Masuk",
+                                      //   //     img: getFoto.path,
+                                      //   //     type: "1");
+                                      //   Get.to(LoadingAbsen(
+                                      //     file: getFoto.path,
+                                      //     status: "detection",
+                                      //     statusAbsen: 'keluar',
+                                      //   ));
+                                      //   // Get.to(FaceidRegistration(
+                                      //   //   status: "registration",
+                                      //   // ));
+                                      // }
+                                      //end image picker
+
+                                      if (controllerAbsensi.regType.value ==
+                                          1) {
+                                        Get.to(AbsensiLocation(
+                                          status: "keluar",
+                                        ));
+                                      } else {
+                                        Get.to(FaceDetectorView(
+                                          status: "keluar",
+                                        ));
+                                      }
+
+                                      // controllerAbsensi.facedDetection(
+                                      //     status: "detection",
+                                      //     type: "2",
+                                      // //     absenStatus: "keluar");
+                                      // Get.to(faceDetectionPage(
+                                      //   status: "keluar",
+                                      // ));
+                                      // Get.offAll(AbsenMasukKeluar(
+                                      //   status: "Absen Keluar",
+                                      //   type: 2,
+                                      // ));
+                                      // controllerAbsensi.absenSelfie();
+                                      // var validasiAbsenMasukUser =
+                                      //     controller.validasiAbsenMasukUser();
+                                      // print(validasiAbsenMasukUser);
+                                      // if (validasiAbsenMasukUser == false) {
+
+                                      // } else {
+                                      //   var kalkulasiRadius =
+                                      //       controller.radiusNotOpen();
+                                      //   kalkulasiRadius.then((value) {
+                                      //     if (value) {
+                                      //       controllerAbsensi.titleAbsen.value =
+                                      //           "Absen Keluar";
+                                      //       controllerAbsensi.typeAbsen.value = 2;
+                                      //       Get.offAll(AbsenMasukKeluar());
+                                      //       controllerAbsensi.absenSelfie();
+                                      //     }
+                                      //   });
                                       // }
                                     } else {
-                                      if (controller.absenOfflineStatus.value ==
-                                          true) {
-                                        UtilsAlert.showToast(
-                                            "Menunggu status absensi anda di approve");
-                                        return;
-                                      }
-
-                                      var dataUser = AppData.informasiUser;
-                                      var faceRecog = dataUser![0].face_recog;
-
-                                      if (GetStorage().read('face_recog') ==
-                                          true) {
-                                        controllerAbsensi.getPlaceCoordinate();
-                                        controllerAbsensi.titleAbsen.value =
-                                            "Absen Keluar";
-                                        controllerAbsensi.typeAbsen.value = 2;
-
-                                        //begin image picker
-                                        // final getFoto = await ImagePicker()
-                                        //     .pickImage(
-                                        //         source: ImageSource.camera,
-                                        //         preferredCameraDevice:
-                                        //             CameraDevice.front,
-                                        //         imageQuality: 100,
-                                        //         maxHeight: 350,
-                                        //         maxWidth: 350);
-                                        // if (getFoto == null) {
-                                        //   UtilsAlert.showToast(
-                                        //       "Gagal mengambil gambar");
-                                        // } else {
-                                        //   // controllerAbsensi.facedDetection(
-                                        //   //     status: "registration",
-                                        //   //     absenStatus: "Absen Masuk",
-                                        //   //     img: getFoto.path,
-                                        //   //     type: "1");
-                                        //   Get.to(LoadingAbsen(
-                                        //     file: getFoto.path,
-                                        //     status: "detection",
-                                        //     statusAbsen: 'keluar',
-                                        //   ));
-                                        //   // Get.to(FaceidRegistration(
-                                        //   //   status: "registration",
-                                        //   // ));
-                                        // }
-                                        //end image picker
-
-                                        if (controllerAbsensi.regType.value ==
-                                            1) {
-                                          Get.to(AbsensiLocation(
-                                            status: "keluar",
-                                          ));
-                                        } else {
-                                          Get.to(FaceDetectorView(
-                                            status: "keluar",
-                                          ));
-                                        }
-
-                                        // controllerAbsensi.facedDetection(
-                                        //     status: "detection",
-                                        //     type: "2",
-                                        // //     absenStatus: "keluar");
-                                        // Get.to(faceDetectionPage(
-                                        //   status: "keluar",
-                                        // ));
-                                        // Get.offAll(AbsenMasukKeluar(
-                                        //   status: "Absen Keluar",
-                                        //   type: 2,
-                                        // ));
-                                        // controllerAbsensi.absenSelfie();
-                                        // var validasiAbsenMasukUser =
-                                        //     controller.validasiAbsenMasukUser();
-                                        // print(validasiAbsenMasukUser);
-                                        // if (validasiAbsenMasukUser == false) {
-
-                                        // } else {
-                                        //   var kalkulasiRadius =
-                                        //       controller.radiusNotOpen();
-                                        //   kalkulasiRadius.then((value) {
-                                        //     if (value) {
-                                        //       controllerAbsensi.titleAbsen.value =
-                                        //           "Absen Keluar";
-                                        //       controllerAbsensi.typeAbsen.value = 2;
-                                        //       Get.offAll(AbsenMasukKeluar());
-                                        //       controllerAbsensi.absenSelfie();
-                                        //     }
-                                        //   });
-                                        // }
-                                      } else {
-                                        controllerAbsensi
-                                            .widgetButtomSheetFaceRegistrattion();
-                                      }
+                                      controllerAbsensi
+                                          .widgetButtomSheetFaceRegistrattion();
                                     }
+                                    // }
                                   }
                                 },
                                 child: Padding(
@@ -1944,26 +1944,26 @@ class _DashboardState extends State<Dashboard> {
                                                 ),
                                                 Obx(
                                                   () => Text(
-                                                    !authController
-                                                            .isConnected.value
-                                                        ? controller.signoutTime
-                                                                        .value ==
-                                                                    "00:00:00" ||
-                                                                controller
-                                                                        .signoutTime
-                                                                        .value ==
-                                                                    "null"
-                                                            ? "_ _:_ _:_ _"
-                                                            : controller
-                                                                .signoutTime
-                                                                .value
-                                                        : controller.signoutTime
-                                                                    .value ==
-                                                                "00:00:00"
-                                                            ? "_ _:_ _:_ _"
-                                                            : controller
-                                                                .signoutTime
-                                                                .value,
+                                                    // !authController
+                                                    //         .isConnected.value
+                                                    //     ? controller.signoutTime
+                                                    //                     .value ==
+                                                    //                 "00:00:00" ||
+                                                    //             controller
+                                                    //                     .signoutTime
+                                                    //                     .value ==
+                                                    //                 "null"
+                                                    //         ? "_ _:_ _:_ _"
+                                                    //         : controller
+                                                    //             .signoutTime
+                                                    //             .value
+                                                    //     :
+                                                    controller.signoutTime
+                                                                .value ==
+                                                            "00:00:00"
+                                                        ? "_ _:_ _:_ _"
+                                                        : controller
+                                                            .signoutTime.value,
                                                     style: GoogleFonts.inter(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -1998,83 +1998,83 @@ class _DashboardState extends State<Dashboard> {
                                                         height: 20,
                                                       )
                                                     : Container(),
-                                                (controller.absenOfflineStatus
-                                                                .value &&
-                                                            !absenControllre
-                                                                .absenStatus
-                                                                .value) ||
-                                                        controller
-                                                            .pendingSignoutApr
-                                                            .value
-                                                    ? Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(top: 4.0),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            // Icon(
-                                                            //   Iconsax.timer,
-                                                            //   color: Constanst
-                                                            //       .color3,
-                                                            //   size: 15,
-                                                            // ),
-                                                            // SizedBox(width: 2),
-                                                            Obx(
-                                                              () => Row(
-                                                                children: [
-                                                                  Text(
-                                                                    // controller
-                                                                    //     .status.value,
-                                                                    controller
-                                                                            .textPendingKeluar
-                                                                            .value
-                                                                        ? "Pending Absensi"
-                                                                        : "Pending Approval",
-                                                                    style: GoogleFonts
-                                                                        .inter(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      fontSize:
-                                                                          9,
-                                                                      color: Constanst
-                                                                          .color4,
-                                                                    ),
-                                                                  ),
-                                                                  Visibility(
-                                                                    visible: controller
-                                                                        .textPendingKeluar
-                                                                        .value,
-                                                                    child: Row(
-                                                                      children: [
-                                                                        const SizedBox(
-                                                                          width:
-                                                                              2,
-                                                                        ),
-                                                                        Icon(
-                                                                          Iconsax
-                                                                              .clock,
-                                                                          size:
-                                                                              8,
-                                                                          color:
-                                                                              Constanst.color4,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    : Container()
+                                                // (controller.absenOfflineStatus
+                                                //                 .value &&
+                                                //             !absenControllre
+                                                //                 .absenStatus
+                                                //                 .value) ||
+                                                //         controller
+                                                //             .pendingSignoutApr
+                                                //             .value
+                                                //     ? Padding(
+                                                //         padding:
+                                                //             const EdgeInsets
+                                                //                 .only(top: 4.0),
+                                                //         child: Row(
+                                                //           mainAxisAlignment:
+                                                //               MainAxisAlignment
+                                                //                   .spaceBetween,
+                                                //           crossAxisAlignment:
+                                                //               CrossAxisAlignment
+                                                //                   .center,
+                                                //           children: [
+                                                //             // Icon(
+                                                //             //   Iconsax.timer,
+                                                //             //   color: Constanst
+                                                //             //       .color3,
+                                                //             //   size: 15,
+                                                //             // ),
+                                                //             // SizedBox(width: 2),
+                                                //             Obx(
+                                                //               () => Row(
+                                                //                 children: [
+                                                //                   Text(
+                                                //                     // controller
+                                                //                     //     .status.value,
+                                                //                     controller
+                                                //                             .textPendingKeluar
+                                                //                             .value
+                                                //                         ? "Pending Absensi"
+                                                //                         : "Pending Approval",
+                                                //                     style: GoogleFonts
+                                                //                         .inter(
+                                                //                       fontWeight:
+                                                //                           FontWeight
+                                                //                               .w500,
+                                                //                       fontSize:
+                                                //                           9,
+                                                //                       color: Constanst
+                                                //                           .color4,
+                                                //                     ),
+                                                //                   ),
+                                                //                   Visibility(
+                                                //                     visible: controller
+                                                //                         .textPendingKeluar
+                                                //                         .value,
+                                                //                     child: Row(
+                                                //                       children: [
+                                                //                         const SizedBox(
+                                                //                           width:
+                                                //                               2,
+                                                //                         ),
+                                                //                         Icon(
+                                                //                           Iconsax
+                                                //                               .clock,
+                                                //                           size:
+                                                //                               8,
+                                                //                           color:
+                                                //                               Constanst.color4,
+                                                //                         ),
+                                                //                       ],
+                                                //                     ),
+                                                //                   ),
+                                                //                 ],
+                                                //               ),
+                                                //             ),
+                                                //           ],
+                                                //         ),
+                                                //       )
+                                                //     : Container()
                                               ],
                                             ),
                                           ],
@@ -2582,29 +2582,31 @@ class _DashboardState extends State<Dashboard> {
                             decoration: BoxDecoration(
                               borderRadius: Constanst.borderStyle2,
                             ),
-                            child: authController.isConnected.value
-                                ? Image.network(
-                                    Api.urlGambarDariFinance +
-                                        controller.bannerDashboard
-                                            .value[itemIndex]['img'],
-                                    fit: BoxFit.fill,
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return UtilsAlert.shimmerBannerDashboard(
-                                          Get.context!);
-                                    },
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        'assets/bnr1.png',
-                                        fit: BoxFit.fill,
-                                      );
-                                    },
-                                  )
-                                : Image.asset(
-                                    'assets/bnr1.png', // Gambar dari asset jika tidak ada koneksi
-                                    fit: BoxFit.fill,
-                                  ),
+                            child: //authController.isConnected.value
+                                // ?
+                                Image.network(
+                              Api.urlGambarDariFinance +
+                                  controller.bannerDashboard.value[itemIndex]
+                                      ['img'],
+                              fit: BoxFit.fill,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return UtilsAlert.shimmerBannerDashboard(
+                                    Get.context!);
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/bnr1.png',
+                                  fit: BoxFit.fill,
+                                );
+                              },
+                            ),
+                            // :
+                            // Image.asset(
+                            //     'assets/bnr1.png', // Gambar dari asset jika tidak ada koneksi
+                            //     fit: BoxFit.fill,
+                            //   ),
                           )),
                     ),
                   );
@@ -2683,9 +2685,10 @@ class _DashboardState extends State<Dashboard> {
                 padding: const EdgeInsets.only(right: 12),
                 child: InkWell(
                   onTap: () async {
-                    authController.isConnected.value
-                        ? controller.widgetButtomSheetMenuLebihDetail()
-                        : UtilsAlert.showDialogCheckInternet();
+                    // authController.isConnected.value
+                    //     ?
+                    controller.widgetButtomSheetMenuLebihDetail();
+                    // : UtilsAlert.showDialogCheckInternet();
                   },
                   highlightColor: Colors.white,
                   child: Column(
@@ -2753,11 +2756,12 @@ class _DashboardState extends State<Dashboard> {
                                                         ? 30.0
                                                         : 30.0),
                         child: InkWell(
-                          onTap: () => authController.isConnected.value
-                              ? controller.routePageDashboard(
+                          onTap: () => // authController.isConnected.value
+                              // ?
+                              controller.routePageDashboard(
                                   controller.menuShowInMain[idxMenu]['url'],
-                                  null)
-                              : UtilsAlert.showDialogCheckInternet(),
+                                  null),
+                          // : UtilsAlert.showDialogCheckInternet(),
                           highlightColor: Colors.white,
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,

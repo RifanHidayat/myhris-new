@@ -234,23 +234,23 @@ class _LiveTrackingState extends State<LiveTracking> {
               fontSize: 20),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: Obx(() {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: authController.isConnected.value
-                        ? Constanst.color5
-                        : Constanst.color4,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                );
-              }),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(right: 5),
+          //   child: SizedBox(
+          //     width: 20,
+          //     height: 20,
+          //     child: Obx(() {
+          //       return Container(
+          //         decoration: BoxDecoration(
+          //           color: authController.isConnected.value
+          //               ? Constanst.color5
+          //               : Constanst.color4,
+          //           borderRadius: BorderRadius.circular(20),
+          //         ),
+          //       );
+          //     }),
+          //   ),
+          // ),
           IconButton(
             icon: Icon(
               Iconsax.document_text,
@@ -683,79 +683,78 @@ class _LiveTrackingState extends State<LiveTracking> {
                 child: Obx(
                   () => ElevatedButton(
                     onPressed: () async {
-                      if (authController.isConnected.value) {
-                        // initializeService();
-                        if (controllerTracking.bagikanlokasi.value ==
-                            "tidak aktif") {
-                          // FlutterBackgroundService().invoke("setAsBackground");
-                          print(controllerTracking.latUser.value);
-                          print(controllerTracking.langUser.value);
+                      // if (authController.isConnected.value) {
+                      // initializeService();
+                      if (controllerTracking.bagikanlokasi.value ==
+                          "tidak aktif") {
+                        // FlutterBackgroundService().invoke("setAsBackground");
+                        print(controllerTracking.latUser.value);
+                        print(controllerTracking.langUser.value);
 
-                          // controllerTracking.bagikanlokasi.value = "tidak aktif";
-                          // Get.to(BagikanLokasi());
-                          // controllerTracking.absenSelfie();
-                          controllerTracking.bagikanlokasi.value = "aktif";
-                          // await BackgroundLocationTrackerManager.startTracking();
-                          controllerTracking.updateStatus('1');
+                        // controllerTracking.bagikanlokasi.value = "tidak aktif";
+                        // Get.to(BagikanLokasi());
+                        // controllerTracking.absenSelfie();
+                        controllerTracking.bagikanlokasi.value = "aktif";
+                        // await BackgroundLocationTrackerManager.startTracking();
+                        controllerTracking.updateStatus('1');
 
-                          setState(() =>
-                              controllerTracking.isTrackingLokasi.value = true);
+                        setState(() =>
+                            controllerTracking.isTrackingLokasi.value = true);
 
-                          // controllerTracking.detailTrackings.clear();
+                        // controllerTracking.detailTrackings.clear();
 
-                          // controllerTracking.detailTracking(emIdEmployee: '');
+                        // controllerTracking.detailTracking(emIdEmployee: '');
 
-                          // controllerTracking.refreshPage();
+                        // controllerTracking.refreshPage();
 
-                          // AppData.informasiUser![0].is_tracking = "1";
-                          await controllerDashboard.updateInformasiUser();
-                          print(
-                              "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
-                          print('hidup');
+                        // AppData.informasiUser![0].is_tracking = "1";
+                        await controllerDashboard.updateInformasiUser();
+                        print(
+                            "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
+                        print('hidup');
 
-                          // final service = FlutterBackgroundService();
-                          // var isRunning = await service.isRunning();
+                        // final service = FlutterBackgroundService();
+                        // var isRunning = await service.isRunning();
 
-                          // service.startService();
+                        // service.startService();
 
-                          setState(() {});
-                        } else {
-                          //FlutterBackgroundService().stopService();
-                          controllerTracking.bagikanlokasi.value =
-                              "tidak aktif";
-                          // await LocationDao().clear();
-                          // await _getLocations();
-                          // await BackgroundLocationTrackerManager.stopTracking();
-                          controllerTracking.updateStatus('0');
-
-                          setState(() => controllerTracking
-                              .isTrackingLokasi.value = false);
-
-                          // AppData.informasiUser![0].is_tracking = "0";
-                          await controllerDashboard.updateInformasiUser();
-                          print(
-                              "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
-
-                          // final service = FlutterBackgroundService();
-
-                          // service.invoke("stopService");
-
-                          setState(() {});
-                          // controllerTracking.latUser.value = 0.0;
-                          // controllerTracking.langUser.value = 0.0;
-                          // controllerTracking.alamatUserFoto.value = "";
-                        }
-
-                        // if (  controllerTracking.isTrackingLokasi.value) {
-                        //   controllerTracking.getPosisition();
-                        // } else {
-                        //   await BackgroundLocationTrackerManager
-                        //       .startTracking();
-                        //   setState(() =>   controllerTracking.isTrackingLokasi.value = true);
-                        // }
+                        setState(() {});
                       } else {
-                        UtilsAlert.showDialogCheckInternet();
+                        //FlutterBackgroundService().stopService();
+                        controllerTracking.bagikanlokasi.value = "tidak aktif";
+                        // await LocationDao().clear();
+                        // await _getLocations();
+                        // await BackgroundLocationTrackerManager.stopTracking();
+                        controllerTracking.updateStatus('0');
+
+                        setState(() =>
+                            controllerTracking.isTrackingLokasi.value = false);
+
+                        // AppData.informasiUser![0].is_tracking = "0";
+                        await controllerDashboard.updateInformasiUser();
+                        print(
+                            "dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
+
+                        // final service = FlutterBackgroundService();
+
+                        // service.invoke("stopService");
+
+                        setState(() {});
+                        // controllerTracking.latUser.value = 0.0;
+                        // controllerTracking.langUser.value = 0.0;
+                        // controllerTracking.alamatUserFoto.value = "";
                       }
+
+                      // if (  controllerTracking.isTrackingLokasi.value) {
+                      //   controllerTracking.getPosisition();
+                      // } else {
+                      //   await BackgroundLocationTrackerManager
+                      //       .startTracking();
+                      //   setState(() =>   controllerTracking.isTrackingLokasi.value = true);
+                      // }
+                      // } else {
+                      //   UtilsAlert.showDialogCheckInternet();
+                      // }
                     },
                     style: ElevatedButton.styleFrom(
                         foregroundColor: Constanst.colorWhite,

@@ -51,19 +51,19 @@ class AuthController extends GetxController {
   var controllerAbsnsi = Get.put(AbsenController());
   final controllerTracking = Get.put(TrackingController());
   var globalCtr = Get.put(GlobalController());
-  var isConnected = true.obs;
-  Timer? timer;
-  var ping = 0.obs;
+  // var isConnected = true.obs;
+  // Timer? timer;
+  // var ping = 0.obs;
   // var login = false.obs;
   // var errorServer = false.obs;
-  var offiline = [].obs;
-  var datas = [].obs;
-  var kirims = false.obs;
+  // var offiline = [].obs;
+  // var datas = [].obs;
+  // var kirims = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    checking();
+    // checking();
   }
 
   @override
@@ -78,40 +78,40 @@ class AuthController extends GetxController {
     super.onReady();
   }
 
-  Future<void> checking() async {
-    Connectivity().onConnectivityChanged.listen((result) async {
-      print("woyyy: ${result[0].toString() == "${ConnectivityResult.none}"}");
-      if (result[0].toString() == "${ConnectivityResult.none}") {
-        print('Tidak ada koneksi internet');
-        isConnected.value = false;
-        _cancelTimer();
-      } else {
-        // await _checkConnection();
-        isConnected.value = true;
-        print('ada koneksi internet');
-        timer = Timer.periodic(const Duration(seconds: 5), (Timer t) async {
-          // _checkConnection();
-          if (AppData.isLogin == true) {
-            if (AppData.loginOffline == true) {
-              if (AppData.emailUser != '') {
-                await sendDataUserOflline();
-              }
-            }
+  // Future<void> checking() async {
+  //   Connectivity().onConnectivityChanged.listen((result) async {
+  //     print("woyyy: ${result[0].toString() == "${ConnectivityResult.none}"}");
+  //     if (result[0].toString() == "${ConnectivityResult.none}") {
+  //       print('Tidak ada koneksi internet');
+  //       isConnected.value = false;
+  //       _cancelTimer();
+  //     } else {
+  //       // await _checkConnection();
+  //       isConnected.value = true;
+  //       print('ada koneksi internet');
+  //       timer = Timer.periodic(const Duration(seconds: 5), (Timer t) async {
+  //         // _checkConnection();
+  //         if (AppData.isLogin == true) {
+  //           if (AppData.loginOffline == true) {
+  //             if (AppData.emailUser != '') {
+  //               await sendDataUserOflline();
+  //             }
+  //           }
 
-            var absenMasukKeluarOffline =
-                await SqliteDatabaseHelper().getAbsensi();
-            print("absenMasukKeluarOffline : $absenMasukKeluarOffline");
-            if (absenMasukKeluarOffline != null) {
-              if (kirims.value == false) {
-                print('kesini');
-                sendAbsensiOffline();
-              }
-            }
-          }
-        });
-      }
-    });
-  }
+  //           var absenMasukKeluarOffline =
+  //               await SqliteDatabaseHelper().getAbsensi();
+  //           print("absenMasukKeluarOffline : $absenMasukKeluarOffline");
+  //           if (absenMasukKeluarOffline != null) {
+  //             if (kirims.value == false) {
+  //               print('kesini');
+  //               sendAbsensiOffline();
+  //             }
+  //           }
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
 
   // Future<void> _checkConnection() async {
   //   try {
@@ -200,64 +200,64 @@ class AuthController extends GetxController {
   //   // }
   // }
 
-  void _cancelTimer() {
-    timer!.cancel();
-    timer = null;
-  }
+  // void _cancelTimer() {
+  //   timer!.cancel();
+  //   timer = null;
+  // }
 
-  void sendAbsensiOffline() async {
-    _cancelTimer();
-    await checkAbsenUserOffline(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        AppData.informasiUser![0].em_id);
-    var absenMasukKeluarOffline = await SqliteDatabaseHelper().getAbsensi();
-    Future.delayed(const Duration(seconds: 1), () {
-      var body = {
-        'em_id': absenMasukKeluarOffline!['em_id'].toString(),
-        'atten_date': absenMasukKeluarOffline['atten_date'].toString(),
-        'signin_time': absenMasukKeluarOffline['signing_time'].toString(),
-        'place_in': absenMasukKeluarOffline['place_in'].toString(),
-        'signin_longlat': absenMasukKeluarOffline['signin_longlat'].toString(),
-        'signin_pict': absenMasukKeluarOffline['signin_pict'].toString(),
-        'signin_note': absenMasukKeluarOffline['signin_note'].toString(),
-        'signin_addr': absenMasukKeluarOffline['signin_addr'].toString(),
-        'signout_time': absenMasukKeluarOffline['signout_time'].toString(),
-        'place_out': absenMasukKeluarOffline['place_out'].toString(),
-        'signout_longlat':
-            absenMasukKeluarOffline['signout_longlat'].toString(),
-        'signout_pict': absenMasukKeluarOffline['signout_pict'].toString(),
-        'signout_note': absenMasukKeluarOffline['signout_note'].toString(),
-        'signout_addr': absenMasukKeluarOffline['signout_addr'].toString(),
-        'id': 19,
-      };
+  // void sendAbsensiOffline() async {
+  //   _cancelTimer();
+  //   await checkAbsenUserOffline(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+  //       AppData.informasiUser![0].em_id);
+  //   var absenMasukKeluarOffline = await SqliteDatabaseHelper().getAbsensi();
+  //   Future.delayed(const Duration(seconds: 1), () {
+  //     var body = {
+  //       'em_id': absenMasukKeluarOffline!['em_id'].toString(),
+  //       'atten_date': absenMasukKeluarOffline['atten_date'].toString(),
+  //       'signin_time': absenMasukKeluarOffline['signing_time'].toString(),
+  //       'place_in': absenMasukKeluarOffline['place_in'].toString(),
+  //       'signin_longlat': absenMasukKeluarOffline['signin_longlat'].toString(),
+  //       'signin_pict': absenMasukKeluarOffline['signin_pict'].toString(),
+  //       'signin_note': absenMasukKeluarOffline['signin_note'].toString(),
+  //       'signin_addr': absenMasukKeluarOffline['signin_addr'].toString(),
+  //       'signout_time': absenMasukKeluarOffline['signout_time'].toString(),
+  //       'place_out': absenMasukKeluarOffline['place_out'].toString(),
+  //       'signout_longlat':
+  //           absenMasukKeluarOffline['signout_longlat'].toString(),
+  //       'signout_pict': absenMasukKeluarOffline['signout_pict'].toString(),
+  //       'signout_note': absenMasukKeluarOffline['signout_note'].toString(),
+  //       'signout_addr': absenMasukKeluarOffline['signout_addr'].toString(),
+  //       'id': 19,
+  //     };
 
-      if ((offiline.isNotEmpty &&
-              offiline[0]['signing_time'].toString() != "00:00:00" &&
-              datas.isEmpty) ||
-          ((offiline.isNotEmpty &&
-              offiline[0]['signing_time'].toString() !=
-                  datas[0]['signin_time'].toString()))) {
-      } else {
-        var connect = Api.connectionApi("post", body, "attendance-offiline");
-        connect.then((dynamic res) {
-          // errorServer.value = false;
-          print(res.statusCode);
-          if (res.statusCode == 200) {
-            SqliteDatabaseHelper().deleteAbsensi();
-            print("kekirim");
-            kirims.value == true;
-            Get.offAll(InitScreen());
-          } else {
-            UtilsAlert.showToast("terjadi kesalhan");
-          }
-        }).catchError((error) {
-          // errorServer.value = true;
-          // UtilsAlert.showToast("terjadi kesalhan");
-        }).whenComplete(() {
-          checking();
-        });
-      }
-    });
-  }
+  //     if ((offiline.isNotEmpty &&
+  //             offiline[0]['signing_time'].toString() != "00:00:00" &&
+  //             datas.isEmpty) ||
+  //         ((offiline.isNotEmpty &&
+  //             offiline[0]['signing_time'].toString() !=
+  //                 datas[0]['signin_time'].toString()))) {
+  //     } else {
+  //       var connect = Api.connectionApi("post", body, "attendance-offiline");
+  //       connect.then((dynamic res) {
+  //         // errorServer.value = false;
+  //         print(res.statusCode);
+  //         if (res.statusCode == 200) {
+  //           SqliteDatabaseHelper().deleteAbsensi();
+  //           print("kekirim");
+  //           kirims.value == true;
+  //           Get.offAll(InitScreen());
+  //         } else {
+  //           UtilsAlert.showToast("terjadi kesalhan");
+  //         }
+  //       }).catchError((error) {
+  //         // errorServer.value = true;
+  //         // UtilsAlert.showToast("terjadi kesalhan");
+  //       }).whenComplete(() {
+  //         checking();
+  //       });
+  //     }
+  //   });
+  // }
 
   bool validateEmail(String? value) {
     String pattern =
@@ -306,207 +306,207 @@ class AuthController extends GetxController {
     // var offline =
     //     (connectivityResult[0].toString() == "${ConnectivityResult.none}");
 
-    if (!isConnected.value) {
-      String? savedEmail = AppData.emailUser;
-      String? savedPassword = AppData.passwordUser;
-      if (savedEmail == email.value.text &&
-          savedPassword == password.value.text) {
-        AppData.loginOffline = true;
-        AppData.isLogin = true;
-        fillLastLoginUserNew(
-            AppData.informasiUser![0].em_id, AppData.informasiUser);
-        checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-            AppData.informasiUser![0].em_id);
-        UtilsAlert.showToast("Login offline berhasil");
+    // if (!isConnected.value) {
+    //   String? savedEmail = AppData.emailUser;
+    //   String? savedPassword = AppData.passwordUser;
+    //   if (savedEmail == email.value.text &&
+    //       savedPassword == password.value.text) {
+    //     AppData.loginOffline = true;
+    //     AppData.isLogin = true;
+    //     fillLastLoginUserNew(
+    //         AppData.informasiUser![0].em_id, AppData.informasiUser);
+    //     checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+    //         AppData.informasiUser![0].em_id);
+    //     UtilsAlert.showToast("Login offline berhasil");
+    //   } else {
+    //     UtilsAlert.showToast("Login offline gagal, data tidak cocok");
+    //   }
+    // } else {
+    // AppData.loginOffline = false;
+    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+    //  var fcm_registration_token = "1";
+    // print("fcmtoken ${fcm_registration_token}");
+    UtilsAlert.showLoadingIndicator(Get.context!);
+    Map<String, dynamic> body = {
+      'email': email.value.text,
+      'password': password.value.text,
+      'token_notif': fcm_registration_token,
+      'database': selectedDb.value
+    };
+    var connect = Api.connectionApi("post", body, "login");
+    connect.then((dynamic res) async {
+      var valueBody = jsonDecode(res.body);
+      print('data login ${valueBody}');
+      if (valueBody['status'] == false) {
+        UtilsAlert.showToast(valueBody['message']);
+        Navigator.pop(Get.context!);
       } else {
-        UtilsAlert.showToast("Login offline gagal, data tidak cocok");
-      }
-    } else {
-      AppData.loginOffline = false;
-      var fcm_registration_token = await FirebaseMessaging.instance.getToken();
-      //  var fcm_registration_token = "1";
-      // print("fcmtoken ${fcm_registration_token}");
-      UtilsAlert.showLoadingIndicator(Get.context!);
-      Map<String, dynamic> body = {
-        'email': email.value.text,
-        'password': password.value.text,
-        'token_notif': fcm_registration_token,
-        'database': selectedDb.value
-      };
-      var connect = Api.connectionApi("post", body, "login");
-      connect.then((dynamic res) async {
-        var valueBody = jsonDecode(res.body);
-        print('data login ${valueBody}');
-        if (valueBody['status'] == false) {
-          UtilsAlert.showToast(valueBody['message']);
-          Navigator.pop(Get.context!);
-        } else {
-          print("nama database ${selectedDb.value}");
-          AppData.selectedDatabase = selectedDb.value;
-          AppData.selectedPerusahan = selectedPerusahaan.value;
+        print("nama database ${selectedDb.value}");
+        AppData.selectedDatabase = selectedDb.value;
+        AppData.selectedPerusahan = selectedPerusahaan.value;
 
-          List<UserModel> getData = [];
+        List<UserModel> getData = [];
 
-          var lastLoginUser = "";
-          var getEmId = "";
-          var getAktif = "";
-          var idMobile = "";
+        var lastLoginUser = "";
+        var getEmId = "";
+        var getAktif = "";
+        var idMobile = "";
 
-          print("data login 2 new new ${valueBody['data']}");
-          var isBackDateSakit = "0";
-          var isBackDateIzin = "0";
-          var isBackDateCuti = "0";
-          var isBackDateTugasLuar = "0";
-          var isBackDateDinasLuar = "0";
-          var isBackDateLembur = "0";
+        print("data login 2 new new ${valueBody['data']}");
+        var isBackDateSakit = "0";
+        var isBackDateIzin = "0";
+        var isBackDateCuti = "0";
+        var isBackDateTugasLuar = "0";
+        var isBackDateDinasLuar = "0";
+        var isBackDateLembur = "0";
 
-          for (var element in valueBody['data']) {
-            if (element['back_date'] == "" || element['back_date'] == null) {
-            } else {
-              List isBackDates = element['back_date'].toString().split(',');
-              isBackDateSakit = isBackDates[0].toString();
-              isBackDateIzin = isBackDates[1].toString();
-              isBackDateCuti = isBackDates[2].toString();
-              isBackDateTugasLuar = isBackDates[3].toString();
-              isBackDateDinasLuar = isBackDates[4].toString();
-              isBackDateLembur = isBackDates[5].toString();
+        for (var element in valueBody['data']) {
+          if (element['back_date'] == "" || element['back_date'] == null) {
+          } else {
+            List isBackDates = element['back_date'].toString().split(',');
+            isBackDateSakit = isBackDates[0].toString();
+            isBackDateIzin = isBackDates[1].toString();
+            isBackDateCuti = isBackDates[2].toString();
+            isBackDateTugasLuar = isBackDates[3].toString();
+            isBackDateDinasLuar = isBackDates[4].toString();
+            isBackDateLembur = isBackDates[5].toString();
 
-              print("data back date ");
-              print("1 ${isBackDates[0].toString()}");
-              print("2 ${isBackDates[1].toString()}");
-              print("3 ${isBackDates[2].toString()}");
-              print("4 ${isBackDates[3].toString()}");
-              print(
-                  "dinas luar ${isBackDates[4].toString()} ${isBackDateDinasLuar}");
-              print("6 ${isBackDates[5].toString()}");
-            }
-            var data = UserModel(
-                isBackDateSakit: isBackDateSakit,
-                isBackDateIzin: isBackDateIzin,
-                isBackDateCuti: isBackDateCuti,
-                isBackDateTugasLuar: isBackDateTugasLuar,
-                isBackDateDinasLuar: isBackDateDinasLuar,
-                isBackDateLembur: isBackDateLembur,
-                em_id: element['em_id'] ?? "",
-                des_id: element['des_id'] ?? 0,
-                dep_id: element['dep_id'] ?? 0,
-                dep_group: element['dep_group'] ?? 0,
-                full_name: element['full_name'] ?? "",
-                em_email: element['em_email'] ?? "",
-                em_phone: element['em_phone'] ?? "",
-                em_birthday: element['em_birthday'] ?? "1999-09-09",
-                em_gender: element['em_gender'] ?? "",
-                em_image: element['em_image'] ?? "",
-                em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-                em_status: element['em_status'] ?? "",
-                em_blood_group: element['em_blood_group'] ?? "",
-                posisi: element['posisi'] ?? "",
-                emp_jobTitle: element['emp_jobTitle'] ?? "",
-                emp_departmen: element['emp_departmen'] ?? "",
-                em_control: element['em_control'] ?? 0,
-                em_control_acess: element['em_control_access'] ?? 0,
-                emp_att_working: element['emp_att_working'] ?? 0,
-                em_hak_akses: element['em_hak_akses'] ?? "",
-                beginPayroll: element['begin_payroll'] ?? 1,
-                endPayroll: element['end_payroll'] ?? 31,
-                branchName: element['branch_name'] ?? "",
-                startTime: element['time_attendance'].toString().split(',')[0],
-                endTime: element['time_attendance'].toString().split(',')[1],
-                nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
-                nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
-                timeIn: element['time_in'] ?? "",
-                timeOut: element['time_out'] ?? "",
-                interval: element['interval'],
-                interval_tracking: element['interval_tracking'],
-                isViewTracking: element['is_view_tracking'],
-                is_tracking: element['is_tracking']
-                //   startTime: "00:01",
-                // endTime: "23:59",
-                );
-
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.setString(
-                "interval_tracking", element['interval_tracking'].toString());
-            await prefs.setString("em_id", element['em_id'].toString());
-
-            print('data login ${data}');
-
-            if (element['file_face'] == "" || element['file_face'] == null) {
-              box.write("face_recog", false);
-            } else {
-              box.write("face_recog", true);
-            }
-            getData.add(data);
-            AppData.informasiUser = getData;
-            lastLoginUser = "${element['last_login']}";
-            getEmId = "${element['em_id']}";
-            getAktif = "${element['status_aktif']}";
-
-            AppData.isLogin = true;
-            AppData.setFcmToken = fcm_registration_token.toString();
-            print(element.toString());
-
-            if (AppData.informasiUser![0].is_tracking.toString() == '1') {
-              controllerTracking.bagikanlokasi.value = "aktif";
-              // await BackgroundLocationTrackerManager.startTracking();
-              // final service = FlutterBackgroundService();
-              // FlutterBackgroundService().invoke("setAsBackground");
-
-              // service.startService();
-              controllerTracking.updateStatus('1');
-              controllerTracking.isTrackingLokasi.value = true;
-              // controllerTracking.detailTracking(emIdEmployee: '');
-              print(
-                  "startTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
-            } else {
-              controllerTracking.bagikanlokasi.value = "tidak aktif";
-              // await LocationDao().clear();
-              // await _getLocations();
-              // await BackgroundLocationTrackerManager.stopTracking();
-              // final service = FlutterBackgroundService();
-              // FlutterBackgroundService().invoke("setAsBackground");
-
-              // service.invoke("stopService");
-              controllerTracking.updateStatus('0');
-              controllerTracking.isTrackingLokasi.value = false;
-              print(
-                  "stopTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
-            }
+            print("data back date ");
+            print("1 ${isBackDates[0].toString()}");
+            print("2 ${isBackDates[1].toString()}");
+            print("3 ${isBackDates[2].toString()}");
+            print("4 ${isBackDates[3].toString()}");
+            print(
+                "dinas luar ${isBackDates[4].toString()} ${isBackDateDinasLuar}");
+            print("6 ${isBackDates[5].toString()}");
           }
+          var data = UserModel(
+              isBackDateSakit: isBackDateSakit,
+              isBackDateIzin: isBackDateIzin,
+              isBackDateCuti: isBackDateCuti,
+              isBackDateTugasLuar: isBackDateTugasLuar,
+              isBackDateDinasLuar: isBackDateDinasLuar,
+              isBackDateLembur: isBackDateLembur,
+              em_id: element['em_id'] ?? "",
+              des_id: element['des_id'] ?? 0,
+              dep_id: element['dep_id'] ?? 0,
+              dep_group: element['dep_group'] ?? 0,
+              full_name: element['full_name'] ?? "",
+              em_email: element['em_email'] ?? "",
+              em_phone: element['em_phone'] ?? "",
+              em_birthday: element['em_birthday'] ?? "1999-09-09",
+              em_gender: element['em_gender'] ?? "",
+              em_image: element['em_image'] ?? "",
+              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+              em_status: element['em_status'] ?? "",
+              em_blood_group: element['em_blood_group'] ?? "",
+              posisi: element['posisi'] ?? "",
+              emp_jobTitle: element['emp_jobTitle'] ?? "",
+              emp_departmen: element['emp_departmen'] ?? "",
+              em_control: element['em_control'] ?? 0,
+              em_control_acess: element['em_control_access'] ?? 0,
+              emp_att_working: element['emp_att_working'] ?? 0,
+              em_hak_akses: element['em_hak_akses'] ?? "",
+              beginPayroll: element['begin_payroll'] ?? 1,
+              endPayroll: element['end_payroll'] ?? 31,
+              branchName: element['branch_name'] ?? "",
+              startTime: element['time_attendance'].toString().split(',')[0],
+              endTime: element['time_attendance'].toString().split(',')[1],
+              nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
+              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
+              timeIn: element['time_in'] ?? "",
+              timeOut: element['time_out'] ?? "",
+              interval: element['interval'],
+              interval_tracking: element['interval_tracking'],
+              isViewTracking: element['is_view_tracking'],
+              is_tracking: element['is_tracking']
+              //   startTime: "00:01",
+              // endTime: "23:59",
+              );
 
-          if (getAktif == "ACTIVE") {
-            if (lastLoginUser == "" ||
-                lastLoginUser == "null" ||
-                lastLoginUser == null ||
-                lastLoginUser == "0000-00-00 00:00:00") {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString(
+              "interval_tracking", element['interval_tracking'].toString());
+          await prefs.setString("em_id", element['em_id'].toString());
+
+          print('data login ${data}');
+
+          if (element['file_face'] == "" || element['file_face'] == null) {
+            box.write("face_recog", false);
+          } else {
+            box.write("face_recog", true);
+          }
+          getData.add(data);
+          AppData.informasiUser = getData;
+          lastLoginUser = "${element['last_login']}";
+          getEmId = "${element['em_id']}";
+          getAktif = "${element['status_aktif']}";
+
+          AppData.isLogin = true;
+          AppData.setFcmToken = fcm_registration_token.toString();
+          print(element.toString());
+
+          if (AppData.informasiUser![0].is_tracking.toString() == '1') {
+            controllerTracking.bagikanlokasi.value = "aktif";
+            // await BackgroundLocationTrackerManager.startTracking();
+            // final service = FlutterBackgroundService();
+            // FlutterBackgroundService().invoke("setAsBackground");
+
+            // service.startService();
+            controllerTracking.updateStatus('1');
+            controllerTracking.isTrackingLokasi.value = true;
+            // controllerTracking.detailTracking(emIdEmployee: '');
+            print(
+                "startTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
+          } else {
+            controllerTracking.bagikanlokasi.value = "tidak aktif";
+            // await LocationDao().clear();
+            // await _getLocations();
+            // await BackgroundLocationTrackerManager.stopTracking();
+            // final service = FlutterBackgroundService();
+            // FlutterBackgroundService().invoke("setAsBackground");
+
+            // service.invoke("stopService");
+            controllerTracking.updateStatus('0');
+            controllerTracking.isTrackingLokasi.value = false;
+            print(
+                "stopTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
+          }
+        }
+
+        if (getAktif == "ACTIVE") {
+          if (lastLoginUser == "" ||
+              lastLoginUser == "null" ||
+              lastLoginUser == null ||
+              lastLoginUser == "0000-00-00 00:00:00") {
+            fillLastLoginUserNew(getEmId, getData);
+            checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                AppData.informasiUser![0].em_id);
+          } else {
+            AppData.emailUser = email.value.text;
+            AppData.passwordUser = password.value.text;
+
+            var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
+            var dateNow = DateTime.now();
+            var convert = DateFormat('dd-MM-yyyy').format(dateNow);
+
+            if (convert != filterLastLogin) {
               fillLastLoginUserNew(getEmId, getData);
               checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
                   AppData.informasiUser![0].em_id);
             } else {
-              AppData.emailUser = email.value.text;
-              AppData.passwordUser = password.value.text;
-
-              var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
-              var dateNow = DateTime.now();
-              var convert = DateFormat('dd-MM-yyyy').format(dateNow);
-
-              if (convert != filterLastLogin) {
-                fillLastLoginUserNew(getEmId, getData);
-                checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                    AppData.informasiUser![0].em_id);
-              } else {
-                //  UtilsAlert.showToast("Anda telah masuk di perangkat lain");
-                Navigator.pop(Get.context!);
-                validasiLogin();
-              }
+              //  UtilsAlert.showToast("Anda telah masuk di perangkat lain");
+              Navigator.pop(Get.context!);
+              validasiLogin();
             }
-          } else {
-            UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
-            Navigator.pop(Get.context!);
           }
+        } else {
+          UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
+          Navigator.pop(Get.context!);
         }
-      });
-    }
+      }
+    });
+    // }
   }
 
   Future<void> loginUser1() async {
@@ -665,151 +665,151 @@ class AuthController extends GetxController {
     });
   }
 
-  Future<void> sendDataUserOflline() async {
-    _cancelTimer();
-    final box = GetStorage();
-    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
-    //  var fcm_registration_token = "1";
+  // Future<void> sendDataUserOflline() async {
+  //   _cancelTimer();
+  //   final box = GetStorage();
+  //   var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+  //   //  var fcm_registration_token = "1";
 
-    //  print("fcmtoken ${fcm_registration_token}");
+  //   //  print("fcmtoken ${fcm_registration_token}");
 
-    // UtilsAlert.showLoadingIndicator(Get.context!);
-    print(AppData.emailUser);
-    print(AppData.passwordUser);
-    if (AppData.emailUser != "" &&
-        AppData.passwordUser != "" &&
-        AppData.setFcmToken != "" &&
-        AppData.selectedDatabase != "") {
-      Map<String, dynamic> body = {
-        'email': AppData.emailUser,
-        'password': AppData.passwordUser,
-        'token_notif': AppData.setFcmToken,
-        'database': AppData.selectedDatabase,
-      };
+  //   // UtilsAlert.showLoadingIndicator(Get.context!);
+  //   print(AppData.emailUser);
+  //   print(AppData.passwordUser);
+  //   if (AppData.emailUser != "" &&
+  //       AppData.passwordUser != "" &&
+  //       AppData.setFcmToken != "" &&
+  //       AppData.selectedDatabase != "") {
+  //     Map<String, dynamic> body = {
+  //       'email': AppData.emailUser,
+  //       'password': AppData.passwordUser,
+  //       'token_notif': AppData.setFcmToken,
+  //       'database': AppData.selectedDatabase,
+  //     };
 
-      var connect = Api.connectionApi("post", body, "login");
-      connect.then((dynamic res) async {
-        var valueBody = jsonDecode(res.body);
-        print('data login 2 new ${valueBody}');
-        if (valueBody['status'] == false) {
-          UtilsAlert.showToast(valueBody['message']);
-          Navigator.pop(Get.context!);
-        } else {
-          AppData.selectedDatabase = selectedDb.value;
-          AppData.selectedPerusahan = selectedPerusahaan.value;
+  //     var connect = Api.connectionApi("post", body, "login");
+  //     connect.then((dynamic res) async {
+  //       var valueBody = jsonDecode(res.body);
+  //       print('data login 2 new ${valueBody}');
+  //       if (valueBody['status'] == false) {
+  //         UtilsAlert.showToast(valueBody['message']);
+  //         Navigator.pop(Get.context!);
+  //       } else {
+  //         AppData.selectedDatabase = selectedDb.value;
+  //         AppData.selectedPerusahan = selectedPerusahaan.value;
 
-          List<UserModel> getData = [];
+  //         List<UserModel> getData = [];
 
-          var lastLoginUser = "";
-          var getEmId = "";
-          var getAktif = "";
-          var idMobile = "";
+  //         var lastLoginUser = "";
+  //         var getEmId = "";
+  //         var getAktif = "";
+  //         var idMobile = "";
 
-          var isBackDateSakit = "0";
-          var isBackDateIzin = "0";
-          var isBackDateCuti = "0";
+  //         var isBackDateSakit = "0";
+  //         var isBackDateIzin = "0";
+  //         var isBackDateCuti = "0";
 
-          var isBackDateTugasLuar = "0";
-          var isBackDateDinasLuar = "0";
-          var isBackDateLembur = "0";
+  //         var isBackDateTugasLuar = "0";
+  //         var isBackDateDinasLuar = "0";
+  //         var isBackDateLembur = "0";
 
-          for (var element in valueBody['data']) {
-            if (element['back_date'] == "" || element['back_date'] == null) {
-            } else {
-              List isBackDates = element['back_date'].toString().split(',');
-              isBackDateSakit = isBackDates[0].toString();
-              isBackDateIzin = isBackDates[1].toString();
-              isBackDateCuti = isBackDates[2].toString();
+  //         for (var element in valueBody['data']) {
+  //           if (element['back_date'] == "" || element['back_date'] == null) {
+  //           } else {
+  //             List isBackDates = element['back_date'].toString().split(',');
+  //             isBackDateSakit = isBackDates[0].toString();
+  //             isBackDateIzin = isBackDates[1].toString();
+  //             isBackDateCuti = isBackDates[2].toString();
 
-              isBackDateTugasLuar = isBackDates[3].toString();
-              isBackDateDinasLuar = isBackDates[4].toString();
-              isBackDateLembur = isBackDates[5].toString();
-            }
-            var data = UserModel(
-                isBackDateSakit: isBackDateSakit,
-                isBackDateIzin: isBackDateIzin,
-                isBackDateCuti: isBackDateCuti,
-                isBackDateTugasLuar: isBackDateTugasLuar,
-                isBackDateDinasLuar: isBackDateDinasLuar,
-                isBackDateLembur: isBackDateLembur,
-                em_id: element['em_id'] ?? "",
-                des_id: element['des_id'] ?? 0,
-                dep_id: element['dep_id'] ?? 0,
-                dep_group: element['dep_group'] ?? 0,
-                full_name: element['full_name'] ?? "",
-                em_email: element['em_email'] ?? "",
-                em_phone: element['em_phone'] ?? "",
-                em_birthday: element['em_birthday'] ?? "1999-09-09",
-                em_gender: element['em_gender'] ?? "",
-                em_image: element['em_image'] ?? "",
-                em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-                em_status: element['em_status'] ?? "",
-                em_blood_group: element['em_blood_group'] ?? "",
-                posisi: element['posisi'] ?? "",
-                emp_jobTitle: element['emp_jobTitle'] ?? "",
-                emp_departmen: element['emp_departmen'] ?? "",
-                em_control: element['em_control'] ?? 0,
-                em_control_acess: element['em_control_access'] ?? 0,
-                emp_att_working: element['emp_att_working'] ?? 0,
-                em_hak_akses: element['em_hak_akses'] ?? "",
-                beginPayroll: element['begin_payroll'] ?? 1,
-                endPayroll: element['end_payroll'] ?? 31,
-                branchName: element['branch_name'] ?? "",
-                startTime: element['time_attendance'].toString().split(',')[0],
-                endTime: element['time_attendance'].toString().split(',')[1],
-                nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
-                nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
-                timeIn: element['time_in'] ?? "",
-                timeOut: element['time_out'] ?? "",
-                interval: element['interval'],
-                interval_tracking: element['interval_tracking'],
-                isViewTracking: element['is_view_tracking'],
-                is_tracking: element['is_tracking']
-                // startTime: "00:01",
-                // endTime: "23:59",
-                );
+  //             isBackDateTugasLuar = isBackDates[3].toString();
+  //             isBackDateDinasLuar = isBackDates[4].toString();
+  //             isBackDateLembur = isBackDates[5].toString();
+  //           }
+  //           var data = UserModel(
+  //               isBackDateSakit: isBackDateSakit,
+  //               isBackDateIzin: isBackDateIzin,
+  //               isBackDateCuti: isBackDateCuti,
+  //               isBackDateTugasLuar: isBackDateTugasLuar,
+  //               isBackDateDinasLuar: isBackDateDinasLuar,
+  //               isBackDateLembur: isBackDateLembur,
+  //               em_id: element['em_id'] ?? "",
+  //               des_id: element['des_id'] ?? 0,
+  //               dep_id: element['dep_id'] ?? 0,
+  //               dep_group: element['dep_group'] ?? 0,
+  //               full_name: element['full_name'] ?? "",
+  //               em_email: element['em_email'] ?? "",
+  //               em_phone: element['em_phone'] ?? "",
+  //               em_birthday: element['em_birthday'] ?? "1999-09-09",
+  //               em_gender: element['em_gender'] ?? "",
+  //               em_image: element['em_image'] ?? "",
+  //               em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+  //               em_status: element['em_status'] ?? "",
+  //               em_blood_group: element['em_blood_group'] ?? "",
+  //               posisi: element['posisi'] ?? "",
+  //               emp_jobTitle: element['emp_jobTitle'] ?? "",
+  //               emp_departmen: element['emp_departmen'] ?? "",
+  //               em_control: element['em_control'] ?? 0,
+  //               em_control_acess: element['em_control_access'] ?? 0,
+  //               emp_att_working: element['emp_att_working'] ?? 0,
+  //               em_hak_akses: element['em_hak_akses'] ?? "",
+  //               beginPayroll: element['begin_payroll'] ?? 1,
+  //               endPayroll: element['end_payroll'] ?? 31,
+  //               branchName: element['branch_name'] ?? "",
+  //               startTime: element['time_attendance'].toString().split(',')[0],
+  //               endTime: element['time_attendance'].toString().split(',')[1],
+  //               nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
+  //               nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
+  //               timeIn: element['time_in'] ?? "",
+  //               timeOut: element['time_out'] ?? "",
+  //               interval: element['interval'],
+  //               interval_tracking: element['interval_tracking'],
+  //               isViewTracking: element['is_view_tracking'],
+  //               is_tracking: element['is_tracking']
+  //               // startTime: "00:01",
+  //               // endTime: "23:59",
+  //               );
 
-            if (element['file_face'] == "" || element['file_face'] == null) {
-              box.write("face_recog", false);
-            } else {
-              box.write("face_recog", true);
-            }
-            getData.add(data);
-            AppData.informasiUser = getData;
-            lastLoginUser = "${element['last_login']}";
-            getEmId = "${element['em_id']}";
-            getAktif = "${element['status_aktif']}";
+  //           if (element['file_face'] == "" || element['file_face'] == null) {
+  //             box.write("face_recog", false);
+  //           } else {
+  //             box.write("face_recog", true);
+  //           }
+  //           getData.add(data);
+  //           AppData.informasiUser = getData;
+  //           lastLoginUser = "${element['last_login']}";
+  //           getEmId = "${element['em_id']}";
+  //           getAktif = "${element['status_aktif']}";
 
-            AppData.isLogin = true;
-            AppData.loginOffline = false;
+  //           AppData.isLogin = true;
+  //           AppData.loginOffline = false;
 
-            print(element.toString());
-            AppData.setFcmToken = fcm_registration_token.toString();
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.setString(
-                "interval_tracking", element['interval_tracking'].toString());
-            await prefs.setString("em_id", element['em_id'].toString());
-          }
+  //           print(element.toString());
+  //           AppData.setFcmToken = fcm_registration_token.toString();
+  //           final prefs = await SharedPreferences.getInstance();
+  //           await prefs.setString(
+  //               "interval_tracking", element['interval_tracking'].toString());
+  //           await prefs.setString("em_id", element['em_id'].toString());
+  //         }
 
-          AppData.emailUser = email.value.text;
-          AppData.passwordUser = password.value.text;
-          fillLastLoginUserNew(getEmId, getData);
-          checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-              AppData.informasiUser![0].em_id);
+  //         AppData.emailUser = email.value.text;
+  //         AppData.passwordUser = password.value.text;
+  //         fillLastLoginUserNew(getEmId, getData);
+  //         checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+  //             AppData.informasiUser![0].em_id);
 
-          if (getAktif == "ACTIVE") {
-          } else {
-            UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
-            Navigator.pop(Get.context!);
-          }
-        }
-      }).catchError((error) {
-        // errorServer.value = true;
-      }).whenComplete(() {
-        checking();
-      });
-    }
-  }
+  //         if (getAktif == "ACTIVE") {
+  //         } else {
+  //           UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
+  //           Navigator.pop(Get.context!);
+  //         }
+  //       }
+  //     }).catchError((error) {
+  //       // errorServer.value = true;
+  //     }).whenComplete(() {
+  //       checking();
+  //     });
+  //   }
+  // }
 
   void fillLastLoginUserNew(getEmId, getData) async {
     var now = DateTime.now();
@@ -824,65 +824,65 @@ class AuthController extends GetxController {
       'database': AppData.selectedDatabase
     };
 
-    if (!isConnected.value) {
-      AppData.emailUser = email.value.text;
-      AppData.passwordUser = password.value.text;
-      AppData.informasiUser = getData;
-      isautoLogout.value = false;
-    } else {
-      var connect = Api.connectionApi("post", body, "edit_last_login");
-      connect.then((dynamic res) {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          print(valueBody['data']);
-          if (valueBody['status'] == true) {
-            checkAbsenUser(DateFormat('yyyy-MM-dd').format(now), getEmId);
-            AppData.emailUser = email.value.text;
-            AppData.passwordUser = password.value.text;
-            AppData.informasiUser = getData;
-            isautoLogout.value = false;
-          }
+    // if (!isConnected.value) {
+    //   AppData.emailUser = email.value.text;
+    //   AppData.passwordUser = password.value.text;
+    //   AppData.informasiUser = getData;
+    //   isautoLogout.value = false;
+    // } else {
+    var connect = Api.connectionApi("post", body, "edit_last_login");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print(valueBody['data']);
+        if (valueBody['status'] == true) {
+          checkAbsenUser(DateFormat('yyyy-MM-dd').format(now), getEmId);
+          AppData.emailUser = email.value.text;
+          AppData.passwordUser = password.value.text;
+          AppData.informasiUser = getData;
+          isautoLogout.value = false;
         }
-      });
-    }
+      }
+    });
+    // }
   }
 
-  void fillLastLoginUserOffline(getEmId, getData) async {
-    var now = DateTime.now();
-    var jam = "${DateFormat('yyyy-MM-dd HH:mm:ss').format(now)}";
-    // var connectivityResult = await Connectivity().checkConnectivity();
-    // var offline =
-    //     (connectivityResult[0].toString() == "${ConnectivityResult.none}");
+  // void fillLastLoginUserOffline(getEmId, getData) async {
+  //   var now = DateTime.now();
+  //   var jam = "${DateFormat('yyyy-MM-dd HH:mm:ss').format(now)}";
+  //   // var connectivityResult = await Connectivity().checkConnectivity();
+  //   // var offline =
+  //   //     (connectivityResult[0].toString() == "${ConnectivityResult.none}");
 
-    Map<String, dynamic> body = {
-      'last_login': jam,
-      'em_id': getEmId,
-      'database': AppData.selectedDatabase
-    };
+  //   Map<String, dynamic> body = {
+  //     'last_login': jam,
+  //     'em_id': getEmId,
+  //     'database': AppData.selectedDatabase
+  //   };
 
-    if (!isConnected.value) {
-      AppData.emailUser = email.value.text;
-      AppData.passwordUser = password.value.text;
-      AppData.informasiUser = getData;
-      isautoLogout.value = false;
-    } else {
-      var connect = Api.connectionApi("post", body, "edit_last_login");
-      connect.then((dynamic res) {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          print(valueBody['data']);
-          if (valueBody['status'] == true) {
-            checkAbsenUserOffline(
-                DateFormat('yyyy-MM-dd').format(now), getEmId);
-            AppData.emailUser = email.value.text;
-            AppData.passwordUser = password.value.text;
-            AppData.informasiUser = getData;
-            isautoLogout.value = false;
-          }
-        }
-      });
-    }
-  }
+  //   if (!isConnected.value) {
+  //     AppData.emailUser = email.value.text;
+  //     AppData.passwordUser = password.value.text;
+  //     AppData.informasiUser = getData;
+  //     isautoLogout.value = false;
+  //   } else {
+  //     var connect = Api.connectionApi("post", body, "edit_last_login");
+  //     connect.then((dynamic res) {
+  //       if (res.statusCode == 200) {
+  //         var valueBody = jsonDecode(res.body);
+  //         print(valueBody['data']);
+  //         if (valueBody['status'] == true) {
+  //           checkAbsenUserOffline(
+  //               DateFormat('yyyy-MM-dd').format(now), getEmId);
+  //           AppData.emailUser = email.value.text;
+  //           AppData.passwordUser = password.value.text;
+  //           AppData.informasiUser = getData;
+  //           isautoLogout.value = false;
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
 
   void checkAbsenUser(convert, getEmid) async {
     // skema menggunakan jam reset
@@ -952,176 +952,176 @@ class AuthController extends GetxController {
     // var offline =
     //     (connectivityResult[0].toString() == "${ConnectivityResult.none}");
 
-    if (!isConnected.value) {
-      isautoLogout.value = false;
-      Get.offAll(InitScreen());
-    } else {
-      Map<String, dynamic> body = {
-        'atten_date': DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(const Duration(days: -1))),
-        'em_id': getEmid,
-        'database': AppData.selectedDatabase,
-        'start_date': startDate,
-        'end_date': endDate,
-        'start_time': startTime,
-        'end_time': endTime,
-      };
+    // if (!isConnected.value) {
+    //   isautoLogout.value = false;
+    //   Get.offAll(InitScreen());
+    // } else {
+    Map<String, dynamic> body = {
+      'atten_date': DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().add(const Duration(days: -1))),
+      'em_id': getEmid,
+      'database': AppData.selectedDatabase,
+      'start_date': startDate,
+      'end_date': endDate,
+      'start_time': startTime,
+      'end_time': endTime,
+    };
 
-      print("param view last absen ${body}");
+    print("param view last absen ${body}");
 
-      var connect = Api.connectionApi("post", body, "view_last_absen_user2");
+    var connect = Api.connectionApi("post", body, "view_last_absen_user2");
 
-      connect.then((dynamic res) async {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          print("data login ${valueBody}");
-          var data = valueBody['data'];
+    connect.then((dynamic res) async {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print("data login ${valueBody}");
+        var data = valueBody['data'];
 
-          var date = AppData.informasiUser![0].startTime.toString().split(':');
-          var date2 = AppData.informasiUser![0].startTime.toString().split(':');
+        var date = AppData.informasiUser![0].startTime.toString().split(':');
+        var date2 = AppData.informasiUser![0].startTime.toString().split(':');
 
-          //skema pertama
-          if (data.isEmpty) {
-            isautoLogout.value = false;
-            signoutTime.value = '00:00:00';
-            signinTime.value = '00:00:00';
-            AppData.statusAbsen = false;
-            Get.offAll(InitScreen());
-          } else {
-            isautoLogout.value = false;
-            AppData.statusAbsen =
-                data[0]['signout_time'] == "00:00:00" ? true : false;
+        //skema pertama
+        if (data.isEmpty) {
+          isautoLogout.value = false;
+          signoutTime.value = '00:00:00';
+          signinTime.value = '00:00:00';
+          AppData.statusAbsen = false;
+          Get.offAll(InitScreen());
+        } else {
+          isautoLogout.value = false;
+          AppData.statusAbsen =
+              data[0]['signout_time'] == "00:00:00" ? true : false;
 
-            signoutTime.value = data[0]['signout_time'].toString();
-            signinTime.value = data[0]['signin_time'].toString();
-            print("ini login: ${AppData.isLogin}");
-            Get.offAll(InitScreen());
-          }
+          signoutTime.value = data[0]['signout_time'].toString();
+          signinTime.value = data[0]['signin_time'].toString();
+          print("ini login: ${AppData.isLogin}");
+          Get.offAll(InitScreen());
         }
-      });
-    }
-    //sekema tidak menggunakan jam reset
-  }
-
-  Future<void> checkAbsenUserOffline(convert, getEmid) async {
-    // skema menggunakan jam reset
-    messageNewPassword.value = "";
-    print("view last absen user 3");
-    print("tes ${AppData.informasiUser![0].startTime.toString()}");
-    var startTime = "";
-    var endTime = "";
-    var startDate = "";
-    var endDate = "";
-    TimeOfDay waktu1 = TimeOfDay(
-        hour: int.parse(
-            AppData.informasiUser![0].startTime.toString().split(':')[0]),
-        minute: int.parse(
-            AppData.informasiUser![0].startTime.toString().split(':')[1]));
-
-    TimeOfDay waktu2 = TimeOfDay(
-        hour: int.parse(
-            AppData.informasiUser![0].endTime.toString().split(':')[0]),
-        minute: int.parse(AppData.informasiUser![0].endTime
-            .toString()
-            .split(':')[1])); // Waktu kedua
-
-    int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
-    int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
-
-    //alur normal
-    if (totalMinutes1 < totalMinutes2) {
-      startTime = AppData.informasiUser![0].startTime;
-      endTime = AppData.informasiUser![0].endTime;
-
-      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
-      //alur beda hari
-    } else if (totalMinutes1 > totalMinutes2) {
-      var waktu3 =
-          TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
-      int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
-
-      if (totalMinutes2 > totalMinutes3) {
-        startTime = AppData.informasiUser![0].endTime;
-        endTime = AppData.informasiUser![0].startTime;
-
-        startDate = DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(const Duration(days: -1)));
-
-        endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      } else {
-        startTime = AppData.informasiUser![0].endTime;
-        endTime = AppData.informasiUser![0].startTime;
-
-        endDate = DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(const Duration(days: 1)));
-
-        startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       }
-    } else {
-      startTime = AppData.informasiUser![0].startTime;
-      endTime = AppData.informasiUser![0].endTime;
-
-      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      print("Waktu 1 sama dengan waktu 2");
-    }
-    // var connectivityResult = await Connectivity().checkConnectivity();
-    // var offline =
-    //     (connectivityResult[0].toString() == "${ConnectivityResult.none}");
-
-    if (!isConnected.value) {
-      isautoLogout.value = false;
-      Get.offAll(InitScreen());
-    } else {
-      Map<String, dynamic> body = {
-        'atten_date': DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(const Duration(days: -1))),
-        'em_id': getEmid,
-        'database': AppData.selectedDatabase,
-        'start_date': startDate,
-        'end_date': endDate,
-        'start_time': startTime,
-        'end_time': endTime,
-        'pola': globalCtr.valuePolaPersetujuan.value.toString()
-      };
-
-      print("param view last absen ${body}");
-
-      var connect = Api.connectionApi("post", body, "view_last_absen_user2");
-
-      connect.then((dynamic res) async {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          print("data login ${valueBody}");
-          var data = valueBody['data'];
-
-          var date = AppData.informasiUser![0].startTime.toString().split(':');
-          var date2 = AppData.informasiUser![0].startTime.toString().split(':');
-
-          offiline.value = valueBody['offiline'];
-          datas.value = valueBody['data'];
-          //skema pertama
-          if (data.isEmpty) {
-            isautoLogout.value = false;
-            signoutTime.value = '00:00:00';
-            signinTime.value = '00:00:00';
-            AppData.statusAbsen = false;
-          } else {
-            isautoLogout.value = false;
-            AppData.statusAbsen =
-                data[0]['signout_time'] == "00:00:00" ? true : false;
-
-            signoutTime.value = data[0]['signout_time'].toString();
-            signinTime.value = data[0]['signin_time'].toString();
-            print("ini login: ${AppData.isLogin}");
-          }
-        }
-      });
-    }
+    });
+    // }
     //sekema tidak menggunakan jam reset
   }
+
+  // Future<void> checkAbsenUserOffline(convert, getEmid) async {
+  //   // skema menggunakan jam reset
+  //   messageNewPassword.value = "";
+  //   print("view last absen user 3");
+  //   print("tes ${AppData.informasiUser![0].startTime.toString()}");
+  //   var startTime = "";
+  //   var endTime = "";
+  //   var startDate = "";
+  //   var endDate = "";
+  //   TimeOfDay waktu1 = TimeOfDay(
+  //       hour: int.parse(
+  //           AppData.informasiUser![0].startTime.toString().split(':')[0]),
+  //       minute: int.parse(
+  //           AppData.informasiUser![0].startTime.toString().split(':')[1]));
+
+  //   TimeOfDay waktu2 = TimeOfDay(
+  //       hour: int.parse(
+  //           AppData.informasiUser![0].endTime.toString().split(':')[0]),
+  //       minute: int.parse(AppData.informasiUser![0].endTime
+  //           .toString()
+  //           .split(':')[1])); // Waktu kedua
+
+  //   int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+  //   int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+
+  //   //alur normal
+  //   if (totalMinutes1 < totalMinutes2) {
+  //     startTime = AppData.informasiUser![0].startTime;
+  //     endTime = AppData.informasiUser![0].endTime;
+
+  //     startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //     endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+  //     //alur beda hari
+  //   } else if (totalMinutes1 > totalMinutes2) {
+  //     var waktu3 =
+  //         TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+  //     int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+  //     if (totalMinutes2 > totalMinutes3) {
+  //       startTime = AppData.informasiUser![0].endTime;
+  //       endTime = AppData.informasiUser![0].startTime;
+
+  //       startDate = DateFormat('yyyy-MM-dd')
+  //           .format(DateTime.now().add(const Duration(days: -1)));
+
+  //       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //     } else {
+  //       startTime = AppData.informasiUser![0].endTime;
+  //       endTime = AppData.informasiUser![0].startTime;
+
+  //       endDate = DateFormat('yyyy-MM-dd')
+  //           .format(DateTime.now().add(const Duration(days: 1)));
+
+  //       startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //     }
+  //   } else {
+  //     startTime = AppData.informasiUser![0].startTime;
+  //     endTime = AppData.informasiUser![0].endTime;
+
+  //     startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //     endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //     print("Waktu 1 sama dengan waktu 2");
+  //   }
+  //   // var connectivityResult = await Connectivity().checkConnectivity();
+  //   // var offline =
+  //   //     (connectivityResult[0].toString() == "${ConnectivityResult.none}");
+
+  //   if (!isConnected.value) {
+  //     isautoLogout.value = false;
+  //     Get.offAll(InitScreen());
+  //   } else {
+  //     Map<String, dynamic> body = {
+  //       'atten_date': DateFormat('yyyy-MM-dd')
+  //           .format(DateTime.now().add(const Duration(days: -1))),
+  //       'em_id': getEmid,
+  //       'database': AppData.selectedDatabase,
+  //       'start_date': startDate,
+  //       'end_date': endDate,
+  //       'start_time': startTime,
+  //       'end_time': endTime,
+  //       'pola': globalCtr.valuePolaPersetujuan.value.toString()
+  //     };
+
+  //     print("param view last absen ${body}");
+
+  //     var connect = Api.connectionApi("post", body, "view_last_absen_user2");
+
+  //     connect.then((dynamic res) async {
+  //       if (res.statusCode == 200) {
+  //         var valueBody = jsonDecode(res.body);
+  //         print("data login ${valueBody}");
+  //         var data = valueBody['data'];
+
+  //         var date = AppData.informasiUser![0].startTime.toString().split(':');
+  //         var date2 = AppData.informasiUser![0].startTime.toString().split(':');
+
+  //         offiline.value = valueBody['offiline'];
+  //         datas.value = valueBody['data'];
+  //         //skema pertama
+  //         if (data.isEmpty) {
+  //           isautoLogout.value = false;
+  //           signoutTime.value = '00:00:00';
+  //           signinTime.value = '00:00:00';
+  //           AppData.statusAbsen = false;
+  //         } else {
+  //           isautoLogout.value = false;
+  //           AppData.statusAbsen =
+  //               data[0]['signout_time'] == "00:00:00" ? true : false;
+
+  //           signoutTime.value = data[0]['signout_time'].toString();
+  //           signinTime.value = data[0]['signin_time'].toString();
+  //           print("ini login: ${AppData.isLogin}");
+  //         }
+  //       }
+  //     });
+  //   }
+  //   //sekema tidak menggunakan jam reset
+  // }
 
   //   void checkAbsenUser(convert, getEmid) {
   //   messageNewPassword.value = "";
@@ -1365,7 +1365,7 @@ class AuthController extends GetxController {
   @override
   void onClose() {
     // Pastikan untuk membatalkan timer ketika controller dihancurkan
-    _cancelTimer();
+    // _cancelTimer();
     super.onClose();
   }
 }

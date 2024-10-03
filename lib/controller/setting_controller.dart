@@ -217,84 +217,84 @@ class SettingController extends GetxController {
     // var connectivityResult = await Connectivity().checkConnectivity();
     // var offline =
     //     (connectivityResult[0].toString() == "${ConnectivityResult.none}");
-    if (!authController.isConnected.value) {
-      showGeneralDialog(
-        barrierDismissible: false,
-        context: Get.context!,
-        barrierColor: Colors.black54, // space around dialog
-        transitionDuration: Duration(milliseconds: 200),
-        transitionBuilder: (context, a1, a2, child) {
-          return ScaleTransition(
-            scale: CurvedAnimation(
-                parent: a1,
-                curve: Curves.elasticOut,
-                reverseCurve: Curves.easeOutCubic),
-            child: CustomDialog(
-              // our custom dialog
-              title: "Peringatan",
-              content:
-                  "Menunggu indikator menjadi hijau untuk keluar akun mohon periksa internet anda",
-              positiveBtnText: "Kembali",
-              style: 1,
-              buttonStatus: 1,
-              positiveBtnPressed: () async {
-                Get.back();
-              },
-            ),
-          );
-        },
-        pageBuilder: (BuildContext context, Animation animation,
-            Animation secondaryAnimation) {
-          return null!;
-        },
-      );
-    } else {
-      showGeneralDialog(
-        barrierDismissible: false,
-        context: Get.context!,
-        barrierColor: Colors.black54, // space around dialog
-        transitionDuration: Duration(milliseconds: 200),
-        transitionBuilder: (context, a1, a2, child) {
-          return ScaleTransition(
-            scale: CurvedAnimation(
-                parent: a1,
-                curve: Curves.elasticOut,
-                reverseCurve: Curves.easeOutCubic),
-            child: CustomDialog(
-              // our custom dialog
-              title: "Peringatan",
-              content: "Yakin Keluar Akun",
-              positiveBtnText: "Keluar",
-              negativeBtnText: "Kembali",
-              style: 1,
-              buttonStatus: 1,
-              positiveBtnPressed: () async {
-                AppData.isLogin = false;
-                UtilsAlert.loadingSimpanData(context, "Tunggu Sebentar...");
-                aksiEditLastLogin();
-                //fungsi stopTracking
-                controllerTracking.bagikanlokasi.value = "tidak aktif";
-                // await LocationDao().clear();
-                // await _getLocations();
-                // await BackgroundLocationTrackerManager.stopTracking();
-                // final service = FlutterBackgroundService();
-                // FlutterBackgroundService().invoke("setAsBackground");
+    // if (!authController.isConnected.value) {
+    // showGeneralDialog(
+    //   barrierDismissible: false,
+    //   context: Get.context!,
+    //   barrierColor: Colors.black54, // space around dialog
+    //   transitionDuration: Duration(milliseconds: 200),
+    //   transitionBuilder: (context, a1, a2, child) {
+    //     return ScaleTransition(
+    //       scale: CurvedAnimation(
+    //           parent: a1,
+    //           curve: Curves.elasticOut,
+    //           reverseCurve: Curves.easeOutCubic),
+    //       child: CustomDialog(
+    //         // our custom dialog
+    //         title: "Peringatan",
+    //         content:
+    //             "Menunggu indikator menjadi hijau untuk keluar akun mohon periksa internet anda",
+    //         positiveBtnText: "Kembali",
+    //         style: 1,
+    //         buttonStatus: 1,
+    //         positiveBtnPressed: () async {
+    //           Get.back();
+    //         },
+    //       ),
+    //     );
+    //   },
+    //   pageBuilder: (BuildContext context, Animation animation,
+    //       Animation secondaryAnimation) {
+    //     return null!;
+    //   },
+    // );
+    // } else {
+    showGeneralDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      barrierColor: Colors.black54, // space around dialog
+      transitionDuration: Duration(milliseconds: 200),
+      transitionBuilder: (context, a1, a2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+              parent: a1,
+              curve: Curves.elasticOut,
+              reverseCurve: Curves.easeOutCubic),
+          child: CustomDialog(
+            // our custom dialog
+            title: "Peringatan",
+            content: "Yakin Keluar Akun",
+            positiveBtnText: "Keluar",
+            negativeBtnText: "Kembali",
+            style: 1,
+            buttonStatus: 1,
+            positiveBtnPressed: () async {
+              AppData.isLogin = false;
+              UtilsAlert.loadingSimpanData(context, "Tunggu Sebentar...");
+              aksiEditLastLogin();
+              //fungsi stopTracking
+              controllerTracking.bagikanlokasi.value = "tidak aktif";
+              // await LocationDao().clear();
+              // await _getLocations();
+              // await BackgroundLocationTrackerManager.stopTracking();
+              // final service = FlutterBackgroundService();
+              // FlutterBackgroundService().invoke("setAsBackground");
 
-                // service.invoke("stopService");
-                controllerTracking.stopService();
-                controllerTracking.isTrackingLokasi.value = false;
-                print(
-                    "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
-              },
-            ),
-          );
-        },
-        pageBuilder: (BuildContext context, Animation animation,
-            Animation secondaryAnimation) {
-          return null!;
-        },
-      );
-    }
+              // service.invoke("stopService");
+              controllerTracking.stopService();
+              controllerTracking.isTrackingLokasi.value = false;
+              print(
+                  "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
+            },
+          ),
+        );
+      },
+      pageBuilder: (BuildContext context, Animation animation,
+          Animation secondaryAnimation) {
+        return null!;
+      },
+    );
+    // }
   }
 
   void dateMin(dateInput) {

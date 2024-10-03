@@ -358,49 +358,49 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                       side: BorderSide(color: Colors.white)))),
           onPressed: () async {
             AbsenController().removeAll();
-            if (authController.isConnected.value) {
-              String checkUserKontrol =
-                  await controllerBerhasil.checkUserKontrol();
-              print("datta absen " + checkUserKontrol);
+            // if (authController.isConnected.value) {
+            String checkUserKontrol =
+                await controllerBerhasil.checkUserKontrol();
+            print("datta absen " + checkUserKontrol);
 
-              try {
-                if (widget.dataBerhasil![2] == 1) {
-                  if (checkUserKontrol.toString() != '0') {
-                    // _startForegroundTask();
-                    AbsenController().removeAll();
-                    Get.offAll(InitScreen());
-                    if (absenControllre.isTracking.value == 1) {
-                      absenControllre.activeTracking.value = 1;
-                    } else {
-                      absenControllre.activeTracking.value = 0;
-                    }
+            try {
+              if (widget.dataBerhasil![2] == 1) {
+                if (checkUserKontrol.toString() != '0') {
+                  // _startForegroundTask();
+                  AbsenController().removeAll();
+                  Get.offAll(InitScreen());
+                  if (absenControllre.isTracking.value == 1) {
+                    absenControllre.activeTracking.value = 1;
                   } else {
                     absenControllre.activeTracking.value = 0;
-
-                    AbsenController().removeAll();
-                    Get.offAll(InitScreen());
                   }
                 } else {
-                  if (checkUserKontrol != '0') {
-                    // _stopForegroundTask();
-                    _stopService();
-                    Location location = new Location();
-                    location.enableBackgroundMode(enable: false);
-                    AbsenController().removeAll();
-                    Get.offAll(InitScreen());
-                  } else {
-                    AbsenController().removeAll();
-                    Get.offAll(InitScreen());
-                  }
+                  absenControllre.activeTracking.value = 0;
+
+                  AbsenController().removeAll();
+                  Get.offAll(InitScreen());
                 }
-              } catch (e) {
-                AbsenController().removeAll();
-                Get.offAll(InitScreen());
+              } else {
+                if (checkUserKontrol != '0') {
+                  // _stopForegroundTask();
+                  _stopService();
+                  Location location = new Location();
+                  location.enableBackgroundMode(enable: false);
+                  AbsenController().removeAll();
+                  Get.offAll(InitScreen());
+                } else {
+                  AbsenController().removeAll();
+                  Get.offAll(InitScreen());
+                }
               }
-            } else {
+            } catch (e) {
               AbsenController().removeAll();
               Get.offAll(InitScreen());
             }
+            // } else {
+            //   AbsenController().removeAll();
+            //   Get.offAll(InitScreen());
+            // }
           },
           child: Padding(
             padding: const EdgeInsets.only(top: 16, bottom: 16),

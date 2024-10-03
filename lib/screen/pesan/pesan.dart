@@ -76,23 +76,23 @@ class _PesanState extends State<Pesan> {
                   fontSize: 20),
             ),
             actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 16),
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: Obx(() {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: authController.isConnected.value
-                            ? Constanst.color5
-                            : Constanst.color4,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    );
-                  }),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(right: 16),
+              //   child: SizedBox(
+              //     width: 20,
+              //     height: 20,
+              //     child: Obx(() {
+              //       return Container(
+              //         decoration: BoxDecoration(
+              //           color: authController.isConnected.value
+              //               ? Constanst.color5
+              //               : Constanst.color4,
+              //           borderRadius: BorderRadius.circular(20),
+              //         ),
+              //       );
+              //     }),
+              //   ),
+              // ),
             ],
           ),
         ),

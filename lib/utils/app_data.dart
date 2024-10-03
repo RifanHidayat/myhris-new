@@ -60,19 +60,19 @@ class AppData {
   static set signingTime(String value) =>
       LocalStorage.saveToDisk('signingTime', value);
 
-  static set statusAbsenOffline(bool value) =>
-      LocalStorage.saveToDisk('statusAbsenOffline', value);
+  // static set statusAbsenOffline(bool value) =>
+  //     LocalStorage.saveToDisk('statusAbsenOffline', value);
 
-  static set temp(bool value) => LocalStorage.saveToDisk('temp', value);
+  // static set temp(bool value) => LocalStorage.saveToDisk('temp', value);
 
-  static set textPendingMasuk(bool value) =>
-      LocalStorage.saveToDisk('textPendingMasuk', value);
+  // static set textPendingMasuk(bool value) =>
+  //     LocalStorage.saveToDisk('textPendingMasuk', value);
 
-  static set textPendingKeluar(bool value) =>
-      LocalStorage.saveToDisk('textPendingKeluar', value);
+  // static set textPendingKeluar(bool value) =>
+  //     LocalStorage.saveToDisk('textPendingKeluar', value);
 
-  static set loginOffline(bool value) =>
-      LocalStorage.saveToDisk('loginOffline', value);
+  // static set loginOffline(bool value) =>
+  //     LocalStorage.saveToDisk('loginOffline', value);
 
   // static set firsLogin(bool value) =>
   //     LocalStorage.saveToDisk('firsLogin', value);
@@ -109,12 +109,12 @@ class AppData {
     return "";
   }
 
-  static bool get statusAbsenOffline {
-    if (LocalStorage.getFromDisk('statusAbsenOffline') != null) {
-      return LocalStorage.getFromDisk('statusAbsenOffline');
-    }
-    return false;
-  }
+  // static bool get statusAbsenOffline {
+  //   if (LocalStorage.getFromDisk('statusAbsenOffline') != null) {
+  //     return LocalStorage.getFromDisk('statusAbsenOffline');
+  //   }
+  //   return false;
+  // }
 
   static String get signoutTime {
     if (LocalStorage.getFromDisk('signoutTime') != null) {
@@ -130,33 +130,33 @@ class AppData {
     return "";
   }
 
-  static bool get textPendingMasuk {
-    if (LocalStorage.getFromDisk('textPendingMasuk') != null) {
-      return LocalStorage.getFromDisk('textPendingMasuk');
-    }
-    return true;
-  }
+  // static bool get textPendingMasuk {
+  //   if (LocalStorage.getFromDisk('textPendingMasuk') != null) {
+  //     return LocalStorage.getFromDisk('textPendingMasuk');
+  //   }
+  //   return true;
+  // }
 
-  static bool get textPendingKeluar {
-    if (LocalStorage.getFromDisk('textPendingKeluar') != null) {
-      return LocalStorage.getFromDisk('textPendingKeluar');
-    }
-    return true;
-  }
+  // static bool get textPendingKeluar {
+  //   if (LocalStorage.getFromDisk('textPendingKeluar') != null) {
+  //     return LocalStorage.getFromDisk('textPendingKeluar');
+  //   }
+  //   return true;
+  // }
 
-  static bool get temp {
-    if (LocalStorage.getFromDisk('temp') != null) {
-      return LocalStorage.getFromDisk('temp');
-    }
-    return false;
-  }
+  // static bool get temp {
+  //   if (LocalStorage.getFromDisk('temp') != null) {
+  //     return LocalStorage.getFromDisk('temp');
+  //   }
+  //   return false;
+  // }
 
-  static bool get loginOffline {
-    if (LocalStorage.getFromDisk('loginOffline') != null) {
-      return LocalStorage.getFromDisk('loginOffline');
-    }
-    return false;
-  }
+  // static bool get loginOffline {
+  //   if (LocalStorage.getFromDisk('loginOffline') != null) {
+  //     return LocalStorage.getFromDisk('loginOffline');
+  //   }
+  //   return false;
+  // }
 
   // static bool get firsLogin {
   //   if (LocalStorage.getFromDisk('firsLogin') != null) {
