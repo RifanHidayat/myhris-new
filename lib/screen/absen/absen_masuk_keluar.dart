@@ -118,23 +118,23 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
           ),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: Obx(() {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: authController.isConnected.value
-                        ? Constanst.color5
-                        : Constanst.color4,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                );
-              }),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(right: 5),
+          //   child: SizedBox(
+          //     width: 20,
+          //     height: 20,
+          //     child: Obx(() {
+          //       return Container(
+          //         decoration: BoxDecoration(
+          //           color: authController.isConnected.value
+          //               ? Constanst.color5
+          //               : Constanst.color4,
+          //           borderRadius: BorderRadius.circular(20),
+          //         ),
+          //       );
+          //     }),
+          //   ),
+          // ),
           Container(
             decoration: BoxDecoration(
                 color: Constanst.grey, borderRadius: BorderRadius.circular(25)),
@@ -157,9 +157,9 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                   //         //17 is new zoom level
                   //         ));
                   controller.refreshPage();
-                  if (!authController.isConnected.value) {
-                    controller.getPlaceCoordinate();
-                  }
+                  // if (!authController.isConnected.value) {
+                  //   controller.getPlaceCoordinate();
+                  // }
                 },
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -757,59 +757,59 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                           8.0),
                                                   side: const BorderSide(color: Colors.white)))),
                                       onPressed: () async {
-                                        await controller.offlineToOnline();
-                                        await controller.getPlaceCoordinate1();
-                                        if (controller.coordinate.value ==
-                                            true) {
-                                          UtilsAlert
-                                              .showCheckOfflineAbsensiKesalahanServer(
-                                                  positiveBtnPressed: () {
-                                            Get.back();
-                                            controller.selectedType.value
-                                                            .toString() ==
-                                                        "WFH" &&
-                                                    widget.status ==
-                                                        "Absen Masuk"
-                                                ? controllerDashboard
-                                                    .widgetButtomSheetWfh()
-                                                : controller
-                                                    .widgetButtomSheetLanjutkanOffline(
-                                                        type: 'offlineAbsensi');
-                                          });
-                                        } else if (!authController
-                                            .isConnected.value) {
-                                          UtilsAlert.showCheckOfflineAbsensi(
-                                              positiveBtnPressed: () {
-                                            Get.back();
-                                            controller.selectedType.value
-                                                            .toString() ==
-                                                        "WFH" &&
-                                                    widget.status ==
-                                                        "Absen Masuk"
-                                                ? controllerDashboard
-                                                    .widgetButtomSheetWfh()
-                                                : controller
-                                                    .widgetButtomSheetLanjutkanOffline(
-                                                        type: 'offlineAbsensi');
-                                          });
-                                        } else {
-                                          final packageInfo =
-                                              await PackageInfo.fromPlatform();
-                                          //for (var package in packageInfo) {
-                                          print('tes');
+                                        // await controller.offlineToOnline();
+                                        // await controller.getPlaceCoordinate1();
+                                        // if (controller.coordinate.value ==
+                                        //     true) {
+                                        //   UtilsAlert
+                                        //       .showCheckOfflineAbsensiKesalahanServer(
+                                        //           positiveBtnPressed: () {
+                                        //     Get.back();
+                                        //     controller.selectedType.value
+                                        //                     .toString() ==
+                                        //                 "WFH" &&
+                                        //             widget.status ==
+                                        //                 "Absen Masuk"
+                                        //         ? controllerDashboard
+                                        //             .widgetButtomSheetWfh()
+                                        //         : controller
+                                        //             .widgetButtomSheetLanjutkanOffline(
+                                        //                 type: 'offlineAbsensi');
+                                        //   });
+                                        // } else if (!authController
+                                        //     .isConnected.value) {
+                                        //   UtilsAlert.showCheckOfflineAbsensi(
+                                        //       positiveBtnPressed: () {
+                                        //     Get.back();
+                                        //     controller.selectedType.value
+                                        //                     .toString() ==
+                                        //                 "WFH" &&
+                                        //             widget.status ==
+                                        //                 "Absen Masuk"
+                                        //         ? controllerDashboard
+                                        //             .widgetButtomSheetWfh()
+                                        //         : controller
+                                        //             .widgetButtomSheetLanjutkanOffline(
+                                        //                 type: 'offlineAbsensi');
+                                        //   });
+                                        // } else {
+                                        final packageInfo =
+                                            await PackageInfo.fromPlatform();
+                                        //for (var package in packageInfo) {
+                                        print('tes');
 
-                                          print(controller.selectedType.value);
-                                          // controller.selectedType.value = "WFH";
-                                          controller.selectedType.value
-                                                          .toString() ==
-                                                      "WFH" &&
-                                                  widget.status == "Absen Masuk"
-                                              ? controllerDashboard
-                                                  .widgetButtomSheetWfh()
-                                              : controllerDashboard
-                                                  .widgetButtomSheetAktifCamera(
-                                                      type: 'checkTracking');
-                                        }
+                                        print(controller.selectedType.value);
+                                        // controller.selectedType.value = "WFH";
+                                        controller.selectedType.value
+                                                        .toString() ==
+                                                    "WFH" &&
+                                                widget.status == "Absen Masuk"
+                                            ? controllerDashboard
+                                                .widgetButtomSheetWfh()
+                                            : controllerDashboard
+                                                .widgetButtomSheetAktifCamera(
+                                                    type: 'checkTracking');
+                                        // }
                                         // Mendapatkan informasi paket aplikasi pihak ketiga
                                       },
                                       child: const Padding(
@@ -1119,31 +1119,31 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                               side: const BorderSide(
                                                   color: Colors.white)))),
                                   onPressed: () async {
-                                    await controller.offlineToOnline();
-                                    await controller.getPlaceCoordinate1();
-                                    if (controller.coordinate.value == true) {
-                                      UtilsAlert
-                                          .showCheckOfflineAbsensiKesalahanServer(
-                                              positiveBtnPressed: () {
-                                        Get.back();
-                                        controller
-                                            .widgetButtomSheetLanjutkanOffline(
-                                                type: 'offlineAbsensi');
-                                      });
-                                    } else if (!authController
-                                        .isConnected.value) {
-                                      UtilsAlert.showCheckOfflineAbsensi(
-                                          positiveBtnPressed: () {
-                                        Get.back();
-                                        controller
-                                            .widgetButtomSheetLanjutkanOffline(
-                                                type: 'offlineAbsensi');
-                                      });
-                                    } else {
-                                      controllerDashboard
-                                          .widgetButtomSheetAktifCamera(
-                                              type: 'checkTracking');
-                                    }
+                                    // await controller.offlineToOnline();
+                                    // await controller.getPlaceCoordinate1();
+                                    // if (controller.coordinate.value == true) {
+                                    //   UtilsAlert
+                                    //       .showCheckOfflineAbsensiKesalahanServer(
+                                    //           positiveBtnPressed: () {
+                                    //     Get.back();
+                                    //     controller
+                                    //         .widgetButtomSheetLanjutkanOffline(
+                                    //             type: 'offlineAbsensi');
+                                    //   });
+                                    // } else if (!authController
+                                    //     .isConnected.value) {
+                                    //   UtilsAlert.showCheckOfflineAbsensi(
+                                    //       positiveBtnPressed: () {
+                                    //     Get.back();
+                                    //     controller
+                                    //         .widgetButtomSheetLanjutkanOffline(
+                                    //             type: 'offlineAbsensi');
+                                    //   });
+                                    // } else {
+                                    controllerDashboard
+                                        .widgetButtomSheetAktifCamera(
+                                            type: 'checkTracking');
+                                    // }
                                   },
                                   child: const Padding(
                                     padding: EdgeInsets.only(

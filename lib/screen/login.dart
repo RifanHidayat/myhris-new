@@ -33,26 +33,26 @@ class Login extends StatelessWidget {
                       image: AssetImage('assets/vector_login.png'),
                       fit: BoxFit.cover)),
             ),
-            Positioned(
-              top: 10,
-              right: 10,
-              child: Obx(() {
-                return Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: controller.isConnected.value
-                        ? Constanst.color5
-                        : Constanst.color4,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    controller.isConnected.value ? "Online" : "Offline",
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                );
-              }),
-            ),
+            // Positioned(
+            //   top: 10,
+            //   right: 10,
+            //   child: Obx(() {
+            //     return Container(
+            //       padding:
+            //           const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            //       decoration: BoxDecoration(
+            //         color: controller.isConnected.value
+            //             ? Constanst.color5
+            //             : Constanst.color4,
+            //         borderRadius: BorderRadius.circular(12),
+            //       ),
+            //       child: Text(
+            //         controller.isConnected.value ? "Online" : "Offline",
+            //         style: const TextStyle(color: Colors.white),
+            //       ),
+            //     );
+            //   }),
+            // ),
             Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: SingleChildScrollView(

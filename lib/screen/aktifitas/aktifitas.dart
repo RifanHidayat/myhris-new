@@ -26,7 +26,6 @@ class Aktifitas extends StatelessWidget {
 
   final authController = Get.put(AuthController());
 
-
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constanst.coloBackgroundScreen,
@@ -130,23 +129,23 @@ class Aktifitas extends StatelessWidget {
                           fontSize: 20),
                     ),
               actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 5),
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: Obx(() {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: authController.isConnected.value
-                              ? Constanst.color5
-                              : Constanst.color4,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(right: 5),
+                //   child: SizedBox(
+                //     width: 20,
+                //     height: 20,
+                //     child: Obx(() {
+                //       return Container(
+                //         decoration: BoxDecoration(
+                //           color: authController.isConnected.value
+                //               ? Constanst.color5
+                //               : Constanst.color4,
+                //           borderRadius: BorderRadius.circular(20),
+                //         ),
+                //       );
+                //     }),
+                //   ),
+                // ),
                 controller.statusFormPencarian.value
                     ? Padding(
                         padding: const EdgeInsets.only(right: 16.0),

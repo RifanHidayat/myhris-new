@@ -145,12 +145,12 @@ class DashboardController extends GetxController {
   var timeIn = "".obs;
   var timeOut = "".obs;
   var absenMasukKeluarOffline = Rx<dynamic>(null);
-  var textPendingMasuk = false.obs;
-  var textPendingKeluar = false.obs;
+  // var textPendingMasuk = false.obs;
+  // var textPendingKeluar = false.obs;
   var pendingSignoutApr = false.obs;
   var pendingSigninApr = false.obs;
 
-  var absenOfflineStatus = false.obs;
+  // var absenOfflineStatus = false.obs;
   // var absenOfflineStatusDua = false.obs;
   var isLoading = false.obs;
 
@@ -205,155 +205,157 @@ class DashboardController extends GetxController {
     // SqliteDatabaseHelper().deleteAbsensi();
     // AppData.signoutTime = "";
     // AppData.signingTime = "";
-    if (authController.isConnected.value) {
-      AppData.signoutTime = "";
-      AppData.signingTime = "";
-      AppData.temp = false;
-      pendingSignoutApr.value = false;
-      pendingSigninApr.value = false;
-      dashboardStatusAbsen.value = AppData.statusAbsen;
-      absenOfflineStatus.value = false;
-      // DateTime startDate = await NTP.now();
+    // if (authController.isConnected.value) {
+    AppData.signoutTime = "";
+    AppData.signingTime = "";
+    // AppData.temp = false;
+    pendingSignoutApr.value = false;
+    pendingSigninApr.value = false;
+    dashboardStatusAbsen.value = AppData.statusAbsen;
+    // absenOfflineStatus.value = false;
+    // DateTime startDate = await NTP.now();
 
-      DateTime startDate = DateTime.now();
+    DateTime startDate = DateTime.now();
 
-      // if (AppData.informasiUser != null && AppData.informasiUser!.isNotEmpty) {
-      var emId = AppData.informasiUser![0].em_id.toString();
-      checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), emId);
-      // } else {
-      //   print("Informasi user tidak tersedia.");
-      // }
+    // if (AppData.informasiUser != null && AppData.informasiUser!.isNotEmpty) {
+    var emId = AppData.informasiUser![0].em_id.toString();
+    checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), emId);
+    // } else {
+    //   print("Informasi user tidak tersedia.");
+    // }
 
-      updateWorkTime();
-      getBannerDashboard();
-      updateInformasiUser();
-      getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
-      getMenuDashboard();
-      loadMenuShowInMain();
-      loadMenuShowInMainUtama();
-      getInformasiDashboard();
-      getEmployeeBelumAbsen();
-      timeString.value = formatDateTime(startDate);
-      dateNow.value = dateNoww(startDate);
+    updateWorkTime();
+    getBannerDashboard();
+    updateInformasiUser();
+    getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
+    getMenuDashboard();
+    loadMenuShowInMain();
+    loadMenuShowInMainUtama();
+    getInformasiDashboard();
+    getEmployeeBelumAbsen();
+    timeString.value = formatDateTime(startDate);
+    dateNow.value = dateNoww(startDate);
 
-      Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
-      getSizeDevice();
-      checkStatusPermission();
-      checkHakAkses();
-    } else {
-      isLoading.value = false;
-      GetStorage().write("face_recog", true);
-      // authController.login.value = false;
-      print("kondisi: ${authController.isConnected.value}");
-      dashboardStatusAbsen.value = AppData.statusAbsen;
+    Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
+    getSizeDevice();
+    checkStatusPermission();
+    checkHakAkses();
+    // } else {
+    //   isLoading.value = false;
+    //   GetStorage().write("face_recog", true);
+    //   // final prefs = await SharedPreferences.getInstance();
+    //   // authController.login.value = false;
+    //   print("kondisi: ${authController.isConnected.value}");
+    //   dashboardStatusAbsen.value = AppData.statusAbsen;
 
-      DateTime startDate = DateTime.now();
-      getBannerDashboard();
-      // getMenuDashboard();
-      loadMenuShowInMain();
-      loadMenuShowInMainUtama();
-      timeString.value = formatDateTime(startDate);
-      dateNow.value = dateNoww(startDate);
+    //   DateTime startDate = DateTime.now();
+    //   getBannerDashboard();
+    //   // getMenuDashboard();
+    //   loadMenuShowInMain();
+    //   loadMenuShowInMainUtama();
+    //   timeString.value = formatDateTime(startDate);
+    //   dateNow.value = dateNoww(startDate);
 
-      Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
-      getSizeDevice();
-      checkStatusPermission();
-      checkHakAkses();
-      // final service = FlutterBackgroundService();
-      // service.invoke("stopService");
+    //   Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
+    //   getSizeDevice();
+    //   checkStatusPermission();
+    //   checkHakAkses();
+    //   // final service = FlutterBackgroundService();
+    //   // service.invoke("stopService");
+    //   controllerTracking.stopService();
 
-      absenMasukKeluarOffline.value = await SqliteDatabaseHelper().getAbsensi();
-      // var absenMasukKeluarOfflineDua =
-      //     await SqliteDatabaseHelper().getAbsensiDua();
-      // print("ini aku: ${absenMasukKeluarOffline.value}");
+    //   absenMasukKeluarOffline.value = await SqliteDatabaseHelper().getAbsensi();
+    //   // var absenMasukKeluarOfflineDua =
+    //   //     await SqliteDatabaseHelper().getAbsensiDua();
+    //   // print("ini aku: ${absenMasukKeluarOffline.value}");
 
-      if (absenMasukKeluarOffline.value != null) {
-        if (absenMasukKeluarOffline.value['signing_time'] != "") {
-          signinTime.value =
-              absenMasukKeluarOffline.value['signing_time'].toString();
-          textPendingMasuk.value = true;
-          signoutTime.value =
-              AppData.signoutTime != "" && AppData.signoutTime != "00:00:00"
-                  ? AppData.signoutTime
-                  : "_ _:_ _:_ _";
-        } else if (absenMasukKeluarOffline.value['signout_time'] != "") {
-          signinTime.value =
-              AppData.signingTime != "" && AppData.signingTime != "00:00:00"
-                  ? AppData.signingTime
-                  : "_ _:_ _:_ _";
-          signoutTime.value =
-              absenMasukKeluarOffline.value['signout_time'].toString();
-          textPendingKeluar.value = true;
-        } else if (absenMasukKeluarOffline.value['signing_time'] != "" &&
-            absenMasukKeluarOffline.value['signout_time'] != "") {
-          signinTime.value =
-              absenMasukKeluarOffline.value['signing_time'].toString();
-          signoutTime.value =
-              absenMasukKeluarOffline.value['signout_time'].toString();
-          textPendingMasuk.value = true;
-          textPendingKeluar.value = true;
-        }
-      } else {
-        signinTime.value =
-            AppData.signingTime != "" && AppData.signingTime != "00:00:00"
-                ? AppData.signingTime
-                : "_ _:_ _:_ _";
-        signoutTime.value =
-            AppData.signoutTime != "" && AppData.signoutTime != "00:00:00"
-                ? AppData.signoutTime
-                : "_ _:_ _:_ _";
-      }
+    //   if (absenMasukKeluarOffline.value != null) {
+    //     if (absenMasukKeluarOffline.value['signing_time'] != "") {
+    //       signinTime.value =
+    //           absenMasukKeluarOffline.value['signing_time'].toString();
+    //       textPendingMasuk.value = true;
+    //       signoutTime.value =
+    //           AppData.signoutTime != "" && AppData.signoutTime != "00:00:00"
+    //               ? AppData.signoutTime
+    //               : "_ _:_ _:_ _";
+    //     } else if (absenMasukKeluarOffline.value['signout_time'] != "") {
+    //       signinTime.value =
+    //           AppData.signingTime != "" && AppData.signingTime != "00:00:00"
+    //               ? AppData.signingTime
+    //               : "_ _:_ _:_ _";
+    //       signoutTime.value =
+    //           absenMasukKeluarOffline.value['signout_time'].toString();
+    //       textPendingKeluar.value = true;
+    //     } else if (absenMasukKeluarOffline.value['signing_time'] != "" &&
+    //         absenMasukKeluarOffline.value['signout_time'] != "") {
+    //       signinTime.value =
+    //           absenMasukKeluarOffline.value['signing_time'].toString();
+    //       signoutTime.value =
+    //           absenMasukKeluarOffline.value['signout_time'].toString();
+    //       textPendingMasuk.value = true;
+    //       textPendingKeluar.value = true;
+    //     }
+    //   } else {
+    //     signinTime.value =
+    //         AppData.signingTime != "" && AppData.signingTime != "00:00:00"
+    //             ? AppData.signingTime
+    //             : "_ _:_ _:_ _";
+    //     signoutTime.value =
+    //         AppData.signoutTime != "" && AppData.signoutTime != "00:00:00"
+    //             ? AppData.signoutTime
+    //             : "_ _:_ _:_ _";
+    //   }
 
-      if ((AppData.signingTime == "" || AppData.signingTime == "00:00:00") &&
-          (AppData.signoutTime == "" || AppData.signoutTime == "00:00:00")) {
-        absenOfflineStatus.value = false;
-        absenControllre.absenStatus.value = false;
-        AppData.statusAbsen = false;
-        // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-      } else if ((AppData.signingTime != "" ||
-              AppData.signingTime != "00:00:00") &&
-          (AppData.signoutTime == "" || AppData.signoutTime == "00:00:00")) {
-        absenOfflineStatus.value = AppData.statusAbsenOffline;
-        if (absenOfflineStatus.value == true) {
-          pendingSigninApr.value = true;
-          textPendingMasuk.value = AppData.textPendingMasuk;
-          textPendingKeluar.value = AppData.textPendingKeluar;
-        }
-        absenControllre.absenStatus.value = true;
-        AppData.statusAbsen = true;
-        // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-      } else if ((AppData.signingTime != "" ||
-              AppData.signingTime != "00:00:00") &&
-          (AppData.signoutTime != "" || AppData.signoutTime != "00:00:00")) {
-        absenOfflineStatus.value = AppData.statusAbsenOffline;
+    //   if ((AppData.signingTime == "" || AppData.signingTime == "00:00:00") &&
+    //       (AppData.signoutTime == "" || AppData.signoutTime == "00:00:00")) {
+    //     absenOfflineStatus.value = false;
+    //     absenControllre.absenStatus.value = false;
+    //     AppData.statusAbsen = false;
+    //     // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+    //   } else if ((AppData.signingTime != "" ||
+    //           AppData.signingTime != "00:00:00") &&
+    //       (AppData.signoutTime == "" || AppData.signoutTime == "00:00:00")) {
+    //     absenOfflineStatus.value = AppData.statusAbsenOffline;
+    //     if (absenOfflineStatus.value == true) {
+    //       pendingSigninApr.value = true;
+    //       textPendingMasuk.value = AppData.textPendingMasuk;
+    //       textPendingKeluar.value = AppData.textPendingKeluar;
+    //     }
+    //     absenControllre.absenStatus.value = true;
+    //     AppData.statusAbsen = true;
+    //     // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+    //   } else if ((AppData.signingTime != "" ||
+    //           AppData.signingTime != "00:00:00") &&
+    //       (AppData.signoutTime != "" || AppData.signoutTime != "00:00:00")) {
+    //     absenOfflineStatus.value = AppData.statusAbsenOffline;
 
-        absenControllre.absenStatus.value = false;
-        AppData.statusAbsen = false;
-        if (absenOfflineStatus.value == true) {
-          pendingSignoutApr.value = true;
-          textPendingKeluar.value = AppData.textPendingKeluar;
-          pendingSigninApr.value = false;
-          textPendingMasuk.value = AppData.textPendingMasuk;
-          if (absenMasukKeluarOffline.value['signing_time'] != "") {
-            pendingSigninApr.value = true;
-            textPendingMasuk.value = AppData.textPendingMasuk;
-            textPendingKeluar.value = AppData.textPendingKeluar;
-            absenControllre.absenStatus.value = true;
-            AppData.statusAbsen = true;
-          } else if (AppData.temp == true) {
-            pendingSigninApr.value = true;
-            textPendingMasuk.value = AppData.textPendingMasuk;
-            textPendingKeluar.value = AppData.textPendingKeluar;
-            absenControllre.absenStatus.value = true;
-            AppData.statusAbsen = true;
-          }
-        }
-        // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-      }
-      print(AppData.signingTime);
-      print(AppData.signoutTime);
-      print("status:${AppData.statusAbsenOffline}");
-    }
+    //     absenControllre.absenStatus.value = false;
+    //     AppData.statusAbsen = false;
+    //     if (absenOfflineStatus.value == true) {
+    //       pendingSignoutApr.value = true;
+    //       textPendingKeluar.value = AppData.textPendingKeluar;
+    //       pendingSigninApr.value = false;
+    //       textPendingMasuk.value = AppData.textPendingMasuk;
+    //       if (absenMasukKeluarOffline.value['signing_time'] != "") {
+    //         pendingSigninApr.value = true;
+    //         textPendingMasuk.value = AppData.textPendingMasuk;
+    //         textPendingKeluar.value = AppData.textPendingKeluar;
+    //         absenControllre.absenStatus.value = true;
+    //         AppData.statusAbsen = true;
+    //       } else if (AppData.temp == true) {
+    //         pendingSigninApr.value = true;
+    //         textPendingMasuk.value = AppData.textPendingMasuk;
+    //         textPendingKeluar.value = AppData.textPendingKeluar;
+    //         absenControllre.absenStatus.value = true;
+    //         AppData.statusAbsen = true;
+    //       }
+    //     }
+    //     // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+    //   }
+    //   print(AppData.signingTime);
+    //   print(AppData.signoutTime);
+    //   print("status:${AppData.statusAbsenOffline}");
+    // }
   }
 
   // void popUpRefresh(BuildContext context) async {
@@ -501,145 +503,180 @@ class DashboardController extends GetxController {
           // signinTime.value = wfh[0]['signing_time'].toString();
 
           // var wfh = valueBody['wfh'];
+          // if (wfh.isEmpty) {
+          //   if (offiline.isEmpty) {
+          //     if (data.isEmpty) {
+          //       AppData.statusAbsen = false;
+          //       signoutTime.value = '00:00:00';
+          //       signinTime.value = '00:00:00';
+
+          //       AppData.statusAbsenOffline = false;
+          //     } else {
+          //       wfhlokasi.value =
+          //           valueBody['data'][0]['place_in'].toString() == "WFH"
+          //               ? true
+          //               : false;
+
+          //       AppData.statusAbsen =
+          //           data[0]['signout_time'] == "00:00:00" ? true : false;
+          //       dashboardStatusAbsen.value =
+          //           data[0]['signout_time'] == "00:00:00" ? true : false;
+
+          //       signoutTime.value = data[0]['signout_time'].toString();
+          //       signinTime.value = data[0]['signin_time'].toString();
+
+          //       AppData.statusAbsenOffline = false;
+          //     }
+          //   } else {
+          //     AppData.temp = false;
+          //     //if (data.isNotEmpty && offiline.isNotEmpty)
+          //     if (offiline[0]['signing_time'].toString() != "00:00:00" &&
+          //         offiline[0]['signout_time'].toString() == "00:00:00" &&
+          //         data.isEmpty) {
+          //       AppData.temp = true;
+          //       absenOfflineStatus.value = true;
+          //       pendingSigninApr.value = true;
+          //       AppData.statusAbsenOffline = true;
+          //       absenControllre.absenStatus.value = true;
+          //       AppData.statusAbsen = true;
+          //       signinTime.value = offiline[0]['signing_time'].toString();
+          //       signoutTime.value = '00:00:00';
+          //       // if (data.isNotEmpty) {
+          //       //   signoutTime.value = data[0]['signout_time'].toString();
+          //       // }
+
+          //       // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+          //     } else if (offiline[0]['signing_time'].toString() == "00:00:00" &&
+          //         offiline[0]['signout_time'].toString() != "00:00:00" &&
+          //         data[0]['signout_time'] == "00:00:00" &&
+          //         data[0]['signin_time'] != "00:00:00") {
+          //       print("atuh");
+          //       absenOfflineStatus.value = true;
+          //       pendingSignoutApr.value = true;
+          //       AppData.statusAbsenOffline = true;
+          //       absenControllre.absenStatus.value = false;
+          //       AppData.statusAbsen = false;
+          //       signinTime.value = data[0]['signin_time'].toString();
+          //       signoutTime.value = offiline[0]['signout_time'].toString();
+          //       // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+          //     } else if (offiline[0]['signing_time'].toString() == "00:00:00" &&
+          //         offiline[0]['signout_time'].toString() != "00:00:00" &&
+          //         data.isEmpty) {
+          //       absenOfflineStatus.value = true;
+          //       pendingSignoutApr.value = true;
+          //       pendingSigninApr.value = true;
+          //       AppData.statusAbsenOffline = true;
+          //       absenControllre.absenStatus.value = false;
+          //       AppData.statusAbsen = false;
+          //       signinTime.value = offiline[0]['signing_time'].toString();
+          //       signoutTime.value = offiline[0]['signout_time'].toString();
+          //     } else if (offiline[0]['signing_time'].toString() != "00:00:00" &&
+          //         offiline[0]['signout_time'].toString() != "00:00:00" &&
+          //         data.isEmpty) {
+          //       absenOfflineStatus.value = true;
+          //       pendingSignoutApr.value = true;
+          //       pendingSigninApr.value = true;
+          //       AppData.statusAbsenOffline = true;
+          //       absenControllre.absenStatus.value = false;
+          //       AppData.statusAbsen = false;
+          //       signinTime.value = offiline[0]['signing_time'].toString();
+          //       signoutTime.value = offiline[0]['signout_time'].toString();
+          //       // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+          //     } else if ((offiline[0]['signing_time'].toString() ==
+          //             data[0]['signin_time'].toString()) &&
+          //         (offiline[0]['signout_time'].toString() ==
+          //             data[0]['signout_time'].toString()) &&
+          //         offiline[0]['signing_time'].toString() != "00:00:00" &&
+          //         offiline[0]['signout_time'].toString() != "00:00:00") {
+          //       absenOfflineStatus.value = false;
+          //       pendingSignoutApr.value = false;
+          //       AppData.statusAbsenOffline = false;
+          //       absenControllre.absenStatus.value = false;
+          //       AppData.statusAbsen = false;
+          //       signinTime.value = data[0]['signin_time'].toString();
+          //       signoutTime.value = data[0]['signout_time'].toString();
+          //       // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+          //     } else if (offiline[0]['signing_time'].toString() ==
+          //             data[0]['signin_time'].toString() &&
+          //         offiline[0]['signing_time'].toString() != "00:00:00") {
+          //       absenOfflineStatus.value = false;
+          //       pendingSignoutApr.value = false;
+          //       AppData.statusAbsenOffline = false;
+          //       absenControllre.absenStatus.value = true;
+          //       AppData.statusAbsen = true;
+          //       signinTime.value = data[0]['signin_time'].toString();
+          //       signoutTime.value = data[0]['signout_time'].toString();
+          //       // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+          //     } else if (offiline[0]['signout_time'].toString() ==
+          //             data[0]['signout_time'].toString() &&
+          //         offiline[0]['signout_time'].toString() != "00:00:00") {
+          //       print("Kesiniiii");
+          //       absenOfflineStatus.value = false;
+          //       pendingSignoutApr.value = false;
+          //       AppData.statusAbsenOffline = false;
+          //       absenControllre.absenStatus.value = false;
+          //       AppData.statusAbsen = false;
+          //       signinTime.value = data[0]['signin_time'].toString();
+          //       signoutTime.value = data[0]['signout_time'].toString();
+          //       // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+          //     }
+
+          //     textPendingMasuk.value =
+          //         (offiline[0]['signing_time'].toString() == "00:00:00");
+
+          //     textPendingKeluar.value =
+          //         (offiline[0]['signout_time'].toString() == "00:00:00");
+
+          //     var absenMasukKeluarOffline =
+          //         await SqliteDatabaseHelper().getAbsensi();
+          //     if (absenMasukKeluarOffline != null) {
+          //       if (absenMasukKeluarOffline['signing_time'] != "") {
+          //         signinTime.value =
+          //             absenMasukKeluarOffline['signing_time'].toString();
+          //         pendingSigninApr.value = true;
+          //         textPendingMasuk.value = true;
+          //       } else if (absenMasukKeluarOffline['signout_time'] != "") {
+          //         signoutTime.value =
+          //             absenMasukKeluarOffline['signout_time'].toString();
+          //         pendingSignoutApr.value = true;
+          //         textPendingKeluar.value = true;
+          //       }
+          //     }
+          //   }
+          // } else {
+          //   wfhstatus.value = wfh.isEmpty ? false : true;
+          //   controllerAbsensi.absenStatus.value = wfh.isEmpty ? false : true;
+          //   approveStatus.value = valueBody['wfh'][0]['status'].toString();
+          //   // if (data.isEmpty) {
+          //   signinTime.value = wfh[0]['signing_time'].toString();
+          //   controllerAbsensi.nomorAjuan.value =
+          //       wfh[0]['nomor_ajuan'].toString();
+          //   // status.value = wfh[0]['status'].toString();
+
+          //   // status.value = "ad";
+          //   // controllerAbsensi.absenStatus.value = true;
+          // }
+
           if (wfh.isEmpty) {
-            if (offiline.isEmpty) {
-              if (data.isEmpty) {
-                AppData.statusAbsen = false;
-                signoutTime.value = '00:00:00';
-                signinTime.value = '00:00:00';
-
-                AppData.statusAbsenOffline = false;
-              } else {
-                wfhlokasi.value =
-                    valueBody['data'][0]['place_in'].toString() == "WFH"
-                        ? true
-                        : false;
-
-                AppData.statusAbsen =
-                    data[0]['signout_time'] == "00:00:00" ? true : false;
-                dashboardStatusAbsen.value =
-                    data[0]['signout_time'] == "00:00:00" ? true : false;
-
-                signoutTime.value = data[0]['signout_time'].toString();
-                signinTime.value = data[0]['signin_time'].toString();
-
-                AppData.statusAbsenOffline = false;
-              }
+            if (data.isEmpty) {
+              AppData.statusAbsen = false;
+              signoutTime.value = '00:00:00';
+              signinTime.value = '00:00:00';
             } else {
-              AppData.temp = false;
-              //if (data.isNotEmpty && offiline.isNotEmpty)
-              if (offiline[0]['signing_time'].toString() != "00:00:00" &&
-                  offiline[0]['signout_time'].toString() == "00:00:00" &&
-                  data.isEmpty) {
-                AppData.temp = true;
-                absenOfflineStatus.value = true;
-                pendingSigninApr.value = true;
-                AppData.statusAbsenOffline = true;
-                absenControllre.absenStatus.value = true;
-                AppData.statusAbsen = true;
-                signinTime.value = offiline[0]['signing_time'].toString();
-                signoutTime.value = '00:00:00';
-                // if (data.isNotEmpty) {
-                //   signoutTime.value = data[0]['signout_time'].toString();
-                // }
+              wfhlokasi.value =
+                  valueBody['data'][0]['place_in'].toString() == "WFH"
+                      ? true
+                      : false;
 
-                // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-              } else if (offiline[0]['signing_time'].toString() == "00:00:00" &&
-                  offiline[0]['signout_time'].toString() != "00:00:00" &&
-                  data[0]['signout_time'] == "00:00:00" &&
-                  data[0]['signin_time'] != "00:00:00") {
-                print("atuh");
-                absenOfflineStatus.value = true;
-                pendingSignoutApr.value = true;
-                AppData.statusAbsenOffline = true;
-                absenControllre.absenStatus.value = false;
-                AppData.statusAbsen = false;
-                signinTime.value = data[0]['signin_time'].toString();
-                signoutTime.value = offiline[0]['signout_time'].toString();
-                // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-              } else if (offiline[0]['signing_time'].toString() == "00:00:00" &&
-                  offiline[0]['signout_time'].toString() != "00:00:00" &&
-                  data.isEmpty) {
-                absenOfflineStatus.value = true;
-                pendingSignoutApr.value = true;
-                pendingSigninApr.value = true;
-                AppData.statusAbsenOffline = true;
-                absenControllre.absenStatus.value = false;
-                AppData.statusAbsen = false;
-                signinTime.value = offiline[0]['signing_time'].toString();
-                signoutTime.value = offiline[0]['signout_time'].toString();
-              } else if (offiline[0]['signing_time'].toString() != "00:00:00" &&
-                  offiline[0]['signout_time'].toString() != "00:00:00" &&
-                  data.isEmpty) {
-                absenOfflineStatus.value = true;
-                pendingSignoutApr.value = true;
-                pendingSigninApr.value = true;
-                AppData.statusAbsenOffline = true;
-                absenControllre.absenStatus.value = false;
-                AppData.statusAbsen = false;
-                signinTime.value = offiline[0]['signing_time'].toString();
-                signoutTime.value = offiline[0]['signout_time'].toString();
-                // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-              } else if ((offiline[0]['signing_time'].toString() ==
-                      data[0]['signin_time'].toString()) &&
-                  (offiline[0]['signout_time'].toString() ==
-                      data[0]['signout_time'].toString()) &&
-                  offiline[0]['signing_time'].toString() != "00:00:00" &&
-                  offiline[0]['signout_time'].toString() != "00:00:00") {
-                absenOfflineStatus.value = false;
-                pendingSignoutApr.value = false;
-                AppData.statusAbsenOffline = false;
-                absenControllre.absenStatus.value = false;
-                AppData.statusAbsen = false;
-                signinTime.value = data[0]['signin_time'].toString();
-                signoutTime.value = data[0]['signout_time'].toString();
-                // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-              } else if (offiline[0]['signing_time'].toString() ==
-                      data[0]['signin_time'].toString() &&
-                  offiline[0]['signing_time'].toString() != "00:00:00") {
-                absenOfflineStatus.value = false;
-                pendingSignoutApr.value = false;
-                AppData.statusAbsenOffline = false;
-                absenControllre.absenStatus.value = true;
-                AppData.statusAbsen = true;
-                signinTime.value = data[0]['signin_time'].toString();
-                signoutTime.value = data[0]['signout_time'].toString();
-                // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-              } else if (offiline[0]['signout_time'].toString() ==
-                      data[0]['signout_time'].toString() &&
-                  offiline[0]['signout_time'].toString() != "00:00:00") {
-                print("Kesiniiii");
-                absenOfflineStatus.value = false;
-                pendingSignoutApr.value = false;
-                AppData.statusAbsenOffline = false;
-                absenControllre.absenStatus.value = false;
-                AppData.statusAbsen = false;
-                signinTime.value = data[0]['signin_time'].toString();
-                signoutTime.value = data[0]['signout_time'].toString();
-                // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-              }
+              AppData.statusAbsen =
+                  data[0]['signout_time'] == "00:00:00" ? true : false;
+              dashboardStatusAbsen.value =
+                  data[0]['signout_time'] == "00:00:00" ? true : false;
 
-              textPendingMasuk.value =
-                  (offiline[0]['signing_time'].toString() == "00:00:00");
-
-              textPendingKeluar.value =
-                  (offiline[0]['signout_time'].toString() == "00:00:00");
-
-              var absenMasukKeluarOffline =
-                  await SqliteDatabaseHelper().getAbsensi();
-              if (absenMasukKeluarOffline != null) {
-                if (absenMasukKeluarOffline['signing_time'] != "") {
-                  signinTime.value =
-                      absenMasukKeluarOffline['signing_time'].toString();
-                  pendingSigninApr.value = true;
-                  textPendingMasuk.value = true;
-                } else if (absenMasukKeluarOffline['signout_time'] != "") {
-                  signoutTime.value =
-                      absenMasukKeluarOffline['signout_time'].toString();
-                  pendingSignoutApr.value = true;
-                  textPendingKeluar.value = true;
-                }
-              }
+              signoutTime.value = data[0]['signout_time'].toString();
+              signinTime.value = data[0]['signin_time'].toString();
+              print("hasil signinTime ${signinTime.value}");
+              print("hasil signinTime ${status.value}");
             }
           } else {
             wfhstatus.value = wfh.isEmpty ? false : true;
@@ -653,10 +690,12 @@ class DashboardController extends GetxController {
 
             // status.value = "ad";
             // controllerAbsensi.absenStatus.value = true;
+            print("hasil signinTime ${signinTime.value}");
+            print("hasil signinTime ${status.value}");
           }
 
-          AppData.textPendingMasuk = textPendingMasuk.value;
-          AppData.textPendingKeluar = textPendingKeluar.value;
+          // AppData.textPendingMasuk = textPendingMasuk.value;
+          // AppData.textPendingKeluar = textPendingKeluar.value;
 
           AppData.signingTime = signinTime.value;
           AppData.signoutTime = signoutTime.value;
@@ -665,95 +704,96 @@ class DashboardController extends GetxController {
         } else {
           isLoading.value = false;
         }
-      }).catchError((error) async {
-        absenMasukKeluarOffline.value =
-            await SqliteDatabaseHelper().getAbsensi();
-        // var absenMasukKeluarOfflineDua =
-        //     await SqliteDatabaseHelper().getAbsensiDua();
-        // print("ini aku: ${absenMasukKeluarOffline.value}");
-
-        if (absenMasukKeluarOffline.value != null) {
-          if (absenMasukKeluarOffline.value['signing_time'] != "") {
-            signinTime.value =
-                absenMasukKeluarOffline.value['signing_time'].toString();
-            textPendingMasuk.value = true;
-            signoutTime.value =
-                AppData.signoutTime != "" && AppData.signoutTime != "00:00:00"
-                    ? AppData.signoutTime
-                    : "_ _:_ _:_ _";
-          } else if (absenMasukKeluarOffline.value['signout_time'] != "") {
-            signinTime.value =
-                AppData.signingTime != "" && AppData.signingTime != "00:00:00"
-                    ? AppData.signingTime
-                    : "_ _:_ _:_ _";
-            signoutTime.value =
-                absenMasukKeluarOffline.value['signout_time'].toString();
-            textPendingKeluar.value = true;
-          } else if (absenMasukKeluarOffline.value['signing_time'] != "" &&
-              absenMasukKeluarOffline.value['signout_time'] != "") {
-            signinTime.value =
-                absenMasukKeluarOffline.value['signing_time'].toString();
-            signoutTime.value =
-                absenMasukKeluarOffline.value['signout_time'].toString();
-            textPendingMasuk.value = true;
-            textPendingKeluar.value = true;
-          }
-        } else {
-          signinTime.value =
-              AppData.signingTime != "" && AppData.signingTime != "00:00:00"
-                  ? AppData.signingTime
-                  : "_ _:_ _:_ _";
-          signoutTime.value =
-              AppData.signoutTime != "" && AppData.signoutTime != "00:00:00"
-                  ? AppData.signoutTime
-                  : "_ _:_ _:_ _";
-        }
-
-        if ((AppData.signingTime == "" || AppData.signingTime == "00:00:00") &&
-            (AppData.signoutTime == "" || AppData.signoutTime == "00:00:00")) {
-          absenOfflineStatus.value = false;
-          absenControllre.absenStatus.value = false;
-          AppData.statusAbsen = false;
-          // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-        } else if ((AppData.signingTime != "" ||
-                AppData.signingTime != "00:00:00") &&
-            (AppData.signoutTime == "" || AppData.signoutTime == "00:00:00")) {
-          absenOfflineStatus.value = AppData.statusAbsenOffline;
-          if (absenOfflineStatus.value == true) {
-            pendingSigninApr.value = true;
-            textPendingMasuk.value = true;
-          }
-          absenControllre.absenStatus.value = true;
-          AppData.statusAbsen = true;
-          // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-        } else if ((AppData.signingTime != "" ||
-                AppData.signingTime != "00:00:00") &&
-            (AppData.signoutTime != "" || AppData.signoutTime != "00:00:00")) {
-          absenOfflineStatus.value = AppData.statusAbsenOffline;
-
-          absenControllre.absenStatus.value = false;
-          AppData.statusAbsen = false;
-          if (absenOfflineStatus.value == true) {
-            pendingSignoutApr.value = true;
-            textPendingKeluar.value = true;
-            pendingSigninApr.value = false;
-            textPendingMasuk.value = false;
-            if (absenMasukKeluarOffline.value['signing_time'] != "") {
-              pendingSigninApr.value = true;
-              textPendingMasuk.value = true;
-              absenControllre.absenStatus.value = true;
-              AppData.statusAbsen = true;
-            } else if (AppData.temp == true) {
-              pendingSigninApr.value = true;
-              textPendingMasuk.value = false;
-              absenControllre.absenStatus.value = true;
-              AppData.statusAbsen = true;
-            }
-          }
-          // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
-        }
-        isLoading.value = false;
       });
+      // .catchError((error) async {
+      //   absenMasukKeluarOffline.value =
+      //       await SqliteDatabaseHelper().getAbsensi();
+      //   // var absenMasukKeluarOfflineDua =
+      //   //     await SqliteDatabaseHelper().getAbsensiDua();
+      //   // print("ini aku: ${absenMasukKeluarOffline.value}");
+
+      //   if (absenMasukKeluarOffline.value != null) {
+      //     if (absenMasukKeluarOffline.value['signing_time'] != "") {
+      //       signinTime.value =
+      //           absenMasukKeluarOffline.value['signing_time'].toString();
+      //       textPendingMasuk.value = true;
+      //       signoutTime.value =
+      //           AppData.signoutTime != "" && AppData.signoutTime != "00:00:00"
+      //               ? AppData.signoutTime
+      //               : "_ _:_ _:_ _";
+      //     } else if (absenMasukKeluarOffline.value['signout_time'] != "") {
+      //       signinTime.value =
+      //           AppData.signingTime != "" && AppData.signingTime != "00:00:00"
+      //               ? AppData.signingTime
+      //               : "_ _:_ _:_ _";
+      //       signoutTime.value =
+      //           absenMasukKeluarOffline.value['signout_time'].toString();
+      //       textPendingKeluar.value = true;
+      //     } else if (absenMasukKeluarOffline.value['signing_time'] != "" &&
+      //         absenMasukKeluarOffline.value['signout_time'] != "") {
+      //       signinTime.value =
+      //           absenMasukKeluarOffline.value['signing_time'].toString();
+      //       signoutTime.value =
+      //           absenMasukKeluarOffline.value['signout_time'].toString();
+      //       textPendingMasuk.value = true;
+      //       textPendingKeluar.value = true;
+      //     }
+      //   } else {
+      //     signinTime.value =
+      //         AppData.signingTime != "" && AppData.signingTime != "00:00:00"
+      //             ? AppData.signingTime
+      //             : "_ _:_ _:_ _";
+      //     signoutTime.value =
+      //         AppData.signoutTime != "" && AppData.signoutTime != "00:00:00"
+      //             ? AppData.signoutTime
+      //             : "_ _:_ _:_ _";
+      //   }
+
+      //   if ((AppData.signingTime == "" || AppData.signingTime == "00:00:00") &&
+      //       (AppData.signoutTime == "" || AppData.signoutTime == "00:00:00")) {
+      //     absenOfflineStatus.value = false;
+      //     absenControllre.absenStatus.value = false;
+      //     AppData.statusAbsen = false;
+      //     // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+      //   } else if ((AppData.signingTime != "" ||
+      //           AppData.signingTime != "00:00:00") &&
+      //       (AppData.signoutTime == "" || AppData.signoutTime == "00:00:00")) {
+      //     absenOfflineStatus.value = AppData.statusAbsenOffline;
+      //     if (absenOfflineStatus.value == true) {
+      //       pendingSigninApr.value = true;
+      //       textPendingMasuk.value = true;
+      //     }
+      //     absenControllre.absenStatus.value = true;
+      //     AppData.statusAbsen = true;
+      //     // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+      //   } else if ((AppData.signingTime != "" ||
+      //           AppData.signingTime != "00:00:00") &&
+      //       (AppData.signoutTime != "" || AppData.signoutTime != "00:00:00")) {
+      //     absenOfflineStatus.value = AppData.statusAbsenOffline;
+
+      //     absenControllre.absenStatus.value = false;
+      //     AppData.statusAbsen = false;
+      //     if (absenOfflineStatus.value == true) {
+      //       pendingSignoutApr.value = true;
+      //       textPendingKeluar.value = true;
+      //       pendingSigninApr.value = false;
+      //       textPendingMasuk.value = false;
+      //       if (absenMasukKeluarOffline.value['signing_time'] != "") {
+      //         pendingSigninApr.value = true;
+      //         textPendingMasuk.value = true;
+      //         absenControllre.absenStatus.value = true;
+      //         AppData.statusAbsen = true;
+      //       } else if (AppData.temp == true) {
+      //         pendingSigninApr.value = true;
+      //         textPendingMasuk.value = false;
+      //         absenControllre.absenStatus.value = true;
+      //         AppData.statusAbsen = true;
+      //       }
+      //     }
+      //     // AppData.dateLastAbsen = absenMasukKeluarOffline['atten_date'];
+      //   }
+      //   isLoading.value = false;
+      // });
     });
   }
 
@@ -1835,77 +1875,16 @@ class DashboardController extends GetxController {
   }
 
   Future<void> loadMenuShowInMain() async {
-    if (authController.isConnected.value) {
-      menuShowInMain.clear();
-      var connect = Api.connectionApi("get", {}, "menu_dashboard",
-          params: "&em_id=${AppData.informasiUser![0].em_id}");
-      Future.delayed(const Duration(seconds: 1), () {
-        connect.then((dynamic res) async {
-          print("res.statusCode: ${res.statusCode}");
-          if (res == false) {
-            // UtilsAlert.koneksiBuruk();
-          } else {
-            absenControllre.showButtonlaporan.value = false;
-            controllerIzin.showButtonlaporan.value = false;
-            controllerLembur.showButtonlaporan.value = false;
-
-            controllerTugasLuar.showButtonlaporan.value = false;
-            controllerKlaim.showButtonlaporan.value = false;
-            controllerCuti.showButtonlaporan.value = false;
-
-            if (res.statusCode == 200) {
-              var valueBody = jsonDecode(res.body);
-              var temporary = valueBody['data'];
-
-              List tempData = temporary;
-
-              print("data temporary ${temporary}");
-
-              List<Map<String, dynamic>> menus = [];
-
-              for (var element in tempData[0]['menu']) {
-                print("Nama Menu ${element['nama']}");
-
-                // menyimpan ke sqlite
-                menus.add({
-                  'id': element['id'],
-                  'nama': element['nama'],
-                  'url': element['url'],
-                  'gambar': element['gambar'],
-                  'status': element['status'],
-                });
-
-                if (element['nama'] == "Absensi") {
-                  absenControllre.showButtonlaporan.value = true;
-                }
-
-                if (element['nama'].toString().trim() == "Izin") {
-                  print("masuk sini ${element['nama'].toString().trim()}");
-                  controllerIzin.showButtonlaporan.value = true;
-                }
-
-                if (element['nama'] == "Lembur") {
-                  controllerLembur.showButtonlaporan.value = true;
-                }
-                if (element['nama'] == "Cuti") {
-                  controllerCuti.showButtonlaporan.value = true;
-                }
-                if (element['nama'] == "Tugas Luar") {
-                  controllerTugasLuar.showButtonlaporan.value = true;
-                }
-                if (element['nama'] == "Klaim") {
-                  controllerKlaim.showButtonlaporan.value = true;
-                }
-              }
-
-              SqliteDatabaseHelper().insertMenus(menus);
-
-              menuShowInMain.value = menus;
-              menuShowInMainNew.value = temporary;
-            }
-          }
-        }).catchError((error) async {
-          menuShowInMain.clear();
+    // if (authController.isConnected.value) {
+    menuShowInMain.clear();
+    var connect = Api.connectionApi("get", {}, "menu_dashboard",
+        params: "&em_id=${AppData.informasiUser![0].em_id}");
+    Future.delayed(const Duration(seconds: 1), () {
+      connect.then((dynamic res) async {
+        print("res.statusCode: ${res.statusCode}");
+        if (res == false) {
+          // UtilsAlert.koneksiBuruk();
+        } else {
           absenControllre.showButtonlaporan.value = false;
           controllerIzin.showButtonlaporan.value = false;
           controllerLembur.showButtonlaporan.value = false;
@@ -1914,153 +1893,172 @@ class DashboardController extends GetxController {
           controllerKlaim.showButtonlaporan.value = false;
           controllerCuti.showButtonlaporan.value = false;
 
-          var menusUtama = await SqliteDatabaseHelper().getMenus();
+          if (res.statusCode == 200) {
+            var valueBody = jsonDecode(res.body);
+            var temporary = valueBody['data'];
 
-          for (var element in menusUtama) {
-            print("Nama Menu ${element['nama']}");
+            List tempData = temporary;
 
-            if (element['nama'] == "Absensi") {
-              absenControllre.showButtonlaporan.value = true;
+            print("data temporary ${temporary}");
+
+            List<Map<String, dynamic>> menus = [];
+
+            for (var element in tempData[0]['menu']) {
+              print("Nama Menu ${element['nama']}");
+
+              // menyimpan ke sqlite
+              menus.add({
+                'id': element['id'],
+                'nama': element['nama'],
+                'url': element['url'],
+                'gambar': element['gambar'],
+                'status': element['status'],
+              });
+
+              if (element['nama'] == "Absensi") {
+                absenControllre.showButtonlaporan.value = true;
+              }
+
+              if (element['nama'].toString().trim() == "Izin") {
+                print("masuk sini ${element['nama'].toString().trim()}");
+                controllerIzin.showButtonlaporan.value = true;
+              }
+
+              if (element['nama'] == "Lembur") {
+                controllerLembur.showButtonlaporan.value = true;
+              }
+              if (element['nama'] == "Cuti") {
+                controllerCuti.showButtonlaporan.value = true;
+              }
+              if (element['nama'] == "Tugas Luar") {
+                controllerTugasLuar.showButtonlaporan.value = true;
+              }
+              if (element['nama'] == "Klaim") {
+                controllerKlaim.showButtonlaporan.value = true;
+              }
             }
 
-            if (element['nama'].toString().trim() == "Izin") {
-              print("masuk sini ${element['nama'].toString().trim()}");
-              controllerIzin.showButtonlaporan.value = true;
-            }
+            SqliteDatabaseHelper().insertMenus(menus);
 
-            if (element['nama'] == "Lembur") {
-              controllerLembur.showButtonlaporan.value = true;
-            }
-            if (element['nama'] == "Cuti") {
-              controllerCuti.showButtonlaporan.value = true;
-            }
-            if (element['nama'] == "Tugas Luar") {
-              controllerTugasLuar.showButtonlaporan.value = true;
-            }
-            if (element['nama'] == "Klaim") {
-              controllerKlaim.showButtonlaporan.value = true;
-            }
+            menuShowInMain.value = menus;
+            menuShowInMainNew.value = temporary;
           }
-          menuShowInMain.value = menusUtama;
-        });
+        }
       });
-    } else {
-      menuShowInMain.clear();
-      absenControllre.showButtonlaporan.value = false;
-      controllerIzin.showButtonlaporan.value = false;
-      controllerLembur.showButtonlaporan.value = false;
+      // .catchError((error) async {
+      //   var menusUtama = await SqliteDatabaseHelper().getMenus();
+      //   if (menusUtama.isNotEmpty) {
+      //     menuShowInMain.clear();
+      //     absenControllre.showButtonlaporan.value = false;
+      //     controllerIzin.showButtonlaporan.value = false;
+      //     controllerLembur.showButtonlaporan.value = false;
 
-      controllerTugasLuar.showButtonlaporan.value = false;
-      controllerKlaim.showButtonlaporan.value = false;
-      controllerCuti.showButtonlaporan.value = false;
+      //     controllerTugasLuar.showButtonlaporan.value = false;
+      //     controllerKlaim.showButtonlaporan.value = false;
+      //     controllerCuti.showButtonlaporan.value = false;
 
-      var menusUtama = await SqliteDatabaseHelper().getMenus();
+      //     for (var element in menusUtama) {
+      //       print("Nama Menu ${element['nama']}");
 
-      for (var element in menusUtama) {
-        print("Nama Menu ${element['nama']}");
+      //       if (element['nama'] == "Absensi") {
+      //         absenControllre.showButtonlaporan.value = true;
+      //       }
 
-        if (element['nama'] == "Absensi") {
-          absenControllre.showButtonlaporan.value = true;
-        }
+      //       if (element['nama'].toString().trim() == "Izin") {
+      //         print("masuk sini ${element['nama'].toString().trim()}");
+      //         controllerIzin.showButtonlaporan.value = true;
+      //       }
 
-        if (element['nama'].toString().trim() == "Izin") {
-          print("masuk sini ${element['nama'].toString().trim()}");
-          controllerIzin.showButtonlaporan.value = true;
-        }
+      //       if (element['nama'] == "Lembur") {
+      //         controllerLembur.showButtonlaporan.value = true;
+      //       }
+      //       if (element['nama'] == "Cuti") {
+      //         controllerCuti.showButtonlaporan.value = true;
+      //       }
+      //       if (element['nama'] == "Tugas Luar") {
+      //         controllerTugasLuar.showButtonlaporan.value = true;
+      //       }
+      //       if (element['nama'] == "Klaim") {
+      //         controllerKlaim.showButtonlaporan.value = true;
+      //       }
+      //     }
+      //     menuShowInMain.value = menusUtama;
+      //   }
+      // });
+    });
+    // } else {
+    //   menuShowInMain.clear();
+    //   absenControllre.showButtonlaporan.value = false;
+    //   controllerIzin.showButtonlaporan.value = false;
+    //   controllerLembur.showButtonlaporan.value = false;
 
-        if (element['nama'] == "Lembur") {
-          controllerLembur.showButtonlaporan.value = true;
-        }
-        if (element['nama'] == "Cuti") {
-          controllerCuti.showButtonlaporan.value = true;
-        }
-        if (element['nama'] == "Tugas Luar") {
-          controllerTugasLuar.showButtonlaporan.value = true;
-        }
-        if (element['nama'] == "Klaim") {
-          controllerKlaim.showButtonlaporan.value = true;
-        }
-      }
-      menuShowInMain.value = menusUtama;
-    }
+    //   controllerTugasLuar.showButtonlaporan.value = false;
+    //   controllerKlaim.showButtonlaporan.value = false;
+    //   controllerCuti.showButtonlaporan.value = false;
+
+    //   var menusUtama = await SqliteDatabaseHelper().getMenus();
+
+    //   for (var element in menusUtama) {
+    //     print("Nama Menu ${element['nama']}");
+
+    //     if (element['nama'] == "Absensi") {
+    //       absenControllre.showButtonlaporan.value = true;
+    //     }
+
+    //     if (element['nama'].toString().trim() == "Izin") {
+    //       print("masuk sini ${element['nama'].toString().trim()}");
+    //       controllerIzin.showButtonlaporan.value = true;
+    //     }
+
+    //     if (element['nama'] == "Lembur") {
+    //       controllerLembur.showButtonlaporan.value = true;
+    //     }
+    //     if (element['nama'] == "Cuti") {
+    //       controllerCuti.showButtonlaporan.value = true;
+    //     }
+    //     if (element['nama'] == "Tugas Luar") {
+    //       controllerTugasLuar.showButtonlaporan.value = true;
+    //     }
+    //     if (element['nama'] == "Klaim") {
+    //       controllerKlaim.showButtonlaporan.value = true;
+    //     }
+    //   }
+    //   menuShowInMain.value = menusUtama;
+    // }
   }
 
   Future<void> loadMenuShowInMainUtama() async {
-    if (authController.isConnected.value) {
-      showPengumuman.value = false;
-      showPkwt.value = false;
-      showUlangTahun.value = false;
-      showLaporan.value = false;
-      // menuShowInMain.value.clear();
-      var connect = Api.connectionApi("get", {}, "menu_dashboard_utama",
-          params: "&em_id=${AppData.informasiUser![0].em_id}");
-      Future.delayed(const Duration(seconds: 1), () {
-        connect.then((dynamic res) async {
-          if (res == false) {
-            // UtilsAlert.koneksiBuruk();
-          } else {
-            if (res.statusCode == 200) {
-              var valueBody = jsonDecode(res.body);
+    // if (authController.isConnected.value) {
+    showPengumuman.value = false;
+    showPkwt.value = false;
+    showUlangTahun.value = false;
+    showLaporan.value = false;
+    // menuShowInMain.value.clear();
+    var connect = Api.connectionApi("get", {}, "menu_dashboard_utama",
+        params: "&em_id=${AppData.informasiUser![0].em_id}");
+    Future.delayed(const Duration(seconds: 1), () {
+      connect.then((dynamic res) async {
+        if (res == false) {
+          // UtilsAlert.koneksiBuruk();
+        } else {
+          if (res.statusCode == 200) {
+            var valueBody = jsonDecode(res.body);
 
-              var temporary = valueBody['data'];
+            var temporary = valueBody['data'];
 
-              List<Map<String, dynamic>> menusUtama = [];
-              for (var element in temporary) {
-                menusUtama.add({
-                  'id': element['id'],
-                  'nama': element['nama'],
-                  'url': element['url'],
-                  'gambar': element['gambar'],
-                  'status': element['status'],
-                });
-              }
-              SqliteDatabaseHelper().insertMenusUtama(menusUtama);
-
-              menuShowInMainUtama.value = menusUtama;
-
-              if (menuShowInMainUtama.isNotEmpty) {
-                List menuPengumuman = menuShowInMainUtama
-                    .where((p0) =>
-                        p0['url'].toString().toLowerCase().trim() ==
-                        "InfoHrd".toLowerCase().toString().trim())
-                    .toList();
-                List menuPkwt = menuShowInMainUtama
-                    .where((p0) =>
-                        p0['url'].toString().toLowerCase().trim() ==
-                        "PKWT".toLowerCase().toString().trim())
-                    .toList();
-                List menuUlangtahun = menuShowInMainUtama
-                    .where((p0) =>
-                        p0['url'].toString().toLowerCase().trim() ==
-                        "UlangTahun".toLowerCase().toString().trim())
-                    .toList();
-                List menuLaporan = menuShowInMainUtama
-                    .where((p0) =>
-                        p0['url'].toString().toLowerCase().trim() ==
-                        "Laporan".toLowerCase().toString().trim())
-                    .toList();
-
-                if (menuPengumuman.isNotEmpty) {
-                  showPengumuman.value = true;
-                }
-                if (menuPkwt.isNotEmpty) {
-                  showPkwt.value = true;
-                }
-                if (menuUlangtahun.isNotEmpty) {
-                  showUlangTahun.value = true;
-                }
-                if (menuLaporan.isNotEmpty) {
-                  showLaporan.value = true;
-                }
-              }
+            List<Map<String, dynamic>> menusUtama = [];
+            for (var element in temporary) {
+              menusUtama.add({
+                'id': element['id'],
+                'nama': element['nama'],
+                'url': element['url'],
+                'gambar': element['gambar'],
+                'status': element['status'],
+              });
             }
-          }
-        }).catchError(
-          (error) async {
-            var menusUtama = await SqliteDatabaseHelper().getMenusUtama();
-            menuShowInMainUtama.value = menusUtama;
+            SqliteDatabaseHelper().insertMenusUtama(menusUtama);
 
-            print("mehehe: ${menuShowInMainUtama.value}");
+            menuShowInMainUtama.value = menusUtama;
 
             if (menuShowInMainUtama.isNotEmpty) {
               List menuPengumuman = menuShowInMainUtama
@@ -2097,52 +2095,97 @@ class DashboardController extends GetxController {
                 showLaporan.value = true;
               }
             }
-          },
-        );
+          }
+        }
       });
-    } else {
-      // menuShowInMain.value.clear();
-      var menusUtama = await SqliteDatabaseHelper().getMenusUtama();
-      menuShowInMainUtama.value = menusUtama;
+      // .catchError(
+      //   (error) async {
+      //     var menusUtama = await SqliteDatabaseHelper().getMenusUtama();
+      //     menuShowInMainUtama.value = menusUtama;
 
-      print("mehehe: ${menuShowInMainUtama.value}");
+      //     print("mehehe: ${menuShowInMainUtama.value}");
 
-      if (menuShowInMainUtama.isNotEmpty) {
-        List menuPengumuman = menuShowInMainUtama
-            .where((p0) =>
-                p0['url'].toString().toLowerCase().trim() ==
-                "InfoHrd".toLowerCase().toString().trim())
-            .toList();
-        List menuPkwt = menuShowInMainUtama
-            .where((p0) =>
-                p0['url'].toString().toLowerCase().trim() ==
-                "PKWT".toLowerCase().toString().trim())
-            .toList();
-        List menuUlangtahun = menuShowInMainUtama
-            .where((p0) =>
-                p0['url'].toString().toLowerCase().trim() ==
-                "UlangTahun".toLowerCase().toString().trim())
-            .toList();
-        List menuLaporan = menuShowInMainUtama
-            .where((p0) =>
-                p0['url'].toString().toLowerCase().trim() ==
-                "Laporan".toLowerCase().toString().trim())
-            .toList();
+      //     if (menuShowInMainUtama.isNotEmpty) {
+      //       List menuPengumuman = menuShowInMainUtama
+      //           .where((p0) =>
+      //               p0['url'].toString().toLowerCase().trim() ==
+      //               "InfoHrd".toLowerCase().toString().trim())
+      //           .toList();
+      //       List menuPkwt = menuShowInMainUtama
+      //           .where((p0) =>
+      //               p0['url'].toString().toLowerCase().trim() ==
+      //               "PKWT".toLowerCase().toString().trim())
+      //           .toList();
+      //       List menuUlangtahun = menuShowInMainUtama
+      //           .where((p0) =>
+      //               p0['url'].toString().toLowerCase().trim() ==
+      //               "UlangTahun".toLowerCase().toString().trim())
+      //           .toList();
+      //       List menuLaporan = menuShowInMainUtama
+      //           .where((p0) =>
+      //               p0['url'].toString().toLowerCase().trim() ==
+      //               "Laporan".toLowerCase().toString().trim())
+      //           .toList();
 
-        if (menuPengumuman.isNotEmpty) {
-          showPengumuman.value = true;
-        }
-        if (menuPkwt.isNotEmpty) {
-          showPkwt.value = true;
-        }
-        if (menuUlangtahun.isNotEmpty) {
-          showUlangTahun.value = true;
-        }
-        if (menuLaporan.isNotEmpty) {
-          showLaporan.value = true;
-        }
-      }
-    }
+      //       if (menuPengumuman.isNotEmpty) {
+      //         showPengumuman.value = true;
+      //       }
+      //       if (menuPkwt.isNotEmpty) {
+      //         showPkwt.value = true;
+      //       }
+      //       if (menuUlangtahun.isNotEmpty) {
+      //         showUlangTahun.value = true;
+      //       }
+      //       if (menuLaporan.isNotEmpty) {
+      //         showLaporan.value = true;
+      //       }
+      //     }
+      //   },
+      // );
+    });
+    // } else {
+    //   // menuShowInMain.value.clear();
+    //   var menusUtama = await SqliteDatabaseHelper().getMenusUtama();
+    //   menuShowInMainUtama.value = menusUtama;
+
+    //   print("mehehe: ${menuShowInMainUtama.value}");
+
+    //   if (menuShowInMainUtama.isNotEmpty) {
+    //     List menuPengumuman = menuShowInMainUtama
+    //         .where((p0) =>
+    //             p0['url'].toString().toLowerCase().trim() ==
+    //             "InfoHrd".toLowerCase().toString().trim())
+    //         .toList();
+    //     List menuPkwt = menuShowInMainUtama
+    //         .where((p0) =>
+    //             p0['url'].toString().toLowerCase().trim() ==
+    //             "PKWT".toLowerCase().toString().trim())
+    //         .toList();
+    //     List menuUlangtahun = menuShowInMainUtama
+    //         .where((p0) =>
+    //             p0['url'].toString().toLowerCase().trim() ==
+    //             "UlangTahun".toLowerCase().toString().trim())
+    //         .toList();
+    //     List menuLaporan = menuShowInMainUtama
+    //         .where((p0) =>
+    //             p0['url'].toString().toLowerCase().trim() ==
+    //             "Laporan".toLowerCase().toString().trim())
+    //         .toList();
+
+    //     if (menuPengumuman.isNotEmpty) {
+    //       showPengumuman.value = true;
+    //     }
+    //     if (menuPkwt.isNotEmpty) {
+    //       showPkwt.value = true;
+    //     }
+    //     if (menuUlangtahun.isNotEmpty) {
+    //       showUlangTahun.value = true;
+    //     }
+    //     if (menuLaporan.isNotEmpty) {
+    //       showLaporan.value = true;
+    //     }
+    //   }
+    // }
   }
 
   Future<void> getInformasiDashboard() async {
@@ -2251,49 +2294,50 @@ class DashboardController extends GetxController {
   // }
 
   Future<void> getBannerDashboard() async {
-    if (authController.isConnected.value) {
-      bannerDashboard.clear();
-      // var connect = Api.connectionApi("get", {}, "banner_dashboard");
-      var connect = Api.connectionApi("get", {}, "banner_from_finance");
-      Future.delayed(const Duration(seconds: 1), () {
-        connect.then((dynamic res) async {
-          if (res == false) {
-            // UtilsAlert.koneksiBuruk();
-            bannerDashboard.clear();
-            var banners = await SqliteDatabaseHelper().getBanners();
-            bannerDashboard.value = banners;
-            print(" banner :${bannerDashboard.value}");
-            bannerDashboard.refresh();
-          } else {
-            if (res.statusCode == 200) {
-              var valueBody = jsonDecode(res.body);
-
-              var banners = List<Map<String, dynamic>>.from(
-                  valueBody['data'].map((banner) => {
-                        'id': banner['id'],
-                        'img': banner['img'],
-                      }));
-
-              SqliteDatabaseHelper().insertBanners(banners);
-
-              bannerDashboard.value = banners;
-              bannerDashboard.refresh();
-            }
-          }
-        }).catchError((error) async {
+    // if (authController.isConnected.value) {
+    bannerDashboard.clear();
+    // var connect = Api.connectionApi("get", {}, "banner_dashboard");
+    var connect = Api.connectionApi("get", {}, "banner_from_finance");
+    Future.delayed(const Duration(seconds: 1), () {
+      connect.then((dynamic res) async {
+        if (res == false) {
+          // UtilsAlert.koneksiBuruk();
           bannerDashboard.clear();
           var banners = await SqliteDatabaseHelper().getBanners();
           bannerDashboard.value = banners;
+          print(" banner :${bannerDashboard.value}");
           bannerDashboard.refresh();
-        });
+        } else {
+          if (res.statusCode == 200) {
+            var valueBody = jsonDecode(res.body);
+
+            var banners = List<Map<String, dynamic>>.from(
+                valueBody['data'].map((banner) => {
+                      'id': banner['id'],
+                      'img': banner['img'],
+                    }));
+
+            SqliteDatabaseHelper().insertBanners(banners);
+
+            bannerDashboard.value = banners;
+            bannerDashboard.refresh();
+          }
+        }
       });
-    } else {
-      bannerDashboard.clear();
-      var banners = await SqliteDatabaseHelper().getBanners();
-      bannerDashboard.value = banners;
-      print(" banner :${bannerDashboard.value}");
-      bannerDashboard.refresh();
-    }
+      // .catchError((error) async {
+      //   bannerDashboard.clear();
+      //   var banners = await SqliteDatabaseHelper().getBanners();
+      //   bannerDashboard.value = banners;
+      //   bannerDashboard.refresh();
+      // });
+    });
+    // } else {
+    //   bannerDashboard.clear();
+    //   var banners = await SqliteDatabaseHelper().getBanners();
+    //   bannerDashboard.value = banners;
+    //   print(" banner :${bannerDashboard.value}");
+    //   bannerDashboard.refresh();
+    // }
   }
 
   Future<void> _getTime() async {
@@ -2688,33 +2732,33 @@ class DashboardController extends GetxController {
                                       false &&
                                   controllerAbsensi.statusDeteksi2.value ==
                                       false) {
-                                if (authController.isConnected.value &&
-                                    !absenControllre.coordinate.value) {
-                                  controllerAbsensi.kirimDataAbsensi(
-                                      typewfh: typewfh);
-                                } else if (absenControllre.coordinate.value ==
-                                    true) {
-                                  UtilsAlert
-                                      .showCheckOfflineAbsensiKesalahanServer(
-                                          positiveBtnPressed: () {
-                                    Get.back();
-                                    controllerAbsensi
-                                        .widgetButtomSheetLanjutkanOffline(
-                                            type: 'offlineAbsensi');
-                                  });
-                                  // controllerAbsensi.kirimDataAbsensiOffline(
-                                  //     typewfh: typewfh);
-                                } else {
-                                  UtilsAlert.showCheckOfflineAbsensi(
-                                      positiveBtnPressed: () {
-                                    Get.back();
-                                    controllerAbsensi
-                                        .widgetButtomSheetLanjutkanOffline(
-                                            type: 'offlineAbsensi');
-                                    // controllerAbsensi.kirimDataAbsensiOffline(
-                                    //     typewfh: typewfh);
-                                  });
-                                }
+                                // if (authController.isConnected.value &&
+                                //     !absenControllre.coordinate.value) {
+                                controllerAbsensi.kirimDataAbsensi(
+                                    typewfh: typewfh);
+                                // } else if (absenControllre.coordinate.value ==
+                                //     true) {
+                                //   UtilsAlert
+                                //       .showCheckOfflineAbsensiKesalahanServer(
+                                //           positiveBtnPressed: () {
+                                //     Get.back();
+                                //     controllerAbsensi
+                                //         .widgetButtomSheetLanjutkanOffline(
+                                //             type: 'offlineAbsensi');
+                                //   });
+                                //   // controllerAbsensi.kirimDataAbsensiOffline(
+                                //   //     typewfh: typewfh);
+                                // } else {
+                                //   UtilsAlert.showCheckOfflineAbsensi(
+                                //       positiveBtnPressed: () {
+                                //     Get.back();
+                                //     controllerAbsensi
+                                //         .widgetButtomSheetLanjutkanOffline(
+                                //             type: 'offlineAbsensi');
+                                //     // controllerAbsensi.kirimDataAbsensiOffline(
+                                //     //     typewfh: typewfh);
+                                //   });
+                                // }
                               } else if (controllerAbsensi
                                           .statusDeteksi.value ==
                                       false &&

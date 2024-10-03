@@ -257,7 +257,7 @@ class LocationService : Service() {
 
         return NotificationCompat.Builder(this, "location_service")
             .setContentTitle("Tracking Lokasi")
-            .setContentText("Date: $date")
+            .setContentText("Tanggal: $date")
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(pendingIntent)
             .setOngoing(true)

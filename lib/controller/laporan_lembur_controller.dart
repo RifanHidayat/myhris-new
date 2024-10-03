@@ -166,7 +166,7 @@ class LaporanLemburController extends GetxController {
     });
   }
 
-  var date = DateTime.now().obs;
+  var date = DateTime.parse(AppData.endPeriode).obs;
   var startPeriode = "".obs;
   var endPeriode = "".obs;
   var tempStartPeriode = "".obs;
@@ -314,6 +314,8 @@ class LaporanLemburController extends GetxController {
 
   void loadDataLemburEmployee(emId, bulan, tahun, title) {
     listDetailLaporanEmployee.value.clear();
+    AppData.startPeriode = startPeriode.value;
+    AppData.endPeriode = endPeriode.value;
     Map<String, dynamic> body = {
       'em_id': emId,
       'bulan': bulan,
@@ -337,6 +339,8 @@ class LaporanLemburController extends GetxController {
         typeAjuanRefresh("Semua");
       }
     });
+    AppData.startPeriode = tempStartPeriode.value;
+    AppData.endPeriode = tempEndPeriode.value;
   }
 
   void typeAjuanRefresh(name) {

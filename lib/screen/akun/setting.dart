@@ -115,9 +115,10 @@ class _SettingState extends State<Setting> {
                                       .toString() !=
                                   60,
                       child: InkWell(
-                        onTap: () => authController.isConnected.value
-                            ? controller.lineInfoPenggunaKontrak()
-                            : UtilsAlert.showDialogCheckInternet(),
+                        onTap: () => //authController.isConnected.value
+                            // ?
+                            controller.lineInfoPenggunaKontrak(),
+                        // : UtilsAlert.showDialogCheckInternet(),
                         child: Column(
                           children: [
                             Padding(
@@ -201,27 +202,27 @@ class _SettingState extends State<Setting> {
           )
         : Stack(
             children: [
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: Obx(() {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: authController.isConnected.value
-                              ? Constanst.color5
-                              : Constanst.color4,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   top: 10,
+              //   right: 10,
+              //   child: Padding(
+              //     padding: const EdgeInsets.only(right: 16),
+              //     child: SizedBox(
+              //       width: 20,
+              //       height: 20,
+              //       child: Obx(() {
+              //         return Container(
+              //           decoration: BoxDecoration(
+              //             color: authController.isConnected.value
+              //                 ? Constanst.color5
+              //                 : Constanst.color4,
+              //             borderRadius: BorderRadius.circular(20),
+              //           ),
+              //         );
+              //       }),
+              //     ),
+              //   ),
+              // ),
               InkWell(
                 customBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12))),
@@ -493,9 +494,10 @@ class _SettingState extends State<Setting> {
             child: InkWell(
               customBorder: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12))),
-              onTap: () => authController.isConnected.value
-                  ? Get.to(InfoKaryawan())
-                  : UtilsAlert.showDialogCheckInternet(),
+              onTap: () => //authController.isConnected.value
+                  // ?
+                  Get.to(InfoKaryawan()),
+              // : UtilsAlert.showDialogCheckInternet(),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -558,9 +560,10 @@ class _SettingState extends State<Setting> {
             child: InkWell(
               customBorder: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12))),
-              onTap: () => authController.isConnected.value
-                  ? controller.lineInfoPenggunaKontrak()
-                  : UtilsAlert.showDialogCheckInternet(),
+              onTap: () => //authController.isConnected.value
+                  // ?
+                  controller.lineInfoPenggunaKontrak(),
+              // : UtilsAlert.showDialogCheckInternet(),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -927,9 +930,10 @@ class _SettingState extends State<Setting> {
           ),
         ),
         InkWell(
-          onTap: () => authController.isConnected.value
-              ? Get.to(EditPassword())
-              : UtilsAlert.showDialogCheckInternet(),
+          onTap: () => //authController.isConnected.value
+              // ?
+              Get.to(EditPassword()),
+          // : UtilsAlert.showDialogCheckInternet(),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 12.0, 20.0, 12.0),
             child: Column(
@@ -973,9 +977,10 @@ class _SettingState extends State<Setting> {
           ),
         ),
         InkWell(
-          onTap: () => authController.isConnected.value
-              ? Get.to(FaceRecognition())
-              : UtilsAlert.showDialogCheckInternet(),
+          onTap: () => //authController.isConnected.value
+              // ?
+              Get.to(FaceRecognition()),
+          // : UtilsAlert.showDialogCheckInternet(),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 12.0, 20.0, 12.0),
             child: Column(
@@ -1041,9 +1046,10 @@ class _SettingState extends State<Setting> {
           ),
         ),
         InkWell(
-          onTap: () => authController.isConnected.value
-              ? Get.to(ChangeLogPage())
-              : UtilsAlert.showDialogCheckInternet(),
+          onTap: () => //authController.isConnected.value
+              // ?
+              Get.to(ChangeLogPage()),
+          // : UtilsAlert.showDialogCheckInternet(),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 12.0, 20.0, 12.0),
             child: Column(

@@ -321,25 +321,24 @@ class _CameraViewState extends State<CameraViewLocation> {
                               InkWell(
                                   onTap: () {
                                     Get.back();
-                                    if (!authController.isConnected.value) {
-                                      Get.to(AbsenMasukKeluarOffline(
-                                        status: widget.status == 'masuk'
-                                            ? "Absen Masuk"
-                                            : "Absen Keluar",
-                                      ));
-                                    } else {
-                                      Navigator.push(
-                                        Get.context!,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                AbsenMasukKeluar(
-                                                  status:
-                                                      widget.status == 'masuk'
-                                                          ? "Absen Masuk"
-                                                          : "Absen Keluar",
-                                                )),
-                                      );
-                                    }
+                                    // if (!authController.isConnected.value) {
+                                    //   Get.to(AbsenMasukKeluarOffline(
+                                    //     status: widget.status == 'masuk'
+                                    //         ? "Absen Masuk"
+                                    //         : "Absen Keluar",
+                                    //   ));
+                                    // } else {
+                                    Navigator.push(
+                                      Get.context!,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AbsenMasukKeluar(
+                                                status: widget.status == 'masuk'
+                                                    ? "Absen Masuk"
+                                                    : "Absen Keluar",
+                                              )),
+                                    );
+                                    // }
                                   },
                                   child: const Icon(
                                     Iconsax.tick_circle,
