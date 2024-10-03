@@ -112,8 +112,7 @@ class _SettingState extends State<Setting> {
                           int.parse(AppData.informasiUser![0].sisaKontrak) <=
                                   60 &&
                               AppData.informasiUser![0].tanggalBerakhirKontrak
-                                      .toString() !=
-                                  60,
+                                      .toString() != "" ,
                       child: InkWell(
                         onTap: () => //authController.isConnected.value
                             // ?
