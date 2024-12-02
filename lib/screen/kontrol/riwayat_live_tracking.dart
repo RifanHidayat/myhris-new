@@ -207,41 +207,41 @@ class _RiwayatLiveTrackingState extends State<RiwayatLiveTracking> {
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 16.0, top: 12.0, bottom: 8.0),
-                            child: Divider(
-                              thickness: 1,
-                              height: 0,
-                              color: Constanst.border,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 12.0, right: 12.0),
-                                child: Image.asset(
-                                  // index == 0
-                                  //     ? 'assets/tracking.png'
-                                  //     :
-                                  'assets/tracking_slash.png',
-                                  width: 24,
-                                  height: 24,
-                                ),
-                              ),
-                              Text(
-                                // index == 0
-                                //     ? "Live tracking active"
-                                //     :
-                                "Live tracking berakhir",
-                                style: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                    color: Constanst.fgPrimary),
-                              ),
-                            ],
-                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(
+                          //       left: 16.0, top: 12.0, bottom: 8.0),
+                          //   child: Divider(
+                          //     thickness: 1,
+                          //     height: 0,
+                          //     color: Constanst.border,
+                          //   ),
+                          // ),
+                          // Row(
+                          //   children: [
+                          //     Padding(
+                          //       padding: const EdgeInsets.only(
+                          //           left: 12.0, right: 12.0),
+                          //       child: Image.asset(
+                          //         // index == 0
+                          //         //     ? 'assets/tracking.png'
+                          //         //     :
+                          //         'assets/tracking_slash.png',
+                          //         width: 24,
+                          //         height: 24,
+                          //       ),
+                          //     ),
+                          //     Text(
+                          //       // index == 0
+                          //       //     ? "Live tracking active"
+                          //       //     :
+                          //       "Live tracking berakhir",
+                          //       style: GoogleFonts.inter(
+                          //           fontWeight: FontWeight.w500,
+                          //           fontSize: 16,
+                          //           color: Constanst.fgPrimary),
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),

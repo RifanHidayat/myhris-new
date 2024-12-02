@@ -5,7 +5,7 @@ import Firebase
 import FirebaseCore
 import flutter_local_notifications
 import FirebaseMessaging    
-import background_location_tracker
+// import background_location_tracker
 // import CorerLocation // update fake gps
 
 // @UIApplicationMain
@@ -41,9 +41,9 @@ if #available(iOS 10.0, *) {
 
     GeneratedPluginRegistrant.register(with: self)
 
-    BackgroundLocationTrackerPlugin.setPluginRegistrantCallback { registry in
-        GeneratedPluginRegistrant.register(with: registry)
-    }
+//    BackgroundLocationTrackerPlugin.setPluginRegistrantCallback { registry in
+//        GeneratedPluginRegistrant.register(with: registry)
+    //}
     
     // update fake gps
     // GeneratedPluginRegistrant.register(with: self)

@@ -373,18 +373,18 @@ class _KasbonState extends State<Kasbon> {
       //           ],
       //         ),
       // ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Constanst.colorPrimary,
-        onPressed: () {
-          Get.to(FormKasbon(
-            dataForm: [[], false],
-          ));
-        },
-        child: const Icon(
-          Iconsax.add,
-          size: 34,
-        ),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Constanst.colorPrimary,
+      //   onPressed: () {
+      //     Get.to(FormKasbon(
+      //       dataForm: [[], false],
+      //     ));
+      //   },
+      //   child: const Icon(
+      //     Iconsax.add,
+      //     size: 34,
+      //   ),
+      // ),
       // bottomNavigationBar: Obx(
       //   () => Padding(
       //       padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 12),

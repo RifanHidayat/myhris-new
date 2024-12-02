@@ -521,26 +521,26 @@ class _DetailLiveTrackingState extends State<DetailLiveTracking> {
                           color: Constanst.border,
                         ),
                       ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 12.0, right: 12.0),
-                            child: Image.asset(
-                              'assets/tracking_slash.png',
-                              width: 24,
-                              height: 24,
-                            ),
-                          ),
-                          Text(
-                            "Live tracking berakhir",
-                            style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
-                                color: Constanst.fgPrimary),
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   children: [
+                      //     Padding(
+                      //       padding:
+                      //           const EdgeInsets.only(left: 12.0, right: 12.0),
+                      //       child: Image.asset(
+                      //         'assets/tracking_slash.png',
+                      //         width: 24,
+                      //         height: 24,
+                      //       ),
+                      //     ),
+                      //     Text(
+                      //       "Live tracking berakhir",
+                      //       style: GoogleFontFFs.inter(
+                      //           fontWeight: FontWeight.w500,
+                      //           fontSize: 16,
+                      //           color: Constanst.fgPrimary),
+                      //     ),
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),

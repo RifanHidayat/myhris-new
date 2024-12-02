@@ -824,7 +824,9 @@ class Aktifitas extends StatelessWidget {
                 CircularPercentIndicator(
                   radius: 30.0,
                   lineWidth: 4.0,
-                  percent: controller.persenAbsenTelat.value,
+                  percent: controller.persenAbsenTelat.value > 1
+                      ? 1
+                      : controller.persenAbsenTelat.value,
                   center: Text(controller.stringPersenAbsenTepatWaktu.value),
                   progressColor: Constanst.infoLight,
                 ),
@@ -842,7 +844,7 @@ class Aktifitas extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Absen tepat waktu",
+                            "Absen tepat waktu ",
                             style: GoogleFonts.inter(
                                 fontWeight: FontWeight.w500,
                                 color: Constanst.fgPrimary,

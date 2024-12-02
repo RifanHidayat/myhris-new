@@ -1435,6 +1435,8 @@ class AbsenController extends GetxController {
               print(
                   "isViewTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
               print("isViewTracking ${typeAbsen.value}");
+             
+             
               if (AppData.informasiUser![0].isViewTracking.toString() == '0') {
                 controllerTracking.bagikanlokasi.value = "aktif";
 
@@ -1444,11 +1446,12 @@ class AbsenController extends GetxController {
                 // service.startService();
                 controllerTracking.updateStatus('1');
                 controllerTracking.isTrackingLokasi.value = true;
-                // controllerTracking.detailTracking(emIdEmployee: '');
+                // controllerTFFracking.detailTracking(emIdEmployee: '');
                 print(
                     "startTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
               }
 
+             
               if (typeAbsen.value == 2) {
                 controllerTracking.bagikanlokasi.value = "tidak aktif";
                 // await LocationDao().clear();

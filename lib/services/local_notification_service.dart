@@ -14,7 +14,7 @@
 //   final BehaviorSubject<String?> onNotificationClick = BehaviorSubject();
 
 //   Future<void> intialize() async {
-//     tz.initializeTimeZones();
+//     tz.initializeTimeZonesF();
 
 //     const AndroidInitializationSettings androidInitializationSettings =
 //         AndroidInitializationSettings('@drawable/ic_stat_email');

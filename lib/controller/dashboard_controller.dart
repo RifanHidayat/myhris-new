@@ -49,6 +49,7 @@ import 'package:siscom_operasional/screen/absen/laporan/laporan_lembur.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_semua_pengajuan.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_tugas_luar.dart';
 import 'package:siscom_operasional/screen/absen/lembur.dart';
+import 'package:siscom_operasional/screen/absen/pengajuan%20absen.dart';
 import 'package:siscom_operasional/screen/absen/riwayat_izin.dart';
 import 'package:siscom_operasional/screen/absen/tugas_luar.dart';
 import 'package:siscom_operasional/screen/absen/form/form_pengajuan_cuti.dart';
@@ -164,14 +165,7 @@ class DashboardController extends GetxController {
     searchController.clear();
   }
 
-  List sortcardPengajuan = [
-    {"id": 1, "nama_pengajuan": "Pengajuan Lembur"},
-    {"id": 2, "nama_pengajuan": "Pengajuan Cuti"},
-    {"id": 3, "nama_pengajuan": "Pengajuan Tugas Luar"},
-    {"id": 4, "nama_pengajuan": "Pengajuan Izin"},
-    {"id": 5, "nama_pengajuan": "Pengajuan Klaim"},
-    {"id": 6, "nama_pengajuan": "Pengajuan Kandidat"},
-  ];
+  List sortcardPengajuan = [].obs;
 
   @override
   void onInit() async {
@@ -1875,6 +1869,7 @@ class DashboardController extends GetxController {
   }
 
   Future<void> loadMenuShowInMain() async {
+    sortcardPengajuan.clear();
     // if (authController.isConnected.value) {
     menuShowInMain.clear();
     var connect = Api.connectionApi("get", {}, "menu_dashboard",
@@ -1915,25 +1910,52 @@ class DashboardController extends GetxController {
                 'status': element['status'],
               });
 
+
               if (element['nama'] == "Absensi") {
                 absenControllre.showButtonlaporan.value = true;
+                sortcardPengajuan
+                    .add({"id": 1, "nama_pengajuan": "Pengajuan Absensi"});
               }
 
               if (element['nama'].toString().trim() == "Izin") {
                 print("masuk sini ${element['nama'].toString().trim()}");
                 controllerIzin.showButtonlaporan.value = true;
+                sortcardPengajuan
+                    .add({"id": 2, "nama_pengajuan": "Pengajuan Izin"});
               }
 
               if (element['nama'] == "Lembur") {
                 controllerLembur.showButtonlaporan.value = true;
+                sortcardPengajuan.add(
+                  {"id": 3, "nama_pengajuan": "Pengajuan Lembur"},
+                );
               }
+
               if (element['nama'] == "Cuti") {
                 controllerCuti.showButtonlaporan.value = true;
+                sortcardPengajuan.add(
+                  {"id": 4, "nama_pengajuan": "Pengajuan Cuti"},
+                );
               }
+
               if (element['nama'] == "Tugas Luar") {
                 controllerTugasLuar.showButtonlaporan.value = true;
+                controllerCuti.showButtonlaporan.value = true;
+                sortcardPengajuan.add(
+                  {"id": 5, "nama_pengajuan": "Pengajuan Tugas Luar"},
+                );
               }
+
               if (element['nama'] == "Klaim") {
+                sortcardPengajuan
+                    .add({"id": 6, "nama_pengajuan": "Pengajuan Klaim"});
+                controllerKlaim.showButtonlaporan.value = true;
+              }
+
+              if (element['nama'] == "Permintaan Kandidat") {
+                sortcardPengajuan.add(
+                  {"id": 7, "nama_pengajuan": "Pengajuan Kandidat"},
+                );
                 controllerKlaim.showButtonlaporan.value = true;
               }
             }
@@ -2563,28 +2585,27 @@ class DashboardController extends GetxController {
   }
 
   void routeSortcartForm(id) {
+  
     if (id == 1) {
-      Get.to(FormLembur(
-        dataForm: [[], false],
-      ));
+      Get.to(pengajuanAbsen());
     } else if (id == 2) {
-      Get.to(FormPengajuanCuti(
+      Get.to(FormPengajuanIzin(
         dataForm: [[], false],
       ));
     } else if (id == 3) {
-      Get.to(FormTugasLuar(
+      Get.to(FormLembur(
         dataForm: [[], false],
       ));
     } else if (id == 4) {
       controllerIzin.changeTypeSelected(controllerIzin.selectedType.value);
-      Get.to(FormPengajuanIzin(
+      Get.to(FormPengajuanCuti(
         dataForm: [[], false],
       ));
     } else if (id == 5) {
-      Get.to(FormKlaim(
+      Get.to(FormTugasLuar(
         dataForm: [[], false],
       ));
-    } else if (id == 6) {
+    } else if (id == 7) {
       var dataUser = AppData.informasiUser;
       var getHakAkses = dataUser![0].em_hak_akses;
       if (getHakAkses == "" || getHakAkses == null || getHakAkses == "null") {
@@ -2594,7 +2615,11 @@ class DashboardController extends GetxController {
           dataForm: [[], false],
         ));
       }
-    } else {
+    } else if (id == 6) {
+      Get.to(FormKlaim(
+        dataForm: [[], false],
+      ));
+    }  else {
       UtilsAlert.showToast("Tahap Development");
     }
   }

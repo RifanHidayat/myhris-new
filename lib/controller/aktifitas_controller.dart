@@ -65,12 +65,10 @@ class AktifitasController extends GetxController {
       'id': '5',
       'nama': 'Lembur',
     },
-
     {
       'id': '6',
       'nama': 'WFH',
     },
-    
   ];
 
   void toggleSearch() {
@@ -252,10 +250,10 @@ class AktifitasController extends GetxController {
             ? 0
             : valueBody['data_izin'][0]['jumlah_izin'];
 
-             var dataEmployee = valueBody['status'] == false
+        var dataEmployee = valueBody['status'] == false
             ? 0
             : valueBody['data_employee'][0]['workday'];
-            
+
         var dataSakit = valueBody['status'] == false
             ? 0
             : valueBody['data_sakit'][0]['jumlah_sakit'];
@@ -269,7 +267,6 @@ class AktifitasController extends GetxController {
         var dataMasukWfh = valueBody['status'] == false
             ? 0
             : valueBody['data_masukwfh'][0]['jumlah_masuk_wfh'];
-
 
         List dataAbsenTepatWaktu = valueBody['status'] == false
             ? []
@@ -339,7 +336,8 @@ class AktifitasController extends GetxController {
         }
         this.jumlahTepatWaktu.refresh();
         this.infoAktifitas.refresh();
-        hitungTepatWaktu(int.parse("20"), jumlahTepatWaktu.value);
+        hitungTepatWaktu(
+            int.parse(dataEmployee.toString()), jumlahTepatWaktu.value);
       }
     });
   }
@@ -348,6 +346,9 @@ class AktifitasController extends GetxController {
     print('terpaakai $terpakai');
     var hitung1 = (terpakai / totalDay) * 100;
     var convert1 = hitung1;
+      stringPersenAbsenTepatWaktu.value =
+        double.parse(convert1.toString()).toStringAsFixed(1);
+
     var convertedValue = double.parse("${convert1}") / 100;
     print('persen double $convertedValue');
     var fltr1 = '$convertedValue'.split('.');
@@ -357,7 +358,7 @@ class AktifitasController extends GetxController {
     } else {
       fltr2 = '${fltr1[1]}0 %';
     }
-    stringPersenAbsenTepatWaktu.value = "$fltr2";
+  //  stringPersenAbsenTepatWaktu.value = "$fltr2";
     persenAbsenTelat.value = convertedValue;
     DateTime now = DateTime.now();
     int firstday = DateTime(now.year, now.month + 1).day;
