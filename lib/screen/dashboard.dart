@@ -3328,6 +3328,7 @@ class _DashboardState extends State<Dashboard> {
 
   void _setIsloading() async {
     controller.isLoading.value = true;
+    controller.refreshPagesStatus.value = true;
     // if (AppData.firsLogin == true) {
     //   absenControllre.getTimeNow();
     //   controllerBpj.employeDetaiBpjs();
