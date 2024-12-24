@@ -509,6 +509,7 @@ class _InitScreenState extends State<InitScreen> {
     super.initState();
     controller.currentIndex.value = 0;
     controller.checkuserinfo();
+    // controller.Absensicontroller.absenStatus.refresh();
     // controllerTracking.isTracking();
   }
 

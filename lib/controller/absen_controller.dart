@@ -1360,11 +1360,11 @@ class AbsenController extends GetxController {
             }
           }
           if (typeAbsen.value == 1) {
-            absenStatus.value = true;
+            // absenStatus.value = true;
             AppData.statusAbsen = true;
             AppData.dateLastAbsen = tanggalUserFoto.value;
           } else {
-            absenStatus.value = false;
+            // absenStatus.value = false;
             AppData.statusAbsen = false;
             AppData.dateLastAbsen = tanggalUserFoto.value;
           }

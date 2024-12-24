@@ -195,7 +195,8 @@ class DashboardController extends GetxController {
 
   Future<void> initData() async {
     absenMasukKeluarOffline.value = await SqliteDatabaseHelper().getAbsensi();
-    print("heii:${absenMasukKeluarOffline.value}");
+    print("check absen masuk keluar :${absenMasukKeluarOffline.value}");
+    print('ini status dari absen ${controllerAbsensi.absenStatus.value}');
     // SqliteDatabaseHelper().deleteAbsensi();
     // AppData.signoutTime = "";
     // AppData.signingTime = "";

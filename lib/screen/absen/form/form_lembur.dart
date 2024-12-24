@@ -1,8 +1,10 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/lembur_controller.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -21,7 +23,7 @@ class _FormLemburState extends State<FormLembur> {
 
   @override
   void initState() {
-    print(widget.dataForm![0]);
+    print('ini data lembur kali yak? ${widget.dataForm![0]}');
     if (widget.dataForm![1] == true) {
       controller.selectedTypeLembur.value = widget.dataForm![0]['type'];
       controller.tanggalLembur.value.text =
@@ -30,6 +32,7 @@ class _FormLemburState extends State<FormLembur> {
       var convertSampaiJam = widget.dataForm![0]['sampai_jam'].split(":");
       var hasilDarijam = "${convertDariJam[0]}:${convertDariJam[1]}";
       var hasilSampaijam = "${convertSampaiJam[0]}:${convertSampaiJam[1]}";
+      print('ini hasil Dari $hasilDarijam');
       controller.dariJam.value.text = hasilDarijam;
       controller.sampaiJam.value.text = hasilSampaijam;
       controller.catatan.value.text = widget.dataForm![0]['uraian'];
@@ -83,29 +86,42 @@ class _FormLemburState extends State<FormLembur> {
           },
           child: SafeArea(
             child: Obx(
-              () => Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Constanst.fgBorder,
-                          width: 1.0,
+              () => Column(
+                children: [
+                  Obx(() => controller.statusJam.value.isNotEmpty
+                      ? Padding(
+                          padding:
+                              const EdgeInsets.only(right: 16.0, left: 16.0),
+                          child: UtilsAlert.infoContainer(
+                              controller.statusJam.value),
+                        )
+                      : SizedBox(height: 18.0)),
+                  Padding(
+                      padding:
+                          const EdgeInsets.only(left: 16, right: 16, top: 8),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Constanst.fgBorder,
+                              width: 1.0,
+                            ),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12))),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            controller.viewTypeLembur.value == false
+                                ? const SizedBox()
+                                : formType(),
+                            formHariDanTanggal(),
+                            formJam(),
+                            formDelegasiKepada(),
+                            formCatatan(),
+                          ],
                         ),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(12))),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        controller.viewTypeLembur.value == false
-                            ? const SizedBox()
-                            : formType(),
-                        formHariDanTanggal(),
-                        formJam(),
-                        formDelegasiKepada(),
-                        formCatatan(),
-                      ],
-                    ),
-                  )),
+                      )),
+                ],
+              ),
             ),
           )),
       bottomNavigationBar: Container(
@@ -395,6 +411,28 @@ class _FormLemburState extends State<FormLembur> {
           controller.tanggalLembur.value.text =
               Constanst.convertDate("$dateSelect");
           this.controller.tanggalLembur.refresh();
+          var startTimeParts =
+              controller.dariJam.value.text.split(":").map(int.parse).toList();
+          var endTimeParts = controller.sampaiJam.value.text
+              .split(":")
+              .map(int.parse)
+              .toList();
+
+          var startTime =
+              TimeOfDay(hour: startTimeParts[0], minute: startTimeParts[1]);
+          var endTime =
+              TimeOfDay(hour: endTimeParts[0], minute: endTimeParts[1]);
+          final currentDate = controller.initialDate.value;
+          final nextDate = currentDate.add(const Duration(days: 1));
+
+          if (endTime.hour < startTime.hour ||
+              (endTime.hour == startTime.hour &&
+                  endTime.minute < startTime.minute)) {
+            controller.statusJam.value =
+                "Lembur dari tanggal ${Constanst.convertDate1(currentDate.toString())} jam ${controller.dariJam.value.text} s/d tanggal ${Constanst.convertDate1(nextDate.toString())} jam ${controller.sampaiJam.value.text}";
+          } else {
+            controller.statusJam.value = "";
+          }
           // DateTime now = DateTime.now();
           // if (now.month == dateSelect.month) {
           //   controller.initialDate.value = dateSelect;
@@ -459,12 +497,6 @@ class _FormLemburState extends State<FormLembur> {
               color: Constanst.fgBorder,
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 4, left: 14),
-            child: Container(
-              child: Obx(() => TextLabell(text: controller.statusJam.value)),
-            ),
-          )
         ],
       ),
     );
@@ -546,10 +578,14 @@ class _FormLemburState extends State<FormLembur> {
                       var endTime = TimeOfDay(
                           hour: endTimeParts[0], minute: endTimeParts[1]);
 
+                      final currentDate = controller.initialDate.value;
+                      final nextDate = currentDate.add(const Duration(days: 1));
+
                       if (endTime.hour < startTime.hour ||
                           (endTime.hour == startTime.hour &&
                               endTime.minute < startTime.minute)) {
-                        controller.statusJam.value = "Day + 1";
+                        controller.statusJam.value =
+                            "Lembur dari tanggal ${Constanst.convertDate1(currentDate.toString())} jam ${controller.dariJam.value.text} s/d tanggal ${Constanst.convertDate1(nextDate.toString())} jam ${controller.sampaiJam.value.text}";
                       } else {
                         controller.statusJam.value = "";
                       }
@@ -666,10 +702,14 @@ class _FormLemburState extends State<FormLembur> {
                       var endTime = TimeOfDay(
                           hour: endTimeParts[0], minute: endTimeParts[1]);
 
+                      final currentDate = controller.initialDate.value;
+                      final nextDate = currentDate.add(const Duration(days: 1));
+
                       if (endTime.hour < startTime.hour ||
                           (endTime.hour == startTime.hour &&
                               endTime.minute < startTime.minute)) {
-                        controller.statusJam.value = "Day + 1";
+                        controller.statusJam.value =
+                            "Lembur dari tanggal ${Constanst.convertDate1(currentDate.toString())} jam ${controller.dariJam.value.text} s/d tanggal ${Constanst.convertDate1(nextDate.toString())} jam ${controller.sampaiJam.value.text}";
                       } else {
                         controller.statusJam.value = "";
                       }

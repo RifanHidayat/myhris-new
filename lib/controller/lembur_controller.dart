@@ -793,7 +793,7 @@ class LemburController extends GetxController {
     var sampai = format.parse("${sampaiJam.value.text}");
     var hasil1 = "${sampai.difference(dari)}";
     var hasilAkhir = hasil1.replaceAll(':00.000000', '');
-    return "$hasilAkhir";
+    return hasilAkhir;
   }
 
   void showModalBatalPengajuan(index) {
