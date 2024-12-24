@@ -99,10 +99,12 @@ class _DashboardState extends State<Dashboard> {
       }),
       tabbController.checkuserinfo(),
     ]);
+
     controllerPesan.getTimeNow();
     await Future.delayed(const Duration(seconds: 2));
     controller.onInit();
     controller.isLoading.value = false;
+
     // });
   }
 
@@ -1756,18 +1758,25 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                 ),
                                 onTap: () {
+
+
+
                                   if (controller.pendingSignoutApr.value) {
                                     UtilsAlert.showToast(
                                         "Menunggu status absensi anda di approve");
                                     return;
                                   }
+
                                   if (!controllerAbsensi.absenStatus.value) {
                                     UtilsAlert.showToast(
                                         "Absen Masuk terlebih dahulu");
+
                                   } else if (controller.status.value == "[]" &&
+
                                       controller.wfhstatus.value) {
                                     UtilsAlert.showToast(
                                         "Abeen WFH beluum di approve");
+
                                   } else {
                                     // if (!authController.isConnected.value) {
                                     //   // if (controller
@@ -1879,6 +1888,8 @@ class _DashboardState extends State<Dashboard> {
                                     }
                                     // }
                                   }
+
+                                  
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -3270,6 +3281,7 @@ class _DashboardState extends State<Dashboard> {
 
     // controller.initData();
     _setIsloading();
+    //  refreshData();
 
     // Api().checkLogin();
     // Add a listener to the scroll controller
@@ -3347,13 +3359,17 @@ class _DashboardState extends State<Dashboard> {
     // }
     absenControllre.getTimeNow();
     controllerBpj.employeDetaiBpjs();
-    controller.initData();
     controllerAbsensi.employeDetail();
     controllerAbsensi.userShift();
     absenControllre.getPosisition();
     absenControllre.getPlaceCoordinate();
     controllerPesan.getTimeNow();
-    await Future.delayed(const Duration(seconds: 2));
+
+    controller.initData();
+    
+
+    await Future.delayed(const Duration(seconds: 3));
+
     controller.isLoading.value = false;
     // AppData.firsLogin = false;
   }

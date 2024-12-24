@@ -235,8 +235,12 @@ class AktifitasController extends GetxController {
         var finalFilterMasukKerja;
 
         if (valueBody['status'] == true) {
+
+          
           var tampungMasukKerja = valueBody['data_masuk_kerja'];
           var seen = Set<String>();
+
+
           List filter = tampungMasukKerja
               .where((tanggal) => seen.add(tanggal['atten_date']))
               .toList();
@@ -246,27 +250,42 @@ class AktifitasController extends GetxController {
         var dataMasukKerja =
             valueBody['status'] == false ? 0 : finalFilterMasukKerja.length;
 
+
+
         var dataIzin = valueBody['status'] == false
             ? 0
             : valueBody['data_izin'][0]['jumlah_izin'];
+
+
 
         var dataEmployee = valueBody['status'] == false
             ? 0
             : valueBody['data_employee'][0]['workday'];
 
+
+
         var dataSakit = valueBody['status'] == false
             ? 0
             : valueBody['data_sakit'][0]['jumlah_sakit'];
+
+
         var dataCuti = valueBody['status'] == false
             ? 0
             : valueBody['data_cuti'][0]['jumlah_cuti'];
+
+
         var dataLembur = valueBody['status'] == false
             ? 0
             : valueBody['data_lembur'][0]['jumlah_lembur'];
 
+
+
         var dataMasukWfh = valueBody['status'] == false
             ? 0
             : valueBody['data_masukwfh'][0]['jumlah_masuk_wfh'];
+
+
+
 
         List dataAbsenTepatWaktu = valueBody['status'] == false
             ? []

@@ -211,10 +211,11 @@ class DashboardController extends GetxController {
     // DateTime startDate = await NTP.now();
 
     DateTime startDate = DateTime.now();
+    updateInformasiUser();
 
     // if (AppData.informasiUser != null && AppData.informasiUser!.isNotEmpty) {
     var emId = AppData.informasiUser![0].em_id.toString();
-    checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), emId);
+    //checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), emId);
     // } else {
     //   print("Informasi user tidak tersedia.");
     // }
@@ -230,6 +231,7 @@ class DashboardController extends GetxController {
     getEmployeeBelumAbsen();
     timeString.value = formatDateTime(startDate);
     dateNow.value = dateNoww(startDate);
+    updateInformasiUser();
 
     Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
     getSizeDevice();
@@ -398,6 +400,7 @@ class DashboardController extends GetxController {
     var endTime = "";
     var startDate = "";
     var endDate = "";
+
     TimeOfDay waktu1 = TimeOfDay(
         hour: int.parse(
             AppData.informasiUser![0].startTime.toString().split(':')[0]),
@@ -489,8 +492,9 @@ class DashboardController extends GetxController {
 
           status.value = data.toString();
           print("hasil status.value ${status.value}");
+
           // print(
-          //     "hasil view_last_absen_user1 wfhstatus.valu ${wfhstatus.value.toString()}");
+          //     "hasil view_last_absen_user1 wchefhstatus.valu ${wfhstatus.value.toString()}");
           // print("hasil view_last_absen_user1 status ${valueBody['wfh']}");
           // print("hasil view_last_absen_user1 ${valueBody['data'].toString()}");
           // print("hasil view_last_absen_user1 status.valu ${status.value}");
@@ -657,6 +661,8 @@ class DashboardController extends GetxController {
               AppData.statusAbsen = false;
               signoutTime.value = '00:00:00';
               signinTime.value = '00:00:00';
+              controllerAbsensi.absenStatus.value = false;
+              dashboardStatusAbsen.value = false;
             } else {
               wfhlokasi.value =
                   valueBody['data'][0]['place_in'].toString() == "WFH"
@@ -694,6 +700,7 @@ class DashboardController extends GetxController {
 
           AppData.signingTime = signinTime.value;
           AppData.signoutTime = signoutTime.value;
+
           print("hasil signinTime ${signinTime.value}");
           print("hasil signinTime ${signoutTime.value}");
         } else {
@@ -1762,8 +1769,11 @@ class DashboardController extends GetxController {
         AppData.informasiUser = getData;
 
         getUserInfo();
+        checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+            getEmid.toString());
 
         controllerTracking.isLoadingDetailTracking.value = false;
+
         controllerTracking.isTracking();
       }
       //   Api().validateAuth(res.statusCode );
@@ -1910,7 +1920,6 @@ class DashboardController extends GetxController {
                 'gambar': element['gambar'],
                 'status': element['status'],
               });
-
 
               if (element['nama'] == "Absensi") {
                 absenControllre.showButtonlaporan.value = true;
@@ -2586,7 +2595,6 @@ class DashboardController extends GetxController {
   }
 
   void routeSortcartForm(id) {
-  
     if (id == 1) {
       Get.to(pengajuanAbsen());
     } else if (id == 2) {
@@ -2620,7 +2628,7 @@ class DashboardController extends GetxController {
       Get.to(FormKlaim(
         dataForm: [[], false],
       ));
-    }  else {
+    } else {
       UtilsAlert.showToast("Tahap Development");
     }
   }
