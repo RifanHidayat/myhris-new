@@ -123,28 +123,36 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                     child: SizedBox(
                       height: double.maxFinite,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          TabBar(
-                            indicatorColor: Constanst.colorPrimary,
-                            labelColor: Constanst.colorPrimary,
-                            unselectedLabelColor: Constanst.fgSecondary,
-                            indicatorWeight: 4.0,
-                            labelPadding:
-                                const EdgeInsets.fromLTRB(0, 14, 0, 14),
-                            indicatorSize: TabBarIndicatorSize.label,
-                            physics: const BouncingScrollPhysics(),
-                            tabs: [
-                              Text("Absensi",
-                                  style: GoogleFonts.inter(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w500)),
-                              Text("Pengajuan",
-                                  style: GoogleFonts.inter(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w500)),
-                            ],
-                          ),
+                          dashboardController.isVisibleFloating.value == false
+                              ? Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text("Absensi",
+                                          style: GoogleFonts.inter(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w500)),
+                              )
+                              : TabBar(
+                                  indicatorColor: Constanst.colorPrimary,
+                                  labelColor: Constanst.colorPrimary,
+                                  unselectedLabelColor: Constanst.fgSecondary,
+                                  indicatorWeight: 4.0,
+                                  labelPadding:
+                                      const EdgeInsets.fromLTRB(0, 14, 0, 14),
+                                  indicatorSize: TabBarIndicatorSize.label,
+                                  physics: const BouncingScrollPhysics(),
+                                  tabs: [
+                                    Text("Absensi",
+                                        style: GoogleFonts.inter(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w500)),
+                                    Text("Pengajuan",
+                                        style: GoogleFonts.inter(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w500)),
+                                  ],
+                                ),
                           Divider(
                             thickness: 1,
                             height: 0,
@@ -153,10 +161,10 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                           Expanded(
                               child: SizedBox(
                             height: double.maxFinite,
-                            child: TabBarView(
-                                physics: const BouncingScrollPhysics(),
-                                children: [
-                                  Padding(
+                            child: dashboardController
+                                        .isVisibleFloating.value ==
+                                    false
+                                ? Padding(
                                     padding: const EdgeInsets.only(
                                         left: 16, right: 16),
                                     child: Column(
@@ -169,192 +177,6 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         UtilsAlert.infoContainer(
                                             "${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}"),
                                         const SizedBox(height: 12),
-                                        // Row(
-                                        //   children: [
-                                        //     Expanded(
-                                        //       flex: 9,
-                                        //       child: Container(
-                                        //         decoration: BoxDecoration(
-                                        //           color: Constanst.infoLight1,
-                                        //           border: Border.all(
-                                        //             color: Constanst
-                                        //                 .colorStateInfoBorder,
-                                        //           ),
-                                        //           borderRadius:
-                                        //               const BorderRadius.all(
-                                        //             Radius.circular(8.0),
-                                        //           ),
-                                        //         ),
-                                        //         child: Padding(
-                                        //           padding:
-                                        //               const EdgeInsets.all(
-                                        //                   8.0),
-                                        //           child: Column(
-                                        //             crossAxisAlignment:
-                                        //                 CrossAxisAlignment
-                                        //                     .start,
-                                        //             children: [
-                                        //               Text(
-                                        //                 "15",
-                                        //                 style: GoogleFonts.inter(
-                                        //                     fontWeight:
-                                        //                         FontWeight
-                                        //                             .w500,
-                                        //                     fontSize: 16,
-                                        //                     color: Constanst
-                                        //                         .fgPrimary),
-                                        //               ),
-                                        //               const SizedBox(
-                                        //                   height: 4),
-                                        //               Text(
-                                        //                 "Masuk Kerja",
-                                        //                 style: GoogleFonts.inter(
-                                        //                     fontWeight:
-                                        //                         FontWeight
-                                        //                             .w400,
-                                        //                     fontSize: 12,
-                                        //                     color: Constanst
-                                        //                         .fgSecondary),
-                                        //               ),
-                                        //             ],
-                                        //           ),
-                                        //         ),
-                                        //       ),
-                                        //     ),
-                                        //     const SizedBox(width: 8),
-                                        //     Expanded(
-                                        //       flex: 9,
-                                        //       child: Container(
-                                        //         decoration: BoxDecoration(
-                                        //           color: Constanst.infoLight1,
-                                        //           border: Border.all(
-                                        //             color: Constanst
-                                        //                 .colorStateInfoBorder,
-                                        //           ),
-                                        //           borderRadius:
-                                        //               const BorderRadius.all(
-                                        //             Radius.circular(8.0),
-                                        //           ),
-                                        //         ),
-                                        //         child: Padding(
-                                        //           padding:
-                                        //               const EdgeInsets.all(
-                                        //                   8.0),
-                                        //           child: Column(
-                                        //             crossAxisAlignment:
-                                        //                 CrossAxisAlignment
-                                        //                     .start,
-                                        //             children: [
-                                        //               Text(
-                                        //                 "0",
-                                        //                 style: GoogleFonts.inter(
-                                        //                     fontWeight:
-                                        //                         FontWeight
-                                        //                             .w500,
-                                        //                     fontSize: 16,
-                                        //                     color: Constanst
-                                        //                         .fgPrimary),
-                                        //               ),
-                                        //               const SizedBox(
-                                        //                   height: 4),
-                                        //               Text(
-                                        //                 "Terlambat",
-                                        //                 style: GoogleFonts.inter(
-                                        //                     fontWeight:
-                                        //                         FontWeight
-                                        //                             .w400,
-                                        //                     fontSize: 12,
-                                        //                     color: Constanst
-                                        //                         .fgSecondary),
-                                        //               ),
-                                        //             ],
-                                        //           ),
-                                        //         ),
-                                        //       ),
-                                        //     ),
-                                        //     const SizedBox(width: 8),
-                                        //     Expanded(
-                                        //       flex: 10,
-                                        //       child: Container(
-                                        //         decoration: BoxDecoration(
-                                        //           color: Constanst.infoLight1,
-                                        //           border: Border.all(
-                                        //             color: Constanst
-                                        //                 .colorStateInfoBorder,
-                                        //           ),
-                                        //           borderRadius:
-                                        //               const BorderRadius.all(
-                                        //             Radius.circular(8.0),
-                                        //           ),
-                                        //         ),
-                                        //         child: Padding(
-                                        //           padding:
-                                        //               const EdgeInsets.all(
-                                        //                   8.0),
-                                        //           child: Column(
-                                        //             crossAxisAlignment:
-                                        //                 CrossAxisAlignment
-                                        //                     .start,
-                                        //             children: [
-                                        //               Text(
-                                        //                 "5",
-                                        //                 style: GoogleFonts.inter(
-                                        //                     fontWeight:
-                                        //                         FontWeight
-                                        //                             .w500,
-                                        //                     fontSize: 16,
-                                        //                     color: Constanst
-                                        //                         .fgPrimary),
-                                        //               ),
-                                        //               const SizedBox(
-                                        //                   height: 4),
-                                        //               Text(
-                                        //                 "Tidak Absen Keluar",
-                                        //                 style: GoogleFonts.inter(
-                                        //                     fontWeight:
-                                        //                         FontWeight
-                                        //                             .w400,
-                                        //                     fontSize: 12,
-                                        //                     color: Constanst
-                                        //                         .fgSecondary),
-                                        //               ),
-                                        //             ],
-                                        //           ),
-                                        //         ),
-                                        //       ),
-                                        //     ),
-                                        //   ],
-                                        // ),
-                                        // const SizedBox(height: 16),
-                                        // controller.bulanDanTahunNow.value == ""
-                                        //     ? const SizedBox()
-                                        //     : pickDate(),
-                                        // const SizedBox(height: 16),
-                                        // Row(
-                                        //   mainAxisAlignment:
-                                        //       MainAxisAlignment.start,
-                                        //   crossAxisAlignment:
-                                        //       CrossAxisAlignment.start,
-                                        //   children: [
-                                        //     Expanded(
-                                        //       flex: 85,
-                                        //       child: Padding(
-                                        //         padding: const EdgeInsets.only(
-                                        //             top: 8),
-                                        //         child: Text(
-                                        //           "Riwayat Absensi",
-                                        //           textAlign: TextAliginitn.left,
-                                        //           style: GoogleFonts.inter(
-                                        //               fontWeight:
-                                        //                   FontWeight.bold,
-                                        //               fontSize:
-                                        //                   Constanst.sizeTitle),
-                                        //         ),
-                                        //       ),
-                                        //     ),
-                                        //   ],
-                                        // ),
-                                        // SizedBox(height: 8),
                                         Flexible(
                                             child: RefreshIndicator(
                                           onRefresh: refreshData,
@@ -368,38 +190,256 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         ))
                                       ],
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 16, right: 16),
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 12),
-                                        // controller.bulanDanTahunNowPengajuan
-                                        //             .value ==
-                                        //         ""
-                                        //     ? const SizedBox()
-                                        //     : pickDateBulanDanTahun(),
-                                        const SizedBox(height: 16),
-                                        Flexible(
-                                            child: Obx(
-                                          () => RefreshIndicator(
-                                              onRefresh: refreshData,
-                                              color: Constanst.colorPrimary,
-                                              child: controller
-                                                      .pengajuanAbsensi.isEmpty
-                                                  ? Center(
-                                                      child: Text(controller
-                                                          .loadingPengajuan
-                                                          .value
-                                                          .toString()),
-                                                    )
-                                                  : listPengajuan()),
-                                        ))
-                                      ],
-                                    ),
                                   )
-                                ]),
+                                : TabBarView(
+                                    physics: const BouncingScrollPhysics(),
+                                    children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 16, right: 16),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(height: 12),
+                                              filterData(),
+                                              const SizedBox(height: 8),
+                                              UtilsAlert.infoContainer(
+                                                  "${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}"),
+                                              const SizedBox(height: 12),
+                                              // Row(
+                                              //   children: [
+                                              //     Expanded(
+                                              //       flex: 9,
+                                              //       child: Container(
+                                              //         decoration: BoxDecoration(
+                                              //           color: Constanst.infoLight1,
+                                              //           border: Border.all(
+                                              //             color: Constanst
+                                              //                 .colorStateInfoBorder,
+                                              //           ),
+                                              //           borderRadius:
+                                              //               const BorderRadius.all(
+                                              //             Radius.circular(8.0),
+                                              //           ),
+                                              //         ),
+                                              //         child: Padding(
+                                              //           padding:
+                                              //               const EdgeInsets.all(
+                                              //                   8.0),
+                                              //           child: Column(
+                                              //             crossAxisAlignment:
+                                              //                 CrossAxisAlignment
+                                              //                     .start,
+                                              //             children: [
+                                              //               Text(
+                                              //                 "15",
+                                              //                 style: GoogleFonts.inter(
+                                              //                     fontWeight:
+                                              //                         FontWeight
+                                              //                             .w500,
+                                              //                     fontSize: 16,
+                                              //                     color: Constanst
+                                              //                         .fgPrimary),
+                                              //               ),
+                                              //               const SizedBox(
+                                              //                   height: 4),
+                                              //               Text(
+                                              //                 "Masuk Kerja",
+                                              //                 style: GoogleFonts.inter(
+                                              //                     fontWeight:
+                                              //                         FontWeight
+                                              //                             .w400,
+                                              //                     fontSize: 12,
+                                              //                     color: Constanst
+                                              //                         .fgSecondary),
+                                              //               ),
+                                              //             ],
+                                              //           ),
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //     const SizedBox(width: 8),
+                                              //     Expanded(
+                                              //       flex: 9,
+                                              //       child: Container(
+                                              //         decoration: BoxDecoration(
+                                              //           color: Constanst.infoLight1,
+                                              //           border: Border.all(
+                                              //             color: Constanst
+                                              //                 .colorStateInfoBorder,
+                                              //           ),
+                                              //           borderRadius:
+                                              //               const BorderRadius.all(
+                                              //             Radius.circular(8.0),
+                                              //           ),
+                                              //         ),
+                                              //         child: Padding(
+                                              //           padding:
+                                              //               const EdgeInsets.all(
+                                              //                   8.0),
+                                              //           child: Column(
+                                              //             crossAxisAlignment:
+                                              //                 CrossAxisAlignment
+                                              //                     .start,
+                                              //             children: [
+                                              //               Text(
+                                              //                 "0",
+                                              //                 style: GoogleFonts.inter(
+                                              //                     fontWeight:
+                                              //                         FontWeight
+                                              //                             .w500,
+                                              //                     fontSize: 16,
+                                              //                     color: Constanst
+                                              //                         .fgPrimary),
+                                              //               ),
+                                              //               const SizedBox(
+                                              //                   height: 4),
+                                              //               Text(
+                                              //                 "Terlambat",
+                                              //                 style: GoogleFonts.inter(
+                                              //                     fontWeight:
+                                              //                         FontWeight
+                                              //                             .w400,
+                                              //                     fontSize: 12,
+                                              //                     color: Constanst
+                                              //                         .fgSecondary),
+                                              //               ),
+                                              //             ],
+                                              //           ),
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //     const SizedBox(width: 8),
+                                              //     Expanded(
+                                              //       flex: 10,
+                                              //       child: Container(
+                                              //         decoration: BoxDecoration(
+                                              //           color: Constanst.infoLight1,
+                                              //           border: Border.all(
+                                              //             color: Constanst
+                                              //                 .colorStateInfoBorder,
+                                              //           ),
+                                              //           borderRadius:
+                                              //               const BorderRadius.all(
+                                              //             Radius.circular(8.0),
+                                              //           ),
+                                              //         ),
+                                              //         child: Padding(
+                                              //           padding:
+                                              //               const EdgeInsets.all(
+                                              //                   8.0),
+                                              //           child: Column(
+                                              //             crossAxisAlignment:
+                                              //                 CrossAxisAlignment
+                                              //                     .start,
+                                              //             children: [
+                                              //               Text(
+                                              //                 "5",
+                                              //                 style: GoogleFonts.inter(
+                                              //                     fontWeight:
+                                              //                         FontWeight
+                                              //                             .w500,
+                                              //                     fontSize: 16,
+                                              //                     color: Constanst
+                                              //                         .fgPrimary),
+                                              //               ),
+                                              //               const SizedBox(
+                                              //                   height: 4),
+                                              //               Text(
+                                              //                 "Tidak Absen Keluar",
+                                              //                 style: GoogleFonts.inter(
+                                              //                     fontWeight:
+                                              //                         FontWeight
+                                              //                             .w400,
+                                              //                     fontSize: 12,
+                                              //                     color: Constanst
+                                              //                         .fgSecondary),
+                                              //               ),
+                                              //             ],
+                                              //           ),
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //   ],
+                                              // ),
+                                              // const SizedBox(height: 16),
+                                              // controller.bulanDanTahunNow.value == ""
+                                              //     ? const SizedBox()
+                                              //     : pickDate(),
+                                              // const SizedBox(height: 16),
+                                              // Row(
+                                              //   mainAxisAlignment:
+                                              //       MainAxisAlignment.start,
+                                              //   crossAxisAlignment:
+                                              //       CrossAxisAlignment.start,
+                                              //   children: [
+                                              //     Expanded(
+                                              //       flex: 85,
+                                              //       child: Padding(
+                                              //         padding: const EdgeInsets.only(
+                                              //             top: 8),
+                                              //         child: Text(
+                                              //           "Riwayat Absensi",
+                                              //           textAlign: TextAliginitn.left,
+                                              //           style: GoogleFonts.inter(
+                                              //               fontWeight:
+                                              //                   FontWeight.bold,
+                                              //               fontSize:
+                                              //                   Constanst.sizeTitle),
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //   ],
+                                              // ),
+                                              // SizedBox(height: 8),
+                                              Flexible(
+                                                  child: RefreshIndicator(
+                                                onRefresh: refreshData,
+                                                child: controller.historyAbsen
+                                                        .value.isEmpty
+                                                    ? Center(
+                                                        child: Text(controller
+                                                            .loading.value),
+                                                      )
+                                                    : listAbsen(),
+                                              ))
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 16, right: 16),
+                                          child: Column(
+                                            children: [
+                                              const SizedBox(height: 12),
+                                              // controller.bulanDanTahunNowPengajuan
+                                              //             .value ==
+                                              //         ""
+                                              //     ? const SizedBox()
+                                              //     : pickDateBulanDanTahun(),
+                                              const SizedBox(height: 16),
+                                              Flexible(
+                                                  child: Obx(
+                                                () => RefreshIndicator(
+                                                    onRefresh: refreshData,
+                                                    color:
+                                                        Constanst.colorPrimary,
+                                                    child: controller
+                                                            .pengajuanAbsensi
+                                                            .isEmpty
+                                                        ? Center(
+                                                            child: Text(controller
+                                                                .loadingPengajuan
+                                                                .value
+                                                                .toString()),
+                                                          )
+                                                        : listPengajuan()),
+                                              ))
+                                            ],
+                                          ),
+                                        )
+                                      ]),
                           ))
                         ],
                       ),
@@ -466,16 +506,19 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
         //           ],
         //         ),
         // )
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Constanst.colorPrimary,
-          onPressed: () {
-            Get.to(const pengajuanAbsen());
-          },
-          child: const Icon(
-            Iconsax.add,
-            size: 34,
-          ),
-        ),
+        floatingActionButton:
+            dashboardController.isVisibleFloating.value == false
+                ? Container()
+                : FloatingActionButton(
+                    backgroundColor: Constanst.colorPrimary,
+                    onPressed: () {
+                      Get.to(const pengajuanAbsen());
+                    },
+                    child: const Icon(
+                      Iconsax.add,
+                      size: 34,
+                    ),
+                  ),
       ),
     );
   }

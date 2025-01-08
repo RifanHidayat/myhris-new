@@ -43,8 +43,8 @@ class _FormLemburState extends State<FormLembur> {
       controller.nomorAjuan.value.text =
           "${widget.dataForm![0]['nomor_ajuan']}";
     } else {
-      // controller.selectedTypeLembur.value = "";
-      // controller.tanggalLembur.value.text = "";
+      controller.selectedTypeLembur.value = "";
+      controller.tanggalLembur.value.text = "";
       controller.getTypeLembur();
       controller.removeAll();
     }
@@ -221,7 +221,11 @@ class _FormLemburState extends State<FormLembur> {
             return PopupMenuItem<String>(
               value: value,
               padding: EdgeInsets.zero,
-              onTap: () => controller.selectedTypeLembur.value = value,
+              onTap: () {
+                print('ini value $value');
+                controller.selectedTypeLembur.value = value;
+                print('ini value ${controller.selectedTypeLembur.value}');
+              },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
                 child: Text(
@@ -269,16 +273,15 @@ class _FormLemburState extends State<FormLembur> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Text(
-                                  controller.selectedTypeLembur.value,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Constanst.fgPrimary,
+                                Obx(() =>
+                                  Text(
+                                    controller.selectedTypeLembur.value,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.fgPrimary,
+                                    ),
                                   ),
-                                  maxLines: 2, // Adjust as needed
-                                  overflow: TextOverflow
-                                      .ellipsis, // or TextOverflow.fade
                                 ),
                               ],
                             ),

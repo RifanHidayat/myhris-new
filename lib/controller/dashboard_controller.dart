@@ -155,6 +155,8 @@ class DashboardController extends GetxController {
   // var absenOfflineStatusDua = false.obs;
   var isLoading = false.obs;
 
+  var isVisibleFloating = false.obs;
+
   GoogleMapController? mapController;
 
   void toggleSearch() {
@@ -1905,7 +1907,9 @@ class DashboardController extends GetxController {
 
             List tempData = temporary;
 
-            print("data temporary ${temporary}");
+            isVisibleFloating.value = false;
+
+            print("data temporary ${tempData}");
 
             List<Map<String, dynamic>> menus = [];
 
@@ -1921,10 +1925,15 @@ class DashboardController extends GetxController {
                 'status': element['status'],
               });
 
-              if (element['nama'] == "Absensi") {
+              if (element['nama'] == "Pengajuan Absensi") {
                 absenControllre.showButtonlaporan.value = true;
+                isVisibleFloating.value = true;
                 sortcardPengajuan
                     .add({"id": 1, "nama_pengajuan": "Pengajuan Absensi"});
+              }
+               if (element['nama'] == "Absensi") {
+                absenControllre.showButtonlaporan.value = true;
+                
               }
 
               if (element['nama'].toString().trim() == "Izin") {
@@ -2077,6 +2086,7 @@ class DashboardController extends GetxController {
             var valueBody = jsonDecode(res.body);
 
             var temporary = valueBody['data'];
+            print('ini load menu show in main $temporary');
 
             List<Map<String, dynamic>> menusUtama = [];
             for (var element in temporary) {
@@ -2985,6 +2995,8 @@ class DashboardController extends GetxController {
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
+                    print('ini sortcard ${sortcardPengajuan}');
+                    var filteredList = sortcardPengajuan.where((item) => item['id'] != 1).toList();
                     var id = sortcardPengajuan[index]['id'];
                     var gambar = sortcardPengajuan[index]['gambar'];
                     return InkWell(
@@ -3630,6 +3642,8 @@ class DashboardController extends GetxController {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(menuShowInMainNew.length, (index) {
                   var data = menuShowInMainNew[index];
+                  // var dataMenu = menuShowInMainNew[0];
+                  // print('ini data menu apa yak ${dataMenu['menu'][index]['nama']}');
                   return data['menu'].length <= 0
                       ? const SizedBox()
                       : InkWell(
@@ -3652,10 +3666,14 @@ class DashboardController extends GetxController {
                               Wrap(
                                 direction: Axis.horizontal,
                                 runSpacing: 16.0, // gap between lines
-                                children: List.generate(data['menu'].length,
-                                    (idxMenu) {
+                                children: List.generate(
+                                    data['menu']
+                                        .where(
+                                            (namaMenu) => namaMenu['id'] != 13)
+                                        .length, (idxMenu) {
                                   var gambar = data['menu'][idxMenu]['gambar'];
                                   print(gambar);
+    
                                   var namaMenu = data['menu'][idxMenu]['nama'];
                                   return data['menu'][idxMenu]['id'] == 8
                                       ? const SizedBox()
@@ -3760,7 +3778,6 @@ class DashboardController extends GetxController {
                             ],
                           ),
                         );
-                  //                 style
                 }),
               ),
               const SizedBox(height: 16),
