@@ -1776,7 +1776,7 @@ class DashboardController extends GetxController {
 
         controllerTracking.isLoadingDetailTracking.value = false;
 
-        controllerTracking.isTracking();
+        // controllerTracking.isTracking();
       }
       //   Api().validateAuth(res.statusCode );
     });
@@ -1931,9 +1931,8 @@ class DashboardController extends GetxController {
                 sortcardPengajuan
                     .add({"id": 1, "nama_pengajuan": "Pengajuan Absensi"});
               }
-               if (element['nama'] == "Absensi") {
+              if (element['nama'] == "Absensi") {
                 absenControllre.showButtonlaporan.value = true;
-                
               }
 
               if (element['nama'].toString().trim() == "Izin") {
@@ -2996,7 +2995,9 @@ class DashboardController extends GetxController {
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
                     print('ini sortcard ${sortcardPengajuan}');
-                    var filteredList = sortcardPengajuan.where((item) => item['id'] != 1).toList();
+                    var filteredList = sortcardPengajuan
+                        .where((item) => item['id'] != 1)
+                        .toList();
                     var id = sortcardPengajuan[index]['id'];
                     var gambar = sortcardPengajuan[index]['gambar'];
                     return InkWell(
@@ -3673,7 +3674,7 @@ class DashboardController extends GetxController {
                                         .length, (idxMenu) {
                                   var gambar = data['menu'][idxMenu]['gambar'];
                                   print(gambar);
-    
+
                                   var namaMenu = data['menu'][idxMenu]['nama'];
                                   return data['menu'][idxMenu]['id'] == 8
                                       ? const SizedBox()

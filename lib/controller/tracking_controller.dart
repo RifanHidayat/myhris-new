@@ -1570,7 +1570,7 @@ class TrackingController extends GetxController {
       // service.startService();
       var interval = prefs.getString('interval_tracking');
       var intervalMilliseconds = int.parse(interval!) * 60000;
-      startService(intervalMilliseconds);
+      // startService(intervalMilliseconds);
 
       print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
       print('hidup');
@@ -1595,7 +1595,7 @@ class TrackingController extends GetxController {
       //  // var isRunning = await service.isRunning();
 
       // service.invoke("stopService");
-      stopService();
+      // stopService();
 
       print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
       print(
