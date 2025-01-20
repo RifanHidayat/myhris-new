@@ -130,6 +130,7 @@ class DashboardController extends GetxController {
   var showPkwt = false.obs;
   var showPengumuman = false.obs;
   var showLaporan = false.obs;
+  var showAbsen = false.obs;
 
   var selectedPageView = 0.obs;
   var indexBanner = 0.obs;
@@ -228,7 +229,7 @@ class DashboardController extends GetxController {
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     getMenuDashboard();
     loadMenuShowInMain();
-    loadMenuShowInMainUtama();
+    await loadMenuShowInMainUtama();
     getInformasiDashboard();
     getEmployeeBelumAbsen();
     timeString.value = formatDateTime(startDate);
@@ -2122,6 +2123,11 @@ class DashboardController extends GetxController {
                       p0['url'].toString().toLowerCase().trim() ==
                       "Laporan".toLowerCase().toString().trim())
                   .toList();
+              List menuAbsen = menuShowInMainUtama
+                  .where((p0) =>
+                      p0['url'].toString().toLowerCase().trim() ==
+                      "Absen".toLowerCase().toString().trim())
+                  .toList();
 
               if (menuPengumuman.isNotEmpty) {
                 showPengumuman.value = true;
@@ -2134,6 +2140,9 @@ class DashboardController extends GetxController {
               }
               if (menuLaporan.isNotEmpty) {
                 showLaporan.value = true;
+              }
+              if (menuAbsen.isNotEmpty) {
+                showAbsen.value = true;
               }
             }
           }

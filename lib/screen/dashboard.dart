@@ -27,6 +27,7 @@ import 'package:siscom_operasional/controller/tab_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/database/sqlite/sqlite_database_helper.dart';
 import 'package:siscom_operasional/screen/absen/absesi_location.dart';
+import 'package:siscom_operasional/screen/absen/berhasil_absen.dart';
 import 'package:siscom_operasional/screen/absen/camera_view.dart';
 import 'package:siscom_operasional/screen/absen/face_id_registration.dart';
 import 'package:siscom_operasional/screen/absen/facee_id_detection.dart';
@@ -140,7 +141,9 @@ class _DashboardState extends State<Dashboard> {
     return UpgradeAlert(
       child: Scaffold(
         backgroundColor: Constanst.coloBackgroundScreen,
-        floatingActionButton: _isVisible == true
+        floatingActionButton: 
+        controller.showAbsen.value
+        ?_isVisible == true
             ? Container()
             : Container(
                 decoration: BoxDecoration(
@@ -440,7 +443,8 @@ class _DashboardState extends State<Dashboard> {
                           : Constanst.color4,
                     ),
                     backgroundColor: Constanst.colorWhite),
-              ),
+              )
+        : Container(),
         body: NotificationListener<ScrollNotification>(
           onNotification: (scrollNotification) {
             return true;
@@ -1158,11 +1162,23 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget cardInfoAbsen() {
+    String formatDateTime(DateTime dateTime) {
+    return DateFormat('HH:mm:ss').format(dateTime);
+  }
+  DateTime startDate = DateTime.now();
     return InkWell(
       customBorder: RoundedRectangleBorder(
         borderRadius: Constanst.borderStyle1,
       ),
       onTap: () {
+        // Get.to(BerhasilAbsensi(
+        //         dataBerhasil: [
+        //           'Absen Masuk',
+        //           formatDateTime(startDate),
+        //           1,
+        //           1,
+        //         ],
+        //       ));
         // widgetButtomSheetFaceRegistrattion();
       },
       child: Container(
@@ -1295,8 +1311,8 @@ class _DashboardState extends State<Dashboard> {
                 ],
               ),
             ),
-
-            _isVisible
+            controller.showAbsen.value
+            ? _isVisible
                 ? Column(
                     children: [
                       const Divider(
@@ -2110,7 +2126,8 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ],
                   )
-                : Container(),
+                : Container()
+            : Container(),
 
             // _isVisible
             //     ? Row(

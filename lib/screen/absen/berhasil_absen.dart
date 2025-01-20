@@ -321,7 +321,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                             child: Padding(
                               padding: EdgeInsets.only(left: 10, right: 10),
                               child: Text(
-                                widget.dataBerhasil![1],
+                                '${widget.dataBerhasil![4]} - ${widget.dataBerhasil![1]}',
                                 style: Constanst.colorGreenBold,
                               ),
                             ),
@@ -335,7 +335,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                             child: Padding(
                               padding: EdgeInsets.only(left: 10, right: 10),
                               child: Text(
-                                widget.dataBerhasil![1],
+                                '${widget.dataBerhasil![4]} - ${widget.dataBerhasil![1]}',
                                 style: Constanst.colorRedBold,
                               ),
                             ),

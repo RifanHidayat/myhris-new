@@ -1428,9 +1428,9 @@ class AbsenController extends GetxController {
               isLoaingAbsensi.value = false;
               this.intervalControl.refresh();
 
+              timeString.value = valueBody['time'];
               print("dapat interval ${intervalControl.value}");
               // Navigator.pop(Get.context!);
-              ;
 
               print(
                   "isViewTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
@@ -1472,7 +1472,8 @@ class AbsenController extends GetxController {
                   titleAbsen.value,
                   timeString.value,
                   typeAbsen.value,
-                  intervalControl.value
+                  intervalControl.value,
+                  dateNow.value
                 ],
               ));
             } else {
@@ -1548,7 +1549,7 @@ class AbsenController extends GetxController {
         connect.then((dynamic res) {
           if (res.statusCode == 200) {
             var valueBody = jsonDecode(res.body);
-            print(res.body);
+            print('ini response kirim');
             for (var element in sysData.value) {
               if (element['kode'] == '006') {
                 intervalControl.value = int.parse(element['name']);
@@ -1564,7 +1565,8 @@ class AbsenController extends GetxController {
                 titleAbsen.value,
                 timeString.value,
                 typeAbsen.value,
-                intervalControl.value
+                intervalControl.value,
+                dateNow.value
               ],
             ));
           } else {
@@ -2799,137 +2801,139 @@ class AbsenController extends GetxController {
           return SafeArea(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Pilih Lokasi",
-                          style: GoogleFonts.inter(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18,
-                            color: Constanst.fgPrimary,
-                          ),
-                        ),
-                        InkWell(
-                            customBorder: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8))),
-                            onTap: () => Navigator.pop(Get.context!),
-                            child: Icon(
-                              Icons.close,
-                              size: 26,
-                              color: Constanst.fgSecondary,
-                            ))
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                    child: Divider(
-                      thickness: 1,
-                      height: 0,
-                      color: Constanst.border,
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Obx(
-                      () => Column(
-                        children: List.generate(placeCoordinate.value.length,
-                            (index) {
-                          var id = placeCoordinate.value[index]['id'];
-                          var place = placeCoordinate.value[index]['place'];
-                          return InkWell(
-                            onTap: () {
-                              if (selectedViewFilterAbsen.value == 0) {
-                                filterLokasiAbsenBulan(place);
-                              } else {
-                                filterLokasiAbsen(place);
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    place,
-                                    style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Constanst.fgPrimary,
-                                    ),
-                                  ),
-                                  "$id" == idDepartemenTerpilih.value
-                                      ? InkWell(
-                                          onTap: () {},
-                                          child: Container(
-                                            height: 20,
-                                            width: 20,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 2,
-                                                    color: Constanst.onPrimary),
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(3),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Constanst.onPrimary,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : InkWell(
-                                          onTap: () {
-                                            if (selectedViewFilterAbsen.value ==
-                                                0) {
-                                              filterLokasiAbsenBulan(place);
-                                            } else {
-                                              filterLokasiAbsen(place);
-                                            }
-                                          },
-                                          child: Container(
-                                            height: 20,
-                                            width: 20,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: Constanst.onPrimary),
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(2),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                ],
-                              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Pilih Lokasi",
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              color: Constanst.fgPrimary,
                             ),
-                          );
-                        }),
+                          ),
+                          InkWell(
+                              customBorder: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              onTap: () => Navigator.pop(Get.context!),
+                              child: Icon(
+                                Icons.close,
+                                size: 26,
+                                color: Constanst.fgSecondary,
+                              ))
+                        ],
                       ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      child: Divider(
+                        thickness: 1,
+                        height: 0,
+                        color: Constanst.border,
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Obx(
+                        () => Column(
+                          children: List.generate(placeCoordinate.value.length,
+                              (index) {
+                            var id = placeCoordinate.value[index]['id'];
+                            var place = placeCoordinate.value[index]['place'];
+                            return InkWell(
+                              onTap: () {
+                                if (selectedViewFilterAbsen.value == 0) {
+                                  filterLokasiAbsenBulan(place);
+                                } else {
+                                  filterLokasiAbsen(place);
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      place,
+                                      style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16,
+                                        color: Constanst.fgPrimary,
+                                      ),
+                                    ),
+                                    "$id" == idDepartemenTerpilih.value
+                                        ? InkWell(
+                                            onTap: () {},
+                                            child: Container(
+                                              height: 20,
+                                              width: 20,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      width: 2,
+                                                      color: Constanst.onPrimary),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10)),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(3),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: Constanst.onPrimary,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : InkWell(
+                                            onTap: () {
+                                              if (selectedViewFilterAbsen.value ==
+                                                  0) {
+                                                filterLokasiAbsenBulan(place);
+                                              } else {
+                                                filterLokasiAbsen(place);
+                                              }
+                                            },
+                                            child: Container(
+                                              height: 20,
+                                              width: 20,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color: Constanst.onPrimary),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10)),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(2),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
