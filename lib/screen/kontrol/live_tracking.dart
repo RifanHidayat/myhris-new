@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
-import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:device_info_plus/device_info_plus.dart';
 // import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
@@ -165,18 +165,18 @@ class _LiveTrackingState extends State<LiveTracking> {
 
   String _fakeGpsMessage = "Detecting...";
 
-  Future<void> _checkForFakeGps() async {
-    bool isFakeGps = await _isMockLocation() || await _isDeveloperModeEnabled();
-    if (isFakeGps) {
-      setState(() {
-        _fakeGpsMessage = "Fake GPS detected!";
-      });
-    } else {
-      setState(() {
-        _fakeGpsMessage = "11.";
-      });
-    }
-  }
+  // Future<void> _checkForFakeGps() async {
+  //   bool isFakeGps = await _isMockLocation() || await _isDeveloperModeEnabled();
+  //   if (isFakeGps) {
+  //     setState(() {
+  //       _fakeGpsMessage = "Fake GPS detected!";
+  //     });
+  //   } else {
+  //     setState(() {
+  //       _fakeGpsMessage = "11.";
+  //     });
+  //   }
+  // }
 
   Future<bool> _isMockLocation() async {
     try {
@@ -188,12 +188,12 @@ class _LiveTrackingState extends State<LiveTracking> {
     }
   }
 
-  Future<bool> _isDeveloperModeEnabled() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    return androidInfo.isPhysicalDevice != true &&
-        androidInfo.version.sdkInt! >= 23;
-  }
+  // Future<bool> _isDeveloperModeEnabled() async {
+  //   // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  //   // AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+  //   // return androidInfo.isPhysicalDevice != true &&
+  //   //     androidInfo.version.sdkInt! >= 23;
+  // }
 
   // static const locationChannel =
   //     MethodChannel('com.example/backgroundservice/location_channel');

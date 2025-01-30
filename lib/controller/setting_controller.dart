@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 // import 'package:background_location_tracker/background_location_tracker.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+// import 'package:connectivity_plus/connectivity_plus.dart';
 // import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
@@ -99,6 +99,11 @@ class SettingController extends GetxController {
 
   @override
   void onReady() async {
+        if (DateTime.now().day > AppData.informasiUser![0].endPayroll) {
+       setDate(   DateTime(DateTime.now().year, DateTime.now().month+1, 01));
+    }else{
+       setDate(   DateTime(DateTime.now().year, DateTime.now().month, 01));
+    }
     setDate(DateTime.now());
     // getTimeNow();
     toRouteSimpanData();
