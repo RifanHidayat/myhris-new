@@ -72,6 +72,8 @@ class AbsenController extends GetxController {
 
   RxBool isChecked = false.obs;
   RxBool isChecked2 = false.obs;
+  RxBool isChecked3 = false.obs;
+  RxBool isChecked4 = false.obs;
   RxBool selengkapnyaMasuk = false.obs;
   RxBool selengkapnyaKeluar = false.obs;
 
@@ -82,6 +84,8 @@ class AbsenController extends GetxController {
   var checkoutAjuan = "".obs;
   var checkinAjuan2 = "".obs;
   var checkoutAjuan2 = "".obs;
+  var checkinIstiahat = "".obs;
+  var checkoutIstirahat = "".obs;
   var catataanAjuan = TextEditingController();
   var imageAjuan = "".obs;
   var nomorAjuan = "".obs;
@@ -100,11 +104,18 @@ class AbsenController extends GetxController {
   Rx<List<String>> placeCoordinateDropdown = Rx<List<String>>([]);
   var placeCoordinateCheckin = [].obs;
   var placeCoordinateCheckout = [].obs;
+  var placeCoordinateCheckinRest = [].obs;
+  var placeCoordinateCheckoutRest = [].obs;
 
   var absenLongLatMasuk = [].obs;
   var absenKeluarLongLat = [].obs;
   var addressMasuk = "".obs;
   var addressKeluar = "".obs;
+
+  var absenLongLatMasukRest = [].obs;
+  var absenKeluarLongLatRest = [].obs;
+  var addressMasukRest = "".obs;
+  var addressKeluarRest = "".obs;
 
   var selectedType = "".obs;
 
@@ -531,6 +542,142 @@ class AbsenController extends GetxController {
       }
     });
     placeCoordinateCheckout.refresh();
+  }
+
+  void getPlaceCoordinateCheckoutRest() {
+    print("place coordinates Rest");
+    placeCoordinate.clear();
+
+    var connect = Api.connectionApi(
+      "get",
+      {},
+      "places_coordinate_pengajuan",
+      params: "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}",
+    );
+
+    connect.then((dynamic res) {
+      if (res == false) {
+        print("error");
+        //UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          print("Place coordinate 200" + res.body.toString());
+          var valueBody = jsonDecode(res.body);
+          selectedType.value = valueBody['data'][0]['place'];
+
+          List filter = [];
+          for (var element in valueBody['data']) {
+            if (element['isFilterView'] == 1) {
+              element['is_selected'] = false;
+              filter.add(element);
+            }
+          }
+
+          placeCoordinateCheckoutRest.value = filter;
+          placeCoordinateCheckoutRest.refresh();
+        } else {
+          print("Place coordinate !=200" + res.body.toString());
+        }
+      }
+    });
+    placeCoordinateCheckoutRest.refresh();
+  }
+
+  void getPlaceCoordinateCheckinRest() {
+    print("place coordinates Rest");
+    placeCoordinate.clear();
+
+    var connect = Api.connectionApi(
+      "get",
+      {},
+      "places_coordinate_pengajuan",
+      params: "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}",
+    );
+
+    connect.then((dynamic res) {
+      if (res == false) {
+        print("error");
+        //UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          print("Place coordinate 200" + res.body.toString());
+          var valueBody = jsonDecode(res.body);
+          selectedType.value = valueBody['data'][0]['place'];
+
+          List filter = [];
+          for (var element in valueBody['data']) {
+            if (element['isFilterView'] == 1) {
+              element['is_selected'] = false;
+              filter.add(element);
+            }
+          }
+
+          placeCoordinateCheckinRest.value = filter;
+          placeCoordinateCheckinRest.refresh();
+        } else {
+          print("Place coordinate !=200" + res.body.toString());
+        }
+      }
+    });
+    placeCoordinateCheckinRest.refresh();
+  }
+
+  Future<void> convertLatLongListToAddressesoutRest(latLongList) async {
+    // absenLongLatMasuk.clear();
+    try {
+      //  for (var coordinates in latLongList) {
+      double latitude = double.parse(latLongList[0].toString());
+      double longitude = double.parse(latLongList[1].toString());
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        var place = placemarks.first;
+        var addressData = {
+          'name': place.name ?? '',
+          'locality': place.locality ?? '',
+          'postalCode': place.postalCode ?? '',
+          'country': place.country ?? '',
+          "street": place.street ?? '',
+          'subLocality': place.subLocality ?? '',
+          'subAdministrativeArea': place.subAdministrativeArea ?? '',
+          'administrativeArea': place.administrativeArea ?? ''
+        };
+        String formattedAddress =
+            "${place.street}, ${place.name}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.postalCode}";
+        addressKeluarRest.value = formattedAddress;
+      } else {}
+      //  }
+    } catch (e) {}
+  }
+
+  Future<void> convertLatLongListToAddressesinRest(latLongList) async {
+    // absenLongLatMasuk.clear();
+    try {
+      //  for (var coordinates in latLongList) {
+      double latitude = double.parse(latLongList[0].toString());
+      double longitude = double.parse(latLongList[1].toString());
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        var place = placemarks.first;
+        var addressData = {
+          'name': place.name ?? '',
+          'locality': place.locality ?? '',
+          'postalCode': place.postalCode ?? '',
+          'country': place.country ?? '',
+          "street": place.street ?? '',
+          'subLocality': place.subLocality ?? '',
+          'subAdministrativeArea': place.subAdministrativeArea ?? '',
+          'administrativeArea': place.administrativeArea ?? ''
+        };
+        String formattedAddress =
+            "${place.street}, ${place.name}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.postalCode}";
+        addressMasukRest.value = formattedAddress;
+      } else {}
+      //  }
+    } catch (e) {}
   }
 
   // latlong convert
@@ -1435,8 +1582,7 @@ class AbsenController extends GetxController {
               print(
                   "isViewTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
               print("isViewTracking ${typeAbsen.value}");
-             
-             
+
               if (AppData.informasiUser![0].isViewTracking.toString() == '0') {
                 controllerTracking.bagikanlokasi.value = "aktif";
 
@@ -1451,7 +1597,6 @@ class AbsenController extends GetxController {
                     "startTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
               }
 
-             
               if (typeAbsen.value == 2) {
                 controllerTracking.bagikanlokasi.value = "tidak aktif";
                 // await LocationDao().clear();
@@ -2880,14 +3025,18 @@ class AbsenController extends GetxController {
                                               decoration: BoxDecoration(
                                                   border: Border.all(
                                                       width: 2,
-                                                      color: Constanst.onPrimary),
+                                                      color:
+                                                          Constanst.onPrimary),
                                                   borderRadius:
-                                                      BorderRadius.circular(10)),
+                                                      BorderRadius.circular(
+                                                          10)),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(3),
+                                                padding:
+                                                    const EdgeInsets.all(3),
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                      color: Constanst.onPrimary,
+                                                      color:
+                                                          Constanst.onPrimary,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               10)),
@@ -2897,7 +3046,8 @@ class AbsenController extends GetxController {
                                           )
                                         : InkWell(
                                             onTap: () {
-                                              if (selectedViewFilterAbsen.value ==
+                                              if (selectedViewFilterAbsen
+                                                      .value ==
                                                   0) {
                                                 filterLokasiAbsenBulan(place);
                                               } else {
@@ -2910,11 +3060,14 @@ class AbsenController extends GetxController {
                                               decoration: BoxDecoration(
                                                   border: Border.all(
                                                       width: 1,
-                                                      color: Constanst.onPrimary),
+                                                      color:
+                                                          Constanst.onPrimary),
                                                   borderRadius:
-                                                      BorderRadius.circular(10)),
+                                                      BorderRadius.circular(
+                                                          10)),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(2),
+                                                padding:
+                                                    const EdgeInsets.all(2),
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                       borderRadius:
@@ -3932,6 +4085,8 @@ class AbsenController extends GetxController {
     // placeCoordinateCheckout.clear();
     absenLongLatMasuk.clear();
     absenKeluarLongLat.clear();
+    absenLongLatMasukRest.clear();
+    absenKeluarLongLatRest.clear();
     // isChecked.value = false;
     // isChecked2.value = false;
     // tglAjunan.value = "";
@@ -3944,10 +4099,13 @@ class AbsenController extends GetxController {
   }
 
   void kirimPengajuan(getNomorAjuanTerakhir, status) {
+    print('kesini gak');
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
       "address_masuk": addressMasuk.value.toString(),
       "address_keluar": addressKeluar.value.toString(),
+      "address_masuk_rest": addressMasukRest.value.toString(),
+      "address_keluar_rest": addressKeluarRest.value.toString(),
       "absen_LongLat_Masuk": absenLongLatMasuk.value.toString(),
       "absenKeluarLongLat": absenKeluarLongLat.value.toString(),
       "em_id": emId,
@@ -3964,6 +4122,12 @@ class AbsenController extends GetxController {
       'checkout': checkoutAjuan2.value.toString() == ""
           ? "00:00:00"
           : checkoutAjuan2.value.toString(),
+      'checkin_rest': checkinIstiahat.value.toString() == ""
+          ? "00:00:00"
+          : checkinIstiahat.value.toString(),
+      'checkout_rest': checkoutIstirahat.value.toString() == ""
+          ? "00:00:00"
+          : checkoutIstirahat.value.toString(),
       'lokasi_masuk_id': placeCoordinateCheckin
               .where((p0) => p0['is_selected'] == true)
               .toList()
@@ -3980,12 +4144,28 @@ class AbsenController extends GetxController {
               .where((p0) => p0['is_selected'] == true)
               .toList()[0]['id']
           : "",
+      'lokasi_masuk_id_rest': placeCoordinateCheckinRest
+              .where((p0) => p0['is_selected'] == true)
+              .toList()
+              .isNotEmpty
+          ? placeCoordinateCheckinRest
+              .where((p0) => p0['is_selected'] == true)
+              .toList()[0]['id']
+          : "",
+      'lokasi_keluar_id_rest': placeCoordinateCheckoutRest
+              .where((p0) => p0['is_selected'] == true)
+              .toList()
+              .isNotEmpty
+          ? placeCoordinateCheckoutRest
+              .where((p0) => p0['is_selected'] == true)
+              .toList()[0]['id']
+          : "",
       'file': imageAjuan.value,
       'tgl_ajuan': DateFormat('yyyy-MM-dd').format(DateTime.now()),
     };
     print('body data ajuan ${body}');
-    var connect = Api.connectionApi("post", body, "save-employee-attendance");
 
+    var connect = Api.connectionApi("post", body, "save-employee-attendance");
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
 
@@ -4043,6 +4223,7 @@ class AbsenController extends GetxController {
         UtilsAlert.showToast("${valueBody['message']}");
       }
     });
+
     clearData();
   }
 

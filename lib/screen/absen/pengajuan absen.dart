@@ -149,11 +149,11 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                         var absk = absenController.addressKeluar.value;
                         var absenklr = absenController.absenKeluarLongLat.value;
                         var absenmsk = absenController.absenLongLatMasuk.value;
-                      absenController.nextKirimPengajuan("status");
-                      print("addressmasuk: $abs");
-                      print("addresskeluar: $absk");
-                      print("absnmsk: $absenmsk");
-                      print("absnklr: $absenklr");
+                        absenController.nextKirimPengajuan("status");
+                        print("addressmasuk: $abs");
+                        print("addresskeluar: $absk");
+                        print("absnmsk: $absenmsk");
+                        print("absnklr: $absenklr");
                       },
                       style: ElevatedButton.styleFrom(
                           foregroundColor: Constanst.colorWhite,
@@ -256,7 +256,8 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
 
                         absenController.getPlaceCoordinateCheckin();
                         absenController.getPlaceCoordinateCheckout();
-
+                        absenController.getPlaceCoordinateCheckinRest();
+                        absenController.getPlaceCoordinateCheckoutRest();
                         // var filter = DateFormat('yyyy-MM').format(time);
                         // var array = filter.split('-');
                         // var bulan = array[1];
@@ -367,78 +368,67 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: Column(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            const Icon(
+                              Iconsax.login_1,
+                              size: 24,
+                            ),
+                            const SizedBox(width: 12),
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(
-                                  Iconsax.login_1,
-                                  size: 24,
+                                TextLabell(
+                                  text: "Absen Masuk",
+                                  color: Constanst.fgPrimary,
+                                  size: 14,
+                                  weight: FontWeight.w400,
                                 ),
-                                const SizedBox(width: 12),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextLabell(
-                                      text: "Absen Masuk",
-                                      color: Constanst.fgPrimary,
-                                      size: 14,
-                                      weight: FontWeight.w400,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    TextLabell(
-                                      text: absenController
-                                                  .checkinAjuan.value ==
-                                              ""
-                                          ? "_ _ : _ _"
-                                          : absenController.checkinAjuan.value,
-                                      color: Constanst.fgSecondary,
-                                      weight: FontWeight.w500,
-                                      size: 16,
-                                    )
-                                  ],
+                                const SizedBox(height: 8),
+                                TextLabell(
+                                  text: absenController.checkinAjuan.value == ""
+                                      ? "_ _ : _ _"
+                                      : absenController.checkinAjuan.value,
+                                  color: Constanst.fgSecondary,
+                                  weight: FontWeight.w500,
+                                  size: 16,
                                 )
                               ],
-                            ),
+                            )
                           ],
                         ),
                       ),
                       Expanded(
-                        child: Column(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            const Icon(
+                              Iconsax.logout_1,
+                              size: 24,
+                            ),
+                            const SizedBox(width: 12),
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(
-                                  Iconsax.logout_1,
-                                  size: 24,
+                                TextLabell(
+                                  text: "Absen Keluar",
+                                  color: Constanst.fgPrimary,
+                                  size: 14,
+                                  weight: FontWeight.w400,
                                 ),
-                                const SizedBox(width: 12),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextLabell(
-                                      text: "Absen Keluar",
-                                      color: Constanst.fgPrimary,
-                                      size: 14,
-                                      weight: FontWeight.w400,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    TextLabell(
-                                      text: absenController
-                                                  .checkoutAjuan.value ==
-                                              ""
+                                const SizedBox(height: 8),
+                                TextLabell(
+                                  text:
+                                      absenController.checkoutAjuan.value == ""
                                           ? "_ _ : _ _"
                                           : absenController.checkoutAjuan.value,
-                                      color: Constanst.fgSecondary,
-                                      weight: FontWeight.w500,
-                                      size: 16,
-                                    )
-                                  ],
+                                  color: Constanst.fgSecondary,
+                                  weight: FontWeight.w500,
+                                  size: 16,
                                 )
                               ],
-                            ),
+                            )
                           ],
                         ),
                       ),
@@ -620,7 +610,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     TextLabell(
-                                      text: "Lokasi*",
+                                      text: "Lokasi",
                                       color: Constanst.fgPrimary,
                                       size: 14,
                                       weight: FontWeight.w400,
@@ -927,6 +917,534 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                     ],
                   ),
                 ),
+                AppData.informasiUser![0].tipeAbsen == '3'
+                    ? Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 16.0),
+                                  child: InkWell(
+                                    customBorder: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(16))),
+                                    onTap: () {
+                                      showTimePicker(
+                                        context: Get.context!,
+                                        initialTime: TimeOfDay.now(),
+                                        // initialEntryMode: TimePickerEntryMode.input,
+                                        cancelText: 'Batal',
+                                        confirmText: 'Simpan',
+                                        builder: (context, child) {
+                                          return MediaQuery(
+                                            data: MediaQuery.of(context)
+                                                .copyWith(
+                                                    alwaysUse24HourFormat:
+                                                        true),
+                                            child: Theme(
+                                              data: ThemeData(
+                                                colorScheme: ColorScheme.light(
+                                                  primary: Constanst.onPrimary,
+                                                ),
+                                                // useMaterial3: settings.useMaterial3,
+                                                dialogTheme: const DialogTheme(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    16)))),
+                                                primaryColor:
+                                                    Constanst.fgPrimary,
+                                                textTheme: TextTheme(
+                                                  titleMedium:
+                                                      GoogleFonts.inter(
+                                                    color: Constanst.fgPrimary,
+                                                  ),
+                                                ),
+                                                dialogBackgroundColor:
+                                                    Constanst.colorWhite,
+                                                canvasColor: Colors.white,
+                                                hintColor: Constanst.onPrimary,
+                                                textButtonTheme:
+                                                    TextButtonThemeData(
+                                                  style: TextButton.styleFrom(
+                                                    foregroundColor:
+                                                        Constanst.onPrimary,
+                                                  ),
+                                                ),
+                                              ),
+                                              child: child!,
+                                            ),
+                                          );
+                                        },
+                                      ).then((value) {
+                                        if (value == null) {
+                                          UtilsAlert.showToast(
+                                              'gagal pilih jam');
+                                        } else {
+                                          var convertJam = value.hour <= 9
+                                              ? "0${value.hour}"
+                                              : "${value.hour}";
+                                          var convertMenit = value.minute <= 9
+                                              ? "0${value.minute}"
+                                              : "${value.minute}";
+                                          absenController.checkoutIstirahat.value =
+                                              "$convertJam:$convertMenit";
+                                          absenController.isChecked3.value =
+                                              true;
+                                          // this.controller.dariJam.refresh();
+                                        }
+                                      });
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          16.0, 16.0, 0.0, 16.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            height: 16.0,
+                                            width: 16.0,
+                                            child: Checkbox(
+                                              value: absenController
+                                                  .isChecked3.value,
+                                              checkColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  absenController
+                                                      .checkoutIstirahat.value = "";
+                                                  absenController
+                                                      .placeCoordinateCheckoutRest
+                                                      .clear();
+                                                  absenController
+                                                      .getPlaceCoordinateCheckoutRest();
+                                                  absenController
+                                                      .isChecked3.value = false;
+                                                });
+                                              },
+                                              activeColor: Constanst.onPrimary,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                TextLabell(
+                                                  text: "Istirahat Keluar",
+                                                  color: Constanst.fgPrimary,
+                                                  size: 14,
+                                                  weight: FontWeight.w400,
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    TextLabell(
+                                                      text: absenController
+                                                                  .checkoutIstirahat
+                                                                  .value ==
+                                                              ""
+                                                          ? "_ _ : _ _"
+                                                          : absenController
+                                                              .checkoutIstirahat
+                                                              .value,
+                                                      color:
+                                                          Constanst.fgPrimary,
+                                                      weight: FontWeight.w500,
+                                                      size: 16,
+                                                    ),
+                                                    Icon(Iconsax.arrow_down_1,
+                                                        size: 20,
+                                                        color: Constanst
+                                                            .fgPrimary),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  customBorder: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(16))),
+                                  onTap: () {
+                                    if (absenController.tglAjunan.value != "") {
+                                      bottomSheetLokasiCheckoutRest();
+                                      return;
+                                    }
+                                    UtilsAlert.showToast(
+                                        "Pilih terlebih dahulu tanggal absensi");
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        0.0, 16.0, 16.0, 16.0),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Icon(Iconsax.location_tick),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              TextLabell(
+                                                text: "Lokasi*",
+                                                color: Constanst.fgPrimary,
+                                                size: 14,
+                                                weight: FontWeight.w400,
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Expanded(
+                                                    child: TextLabell(
+                                                      text: absenController
+                                                              .placeCoordinateCheckoutRest
+                                                              .where((p0) =>
+                                                                  p0['is_selected'] ==
+                                                                  true)
+                                                              .toList()
+                                                              .isNotEmpty
+                                                          ? absenController
+                                                              .placeCoordinateCheckoutRest
+                                                              .where((p0) =>
+                                                                  p0['is_selected'] ==
+                                                                  true)
+                                                              .toList()[0]['place']
+                                                          : "-",
+                                                      color:
+                                                          Constanst.fgPrimary,
+                                                      weight: FontWeight.w500,
+                                                      size: 16,
+                                                    ),
+                                                  ),
+                                                  Icon(Iconsax.arrow_down_1,
+                                                      size: 20,
+                                                      color:
+                                                          Constanst.fgPrimary),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 16.0),
+                                    child: Divider(
+                                      height: 0,
+                                      thickness: 1,
+                                      color: Constanst.fgBorder,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                    color: Constanst.fgBorder,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 16.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      showTimePicker(
+                                        context: Get.context!,
+                                        initialTime: TimeOfDay.now(),
+                                        // initialEntryMode: TimePickerEntryMode.input,
+                                        cancelText: 'Batal',
+                                        confirmText: 'Simpan',
+                                        builder: (context, child) {
+                                          return MediaQuery(
+                                            data: MediaQuery.of(context)
+                                                .copyWith(
+                                                    alwaysUse24HourFormat:
+                                                        true),
+                                            child: Theme(
+                                              data: ThemeData(
+                                                colorScheme: ColorScheme.light(
+                                                  primary: Constanst.onPrimary,
+                                                ),
+                                                // useMaterial3: settings.useMaterial3,
+                                                dialogTheme: const DialogTheme(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    16)))),
+                                                primaryColor:
+                                                    Constanst.fgPrimary,
+                                                textTheme: TextTheme(
+                                                  titleMedium:
+                                                      GoogleFonts.inter(
+                                                    color: Constanst.fgPrimary,
+                                                  ),
+                                                ),
+                                                dialogBackgroundColor:
+                                                    Constanst.colorWhite,
+                                                canvasColor: Colors.white,
+                                                hintColor: Constanst.onPrimary,
+                                                textButtonTheme:
+                                                    TextButtonThemeData(
+                                                  style: TextButton.styleFrom(
+                                                    foregroundColor:
+                                                        Constanst.onPrimary,
+                                                  ),
+                                                ),
+                                              ),
+                                              child: child!,
+                                            ),
+                                          );
+                                        },
+                                      ).then((value) {
+                                        if (value == null) {
+                                          UtilsAlert.showToast(
+                                              'gagal pilih jam');
+                                        } else {
+                                          var convertJam = value.hour <= 9
+                                              ? "0${value.hour}"
+                                              : "${value.hour}";
+                                          var convertMenit = value.minute <= 9
+                                              ? "0${value.minute}"
+                                              : "${value.minute}";
+                                          absenController.checkinIstiahat.value =
+                                              "$convertJam:$convertMenit";
+                                          absenController.isChecked4.value =
+                                              true;
+                                          // var convertJam = value.hour <= 9
+                                          //     ? "0${value.hour}"
+                                          //     : "${value.hour}";
+                                          // var convertMenit = value.minute <= 9
+                                          //     ? "0${value.minute}"
+                                          //     : "${value.minute}";
+                                          // controller.dariJam.value.text =
+                                          //     "$convertJam:$convertMenit";
+                                          // this.controller.dariJam.refresh();
+                                        }
+                                      });
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          16.0, 16.0, 0.0, 16.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            height: 16.0,
+                                            width: 16.0,
+                                            child: Checkbox(
+                                              value: absenController
+                                                  .isChecked4.value,
+                                              checkColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  absenController.checkinIstiahat
+                                                      .value = "";
+                                                  absenController
+                                                      .placeCoordinateCheckinRest
+                                                      .clear();
+                                                  absenController
+                                                      .getPlaceCoordinateCheckinRest();
+                                                  absenController
+                                                      .isChecked4.value = false;
+                                                });
+                                              },
+                                              activeColor: Constanst.onPrimary,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                TextLabell(
+                                                  text: "Istirahat Masuk",
+                                                  color: Constanst.fgPrimary,
+                                                  size: 14,
+                                                  weight: FontWeight.w400,
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    TextLabell(
+                                                      text: absenController
+                                                                  .checkinIstiahat
+                                                                  .value ==
+                                                              ""
+                                                          ? "_ _ : _ _"
+                                                          : absenController
+                                                              .checkinIstiahat
+                                                              .value,
+                                                      color:
+                                                          Constanst.fgPrimary,
+                                                      weight: FontWeight.w500,
+                                                      size: 16,
+                                                    ),
+                                                    Icon(Iconsax.arrow_down_1,
+                                                        size: 20,
+                                                        color: Constanst
+                                                            .fgPrimary),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    if (absenController.tglAjunan.value != "") {
+                                      bottomSheetLokasiCheckinRest();
+                                      return;
+                                    }
+                                    UtilsAlert.showToast(
+                                        "Pilih terlebih dahulu tanggal absensi");
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        0.0, 16.0, 16.0, 16.0),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Icon(Iconsax.location_tick),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              TextLabell(
+                                                text: "Lokasi",
+                                                color: Constanst.fgPrimary,
+                                                size: 14,
+                                                weight: FontWeight.w400,
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Expanded(
+                                                    child: TextLabell(
+                                                      text: absenController
+                                                              .placeCoordinateCheckinRest
+                                                              .where((p0) =>
+                                                                  p0['is_selected'] ==
+                                                                  true)
+                                                              .toList()
+                                                              .isNotEmpty
+                                                          ? absenController
+                                                              .placeCoordinateCheckinRest
+                                                              .where((p0) =>
+                                                                  p0['is_selected'] ==
+                                                                  true)
+                                                              .toList()[0]['place']
+                                                          : "-",
+                                                      color:
+                                                          Constanst.fgPrimary,
+                                                      weight: FontWeight.w500,
+                                                      size: 16,
+                                                    ),
+                                                  ),
+                                                  Icon(Iconsax.arrow_down_1,
+                                                      size: 20,
+                                                      color:
+                                                          Constanst.fgPrimary),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 16.0),
+                                    child: Divider(
+                                      height: 0,
+                                      thickness: 1,
+                                      color: Constanst.fgBorder,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Divider(
+                                    height: 0,
+                                    thickness: 1,
+                                    color: Constanst.fgBorder,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+                    : SizedBox(),
                 InkWell(
                   onTap: () {
                     absenController.takeFile();
@@ -1123,8 +1641,9 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                               });
 
                               data['is_selected'] = true;
-                             absenController.placeCoordinateCheckin.refresh();
-                              absenController.absenLongLatMasuk.value = data['place_longlat'].toString().split(",");
+                              absenController.placeCoordinateCheckin.refresh();
+                              absenController.absenLongLatMasuk.value =
+                                  data['place_longlat'].toString().split(",");
                               print(absenController.absenLongLatMasuk);
                               print(data);
                               absenController.convertLatLongListToAddressesin(
@@ -1384,4 +1903,335 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
       },
     );
   }
+
+  void bottomSheetLokasiCheckoutRest() {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      builder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Lokasi Absen Checkout",
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18),
+                  ),
+                  InkWell(
+                      customBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      onTap: () {
+                        Navigator.pop(Get.context!);
+                      },
+                      child: Icon(
+                        Icons.close,
+                        opticalSize: 24,
+                        color: Constanst.fgSecondary,
+                      ))
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Divider(
+                thickness: 1,
+                height: 0,
+                color: Constanst.border,
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Obx(() => ListView.builder(
+                    itemCount: absenController.placeCoordinateCheckoutRest.length,
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context, index) {
+                      var data = absenController.placeCoordinateCheckoutRest[index];
+                      return Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              absenController.placeCoordinateCheckoutRest
+                                  .forEach((element) {
+                                element['is_selected'] = false;
+                              });
+
+                              data['is_selected'] = true;
+                              absenController.placeCoordinateCheckoutRest.refresh();
+                              absenController.convertLatLongListToAddressesoutRest(
+                                  data['place_longlat'].toString().split(","));
+                              absenController.absenKeluarLongLat.value =
+                                  data['place_longlat'].toString().split(",");
+                              print("data ce : ${data}");
+                              Get.back();
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                      absenController
+                                          .placeCoordinateCheckoutRest[index]
+                                              ['place']
+                                          .toString(),
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Constanst.fgPrimary)),
+                                  data['is_selected'] == true
+                                      ? InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(3),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Constanst.onPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            absenController
+                                                .placeCoordinateCheckoutRest
+                                                .forEach((element) {
+                                              element['is_selected'] = false;
+                                            });
+
+                                            data['is_selected'] = true;
+                                            absenController
+                                                .placeCoordinateCheckoutRest
+                                                .refresh();
+                                            Get.back();
+                                          },
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    })),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void bottomSheetLokasiCheckinRest() {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      builder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Lokasi Istirahat Checkin",
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18),
+                  ),
+                  InkWell(
+                      customBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      onTap: () {
+                        Navigator.pop(Get.context!);
+                      },
+                      child: Icon(
+                        Icons.close,
+                        opticalSize: 24,
+                        color: Constanst.fgSecondary,
+                      ))
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Divider(
+                thickness: 1,
+                height: 0,
+                color: Constanst.border,
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Obx(() => ListView.builder(
+                    itemCount: absenController.placeCoordinateCheckinRest.length,
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context, index) {
+                      var data = absenController.placeCoordinateCheckinRest[index];
+                      return Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              absenController.placeCoordinateCheckinRest
+                                  .forEach((element) {
+                                element['is_selected'] = false;
+                              });
+
+                              data['is_selected'] = true;
+                              absenController.placeCoordinateCheckinRest.refresh();
+                              absenController.convertLatLongListToAddressesinRest(
+                                  data['place_longlat'].toString().split(","));
+                              absenController.absenKeluarLongLat.value =
+                                  data['place_longlat'].toString().split(",");
+                              print("data ce : ${data}");
+                              Get.back();
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                      absenController
+                                          .placeCoordinateCheckinRest[index]
+                                              ['place']
+                                          .toString(),
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Constanst.fgPrimary)),
+                                  data['is_selected'] == true
+                                      ? InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(3),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Constanst.onPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            absenController
+                                                .placeCoordinateCheckinRest
+                                                .forEach((element) {
+                                              element['is_selected'] = false;
+                                            });
+
+                                            data['is_selected'] = true;
+                                            absenController
+                                                .placeCoordinateCheckinRest
+                                                .refresh();
+                                            Get.back();
+                                          },
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    })),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

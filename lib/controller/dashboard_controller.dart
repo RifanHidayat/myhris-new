@@ -1758,6 +1758,7 @@ class DashboardController extends GetxController {
             sisaKontrakFormat: element['sisa_kontrak_format'],
             lamaBekerja: element['lama_bekerja'],
             lamaBekerjaFormat: element['lama_bekerja_format'],
+            tipeAbsen: element['tipe_absen']
           );
           print(element['posisi']);
           getData.add(data);

@@ -49,6 +49,7 @@ class UserModel {
   var sisaKontrakFormat;
   var lamaBekerja;
   var lamaBekerjaFormat;
+  var tipeAbsen;
 
   UserModel({
     this.em_id,
@@ -97,6 +98,7 @@ class UserModel {
     this.sisaKontrakFormat,
     this.lamaBekerja,
     this.lamaBekerjaFormat,
+    this.tipeAbsen,
   });
 
   Map<String, dynamic> toMap() {
@@ -146,6 +148,7 @@ class UserModel {
       "sisa_kontrak_format": sisaKontrakFormat,
       "lama_bekerja": lamaBekerja,
       "lama_bekerja_format": lamaBekerjaFormat,
+      "tipe_absen": tipeAbsen
     };
   }
 
@@ -196,6 +199,7 @@ class UserModel {
       sisaKontrakFormat: map['sisa_kontrak_format'],
       lamaBekerja: map['lama_bekerja'],
       lamaBekerjaFormat: map['lama_bekerja_format'],
+      tipeAbsen: map['tipe_absen'],
     );
   }
 

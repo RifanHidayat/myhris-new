@@ -896,181 +896,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                             ),
                           ],
                         ),
-                        // Row(
-                        //   children: [
-                        //     Expanded(
-                        //       child: Column(
-                        //         crossAxisAlignment:
-                        //             CrossAxisAlignment.start,
-                        //         children: [
-                        //           Text(
-                        //             "Absen Masuk",
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgSecondary,
-                        //                 fontWeight: FontWeight.w400,
-                        //                 fontSize: 14),
-                        //           ),
-                        //           const SizedBox(height: 4),
-                        //           Text(
-                        //             "_ _ : _ _",
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgSecondary,
-                        //                 fontWeight: FontWeight.w500,
-                        //                 fontSize: 16),
-                        //           ),
-                        //           const SizedBox(height: 4),
-                        //           Text(
-                        //             "Sebelum",
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgSecondary,
-                        //                 fontWeight: FontWeight.w400,
-                        //                 fontSize: 12),
-                        //           ),
-                        //           Padding(
-                        //             padding: const EdgeInsets.only(
-                        //                 top: 12.0, bottom: 12.0),
-                        //             child: Divider(
-                        //               thickness: 1,
-                        //               height: 0,
-                        //               color: Constanst.border,
-                        //             ),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //     Padding(
-                        //       padding: const EdgeInsets.only(
-                        //           left: 16.0, right: 16.0),
-                        //       child: Icon(
-                        //         Iconsax.arrow_right_1,
-                        //         color: Constanst.fgSecondary,
-                        //         size: 22,
-                        //       ),
-                        //     ),
-                        //     Expanded(
-                        //       child: Column(
-                        //         crossAxisAlignment:
-                        //             CrossAxisAlignment.start,
-                        //         children: [
-                        //           Text(
-                        //             "Absen Masuk",
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgSecondary,
-                        //                 fontWeight: FontWeight.w400,
-                        //                 fontSize: 14),
-                        //           ),
-                        //           const SizedBox(height: 4),
-                        //           Text(
-                        //             DateFormat.Hm().format(
-                        //                 DateFormat("dd-MM-yyyy HH:mm:ss")
-                        //                     .parse(controller.detailData[0]
-                        //                         ['waktu_dari'])),
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgPrimary,
-                        //                 fontWeight: FontWeight.w500,
-                        //                 fontSize: 16),
-                        //           ),
-                        //           const SizedBox(height: 4),
-                        //           Text(
-                        //             "Setelah",
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgSecondary,
-                        //                 fontWeight: FontWeight.w400,
-                        //                 fontSize: 12),
-                        //           ),
-                        //           Padding(
-                        //             padding: const EdgeInsets.only(
-                        //                 top: 12.0, bottom: 12.0),
-                        //             child: Divider(
-                        //               thickness: 1,
-                        //               height: 0,
-                        //               color: Constanst.border,
-                        //             ),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-                        // Row(
-                        //   children: [
-                        //     Expanded(
-                        //       child: Column(
-                        //         crossAxisAlignment:
-                        //             CrossAxisAlignment.start,
-                        //         children: [
-                        //           Text(
-                        //             "Absen Keluar",
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgSecondary,
-                        //                 fontWeight: FontWeight.w400,
-                        //                 fontSize: 14),
-                        //           ),
-                        //           const SizedBox(height: 4),
-                        //           Text(
-                        //             "_ _ : _ _",
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgSecondary,
-                        //                 fontWeight: FontWeight.w500,
-                        //                 fontSize: 16),
-                        //           ),
-                        //           const SizedBox(height: 4),
-                        //           Text(
-                        //             "Sebelum",
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgSecondary,
-                        //                 fontWeight: FontWeight.w400,
-                        //                 fontSize: 12),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //     Padding(
-                        //       padding: const EdgeInsets.only(
-                        //           left: 16.0, right: 16.0),
-                        //       child: Icon(
-                        //         Iconsax.arrow_right_1,
-                        //         color: Constanst.fgSecondary,
-                        //         size: 22,
-                        //       ),
-                        //     ),
-                        //     Expanded(
-                        //       child: Column(
-                        //         crossAxisAlignment:
-                        //             CrossAxisAlignment.start,
-                        //         children: [
-                        //           Text(
-                        //             "Absen Keluar",
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgSecondary,
-                        //                 fontWeight: FontWeight.w400,
-                        //                 fontSize: 14),
-                        //           ),
-                        //           const SizedBox(height: 4),
-                        //           Text(
-                        //             DateFormat.Hm().format(
-                        //                 DateFormat("dd-MM-yyyy HH:mm:ss")
-                        //                     .parse(controller.detailData[0]
-                        //                         ['waktu_sampai'])),
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgPrimary,
-                        //                 fontWeight: FontWeight.w500,
-                        //                 fontSize: 16),
-                        //           ),
-                        //           const SizedBox(height: 4),
-                        //           Text(
-                        //             "Setelah",
-                        //             style: GoogleFonts.inter(
-                        //                 color: Constanst.fgSecondary,
-                        //                 fontWeight: FontWeight.w400,
-                        //                 fontSize: 12),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-
+                        
                         Padding(
                           padding:
                               const EdgeInsets.only(top: 12.0, bottom: 12.0),
@@ -1080,6 +906,129 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                             color: Constanst.border,
                           ),
                         ),
+
+                        Row(
+                          children: [
+                            Visibility(
+                              visible: DateFormat.Hm().format(
+                                      DateFormat("HH:mm:ss").parse(
+                                          controller.detailData[0]
+                                              ['breakout_time'])) !=
+                                  "00:00",
+                              child: Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Istirahat Keluar",
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgSecondary,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      DateFormat.Hm().format(
+                                          DateFormat("HH:mm:ss")
+                                              .parse(controller.detailData[0]
+                                                  ['breakout_time'])),
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgPrimary,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "Setelah",
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgSecondary,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12),
+                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(
+                                    //       top: 12.0, bottom: 12.0),
+                                    //   child: Divider(
+                                    //     thickness: 1,
+                                    //     height: 0,
+                                    //     color: Constanst.border,
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.only(
+                            //       left: 16.0, right: 16.0),
+                            //   child: Icon(
+                            //     Iconsax.arrow_right_1,
+                            //     color: Constanst.fgSecondary,
+                            //     size: 22,
+                            //   ),
+                            // ),
+                            Visibility(
+                              visible: DateFormat.Hm().format(
+                                      DateFormat("HH:mm:ss").parse(
+                                          controller.detailData[0]
+                                              ['breakin_time'])) !=
+                                  "00:00",
+                              child: Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Istirahat Masuk",
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgSecondary,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      DateFormat.Hm().format(
+                                          DateFormat("HH:mm:ss")
+                                              .parse(controller.detailData[0]
+                                                  ['breakin_time'])),
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgPrimary,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "Setelah",
+                                      style: GoogleFonts.inter(
+                                          color: Constanst.fgSecondary,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12),
+                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(
+                                    //       top: 12.0, bottom: 12.0),
+                                    //   child: Divider(
+                                    //     thickness: 1,
+                                    //     height: 0,
+                                    //     color: Constanst.border,
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                          child: Divider(
+                            thickness: 1,
+                            height: 0,
+                            color: Constanst.border,
+                          ),
+                        ),
+
                         Text(
                           "Catatan",
                           style: GoogleFonts.inter(
