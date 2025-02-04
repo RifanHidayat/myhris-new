@@ -117,7 +117,7 @@ dependencies:
   # draggable_bottom_sheet: ^1.0.2
   
   
-  upgrader: 
+  # upgrader: 
   # ffi: ^1.0.0
   # open_file_safe: ^3.2.3
   open_file_safe_plus: ^0.0.4
@@ -171,7 +171,7 @@ dependencies:
   google_maps_utils: ^2.0.0+1
   custom_navigation_bar: ^0.8.2
   dots_indicator: ^3.0.0
-  device_info_plus: ^10.1.2
+  # device_info_plus: ^10.1.2
   geocoding: ^3.0.0
   geolocator: ^13.0.1
   cached_network_image: ^3.3.1
@@ -188,7 +188,7 @@ dependencies:
   currency_text_input_formatter: ^2.2.3
   draggable_bottom_sheet: ^1.0.2
   # flutter_background_service: ^5.0.10
-  connectivity_plus: ^6.0.5
+  # connectivity_plus: ^6.0.5
   # flutter_internet_speed_test: ^1.0.1
   # dart_ping: ^9.0.1
   # pull_to_refresh_flutter3: ^2.0.2
