@@ -26,12 +26,14 @@ import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/controller/tab_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/database/sqlite/sqlite_database_helper.dart';
+import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 import 'package:siscom_operasional/screen/absen/absesi_location.dart';
 import 'package:siscom_operasional/screen/absen/berhasil_absen.dart';
 import 'package:siscom_operasional/screen/absen/camera_view.dart';
 import 'package:siscom_operasional/screen/absen/face_id_registration.dart';
 import 'package:siscom_operasional/screen/absen/facee_id_detection.dart';
 import 'package:siscom_operasional/screen/absen/loading_absen.dart';
+import 'package:siscom_operasional/screen/absen_istirahat_masuk_keluar.dart';
 import 'package:siscom_operasional/screen/akun/personal_info.dart';
 import 'package:siscom_operasional/screen/chatting/history.dart';
 import 'package:siscom_operasional/screen/detail_informasi.dart';
@@ -40,6 +42,7 @@ import 'package:siscom_operasional/screen/pesan/pesan.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
+import 'package:siscom_operasional/utils/custom_dialog.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
@@ -484,14 +487,22 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                       SafeArea(
-                        child: Padding(
+                   child: Padding(
                           padding: EdgeInsets.only(
-                              top: _isVisible
-                                  ? (controller.status.value == "[]" &&
-                                          controller.wfhstatus.value)
-                                      ? 280.0
-                                      : 265.0
-                                  : 175.0),
+                            top: (controller.isVisibleAbsenIstirahat())
+                                ? 350.0
+                                : (controller.isVisibleAbsenIstirahat())
+                                    ? 260.0
+                                    : 
+                                    // _isVisible
+                                        (controller.status.value == "[]" &&
+                                                controller
+                                                    .wfhstatus.value) // ||
+                                            // (controller.absenOfflineStatus.value)
+                                            ? 300.0
+                                            : 285.0
+                                        // : 190.0,
+                          ),
                           child: Container(
                             decoration: BoxDecoration(
                               color: Constanst.colorWhite,
@@ -1082,7 +1093,7 @@ class _DashboardState extends State<Dashboard> {
                                 fit: BoxFit.cover,
                                 width: 50,
                                 height: 50,
-                              ),
+                            ),
                             ),
                           ),
                         ),
@@ -1161,23 +1172,11 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget cardInfoAbsen() {
-    String formatDateTime(DateTime dateTime) {
-    return DateFormat('HH:mm:ss').format(dateTime);
-  }
-  DateTime startDate = DateTime.now();
     return InkWell(
       customBorder: RoundedRectangleBorder(
         borderRadius: Constanst.borderStyle1,
       ),
       onTap: () {
-        // Get.to(BerhasilAbsensi(
-        //         dataBerhasil: [
-        //           'Absen Masuk',
-        //           formatDateTime(startDate),
-        //           1,
-        //           1,
-        //         ],
-        //       ));
         // widgetButtomSheetFaceRegistrattion();
       },
       child: Container(
@@ -1310,9 +1309,10 @@ class _DashboardState extends State<Dashboard> {
                 ],
               ),
             ),
-            controller.showAbsen.value
-            ? _isVisible
-                ? Column(
+
+            // _isVisible
+            //     ? 
+                Column(
                     children: [
                       const Divider(
                         thickness: 1,
@@ -1328,10 +1328,17 @@ class _DashboardState extends State<Dashboard> {
                               borderRadius: const BorderRadius.only(
                                 bottomLeft: Radius.circular(15.0),
                               ),
-                              color: !controllerAbsensi.absenStatus.value &&
-                                      !controller.pendingSignoutApr.value
-                                  ? Constanst.colorWhite
-                                  : Constanst.colorNonAktif,
+                              color:
+                                  // (controller.signinTime.value !=
+                                  //             "00:00:00" &&
+                                  //         controller.trx.value.toUpperCase() !=
+                                  //             "TLM")
+                                  //     ? Constanst.colorNonAktif
+                                  //     :
+                                  !controllerAbsensi.absenStatus.value //&&
+                                      // !controller.pendingSignoutApr.value
+                                      ? Constanst.colorWhite
+                                      : Constanst.colorNonAktif,
                               child: InkWell(
                                 customBorder: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.only(
@@ -1339,6 +1346,79 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                 ),
                                 onTap: () {
+                                  // if (AppData.informasiUser![0].sisaKontrak
+                                  //             .toString() ==
+                                  //         'null' ||
+                                  //     AppData.informasiUser![0].sisaKontrak ==
+                                  //         '') {
+                                  // } else {
+                                  //   if (double.tryParse(AppData
+                                  //               .informasiUser![0].sisaKontrak
+                                  //               .toString())! <=
+                                  //           0 &&
+                                  //       AppData.informasiUser![0].em_status! !=
+                                  //           "PERMANENT") {
+                                  //     showGeneralDialog(
+                                  //       barrierDismissible: false,
+                                  //       context: Get.context!,
+                                  //       barrierColor: Colors
+                                  //           .black54, // space around dialog
+                                  //       transitionDuration:
+                                  //           const Duration(milliseconds: 200),
+                                  //       transitionBuilder:
+                                  //           (context, a1, a2, child) {
+                                  //         return ScaleTransition(
+                                  //           scale: CurvedAnimation(
+                                  //               parent: a1,
+                                  //               curve: Curves.elasticOut,
+                                  //               reverseCurve:
+                                  //                   Curves.easeOutCubic),
+                                  //           child: CustomDialog(
+                                  //             title: "Informasi",
+                                  //             content: controller
+                                  //                 .informasiHabisKontrak,
+                                  //             positiveBtnText: "Refresh",
+                                  //             negativeBtnText: "Kembali",
+                                  //             style: 1,
+                                  //             buttonStatus: 1,
+                                  //             positiveBtnPressed: () async {
+                                  //               print("logout");
+                                  //               UtilsAlert.loadingSimpanData(
+                                  //                   context,
+                                  //                   "Tunggu Sebentar...");
+
+                                  //               AppData.isLogin = false;
+                                  //               settingController
+                                  //                   .aksiEditLastLogin();
+                                  //               controllerTracking
+                                  //                   .stopService();
+                                  //               controllerTracking
+                                  //                   .isTrackingLokasi
+                                  //                   .value = false;
+                                  //               // refreshData();
+                                  //             },
+                                  //           ),
+                                  //         );
+                                  //       },
+                                  //       pageBuilder: (BuildContext context,
+                                  //           Animation animation,
+                                  //           Animation secondaryAnimation) {
+                                  //         return null!;
+                                  //       },
+                                  //     );
+                                  //     return;
+                                  //   }
+                                  // }
+                                  // ;
+
+                                  // else if (controller.signinTime.value !=
+                                  //         "00:00:00" &&
+                                  //     controller.trx.value.toUpperCase() !=
+                                  //         "TLM") {
+                                  //   UtilsAlert.showToast(
+                                  //       "Absensi hanya bisa dilakukan satu kali saja");
+                                  //   return;
+                                  // }
                                   if (controllerAbsensi.absenStatus.value ==
                                       true) {
                                     if (controller.wfhstatus.value) {
@@ -1352,9 +1432,11 @@ class _DashboardState extends State<Dashboard> {
                                     var dataUser = AppData.informasiUser;
                                     var faceRecog = dataUser![0].face_recog;
                                     print(
-                                        "facee recog ${GetStorage().read('face_recog')}");
+                                        "facee recokkk ${GetStorage().read('face_recog')}");
                                     if (GetStorage().read('face_recog') ==
-                                        true) {
+                                            true ||
+                                        controllerAbsensi.regType.value == 1 ||
+                                        controllerAbsensi.regType.value == 2) {
                                       print("masuk sini");
                                       var statusCamera =
                                           Permission.camera.status;
@@ -1452,16 +1534,23 @@ class _DashboardState extends State<Dashboard> {
                                               //   status: "masuk",
                                               // ));
                                               //end begin face recogniton
-
+                                              controllerAbsensi.isAbsenIstirahat
+                                                  .value = false;
                                               if (controllerAbsensi
                                                       .regType.value ==
                                                   1) {
                                                 Get.to(AbsensiLocation(
                                                   status: "masuk",
                                                 ));
-                                              } else {
+                                              } else if (controllerAbsensi
+                                                      .regType.value ==
+                                                  0) {
                                                 Get.to(FaceDetectorView(
                                                   status: "masuk",
+                                                ));
+                                              } else {
+                                                Get.to(AbsenMasukKeluar(
+                                                  status: "Absen Masuk",
                                                 ));
                                               }
 
@@ -1513,13 +1602,23 @@ class _DashboardState extends State<Dashboard> {
                                         children: [
                                           Icon(
                                             Iconsax.login5,
-                                            color: !controllerAbsensi
-                                                        .absenStatus.value &&
-                                                    !controller
-                                                        .pendingSignoutApr.value
-                                                ? Constanst.color5
-                                                : const Color.fromARGB(
-                                                    168, 166, 167, 158),
+                                            color:
+                                                // (controller
+                                                //                 .signinTime.value !=
+                                                //             "00:00:00" &&
+                                                //         controller.trx.value
+                                                //                 .toUpperCase() !=
+                                                //             "TLM")
+                                                //     ? const Color.fromARGB(
+                                                //         168, 166, 167, 158)
+                                                //     :
+                                                !controllerAbsensi
+                                                        .absenStatus.value // &&
+                                                    // !controller
+                                                    //     .pendingSignoutApr.value
+                                                    ? Constanst.color5
+                                                    : const Color.fromARGB(
+                                                        168, 166, 167, 158),
                                             size: 26,
                                           ),
                                           const SizedBox(width: 4),
@@ -1530,20 +1629,29 @@ class _DashboardState extends State<Dashboard> {
                                               Text(
                                                 "Masuk",
                                                 style: GoogleFonts.inter(
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 16,
-                                                    color: !controllerAbsensi
-                                                                .absenStatus
-                                                                .value &&
-                                                            !controller
-                                                                .pendingSignoutApr
-                                                                .value
-                                                        ? Constanst.fgPrimary
-                                                        : const Color.fromARGB(
-                                                            168,
-                                                            166,
-                                                            167,
-                                                            158)),
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 16,
+                                                  color:
+                                                      // (controller.signinTime
+                                                      //                 .value !=
+                                                      //             "00:00:00" &&
+                                                      //         controller.trx.value
+                                                      //                 .toUpperCase() !=
+                                                      //             "TLM")
+                                                      //     ? const Color.fromARGB(
+                                                      //         168, 166, 167, 158)
+                                                      //     :
+                                                      !controllerAbsensi
+                                                              .absenStatus
+                                                              .value //&&
+                                                          // !controller
+                                                          //     .pendingSignoutApr
+                                                          //     .value
+                                                          ? Constanst.fgPrimary
+                                                          : const Color
+                                                              .fromARGB(168,
+                                                              166, 167, 158),
+                                                ),
                                               ),
                                               Obx(
                                                 () => Text(
@@ -1555,7 +1663,7 @@ class _DashboardState extends State<Dashboard> {
                                                   //         ? "_ _:_ _:_ _"
                                                   //         : controller
                                                   //             .signinTime.value
-                                                  //     :
+                                                  // :
                                                   controller.signinTime.value ==
                                                           "00:00:00"
                                                       ? "_ _:_ _:_ _"
@@ -1565,16 +1673,33 @@ class _DashboardState extends State<Dashboard> {
                                                       fontWeight:
                                                           FontWeight.w500,
                                                       fontSize: 16,
-                                                      color: !controllerAbsensi
+                                                      color:
+                                                          // (controller
+                                                          //                 .signinTime
+                                                          //                 .value !=
+                                                          //             "00:00:00" &&
+                                                          //         controller
+                                                          //                 .trx.value
+                                                          //                 .toUpperCase() !=
+                                                          //             "TLM")
+                                                          //     ? const Color
+                                                          //         .fromARGB(168,
+                                                          //         166, 167, 158)
+                                                          //     :
+                                                          !controllerAbsensi
                                                                   .absenStatus
-                                                                  .value &&
-                                                              !controller
-                                                                  .pendingSignoutApr
-                                                                  .value
-                                                          ? Constanst.fgPrimary
-                                                          : const Color
-                                                              .fromARGB(168,
-                                                              166, 167, 158)),
+                                                                  .value //&&
+                                                              // !controller
+                                                              //     .pendingSignoutApr
+                                                              //     .value
+                                                              ? Constanst
+                                                                  .fgPrimary
+                                                              : const Color
+                                                                  .fromARGB(
+                                                                  168,
+                                                                  166,
+                                                                  167,
+                                                                  158)),
                                                 ),
                                               ),
                                               controller.status.value == "[]" &&
@@ -1756,13 +1881,20 @@ class _DashboardState extends State<Dashboard> {
                           Expanded(
                             flex: 165,
                             child: Material(
-                              color: controller.status.value == "[]" &&
-                                      controller.wfhstatus.value
-                                  ? Constanst.colorWhite
-                                  : controllerAbsensi.absenStatus.value &&
-                                          !controller.pendingSignoutApr.value
+                              color:
+                                  // controller.signoutTime.value !=
+                                  //             "00:00:00" &&
+                                  //         controller.trx.value.toUpperCase() !=
+                                  //             "TLM"
+                                  //     ? Constanst.colorNonAktif
+                                  //     :
+                                  controller.status.value == "[]" &&
+                                          controller.wfhstatus.value
                                       ? Constanst.colorWhite
-                                      : Constanst.colorNonAktif,
+                                      : controllerAbsensi.absenStatus.value //&&
+                                          // !controller.pendingSignoutApr.value
+                                          ? Constanst.colorWhite
+                                          : Constanst.colorNonAktif,
                               borderRadius: const BorderRadius.only(
                                 bottomRight: Radius.circular(15.0),
                               ),
@@ -1773,25 +1905,26 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                 ),
                                 onTap: () {
-
-
-
-                                  if (controller.pendingSignoutApr.value) {
-                                    UtilsAlert.showToast(
-                                        "Menunggu status absensi anda di approve");
-                                    return;
-                                  }
-
+                                  // if (controller.pendingSignoutApr.value) {
+                                  //   UtilsAlert.showToast(
+                                  //       "Menunggu status absensi anda di approve");
+                                  //   return;
+                                  // }
+                                  // if (controller.signoutTime.value !=
+                                  //         "00:00:00" &&
+                                  //     controller.trx.value.toUpperCase() !=
+                                  //         "TLM") {
+                                  //   UtilsAlert.showToast(
+                                  //       "Absensi hanya bisa dilakukan satu kali saja");
+                                  //   return;
+                                  // } else
                                   if (!controllerAbsensi.absenStatus.value) {
                                     UtilsAlert.showToast(
                                         "Absen Masuk terlebih dahulu");
-
                                   } else if (controller.status.value == "[]" &&
-
                                       controller.wfhstatus.value) {
                                     UtilsAlert.showToast(
                                         "Abeen WFH beluum di approve");
-
                                   } else {
                                     // if (!authController.isConnected.value) {
                                     //   // if (controller
@@ -1810,18 +1943,20 @@ class _DashboardState extends State<Dashboard> {
                                     //       status: "keluar");
                                     //   // }
                                     // } else {
-                                    // if (controller.absenOfflineStatus.value ==
-                                    //     true) {
-                                    //   UtilsAlert.showToast(
-                                    //       "Menunggu status absensi anda di approve");
-                                    //   return;
-                                    // }
+                                    //   if (controller.absenOfflineStatus.value ==
+                                    //       true) {
+                                    //     UtilsAlert.showToast(
+                                    //         "Menunggu status absensi anda di approve");
+                                    //     return;
+                                    //   }
 
                                     var dataUser = AppData.informasiUser;
                                     var faceRecog = dataUser![0].face_recog;
 
                                     if (GetStorage().read('face_recog') ==
-                                        true) {
+                                            true ||
+                                        controllerAbsensi.regType.value == 1 ||
+                                        controllerAbsensi.regType.value == 2) {
                                       controllerAbsensi.getPlaceCoordinate();
                                       controllerAbsensi.titleAbsen.value =
                                           "Absen Keluar";
@@ -1855,16 +1990,23 @@ class _DashboardState extends State<Dashboard> {
                                       //   // ));
                                       // }
                                       //end image picker
+                                      controllerAbsensi.isAbsenIstirahat.value =
+                                          false;
 
                                       if (controllerAbsensi.regType.value ==
                                           1) {
                                         Get.to(AbsensiLocation(
                                           status: "keluar",
                                         ));
-                                      } else {
+                                      } else if (controllerAbsensi
+                                              .regType.value ==
+                                          0) {
                                         Get.to(FaceDetectorView(
                                           status: "keluar",
                                         ));
+                                      } else {
+                                        Get.to(
+                                            AbsenMasukKeluar(status: "keluar"));
                                       }
 
                                       // controllerAbsensi.facedDetection(
@@ -1903,8 +2045,6 @@ class _DashboardState extends State<Dashboard> {
                                     }
                                     // }
                                   }
-
-                                  
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -2124,9 +2264,8 @@ class _DashboardState extends State<Dashboard> {
                         ],
                       ),
                     ],
-                  )
-                : Container()
-            : Container(),
+                  ),
+                // : Container(),
 
             // _isVisible
             //     ? Row(
@@ -2394,9 +2533,1552 @@ class _DashboardState extends State<Dashboard> {
             //         ],
             //       )
             //     : Container(),
+
+            Visibility(
+              visible: controller.isVisibleAbsenIstirahat(),
+              child: Column(
+                children: [
+                  const Divider(
+                    height: 0,
+                    thickness: 1,
+                  ),
+                  cardAbsenIstirahat(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+
+
+  //card info absen lama 
+
+//   Widget cardInfoAbsen() {
+//     String formatDateTime(DateTime dateTime) {
+//     return DateFormat('HH:mm:ss').format(dateTime);
+//   }
+//   DateTime startDate = DateTime.now();
+//     return InkWell(
+//       customBorder: RoundedRectangleBorder(
+//         borderRadius: Constanst.borderStyle1,
+//       ),
+//       onTap: () {
+//         // Get.to(BerhasilAbsensi(
+//         //         dataBerhasil: [
+//         //           'Absen Masuk',
+//         //           formatDateTime(startDate),
+//         //           1,
+//         //           1,
+//         //         ],
+//         //       ));
+//         // widgetButtomSheetFaceRegistrattion();
+//       },
+//       child: Container(
+//         width: MediaQuery.of(Get.context!).size.width,
+//         decoration: BoxDecoration(
+//           color: Colors.white,
+//           borderRadius: Constanst.borderStyle1,
+//           boxShadow: [
+//             BoxShadow(
+//               color: const Color.fromARGB(255, 155, 155, 155).withOpacity(0.5),
+//               spreadRadius: 0.1,
+//               blurRadius: 3,
+//               offset: const Offset(1, 1), // changes position of shadow
+//             ),
+//           ],
+//         ),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             // InkWell(
+//             //     onTap: () {
+//             //       print(AppData.informasiUser![0].endTime);
+//             //     },
+//             //     // onTap: () => controller.getMenuTest(),
+//             //     child: Text(
+//             //       "Live Attendance",
+//             //       style: TextStyle(
+//             //           fontSize: 14,
+//             //           fontWeight: FontWeight.bold,
+//             //           color: Constanst.color2),
+//             //     )),
+//             Padding(
+//               padding: const EdgeInsets.only(left: 12),
+//               child: Column(
+//                 children: [
+//                   Row(
+// // >>>>>>> main
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Padding(
+//                         padding: const EdgeInsets.only(top: 12),
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Text(
+//                               controller.timeString.value,
+//                               style: GoogleFonts.inter(
+//                                   fontWeight: FontWeight.w500,
+//                                   fontSize: 18,
+//                                   color: Constanst.fgPrimary),
+//                             ),
+//                             const SizedBox(height: 4),
+//                             Text(
+//                               controller.dateNow.value,
+//                               style: GoogleFonts.inter(
+//                                   fontWeight: FontWeight.w400,
+//                                   fontSize: 14,
+//                                   color: Constanst.fgPrimary),
+//                             ),
+//                             const SizedBox(height: 4),
+//                             Row(
+//                               children: [
+//                                 Obx(
+//                                   () => Text(
+//                                     "Jadwal ${controller.timeIn.value}  - ${controller.timeOut.value}",
+//                                     style: GoogleFonts.inter(
+//                                         fontWeight: FontWeight.w400,
+//                                         fontSize: 12,
+//                                         color: Constanst.fgSecondary),
+//                                   ),
+//                                 ),
+//                                 // const SizedBox(width: 8),
+//                                 // InkWell(
+//                                 //   onTap: () => UtilsAlert.informasiDashboard(
+//                                 //       Get.context!),
+//                                 //   child: Icon(
+//                                 //     Iconsax.info_circle,
+//                                 //     size: 16,
+//                                 //     color: Constanst.fgSecondary,
+//                                 //   ),
+//                                 // ),
+//                               ],
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                       Stack(
+//                         children: [
+//                           ClipRRect(
+//                             borderRadius: Constanst.borderStyle1,
+//                             child: Image.asset(
+//                               'assets/cardInfoImage.gif',
+//                               height: 101,
+//                             ),
+//                           ),
+//                           Positioned(
+//                             bottom: 2,
+//                             right: 2,
+//                             child: Container(
+//                               color: Colors.white,
+//                               width: 30,
+//                               height: 10,
+//                             ),
+//                           )
+//                         ],
+//                       ),
+//                       // Expanded(
+//                       //   flex: 30,
+//                       //   child: Column(
+//                       //     crossAxisAlignment: CrossAxisAlignment.end,
+//                       //     mainAxisAlignment: MainAxisAlignment.end,
+//                       //     children: [
+//                       //       const SizedBox(height: 4),
+//                       //       Obx(() {
+//                       //         return controllerAbsensi.shift.value.timeIn != ""
+//                       //             ? Text(
+//                       //                 "${controllerAbsensi.shift.value.timeIn ?? ""} - ${controllerAbsensi.shift.value.timeOut ?? ""}",
+//                       //                 style: TextStyle(
+//                       //                     fontSize: 10,
+//                       //                     color: Constanst.colorText2),
+//                       //               )
+//                       //             : const Text("");
+//                       //       })
+//                       //     ],
+//                       //   ),
+//                       // )
+//                     ],
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             controller.showAbsen.value
+//             ? _isVisible
+//                 ? Column(
+//                     children: [
+//                       const Divider(
+//                         thickness: 1,
+//                         height: 0,
+//                       ),
+//                       Row(
+//                         crossAxisAlignment: CrossAxisAlignment.center,
+//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                         children: [
+//                           Expanded(
+//                             flex: 165,
+//                             child: Material(
+//                               borderRadius: const BorderRadius.only(
+//                                 bottomLeft: Radius.circular(15.0),
+//                               ),
+//                               color: !controllerAbsensi.absenStatus.value &&
+//                                       !controller.pendingSignoutApr.value
+//                                   ? Constanst.colorWhite
+//                                   : Constanst.colorNonAktif,
+//                               child: InkWell(
+//                                 customBorder: const RoundedRectangleBorder(
+//                                   borderRadius: BorderRadius.only(
+//                                     bottomLeft: Radius.circular(15.0),
+//                                   ),
+//                                 ),
+//                                 onTap: () {
+//                                   if (controllerAbsensi.absenStatus.value ==
+//                                       true) {
+//                                     if (controller.wfhstatus.value) {
+//                                       UtilsAlert.showToast(
+//                                           "Menunggu status wfh anda di approve");
+//                                       return;
+//                                     }
+//                                     UtilsAlert.showToast(
+//                                         "Anda harus absen keluar terlebih dahulu");
+//                                   } else {
+//                                     var dataUser = AppData.informasiUser;
+//                                     var faceRecog = dataUser![0].face_recog;
+//                                     print(
+//                                         "facee recog ${GetStorage().read('face_recog')}");
+//                                     if (GetStorage().read('face_recog') ==
+//                                         true) {
+//                                       print("masuk sini");
+//                                       var statusCamera =
+//                                           Permission.camera.status;
+//                                       statusCamera.then((value) {
+//                                         var statusLokasi =
+//                                             Permission.location.status;
+//                                         statusLokasi.then((value2) async {
+//                                           if (value !=
+//                                                   PermissionStatus.granted ||
+//                                               value2 !=
+//                                                   PermissionStatus.granted) {
+//                                             UtilsAlert.showToast(
+//                                                 "Anda harus aktifkan kamera dan lokasi anda");
+//                                             controller
+//                                                 .widgetButtomSheetAktifCamera(
+//                                                     type: 'loadfirst');
+//                                           } else {
+//                                             print("masuk absen user");
+//                                             // if (controller
+//                                             //         .absenOfflineStatus.value ==
+//                                             //     true) {
+//                                             //   UtilsAlert.showToast(
+//                                             //       "Menunggu status absensi anda di approve");
+//                                             //   return;
+//                                             // }
+//                                             // Get.offAll(AbsenMasukKeluar(
+//                                             //   status: "Absen Masuk",
+//                                             //   type: 1,
+//                                             // ));
+//                                             //  controllerAbsensi.absenSelfie();
+
+//                                             var validasiAbsenMasukUser =
+//                                                 controller
+//                                                     .validasiAbsenMasukUser();
+//                                             if (!validasiAbsenMasukUser) {
+//                                               print("masuk sini");
+//                                             } else {
+//                                               // if (!authController
+//                                               //     .isConnected.value) {
+//                                               //   if (controller
+//                                               //           .absenOfflineStatus
+//                                               //           .value ==
+//                                               //       true) {
+//                                               //     UtilsAlert.showToast(
+//                                               //         "Menunggu status absensi anda di approve");
+//                                               //     return;
+//                                               //   } else {
+//                                               //     controllerAbsensi.titleAbsen
+//                                               //         .value = "Absen masuk";
+//                                               //     controllerAbsensi
+//                                               //         .typeAbsen.value = 1;
+//                                               //     controller
+//                                               //         .widgetButtomSheetOfflineAbsen(
+//                                               //             title: "Absen masuk",
+//                                               //             status: "masuk");
+//                                               //   }
+//                                               // } else {
+//                                               controllerAbsensi.titleAbsen
+//                                                   .value = "Absen masuk";
+
+//                                               controllerAbsensi
+//                                                   .typeAbsen.value = 1;
+
+//                                               //begin image picker
+//                                               // final getFoto = await ImagePicker()
+//                                               //     .pickImage(
+//                                               //         source: ImageSource.camera,
+//                                               //         preferredCameraDevice:
+//                                               //             CameraDevice.front,
+//                                               //         imageQuality: 100,
+//                                               //         maxHeight: 350,
+//                                               //         maxWidth: 350);
+//                                               // if (getFoto == null) {
+//                                               //   UtilsAlert.showToast(
+//                                               //       "Gagal mengambil gambar");
+//                                               // } else {
+//                                               //   // controllerAbsensi.facedDetection(
+//                                               //   //     status: "registration",
+//                                               //   //     absenStatus: "Absen Masuk",
+//                                               //   //     img: getFoto.path,
+//                                               //   //     type: "1");
+//                                               //   Get.to(LoadingAbsen(
+//                                               //     file: getFoto.path,
+//                                               //     status: "detection",
+//                                               //     statusAbsen: 'masuk',
+//                                               //   ));
+//                                               //   // Get.to(FaceidRegistration(
+//                                               //   //   status: "registration",
+//                                               //   // ));
+//                                               // }
+//                                               //end image picker
+
+//                                               //begin face recognition
+//                                               // Get.to(FaceDetectorView(
+//                                               //   status: "masuk",
+//                                               // ));
+//                                               //end begin face recogniton
+
+//                                               if (controllerAbsensi
+//                                                       .regType.value ==
+//                                                   1) {
+//                                                 Get.to(AbsensiLocation(
+//                                                   status: "masuk",
+//                                                 ));
+//                                               } else {
+//                                                 Get.to(FaceDetectorView(
+//                                                   status: "masuk",
+//                                                 ));
+//                                               }
+
+//                                               // // controllerAbsensi.getPlaceCoordinate();
+//                                               // ;
+//                                               // controllerAbsensi.facedDetection(
+//                                               //     status: "detection",
+//                                               //     absenStatus: "masuk",
+//                                               //     type: "1");
+
+//                                               // var kalkulasiRadius =
+//                                               //     controller.radiusNotOpen();
+//                                               // Get.to(faceDetectionPage(
+//                                               //   status: "masuk",
+//                                               // ));
+//                                               // kalkulasiRadius.then((value) {
+//                                               //   print(value);
+//                                               //   // if (value) {
+//                                               //   //   controllerAbsensi.titleAbsen.value =
+//                                               //   //       "Absen Masuk";
+//                                               //   //   controllerAbsensi.typeAbsen.value = 1;
+//                                               //   //   Get.offAll(faceDetectionPage());
+//                                               //   //   // controllerAbsensi.absenSelfie();
+//                                               //   // }
+//                                               // });
+//                                               // }
+//                                             }
+//                                           }
+//                                         });
+//                                       });
+//                                     } else {
+//                                       controllerAbsensi
+//                                           .widgetButtomSheetFaceRegistrattion();
+//                                     }
+//                                   }
+//                                 },
+//                                 child: Padding(
+//                                   padding: const EdgeInsets.only(
+//                                       left: 4, top: 12.0, bottom: 6),
+//                                   child: Row(
+//                                     crossAxisAlignment:
+//                                         CrossAxisAlignment.start,
+//                                     children: [
+//                                       Row(
+//                                         crossAxisAlignment:
+//                                             CrossAxisAlignment.start,
+//                                         mainAxisAlignment:
+//                                             MainAxisAlignment.spaceBetween,
+//                                         children: [
+//                                           Icon(
+//                                             Iconsax.login5,
+//                                             color: !controllerAbsensi
+//                                                         .absenStatus.value &&
+//                                                     !controller
+//                                                         .pendingSignoutApr.value
+//                                                 ? Constanst.color5
+//                                                 : const Color.fromARGB(
+//                                                     168, 166, 167, 158),
+//                                             size: 26,
+//                                           ),
+//                                           const SizedBox(width: 4),
+//                                           Column(
+//                                             crossAxisAlignment:
+//                                                 CrossAxisAlignment.start,
+//                                             children: [
+//                                               Text(
+//                                                 "Masuk",
+//                                                 style: GoogleFonts.inter(
+//                                                     fontWeight: FontWeight.w500,
+//                                                     fontSize: 16,
+//                                                     color: !controllerAbsensi
+//                                                                 .absenStatus
+//                                                                 .value &&
+//                                                             !controller
+//                                                                 .pendingSignoutApr
+//                                                                 .value
+//                                                         ? Constanst.fgPrimary
+//                                                         : const Color.fromARGB(
+//                                                             168,
+//                                                             166,
+//                                                             167,
+//                                                             158)),
+//                                               ),
+//                                               Obx(
+//                                                 () => Text(
+//                                                   // !authController
+//                                                   //         .isConnected.value
+//                                                   //     ? controller.signinTime
+//                                                   //                 .value ==
+//                                                   //             "00:00:00"
+//                                                   //         ? "_ _:_ _:_ _"
+//                                                   //         : controller
+//                                                   //             .signinTime.value
+//                                                   //     :
+//                                                   controller.signinTime.value ==
+//                                                           "00:00:00"
+//                                                       ? "_ _:_ _:_ _"
+//                                                       : controller
+//                                                           .signinTime.value,
+//                                                   style: GoogleFonts.inter(
+//                                                       fontWeight:
+//                                                           FontWeight.w500,
+//                                                       fontSize: 16,
+//                                                       color: !controllerAbsensi
+//                                                                   .absenStatus
+//                                                                   .value &&
+//                                                               !controller
+//                                                                   .pendingSignoutApr
+//                                                                   .value
+//                                                           ? Constanst.fgPrimary
+//                                                           : const Color
+//                                                               .fromARGB(168,
+//                                                               166, 167, 158)),
+//                                                 ),
+//                                               ),
+//                                               controller.status.value == "[]" &&
+//                                                       controller.wfhstatus.value
+//                                                   ? Padding(
+//                                                       padding:
+//                                                           const EdgeInsets.only(
+//                                                               top: 4.0),
+//                                                       child: Row(
+//                                                         mainAxisAlignment:
+//                                                             MainAxisAlignment
+//                                                                 .spaceBetween,
+//                                                         crossAxisAlignment:
+//                                                             CrossAxisAlignment
+//                                                                 .center,
+//                                                         children: [
+//                                                           // Icon(
+//                                                           //   Iconsax.timer,
+//                                                           //   color: Constanst
+//                                                           //       .color3,
+//                                                           //   size: 15,
+//                                                           // ),
+//                                                           // SizedBox(width: 2),
+//                                                           Obx(
+//                                                             () => Text(
+//                                                               // controller
+//                                                               //     .status.value,
+//                                                               "Pending WFH Approval",
+//                                                               style: GoogleFonts.inter(
+//                                                                   fontWeight:
+//                                                                       FontWeight
+//                                                                           .w500,
+//                                                                   fontSize: 9,
+//                                                                   color: !controllerAbsensi
+//                                                                           .absenStatus
+//                                                                           .value
+//                                                                       ? Constanst
+//                                                                           .fgPrimary
+//                                                                       : Constanst
+//                                                                           .color4),
+//                                                             ),
+//                                                           ),
+//                                                         ],
+//                                                       ),
+//                                                     )
+//                                                   : Container(),
+//                                               // (controller.absenOfflineStatus
+//                                               //                 .value &&
+//                                               //             absenControllre
+//                                               //                 .absenStatus
+//                                               //                 .value) ||
+//                                               //         controller
+//                                               //             .pendingSigninApr
+//                                               //             .value
+//                                               //     ? Padding(
+//                                               //         padding:
+//                                               //             const EdgeInsets.only(
+//                                               //                 top: 4.0),
+//                                               //         child: Row(
+//                                               //           mainAxisAlignment:
+//                                               //               MainAxisAlignment
+//                                               //                   .spaceBetween,
+//                                               //           crossAxisAlignment:
+//                                               //               CrossAxisAlignment
+//                                               //                   .center,
+//                                               //           children: [
+//                                               //             // Icon(
+//                                               //             //   Iconsax.timer,
+//                                               //             //   color: Constanst
+//                                               //             //       .color3,
+//                                               //             //   size: 15,
+//                                               //             // ),
+//                                               //             // SizedBox(width: 2),
+//                                               //             Obx(
+//                                               //               () => Row(
+//                                               //                 children: [
+//                                               //                   Text(
+//                                               //                     // controller
+//                                               //                     //     .status.value,
+//                                               //                     controller
+//                                               //                             .textPendingMasuk
+//                                               //                             .value
+//                                               //                         ? "Pending Absensi"
+//                                               //                         : "Pending Approval",
+//                                               //                     style:
+//                                               //                         GoogleFonts
+//                                               //                             .inter(
+//                                               //                       fontWeight:
+//                                               //                           FontWeight
+//                                               //                               .w500,
+//                                               //                       fontSize: 9,
+//                                               //                       color: Constanst
+//                                               //                           .color4,
+//                                               //                     ),
+//                                               //                   ),
+//                                               //                   Visibility(
+//                                               //                     visible: controller
+//                                               //                         .textPendingMasuk
+//                                               //                         .value,
+//                                               //                     child: Row(
+//                                               //                       children: [
+//                                               //                         const SizedBox(
+//                                               //                           width:
+//                                               //                               2,
+//                                               //                         ),
+//                                               //                         Icon(
+//                                               //                           Iconsax
+//                                               //                               .clock,
+//                                               //                           size: 8,
+//                                               //                           color: Constanst
+//                                               //                               .color4,
+//                                               //                         ),
+//                                               //                       ],
+//                                               //                     ),
+//                                               //                   ),
+//                                               //                 ],
+//                                               //               ),
+//                                               //             ),
+//                                               //           ],
+//                                               //         ),
+//                                               //       )
+//                                               //     : Container()
+//                                             ],
+//                                           ),
+//                                         ],
+//                                       ),
+//                                       Expanded(
+//                                         flex: 1,
+//                                         child: Column(
+//                                           crossAxisAlignment:
+//                                               CrossAxisAlignment.stretch,
+//                                           mainAxisAlignment:
+//                                               MainAxisAlignment.spaceBetween,
+//                                           children: [
+//                                             Icon(
+//                                               Iconsax.arrow_right_3,
+//                                               color: Constanst
+//                                                   .colorNeutralFgTertiary,
+//                                               size: 18,
+//                                             ),
+//                                             const SizedBox(height: 22),
+//                                             controller.status.value == "[]" &&
+//                                                     controller.wfhstatus.value
+//                                                 ? controller.approveStatus
+//                                                             .value ==
+//                                                         "Approve"
+//                                                     ? Container()
+//                                                     : GestureDetector(
+//                                                         onTap: () {
+//                                                           controller
+//                                                               .widgetButtomSheetWfhDelete();
+//                                                         },
+//                                                         child: Icon(
+//                                                           Iconsax.close_circle5,
+//                                                           color:
+//                                                               Constanst.color4,
+//                                                           size: 15,
+//                                                         ),
+//                                                       )
+//                                                 : Container(),
+//                                           ],
+//                                         ),
+//                                       ),
+//                                       const SizedBox(width: 18),
+//                                     ],
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                           Expanded(
+//                             flex: 1,
+//                             child: Container(
+//                               color: Constanst.fgBorder,
+//                               height: 36,
+//                               width: 1,
+//                             ),
+//                           ),
+//                           Expanded(
+//                             flex: 165,
+//                             child: Material(
+//                               color: controller.status.value == "[]" &&
+//                                       controller.wfhstatus.value
+//                                   ? Constanst.colorWhite
+//                                   : controllerAbsensi.absenStatus.value &&
+//                                           !controller.pendingSignoutApr.value
+//                                       ? Constanst.colorWhite
+//                                       : Constanst.colorNonAktif,
+//                               borderRadius: const BorderRadius.only(
+//                                 bottomRight: Radius.circular(15.0),
+//                               ),
+//                               child: InkWell(
+//                                 customBorder: const RoundedRectangleBorder(
+//                                   borderRadius: BorderRadius.only(
+//                                     bottomRight: Radius.circular(15.0),
+//                                   ),
+//                                 ),
+//                                 onTap: () {
+
+
+
+//                                   if (controller.pendingSignoutApr.value) {
+//                                     UtilsAlert.showToast(
+//                                         "Menunggu status absensi anda di approve");
+//                                     return;
+//                                   }
+
+//                                   if (!controllerAbsensi.absenStatus.value) {
+//                                     UtilsAlert.showToast(
+//                                         "Absen Masuk terlebih dahulu");
+
+//                                   } else if (controller.status.value == "[]" &&
+
+//                                       controller.wfhstatus.value) {
+//                                     UtilsAlert.showToast(
+//                                         "Abeen WFH beluum di approve");
+
+//                                   } else {
+//                                     // if (!authController.isConnected.value) {
+//                                     //   // if (controller
+//                                     //   //         .absenOfflineStatusDua.value ==
+//                                     //   //     true) {
+//                                     //   //   UtilsAlert.showToast(
+//                                     //   //       "Menunggu status absensi anda di approve");
+//                                     //   //   return;
+//                                     //   // } else {
+//                                     //   controllerAbsensi.getPlaceCoordinate();
+//                                     //   controllerAbsensi.titleAbsen.value =
+//                                     //       "Absen Keluar";
+//                                     //   controllerAbsensi.typeAbsen.value = 2;
+//                                     //   controller.widgetButtomSheetOfflineAbsen(
+//                                     //       title: "Absen Keluar",
+//                                     //       status: "keluar");
+//                                     //   // }
+//                                     // } else {
+//                                     // if (controller.absenOfflineStatus.value ==
+//                                     //     true) {
+//                                     //   UtilsAlert.showToast(
+//                                     //       "Menunggu status absensi anda di approve");
+//                                     //   return;
+//                                     // }
+
+//                                     var dataUser = AppData.informasiUser;
+//                                     var faceRecog = dataUser![0].face_recog;
+
+//                                     if (GetStorage().read('face_recog') ==
+//                                         true) {
+//                                       controllerAbsensi.getPlaceCoordinate();
+//                                       controllerAbsensi.titleAbsen.value =
+//                                           "Absen Keluar";
+//                                       controllerAbsensi.typeAbsen.value = 2;
+
+//                                       //begin image picker
+//                                       // final getFoto = await ImagePicker()
+//                                       //     .pickImage(
+//                                       //         source: ImageSource.camera,
+//                                       //         preferredCameraDevice:
+//                                       //             CameraDevice.front,
+//                                       //         imageQuality: 100,
+//                                       //         maxHeight: 350,
+//                                       //         maxWidth: 350);
+//                                       // if (getFoto == null) {
+//                                       //   UtilsAlert.showToast(
+//                                       //       "Gagal mengambil gambar");
+//                                       // } else {
+//                                       //   // controllerAbsensi.facedDetection(
+//                                       //   //     status: "registration",
+//                                       //   //     absenStatus: "Absen Masuk",
+//                                       //   //     img: getFoto.path,
+//                                       //   //     type: "1");
+//                                       //   Get.to(LoadingAbsen(
+//                                       //     file: getFoto.path,
+//                                       //     status: "detection",
+//                                       //     statusAbsen: 'keluar',
+//                                       //   ));
+//                                       //   // Get.to(FaceidRegistration(
+//                                       //   //   status: "registration",
+//                                       //   // ));
+//                                       // }
+//                                       //end image picker
+
+//                                       if (controllerAbsensi.regType.value ==
+//                                           1) {
+//                                         Get.to(AbsensiLocation(
+//                                           status: "keluar",
+//                                         ));
+//                                       } else {
+//                                         Get.to(FaceDetectorView(
+//                                           status: "keluar",
+//                                         ));
+//                                       }
+
+//                                       // controllerAbsensi.facedDetection(
+//                                       //     status: "detection",
+//                                       //     type: "2",
+//                                       // //     absenStatus: "keluar");
+//                                       // Get.to(faceDetectionPage(
+//                                       //   status: "keluar",
+//                                       // ));
+//                                       // Get.offAll(AbsenMasukKeluar(
+//                                       //   status: "Absen Keluar",
+//                                       //   type: 2,
+//                                       // ));
+//                                       // controllerAbsensi.absenSelfie();
+//                                       // var validasiAbsenMasukUser =
+//                                       //     controller.validasiAbsenMasukUser();
+//                                       // print(validasiAbsenMasukUser);
+//                                       // if (validasiAbsenMasukUser == false) {
+
+//                                       // } else {
+//                                       //   var kalkulasiRadius =
+//                                       //       controller.radiusNotOpen();
+//                                       //   kalkulasiRadius.then((value) {
+//                                       //     if (value) {
+//                                       //       controllerAbsensi.titleAbsen.value =
+//                                       //           "Absen Keluar";
+//                                       //       controllerAbsensi.typeAbsen.value = 2;
+//                                       //       Get.offAll(AbsenMasukKeluar());
+//                                       //       controllerAbsensi.absenSelfie();
+//                                       //     }
+//                                       //   });
+//                                       // }
+//                                     } else {
+//                                       controllerAbsensi
+//                                           .widgetButtomSheetFaceRegistrattion();
+//                                     }
+//                                     // }
+//                                   }
+
+                                  
+//                                 },
+//                                 child: Padding(
+//                                   padding: const EdgeInsets.only(
+//                                       top: 12.0, bottom: 12, right: 12.0),
+//                                   child: Row(
+//                                     crossAxisAlignment:
+//                                         CrossAxisAlignment.start,
+//                                     mainAxisAlignment:
+//                                         MainAxisAlignment.spaceBetween,
+//                                     children: [
+//                                       Expanded(
+//                                         flex: 10,
+//                                         child: Row(
+//                                           crossAxisAlignment:
+//                                               CrossAxisAlignment.start,
+//                                           children: [
+//                                             const SizedBox(width: 18),
+//                                             Icon(
+//                                               Iconsax.logout_15,
+//                                               color: controller.status.value ==
+//                                                           "[]" &&
+//                                                       controller.wfhstatus.value
+//                                                   ? const Color.fromARGB(
+//                                                       168, 166, 167, 158)
+//                                                   : controllerAbsensi
+//                                                           .absenStatus.value
+//                                                       ? Constanst.color4
+//                                                       : const Color.fromARGB(
+//                                                           168, 166, 167, 158),
+//                                               size: 26,
+//                                             ),
+//                                             const SizedBox(width: 8),
+//                                             Column(
+//                                               crossAxisAlignment:
+//                                                   CrossAxisAlignment.start,
+//                                               children: [
+//                                                 Text(
+//                                                   "Keluar",
+//                                                   style: GoogleFonts.inter(
+//                                                       fontWeight:
+//                                                           FontWeight.w500,
+//                                                       fontSize: 16,
+//                                                       color: controller.status
+//                                                                       .value ==
+//                                                                   "[]" &&
+//                                                               controller
+//                                                                   .wfhstatus
+//                                                                   .value
+//                                                           ? const Color
+//                                                               .fromARGB(168,
+//                                                               166, 167, 158)
+//                                                           : controllerAbsensi
+//                                                                   .absenStatus
+//                                                                   .value
+//                                                               ? Constanst
+//                                                                   .fgPrimary
+//                                                               : const Color
+//                                                                   .fromARGB(
+//                                                                   168,
+//                                                                   166,
+//                                                                   167,
+//                                                                   158)),
+//                                                 ),
+//                                                 Obx(
+//                                                   () => Text(
+//                                                     // !authController
+//                                                     //         .isConnected.value
+//                                                     //     ? controller.signoutTime
+//                                                     //                     .value ==
+//                                                     //                 "00:00:00" ||
+//                                                     //             controller
+//                                                     //                     .signoutTime
+//                                                     //                     .value ==
+//                                                     //                 "null"
+//                                                     //         ? "_ _:_ _:_ _"
+//                                                     //         : controller
+//                                                     //             .signoutTime
+//                                                     //             .value
+//                                                     //     :
+//                                                     controller.signoutTime
+//                                                                 .value ==
+//                                                             "00:00:00"
+//                                                         ? "_ _:_ _:_ _"
+//                                                         : controller
+//                                                             .signoutTime.value,
+//                                                     style: GoogleFonts.inter(
+//                                                         fontWeight:
+//                                                             FontWeight.w500,
+//                                                         fontSize: 16,
+//                                                         color: controller
+//                                                                         .status.value ==
+//                                                                     "[]" &&
+//                                                                 controller
+//                                                                     .wfhstatus
+//                                                                     .value
+//                                                             ? const Color
+//                                                                 .fromARGB(168,
+//                                                                 166, 167, 158)
+//                                                             : controllerAbsensi
+//                                                                     .absenStatus
+//                                                                     .value
+//                                                                 ? Constanst
+//                                                                     .fgPrimary
+//                                                                 : const Color
+//                                                                     .fromARGB(
+//                                                                     168,
+//                                                                     166,
+//                                                                     167,
+//                                                                     158)),
+//                                                   ),
+//                                                 ),
+//                                                 controller.status.value ==
+//                                                             "[]" &&
+//                                                         controller
+//                                                             .wfhstatus.value
+//                                                     ? Container(
+//                                                         height: 20,
+//                                                       )
+//                                                     : Container(),
+//                                                 // (controller.absenOfflineStatus
+//                                                 //                 .value &&
+//                                                 //             !absenControllre
+//                                                 //                 .absenStatus
+//                                                 //                 .value) ||
+//                                                 //         controller
+//                                                 //             .pendingSignoutApr
+//                                                 //             .value
+//                                                 //     ? Padding(
+//                                                 //         padding:
+//                                                 //             const EdgeInsets
+//                                                 //                 .only(top: 4.0),
+//                                                 //         child: Row(
+//                                                 //           mainAxisAlignment:
+//                                                 //               MainAxisAlignment
+//                                                 //                   .spaceBetween,
+//                                                 //           crossAxisAlignment:
+//                                                 //               CrossAxisAlignment
+//                                                 //                   .center,
+//                                                 //           children: [
+//                                                 //             // Icon(
+//                                                 //             //   Iconsax.timer,
+//                                                 //             //   color: Constanst
+//                                                 //             //       .color3,
+//                                                 //             //   size: 15,
+//                                                 //             // ),
+//                                                 //             // SizedBox(width: 2),
+//                                                 //             Obx(
+//                                                 //               () => Row(
+//                                                 //                 children: [
+//                                                 //                   Text(
+//                                                 //                     // controller
+//                                                 //                     //     .status.value,
+//                                                 //                     controller
+//                                                 //                             .textPendingKeluar
+//                                                 //                             .value
+//                                                 //                         ? "Pending Absensi"
+//                                                 //                         : "Pending Approval",
+//                                                 //                     style: GoogleFonts
+//                                                 //                         .inter(
+//                                                 //                       fontWeight:
+//                                                 //                           FontWeight
+//                                                 //                               .w500,
+//                                                 //                       fontSize:
+//                                                 //                           9,
+//                                                 //                       color: Constanst
+//                                                 //                           .color4,
+//                                                 //                     ),
+//                                                 //                   ),
+//                                                 //                   Visibility(
+//                                                 //                     visible: controller
+//                                                 //                         .textPendingKeluar
+//                                                 //                         .value,
+//                                                 //                     child: Row(
+//                                                 //                       children: [
+//                                                 //                         const SizedBox(
+//                                                 //                           width:
+//                                                 //                               2,
+//                                                 //                         ),
+//                                                 //                         Icon(
+//                                                 //                           Iconsax
+//                                                 //                               .clock,
+//                                                 //                           size:
+//                                                 //                               8,
+//                                                 //                           color:
+//                                                 //                               Constanst.color4,
+//                                                 //                         ),
+//                                                 //                       ],
+//                                                 //                     ),
+//                                                 //                   ),
+//                                                 //                 ],
+//                                                 //               ),
+//                                                 //             ),
+//                                                 //           ],
+//                                                 //         ),
+//                                                 //       )
+//                                                 //     : Container()
+//                                               ],
+//                                             ),
+//                                           ],
+//                                         ),
+//                                       ),
+//                                       Expanded(
+//                                         flex: 1,
+//                                         child: Icon(
+//                                           Iconsax.arrow_right_3,
+//                                           color:
+//                                               Constanst.colorNeutralFgTertiary,
+//                                           size: 18,
+//                                         ),
+//                                       ),
+//                                     ],
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ],
+//                   )
+//                 : Container()
+//             : Container(),
+
+//             // _isVisible
+//             //     ? Row(
+//             //         crossAxisAlignment: CrossAxisAlignment.start,
+//             //         children: [
+//             //           Expanded(
+//             //             child: Padding(
+//             //                 padding: const EdgeInsets.only(right: 8),
+//             //                 child: TextButtonWidget2(
+//             //                     title: "Absen Masuk",
+//             //                     onTap: () async {
+//             //                       if (controllerAbsensi.absenStatus.value ==
+//             //                           true) {
+//             //                         UtilsAlert.showToast(
+//             //                             "Anda harus absen keluar terlebih dahulu");
+//             //                       } else {
+//             //                         var dataUser = AppData.informasiUser;
+//             //                         var faceRecog = dataUser![0].face_recog;
+//             //                         print(
+//             //                             "facee recog ${GetStorage().read('face_recog')}");
+//             //                         if (GetStorage().read('face_recog') ==
+//             //                             true) {
+//             //                           print("masuk sini");
+//             //                           var statusCamera =
+//             //                               Permission.camera.status;
+//             //                           statusCamera.then((value) {
+//             //                             var statusLokasi =
+//             //                                 Permission.location.status;
+//             //                             statusLokasi.then((value2) async {
+//             //                               if (value !=
+//             //                                       PermissionStatus.granted ||
+//             //                                   value2 !=
+//             //                                       PermissionStatus.granted) {
+//             //                                 UtilsAlert.showToast(
+//             //                                     "Anda harus aktifkan kamera dan lokasi anda");
+//             //                                 controller
+//             //                                     .widgetButtomSheetAktifCamera(
+//             //                                         'loadfirst');
+//             //                               } else {
+//             //                                 print("masuk absen user");
+//             //                                 // Get.offAll(AbsenMasukKeluar(
+//             //                                 //   status: "Absen Masuk",
+//             //                                 //   type: 1,
+//             //                                 // ));
+//             //                                 //  controllerAbsensi.absenSelfie();
+
+//             //                                 var validasiAbsenMasukUser =
+//             //                                     controller
+//             //                                         .validasiAbsenMasukUser();
+//             //                                 if (!validasiAbsenMasukUser) {
+//             //                                   print("masuk sini");
+//             //                                 } else {
+//             //                                   controllerAbsensi.titleAbsen
+//             //                                       .value = "Absen masuk";
+
+//             //                                   controllerAbsensi
+//             //                                       .typeAbsen.value = 1;
+
+//             //                                   //begin image picker
+//             //                                   // final getFoto = await ImagePicker()
+//             //                                   //     .pickImage(
+//             //                                   //         source: ImageSource.camera,
+//             //                                   //         preferredCameraDevice:
+//             //                                   //             CameraDevice.front,
+//             //                                   //         imageQuality: 100,
+//             //                                   //         maxHeight: 350,
+//             //                                   //         maxWidth: 350);
+//             //                                   // if (getFoto == null) {
+//             //                                   //   UtilsAlert.showToast(
+//             //                                   //       "Gagal mengambil gambar");
+//             //                                   // } else {
+//             //                                   //   // controllerAbsensi.facedDetection(
+//             //                                   //   //     status: "registration",
+//             //                                   //   //     absenStatus: "Absen Masuk",
+//             //                                   //   //     img: getFoto.path,
+//             //                                   //   //     type: "1");
+//             //                                   //   Get.to(LoadingAbsen(
+//             //                                   //     file: getFoto.path,
+//             //                                   //     status: "detection",
+//             //                                   //     statusAbsen: 'masuk',
+//             //                                   //   ));
+//             //                                   //   // Get.to(FaceidRegistration(
+//             //                                   //   //   status: "registration",
+//             //                                   //   // ));
+//             //                                   // }
+//             //                                   //end image picker
+
+//             //                                   //begin face recognition
+//             //                                   // Get.to(FaceDetectorView(
+//             //                                   //   status: "masuk",
+//             //                                   // ));
+//             //                                   //end begin face recogniton
+
+//             //                                   if (controllerAbsensi
+//             //                                           .regType.value ==
+//             //                                       1) {
+//             //                                     Get.to(AbsensiLocation(
+//             //                                       status: "masuk",
+//             //                                     ));
+//             //                                   } else {
+//             //                                     Get.to(FaceDetectorView(
+//             //                                       status: "masuk",
+//             //                                     ));
+//             //                                   }
+
+//             //                                   // // controllerAbsensi.getPlaceCoordinate();
+//             //                                   // ;
+//             //                                   // controllerAbsensi.facedDetection(
+//             //                                   //     status: "detection",
+//             //                                   //     absenStatus: "masuk",
+//             //                                   //     type: "1");
+
+//             //                                   // var kalkulasiRadius =
+//             //                                   //     controller.radiusNotOpen();
+//             //                                   // Get.to(faceDetectionPage(
+//             //                                   //   status: "masuk",
+//             //                                   // ));
+//             //                                   // kalkulasiRadius.then((value) {
+//             //                                   //   print(value);
+//             //                                   //   // if (value) {
+//             //                                   //   //   controllerAbsensi.titleAbsen.value =
+//             //                                   //   //       "Absen Masuk";
+//             //                                   //   //   controllerAbsensi.typeAbsen.value = 1;
+//             //                                   //   //   Get.offAll(faceDetectionPage());
+//             //                                   //   //   // controllerAbsensi.absenSelfie();
+//             //                                   //   // }
+//             //                                   // });
+//             //                                 }
+//             //                               }
+//             //                             });
+//             //                           });
+//             //                         } else {
+//             //                           controllerAbsensi
+//             //                               .widgetButtomSheetFaceRegistrattion();
+//             //                         }
+//             //                       }
+//             //                     },
+//             //                     colorButton:
+//             //                         !controllerAbsensi.absenStatus.value
+//             //                             ? Constanst.colorPrimary
+//             //                             : Constanst.colorNonAktif,
+//             //                     colortext: !controllerAbsensi.absenStatus.value
+//             //                         ? Constanst.colorWhite
+//             //                         : Color.fromARGB(168, 166, 167, 158),
+//             //                     border: BorderRadius.circular(5.0),
+//             //                     icon: Icon(
+//             //                       Iconsax.login,
+//             //                       size: 18,
+//             //                       color: !controllerAbsensi.absenStatus.value
+//             //                           ? Constanst.colorWhite
+//             //                           : Color.fromARGB(168, 166, 167, 158),
+//             //                     ))),
+//             //           ),
+//             //           Expanded(
+//             //             child: Padding(
+//             //                 padding: EdgeInsets.only(right: 8),
+//             //                 child: TextButtonWidget2(
+//             //                     title: "Absen Keluar",
+//             //                     onTap: () async {
+//             //                       if (!controllerAbsensi.absenStatus.value) {
+//             //                         UtilsAlert.showToast(
+//             //                             "Absen Masuk terlebih dahulu");
+//             //                       } else {
+//             //                         var dataUser = AppData.informasiUser;
+//             //                         var faceRecog = dataUser![0].face_recog;
+
+//             //                         if (GetStorage().read('face_recog') ==
+//             //                             true) {
+//             //                           controllerAbsensi.getPlaceCoordinate();
+//             //                           controllerAbsensi.titleAbsen.value =
+//             //                               "Absen Keluar";
+//             //                           controllerAbsensi.typeAbsen.value = 2;
+
+//             //                           //begin image picker
+//             //                           // final getFoto = await ImagePicker()
+//             //                           //     .pickImage(
+//             //                           //         source: ImageSource.camera,
+//             //                           //         preferredCameraDevice:
+//             //                           //             CameraDevice.front,
+//             //                           //         imageQuality: 100,
+//             //                           //         maxHeight: 350,
+//             //                           //         maxWidth: 350);
+//             //                           // if (getFoto == null) {
+//             //                           //   UtilsAlert.showToast(
+//             //                           //       "Gagal mengambil gambar");
+//             //                           // } else {
+//             //                           //   // controllerAbsensi.facedDetection(
+//             //                           //   //     status: "registration",
+//             //                           //   //     absenStatus: "Absen Masuk",
+//             //                           //   //     img: getFoto.path,
+//             //                           //   //     type: "1");
+//             //                           //   Get.to(LoadingAbsen(
+//             //                           //     file: getFoto.path,
+//             //                           //     status: "detection",
+//             //                           //     statusAbsen: 'keluar',
+//             //                           //   ));
+//             //                           //   // Get.to(FaceidRegistration(
+//             //                           //   //   status: "registration",
+//             //                           //   // ));
+//             //                           // }
+//             //                           //end image picker
+
+//             //                           if (controllerAbsensi.regType.value ==
+//             //                               1) {
+//             //                             Get.to(AbsensiLocation(
+//             //                               status: "keluar",
+//             //                             ));
+//             //                           } else {
+//             //                             Get.to(FaceDetectorView(
+//             //                               status: "keluar",
+//             //                             ));
+//             //                           }
+
+//             //                           // controllerAbsensi.facedDetection(
+//             //                           //     status: "detection",
+//             //                           //     type: "2",
+//             //                           // //     absenStatus: "keluar");
+//             //                           // Get.to(faceDetectionPage(
+//             //                           //   status: "keluar",
+//             //                           // ));
+//             //                           // Get.offAll(AbsenMasukKeluar(
+//             //                           //   status: "Absen Keluar",
+//             //                           //   type: 2,
+//             //                           // ));
+//             //                           // controllerAbsensi.absenSelfie();
+//             //                           // var validasiAbsenMasukUser =
+//             //                           //     controller.validasiAbsenMasukUser();
+//             //                           // print(validasiAbsenMasukUser);
+//             //                           // if (validasiAbsenMasukUser == false) {
+
+//             //                           // } else {
+//             //                           //   var kalkulasiRadius =
+//             //                           //       controller.radiusNotOpen();
+//             //                           //   kalkulasiRadius.then((value) {
+//             //                           //     if (value) {
+//             //                           //       controllerAbsensi.titleAbsen.value =
+//             //                           //           "Absen Keluar";
+//             //                           //       controllerAbsensi.typeAbsen.value = 2;
+//             //                           //       Get.offAll(AbsenMasukKeluar());
+//             //                           //       controllerAbsensi.absenSelfie();
+//             //                           //     }
+//             //                           //   });
+//             //                           // }
+//             //                         } else {
+//             //                           controllerAbsensi
+//             //                               .widgetButtomSheetFaceRegistrattion();
+//             //                         }
+//             //                       }
+//             //                     },
+//             //                     colorButton: controllerAbsensi.absenStatus.value
+//             //                         ? Constanst.colorPrimary
+//             //                         : Constanst.colorNonAktif,
+//             //                     colortext: controllerAbsensi.absenStatus.value
+//             //                         ? Constanst.colorWhite
+//             //                         : Color.fromARGB(168, 166, 167, 158),
+//             //                     border: BorderRadius.circular(5.0),
+//             //                     icon: Icon(
+//             //                       Iconsax.logout,
+//             //                       size: 18,
+//             //                       color: controllerAbsensi.absenStatus.value
+//             //                           ? Constanst.colorWhite
+//             //                           : Color.fromARGB(168, 166, 167, 158),
+//             //                     ))),
+//             //           ),
+//             //         ],
+//             //       )
+//             //     : Container(),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+  
+  
+  Widget cardAbsenIstirahat() {
+    return Row(
+      mainAxisSize: MainAxisSize.min, // Membuat tinggi card sesuai content
+      children: [
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              if (controller.signinTime.value == "00:00:00") {
+                UtilsAlert.showToast("Anda harus absen masuk terlebih dahulu");
+              } else if (controller.breakoutTime.value != "00:00:00") {
+                UtilsAlert.showToast(
+                    "Anda harus absen mulai kerja terlebih dahulu");
+              } else if (controller.breakinTime.value != "00:00:00" &&
+                  controller.breakoutTime.value != "00:00:00") {
+                UtilsAlert.showToast("Absen Istirahat hanya sekali saja");
+              } else if (controller.signoutTime.value != "00:00:00") {
+                UtilsAlert.showToast("Anda sudah absen pulang");
+              } else {
+                var dataUser = AppData.informasiUser;
+                var faceRecog = dataUser![0].face_recog;
+                print("facee recog ${GetStorage().read('face_recog')}");
+
+                if (GetStorage().read('face_recog') == true ||
+                    controllerAbsensi.regType.value == 1 ||
+                    controllerAbsensi.regType.value == 2) {
+                  print("masuk sini");
+                  var statusCamera = Permission.camera.status;
+                  statusCamera.then((value) {
+                    var statusLokasi = Permission.location.status;
+                    statusLokasi.then((value2) async {
+                      if (value != PermissionStatus.granted ||
+                          value2 != PermissionStatus.granted) {
+                        UtilsAlert.showToast(
+                            "Anda harus aktifkan kamera dan lokasi anda");
+                        controller.widgetButtomSheetAktifCameraIstirahat(
+                            type: 'loadfirst');
+                      } else {
+                        controllerAbsensi.titleAbsen.value = "Absen Istirahat";
+                        controllerAbsensi.typeAbsen.value = 2;
+                        controllerAbsensi.isAbsenIstirahat.value = true;
+
+                        if (controllerAbsensi.regType.value == 1) {
+                          print("masuk 1");
+                          Get.to(AbsensiLocation(
+                            status: "masuk",
+                          ));
+                        } else if (controllerAbsensi.regType.value == 0) {
+                          print("masuk masuk 2");
+                          Get.to(FaceDetectorView(
+                            status: "masuk",
+                          ));
+                        } else {
+                          Get.to(AbsenIstirahatMasukKeluar(
+                              status: "Absen Istirahat"));
+                        }
+                      }
+                    });
+                  });
+                } else {
+                  controllerAbsensi.widgetButtomSheetFaceRegistrattion();
+                }
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  // topLeft: Radius.circular(15),
+                  bottomLeft: Radius.circular(15),
+                ),
+                color: controller.breakoutTime.value != "00:00:00" ||
+                        controller.signinTime.value == "00:00:00" ||
+                        controller.signoutTime.value != "00:00:00"
+                    ? Constanst.colorNonAktif
+                    : Constanst.colorWhite,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.restaurant,
+                    color: controller.breakoutTime.value != "00:00:00" ||
+                            controller.signinTime.value == "00:00:00" ||
+                            controller.signoutTime.value != "00:00:00"
+                        ? const Color.fromARGB(168, 166, 167, 158)
+                        : Constanst.color4,
+                    // size: 26,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Istirahat',
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: controller.breakoutTime.value !=
+                                            "00:00:00" ||
+                                        controller.signinTime.value ==
+                                            "00:00:00" ||
+                                        controller.signoutTime.value !=
+                                            "00:00:00"
+                                    ? const Color.fromARGB(168, 166, 167, 158)
+                                    : Constanst.fgPrimary,
+                              ),
+                            ),
+                            const SizedBox(width: 25),
+                            // const Spacer(),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                              color: controller.breakoutTime.value !=
+                                          "00:00:00" ||
+                                      controller.signinTime.value ==
+                                          "00:00:00" ||
+                                      controller.signoutTime.value != "00:00:00"
+                                  ? const Color.fromARGB(168, 166, 167, 158)
+                                  : Constanst.fgPrimary,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 3),
+                        Obx(
+                          () => Text(
+                            controller.breakoutTime.value != "00:00:00"
+                                ? controller.breakoutTime.value
+                                : '_ _:_ _:_ _',
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: controller.breakoutTime.value !=
+                                          "00:00:00" ||
+                                      controller.signinTime.value ==
+                                          "00:00:00" ||
+                                      controller.signoutTime.value != "00:00:00"
+                                  ? const Color.fromARGB(168, 166, 167, 158)
+                                  : Constanst.fgPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        // Bagian "Keluar"
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              if (controller.breakoutTime.value == "00:00:00") {
+                UtilsAlert.showToast(
+                    "Anda harus absen istirahat terlebih dahulu");
+              } else if (controller.breakinTime.value != "00:00:00" &&
+                  controller.breakoutTime.value != "00:00:00") {
+                UtilsAlert.showToast("Absen Istirahat hanya sekali saja");
+              } else if (controller.signoutTime.value != "00:00:00") {
+                UtilsAlert.showToast("Anda sudah absen pulang");
+              } else {
+                var dataUser = AppData.informasiUser;
+                var faceRecog = dataUser![0].face_recog;
+
+                if (GetStorage().read('face_recog') == true ||
+                    controllerAbsensi.regType.value == 1 ||
+                    controllerAbsensi.regType.value == 2) {
+                  controllerAbsensi.titleAbsen.value = "Absen Mulai Kerja";
+                  controllerAbsensi.typeAbsen.value = 1;
+                  controllerAbsensi.isAbsenIstirahat.value = true;
+
+                  if (controllerAbsensi.regType.value == 1) {
+                    print("tes absen rrr");
+                    Get.to(AbsensiLocation(
+                      status: "keluar",
+                    ));
+                  } else if (controllerAbsensi.regType.value == 0) {
+                    print("tes absen pppp");
+                    Get.to(FaceDetectorView(
+                      status: "keluar",
+                    ));
+                  } else {
+                    Get.to(
+                        AbsenIstirahatMasukKeluar(status: "Absen Mulai Kerja"));
+                  }
+                } else {
+                  controllerAbsensi.widgetButtomSheetFaceRegistrattion();
+                }
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  // topRight: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+                color: controller.breakinTime.value != "00:00:00" ||
+                        controller.breakoutTime.value == "00:00:00" ||
+                        controller.signoutTime.value != "00:00:00"
+                    ? Constanst.colorNonAktif
+                    : Constanst.colorWhite,
+              ),
+              padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.work,
+                    color: controller.breakinTime.value != "00:00:00" ||
+                            controller.breakoutTime.value == "00:00:00" ||
+                            controller.signoutTime.value != "00:00:00"
+                        ? const Color.fromARGB(168, 166, 167, 158)
+                        : Constanst.color5,
+                    // size: 26,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Mulai Kerja",
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: controller.breakinTime.value !=
+                                            "00:00:00" ||
+                                        controller.breakoutTime.value ==
+                                            "00:00:00" ||
+                                        controller.signoutTime.value !=
+                                            "00:00:00"
+                                    ? const Color.fromARGB(168, 166, 167, 158)
+                                    : Constanst.fgPrimary,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                              color: controller.breakinTime.value !=
+                                          "00:00:00" ||
+                                      controller.breakoutTime.value ==
+                                          "00:00:00" ||
+                                      controller.signoutTime.value != "00:00:00"
+                                  ? const Color.fromARGB(168, 166, 167, 158)
+                                  : Constanst.fgPrimary,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          controller.breakinTime.value != "00:00:00"
+                              ? controller.breakinTime.value
+                              : '_ _:_ _:_ _',
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: controller.breakinTime.value != "00:00:00" ||
+                                    controller.breakoutTime.value ==
+                                        "00:00:00" ||
+                                    controller.signoutTime.value != "00:00:00"
+                                ? const Color.fromARGB(168, 166, 167, 158)
+                                : Constanst.fgPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
