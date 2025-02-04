@@ -357,7 +357,7 @@ class ApprovalController extends GetxController {
         }
         listNotModif.value = valueBody['data'];
 
-        print("data body 2 ${valueBody['data']}");
+        print("data body asli ${valueBody['data']}");
         for (var element in valueBody['data']) {
           var fullName = element['full_name'] ?? "";
           var convertNama = "$fullName";
@@ -405,6 +405,8 @@ class ApprovalController extends GetxController {
             'lokasi_keluar': element['lokasi_keluar'],
             'foto_masuk': element['foto_masuk'],
             'foto_keluar': element['foto_keluar'],
+            'breakin_time': element['breakin_time'],
+            'breakout_time': element['breakout_time'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);

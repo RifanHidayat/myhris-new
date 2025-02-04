@@ -512,6 +512,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                 : FloatingActionButton(
                     backgroundColor: Constanst.colorPrimary,
                     onPressed: () {
+                      print('tipe absen user ${AppData.informasiUser![0].tipeAbsen}');
                       Get.to(const pengajuanAbsen());
                     },
                     child: const Icon(
@@ -1011,20 +1012,34 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                         color: Constanst.fgSecondary,
                       ),
                       const SizedBox(height: 4),
-                      TextLabell(
-                        text:
-                            "Absen Masuk Tanggal $formatAttenDate, ${data['dari_jam']}",
-                        color: Constanst.fgSecondary,
-                        size: 13.0,
-                        weight: FontWeight.w400,
-                      ),
-                      TextLabell(
-                        text:
-                            "Absen Keluar Tanggal $formatAttenDate, ${data['sampai_jam']}",
-                        color: Constanst.fgSecondary,
-                        size: 13.0,
-                        weight: FontWeight.w400,
-                      ),
+                      // TextLabell(
+                      //   text:
+                      //       "Absen Masuk Tanggal $formatAttenDate, ${data['dari_jam']}",
+                      //   color: Constanst.fgSecondary,
+                      //   size: 13.0,
+                      //   weight: FontWeight.w400,
+                      // ),
+                      // TextLabell(
+                      //   text:
+                      //       "Absen Keluar Tanggal $formatAttenDate, ${data['sampai_jam']}",
+                      //   color: Constanst.fgSecondary,
+                      //   size: 13.0,
+                      //   weight: FontWeight.w400,
+                      // ),
+                      //  TextLabell(
+                      //   text:
+                      //       "Istirahat Masuk Tanggal $formatAttenDate, ${data['breakin_time']}",
+                      //   color: Constanst.fgSecondary,
+                      //   size: 13.0,
+                      //   weight: FontWeight.w400,
+                      // ),
+                      //  TextLabell(
+                      //   text:
+                      //       "Istirahat Keluar Tanggal $formatAttenDate, ${data['breakout_time']}",
+                      //   color: Constanst.fgSecondary,
+                      //   size: 13.0,
+                      //   weight: FontWeight.w400,
+                      // ),
                       const SizedBox(height: 12),
                       Divider(
                         height: 0,
@@ -3079,6 +3094,72 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                             )
                                           : TextLabell(
                                               text: data['sampai_jam'],
+                                              color: Constanst.fgPrimary,
+                                              size: 16,
+                                              weight: FontWeight.w500,
+                                            )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            const Divider(
+                              thickness: 1,
+                              height: 0,
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      TextLabell(
+                                        text: "Istirahat Keluar",
+                                        color: Constanst.fgSecondary,
+                                        size: 14,
+                                        weight: FontWeight.w400,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      data['breakout_time'] == ""
+                                          ? TextLabell(
+                                              text: "_ _ : _ _",
+                                              color: Constanst.fgPrimary,
+                                              size: 16,
+                                              weight: FontWeight.w500,
+                                            )
+                                          : TextLabell(
+                                              text: data['breakout_time'],
+                                              color: Constanst.fgPrimary,
+                                              size: 16,
+                                              weight: FontWeight.w500,
+                                            )
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      TextLabell(
+                                        text: "Istirahat Masuk",
+                                        color: Constanst.fgSecondary,
+                                        size: 14,
+                                        weight: FontWeight.w400,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      data['breakin_time'] == ""
+                                          ? TextLabell(
+                                              text: "_ _ : _ _",
+                                              color: Constanst.fgPrimary,
+                                              size: 16,
+                                              weight: FontWeight.w500,
+                                            )
+                                          : TextLabell(
+                                              text: data['breakin_time'],
                                               color: Constanst.fgPrimary,
                                               size: 16,
                                               weight: FontWeight.w500,
