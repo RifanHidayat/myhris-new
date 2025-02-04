@@ -307,19 +307,19 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
         }
       }
 
-      if (controller.detailData[0]['status'] == "Pending" ||
-          controller.detailData[0]['approve_status'] == "Pending" ||
-          controller.detailData[0]['approve_status'] == "Pending" ||
-          (controller.detailData[0]['approve2_status'] == "Pending" &&
-              controller.detailData[0]['approve_status'] != "Rejected")) {
-        if (controller.detailData[0]['em_report_to']
-            .toString()
-            .contains(emId)) {
-          controller.showButton.value = true;
-        }
-      } else {
-        controller.showButton.value = false;
-      }
+      // if (controller.detailData[0]['status'] == "Pending" ||
+      //     controller.detailData[0]['approve_status'] == "Pending" ||
+      //     controller.detailData[0]['approve_status'] == "Pending" ||
+      //     (controller.detailData[0]['approve2_status'] == "Pending" &&
+      //         controller.detailData[0]['approve_status'] != "Rejected")) {
+      //   if (controller.detailData[0]['em_report_to']
+      //       .toString()
+      //       .contains(emId)) {
+      //     controller.showButton.value = true;
+      //   }
+      // } else {
+      //   controller.showButton.value = false;
+      // }
     }
 
     if (controller.detailData[0]['type'].toString().toLowerCase() ==
@@ -419,13 +419,86 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Obx(() => controller.showButton.value == true ||
-                controller.showButton.value == true &&
+        child: Obx(() => controller.showButton.value == true  &&
                     (controller.detailData[0]['status'] == "Pending" ||
                         controller.detailData[0]['approve_status'] ==
-                            "Pending" ||
+                            "Pending")
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 40,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color:
+                              Constanst.border, // Set the desired border color
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          print(AppData.informasiUser![0].em_id);
+                          print(controller.detailData[0]['em_report_to']);
+                          print(controller.detailData[0]['em_report2_to']);
+                          // print("tes");
+                          showBottomAlasanReject(em_id);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.color4,
+                            backgroundColor: Constanst.colorWhite,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 0,
+                            // padding: EdgeInsets.zero,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                        child: Text(
+                          'Tolak',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.color4,
+                              fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          validasiMenyetujui(true, em_id);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Constanst.colorWhite,
+                          backgroundColor: Constanst.colorPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 0,
+                          // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                        ),
+                        child: Text(
+                          'Menyetujui',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.colorWhite,
+                              fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : controller.showButton.value == true  &&
+                    (controller.detailData[0]['status'] == "Approve" ||
                         controller.detailData[0]['approve_status'] ==
-                            "Pending" ||
+                            "Approve" &&
                         (controller.detailData[0]['approve2_status'] ==
                                 "Pending" &&
                             controller.detailData[0]['approve_status'] !=

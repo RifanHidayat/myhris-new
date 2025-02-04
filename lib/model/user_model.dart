@@ -51,7 +51,6 @@ class UserModel {
   var sisaKontrakFormat;
   var lamaBekerja;
   var lamaBekerjaFormat;
-  var tipeAbsen;
 
   UserModel({
     this.em_id,
