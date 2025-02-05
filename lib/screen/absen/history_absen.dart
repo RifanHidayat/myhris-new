@@ -3414,7 +3414,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['approve_status'] == "Pending"
+                      data['approve_status'] == "Pending" || data['approve_status'] == null || data['approve_status'] == "null" || data['approve_status'] == ""
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,

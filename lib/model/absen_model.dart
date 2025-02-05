@@ -37,6 +37,16 @@ class AbsenModel {
   var namaHariLibur;
   var statusView;
   var jamKerja;
+  var breakoutTime;
+  var breakoutPlace;
+  var breakoutPict;
+  var breakoutNote;
+  var breakinTime;
+  var breakinPlace;
+  var breakinPict;
+  var breakinNote;
+  var breakoutAddr;
+  var breakinAddr;
 
   List<AbsenModel>? turunan;
 
@@ -78,6 +88,16 @@ class AbsenModel {
     this.namaHariLibur,
     this.jamKerja,
     this.turunan,
+    this.breakoutNote,
+    this.breakoutTime,
+    this.breakoutPict,
+    this.breakoutPlace,
+    this.breakinNote,
+    this.breakinTime,
+    this.breakinPict,
+    this.breakinPlace,
+    this.breakinAddr,
+    this.breakoutAddr,
   });
 
   Map<String, dynamic> toMap() {
@@ -109,6 +129,16 @@ class AbsenModel {
       "hari_libur": namaHariLibur,
       "jam_kerja": jamKerja,
       'turunan': turunan,
+      'breakout_time': breakoutTime,
+      'place_break_out': breakoutPlace,
+      'breakout_note': breakoutNote,
+      'breakout_pict': breakoutPict,
+      'breakin_time': breakinTime,
+      'place_break_in': breakinPlace,
+      'breakin_note': breakinNote,
+      'breakin_pict': breakinPict,
+      'breakin_addr': breakinAddr,
+      'breakout_addr': breakoutAddr,
       'status_view': statusView ?? false
     };
   }
@@ -148,6 +178,16 @@ class AbsenModel {
         offDay: map['off_day'] ?? 1,
         namaHariLibur: map['hari_libur'],
         jamKerja: map['jam_kerja'],
+        breakoutTime: map['breakout_time'],
+        breakoutNote: map['breakout_note'],
+        breakoutPict: map['breakout_pict'],
+        breakoutPlace: map['place_break_out'],
+        breakinTime: map['breakin_time'],
+        breakinNote: map['breakin_note'],
+        breakinPict: map['breakin_pict'],
+        breakinPlace: map['place_break_in'],
+        breakinAddr: map['breakin_addr'],
+        breakoutAddr: map['breakout_addr'],
         statusView: map['status_view'] ?? false,
         turunan: AbsenModel.fromJsonToList(map['turunan'] ?? []));
   }

@@ -2538,6 +2538,16 @@ class AbsenController extends GetxController {
                 offDay: el['off_date'],
                 namaHariLibur: el['hari_libur'],
                 jamKerja: el['jam_kerja'],
+                breakoutTime: el['breakout_time'],
+                breakoutNote: el['breakout_note'],
+                breakoutPict: el['breakout_pict'],
+                breakoutPlace: el['place_break_out'],
+                breakinTime: el['breakin_time'],
+                breakinNote: el['breakin_note'],
+                breakinPict: el['breakin_pict'],
+                breakinPlace: el['place_break_in'],
+                breakinAddr: el['breakin_addr'],
+                breakoutAddr: el['breakout_addr'],
                 statusView: el['status_view'] ?? false));
             tempHistoryAbsen.value = historyAbsen.value;
             // historyAbsen.value.add(AbsenModel(
@@ -2828,6 +2838,16 @@ class AbsenController extends GetxController {
                 offDay: el['off_date'],
                 namaHariLibur: el['hari_libur'],
                 jamKerja: el['jam_kerja'],
+                breakoutTime: el['breakout_time'],
+                breakoutNote: el['breakout_note'],
+                breakoutPict: el['breakout_pict'],
+                breakoutPlace: el['place_break_out'],
+                breakinTime: el['breakin_time'],
+                breakinNote: el['breakin_note'],
+                breakinPict: el['breakin_pict'],
+                breakinPlace: el['place_break_in'],
+                breakinAddr: el['breakin_addr'],
+                breakoutAddr: el['breakout_addr'],
                 statusView: el['status_view'] ?? false));
             tempHistoryAbsen.value = historyAbsen.value;
             // historyAbsen.value.add(AbsenModel(
@@ -3032,6 +3052,7 @@ class AbsenController extends GetxController {
       var getSelected = tempHistoryAbsen.value
           .firstWhere((element) => element.id == id_absen);
       // print(getSelected);
+      print('ini apaci ${getSelected}');
       Get.to(DetailAbsen(
         absenSelected: [getSelected],
         status: false,
