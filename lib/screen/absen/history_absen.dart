@@ -3103,13 +3103,13 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 )
                               ],
                             ),
-                            const SizedBox(height: 12),
-                            const Divider(
+                            AppData.informasiUser![0].tipeAbsen.toString()=="3"?  const SizedBox(height: 12):SizedBox(),
+                            AppData.informasiUser![0].tipeAbsen.toString()=="3"? const Divider(
                               thickness: 1,
                               height: 0,
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
+                            ):SizedBox(),
+                            AppData.informasiUser![0].tipeAbsen.toString()=="3"? SizedBox(height: 12):SizedBox(),
+                           AppData.informasiUser![0].tipeAbsen.toString()=="3"? Row(
                               children: [
                                 Expanded(
                                   child: Column(
@@ -3168,7 +3168,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                   ),
                                 )
                               ],
-                            ),
+                            ):SizedBox(),
                             const SizedBox(height: 12),
                             const Divider(
                               thickness: 1,
