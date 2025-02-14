@@ -1310,9 +1310,12 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
 
+
+            
+
             // _isVisible
             //     ? 
-                Column(
+                controller.showAbsen.value==false?SizedBox():   Column(
                     children: [
                       const Divider(
                         thickness: 1,

@@ -133,7 +133,7 @@ class DashboardController extends GetxController {
   var showPkwt = false.obs;
   var showPengumuman = false.obs;
   var showLaporan = false.obs;
-  var showAbsen = true.obs;
+  var showAbsen = false.obs;
 
   var selectedPageView = 0.obs;
   var indexBanner = 0.obs;
@@ -2095,6 +2095,7 @@ class DashboardController extends GetxController {
     showPkwt.value = false;
     showUlangTahun.value = false;
     showLaporan.value = false;
+    showAbsen.value=false; 
     // menuShowInMain.value.clear();
     var connect = Api.connectionApi("get", {}, "menu_dashboard_utama",
         params: "&em_id=${AppData.informasiUser![0].em_id}");

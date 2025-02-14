@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/screen/absen/photo_absent.dart';
 import 'package:siscom_operasional/utils/api.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
 class DetailAbsen extends StatelessWidget {
@@ -123,9 +124,9 @@ class DetailAbsen extends StatelessWidget {
                   // longlatKeluar == "" ? const SizedBox() : 
                   descKeluar(),
                   const SizedBox(height: 16),
-                  descKeluarRest(),
+                  AppData.informasiUser![0].tipeAbsen.toString()=="3"? descKeluarRest():SizedBox(),
                   const SizedBox(height: 16),
-                  descMasukRest(),
+                 AppData.informasiUser![0].tipeAbsen.toString()=="3"? descMasukRest():SizedBox(),
                   const SizedBox(height: 16),
                 ],
               ),

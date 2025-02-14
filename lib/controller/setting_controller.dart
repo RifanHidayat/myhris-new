@@ -104,7 +104,7 @@ class SettingController extends GetxController {
     }else{
        setDate(   DateTime(DateTime.now().year, DateTime.now().month, 01));
     }
-    setDate(DateTime.now());
+    // setDate(DateTime.now());
     // getTimeNow();
     toRouteSimpanData();
     getPusatBantuan();
