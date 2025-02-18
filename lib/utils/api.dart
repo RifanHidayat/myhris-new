@@ -193,7 +193,7 @@ class ApiRequest {
 
   // static var basicUrl = "http://kantor.membersis.com:2626/";
 
-   //static var basicUrl = "http://192.168.20.28:2626/";
+   static var basicUrl = "http://192.168.20.15:2626/";
 
  //static var basicUrl = "http://kantor.membersis.com:2626/";
 
