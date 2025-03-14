@@ -107,10 +107,10 @@ class SettingController extends GetxController {
     // setDate(DateTime.now());
     // getTimeNow();
     toRouteSimpanData();
-    getPusatBantuan();
-    allDepartement();
-    getUserInfo();
-    checkSelesaiKontrak();
+    // getPusatBantuan();
+    // allDepartement();
+    // getUserInfo();
+    // checkSelesaiKontrak();
     super.onReady();
   }
 

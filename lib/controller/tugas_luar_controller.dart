@@ -99,12 +99,12 @@ class TugasLuarController extends GetxController {
   @override
   void onInit() {
     getTimeNow();
-    getLoadsysData();
-    loadTipePengajuan();
-    loadDataTugasLuar();
-    loadDataDinasLuar();
-    getDepartemen(1, "");
-    loadAllEmployeeDelegasi();
+    // getLoadsysData();
+    // loadTipePengajuan();
+    // loadDataTugasLuar();
+    // loadDataDinasLuar();
+    // getDepartemen(1, "");
+    // loadAllEmployeeDelegasi();
     super.onInit();
   }
 

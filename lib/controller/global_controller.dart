@@ -22,7 +22,7 @@ class GlobalController extends GetxController {
 
   @override
   void onReady() async {
-    getLoadsysData();
+    // getLoadsysData();
     super.onReady();
   }
 

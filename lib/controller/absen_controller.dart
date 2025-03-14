@@ -207,15 +207,15 @@ class AbsenController extends GetxController {
 
   @override
   void onReady() async {
-    getTimeNow();
-    getLoadsysData();
-    loadHistoryAbsenUser();
-    getDepartemen(1, "");
+    // getTimeNow();
+    // getLoadsysData();
+    // loadHistoryAbsenUser();
+    // getDepartemen(1, "");
     filterLokasiKoordinate.value = "Lokasi";
     selectedViewFilterAbsen.value = 0;
     pilihTanggalTelatAbsen.value = DateTime.now();
     super.onReady();
-    userShift();
+    // userShift();
   }
 
   void getLoadsysData() {
@@ -338,6 +338,10 @@ class AbsenController extends GetxController {
         getPlaceCoordinateOffline();
         //UtilsAlert.koneksiBuruk();
       } else {
+     
+
+
+     
         if (res.statusCode == 200) {
           coordinate.value = false;
           print("Place cordinate 200" + res.body.toString());
@@ -401,6 +405,9 @@ class AbsenController extends GetxController {
           print("Place cordinate !=200" + res.body.toString());
           print(res.body.toString());
         }
+
+
+
       }
     }).catchError((error) {
       coordinate.value = true;

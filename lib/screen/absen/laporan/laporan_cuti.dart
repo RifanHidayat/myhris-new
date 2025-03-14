@@ -24,7 +24,7 @@ class _LaporanCutiState extends State<LaporanCuti> {
 
   @override
   void initState() {
-    controller.getDepartemen(1, "");
+    //controller.getDepartemen(1, "");
     controller.title.value = widget.title;
     controller.tempNamaLaporan1.value = "cuti";
     super.initState();
@@ -32,7 +32,7 @@ class _LaporanCutiState extends State<LaporanCuti> {
 
   Future<void> refreshData() async {
     await Future.delayed(const Duration(seconds: 2));
-    controller.getDepartemen(1, "");
+   // controller.getDepartemen(1, "");
     controller.title.value = widget.title;
   }
 
