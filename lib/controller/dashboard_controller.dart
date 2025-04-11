@@ -218,11 +218,8 @@ class DashboardController extends GetxController {
     dashboardStatusAbsen.value = AppData.statusAbsen;
 
     DateTime startDate = DateTime.now();
-    var emId = AppData.informasiUser![0].em_id.toString();
 
-    checkAbsenUser(
-        DateFormat('yyyy-MM-dd').format(DateTime.now()), emId.toString());
-
+   
     dataDashboard();
 
     // updateWorkTime();
@@ -320,11 +317,18 @@ class DashboardController extends GetxController {
       await prefs.setString("", element['em_id'].toString());
 
       print("interval tracking ${element['interval_tracking'].toString()}");
+  
     }
+    
     AppData.informasiUser = getData;
-   pesanController.loadApproveInfo();
+         checkAbsenUser(
+        DateFormat('yyyy-MM-dd').format(DateTime.now()),AppData.informasiUser![0].em_id);
+   //pesanController.loadApproveInfo();
 
     getUserInfo();
+
+    
+
    
     controllerTracking.isLoadingDetailTracking.value = false;
   }
@@ -990,6 +994,9 @@ class DashboardController extends GetxController {
           //   // controllerAbsensi.absenStatus.value = true;
           // }
 
+         
+         
+         
           if (wfh.isEmpty) {
             if (data.isEmpty) {
               AppData.statusAbsen = false;

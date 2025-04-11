@@ -966,6 +966,9 @@ class TugasLuarController extends GetxController {
               // }
             }
 
+            // f,pdfkm
+            // sdff
+
             Get.offAll(BerhasilPengajuan(
               dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
             ));

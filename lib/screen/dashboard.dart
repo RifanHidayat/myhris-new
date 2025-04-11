@@ -1548,7 +1548,7 @@ class _DashboardState extends State<Dashboard> {
                                               } else if (controllerAbsensi
                                                       .regType.value ==
                                                   0) {
-                                                Get.to(FaceDetectorView(
+                                               Get.to(AbsensiLocation(
                                                   status: "masuk",
                                                 ));
                                               } else {

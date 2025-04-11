@@ -158,6 +158,9 @@ class PesanController extends GetxController {
        
 
         if (valueBody['status'] == true) {
+          
+          
+          
           jumlahApproveCuti.value = valueBody['jumlah_cuti'];
           jumlahApproveLembur.value = valueBody['jumlah_lembur'];
           jumlahApproveTidakHadir.value = valueBody['jumlah_tidak_hadir'];

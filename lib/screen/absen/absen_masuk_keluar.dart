@@ -18,6 +18,7 @@ import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -640,6 +641,24 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                 ),
                               ),
                             ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color:Constanst.infoLight1
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.info),
+                                TextLabell(
+                                    text:
+                                        "Lokasi tidak tersedia! ,coba lakukan refresh pada bagian atas aplikasi "),
+                              ],
+                            ),
                           ),
                           const SizedBox(
                             height: 10,

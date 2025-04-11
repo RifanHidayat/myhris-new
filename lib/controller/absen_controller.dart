@@ -326,7 +326,8 @@ class AbsenController extends GetxController {
   }
 
   Future<void> getPlaceCoordinate() async {
-    // placeCoordinate.clear();
+
+   //UtilsAlert.showLoadingIndicator(Get.context!);
 
     placeCoordinateDropdown.value.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate",
@@ -343,8 +344,9 @@ class AbsenController extends GetxController {
 
      
         if (res.statusCode == 200) {
+               placeCoordinate.clear();
           coordinate.value = false;
-          print("Place cordinate 200" + res.body.toString());
+       
           var valueBody = jsonDecode(res.body);
 
           var temporary = valueBody['data'];
@@ -401,7 +403,101 @@ class AbsenController extends GetxController {
           placeCoordinate.value = filter;
           placeCoordinate.refresh();
           placeCoordinate.refresh();
+          //Get.back();
         } else {
+          print("Place cordinate !=200" + res.body.toString());
+          print(res.body.toString());
+            //  Get.back();
+        }
+
+
+
+      }
+    }).catchError((error) {
+      coordinate.value = true;
+     // Get.back();
+      getPlaceCoordinateOffline();
+    });
+  }
+
+    Future<void> getPlaceCoordinate2() async {
+ 
+     UtilsAlert.showLoadingIndicator(Get.context!);
+
+    placeCoordinateDropdown.value.clear();
+    var connect = Api.connectionApi("get", {}, "places_coordinate",
+        params: "&id=${AppData.informasiUser![0].em_id}");
+    connect.then((dynamic res) {
+      if (res == false) {
+        print("errror");
+        coordinate.value = true;
+        getPlaceCoordinateOffline();
+        //UtilsAlert.koneksiBuruk();
+      } else {
+     
+
+
+     
+        if (res.statusCode == 200) {
+              placeCoordinate.clear();
+          coordinate.value = false;
+          print("Place cordinate 200" + res.body.toString());
+          var valueBody = jsonDecode(res.body);
+
+          var temporary = valueBody['data'];
+
+          List<Map<String, dynamic>> tipeLokasi = [];
+          for (var element in temporary) {
+            tipeLokasi.add({
+              'id': element['id'],
+              'place': element['place'],
+              'place_longlat': element['place_longlat'],
+              'place_radius': element['place_radius'],
+            });
+          }
+          SqliteDatabaseHelper().insertTipeLokasi(tipeLokasi);
+
+          
+
+          print("controller.wfhlokasi ${controller.wfhlokasi.value}");
+
+          if (typeAbsen.value == 1) {
+            selectedType.value = valueBody['data'][0]['place'];
+          } else {
+            if (controller.wfhlokasi.value == true) {
+              selectedType.value = 'WFH';
+            } else {
+              selectedType.value = valueBody['data'][0]['place'];
+            }
+          }
+
+          for (var element in valueBody['data']) {
+            // placeCoordinateDropdown.value.add(element['place']);
+            if (typeAbsen.value == 1) {
+              placeCoordinateDropdown.value.add(element['place']);
+            } else {
+              if (controller.wfhlokasi.value == true) {
+                placeCoordinateDropdown.value.add('WFH');
+              } else {
+                placeCoordinateDropdown.value.add(element['place']);
+              }
+            }
+          }
+          List filter = [];
+          for (var element in valueBody['data']) {
+            if (element['isFilterView'] == 1) {
+              filter.add(element);
+            }
+          }
+
+          print("data ${placeCoordinate.value}");
+          // placeCoordinate.clear();
+          placeCoordinate.value = filter;
+          placeCoordinate.refresh();
+          placeCoordinate.refresh();
+          Get.back();
+        } else {
+             Get.back();
           print("Place cordinate !=200" + res.body.toString());
           print(res.body.toString());
         }
@@ -414,6 +510,7 @@ class AbsenController extends GetxController {
       getPlaceCoordinateOffline();
     });
   }
+
 
   void getPlaceCoordinateOffline() async {
     var body = await SqliteDatabaseHelper().getTipeLokasi();
@@ -459,6 +556,7 @@ class AbsenController extends GetxController {
   // }
 
   Future<void> getPlaceCoordinate1() async {
+   // UtilsAlert.showLoadingIndicator(Get.context!);
     var connect = Api.connectionApi("get", {}, "places_coordinate",
         params: "&id=${AppData.informasiUser![0].em_id}");
 
@@ -466,12 +564,15 @@ class AbsenController extends GetxController {
       if (res == false) {
         print("error");
         coordinate.value = true;
+       // Get.back();
         // UtilsAlert.koneksiBuruk();
       } else {
+         Get.back();
         print("sukses");
         coordinate.value = false;
       }
     }).catchError((error) {
+     //  Get.back();
       coordinate.value = true;
     });
     ;
@@ -883,7 +984,7 @@ class AbsenController extends GetxController {
 
   Future<void> refreshPage() async {
     getPosisition();
-    getPlaceCoordinate1();
+    getPlaceCoordinate2();
     mapController?.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: LatLng(latUser.value, langUser.value), zoom: 20)
         //17 is new zoom level
