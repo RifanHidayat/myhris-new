@@ -17,6 +17,7 @@ import 'package:new_version_plus/new_version_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
+import 'package:siscom_operasional/controller/aktifitas_controller.dart';
 import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/bpjs.dart';
 import 'package:siscom_operasional/controller/chat_controller.dart';
@@ -68,12 +69,6 @@ class _DashboardState extends State<Dashboard> {
   final controller = Get.put(DashboardController());
   final controllerAbsensi = Get.put(AbsenController());
   final controllerTracking = Get.put(TrackingController());
-  // final controllerIzin = Get.put(IzinController());
-  // var controllerLembur = Get.put(LemburController());
-  // var controllerCuti = Get.put(CutiController());
-  // var controllerTugasLuar = Get.put(TugasLuarController());
-  // var controllerKlaim = Get.put(KlaimController());
-
   final controllerPesan = Get.put(PesanController());
   var controllerGlobal = Get.put(GlobalController());
   var controllerBpj = Get.put(BpjsController());
@@ -81,19 +76,24 @@ class _DashboardState extends State<Dashboard> {
   final authController = Get.put(AuthController());
   final chatController = Get.put(ChatController());
 
+
   var intervalTracking = "";
   final WebSocketChannel channel =
       WebSocketChannel.connect(Uri.parse(Api.webSocket));
+
+
   Future<void> refreshData() async {
     controller.isLoading.value = true;
     controller.refreshPagesStatus.value = true;
+        controller.initData();
     // setState(() {
     Future.wait([
-      controller.updateInformasiUser(),
-      controllerBpj.employeDetaiBpjs(),
-      controllerAbsensi.employeDetail(),
-      controllerAbsensi.userShift(),
-      controller.initData(),
+      // controller.updateInformasiUser(),
+      // controllerBpj.employeDetaiBpjs(),
+      // controllerAbsensi.employeDetail(),
+      // controllerAbsensi.userShift(),
+  
+     
       Future.delayed(const Duration(milliseconds: 500), () {
         absenControllre.absenStatus.value = AppData.statusAbsen;
         authController.signinTime.value = controller.signinTime.value;
@@ -1292,7 +1292,7 @@ class _DashboardState extends State<Dashboard> {
                       //     children: [
                       //       const SizedBox(height: 4),
                       //       Obx(() {
-                      //         return controllerAbsensi.shift.value.timeIn != ""
+                      //         return controllerAbsensi.init.timeIn != ""
                       //             ? Text(
                       //                 "${controllerAbsensi.shift.value.timeIn ?? ""} - ${controllerAbsensi.shift.value.timeOut ?? ""}",
                       //                 style: TextStyle(
@@ -1548,7 +1548,7 @@ class _DashboardState extends State<Dashboard> {
                                               } else if (controllerAbsensi
                                                       .regType.value ==
                                                   0) {
-                                                Get.to(FaceDetectorView(
+                                               Get.to(AbsensiLocation(
                                                   status: "masuk",
                                                 ));
                                               } else {
@@ -5042,29 +5042,14 @@ class _DashboardState extends State<Dashboard> {
   void _setIsloading() async {
     controller.isLoading.value = true;
     controller.refreshPagesStatus.value = true;
-    // if (AppData.firsLogin == true) {
-    //   absenControllre.getTimeNow();
-    //   controllerBpj.employeDetaiBpjs();
-    //   controller.initData();
-    //   absenControllre.getPosisition();
-    //   absenControllre.getPlaceCoordinate();rcq
-    //   await Future.delayed(const Duration(seconds: 4));
-    // } else {
-    //   await Future.wait([
-    //     absenControllre.getTimeNow(),
-    //     controllerBpj.employeDetaiBpjs(),
-    //     controller.initData(),
-    //     absenControllre.getPosisition(),
-    //     absenControllre.getPlaceCoordinate(),
-    //   ]);
-    // }
-    absenControllre.getTimeNow();
-    controllerBpj.employeDetaiBpjs();
-    controllerAbsensi.employeDetail();
-    controllerAbsensi.userShift();
-    absenControllre.getPosisition();
-    absenControllre.getPlaceCoordinate();
-    controllerPesan.getTimeNow();
+ 
+    // absenControllre.getTimeNow();
+    // controllerBpj.employeDetaiBpjs();
+    // controllerAbsensi.employeDetail();
+    // controllerAbsensi.userShift();
+    // absenControllre.getPosisition();
+    // absenControllre.getPlaceCoordinate();
+    // controllerPesan.getTimeNow();
 
     controller.initData();
     

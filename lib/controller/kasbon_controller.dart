@@ -77,12 +77,12 @@ class KasbonController extends GetxController {
   void onReady() async {
     print("on ready");
     super.onReady();
-    getTimeNow();
-    getLoadsysData();
-    // loadDataKasbon();
-    loadAllEmployeeDelegasi();
-    getTypeKasbon();
-    getDepartemen(1, "");
+    // getTimeNow();
+    // getLoadsysData();
+    // // loadDataKasbon();
+    // loadAllEmployeeDelegasi();
+    // getTypeKasbon();
+    // getDepartemen(1, "");
   }
 
   void showInputCari() {

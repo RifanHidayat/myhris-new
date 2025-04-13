@@ -74,11 +74,11 @@ class LemburController extends GetxController {
     print("on ready");
     super.onReady();
     getTimeNow();
-    getLoadsysData();
-    loadDataLembur();
-    loadAllEmployeeDelegasi();
-    getTypeLembur();
-    getDepartemen(1, "");
+    // getLoadsysData();
+    // loadDataLembur();
+    // loadAllEmployeeDelegasi();
+    // getTypeLembur();
+    // getDepartemen(1, "");
   }
 
   void showInputCari() {

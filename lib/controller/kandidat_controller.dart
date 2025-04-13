@@ -96,7 +96,7 @@ class KandidatController extends GetxController {
     getTimeNow();
     loadTypeStatus();
     loadTypeProsesKandidat();
-    getDepartemen();
+   // getDepartemen();
   }
 
   void removeAll() {}

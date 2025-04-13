@@ -118,11 +118,11 @@ class IzinController extends GetxController {
   @override
   void onInit() {
     getTimeNow();
-    getLoadsysData();
-    loadAllEmployeeDelegasi();
-    loadTypeSakit();
-    loadDataAjuanIzin();
-    getDepartemen(1, "");
+    // getLoadsysData();
+    // loadAllEmployeeDelegasi();
+    // loadTypeSakit();
+    // loadDataAjuanIzin();
+    // getDepartemen(1, "");
     super.onInit();
   }
 
