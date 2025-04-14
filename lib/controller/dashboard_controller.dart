@@ -209,13 +209,14 @@ class DashboardController extends GetxController {
     print("check absen masuk keluar :${absenMasukKeluarOffline.value}");
     print('ini status dari absen ${controllerAbsensi.absenStatus.value}');
 
-    AppData.signoutTime = "";
-    AppData.signingTime = "";
+    // AppData.signoutTime = "";
+    // AppData.signingTime = "";
 
     pendingSignoutApr.value = false;
 
     pendingSigninApr.value = false;
     dashboardStatusAbsen.value = AppData.statusAbsen;
+    // /UtilsAlert.showToast(dashboardStatusAbsen.value.toString() );
 
     DateTime startDate = DateTime.now();
 
@@ -316,6 +317,7 @@ class DashboardController extends GetxController {
       await prefs.setString("", element['em_id'].toString());
 
       print("interval tracking ${element['interval_tracking'].toString()}");
+      absenControllre.regType.value=element['reg_type']=='' ||element['reg_type']==null?0:int.parse(element['reg_type'].toString());
     }
 
     AppData.informasiUser = getData;
@@ -1044,6 +1046,8 @@ class DashboardController extends GetxController {
 
           print("hasil signinTime ${signinTime.value}");
           print("hasil signinTime ${signoutTime.value}");
+
+  
         } else {
           isLoading.value = false;
         }

@@ -76,33 +76,32 @@ class _DashboardState extends State<Dashboard> {
   final authController = Get.put(AuthController());
   final chatController = Get.put(ChatController());
 
-
   var intervalTracking = "";
   final WebSocketChannel channel =
       WebSocketChannel.connect(Uri.parse(Api.webSocket));
 
-
   Future<void> refreshData() async {
     controller.isLoading.value = true;
     controller.refreshPagesStatus.value = true;
-        controller.initData();
+    controller.initData();
+  
     // setState(() {
     Future.wait([
       // controller.updateInformasiUser(),
       // controllerBpj.employeDetaiBpjs(),
       // controllerAbsensi.employeDetail(),
       // controllerAbsensi.userShift(),
-  
-     
+
       Future.delayed(const Duration(milliseconds: 500), () {
-        absenControllre.absenStatus.value = AppData.statusAbsen;
+        controllerAbsensi.absenStatus.value = AppData.statusAbsen;
         authController.signinTime.value = controller.signinTime.value;
         authController.signoutTime.value = controller.signoutTime.value;
-        // absenControllre.absenStatus.value =
+        // controllerAbsensi.absenStatus.value =
         //     controller.dashboardStatusAbsen.value;
       }),
       tabbController.checkuserinfo(),
     ]);
+        //  UtilsAlert.showToast(controllerAbsensi.absenStatus.value.toString());
 
     controllerPesan.getTimeNow();
     await Future.delayed(const Duration(seconds: 2));
@@ -141,721 +140,719 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        backgroundColor: Constanst.coloBackgroundScreen,
-        floatingActionButton: 
-        controller.showAbsen.value
-        ?_isVisible == true
-            ? Container()
-            : Container(
-                decoration: BoxDecoration(
-                  // color: Colors.white,
-                  borderRadius: BorderRadius.circular(100),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color.fromARGB(255, 155, 155, 155)
-                          .withOpacity(0.5),
-                      spreadRadius: 1.0,
-                      blurRadius: 3,
-                      offset: const Offset(0, 0),
-                    ),
-                  ],
-                ),
-                child: FloatingActionButton.extended(
-                    // shape: RoundedRectangleBorder(
-                    //   borderRadius: BorderRadius.circular(10),
-                    // ),
-                    extendedPadding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                    // splashColor: Colors.black,
-                    elevation: 0,
-                    onPressed: !controllerAbsensi.absenStatus.value
-                        ? () {
-                            if (controllerAbsensi.absenStatus.value == true) {
-                              if (controller.wfhstatus.value == true) {
-                                UtilsAlert.showToast(
-                                    "Menunggu status wfh anda di approve");
-                                return;
-                              }
-
-                              UtilsAlert.showToast(
-                                  "Anda harus absen keluar terlebih dahulu");
-                            } else {
-                              var dataUser = AppData.informasiUser;
-                              var faceRecog = dataUser![0].face_recog;
-                              print(
-                                  "facee recog ${GetStorage().read('face_recog')}");
-                              if (GetStorage().read('face_recog') == true) {
-                                print("masuk sini");
-                                var statusCamera = Permission.camera.status;
-                                statusCamera.then((value) {
-                                  var statusLokasi = Permission.location.status;
-                                  statusLokasi.then((value2) async {
-                                    if (value != PermissionStatus.granted ||
-                                        value2 != PermissionStatus.granted) {
-                                      UtilsAlert.showToast(
-                                          "Anda harus aktifkan kamera dan lokasi anda");
-                                      controller.widgetButtomSheetAktifCamera(
-                                          type: 'loadfirst');
-                                    } else {
-                                      print("masuk absen user");
-                                      // if (controller.absenOfflineStatus.value ==
-                                      //     true) {
-                                      //   UtilsAlert.showToast(
-                                      //       "Menunggu status absensi anda di approve");
-                                      //   return;
-                                      // }
-                                      // Get.offAll(AbsenMasukKeluar(
-                                      //   status: "Absen Masuk",
-                                      //   type: 1,
-                                      // ));
-                                      //  controllerAbsensi.absenSelfie();
-
-                                      var validasiAbsenMasukUser =
-                                          controller.validasiAbsenMasukUser();
-                                      if (!validasiAbsenMasukUser) {
-                                        print("masuk sini");
-                                      } else {
-                                        // if (!authController.isConnected.value) {
-                                        //   if (controller
-                                        //           .absenOfflineStatus.value ==
-                                        //       true) {
-                                        //     UtilsAlert.showToast(
-                                        //         "Menunggu status absensi anda di approve");
-                                        //     return;
-                                        //   } else {
-                                        //     controllerAbsensi.titleAbsen.value =
-                                        //         "Absen masuk";
-                                        //     controllerAbsensi.typeAbsen.value =
-                                        //         1;
-                                        //     controller
-                                        //         .widgetButtomSheetOfflineAbsen(
-                                        //             title: "Absen masuk",
-                                        //             status: "masuk");
-                                        //   }
-                                        // } else {
-                                        controllerAbsensi.titleAbsen.value =
-                                            "Absen masuk";
-
-                                        controllerAbsensi.typeAbsen.value = 1;
-
-                                        //begin image picker
-                                        // final getFoto = await ImagePicker()
-                                        //     .pickImage(
-                                        //         source: ImageSource.camera,
-                                        //         preferredCameraDevice:
-                                        //             CameraDevice.front,
-                                        //         imageQuality: 100,
-                                        //         maxHeight: 350,
-                                        //         maxWidth: 350);
-                                        // if (getFoto == null) {
-                                        //   UtilsAlert.showToast(
-                                        //       "Gagal mengambil gambar");
-                                        // } else {
-                                        //   // controllerAbsensi.facedDetection(
-                                        //   //     status: "registration",
-                                        //   //     absenStatus: "Absen Masuk",
-                                        //   //     img: getFoto.path,
-                                        //   //     type: "1");
-                                        //   Get.to(LoadingAbsen(
-                                        //     file: getFoto.path,
-                                        //     status: "detection",
-                                        //     statusAbsen: 'masuk',
-                                        //   ));
-                                        //   // Get.to(FaceidRegistration(
-                                        //   //   status: "registration",
-                                        //   // ));
-                                        // }
-                                        //end image picker
-
-                                        //begin face recognition
-                                        // Get.to(FaceDetectorView(
-                                        //   status: "masuk",
-                                        // ));
-                                        //end begin face recogniton
-
-                                        if (controllerAbsensi.regType.value ==
-                                            1) {
-                                          Get.to(AbsensiLocation(
-                                            status: "masuk",
-                                          ));
-                                        } else {
-                                          Get.to(FaceDetectorView(
-                                            status: "masuk",
-                                          ));
-                                        }
-
-                                        // // controllerAbsensi.getPlaceCoordinate();
-                                        // ;
-                                        // controllerAbsensi.facedDetection(
-                                        //     status: "detection",
-                                        //     absenStatus: "masuk",
-                                        //     type: "1");
-
-                                        // var kalkulasiRadius =
-                                        //     controller.radiusNotOpen();
-                                        // Get.to(faceDetectionPage(
-                                        //   status: "masuk",
-                                        // ));
-                                        // kalkulasiRadius.then((value) {
-                                        //   print(value);
-                                        //   // if (value) {
-                                        //   //   controllerAbsensi.titleAbsen.value =
-                                        //   //       "Absen Masuk";
-                                        //   //   controllerAbsensi.typeAbsen.value = 1;
-                                        //   //   Get.offAll(faceDetectionPage());
-                                        //   //   // controllerAbsensi.absenSelfie();
-                                        //   // }
-                                        // });
-                                        // }
-                                      }
-                                    }
-                                  });
-                                });
-                              } else {
-                                controllerAbsensi
-                                    .widgetButtomSheetFaceRegistrattion();
-                              }
-                            }
-                          }
-                        : () async {
-                            if (!controllerAbsensi.absenStatus.value) {
-                              UtilsAlert.showToast(
-                                  "Absen Masuk terlebih dahulu");
-                            } else {
-                              // if (!authController.isConnected.value) {
-                              //   // if (controller.absenOfflineStatusDua.value ==
-                              //   //     true) {
-                              //   //   UtilsAlert.showToast(
-                              //   //       "Menunggu status absensi anda di approve");
-                              //   //   return;
-                              //   // } else {
-                              //   controllerAbsensi.getPlaceCoordinate();
-                              //   controllerAbsensi.titleAbsen.value =
-                              //       "Absen Keluar";
-                              //   controllerAbsensi.typeAbsen.value = 2;
-                              //   controller.widgetButtomSheetOfflineAbsen(
-                              //       title: "Absen Keluar", status: "keluar");
-                              //   // }
-                              // } else {
-                              // if (controller.absenOfflineStatus.value ==
-                              //     true) {
-                              //   UtilsAlert.showToast(
-                              //       "Menunggu status absensi anda di approve");
-                              //   return;
-                              // }
-                              var dataUser = AppData.informasiUser;
-                              var faceRecog = dataUser![0].face_recog;
-
-                              if (GetStorage().read('face_recog') == true) {
-                                controllerAbsensi.getPlaceCoordinate();
-                                controllerAbsensi.titleAbsen.value =
-                                    "Absen Keluar";
-                                controllerAbsensi.typeAbsen.value = 2;
-
-                                //begin image picker
-                                // final getFoto = await ImagePicker()
-                                //     .pickImage(
-                                //         source: ImageSource.camera,
-                                //         preferredCameraDevice:
-                                //             CameraDevice.front,
-                                //         imageQuality: 100,
-                                //         maxHeight: 350,
-                                //         maxWidth: 350);
-                                // if (getFoto == null) {
-                                //   UtilsAlert.showToast(
-                                //       "Gagal mengambil gambar");
-                                // } else {
-                                //   // controllerAbsensi.facedDetection(
-                                //   //     status: "registration",
-                                //   //     absenStatus: "Absen Masuk",
-                                //   //     img: getFoto.path,
-                                //   //     type: "1");
-                                //   Get.to(LoadingAbsen(
-                                //     file: getFoto.path,
-                                //     status: "detection",
-                                //     statusAbsen: 'keluar',
-                                //   ));
-                                //   // Get.to(FaceidRegistration(
-                                //   //   status: "registration",
-                                //   // ));
-                                // }
-                                //end image picker
-
-                                if (controllerAbsensi.regType.value == 1) {
-                                  Get.to(AbsensiLocation(
-                                    status: "keluar",
-                                  ));
-                                } else {
-                                  Get.to(FaceDetectorView(
-                                    status: "keluar",
-                                  ));
+    return Scaffold(
+      backgroundColor: Constanst.coloBackgroundScreen,
+      floatingActionButton: controller.showAbsen.value
+          ? _isVisible == true
+              ? Container()
+              : Container(
+                  decoration: BoxDecoration(
+                    // color: Colors.white,
+                    borderRadius: BorderRadius.circular(100),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color.fromARGB(255, 155, 155, 155)
+                            .withOpacity(0.5),
+                        spreadRadius: 1.0,
+                        blurRadius: 3,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: FloatingActionButton.extended(
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(10),
+                      // ),
+                      extendedPadding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                      // splashColor: Colors.black,
+                      elevation: 0,
+                      onPressed: !controllerAbsensi.absenStatus.value
+                          ? () {
+                              if (controllerAbsensi.absenStatus.value == true) {
+                                if (controller.wfhstatus.value == true) {
+                                  UtilsAlert.showToast(
+                                      "Menunggu status wfh anda di approve");
+                                  return;
                                 }
 
-                                // controllerAbsensi.facedDetection(
-                                //     status: "detection",
-                                //     type: "2",
-                                // //     absenStatus: "keluar");
-                                // Get.to(faceDetectionPage(
-                                //   status: "keluar",
-                                // ));
-                                // Get.offAll(AbsenMasukKeluar(
-                                //   status: "Absen Keluar",
-                                //   type: 2,
-                                // ));
-                                // controllerAbsensi.absenSelfie();
-                                // var validasiAbsenMasukUser =
-                                //     controller.validasiAbsenMasukUser();
-                                // print(validasiAbsenMasukUser);
-                                // if (validasiAbsenMasukUser == false) {
-
-                                // } else {
-                                //   var kalkulasiRadius =
-                                //       controller.radiusNotOpen();
-                                //   kalkulasiRadius.then((value) {
-                                //     if (value) {
-                                //       controllerAbsensi.titleAbsen.value =
-                                //           "Absen Keluar";
-                                //       controllerAbsensi.typeAbsen.value = 2;
-                                //       Get.offAll(AbsenMasukKeluar());
-                                //       controllerAbsensi.absenSelfie();
-                                //     }
-                                //   });
-                                // }
+                                UtilsAlert.showToast(
+                                    "Anda harus absen keluar terlebih dahulu");
                               } else {
-                                controllerAbsensi
-                                    .widgetButtomSheetFaceRegistrattion();
+                                var dataUser = AppData.informasiUser;
+                                var faceRecog = dataUser![0].face_recog;
+                                print(
+                                    "facee recog ${GetStorage().read('face_recog')}");
+                                if (GetStorage().read('face_recog') == true) {
+                                  print("masuk sini");
+                                  var statusCamera = Permission.camera.status;
+                                  statusCamera.then((value) {
+                                    var statusLokasi =
+                                        Permission.location.status;
+                                    statusLokasi.then((value2) async {
+                                      if (value != PermissionStatus.granted ||
+                                          value2 != PermissionStatus.granted) {
+                                        UtilsAlert.showToast(
+                                            "Anda harus aktifkan kamera dan lokasi anda");
+                                        controller.widgetButtomSheetAktifCamera(
+                                            type: 'loadfirst');
+                                      } else {
+                                        print("masuk absen user");
+                                        // if (controller.absenOfflineStatus.value ==
+                                        //     true) {
+                                        //   UtilsAlert.showToast(
+                                        //       "Menunggu status absensi anda di approve");
+                                        //   return;
+                                        // }
+                                        // Get.offAll(AbsenMasukKeluar(
+                                        //   status: "Absen Masuk",
+                                        //   type: 1,
+                                        // ));
+                                        //  controllerAbsensi.absenSelfie();
+
+                                        var validasiAbsenMasukUser =
+                                            controller.validasiAbsenMasukUser();
+                                        if (!validasiAbsenMasukUser) {
+                                          print("masuk sini");
+                                        } else {
+                                          // if (!authController.isConnected.value) {
+                                          //   if (controller
+                                          //           .absenOfflineStatus.value ==
+                                          //       true) {
+                                          //     UtilsAlert.showToast(
+                                          //         "Menunggu status absensi anda di approve");
+                                          //     return;
+                                          //   } else {
+                                          //     controllerAbsensi.titleAbsen.value =
+                                          //         "Absen masuk";
+                                          //     controllerAbsensi.typeAbsen.value =
+                                          //         1;
+                                          //     controller
+                                          //         .widgetButtomSheetOfflineAbsen(
+                                          //             title: "Absen masuk",
+                                          //             status: "masuk");
+                                          //   }
+                                          // } else {
+                                          controllerAbsensi.titleAbsen.value =
+                                              "Absen masuk";
+
+                                          controllerAbsensi.typeAbsen.value = 1;
+
+                                          //begin image picker
+                                          // final getFoto = await ImagePicker()
+                                          //     .pickImage(
+                                          //         source: ImageSource.camera,
+                                          //         preferredCameraDevice:
+                                          //             CameraDevice.front,
+                                          //         imageQuality: 100,
+                                          //         maxHeight: 350,
+                                          //         maxWidth: 350);
+                                          // if (getFoto == null) {
+                                          //   UtilsAlert.showToast(
+                                          //       "Gagal mengambil gambar");
+                                          // } else {
+                                          //   // controllerAbsensi.facedDetection(
+                                          //   //     status: "registration",
+                                          //   //     absenStatus: "Absen Masuk",
+                                          //   //     img: getFoto.path,
+                                          //   //     type: "1");
+                                          //   Get.to(LoadingAbsen(
+                                          //     file: getFoto.path,
+                                          //     status: "detection",
+                                          //     statusAbsen: 'masuk',
+                                          //   ));
+                                          //   // Get.to(FaceidRegistration(
+                                          //   //   status: "registration",
+                                          //   // ));
+                                          // }
+                                          //end image picker
+
+                                          //begin face recognition
+                                          // Get.to(FaceDetectorView(
+                                          //   status: "masuk",
+                                          // ));
+                                          //end begin face recogniton
+
+                                          if (controllerAbsensi.regType.value ==
+                                              1) {
+                                            Get.to(AbsensiLocation(
+                                              status: "masuk",
+                                            ));
+                                          } else {
+                                            Get.to(FaceDetectorView(
+                                              status: "masuk",
+                                            ));
+                                          }
+
+                                          // // controllerAbsensi.getPlaceCoordinate();
+                                          // ;
+                                          // controllerAbsensi.facedDetection(
+                                          //     status: "detection",
+                                          //     absenStatus: "masuk",
+                                          //     type: "1");
+
+                                          // var kalkulasiRadius =
+                                          //     controller.radiusNotOpen();
+                                          // Get.to(faceDetectionPage(
+                                          //   status: "masuk",
+                                          // ));
+                                          // kalkulasiRadius.then((value) {
+                                          //   print(value);
+                                          //   // if (value) {
+                                          //   //   controllerAbsensi.titleAbsen.value =
+                                          //   //       "Absen Masuk";
+                                          //   //   controllerAbsensi.typeAbsen.value = 1;
+                                          //   //   Get.offAll(faceDetectionPage());
+                                          //   //   // controllerAbsensi.absenSelfie();
+                                          //   // }
+                                          // });
+                                          // }
+                                        }
+                                      }
+                                    });
+                                  });
+                                } else {
+                                  controllerAbsensi
+                                      .widgetButtomSheetFaceRegistrattion();
+                                }
                               }
-                              // }
                             }
-                          },
-                    label: Text(
-                      !controllerAbsensi.absenStatus.value ? "Masuk" : "Keluar",
-                      style: GoogleFonts.inter(
-                          color: Constanst.fgPrimary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
+                          : () async {
+                              if (!controllerAbsensi.absenStatus.value) {
+                                UtilsAlert.showToast(
+                                    "Absen Masuk terlebih dahulu");
+                              } else {
+                                // if (!authController.isConnected.value) {
+                                //   // if (controller.absenOfflineStatusDua.value ==
+                                //   //     true) {
+                                //   //   UtilsAlert.showToast(
+                                //   //       "Menunggu status absensi anda di approve");
+                                //   //   return;
+                                //   // } else {
+                                //   controllerAbsensi.getPlaceCoordinate();
+                                //   controllerAbsensi.titleAbsen.value =
+                                //       "Absen Keluar";
+                                //   controllerAbsensi.typeAbsen.value = 2;
+                                //   controller.widgetButtomSheetOfflineAbsen(
+                                //       title: "Absen Keluar", status: "keluar");
+                                //   // }
+                                // } else {
+                                // if (controller.absenOfflineStatus.value ==
+                                //     true) {
+                                //   UtilsAlert.showToast(
+                                //       "Menunggu status absensi anda di approve");
+                                //   return;
+                                // }
+                                var dataUser = AppData.informasiUser;
+                                var faceRecog = dataUser![0].face_recog;
+
+                                if (GetStorage().read('face_recog') == true) {
+                                  controllerAbsensi.getPlaceCoordinate();
+                                  controllerAbsensi.titleAbsen.value =
+                                      "Absen Keluar";
+                                  controllerAbsensi.typeAbsen.value = 2;
+
+                                  //begin image picker
+                                  // final getFoto = await ImagePicker()
+                                  //     .pickImage(
+                                  //         source: ImageSource.camera,
+                                  //         preferredCameraDevice:
+                                  //             CameraDevice.front,
+                                  //         imageQuality: 100,
+                                  //         maxHeight: 350,
+                                  //         maxWidth: 350);
+                                  // if (getFoto == null) {
+                                  //   UtilsAlert.showToast(
+                                  //       "Gagal mengambil gambar");
+                                  // } else {
+                                  //   // controllerAbsensi.facedDetection(
+                                  //   //     status: "registration",
+                                  //   //     absenStatus: "Absen Masuk",
+                                  //   //     img: getFoto.path,
+                                  //   //     type: "1");
+                                  //   Get.to(LoadingAbsen(
+                                  //     file: getFoto.path,
+                                  //     status: "detection",
+                                  //     statusAbsen: 'keluar',
+                                  //   ));
+                                  //   // Get.to(FaceidRegistration(
+                                  //   //   status: "registration",
+                                  //   // ));
+                                  // }
+                                  //end image picker
+
+                                  if (controllerAbsensi.regType.value == 1) {
+                                    Get.to(AbsensiLocation(
+                                      status: "keluar",
+                                    ));
+                                  } else {
+                                    Get.to(FaceDetectorView(
+                                      status: "keluar",
+                                    ));
+                                  }
+
+                                  // controllerAbsensi.facedDetection(
+                                  //     status: "detection",
+                                  //     type: "2",
+                                  // //     absenStatus: "keluar");
+                                  // Get.to(faceDetectionPage(
+                                  //   status: "keluar",
+                                  // ));
+                                  // Get.offAll(AbsenMasukKeluar(
+                                  //   status: "Absen Keluar",
+                                  //   type: 2,
+                                  // ));
+                                  // controllerAbsensi.absenSelfie();
+                                  // var validasiAbsenMasukUser =
+                                  //     controller.validasiAbsenMasukUser();
+                                  // print(validasiAbsenMasukUser);
+                                  // if (validasiAbsenMasukUser == false) {
+
+                                  // } else {
+                                  //   var kalkulasiRadius =
+                                  //       controller.radiusNotOpen();
+                                  //   kalkulasiRadius.then((value) {
+                                  //     if (value) {
+                                  //       controllerAbsensi.titleAbsen.value =
+                                  //           "Absen Keluar";
+                                  //       controllerAbsensi.typeAbsen.value = 2;
+                                  //       Get.offAll(AbsenMasukKeluar());
+                                  //       controllerAbsensi.absenSelfie();
+                                  //     }
+                                  //   });
+                                  // }
+                                } else {
+                                  controllerAbsensi
+                                      .widgetButtomSheetFaceRegistrattion();
+                                }
+                                // }
+                              }
+                            },
+                      label: Text(
+                        !controllerAbsensi.absenStatus.value
+                            ? "Masuk"
+                            : "Keluar",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      icon: Icon(
+                        !controllerAbsensi.absenStatus.value
+                            ? Iconsax.login5
+                            : Iconsax.logout_15,
+                        size: 32,
+                        color: !controllerAbsensi.absenStatus.value
+                            ? Constanst.color5
+                            : Constanst.color4,
+                      ),
+                      backgroundColor: Constanst.colorWhite),
+                )
+          : Container(),
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (scrollNotification) {
+          return true;
+        },
+        child: Obx(
+          () => controller.isLoading.value
+              ? UtilsAlert.homeShimmer()
+              : Stack(
+                  children: [
+                    Positioned(
+                      top: 0,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        // height: MediaQuery.of(context).size.height * 0.4,
+                        decoration: BoxDecoration(
+                            color: Constanst.greyLight50,
+                            image: const DecorationImage(
+                                alignment: Alignment.topCenter,
+                                image: AssetImage('assets/bg_vector.png'),
+                                fit: BoxFit.cover)),
+                        child: SafeArea(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 16, right: 16),
+                            child: Column(
+                              children: [
+                                informasiUser(),
+                                // controller.refreshPagesStatus.value
+                                //     ? UtilsAlert.shimmerInfoPersonal(Get.context!)
+                                //     : Obx(() => informasiUser()),
+                                const SizedBox(height: 16),
+                                cardInfoAbsen(),
+                                const SizedBox(height: 48),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    icon: Icon(
-                      !controllerAbsensi.absenStatus.value
-                          ? Iconsax.login5
-                          : Iconsax.logout_15,
-                      size: 32,
-                      color: !controllerAbsensi.absenStatus.value
-                          ? Constanst.color5
-                          : Constanst.color4,
-                    ),
-                    backgroundColor: Constanst.colorWhite),
-              )
-        : Container(),
-        body: NotificationListener<ScrollNotification>(
-          onNotification: (scrollNotification) {
-            return true;
-          },
-          child: Obx(
-            () => controller.isLoading.value
-                ? UtilsAlert.homeShimmer()
-                : Stack(
-                    children: [
-                      Positioned(
-                        top: 0,
+                    SafeArea(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: (controller.isVisibleAbsenIstirahat())
+                                ? 350.0
+                                : (controller.isVisibleAbsenIstirahat())
+                                    ? 260.0
+                                    :
+                                    // _isVisible
+                                    (controller.status.value == "[]" &&
+                                            controller.wfhstatus.value) // ||
+                                        // (controller.absenOfflineStatus.value)
+                                        ? 300.0
+                                        : 285.0
+                            // : 190.0,
+                            ),
                         child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          // height: MediaQuery.of(context).size.height * 0.4,
                           decoration: BoxDecoration(
-                              color: Constanst.greyLight50,
-                              image: const DecorationImage(
-                                  alignment: Alignment.topCenter,
-                                  image: AssetImage('assets/bg_vector.png'),
-                                  fit: BoxFit.cover)),
-                          child: SafeArea(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 16, right: 16),
+                            color: Constanst.colorWhite,
+                            borderRadius: Constanst.borderStyle3,
+                          ),
+                          child: RefreshIndicator(
+                            onRefresh: refreshData,
+                            child: SingleChildScrollView(
+                              controller: _scrollController,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              // physics: ClampingScrollPhysics(),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  informasiUser(),
-                                  // controller.refreshPagesStatus.value
-                                  //     ? UtilsAlert.shimmerInfoPersonal(Get.context!)
-                                  //     : Obx(() => informasiUser()),
+                                  const SizedBox(height: 12),
+                                  Center(
+                                    child: Container(
+                                        height: 7,
+                                        width: 48,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Constanst.colorNeutralBgTertiary,
+                                          borderRadius: Constanst.borderStyle3,
+                                        )),
+                                  ),
+                                  // controller.menuShowInMain.value.isEmpty
+                                  //     ? const SizedBox()
+                                  //     : listModul(),
                                   const SizedBox(height: 16),
-                                  cardInfoAbsen(),
-                                  const SizedBox(height: 48),
+                                  controller.menuShowInMain.value.isEmpty
+                                      ? UtilsAlert.shimmerMenuDashboard(
+                                          Get.context!)
+                                      : MenuDashboard(),
+                                  // MenuDashboard(),
+                                  // authController.isConnected.value
+                                  // ?
+                                  cardFormPengajuan(),
+                                  // : Container(),
+                                  const SizedBox(height: 16),
+                                  controller.bannerDashboard.value.isEmpty
+                                      ? const SizedBox()
+                                      : sliderBanner(),
+                                  // sliderBanner(),
+                                  const SizedBox(height: 10),
+
+                                  controller.showPengumuman.value == false
+                                      ? const SizedBox()
+                                      : controller
+                                              .informasiDashboard.value.isEmpty
+                                          ? const SizedBox()
+                                          : Column(
+                                              children: [
+                                                Container(
+                                                  width: double.infinity,
+                                                  height: 6,
+                                                  color: Constanst
+                                                      .colorNeutralBgSecondary,
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 16.0,
+                                                          top: 16.0,
+                                                          right: 8.0),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Informasi",
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                                color: Constanst
+                                                                    .fgPrimary,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                      ),
+                                                      Material(
+                                                        color: Constanst
+                                                            .colorWhite,
+                                                        child: InkWell(
+                                                          customBorder:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                Constanst
+                                                                    .borderStyle5,
+                                                          ),
+                                                          onTap: () =>
+                                                              Get.to(Informasi(
+                                                            index: 0,
+                                                          )),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .fromLTRB(
+                                                                    8.0,
+                                                                    3.0,
+                                                                    8.0,
+                                                                    3.0),
+                                                            child: Text(
+                                                              "Lihat semua",
+                                                              style: GoogleFonts.inter(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Constanst
+                                                                      .infoLight),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+                                  controller.showPengumuman.value == false
+                                      ? const SizedBox()
+                                      : controller
+                                              .informasiDashboard.value.isEmpty
+                                          ? const SizedBox()
+                                          : listInformasi(),
+
+                                  controller.showPkwt.value == false
+                                      ? const SizedBox()
+                                      : controllerGlobal
+                                              .employeeSisaCuti.value.isEmpty
+                                          ? const SizedBox()
+                                          : Column(
+                                              children: [
+                                                Container(
+                                                  width: double.infinity,
+                                                  height: 6,
+                                                  color: Constanst
+                                                      .colorNeutralBgSecondary,
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 16.0,
+                                                          top: 16.0,
+                                                          right: 8.0),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Reminder PKWT",
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                                color: Constanst
+                                                                    .fgPrimary,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                      ),
+                                                      Material(
+                                                        color: Constanst
+                                                            .colorWhite,
+                                                        child: InkWell(
+                                                          customBorder:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                Constanst
+                                                                    .borderStyle5,
+                                                          ),
+                                                          onTap: () =>
+                                                              Get.to(Informasi(
+                                                            index: 3,
+                                                          )),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .fromLTRB(
+                                                                    8.0,
+                                                                    3.0,
+                                                                    8.0,
+                                                                    3.0),
+                                                            child: Text(
+                                                              "Lihat semua",
+                                                              style: GoogleFonts.inter(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Constanst
+                                                                      .infoLight),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                  controller.showPkwt.value == false
+                                      ? const SizedBox()
+                                      : controllerGlobal
+                                              .employeeSisaCuti.isEmpty
+                                          ? const SizedBox()
+                                          : const SizedBox(height: 8),
+                                  controller.showPkwt.value == false
+                                      ? const SizedBox()
+                                      : controllerGlobal
+                                              .employeeSisaCuti.isEmpty
+                                          ? const SizedBox()
+                                          : listReminderPkwt(),
+                                  const SizedBox(height: 16),
+
+                                  controller.showUlangTahun.value
+                                      ? controller.employeeUltah.isEmpty
+                                          ? const SizedBox()
+                                          : Column(
+                                              children: [
+                                                Container(
+                                                  width: double.infinity,
+                                                  height: 6,
+                                                  color: Constanst
+                                                      .colorNeutralBgSecondary,
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 16.0,
+                                                          top: 16.0,
+                                                          right: 8.0),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Ulang tahun bulan ini",
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                                color: Constanst
+                                                                    .fgPrimary,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                      ),
+                                                      Material(
+                                                        color: Constanst
+                                                            .colorWhite,
+                                                        child: InkWell(
+                                                          customBorder:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                Constanst
+                                                                    .borderStyle5,
+                                                          ),
+                                                          onTap: () => Get.to(
+                                                            Informasi(index: 1),
+                                                          ),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .fromLTRB(
+                                                                    8.0,
+                                                                    3.0,
+                                                                    8.0,
+                                                                    3.0),
+                                                            child: Text(
+                                                              "Lihat semua",
+                                                              style: GoogleFonts.inter(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Constanst
+                                                                      .infoLight),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                      : Container(),
+                                  controller.employeeUltah.isEmpty
+                                      ? const SizedBox()
+                                      : const SizedBox(height: 8),
+                                  controller.showUlangTahun.value == true
+                                      ? controller.employeeUltah.isEmpty
+                                          ? const SizedBox()
+                                          : listEmployeeUltah()
+                                      : const SizedBox(),
+                                  controller.showUlangTahun.value == true
+                                      ? controller.employeeUltah.isEmpty
+                                          ? Container(height: 180)
+                                          : const SizedBox(height: 20)
+                                      : const SizedBox(),
                                 ],
                               ),
                             ),
                           ),
                         ),
                       ),
-                      SafeArea(
-                   child: Padding(
-                          padding: EdgeInsets.only(
-                            top: (controller.isVisibleAbsenIstirahat())
-                                ? 350.0
-                                : (controller.isVisibleAbsenIstirahat())
-                                    ? 260.0
-                                    : 
-                                    // _isVisible
-                                        (controller.status.value == "[]" &&
-                                                controller
-                                                    .wfhstatus.value) // ||
-                                            // (controller.absenOfflineStatus.value)
-                                            ? 300.0
-                                            : 285.0
-                                        // : 190.0,
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Constanst.colorWhite,
-                              borderRadius: Constanst.borderStyle3,
-                            ),
-                            child: RefreshIndicator(
-                              onRefresh: refreshData,
-                              child: SingleChildScrollView(
-                                controller: _scrollController,
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                // physics: ClampingScrollPhysics(),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 12),
-                                    Center(
-                                      child: Container(
-                                          height: 7,
-                                          width: 48,
-                                          decoration: BoxDecoration(
-                                            color: Constanst
-                                                .colorNeutralBgTertiary,
-                                            borderRadius:
-                                                Constanst.borderStyle3,
-                                          )),
-                                    ),
-                                    // controller.menuShowInMain.value.isEmpty
-                                    //     ? const SizedBox()
-                                    //     : listModul(),
-                                    const SizedBox(height: 16),
-                                    controller.menuShowInMain.value.isEmpty
-                                        ? UtilsAlert.shimmerMenuDashboard(
-                                            Get.context!)
-                                        : MenuDashboard(),
-                                    // MenuDashboard(),
-                                    // authController.isConnected.value
-                                    // ?
-                                    cardFormPengajuan(),
-                                    // : Container(),
-                                    const SizedBox(height: 16),
-                                    controller.bannerDashboard.value.isEmpty
-                                        ? const SizedBox()
-                                        : sliderBanner(),
-                                    // sliderBanner(),
-                                    const SizedBox(height: 10),
+                    )
 
-                                    controller.showPengumuman.value == false
-                                        ? const SizedBox()
-                                        : controller.informasiDashboard.value
-                                                .isEmpty
-                                            ? const SizedBox()
-                                            : Column(
-                                                children: [
-                                                  Container(
-                                                    width: double.infinity,
-                                                    height: 6,
-                                                    color: Constanst
-                                                        .colorNeutralBgSecondary,
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 16.0,
-                                                            top: 16.0,
-                                                            right: 8.0),
-                                                    child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          "Informasi",
-                                                          style: GoogleFonts.inter(
-                                                              color: Constanst
-                                                                  .fgPrimary,
-                                                              fontSize: 18,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                        ),
-                                                        Material(
-                                                          color: Constanst
-                                                              .colorWhite,
-                                                          child: InkWell(
-                                                            customBorder:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  Constanst
-                                                                      .borderStyle5,
-                                                            ),
-                                                            onTap: () => Get.to(
-                                                                Informasi(
-                                                              index: 0,
-                                                            )),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .fromLTRB(
-                                                                      8.0,
-                                                                      3.0,
-                                                                      8.0,
-                                                                      3.0),
-                                                              child: Text(
-                                                                "Lihat semua",
-                                                                style: GoogleFonts.inter(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    color: Constanst
-                                                                        .infoLight),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-
-                                    controller.showPengumuman.value == false
-                                        ? const SizedBox()
-                                        : controller.informasiDashboard.value
-                                                .isEmpty
-                                            ? const SizedBox()
-                                            : listInformasi(),
-
-                                    controller.showPkwt.value == false
-                                        ? const SizedBox()
-                                        : controllerGlobal
-                                                .employeeSisaCuti.value.isEmpty
-                                            ? const SizedBox()
-                                            : Column(
-                                                children: [
-                                                  Container(
-                                                    width: double.infinity,
-                                                    height: 6,
-                                                    color: Constanst
-                                                        .colorNeutralBgSecondary,
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 16.0,
-                                                            top: 16.0,
-                                                            right: 8.0),
-                                                    child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          "Reminder PKWT",
-                                                          style: GoogleFonts.inter(
-                                                              color: Constanst
-                                                                  .fgPrimary,
-                                                              fontSize: 18,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                        ),
-                                                        Material(
-                                                          color: Constanst
-                                                              .colorWhite,
-                                                          child: InkWell(
-                                                            customBorder:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  Constanst
-                                                                      .borderStyle5,
-                                                            ),
-                                                            onTap: () => Get.to(
-                                                                Informasi(
-                                                              index: 3,
-                                                            )),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .fromLTRB(
-                                                                      8.0,
-                                                                      3.0,
-                                                                      8.0,
-                                                                      3.0),
-                                                              child: Text(
-                                                                "Lihat semua",
-                                                                style: GoogleFonts.inter(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    color: Constanst
-                                                                        .infoLight),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                    controller.showPkwt.value == false
-                                        ? const SizedBox()
-                                        : controllerGlobal
-                                                .employeeSisaCuti.isEmpty
-                                            ? const SizedBox()
-                                            : const SizedBox(height: 8),
-                                    controller.showPkwt.value == false
-                                        ? const SizedBox()
-                                        : controllerGlobal
-                                                .employeeSisaCuti.isEmpty
-                                            ? const SizedBox()
-                                            : listReminderPkwt(),
-                                    const SizedBox(height: 16),
-
-                                    controller.showUlangTahun.value
-                                        ? controller.employeeUltah.isEmpty
-                                            ? const SizedBox()
-                                            : Column(
-                                                children: [
-                                                  Container(
-                                                    width: double.infinity,
-                                                    height: 6,
-                                                    color: Constanst
-                                                        .colorNeutralBgSecondary,
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 16.0,
-                                                            top: 16.0,
-                                                            right: 8.0),
-                                                    child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          "Ulang tahun bulan ini",
-                                                          style: GoogleFonts.inter(
-                                                              color: Constanst
-                                                                  .fgPrimary,
-                                                              fontSize: 18,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                        ),
-                                                        Material(
-                                                          color: Constanst
-                                                              .colorWhite,
-                                                          child: InkWell(
-                                                            customBorder:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  Constanst
-                                                                      .borderStyle5,
-                                                            ),
-                                                            onTap: () => Get.to(
-                                                              Informasi(
-                                                                  index: 1),
-                                                            ),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .fromLTRB(
-                                                                      8.0,
-                                                                      3.0,
-                                                                      8.0,
-                                                                      3.0),
-                                                              child: Text(
-                                                                "Lihat semua",
-                                                                style: GoogleFonts.inter(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    color: Constanst
-                                                                        .infoLight),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                        : Container(),
-                                    controller.employeeUltah.isEmpty
-                                        ? const SizedBox()
-                                        : const SizedBox(height: 8),
-                                    controller.showUlangTahun.value == true
-                                        ? controller.employeeUltah.isEmpty
-                                            ? const SizedBox()
-                                            : listEmployeeUltah()
-                                        : const SizedBox(),
-                                    controller.showUlangTahun.value == true
-                                        ? controller.employeeUltah.isEmpty
-                                            ? Container(height: 180)
-                                            : const SizedBox(height: 20)
-                                        : const SizedBox(),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 5, right: 5),
-                      //   child: Row(
-                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                      //     children: [
-                      //       Expanded(
-                      //         child: Text(
-                      //           "Menu",
-                      //           style: TextStyle(
-                      //               fontWeight: FontWeight.bold, fontSize: 14),
-                      //         ),
-                      //       ),
-                      //       Expanded(
-                      //         child: Text(
-                      //           "Lihat semua",
-                      //           textAlign: TextAlign.right,
-                      //           style: TextStyle(
-                      //               fontWeight: FontWeight.bold,
-                      //               color: Constanst.colorPrimary,
-                      //               fontSize: 10),
-                      //         ),
-                      //       )
-                      //     ],
-                      //   ),
-                      // ),
-                    ],
-                  ),
-          ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 5, right: 5),
+                    //   child: Row(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       Expanded(
+                    //         child: Text(
+                    //           "Menu",
+                    //           style: TextStyle(
+                    //               fontWeight: FontWeight.bold, fontSize: 14),
+                    //         ),
+                    //       ),
+                    //       Expanded(
+                    //         child: Text(
+                    //           "Lihat semua",
+                    //           textAlign: TextAlign.right,
+                    //           style: TextStyle(
+                    //               fontWeight: FontWeight.bold,
+                    //               color: Constanst.colorPrimary,
+                    //               fontSize: 10),
+                    //         ),
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
+                  ],
+                ),
         ),
-      );
-   // );
+      ),
+    );
+    // );
   }
 
   Widget informasiUser() {
@@ -1093,7 +1090,7 @@ class _DashboardState extends State<Dashboard> {
                                 fit: BoxFit.cover,
                                 width: 50,
                                 height: 50,
-                            ),
+                              ),
                             ),
                           ),
                         ),
@@ -1310,12 +1307,11 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
 
-
-            
-
             // _isVisible
-            //     ? 
-                controller.showAbsen.value==false?SizedBox():   Column(
+            //     ?
+            controller.showAbsen.value == false
+                ? SizedBox()
+                : Column(
                     children: [
                       const Divider(
                         thickness: 1,
@@ -1548,9 +1544,12 @@ class _DashboardState extends State<Dashboard> {
                                               } else if (controllerAbsensi
                                                       .regType.value ==
                                                   0) {
-                                               Get.to(AbsensiLocation(
-                                                  status: "masuk",
+                                                Get.to(FaceDetectorView(
+                                                  status: "keluar",
                                                 ));
+                                                //  Get.to(AbsensiLocation(
+                                                //     status: "masuk",
+                                                //   ));
                                               } else {
                                                 Get.to(AbsenMasukKeluar(
                                                   status: "Absen Masuk",
@@ -1751,7 +1750,7 @@ class _DashboardState extends State<Dashboard> {
                                                   : Container(),
                                               // (controller.absenOfflineStatus
                                               //                 .value &&
-                                              //             absenControllre
+                                              //             controllerAbsensi
                                               //                 .absenStatus
                                               //                 .value) ||
                                               //         controller
@@ -2169,7 +2168,7 @@ class _DashboardState extends State<Dashboard> {
                                                     : Container(),
                                                 // (controller.absenOfflineStatus
                                                 //                 .value &&
-                                                //             !absenControllre
+                                                //             !controllerAbsensi
                                                 //                 .absenStatus
                                                 //                 .value) ||
                                                 //         controller
@@ -2268,7 +2267,7 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ],
                   ),
-                // : Container(),
+            // : Container(),
 
             // _isVisible
             //     ? Row(
@@ -2555,9 +2554,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-
-
-  //card info absen lama 
+  //card info absen lama
 
 //   Widget cardInfoAbsen() {
 //     String formatDateTime(DateTime dateTime) {
@@ -3022,7 +3019,7 @@ class _DashboardState extends State<Dashboard> {
 //                                                   : Container(),
 //                                               // (controller.absenOfflineStatus
 //                                               //                 .value &&
-//                                               //             absenControllre
+//                                               //             controllerAbsensi
 //                                               //                 .absenStatus
 //                                               //                 .value) ||
 //                                               //         controller
@@ -3173,8 +3170,6 @@ class _DashboardState extends State<Dashboard> {
 //                                 ),
 //                                 onTap: () {
 
-
-
 //                                   if (controller.pendingSignoutApr.value) {
 //                                     UtilsAlert.showToast(
 //                                         "Menunggu status absensi anda di approve");
@@ -3303,7 +3298,6 @@ class _DashboardState extends State<Dashboard> {
 //                                     // }
 //                                   }
 
-                                  
 //                                 },
 //                                 child: Padding(
 //                                   padding: const EdgeInsets.only(
@@ -3425,7 +3419,7 @@ class _DashboardState extends State<Dashboard> {
 //                                                     : Container(),
 //                                                 // (controller.absenOfflineStatus
 //                                                 //                 .value &&
-//                                                 //             !absenControllre
+//                                                 //             !controllerAbsensi
 //                                                 //                 .absenStatus
 //                                                 //                 .value) ||
 //                                                 //         controller
@@ -3798,8 +3792,7 @@ class _DashboardState extends State<Dashboard> {
 //       ),
 //     );
 //   }
-  
-  
+
   Widget cardAbsenIstirahat() {
     return Row(
       mainAxisSize: MainAxisSize.min, // Membuat tinggi card sesuai content
@@ -4972,9 +4965,10 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
+   
     // controller.updateInformasiUser();
     //controller.initData();
-    // absenControllre.getTimeNow();
+    // controllerAbsensi.getTimeNow();
 
     // controller.checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
     //     AppData.informasiUser![0].em_id);
@@ -4982,16 +4976,16 @@ class _DashboardState extends State<Dashboard> {
 
     // controller.initData();
     _setIsloading();
-    //  refreshData();
+    // refreshData();
 
     // Api().checkLogin();
     // Add a listener to the scroll controller
-    _scrollController.addListener(_scrollListener);
+
     // controller.loadMenuShowInMain();
     // tabbController.checkuserinfo();
-    if (controllerTracking.bagikanlokasi.value == "aktif") {
-      controllerTracking.absenSelfie();
-    }
+    // if (controllerTracking.bagikanlokasi.value == "aktif") {
+    //   controllerTracking.absenSelfie();
+    // }
 
     // chatController.getCount();
 
@@ -5018,23 +5012,25 @@ class _DashboardState extends State<Dashboard> {
     // });
     controller.versionCheck();
     _checkversion();
-    // absenControllre.getPosisition();
-    // absenControllre.getPlaceCoordinate();
-    print("intervallll ${AppData.informasiUser![0].interval.toString()}");
+    // controllerAbsensi.getPosisition();
+    // controllerAbsensi.getPlaceCoordinate();
+    //print("intervallll ${AppData.informasiUser![0].interval.toString()}");
     // _setTime();
     // } else {
     //   final service = FlutterBackgroundService();
     //   service.invoke("stopService");
     //   controller.initData();
     // }
+
+
   }
 
   void _setTime() async {
     Future.delayed(const Duration(milliseconds: 500), () {
-      absenControllre.absenStatus.value = AppData.statusAbsen;
+      controllerAbsensi.absenStatus.value = AppData.statusAbsen;
       authController.signinTime.value = controller.signinTime.value;
       authController.signoutTime.value = controller.signoutTime.value;
-      // absenControllre.absenStatus.value =
+      // controllerAbsensi.absenStatus.value =
       //     controller.dashboardStatusAbsen.value;
     });
   }
@@ -5042,17 +5038,24 @@ class _DashboardState extends State<Dashboard> {
   void _setIsloading() async {
     controller.isLoading.value = true;
     controller.refreshPagesStatus.value = true;
- 
-    // absenControllre.getTimeNow();
+    
+
+    // controllerAbsensi.getTimeNow();
     // controllerBpj.employeDetaiBpjs();
     // controllerAbsensi.employeDetail();
     // controllerAbsensi.userShift();
-    // absenControllre.getPosisition();
-    // absenControllre.getPlaceCoordinate();
+    // controllerAbsensi.getPosisition();
+    // controllerAbsensi.getPlaceCoordinate();
     // controllerPesan.getTimeNow();
 
     controller.initData();
-    
+     Future.delayed(const Duration(milliseconds: 500), () {
+        controllerAbsensi.absenStatus.value = AppData.statusAbsen;
+        authController.signinTime.value = controller.signinTime.value;
+        authController.signoutTime.value = controller.signoutTime.value;
+        // controllerAbsensi.absenStatus.value =
+        //     controller.dashboardStatusAbsen.value;
+      });
 
     await Future.delayed(const Duration(seconds: 3));
 
