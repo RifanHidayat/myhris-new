@@ -125,6 +125,7 @@ class AbsenController extends GetxController {
   var tempNamaStatus1 = "Semua".obs;
   var tempNamaLaporan1 = "Semua".obs;
   var tempNamaTipe1 = "".obs;
+  // var isLocaationLoading = false;
 
   var historyAbsen = <AbsenModel>[].obs;
   var tempHistoryAbsen = <AbsenModel>[].obs;
@@ -202,7 +203,6 @@ class AbsenController extends GetxController {
 
   var coordinate = false.obs;
 
-  
   var isAbsenIstirahat = false.obs;
 
   @override
@@ -326,8 +326,7 @@ class AbsenController extends GetxController {
   }
 
   Future<void> getPlaceCoordinate() async {
-
-   //UtilsAlert.showLoadingIndicator(Get.context!);
+    //UtilsAlert.showLoadingIndicator(Get.context!);
 
     placeCoordinateDropdown.value.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate",
@@ -339,14 +338,10 @@ class AbsenController extends GetxController {
         getPlaceCoordinateOffline();
         //UtilsAlert.koneksiBuruk();
       } else {
-     
-
-
-     
         if (res.statusCode == 200) {
-               placeCoordinate.clear();
+          placeCoordinate.clear();
           coordinate.value = false;
-       
+
           var valueBody = jsonDecode(res.body);
 
           var temporary = valueBody['data'];
@@ -407,22 +402,18 @@ class AbsenController extends GetxController {
         } else {
           print("Place cordinate !=200" + res.body.toString());
           print(res.body.toString());
-            //  Get.back();
+          //  Get.back();
         }
-
-
-
       }
     }).catchError((error) {
       coordinate.value = true;
-     // Get.back();
+      // Get.back();
       getPlaceCoordinateOffline();
     });
   }
 
-    Future<void> getPlaceCoordinate2() async {
- 
-     UtilsAlert.showLoadingIndicator(Get.context!);
+  Future<void> getPlaceCoordinate2() async {
+    UtilsAlert.showLoadingIndicator(Get.context!);
 
     placeCoordinateDropdown.value.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate",
@@ -434,12 +425,8 @@ class AbsenController extends GetxController {
         getPlaceCoordinateOffline();
         //UtilsAlert.koneksiBuruk();
       } else {
-     
-
-
-     
         if (res.statusCode == 200) {
-              placeCoordinate.clear();
+          placeCoordinate.clear();
           coordinate.value = false;
           print("Place cordinate 200" + res.body.toString());
           var valueBody = jsonDecode(res.body);
@@ -456,8 +443,6 @@ class AbsenController extends GetxController {
             });
           }
           SqliteDatabaseHelper().insertTipeLokasi(tipeLokasi);
-
-          
 
           print("controller.wfhlokasi ${controller.wfhlokasi.value}");
 
@@ -497,20 +482,16 @@ class AbsenController extends GetxController {
           placeCoordinate.refresh();
           Get.back();
         } else {
-             Get.back();
+          Get.back();
           print("Place cordinate !=200" + res.body.toString());
           print(res.body.toString());
         }
-
-
-
       }
     }).catchError((error) {
       coordinate.value = true;
       getPlaceCoordinateOffline();
     });
   }
-
 
   void getPlaceCoordinateOffline() async {
     var body = await SqliteDatabaseHelper().getTipeLokasi();
@@ -556,7 +537,7 @@ class AbsenController extends GetxController {
   // }
 
   Future<void> getPlaceCoordinate1() async {
-   // UtilsAlert.showLoadingIndicator(Get.context!);
+    // UtilsAlert.showLoadingIndicator(Get.context!);
     var connect = Api.connectionApi("get", {}, "places_coordinate",
         params: "&id=${AppData.informasiUser![0].em_id}");
 
@@ -564,15 +545,15 @@ class AbsenController extends GetxController {
       if (res == false) {
         print("error");
         coordinate.value = true;
-       // Get.back();
+        // Get.back();
         // UtilsAlert.koneksiBuruk();
       } else {
-         Get.back();
+        // Get.back();
         print("sukses");
         coordinate.value = false;
       }
     }).catchError((error) {
-     //  Get.back();
+      //  Get.back();
       coordinate.value = true;
     });
     ;
@@ -2186,7 +2167,7 @@ class AbsenController extends GetxController {
     }
   }
 
-    void kirimDataAbsensiIstirahat({typewfh}) async {
+  void kirimDataAbsensiIstirahat({typewfh}) async {
 //// untuk cek absensi
     print("view last absen user 3");
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
@@ -2421,13 +2402,13 @@ class AbsenController extends GetxController {
                     "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
               }
 
-                 Get.to(BerhasilAbsensi(
+              Get.to(BerhasilAbsensi(
                 dataBerhasil: [
                   titleAbsen.value,
                   timeString.value,
                   typeAbsen.value,
                   intervalControl.value,
-             dateNoww(DateTime.now())
+                  dateNoww(DateTime.now())
                 ],
               ));
 
@@ -2438,7 +2419,7 @@ class AbsenController extends GetxController {
               //     typeAbsen.value,
               //     intervalControl.value
               //   ],
-             // ));
+              // ));
             } else {
               isLoaingAbsensi.value = false;
               Get.back();
@@ -2558,7 +2539,6 @@ class AbsenController extends GetxController {
 
     //  }
   }
-
 
   var date = DateTime.now().obs;
   var beginPayroll = DateFormat('MMMM').format(DateTime.now()).obs;

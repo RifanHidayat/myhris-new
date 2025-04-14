@@ -132,35 +132,26 @@ class PesanController extends GetxController {
   }
 
   void loadApproveInfo() {
-
-    
-
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "load_approve_info"
         : "load_approve_info_multi";
-          
+
     statusScreenInfoApproval.value = true;
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
-   var  body = {
+    var body = {
       'em_id': getEmid,
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
       'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
     };
 
-    UtilsAlert.showToast(body.toString());
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) async {
-      UtilsAlert.showToast("masuk sini");
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-       
 
         if (valueBody['status'] == true) {
-          
-          
-          
           jumlahApproveCuti.value = valueBody['jumlah_cuti'];
           jumlahApproveLembur.value = valueBody['jumlah_lembur'];
           jumlahApproveTidakHadir.value = valueBody['jumlah_tidak_hadir'];
@@ -171,8 +162,6 @@ class PesanController extends GetxController {
           jumlahCheckin.value = valueBody['jumlah_checkin'];
           jumlahApproveWfh.value = valueBody['jumlah_wfh'];
           jumlahApproveKasbon.value = valueBody['jumlah_kasbon'];
-
-          UtilsAlert.showToast(valueBody['jumlah_kasbon']);
 
           jumlahPersetujuan.value = jumlahApproveCuti.value +
               jumlahApproveLembur.value +
@@ -204,26 +193,20 @@ class PesanController extends GetxController {
           UtilsAlert.showToast(
               "Data periode ${bulanSelectedSearchHistory.value}-${tahunSelectedSearchHistory.value} belum tersedia, harap hubungi HRD");
         }
-      }else{
-        
-        
-      }
+      } else {}
     });
   }
 
   void loadApproveHistory() {
-
     var url = valuePolaPersetujuan.value == "1"
         ? "load_approve_history"
         : "load_approve_history_multi";
-         //   UtilsAlert.showToast(AppData.informasiUser!.length);
+    //   UtilsAlert.showToast(AppData.informasiUser!.length);
     riwayatPersetujuan.value.clear();
     allRiwayatPersetujuan.value.clear();
 
-    
-    var dataUser = AppData.informasiUser;          
+    var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
-  
 
     Map<String, dynamic> body = {
       'em_id': getEmid,

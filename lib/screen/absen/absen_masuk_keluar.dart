@@ -645,24 +645,38 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                           const SizedBox(
                             height: 10,
                           ),
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color:Constanst.infoLight1
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.info),
-                                TextLabell(
-                                    text:
-                                        "Lokasi tidak tersedia! ,coba lakukan refresh pada bagian atas aplikasi "),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          Obx(() {
+                            return controller
+                                        .placeCoordinateDropdown.value.length >
+                                    0
+                                ? SizedBox()
+                                : Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Constanst.infoLight1),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.7,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 10,
+                                            child: Icon(Icons.info),
+                                          ),
+                                          SizedBox(
+                                            width: 8,
+                                          ),
+                                          Expanded(
+                                            flex: 90,
+                                            child: TextLabell(
+                                                text:
+                                                    "Lokasi tidak tersedia! ,coba lakukan refresh pada bagian atas aplikasi "),
+                                          )
+                                        ],
+                                      ),
+                                    ));
+                          }),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

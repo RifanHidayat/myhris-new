@@ -219,7 +219,6 @@ class DashboardController extends GetxController {
 
     DateTime startDate = DateTime.now();
 
-   
     dataDashboard();
 
     // updateWorkTime();
@@ -317,19 +316,16 @@ class DashboardController extends GetxController {
       await prefs.setString("", element['em_id'].toString());
 
       print("interval tracking ${element['interval_tracking'].toString()}");
-  
     }
-    
+
     AppData.informasiUser = getData;
-         checkAbsenUser(
-        DateFormat('yyyy-MM-dd').format(DateTime.now()),AppData.informasiUser![0].em_id);
-   //pesanController.loadApproveInfo();
+    checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        AppData.informasiUser![0].em_id);
+    //pesanController.loadApproveInfo();
 
     getUserInfo();
+    pesanController.loadApproveInfo();
 
-    
-
-   
     controllerTracking.isLoadingDetailTracking.value = false;
   }
 
@@ -711,7 +707,6 @@ class DashboardController extends GetxController {
           pesanController.valuePolaPersetujuan.value = statusPersetujuan;
         }
 
-   
         for (var element in aktifitas) {
           var getList = element['createdDate'].split('T');
           var tanggal = getList[0];
@@ -725,7 +720,6 @@ class DashboardController extends GetxController {
           };
           controllerAktifitas.listAktifitas.value.add(data);
         }
-     
       }
     } catch (e) {
       UtilsAlert.showToast(e.toString());
@@ -994,9 +988,6 @@ class DashboardController extends GetxController {
           //   // controllerAbsensi.absenStatus.value = true;
           // }
 
-         
-         
-         
           if (wfh.isEmpty) {
             if (data.isEmpty) {
               AppData.statusAbsen = false;
