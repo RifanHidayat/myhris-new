@@ -121,12 +121,19 @@ class DetailAbsen extends StatelessWidget {
                   // longlatMasuk == "" ? const SizedBox() : 
                   descMasuk(),
                   const SizedBox(height: 16),
-                  // longlatKeluar == "" ? const SizedBox() : 
-                  descKeluar(),
+                  longlatKeluar == "" ? const SizedBox() : descKeluar(),
                   const SizedBox(height: 16),
-                  AppData.informasiUser![0].tipeAbsen.toString()=="3"? descKeluarRest():SizedBox(),
+                  AppData.informasiUser![0].tipeAbsen.toString() == "3"
+                      ? breakoutAddr == '00:00:00' || breakoutAddr == null
+                          ? const SizedBox()
+                          : descKeluarRest()
+                      : SizedBox(),
                   const SizedBox(height: 16),
-                 AppData.informasiUser![0].tipeAbsen.toString()=="3"? descMasukRest():SizedBox(),
+                  AppData.informasiUser![0].tipeAbsen.toString() == "3"
+                      ? breakinAddr == '00:00:00' || breakinAddr == null
+                          ? const SizedBox()
+                          : descMasukRest()
+                      : const SizedBox(),
                   const SizedBox(height: 16),
                 ],
               ),
