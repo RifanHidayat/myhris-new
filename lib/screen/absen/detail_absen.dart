@@ -30,6 +30,12 @@ class DetailAbsen extends StatelessWidget {
     var longlatKeluar = status == false
         ? absenSelected![0].signout_longlat
         : absenSelected![0]['signout_longlat'];
+    var breakinAddr = status == false
+        ? absenSelected![0].breakinTime
+        : absenSelected![0]['breakin_time'];
+    var breakoutAddr = status == false
+        ? absenSelected![0].breakoutTime
+        : absenSelected![0]['breakout_time'];
     var getFullName =
         status == false ? "" : absenSelected![0]['full_name'] ?? "";
     var namaKaryawan = fullName != "" ? fullName : "$getFullName";
@@ -121,12 +127,19 @@ class DetailAbsen extends StatelessWidget {
                   // longlatMasuk == "" ? const SizedBox() : 
                   descMasuk(),
                   const SizedBox(height: 16),
-                  // longlatKeluar == "" ? const SizedBox() : 
-                  descKeluar(),
+                  longlatKeluar == "" ? const SizedBox() : descKeluar(),
                   const SizedBox(height: 16),
-                  AppData.informasiUser![0].tipeAbsen.toString()=="3"? descKeluarRest():SizedBox(),
+                  AppData.informasiUser![0].tipeAbsen.toString() == "3"
+                      ? breakoutAddr == '00:00:00' || breakoutAddr == null
+                          ? const SizedBox()
+                          : descKeluarRest()
+                      : SizedBox(),
                   const SizedBox(height: 16),
-                 AppData.informasiUser![0].tipeAbsen.toString()=="3"? descMasukRest():SizedBox(),
+                  AppData.informasiUser![0].tipeAbsen.toString() == "3"
+                      ? breakinAddr == '00:00:00' || breakinAddr == null
+                          ? const SizedBox()
+                          : descMasukRest()
+                      : const SizedBox(),
                   const SizedBox(height: 16),
                 ],
               ),
