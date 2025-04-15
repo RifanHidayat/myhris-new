@@ -655,8 +655,8 @@ class DashboardController extends GetxController {
 
   Future<void> dataDashboard() async {
     var dataUser = AppData.informasiUser;
-    var getEmid = dataUser![0].em_id;
-    var desId = dataUser![0].des_id;
+    // var getEmid = dataUser![0].em_id;
+    // var desId = dataUser![0].des_id;
     controllerAktifitas.listAktifitas.clear();
 
     try {
@@ -2110,6 +2110,7 @@ class DashboardController extends GetxController {
           await prefs.setString("", element['em_id'].toString());
 
           print("interval tracking ${element['interval_tracking'].toString()}");
+          absenControllre.regType.value=element['reg_type']=='' ||element['reg_type']==null?0:int.parse(element['reg_type'].toString());
         }
         AppData.informasiUser = getData;
 

@@ -31,6 +31,8 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
 
   @override
   void initState() {
+        controller.loadAllEmployeeDelegasi();
+       
     print(controller.viewTugasLuar.value);
     if (widget.dataForm![1] == true) {
       print("nomor ajuan ${widget.dataForm![0]['nomor_ajuan']}");
@@ -53,7 +55,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
         controller.sampaiJam.value.text = hasilSampaijam;
         controller.catatan.value.text = widget.dataForm![0]['uraian'];
       } else {
-        controller.selectedDropdownFormTugasLuarTipe.value = "Dinas Luar";
+       
         controller.screenTanggalSelected.value = false;
         controller.dariTanggal.value.text = widget.dataForm![0]['start_date'];
         controller.sampaiTanggal.value.text = widget.dataForm![0]['end_date'];
@@ -66,6 +68,15 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
         }
         controller.tanggalSelectedEdit.value = getDummy;
       }
+    }else{
+      if (controller.viewTugasLuar.value) {
+            controller.selectedDropdownFormTugasLuarTipe.value = "Tugas Luar";
+
+      }else{
+         controller.selectedDropdownFormTugasLuarTipe.value = "Dinas Luar";
+
+      }
+
     }
     super.initState();
   }

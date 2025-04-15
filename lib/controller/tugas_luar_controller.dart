@@ -100,7 +100,7 @@ class TugasLuarController extends GetxController {
   void onInit() {
     getTimeNow();
     // getLoadsysData();
-    // loadTipePengajuan();
+     loadTipePengajuan();
     // loadDataTugasLuar();
     // loadDataDinasLuar();
     // getDepartemen(1, "");

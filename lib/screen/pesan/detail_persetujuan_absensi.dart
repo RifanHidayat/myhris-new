@@ -986,6 +986,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                               visible: DateFormat.Hm().format(
                                       DateFormat("HH:mm:ss").parse(
                                           controller.detailData[0]
+                                              ['breakout_time']==null?"00:00:00":controller.detailData[0]
                                               ['breakout_time'])) !=
                                   "00:00",
                               child: Expanded(
@@ -1004,6 +1005,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                                       DateFormat.Hm().format(
                                           DateFormat("HH:mm:ss")
                                               .parse(controller.detailData[0]
+                                                  ['breakout_time']==null?"00:00:00":controller.detailData[0]
                                                   ['breakout_time'])),
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgPrimary,
@@ -1044,6 +1046,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                               visible: DateFormat.Hm().format(
                                       DateFormat("HH:mm:ss").parse(
                                           controller.detailData[0]
+                                              ['breakin_time']==null?"00:00:00":controller.detailData[0]
                                               ['breakin_time'])) !=
                                   "00:00",
                               child: Expanded(
@@ -1062,6 +1065,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                                       DateFormat.Hm().format(
                                           DateFormat("HH:mm:ss")
                                               .parse(controller.detailData[0]
+                                                  ['breakin_time']==null?"00:00:00":controller.detailData[0]
                                                   ['breakin_time'])),
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgPrimary,
