@@ -30,6 +30,12 @@ class DetailAbsen extends StatelessWidget {
     var longlatKeluar = status == false
         ? absenSelected![0].signout_longlat
         : absenSelected![0]['signout_longlat'];
+    var breakinAddr = status == false
+        ? absenSelected![0].breakinTime
+        : absenSelected![0]['breakin_time'];
+    var breakoutAddr = status == false
+        ? absenSelected![0].breakoutTime
+        : absenSelected![0]['breakout_time'];
     var getFullName =
         status == false ? "" : absenSelected![0]['full_name'] ?? "";
     var namaKaryawan = fullName != "" ? fullName : "$getFullName";
