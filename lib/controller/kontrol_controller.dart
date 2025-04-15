@@ -51,7 +51,7 @@ class KontrolController extends GetxController {
     super.onReady();
     print("jalan kontroller kontrol");
     getTimeNow();
-    getDepartemen(1, "");
+    // getDepartemen(1, "");
   }
 
   void getTimeNow() {

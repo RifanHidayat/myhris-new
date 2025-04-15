@@ -99,12 +99,12 @@ class TugasLuarController extends GetxController {
   @override
   void onInit() {
     getTimeNow();
-    getLoadsysData();
-    loadTipePengajuan();
-    loadDataTugasLuar();
-    loadDataDinasLuar();
-    getDepartemen(1, "");
-    loadAllEmployeeDelegasi();
+    // getLoadsysData();
+    // loadTipePengajuan();
+    // loadDataTugasLuar();
+    // loadDataDinasLuar();
+    // getDepartemen(1, "");
+    // loadAllEmployeeDelegasi();
     super.onInit();
   }
 
@@ -965,6 +965,9 @@ class TugasLuarController extends GetxController {
               //       tokens: item['token_notif']);
               // }
             }
+
+            // f,pdfkm
+            // sdff
 
             Get.offAll(BerhasilPengajuan(
               dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],

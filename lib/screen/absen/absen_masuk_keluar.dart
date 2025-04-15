@@ -18,6 +18,7 @@ import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -644,6 +645,38 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                           const SizedBox(
                             height: 10,
                           ),
+                          Obx(() {
+                            return controller
+                                        .placeCoordinateDropdown.value.length >
+                                    0
+                                ? SizedBox()
+                                : Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Constanst.infoLight1),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.7,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 10,
+                                            child: Icon(Icons.info),
+                                          ),
+                                          SizedBox(
+                                            width: 8,
+                                          ),
+                                          Expanded(
+                                            flex: 90,
+                                            child: TextLabell(
+                                                text:
+                                                    "Lokasi tidak tersedia! ,coba lakukan refresh pada bagian atas aplikasi "),
+                                          )
+                                        ],
+                                      ),
+                                    ));
+                          }),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

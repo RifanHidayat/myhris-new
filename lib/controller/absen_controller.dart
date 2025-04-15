@@ -125,6 +125,7 @@ class AbsenController extends GetxController {
   var tempNamaStatus1 = "Semua".obs;
   var tempNamaLaporan1 = "Semua".obs;
   var tempNamaTipe1 = "".obs;
+  // var isLocaationLoading = false;
 
   var historyAbsen = <AbsenModel>[].obs;
   var tempHistoryAbsen = <AbsenModel>[].obs;
@@ -202,20 +203,19 @@ class AbsenController extends GetxController {
 
   var coordinate = false.obs;
 
-  
   var isAbsenIstirahat = false.obs;
 
   @override
   void onReady() async {
-    getTimeNow();
-    getLoadsysData();
-    loadHistoryAbsenUser();
-    getDepartemen(1, "");
+    // getTimeNow();
+    // getLoadsysData();
+    // loadHistoryAbsenUser();
+    // getDepartemen(1, "");
     filterLokasiKoordinate.value = "Lokasi";
     selectedViewFilterAbsen.value = 0;
     pilihTanggalTelatAbsen.value = DateTime.now();
     super.onReady();
-    userShift();
+    // userShift();
   }
 
   void getLoadsysData() {
@@ -326,7 +326,7 @@ class AbsenController extends GetxController {
   }
 
   Future<void> getPlaceCoordinate() async {
-    // placeCoordinate.clear();
+    //UtilsAlert.showLoadingIndicator(Get.context!);
 
     placeCoordinateDropdown.value.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate",
@@ -339,8 +339,9 @@ class AbsenController extends GetxController {
         //UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
+          placeCoordinate.clear();
           coordinate.value = false;
-          print("Place cordinate 200" + res.body.toString());
+
           var valueBody = jsonDecode(res.body);
 
           var temporary = valueBody['data'];
@@ -397,7 +398,91 @@ class AbsenController extends GetxController {
           placeCoordinate.value = filter;
           placeCoordinate.refresh();
           placeCoordinate.refresh();
+          //Get.back();
         } else {
+          print("Place cordinate !=200" + res.body.toString());
+          print(res.body.toString());
+          //  Get.back();
+        }
+      }
+    }).catchError((error) {
+      coordinate.value = true;
+      // Get.back();
+      getPlaceCoordinateOffline();
+    });
+  }
+
+  Future<void> getPlaceCoordinate2() async {
+    UtilsAlert.showLoadingIndicator(Get.context!);
+
+    placeCoordinateDropdown.value.clear();
+    var connect = Api.connectionApi("get", {}, "places_coordinate",
+        params: "&id=${AppData.informasiUser![0].em_id}");
+    connect.then((dynamic res) {
+      if (res == false) {
+        print("errror");
+        coordinate.value = true;
+        getPlaceCoordinateOffline();
+        //UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          placeCoordinate.clear();
+          coordinate.value = false;
+          print("Place cordinate 200" + res.body.toString());
+          var valueBody = jsonDecode(res.body);
+
+          var temporary = valueBody['data'];
+
+          List<Map<String, dynamic>> tipeLokasi = [];
+          for (var element in temporary) {
+            tipeLokasi.add({
+              'id': element['id'],
+              'place': element['place'],
+              'place_longlat': element['place_longlat'],
+              'place_radius': element['place_radius'],
+            });
+          }
+          SqliteDatabaseHelper().insertTipeLokasi(tipeLokasi);
+
+          print("controller.wfhlokasi ${controller.wfhlokasi.value}");
+
+          if (typeAbsen.value == 1) {
+            selectedType.value = valueBody['data'][0]['place'];
+          } else {
+            if (controller.wfhlokasi.value == true) {
+              selectedType.value = 'WFH';
+            } else {
+              selectedType.value = valueBody['data'][0]['place'];
+            }
+          }
+
+          for (var element in valueBody['data']) {
+            // placeCoordinateDropdown.value.add(element['place']);
+            if (typeAbsen.value == 1) {
+              placeCoordinateDropdown.value.add(element['place']);
+            } else {
+              if (controller.wfhlokasi.value == true) {
+                placeCoordinateDropdown.value.add('WFH');
+              } else {
+                placeCoordinateDropdown.value.add(element['place']);
+              }
+            }
+          }
+          List filter = [];
+          for (var element in valueBody['data']) {
+            if (element['isFilterView'] == 1) {
+              filter.add(element);
+            }
+          }
+
+          print("data ${placeCoordinate.value}");
+          // placeCoordinate.clear();
+          placeCoordinate.value = filter;
+          placeCoordinate.refresh();
+          placeCoordinate.refresh();
+          Get.back();
+        } else {
+          Get.back();
           print("Place cordinate !=200" + res.body.toString());
           print(res.body.toString());
         }
@@ -452,6 +537,7 @@ class AbsenController extends GetxController {
   // }
 
   Future<void> getPlaceCoordinate1() async {
+    // UtilsAlert.showLoadingIndicator(Get.context!);
     var connect = Api.connectionApi("get", {}, "places_coordinate",
         params: "&id=${AppData.informasiUser![0].em_id}");
 
@@ -459,12 +545,15 @@ class AbsenController extends GetxController {
       if (res == false) {
         print("error");
         coordinate.value = true;
+        // Get.back();
         // UtilsAlert.koneksiBuruk();
       } else {
+        // Get.back();
         print("sukses");
         coordinate.value = false;
       }
     }).catchError((error) {
+      //  Get.back();
       coordinate.value = true;
     });
     ;
@@ -876,7 +965,7 @@ class AbsenController extends GetxController {
 
   Future<void> refreshPage() async {
     getPosisition();
-    getPlaceCoordinate1();
+    getPlaceCoordinate2();
     mapController?.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: LatLng(latUser.value, langUser.value), zoom: 20)
         //17 is new zoom level
@@ -1451,124 +1540,112 @@ class AbsenController extends GetxController {
     //   UtilsAlert.showToast("Silahkan Absen");
     // } else {
 
-    if (Platform.isAndroid) {
-      // TrustLocation.start(1);
-      getCheckMock();
-      if (!mockLocation.value) {
-        var statusPosisi = await validasiRadius();
-        if (statusPosisi == true) {
-          var latLangAbsen = "${latUser.value},${langUser.value}";
-          var dataUser = AppData.informasiUser;
-          var getEmpId = dataUser![0].em_id;
-          var getSettingAppSaveImageAbsen = "1";
-          var validasiGambar =
-              getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
+    try {
+      if (Platform.isAndroid) {
+        // TrustLocation.start(1);
+        getCheckMock();
+        if (!mockLocation.value) {
+          var statusPosisi = await validasiRadius();
+          if (statusPosisi == true) {
+            var latLangAbsen = "${latUser.value},${langUser.value}";
+            var dataUser = AppData.informasiUser;
+            var getEmpId = dataUser![0].em_id;
+            var getSettingAppSaveImageAbsen = "1";
+            var validasiGambar =
+                getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
 
-          var getFullName = "${dataUser![0].full_name}";
-          var convertTanggalBikinPengajuan =
-              // status == false
-              //     ? Constanst.convertDateSimpan(
-              //         pilihTanggalTelatAbsen.value.toString())
-              //     :
-              pilihTanggalTelatAbsen.value.toString();
-          var getEmid = "${dataUser![0].em_id}";
-          var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
-          var typeNotifFcm = "Pengajuan WFH";
-          var now = DateTime.now();
-          var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
-          var getNomorAjuanTerakhir = nomorAjuan;
+            var getFullName = "${dataUser![0].full_name}";
+            var convertTanggalBikinPengajuan =
+                // status == false
+                //     ? Constanst.convertDateSimpan(
+                //         pilihTanggalTelatAbsen.value.toString())
+                //     :
+                pilihTanggalTelatAbsen.value.toString();
+            var getEmid = "${dataUser![0].em_id}";
+            var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
+            var typeNotifFcm = "Pengajuan WFH";
+            var now = DateTime.now();
+            var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
+            var getNomorAjuanTerakhir = nomorAjuan;
 
-          if (typeAbsen.value == 1 && typewfh == "wfh") {
-            for (var item in globalCt.konfirmasiAtasan) {
-              print("Token notif ${item['token_notif']}");
-              var pesan;
-              if (item['em_gender'] == "PRIA") {
-                pesan =
-                    "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
-              } else {
-                pesan =
-                    "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
-              }
+            if (typeAbsen.value == 1 && typewfh == "wfh") {
+              for (var item in globalCt.konfirmasiAtasan) {
+                print("Token notif ${item['token_notif']}");
+                var pesan;
+                if (item['em_gender'] == "PRIA") {
+                  pesan =
+                      "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
+                } else {
+                  pesan =
+                      "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
+                }
 
-              kirimNotifikasiToDelegasi1(
-                  getFullName,
-                  convertTanggalBikinPengajuan,
-                  item['em_id'],
-                  '',
-                  stringTanggal,
-                  typeNotifFcm,
-                  pesan,
-                  'Approval WFH');
+                kirimNotifikasiToDelegasi1(
+                    getFullName,
+                    convertTanggalBikinPengajuan,
+                    item['em_id'],
+                    '',
+                    stringTanggal,
+                    typeNotifFcm,
+                    pesan,
+                    'Approval WFH');
 
-              if (item['token_notif'] != null) {
-                globalCt.kirimNotifikasiFcm(
-                  title: typeNotifFcm,
-                  message: pesan,
-                  tokens: item['token_notif'],
-                );
+                if (item['token_notif'] != null) {
+                  globalCt.kirimNotifikasiFcm(
+                    title: typeNotifFcm,
+                    message: pesan,
+                    tokens: item['token_notif'],
+                  );
+                }
               }
             }
-          }
-          if (typeAbsen.value == 1) {
-            // absenStatus.value = true;
-            AppData.statusAbsen = true;
-            AppData.dateLastAbsen = tanggalUserFoto.value;
-          } else {
-            // absenStatus.value = false;
-            AppData.statusAbsen = false;
-            AppData.dateLastAbsen = tanggalUserFoto.value;
-          }
-          Map<String, dynamic> body = typewfh == "wfh"
-              ? {
-                  'em_id': getEmpId,
-                  'date': tanggalUserFoto.value,
-                  'uraian': deskripsiAbsen.value.text,
-                  'place': selectedType.value,
-                  'lokasi': alamatUserFoto.value,
-                  'latLang': latLangAbsen,
+            if (typeAbsen.value == 1) {
+              // absenStatus.value = true;
+              AppData.statusAbsen = true;
+              AppData.dateLastAbsen = tanggalUserFoto.value;
+            } else {
+              // absenStatus.value = false;
+              AppData.statusAbsen = false;
+              AppData.dateLastAbsen = tanggalUserFoto.value;
+            }
+            Map<String, dynamic> body = typewfh == "wfh"
+                ? {
+                    'em_id': getEmpId,
+                    'date': tanggalUserFoto.value,
+                    'uraian': deskripsiAbsen.value.text,
+                    'place': selectedType.value,
+                    'lokasi': alamatUserFoto.value,
+                    'latLang': latLangAbsen,
+                    'start_date': startDate,
+                    'end_date': endDate,
+                    'start_time': startTime,
+                    'end_time': endTime,
+                  }
+                : {
+                    'em_id': getEmpId,
+                    'tanggal_absen': tanggalUserFoto.value,
+                    'waktu': timeString.value,
+                    'reg_type': regType.value,
+                    'lokasi': alamatUserFoto.value,
+                    'latLang': latLangAbsen,
+                    'catatan': deskripsiAbsen.value.text,
+                    'typeAbsen': typeAbsen.value,
+                    'place': selectedType.value,
+                    'kategori': "1",
+                    'gambar': base64fotoUser.value,
+                    'start_date': startDate,
+                    'end_date': endDate,
+                    'start_time': startTime,
+                    'end_time': endTime,
+                  };
+            print("parameter wfh ${body}");
+            isLoaingAbsensi.value = true;
+            var connect = await ApiRequest(
+                    url: typewfh == "wfh" ? "wfh" : "kirimAbsen", body: body)
+                .post();
 
-                  // 'waktu': timeString.value,
-                  // // 'gambar': validasiGambar,
-                  // 'reg_type': regType.value,
-                  // 'gambar': base64fotoUser.value,
-                  // 'lokasi': alamatUserFoto.value,
-                  // 'latLang': latLangAbsen,
-                  // 'typeAbsen': typeAbsen.value,
-                  // 'kategori': "1"
-
-                  'start_date': startDate,
-                  'end_date': endDate,
-                  'start_time': startTime,
-                  'end_time': endTime,
-                }
-              : {
-                  'em_id': getEmpId,
-                  'tanggal_absen': tanggalUserFoto.value,
-                  'waktu': timeString.value,
-                  // 'gambar': validasiGambar,
-                  'reg_type': regType.value,
-
-                  'lokasi': alamatUserFoto.value,
-                  'latLang': latLangAbsen,
-                  'catatan': deskripsiAbsen.value.text,
-                  'typeAbsen': typeAbsen.value,
-                  'place': selectedType.value,
-                  'kategori': "1",
-                  'gambar': base64fotoUser.value,
-
-                  'start_date': startDate,
-                  'end_date': endDate,
-                  'start_time': startTime,
-                  'end_time': endTime,
-                };
-          print("parameter wfh ${body}");
-          isLoaingAbsensi.value = true;
-          var connect = Api.connectionApi(
-              "post", body, typewfh == "wfh" ? "wfh" : "kirimAbsen");
-          connect.then((dynamic res) async {
-            print("respon wfh ${res.statusCode}");
-            if (res.statusCode == 200) {
-              var valueBody = jsonDecode(res.body);
+            if (connect.statusCode == 200) {
+              var valueBody = jsonDecode(connect.body);
               print("respon wfh ${valueBody}");
               // for (var element in sysData.value) {
               //   if (element['kode'] == '006') {
@@ -1588,11 +1665,6 @@ class AbsenController extends GetxController {
 
               if (AppData.informasiUser![0].isViewTracking.toString() == '0') {
                 controllerTracking.bagikanlokasi.value = "aktif";
-
-                // final service = FlutterBackgroundService();
-                // FlutterBackgroundService().invoke("setAsBackground");
-
-                // service.startService();
                 controllerTracking.updateStatus('1');
                 controllerTracking.isTrackingLokasi.value = true;
                 // controllerTFFracking.detailTracking(emIdEmployee: '');
@@ -1602,13 +1674,6 @@ class AbsenController extends GetxController {
 
               if (typeAbsen.value == 2) {
                 controllerTracking.bagikanlokasi.value = "tidak aktif";
-                // await LocationDao().clear();
-                // await _getLocations();
-                // await BackgroundLocationTrackerManager.stopTracking();
-                // final service = FlutterBackgroundService();
-                // FlutterBackgroundService().invoke("setAsBackground");
-
-                // service.invoke("stopService");
                 controllerTracking.updateStatus('0');
                 controllerTracking.isTrackingLokasi.value = false;
                 print(
@@ -1627,76 +1692,64 @@ class AbsenController extends GetxController {
             } else {
               isLoaingAbsensi.value = false;
               Get.back();
-              UtilsAlert.koneksiBuruk();
-              // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
-              //     positiveBtnPressed: () {
-              //   // kirimDataAbsensiOffline(typewfh: typewfh);
-              //   Get.back();
-              //   widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
-              // });
-              //error
+
+              UtilsAlert.showToast(
+                  "Terjadi kesalahan, silakan coba melakukan absen ulang.");
+
+              //  UtilsAlert.koneksiBuruk();
             }
-          });
-          // .catchError((error) {
-          //   isLoaingAbsensi.value = false;
-          //   Get.back();
-          //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
-          //       positiveBtnPressed: () {
-          //     // kirimDataAbsensiOffline(typewfh: typewfh);
-          //     Get.back();
-          //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
-          //   });
-          // });
-        }
-      } else {
-        isLoaingAbsensi.value = false;
-        UtilsAlert.showToast("Periksa GPS anda");
-      }
-    } else if (Platform.isIOS) {
-      var statusPosisi = await validasiRadius();
-      if (statusPosisi == true) {
-        var latLangAbsen = "${latUser.value},${langUser.value}";
-        var dataUser = AppData.informasiUser;
-        var getEmpId = dataUser![0].em_id;
-        // var getSettingAppSaveImageAbsen =
-        //     settingAppInfo.value![0].saveimage_attend;
-        var getSettingAppSaveImageAbsen = "1";
-        var validasiGambar =
-            getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
-        if (typeAbsen.value == 1) {
-          absenStatus.value = true;
-          AppData.statusAbsen = true;
-          AppData.dateLastAbsen = tanggalUserFoto.value;
+          }
         } else {
-          absenStatus.value = false;
-          AppData.statusAbsen = false;
-          AppData.dateLastAbsen = tanggalUserFoto.value;
+          isLoaingAbsensi.value = false;
+          UtilsAlert.showToast("Periksa GPS anda");
         }
-        Map<String, dynamic> body = {
-          'em_id': getEmpId,
-          'tanggal_absen': tanggalUserFoto.value,
-          'waktu': timeString.value,
-          // 'gambar': validasiGambar,
-          'reg_type': regType.value.toString(),
-          'gambar': base64fotoUser.value,
-          'lokasi': alamatUserFoto.value,
-          'latLang': latLangAbsen,
-          'catatan': deskripsiAbsen.value.text,
-          'typeAbsen': typeAbsen.value,
-          'place': selectedType.value,
-          'kategori': "1",
+      } else if (Platform.isIOS) {
+        var statusPosisi = await validasiRadius();
+        if (statusPosisi == true) {
+          var latLangAbsen = "${latUser.value},${langUser.value}";
+          var dataUser = AppData.informasiUser;
+          var getEmpId = dataUser![0].em_id;
+          // var getSettingAppSaveImageAbsen =
+          //     settingAppInfo.value![0].saveimage_attend;
+          var getSettingAppSaveImageAbsen = "1";
+          var validasiGambar =
+              getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
+          if (typeAbsen.value == 1) {
+            absenStatus.value = true;
+            AppData.statusAbsen = true;
+            AppData.dateLastAbsen = tanggalUserFoto.value;
+          } else {
+            absenStatus.value = false;
+            AppData.statusAbsen = false;
+            AppData.dateLastAbsen = tanggalUserFoto.value;
+          }
+          Map<String, dynamic> body = {
+            'em_id': getEmpId,
+            'tanggal_absen': tanggalUserFoto.value,
+            'waktu': timeString.value,
+            // 'gambar': validasiGambar,
+            'reg_type': regType.value.toString(),
+            'gambar': base64fotoUser.value,
+            'lokasi': alamatUserFoto.value,
+            'latLang': latLangAbsen,
+            'catatan': deskripsiAbsen.value.text,
+            'typeAbsen': typeAbsen.value,
+            'place': selectedType.value,
+            'kategori': "1",
 
-          'start_date': startDate,
-          'end_date': endDate,
-          'start_time': startTime,
-          'end_time': endTime,
-        };
-        isLoaingAbsensi.value = true;
+            'start_date': startDate,
+            'end_date': endDate,
+            'start_time': startTime,
+            'end_time': endTime,
+          };
+          isLoaingAbsensi.value = true;
 
-        var connect = Api.connectionApi("post", body, "kirimAbsen");
-        connect.then((dynamic res) {
-          if (res.statusCode == 200) {
-            var valueBody = jsonDecode(res.body);
+          var connect = await ApiRequest(
+                  url: typewfh == "wfh" ? "wfh" : "kirimAbsen", body: body)
+              .post();
+
+          if (connect.statusCode == 200) {
+            var valueBody = jsonDecode(connect.body);
             print('ini response kirim');
             for (var element in sysData.value) {
               if (element['kode'] == '006') {
@@ -1720,7 +1773,8 @@ class AbsenController extends GetxController {
           } else {
             isLoaingAbsensi.value = false;
             Get.back();
-            UtilsAlert.koneksiBuruk();
+            UtilsAlert.showToast("Terjadi kesalahan, silakan coba melakukan absen ulang.");
+            // UtilsAlert.koneksiBuruk();
             // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
             //     positiveBtnPressed: () {
             //   // kirimDataAbsensiOffline(typewfh: typewfh);
@@ -1728,18 +1782,61 @@ class AbsenController extends GetxController {
             //   widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
             // });
           }
-        });
-        // .catchError((error) {
-        //   isLoaingAbsensi.value = false;
-        //   Get.back();
-        //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
-        //       positiveBtnPressed: () {
-        //     // kirimDataAbsensiOffline(typewfh: typewfh);
-        //     Get.back();
-        //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
-        //   });
-        // });
+
+          // var connect = Api.connectionApi("post", body, "kirimAbsen");
+          // connect.then((dynamic res) {
+          //   if (res.statusCode == 200) {
+          //     var valueBody = jsonDecode(res.body);
+          //     print('ini response kirim');
+          //     for (var element in sysData.value) {
+          //       if (element['kode'] == '006') {
+          //         intervalControl.value = int.parse(element['name']);
+          //       }
+          //     }
+          //     isLoaingAbsensi.value = false;
+          //     this.intervalControl.refresh();
+
+          //     print("dapat interval ${intervalControl.value}");
+          //     Get.back();
+          //     Get.offAll(BerhasilAbsensi(
+          //       dataBerhasil: [
+          //         titleAbsen.value,
+          //         timeString.value,
+          //         typeAbsen.value,
+          //         intervalControl.value,
+          //         dateNow.value
+          //       ],
+          //     ));
+          //   } else {
+          //     isLoaingAbsensi.value = false;
+          //     Get.back();
+          //     UtilsAlert.koneksiBuruk();
+          //     // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+          //     //     positiveBtnPressed: () {
+          //     //   // kirimDataAbsensiOffline(typewfh: typewfh);
+          //     //   Get.back();
+          //     //   widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+          //     // });
+          //   }
+          // });
+          // .catchError((error) {
+          //   isLoaingAbsensi.value = false;
+          //   Get.back();
+          //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+          //       positiveBtnPressed: () {
+          //     // kirimDataAbsensiOffline(typewfh: typewfh);
+          //     Get.back();
+          //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+          //   });
+          // });
+        }
       }
+    } catch (e) {
+      isLoaingAbsensi.value = false;
+      Get.back();
+      UtilsAlert.showToast(
+          "Periksa kembali koneksi internet Anda, dan coba lakukan absen beberapa saat lagi.");
+          
     }
 
     //  }
@@ -2078,7 +2175,7 @@ class AbsenController extends GetxController {
     }
   }
 
-    void kirimDataAbsensiIstirahat({typewfh}) async {
+  void kirimDataAbsensiIstirahat({typewfh}) async {
 //// untuk cek absensi
     print("view last absen user 3");
     print("tes ${AppData.informasiUser![0].startTime.toString()}");
@@ -2150,124 +2247,127 @@ class AbsenController extends GetxController {
     //   UtilsAlert.showToast("Silahkan Absen");
     // } else {
 
-    if (Platform.isAndroid) {
-      // TrustLocation.start(1);
-      getCheckMock();
-      if (!mockLocation.value) {
-        var statusPosisi = await validasiRadius();
-        if (statusPosisi == true) {
-          var latLangAbsen = "${latUser.value},${langUser.value}";
-          var dataUser = AppData.informasiUser;
-          var getEmpId = dataUser![0].em_id;
-          var getSettingAppSaveImageAbsen = "1";
-          var validasiGambar =
-              getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
+    try {
+      if (Platform.isAndroid) {
+        // TrustLocation.start(1);
+        getCheckMock();
+        if (!mockLocation.value) {
+          var statusPosisi = await validasiRadius();
+          if (statusPosisi == true) {
+            var latLangAbsen = "${latUser.value},${langUser.value}";
+            var dataUser = AppData.informasiUser;
+            var getEmpId = dataUser![0].em_id;
+            var getSettingAppSaveImageAbsen = "1";
+            var validasiGambar =
+                getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
 
-          var getFullName = "${dataUser![0].full_name}";
-          var convertTanggalBikinPengajuan =
-              // status == false
-              //     ? Constanst.convertDateSimpan(
-              //         pilihTanggalTelatAbsen.value.toString())
-              //     :
-              pilihTanggalTelatAbsen.value.toString();
-          var getEmid = "${dataUser![0].em_id}";
-          var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
-          var typeNotifFcm = "Pengajuan WFH";
-          var now = DateTime.now();
-          var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
-          var getNomorAjuanTerakhir = nomorAjuan;
+            var getFullName = "${dataUser![0].full_name}";
+            var convertTanggalBikinPengajuan =
+                // status == false
+                //     ? Constanst.convertDateSimpan(
+                //         pilihTanggalTelatAbsen.value.toString())
+                //     :
+                pilihTanggalTelatAbsen.value.toString();
+            var getEmid = "${dataUser![0].em_id}";
+            var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
+            var typeNotifFcm = "Pengajuan WFH";
+            var now = DateTime.now();
+            var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
+            var getNomorAjuanTerakhir = nomorAjuan;
 
-          if (typeAbsen.value == 1 && typewfh == "wfh") {
-            for (var item in globalCt.konfirmasiAtasan) {
-              print("Token notif ${item['token_notif']}");
-              var pesan;
-              if (item['em_gender'] == "PRIA") {
-                pesan =
-                    "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
-              } else {
-                pesan =
-                    "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
-              }
+            if (typeAbsen.value == 1 && typewfh == "wfh") {
+              for (var item in globalCt.konfirmasiAtasan) {
+                print("Token notif ${item['token_notif']}");
+                var pesan;
+                if (item['em_gender'] == "PRIA") {
+                  pesan =
+                      "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
+                } else {
+                  pesan =
+                      "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
+                }
 
-              kirimNotifikasiToDelegasi1(
-                  getFullName,
-                  convertTanggalBikinPengajuan,
-                  item['em_id'],
-                  '',
-                  stringTanggal,
-                  typeNotifFcm,
-                  pesan,
-                  'Approval WFH');
+                kirimNotifikasiToDelegasi1(
+                    getFullName,
+                    convertTanggalBikinPengajuan,
+                    item['em_id'],
+                    '',
+                    stringTanggal,
+                    typeNotifFcm,
+                    pesan,
+                    'Approval WFH');
 
-              if (item['token_notif'] != null) {
-                globalCt.kirimNotifikasiFcm(
-                  title: typeNotifFcm,
-                  message: pesan,
-                  tokens: item['token_notif'],
-                );
+                if (item['token_notif'] != null) {
+                  globalCt.kirimNotifikasiFcm(
+                    title: typeNotifFcm,
+                    message: pesan,
+                    tokens: item['token_notif'],
+                  );
+                }
               }
             }
-          }
-          if (typeAbsen.value == 1) {
-            absenStatus.value = true;
-            AppData.statusAbsen = true;
-            AppData.dateLastAbsen = tanggalUserFoto.value;
-          } else {
-            absenStatus.value = false;
-            AppData.statusAbsen = false;
-            AppData.dateLastAbsen = tanggalUserFoto.value;
-          }
-          Map<String, dynamic> body = typewfh == "wfh"
-              ? {
-                  'em_id': getEmpId,
-                  'date': tanggalUserFoto.value,
-                  'uraian': deskripsiAbsen.value.text,
-                  'place': selectedType.value,
-                  'lokasi': alamatUserFoto.value,
-                  'latLang': latLangAbsen,
+            if (typeAbsen.value == 1) {
+              absenStatus.value = true;
+              AppData.statusAbsen = true;
+              AppData.dateLastAbsen = tanggalUserFoto.value;
+            } else {
+              absenStatus.value = false;
+              AppData.statusAbsen = false;
+              AppData.dateLastAbsen = tanggalUserFoto.value;
+            }
+            Map<String, dynamic> body = typewfh == "wfh"
+                ? {
+                    'em_id': getEmpId,
+                    'date': tanggalUserFoto.value,
+                    'uraian': deskripsiAbsen.value.text,
+                    'place': selectedType.value,
+                    'lokasi': alamatUserFoto.value,
+                    'latLang': latLangAbsen,
 
-                  // 'waktu': timeString.value,
-                  // // 'gambar': validasiGambar,
-                  // 'reg_type': regType.value,
-                  // 'gambar': base64fotoUser.value,
-                  // 'lokasi': alamatUserFoto.value,
-                  // 'latLang': latLangAbsen,
-                  // 'typeAbsen': typeAbsen.value,
-                  // 'kategori': "1"
+                    // 'waktu': timeString.value,
+                    // // 'gambar': validasiGambar,
+                    // 'reg_type': regType.value,
+                    // 'gambar': base64fotoUser.value,
+                    // 'lokasi': alamatUserFoto.value,
+                    // 'latLang': latLangAbsen,
+                    // 'typeAbsen': typeAbsen.value,
+                    // 'kategori': "1"
 
-                  'start_date': startDate,
-                  'end_date': endDate,
-                  'start_time': startTime,
-                  'end_time': endTime,
-                }
-              : {
-                  'em_id': getEmpId,
-                  'tanggal_absen': tanggalUserFoto.value,
-                  'waktu': timeString.value,
-                  // 'gambar': validasiGambar,
-                  'reg_type': regType.value,
+                    'start_date': startDate,
+                    'end_date': endDate,
+                    'start_time': startTime,
+                    'end_time': endTime,
+                  }
+                : {
+                    'em_id': getEmpId,
+                    'tanggal_absen': tanggalUserFoto.value,
+                    'waktu': timeString.value,
+                    // 'gambar': validasiGambar,
+                    'reg_type': regType.value,
 
-                  'lokasi': alamatUserFoto.value,
-                  'latLang': latLangAbsen,
-                  'catatan': deskripsiAbsen.value.text,
-                  'typeAbsen': typeAbsen.value,
-                  'place': selectedType.value,
-                  'kategori': "1",
-                  'gambar': base64fotoUser.value,
+                    'lokasi': alamatUserFoto.value,
+                    'latLang': latLangAbsen,
+                    'catatan': deskripsiAbsen.value.text,
+                    'typeAbsen': typeAbsen.value,
+                    'place': selectedType.value,
+                    'kategori': "1",
+                    'gambar': base64fotoUser.value,
 
-                  'start_date': startDate,
-                  'end_date': endDate,
-                  'start_time': startTime,
-                  'end_time': endTime,
-                };
-          print("parameter wfh ${body}");
-          isLoaingAbsensi.value = true;
-          var connect = Api.connectionApi(
-              "post", body, typewfh == "wfh" ? "wfh" : "attendance-break");
-          connect.then((dynamic res) async {
-            print("respon attendace break ${res.statusCode}");
-            if (res.statusCode == 200) {
-              var valueBody = jsonDecode(res.body);
+                    'start_date': startDate,
+                    'end_date': endDate,
+                    'start_time': startTime,
+                    'end_time': endTime,
+                  };
+            print("parameter wfh ${body}");
+            isLoaingAbsensi.value = true;
+
+            var connect = await ApiRequest(
+                    url: typewfh == "wfh" ? "wfh" : "attendance-break",
+                    body: body)
+                .post();
+
+            if (connect.statusCode == 200) {
+              var valueBody = jsonDecode(connect.body);
               print("respon wfh ${valueBody}");
               // for (var element in sysData.value) {
               //   if (element['kode'] == '006') {
@@ -2313,13 +2413,13 @@ class AbsenController extends GetxController {
                     "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
               }
 
-                 Get.to(BerhasilAbsensi(
+              Get.to(BerhasilAbsensi(
                 dataBerhasil: [
                   titleAbsen.value,
                   timeString.value,
                   typeAbsen.value,
                   intervalControl.value,
-             dateNoww(DateTime.now())
+                  dateNoww(DateTime.now())
                 ],
               ));
 
@@ -2330,11 +2430,13 @@ class AbsenController extends GetxController {
               //     typeAbsen.value,
               //     intervalControl.value
               //   ],
-             // ));
+              // ));
             } else {
               isLoaingAbsensi.value = false;
               Get.back();
-              UtilsAlert.koneksiBuruk();
+                      UtilsAlert.showToast(
+                  "Terjadi kesalahan, silakan coba melakukan absen ulang.");
+         
               // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
               //     positiveBtnPressed: () {
               //   // kirimDataAbsensiOffline(typewfh: typewfh);
@@ -2343,68 +2445,75 @@ class AbsenController extends GetxController {
               // });
               //error
             }
-          });
-          // .catchError((error) {
-          //   isLoaingAbsensi.value = false;
-          //   Get.back();
-          //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
-          //       positiveBtnPressed: () {
-          //     // kirimDataAbsensiOffline(typewfh: typewfh);
-          //     Get.back();
-          //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
-          //   });
-          // });
-        }
-      } else {
-        isLoaingAbsensi.value = false;
-        UtilsAlert.showToast("Periksa GPS anda");
-      }
-    } else if (Platform.isIOS) {
-      var statusPosisi = await validasiRadius();
-      if (statusPosisi == true) {
-        var latLangAbsen = "${latUser.value},${langUser.value}";
-        var dataUser = AppData.informasiUser;
-        var getEmpId = dataUser![0].em_id;
-        // var getSettingAppSaveImageAbsen =
-        //     settingAppInfo.value![0].saveimage_attend;
-        var getSettingAppSaveImageAbsen = "1";
-        var validasiGambar =
-            getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
-        if (typeAbsen.value == 1) {
-          absenStatus.value = true;
-          AppData.statusAbsen = true;
-          AppData.dateLastAbsen = tanggalUserFoto.value;
+
+            // var connect = Api.connectionApi(
+            //     "post", body, typewfh == "wfh" ? "wfh" : "attendance-break");
+            // connect.then((dynamic res) async {
+            //   print("respon attendace break ${res.statusCode}");
+
+            // });
+            // .catchError((error) {
+            //   isLoaingAbsensi.value = false;
+            //   Get.back();
+            //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+            //       positiveBtnPressed: () {
+            //     // kirimDataAbsensiOffline(typewfh: typewfh);
+            //     Get.back();
+            //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+            //   });
+            // });
+          }
         } else {
-          absenStatus.value = false;
-          AppData.statusAbsen = false;
-          AppData.dateLastAbsen = tanggalUserFoto.value;
+          isLoaingAbsensi.value = false;
+          UtilsAlert.showToast("Periksa GPS anda");
         }
-        Map<String, dynamic> body = {
-          'em_id': getEmpId,
-          'tanggal_absen': tanggalUserFoto.value,
-          'waktu': timeString.value,
-          // 'gambar': validasiGambar,
-          'reg_type': regType.value.toString(),
-          'gambar': base64fotoUser.value,
-          'lokasi': alamatUserFoto.value,
-          'latLang': latLangAbsen,
-          'catatan': deskripsiAbsen.value.text,
-          'typeAbsen': typeAbsen.value,
-          'place': selectedType.value,
-          'kategori': "1",
+      } else if (Platform.isIOS) {
+        var statusPosisi = await validasiRadius();
+        if (statusPosisi == true) {
+          var latLangAbsen = "${latUser.value},${langUser.value}";
+          var dataUser = AppData.informasiUser;
+          var getEmpId = dataUser![0].em_id;
+          // var getSettingAppSaveImageAbsen =
+          //     settingAppInfo.value![0].saveimage_attend;
+          var getSettingAppSaveImageAbsen = "1";
+          var validasiGambar =
+              getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
+          if (typeAbsen.value == 1) {
+            absenStatus.value = true;
+            AppData.statusAbsen = true;
+            AppData.dateLastAbsen = tanggalUserFoto.value;
+          } else {
+            absenStatus.value = false;
+            AppData.statusAbsen = false;
+            AppData.dateLastAbsen = tanggalUserFoto.value;
+          }
+          Map<String, dynamic> body = {
+            'em_id': getEmpId,
+            'tanggal_absen': tanggalUserFoto.value,
+            'waktu': timeString.value,
+            // 'gambar': validasiGambar,
+            'reg_type': regType.value.toString(),
+            'gambar': base64fotoUser.value,
+            'lokasi': alamatUserFoto.value,
+            'latLang': latLangAbsen,
+            'catatan': deskripsiAbsen.value.text,
+            'typeAbsen': typeAbsen.value,
+            'place': selectedType.value,
+            'kategori': "1",
 
-          'start_date': startDate,
-          'end_date': endDate,
-          'start_time': startTime,
-          'end_time': endTime,
-        };
-        isLoaingAbsensi.value = true;
+            'start_date': startDate,
+            'end_date': endDate,
+            'start_time': startTime,
+            'end_time': endTime,
+          };
+          isLoaingAbsensi.value = true;
 
-        var connect = Api.connectionApi("post", body, "attendance-break");
-        connect.then((dynamic res) {
-          if (res.statusCode == 200) {
-            var valueBody = jsonDecode(res.body);
-            print(res.body);
+          var connect =
+              await ApiRequest(url: "attendance-break", body: body).post();
+
+          if (connect.statusCode == 200) {
+            var valueBody = jsonDecode(connect.body);
+
             for (var element in sysData.value) {
               if (element['kode'] == '006') {
                 intervalControl.value = int.parse(element['name']);
@@ -2426,7 +2535,8 @@ class AbsenController extends GetxController {
           } else {
             isLoaingAbsensi.value = false;
             Get.back();
-            UtilsAlert.koneksiBuruk();
+                      UtilsAlert.showToast(
+                  "Terjadi kesalahan, silakan coba melakukan absen ulang.");
             // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
             //     positiveBtnPressed: () {
             //   // kirimDataAbsensiOffline(typewfh: typewfh);
@@ -2434,23 +2544,33 @@ class AbsenController extends GetxController {
             //   widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
             // });
           }
-        });
-        // .catchError((error) {
-        //   isLoaingAbsensi.value = false;
-        //   Get.back();
-        //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
-        //       positiveBtnPressed: () {
-        //     // kirimDataAbsensiOffline(typewfh: typewfh);
-        //     Get.back();
-        //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
-        //   });
-        // });
+
+          // var connect = Api.connectionApi("post", body, "attendance-break");
+          // connect.then((dynamic res) {
+
+          // });
+          // .catchError((error) {
+          //   isLoaingAbsensi.value = false;
+          //   Get.back();
+          //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+          //       positiveBtnPressed: () {
+          //     // kirimDataAbsensiOffline(typewfh: typewfh);
+          //     Get.back();
+          //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+          //   });
+          // });
+        }
       }
+    } catch (e) {
+      isLoaingAbsensi.value = false;
+      Get.back();
+     UtilsAlert.showToast(
+          "Periksa kembali koneksi internet Anda, dan coba lakukan absen beberapa saat lagi.");
+
     }
 
     //  }
   }
-
 
   var date = DateTime.now().obs;
   var beginPayroll = DateFormat('MMMM').format(DateTime.now()).obs;

@@ -94,7 +94,7 @@ class PesanController extends GetxController {
   @override
   void onReady() async {
     getTimeNow();
-    loadNotifikasi();
+    //loadNotifikasi();
     super.onReady();
   }
 
@@ -115,42 +115,41 @@ class PesanController extends GetxController {
   }
 
   void getLoadsysData() {
-    var connect = Api.connectionApi("get", "", "sysdata");
-    connect.then((dynamic res) {
-      if (res.statusCode == 200) {
-        var valueBody = jsonDecode(res.body);
-        for (var element in valueBody['data']) {
-          if (element['kode'] == "013") {
-            valuePolaPersetujuan.value = "${element['name']}";
-            this.valuePolaPersetujuan.refresh();
-            loadApproveInfo();
-            loadApproveHistory();
-          }
-        }
-      }
-    });
+    // var connect = Api.connectionApi("get", "", "sysdata");
+    // connect.then((dynamic res) {
+    //   if (res.statusCode == 200) {
+    //     var valueBody = jsonDecode(res.body);
+    //     for (var element in valueBody['data']) {
+    //       if (element['kode'] == "013") {
+    //         valuePolaPersetujuan.value = "${element['name']}";
+    //         this.valuePolaPersetujuan.refresh();
+    //         loadApproveInfo();
+    //         loadApproveHistory();
+    //       }
+    //     }
+    //   }
+    // });
   }
 
   void loadApproveInfo() {
-    print("load approval info");
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "load_approve_info"
         : "load_approve_info_multi";
+
     statusScreenInfoApproval.value = true;
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'em_id': getEmid,
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
       'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
     };
-    print("load data ${getEmid}");
+
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-        print("data persetujuan ${valueBody}");
 
         if (valueBody['status'] == true) {
           jumlahApproveCuti.value = valueBody['jumlah_cuti'];
@@ -194,7 +193,7 @@ class PesanController extends GetxController {
           UtilsAlert.showToast(
               "Data periode ${bulanSelectedSearchHistory.value}-${tahunSelectedSearchHistory.value} belum tersedia, harap hubungi HRD");
         }
-      }
+      } else {}
     });
   }
 
@@ -202,15 +201,19 @@ class PesanController extends GetxController {
     var url = valuePolaPersetujuan.value == "1"
         ? "load_approve_history"
         : "load_approve_history_multi";
+    //   UtilsAlert.showToast(AppData.informasiUser!.length);
     riwayatPersetujuan.value.clear();
     allRiwayatPersetujuan.value.clear();
+
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
+
     Map<String, dynamic> body = {
       'em_id': getEmid,
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
     };
+
     var connect = Api.connectionApi("post", body, url);
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {

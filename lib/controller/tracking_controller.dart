@@ -276,14 +276,14 @@ class TrackingController extends GetxController {
   void onReady() async {
     print("Masulk ke controller absen");
     getTimeNow();
-    getLoadsysData();
-    loadHistoryAbsenUser();
-    getDepartemen(1, "");
+    // getLoadsysData();
+    // // loadHistoryAbsenUser();
+    // getDepartemen(1, "");
     filterLokasiKoordinate.value = "Lokasi";
     selectedViewFilterAbsen.value = 0;
     pilihTanggalTelatAbsen.value = DateTime.now();
     super.onReady();
-    userShift();
+   // userShift();
   }
 
   void getLoadsysData() {
@@ -449,7 +449,6 @@ class TrackingController extends GetxController {
     connect.then((dynamic res) {
       if (res == false) {
         print("errror");
-        //UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           print("Place cordinate 200" + res.body.toString());
@@ -3151,27 +3150,27 @@ class TrackingController extends GetxController {
 
   void userShift() {
     // UtilsAlert.showLoadingIndicator(Get.context!);
-    var dataUser = AppData.informasiUser;
-    final box = GetStorage();
+    // var dataUser = AppData.informasiUser;
+    // final box = GetStorage();
 
-    var id = dataUser![0].em_id;
+    // var id = dataUser![0].em_id;
 
-    var connect = Api.connectionApi("get", "", "setting_shift");
-    connect.then((dynamic res) {
-      if (res == false) {
-        //UtilsAlert.koneksiBuruk();
-      } else {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          List data = valueBody['data'];
-          print("data setting ${data}");
-          if (data.isNotEmpty) {
-            shift.value = OfficeShiftModel.fromJson(data[0]);
-          }
-        }
-        // Get.back();
-      }
-    });
+    // var connect = Api.connectionApi("get", "", "setting_shift");
+    // connect.then((dynamic res) {
+    //   if (res == false) {
+    //     //UtilsAlert.koneksiBuruk();
+    //   } else {
+    //     if (res.statusCode == 200) {
+    //       var valueBody = jsonDecode(res.body);
+    //       List data = valueBody['data'];
+    //       print("data setting ${data}");
+    //       if (data.isNotEmpty) {
+    //         shift.value = OfficeShiftModel.fromJson(data[0]);
+    //       }
+    //     }
+    //     // Get.back();
+    //   }
+    // });
   }
 
   // void widgetButtomSheetFaceRegistrattion() {

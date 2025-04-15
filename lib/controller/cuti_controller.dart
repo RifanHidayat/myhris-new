@@ -106,14 +106,14 @@ class CutiController extends GetxController {
 
   @override
   void onReady() async {
-    getTimeNow();
-    loadCutiUser();
-    getLoadsysData();
-    loadAllEmployeeDelegasi();
-    loadDataTypeCuti();
-    loadDataAjuanCuti();
-    getDepartemen(1, "");
-    super.onReady();
+    // getTimeNow();
+    // loadCutiUser();
+    // getLoadsysData();
+    // loadAllEmployeeDelegasi();
+    // loadDataTypeCuti();
+    // loadDataAjuanCuti();
+    // getDepartemen(1, "");
+    // super.onReady();
   }
 
   void showInputCari() {

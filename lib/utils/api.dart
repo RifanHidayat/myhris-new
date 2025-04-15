@@ -18,13 +18,14 @@ class Api {
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
-  // static var basicUrl = "http://mobilehris.siscom.id:3010/";
+
   static var urlImage = 'https://imagehris.siscom.id:4431';
 
   // static var basicUrl = "http://mobilehris.siscom.id:3000/";
 
-  //static var basicUrl = "http://kantor.membersis.com:2626/";
-  static var basicUrl = "http://192.168.20.200:2626/";
+
+  static var basicUrl = "http://kantor.membersis.com:2626/";
+
 
   static var token = '9d590c04119a4433971a1dd622266d38';
   static var luxand = 'https://api.luxand.cloud/photo/similarity';
@@ -189,13 +190,15 @@ class ApiRequest {
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
-  //  static var basicUrl = "http://mobilehris.siscom.id:3010/";
 
-  // static var basicUrl = "http://kantor.membersis.com:2626/";
+ //  static var basicUrl = "http://mobilehris.siscom.id:3010/";
+
+
+  static var basicUrl = "http://kantor.membersis.com:2626/";
 
    static var basicUrl = "http://192.168.20.200:2626/";
 
- //static var basicUrl = "http://kantor.membersis.com:2626/";
+ static var basicUrl = "http://kantor.membersis.com:2626/";
 
 
   Map<String, String> headers = {

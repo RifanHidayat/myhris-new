@@ -74,8 +74,8 @@ class LaporanTidakHadirController extends GetxController {
   void onReady() async {
     super.onReady();
     getTimeNow();
-    getLoadsysData();
-    getDepartemen(1, "");
+    // getLoadsysData();
+    // getDepartemen(1, "");
     filterStatusAjuanTerpilih.value = "Semua";
     selectedViewFilterPengajuan.value = 0;
     pilihTanggalFilterAjuan.value = DateTime.now();
