@@ -106,7 +106,7 @@ class CutiController extends GetxController {
 
   @override
   void onReady() async {
-    // getTimeNow();
+   getTimeNow();
     // loadCutiUser();
     // getLoadsysData();
     // loadAllEmployeeDelegasi();

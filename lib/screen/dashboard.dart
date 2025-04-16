@@ -1629,7 +1629,7 @@ class _DashboardState extends State<Dashboard> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "Masuk",
+                                                "Masuk ",
                                                 style: GoogleFonts.inter(
                                                   fontWeight: FontWeight.w500,
                                                   fontSize: 16,

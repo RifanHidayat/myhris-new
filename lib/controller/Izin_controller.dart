@@ -119,7 +119,7 @@ class IzinController extends GetxController {
   void onInit() {
     getTimeNow();
     // getLoadsysData();
-    // loadAllEmployeeDelegasi();
+    //loadAllEmployeeDelegasi();
     // loadTypeSakit();
     // loadDataAjuanIzin();
     // getDepartemen(1, "");
