@@ -33,6 +33,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
   void initState() {
     controller.loadCutiUser();
     controller.loadDataTypeCuti();
+    controller.loadAllEmployeeDelegasi();
     print("data biaya ${widget.dataForm![0]}");
     if (widget.dataForm![1] == true) {
       controller.dariTanggal.value.text = widget.dataForm![0]['start_date'];

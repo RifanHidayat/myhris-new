@@ -371,9 +371,12 @@ class IzinController extends GetxController {
         } else {
           if (res.statusCode == 200) {
             var valueBody = jsonDecode(res.body);
-            var data = valueBody['data'];
+            List  data = valueBody['data'];
+            
             for (var element in data) {
+                 print("status new new${element['status'] }");
               if (element['status'] == 'ACTIVE') {
+             
                 var fullName = element['full_name'] ?? "";
                 String namaUser = "$fullName";
 

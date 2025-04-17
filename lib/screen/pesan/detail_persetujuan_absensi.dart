@@ -583,7 +583,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
           Get.back();
           return true;
         },
-        child: no_ajuan.toString() == "RQ" ? body1() : bodyOffline(),
+        child:bodyOffline(),
       ),
     );
   }
@@ -1659,7 +1659,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                         //       fontSize: 16),
                         // ),
                         Text(
-                          "Pengajuan Absensi Offline",
+                        controller.detailData[0]['nomor_ajuan'].toString().substring(0, 2)=='RQ'?"Pengajuan Absensi":  "Pengajuan Absensi Offline",
                           style: GoogleFonts.inter(
                               fontWeight: FontWeight.w500,
                               color: Constanst.fgPrimary,
@@ -1997,7 +1997,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                         // ),
                         Visibility(
                           visible:
-                              controller.detailData[0]['lokasi_masuk'] != "",
+                              controller.detailData[0]['place_in'] != "",
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2031,7 +2031,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                         ),
                         Visibility(
                           visible:
-                              controller.detailData[0]['lokasi_keluar'] != "",
+                              controller.detailData[0]['place_out'] != "",
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,

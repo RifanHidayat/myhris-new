@@ -234,8 +234,8 @@ class Login extends StatelessWidget {
                                           },
                                         );
                                       } else {
-                                        UtilsAlert.showToast(
-                                            "Database tidak tersedia");
+                                        // UtilsAlert.showToast(
+                                        //     "Database tidak tersedia");
                                       }
                                     });
                                     // showModalBottomSheet(
@@ -261,8 +261,8 @@ class Login extends StatelessWidget {
                                     //   },
                                     // );
                                   } else {
-                                    UtilsAlert.showToast(
-                                        "Database tidak tersedia");
+                                    // UtilsAlert.showToast(
+                                    //     "Database tidak tersedia");
                                   }
                                 } else {
                                   controller.dataabse().then((value) {
@@ -279,8 +279,8 @@ class Login extends StatelessWidget {
                                         },
                                       );
                                     } else {
-                                      UtilsAlert.showToast(
-                                          "Database tidak tersedia");
+                                      // UtilsAlert.showToast(
+                                      //     "Database tidak tersedia");
                                     }
                                   });
                                 }
