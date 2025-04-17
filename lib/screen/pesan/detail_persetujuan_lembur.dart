@@ -299,7 +299,10 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
 
       Duration difference = end.difference(start);
 
-      hours = difference.inHours;
+      hours = (difference.inHours % 24);
+      print('ini start $start');
+      print('ini end $end');
+      print('ini hours $hours');
       minutes = (difference.inMinutes % 60);
       second = (difference.inSeconds % 60);
     }
@@ -738,7 +741,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                   controller.detailData[0]['type'] == "Klaim"
                                       ? const SizedBox()
                                       : Text(
-                                          "s.d",
+                                          "s.d ",
                                           style: GoogleFonts.inter(
                                               fontWeight: FontWeight.w500,
                                               color: Constanst.fgPrimary,
