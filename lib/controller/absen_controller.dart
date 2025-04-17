@@ -76,12 +76,14 @@ class AbsenController extends GetxController {
   RxBool isChecked4 = false.obs;
   RxBool selengkapnyaMasuk = false.obs;
   RxBool selengkapnyaKeluar = false.obs;
+  RxBool isCreateNew = false.obs;
 
   Rx<DateTime> selectedDate = DateTime.now().obs;
 
   var tglAjunan = "".obs;
   var checkinAjuan = "".obs;
   var checkoutAjuan = "".obs;
+  var idAjuan = 0.obs;
   var checkinAjuan2 = "".obs;
   var checkoutAjuan2 = "".obs;
   var checkinIstiahat = "".obs;
@@ -187,6 +189,8 @@ class AbsenController extends GetxController {
 
   var typeAbsen = 0.obs;
   var intervalControl = 60000.obs;
+  
+  var allDataCheck = [].obs;
 
   var imageStatus = false.obs;
   var detailAlamat = false.obs;
@@ -4359,7 +4363,7 @@ class AbsenController extends GetxController {
           var valueBody = jsonDecode(res.body);
           var data = valueBody['data'];
           isTracking.value = data[0]['em_control'];
-          regType.value = data[0]['reg_type'];
+         // regType.value = data[0]['reg_type'];
           print("Req tye ${regType.value}");
           box.write("file_face", data[0]['file_face']);
 
@@ -4523,7 +4527,7 @@ class AbsenController extends GetxController {
 
   void addPengajuan() {}
 
-  void checkAbsensi() {
+   void checkAbsensi() {
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
       "em_id": emId,
@@ -4535,17 +4539,53 @@ class AbsenController extends GetxController {
     };
     print(body);
     var connect = Api.connectionApi("post", body, "employee-attendance");
+    allDataCheck.clear();
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         List data = valueBody['data'];
         if (data.isNotEmpty) {
-          checkinAjuan.value = data[0]['signin_time'];
-          checkoutAjuan.value = data[0]['signout_time'];
-        } else {}
+          allDataCheck.add(data) ;
+          var lastData = data[data.length - 1];
+          checkinAjuan.value = lastData['signin_time'];
+          checkoutAjuan.value = lastData['signout_time'];
+          idAjuan.value = int.parse(lastData['id'].toString());
+          isCreateNew.value = false;
+          print('ini id nya yak ${idAjuan.value}');
+        } else {
+          allDataCheck.clear();
+          isCreateNew.value = true;
+          checkinAjuan.value = '';
+          checkoutAjuan.value = '';
+          idAjuan.value = 0;
+        }
       }
     });
   }
+
+  // void checkAbsensi() {
+  //   var emId = AppData.informasiUser![0].em_id;
+  //   Map<String, dynamic> body = {
+  //     "em_id": emId,
+  //     'date': tglAjunan.value,
+  //     'bulan':
+  //         DateFormat('MM').format(DateTime.parse(tglAjunan.value.toString())),
+  //     'tahun':
+  //         DateFormat('yyyy').format(DateTime.parse(tglAjunan.value.toString()))
+  //   };
+  //   print(body);
+  //   var connect = Api.connectionApi("post", body, "employee-attendance");
+  //   connect.then((dynamic res) {
+  //     if (res.statusCode == 200) {
+  //       var valueBody = jsonDecode(res.body);
+  //       List data = valueBody['data'];
+  //       if (data.isNotEmpty) {
+  //         checkinAjuan.value = data[0]['signin_time'];
+  //         checkoutAjuan.value = data[0]['signout_time'];
+  //       } else {}
+  //     }
+  //   });
+  // }
 
   void batalkanAjuan({date}) {
     UtilsAlert.showLoadingIndicator(Get.context!);
@@ -4570,9 +4610,10 @@ class AbsenController extends GetxController {
   }
 
   void dataPengajuanAbsensi() {
+  
     isLoadingPengajuan.value = true;
     var emId = AppData.informasiUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       "em_id": emId,
       'date': tglAjunan.value,
       'bulan': bulanSelectedSearchHistoryPengajuan.value,
@@ -4581,7 +4622,9 @@ class AbsenController extends GetxController {
     print(body);
     var connect = Api.connectionApi("post", body, "get-employee-attendance");
     connect.then((dynamic res) {
+     
       if (res.statusCode == 200) {
+           UtilsAlert.showToast("masuk sini");
         isLoadingPengajuan.value = false;
         var valueBody = jsonDecode(res.body);
         List data = valueBody['data'];
@@ -4621,6 +4664,7 @@ class AbsenController extends GetxController {
     print('kesini gak');
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
+      'id_absen': idAjuan.value.toString(),
       "address_masuk": addressMasuk.value.toString(),
       "address_keluar": addressKeluar.value.toString(),
       "address_masuk_rest": addressMasukRest.value.toString(),

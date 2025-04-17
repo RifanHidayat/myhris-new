@@ -181,11 +181,52 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
     );
   }
 
+  void onChanged(bool? value) {
+    if (value == true) {
+      // absenController.allDataCheck.clear();
+      absenController.isCreateNew.value = true;
+      // absenController.checkinAjuan.value = '';
+      // absenController.checkoutAjuan.value = '';
+      absenController.idAjuan.value = 0;
+    }
+  }
+
   Widget item() {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
+          Row(
+            children: [
+              Checkbox(
+                value: absenController.isCreateNew.value,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
+                onChanged: (bool? value) {
+                  final isAbsenSelected =
+                      absenController.checkinAjuan.value.isNotEmpty &&
+                          absenController.checkoutAjuan.value.isNotEmpty;
+
+                  // Kalau mau centang (true), langsung izinkan
+                  if (value == true) {
+                    absenController.isCreateNew.value = true;
+                    if (onChanged != null) onChanged(true);
+                  }
+
+                  // Kalau mau uncentang (false), hanya izinkan jika absen dipilih
+                  else if (value == false && isAbsenSelected) {
+                    absenController.isCreateNew.value = false;
+                    if (onChanged != null) onChanged(false);
+                  } 
+                  else {
+                    UtilsAlert.showToast(
+                        'Tidak ada data absensi pada tanggal ini, sehingga anda hanya bisa buat pengajuan');
+                  }
+                },
+              ),
+              const Text('Buat Pengajuan Baru')
+            ],
+          ),
           Container(
             decoration: BoxDecoration(
               border: Border.all(width: 1, color: Constanst.fgBorder),
@@ -354,87 +395,19 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: Divider(
-                    height: 0,
-                    thickness: 1,
-                    color: Constanst.fgBorder,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Iconsax.login_1,
-                              size: 24,
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextLabell(
-                                  text: "Absen Masuk",
-                                  color: Constanst.fgPrimary,
-                                  size: 14,
-                                  weight: FontWeight.w400,
-                                ),
-                                const SizedBox(height: 8),
-                                TextLabell(
-                                  text: absenController.checkinAjuan.value == ""
-                                      ? "_ _ : _ _"
-                                      : absenController.checkinAjuan.value,
-                                  color: Constanst.fgSecondary,
-                                  weight: FontWeight.w500,
-                                  size: 16,
-                                )
-                              ],
-                            )
-                          ],
+                absenController.isCreateNew.value == true
+                    ? const SizedBox()
+                    : Padding(
+                        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                        child: Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.fgBorder,
                         ),
                       ),
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Iconsax.logout_1,
-                              size: 24,
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextLabell(
-                                  text: "Absen Keluar",
-                                  color: Constanst.fgPrimary,
-                                  size: 14,
-                                  weight: FontWeight.w400,
-                                ),
-                                const SizedBox(height: 8),
-                                TextLabell(
-                                  text:
-                                      absenController.checkoutAjuan.value == ""
-                                          ? "_ _ : _ _"
-                                          : absenController.checkoutAjuan.value,
-                                  color: Constanst.fgSecondary,
-                                  weight: FontWeight.w500,
-                                  size: 16,
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                absenController.isCreateNew.value == true
+                    ? const SizedBox()
+                    : lastAbsen(),
               ],
             ),
           ),
@@ -990,7 +963,8 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                           var convertMenit = value.minute <= 9
                                               ? "0${value.minute}"
                                               : "${value.minute}";
-                                          absenController.checkoutIstirahat.value =
+                                          absenController
+                                                  .checkoutIstirahat.value =
                                               "$convertJam:$convertMenit";
                                           absenController.isChecked3.value =
                                               true;
@@ -1018,7 +992,8 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                               onChanged: (value) {
                                                 setState(() {
                                                   absenController
-                                                      .checkoutIstirahat.value = "";
+                                                      .checkoutIstirahat
+                                                      .value = "";
                                                   absenController
                                                       .placeCoordinateCheckoutRest
                                                       .clear();
@@ -1247,7 +1222,8 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                           var convertMenit = value.minute <= 9
                                               ? "0${value.minute}"
                                               : "${value.minute}";
-                                          absenController.checkinIstiahat.value =
+                                          absenController
+                                                  .checkinIstiahat.value =
                                               "$convertJam:$convertMenit";
                                           absenController.isChecked4.value =
                                               true;
@@ -1282,7 +1258,8 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                                       BorderRadius.circular(5)),
                                               onChanged: (value) {
                                                 setState(() {
-                                                  absenController.checkinIstiahat
+                                                  absenController
+                                                      .checkinIstiahat
                                                       .value = "";
                                                   absenController
                                                       .placeCoordinateCheckinRest
@@ -1556,6 +1533,197 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Padding lastAbsen() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: InkWell(
+        onTap: () {
+          // UtilsAlert.showToast('${absenController.allDataCheck}');
+          debugPrint('ini all data absen ${absenController.allDataCheck}',
+              wrapWidth: 100);
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) {
+              return DraggableScrollableSheet(
+                initialChildSize: 0.5,
+                minChildSize: 0.3,
+                maxChildSize: 0.9,
+                builder: (_, controller) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(16)),
+                    ),
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          child: Text(
+                            'Riwayat Absen',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Obx(() {
+                            final dataList = absenController.allDataCheck;
+                            return ListView.builder(
+                              controller: controller,
+                              itemCount: dataList[0].length,
+                              itemBuilder: (context, index) {
+                                final item = dataList[0][index];
+                                return ListTile(
+                                  leading: const Icon(Icons.access_time),
+                                  title: Text(
+                                      "Masuk: ${item['signin_time'] ?? '-'}"),
+                                  subtitle: Text(
+                                      "Keluar: ${item['signout_time'] ?? '-'}"),
+                                  trailing: (absenController
+                                                  .checkinAjuan.value ==
+                                              item['signin_time'] &&
+                                          absenController.checkoutAjuan.value ==
+                                              item['signout_time'])
+                                      ? Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 2,
+                                                  color: Constanst.onPrimary),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: Constanst.onPrimary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Constanst.onPrimary),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                            ),
+                                          ),
+                                        ),
+                                  onTap: () {
+                                    absenController.checkinAjuan.value =
+                                        item['signin_time'] ?? '';
+                                    absenController.checkoutAjuan.value =
+                                        item['signout_time'] ?? '';
+                                    absenController.idAjuan.value =
+                                        int.parse(item['id'].toString());
+                                    Navigator.pop(
+                                        context); // Tutup sheet setelah pilih
+                                  },
+                                );
+                              },
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Iconsax.login_1,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextLabell(
+                        text: "Absen Masuk",
+                        color: Constanst.fgPrimary,
+                        size: 14,
+                        weight: FontWeight.w400,
+                      ),
+                      const SizedBox(height: 8),
+                      TextLabell(
+                        text: absenController.checkinAjuan.value == ""
+                            ? "_ _ : _ _"
+                            : absenController.checkinAjuan.value,
+                        color: Constanst.fgSecondary,
+                        weight: FontWeight.w500,
+                        size: 16,
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Iconsax.logout_1,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextLabell(
+                        text: "Absen Keluar",
+                        color: Constanst.fgPrimary,
+                        size: 14,
+                        weight: FontWeight.w400,
+                      ),
+                      const SizedBox(height: 8),
+                      TextLabell(
+                        text: absenController.checkoutAjuan.value == ""
+                            ? "_ _ : _ _"
+                            : absenController.checkoutAjuan.value,
+                        color: Constanst.fgSecondary,
+                        weight: FontWeight.w500,
+                        size: 16,
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Icon(Iconsax.arrow_down_1, size: 20, color: Constanst.fgPrimary),
+          ],
+        ),
       ),
     );
   }
@@ -1956,12 +2124,14 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
             Expanded(
               child: SingleChildScrollView(
                 child: Obx(() => ListView.builder(
-                    itemCount: absenController.placeCoordinateCheckoutRest.length,
+                    itemCount:
+                        absenController.placeCoordinateCheckoutRest.length,
                     physics: const BouncingScrollPhysics(),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (context, index) {
-                      var data = absenController.placeCoordinateCheckoutRest[index];
+                      var data =
+                          absenController.placeCoordinateCheckoutRest[index];
                       return Column(
                         children: [
                           InkWell(
@@ -1972,9 +2142,13 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                               });
 
                               data['is_selected'] = true;
-                              absenController.placeCoordinateCheckoutRest.refresh();
-                              absenController.convertLatLongListToAddressesoutRest(
-                                  data['place_longlat'].toString().split(","));
+                              absenController.placeCoordinateCheckoutRest
+                                  .refresh();
+                              absenController
+                                  .convertLatLongListToAddressesoutRest(
+                                      data['place_longlat']
+                                          .toString()
+                                          .split(","));
                               absenController.absenKeluarLongLat.value =
                                   data['place_longlat'].toString().split(",");
                               print("data ce : ${data}");
@@ -2121,12 +2295,14 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
             Expanded(
               child: SingleChildScrollView(
                 child: Obx(() => ListView.builder(
-                    itemCount: absenController.placeCoordinateCheckinRest.length,
+                    itemCount:
+                        absenController.placeCoordinateCheckinRest.length,
                     physics: const BouncingScrollPhysics(),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (context, index) {
-                      var data = absenController.placeCoordinateCheckinRest[index];
+                      var data =
+                          absenController.placeCoordinateCheckinRest[index];
                       return Column(
                         children: [
                           InkWell(
@@ -2137,9 +2313,13 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                               });
 
                               data['is_selected'] = true;
-                              absenController.placeCoordinateCheckinRest.refresh();
-                              absenController.convertLatLongListToAddressesinRest(
-                                  data['place_longlat'].toString().split(","));
+                              absenController.placeCoordinateCheckinRest
+                                  .refresh();
+                              absenController
+                                  .convertLatLongListToAddressesinRest(
+                                      data['place_longlat']
+                                          .toString()
+                                          .split(","));
                               absenController.absenKeluarLongLat.value =
                                   data['place_longlat'].toString().split(",");
                               print("data ce : ${data}");
@@ -2233,5 +2413,4 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
       },
     );
   }
-
 }

@@ -319,6 +319,7 @@ class DashboardController extends GetxController {
       print("interval tracking ${element['interval_tracking'].toString()}");
       //UtilsAlert.showToast(element['reg_type']);
       absenControllre.regType.value=element['reg_type']=='' ||element['reg_type']==null?0:int.parse(element['reg_type'].toString());
+    
     }
 
     AppData.informasiUser = getData;

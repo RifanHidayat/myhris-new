@@ -1354,11 +1354,13 @@ class AuthController extends GetxController {
       } else {
         Get.back();
         databases.value = [];
+        UtilsAlert.showToast(resp['message']);
         return false;
       }
     } catch (e) {
       print(e);
       Get.back();
+      UtilsAlert.showToast("Terjadi kesalahan,Pastikan koneksi internet dalama keadaan stabil");
       databases.value = [];
       return false;
     }

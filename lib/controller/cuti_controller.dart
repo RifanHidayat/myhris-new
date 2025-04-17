@@ -405,8 +405,11 @@ class CutiController extends GetxController {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
           var data = valueBody['data'];
+        print('tes  ${valueBody.toString()}');
+
           for (var element in data) {
-            if (element['status'] == 'ACTIVE') {
+          
+            if (element['status'].toString() == 'ACTIVE') {
               var fullName = element['full_name'] ?? "";
               String namaUser = "$fullName";
               if (namaUser != full_name) {
