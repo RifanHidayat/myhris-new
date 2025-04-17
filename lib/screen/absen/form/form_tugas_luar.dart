@@ -31,7 +31,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
 
   @override
   void initState() {
-        controller.loadAllEmployeeDelegasi();
+        // controller.loadAllEmployeeDelegasi();
        
     print(controller.viewTugasLuar.value);
     if (widget.dataForm![1] == true) {

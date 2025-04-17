@@ -29,10 +29,6 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
 
   @override
   void initState() {
-   controller. getLoadsysData();
-   controller.loadAllEmployeeDelegasi();
-   controller. loadTypeSakit();
-   controller. loadDataAjuanIzin();
    
     controller.percentIzin.value = 0.0;
     if (widget.dataForm![1] == true) {

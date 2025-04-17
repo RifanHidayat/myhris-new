@@ -113,7 +113,7 @@ class CutiController extends GetxController {
     // loadDataTypeCuti();
     // loadDataAjuanCuti();
     // getDepartemen(1, "");
-    // super.onReady();
+    super.onReady();
   }
 
   void showInputCari() {
@@ -230,7 +230,7 @@ class CutiController extends GetxController {
     }
   }
 
-  void loadDataTypeCuti() {
+  Future<void> loadDataTypeCuti()async {
     print("load data cuti");
     allTipeFormCutiDropdown.value.clear();
     allTipe.value.clear();
@@ -379,7 +379,7 @@ class CutiController extends GetxController {
     }
   }
 
-  void loadAllEmployeeDelegasi() {
+  Future<void> loadAllEmployeeDelegasi() async {
     print("load all employee");
     allEmployeeDelegasi.value.clear();
     allEmployee.value.clear();
@@ -405,7 +405,7 @@ class CutiController extends GetxController {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
           var data = valueBody['data'];
-        print('tes  ${valueBody.toString()}');
+        print('tes data allemployee ${valueBody.toString()}');
 
           for (var element in data) {
           
@@ -435,16 +435,16 @@ class CutiController extends GetxController {
   void checkingDelegation(em_id) {
     print(em_id);
 
-    // if (em_id=="null" || em_id == "" || em_id==null){
+    if (em_id=="null" || em_id == "" || em_id==null){
 
-    // }else{
+    }else{
 
     var getData =
         allEmployee.value.firstWhere((element) => element["em_id"] == em_id);
     selectedDelegasi.value = getData["full_name"];
     this.selectedDelegasi.refresh();
 
-    //}
+    }
     print("data employee ${em_id},${allEmployee.value}");
   }
 

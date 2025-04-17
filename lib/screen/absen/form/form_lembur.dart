@@ -24,8 +24,8 @@ class _FormLemburState extends State<FormLembur> {
   @override
   void initState() {
     print('ini data lembur kali yak? ${widget.dataForm![0]}');
-    controller.loadAllEmployeeDelegasi();
-    controller.getTypeLembur();
+    // controller.loadAllEmployeeDelegasi();
+    // controller.getTypeLembur();
     if (widget.dataForm![1] == true) {
       controller.selectedTypeLembur.value = widget.dataForm![0]['type'];
       controller.tanggalLembur.value.text =
