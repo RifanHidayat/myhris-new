@@ -33,7 +33,7 @@ class TabbController extends GetxController {
 
   var kontrolAkses = false.obs;
   var kontrol = false.obs;
-  final Absensicontroller = Get.put(AbsenController());
+  final Absensicontroller = Get.find<AbsenController>(tag: 'absen controller');
 
   @override
   void onReady() {

@@ -16,6 +16,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:siscom_operasional/controller/absen_controller.dart';
 // import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/controller/tab_controller.dart';
@@ -1090,6 +1091,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     controller.loadDashboard();
+    var controllerAbsnsi = Get.put(AbsenController(),tag: 'absen controller');
     super.initState();
   }
 

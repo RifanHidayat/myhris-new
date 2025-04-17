@@ -23,7 +23,7 @@ class _FaceRegistrationVerifyPasswordState
   final controller = Get.put(AuthController());
   final TextEditingController passwordCtr = TextEditingController();
 
-  var absensiController = Get.put(AbsenController());
+  var absensiController = Get.find<AbsenController>(tag: 'absen controller');
   @override
   Widget build(BuildContext context) {
     return Scaffold(

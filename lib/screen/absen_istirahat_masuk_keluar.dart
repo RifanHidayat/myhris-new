@@ -35,7 +35,7 @@ class _AbsenIstirahatMasukKeluarState extends State<AbsenIstirahatMasukKeluar> {
   double _panelHeightOpen = 0;
   double _panelHeightClosed = 250.0;
   final panelController = PanelController();
-  final controller = Get.put(AbsenController());
+  final controller = Get.find<AbsenController>(tag: 'absen controller');
   final controllerDashboard = Get.put(DashboardController());
   FocusNode myfocus = FocusNode();
 

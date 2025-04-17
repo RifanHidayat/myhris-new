@@ -47,8 +47,8 @@ class AuthController extends GetxController {
   var isautoLogout = false.obs;
   var messageLogout = "".obs;
   var messageNewPassword = "".obs;
-
-  var controllerAbsnsi = Get.put(AbsenController());
+ 
+  var controllerAbsnsi = Get.find<AbsenController>(tag: 'absen controller');
   final controllerTracking = Get.put(TrackingController());
   var globalCtr = Get.put(GlobalController());
   // var isConnected = true.obs;
@@ -1360,7 +1360,7 @@ class AuthController extends GetxController {
     } catch (e) {
       print(e);
       Get.back();
-      UtilsAlert.showToast("Terjadi kesalahan,Pastikan koneksi internet dalama keadaan stabil");
+      UtilsAlert.showToast("Koneksi internet tidak tersedia.Silahkan periksa jaringan Anda dan coba kembali.");
       databases.value = [];
       return false;
     }

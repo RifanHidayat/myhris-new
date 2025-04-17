@@ -18,7 +18,7 @@ class DetailAbsen extends StatelessWidget {
     this.status,
     this.fullName,
   }) : super(key: key);
-  final controller = Get.put(AbsenController());
+  final controller = Get.find<AbsenController>(tag: 'absen controller');
   @override
   Widget build(BuildContext context) {
     var tanggal = status == false

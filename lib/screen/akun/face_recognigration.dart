@@ -39,7 +39,7 @@ class FaceRecognition extends StatelessWidget {
           "Fitur ini melakukan scan untuk mengenali data wajah tersimpan, dan tidak ada  gambar yang disimpan dalam memori internal."
     },
   ];
-  final AbsenController absenController = Get.put(AbsenController());
+  final AbsenController absenController = Get.find<AbsenController>(tag: 'absen controller');
 
   @override
   Widget build(BuildContext context) {

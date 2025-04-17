@@ -31,7 +31,7 @@ class _VerifyPasswordPayrollState extends State<VerifyPasswordPayroll> {
 
   var dashboarController = Get.find<DashboardController>();
 
-  var absensiController = Get.put(AbsenController());
+  var absensiController = Get.find<AbsenController>(tag: 'absen controller');
 
   @override
   void initState() {

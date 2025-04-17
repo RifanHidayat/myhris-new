@@ -13,7 +13,7 @@ import 'package:siscom_operasional/utils/widget_utils.dart';
 class OnboardController extends GetxController {
   var deviceStatus = false.obs;
 
-  final AbsenController abseController = Get.put(AbsenController());
+  final AbsenController abseController = Get.find<AbsenController>(tag: 'absen controller');
 
   var loading = false.obs;
 

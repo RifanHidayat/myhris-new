@@ -22,7 +22,7 @@
 
 // enum ScreenMode { liveFeed, gallery }
 
-// final AbsenController absenControllre = Get.put(AbsenController());
+// final AbsenController absenControllre = Get.find<AbsenController>(tag: 'absen controller');
 // final authController = Get.put(AuthController());
 
 // class CameraViewLocation extends StatefulWidget {
@@ -65,7 +65,7 @@
 //   double zoomLevel = 0.0, minZoomLevel = 0.0, maxZoomLevel = 0.0;
 //   final bool _allowPicker = true;
 //   bool _changingCameraLens = false;
-//   final controllerAbsensi = Get.put(AbsenController());
+//   final controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
 
 //   File? imageFile;
 //   bool isSent = false;
@@ -548,7 +548,7 @@ import 'dart:math' as math;
 
 enum ScreenMode { liveFeed, gallery }
 
-final AbsenController absenControllre = Get.put(AbsenController());
+final AbsenController absenControllre = Get.find<AbsenController>(tag: 'absen controller');
 final authController = Get.put(AuthController());
 
 class CameraViewLocation extends StatefulWidget {
@@ -591,7 +591,7 @@ class _CameraViewState extends State<CameraViewLocation> {
   double zoomLevel = 0.0, minZoomLevel = 0.0, maxZoomLevel = 0.0;
   final bool _allowPicker = true;
   bool _changingCameraLens = false;
-  final controllerAbsensi = Get.put(AbsenController());
+  final controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
 
   File? imageFile;
   bool isSent = false;
