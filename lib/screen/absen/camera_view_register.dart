@@ -18,7 +18,7 @@ import 'dart:math' as math;
 
 enum ScreenMode { liveFeed, gallery }
 
-final AbsenController absenControllre = Get.put(AbsenController());
+final AbsenController absenControllre = Get.find<AbsenController>(tag: 'absen controller');
 
 class CameraViewRegister extends StatefulWidget {
   CameraViewRegister(
@@ -59,7 +59,7 @@ class _CameraViewState extends State<CameraViewRegister> {
   double zoomLevel = 0.0, minZoomLevel = 0.0, maxZoomLevel = 0.0;
   final bool _allowPicker = true;
   bool _changingCameraLens = false;
-  final controllerAbsensi = Get.put(AbsenController());
+  final controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
 
   File? imageFile;
   bool isSent = false;

@@ -25,7 +25,7 @@
 
 // class _LoadingAbsenState extends State<LoadingAbsen>
 //     with SingleTickerProviderStateMixin {
-//   final abseController = Get.put(AbsenController());
+//   final abseController = Get.find<AbsenController>(tag: 'absen controller');
 
 //   AnimationController? _animationController;
 //   bool _animationStopped = false;
@@ -419,7 +419,7 @@ class LoadingAbsen extends StatefulWidget {
 
 class _LoadingAbsenState extends State<LoadingAbsen>
     with SingleTickerProviderStateMixin {
-  final abseController = Get.put(AbsenController());
+  final abseController = Get.find<AbsenController>(tag: 'absen controller');
 
   AnimationController? _animationController;
   bool _animationStopped = false;

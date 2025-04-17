@@ -12,7 +12,7 @@ class PhotoAbsen extends StatelessWidget {
   PhotoAbsen(
       {super.key, this.image, this.time, this.alamat, this.type, this.note});
 
-  final controller = Get.put(AbsenController());
+  final controller = Get.find<AbsenController>(tag: 'absen controller');
   @override
   Widget build(BuildContext context) {
     return Scaffold(

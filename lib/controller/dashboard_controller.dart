@@ -103,7 +103,7 @@ class DashboardController extends GetxController {
   var searchController = TextEditingController();
   var bpjsController = Get.put(BpjsController());
 
-  var controllerAbsensi = Get.put(AbsenController());
+  var controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
   var controllerIzin = Get.put(IzinController());
   var controllerLembur = Get.put(LemburController());
   var controllerCuti = Get.put(CutiController());

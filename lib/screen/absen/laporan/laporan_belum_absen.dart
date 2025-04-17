@@ -18,7 +18,7 @@ class LaporanBelumAbsen extends StatefulWidget {
 }
 
 class _LaporanBelumAbsenState extends State<LaporanBelumAbsen> {
-  var controller = Get.put(AbsenController());
+  var controller = Get.find<AbsenController>(tag: 'absen controller');
 
   @override
   void initState() {

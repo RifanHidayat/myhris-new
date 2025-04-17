@@ -67,7 +67,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final controller = Get.put(DashboardController());
-  final controllerAbsensi = Get.put(AbsenController());
+  final controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
   final controllerTracking = Get.put(TrackingController());
   final controllerPesan = Get.put(PesanController());
   var controllerGlobal = Get.put(GlobalController());

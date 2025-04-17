@@ -4624,7 +4624,7 @@ class AbsenController extends GetxController {
     connect.then((dynamic res) {
      
       if (res.statusCode == 200) {
-           UtilsAlert.showToast("masuk sini");
+      //  /    UtilsAlert.showToast("masuk sini");
         isLoadingPengajuan.value = false;
         var valueBody = jsonDecode(res.body);
         List data = valueBody['data'];

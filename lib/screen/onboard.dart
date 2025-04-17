@@ -234,7 +234,7 @@ class Onboard extends StatelessWidget {
 
   T? _ambiguate<T>(T? value) => value;
 
-  var controllerAbsensi = Get.put(AbsenController());
+  var controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
   var controllerBerhasil = Get.put(BerhasilController());
 
   @override

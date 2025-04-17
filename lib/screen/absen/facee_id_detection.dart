@@ -27,7 +27,7 @@ class FaceDetectorView extends StatefulWidget {
 }
 
 class _FaceDetectorViewState extends State<FaceDetectorView> {
-  final controllerAbsensi = Get.put(AbsenController());
+  final controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
   final FaceDetector _faceDetector = FaceDetector(
     options: FaceDetectorOptions(
       enableContours: true,
@@ -714,7 +714,7 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
 // }
 
 // class _FaceDetectorViewState extends State<FaceDetectorView> {
-//   final controllerAbsensi = Get.put(AbsenController());
+//   final controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
 //   final FaceDetector _faceDetector = FaceDetector(
 //     options: FaceDetectorOptions(
 //       enableContours: true,

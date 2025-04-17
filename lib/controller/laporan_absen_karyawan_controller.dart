@@ -33,7 +33,7 @@ class LaporanAbsenKaryawanController extends GetxController {
     loadHistoryAbsenEmployee();
   }
 
-  var controller = Get.put(AbsenController());
+  var controller = Get.find<AbsenController>(tag: 'absen controller');
 
   void loadHistoryAbsenEmployee() {
     var listPeriode = bulanSelected.value.split("-");

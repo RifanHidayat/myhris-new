@@ -21,7 +21,7 @@ class pengajuanAbsen extends StatefulWidget {
 }
 
 class _pengajuanAbsenState extends State<pengajuanAbsen> {
-  var absenController = Get.put(AbsenController());
+  var absenController = Get.find<AbsenController>(tag: 'absen controller');
 
   @override
   void initState() {

@@ -29,7 +29,7 @@ class HistoryAbsen extends StatefulWidget {
 }
 
 class _HistoryAbsenState extends State<HistoryAbsen> {
-  var controller = Get.put(AbsenController());
+  var controller = Get.find<AbsenController>(tag: 'absen controller');
   var controllerGlobal = Get.put(GlobalController());
   final dashboardController = Get.put(DashboardController());
 
