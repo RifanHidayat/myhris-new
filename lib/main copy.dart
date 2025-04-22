@@ -61,7 +61,7 @@
 // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 //     FlutterLocalNotificationsPlugin();
 // late List<CameraDescription> cameras;
-// final controllerTracking = Get.put(TrackingController());
+// final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
 
 // // @pragma('vm:entry-point')
 // // void backgroundCallback() {

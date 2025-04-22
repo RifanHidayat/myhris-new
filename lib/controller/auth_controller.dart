@@ -49,7 +49,7 @@ class AuthController extends GetxController {
   var messageNewPassword = "".obs;
 
   var controllerAbsnsi = Get.find<AbsenController>(tag: 'absen controller');
-  final controllerTracking = Get.put(TrackingController());
+  final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
   var globalCtr = Get.put(GlobalController());
   // var isConnected = true.obs;
   // Timer? timer;
@@ -1368,7 +1368,7 @@ class AuthController extends GetxController {
       print(e);
       Get.back();
       UtilsAlert.showToast(
-          "Koneksi internet tidak tersedia.Silahkan periksa jaringan Anda dan coba kembali.");
+          "Koneksi internet tidak tersedia. Silahkan periksa jaringan Anda dan coba kembali.");
       databases.value = [];
       return false;
     }

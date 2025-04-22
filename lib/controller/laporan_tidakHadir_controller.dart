@@ -196,7 +196,8 @@ class LaporanTidakHadirController extends GetxController {
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
       'status': idDepartemenTerpilih.value,
-      'type': title.value
+      'type': title.value,
+      'em_id': AppData.informasiUser![0].em_id
     };
     var connect = Api.connectionApi("post", body, "load_laporan_pengajuan");
     connect.then((dynamic res) {

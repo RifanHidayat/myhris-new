@@ -90,7 +90,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
   var controller = Get.find<AbsenController>(tag: 'absen controller');
   var controllerBerhasil = Get.put(BerhasilController());
   var authController = Get.put(AuthController());
-  var controllerTracking = Get.put(TrackingController());
+  var controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
   Timer? time;
   Location location = new Location();
 
@@ -260,7 +260,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
 
   @override
   void dispose() {
-    UtilsAlert.showLoadingIndicator(context);
+    // UtilsAlert.showLoadingIndicator(context);
     super.dispose();
     Get.back();
   }

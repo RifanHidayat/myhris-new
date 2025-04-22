@@ -33,8 +33,8 @@ class _TugasLuarState extends State<TugasLuar> {
   void initState() {
     super.initState();
     Api().checkLogin();
-    controller.loadDataTugasLuar();
-    controller.loadDataDinasLuar();
+    // controller.loadDataTugasLuar();
+    // controller.loadDataDinasLuar();
     if (Get.arguments != null) {
       idx = Get.arguments;
       Future.delayed(const Duration(milliseconds: 500), () {

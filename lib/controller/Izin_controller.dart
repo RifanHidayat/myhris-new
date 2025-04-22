@@ -36,6 +36,8 @@ class IzinController extends GetxController {
   var izinTerpakai = 0.obs;
   var jumlahIzin = 0.obs;
   var percentIzin = 0.0.obs;
+  var cutLeave = 0.obs;
+  var limitIzin = 0.obs;
   var showDurationIzin = false.obs;
   var inputTime = 0.obs;
 
@@ -254,8 +256,8 @@ class IzinController extends GetxController {
     };
     var connect = Api.connectionApi("post", body, "emp_leave_load_izin");
     connect.then((dynamic res) {
+      var valueBody = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        var valueBody = jsonDecode(res.body);
         if (valueBody['status'] == false) {
           loadingString.value = "Anda tidak memiliki\nRiwayat Pengajuan Izin";
           this.loadingString.refresh();
@@ -275,6 +277,8 @@ class IzinController extends GetxController {
           this.AlllistHistoryAjuan.refresh();
           this.loadingString.refresh();
         }
+      } else {
+        loadingString.value = valueBody['message'];
       }
     });
   }
@@ -294,8 +298,8 @@ class IzinController extends GetxController {
     var connect =
         Api.connectionApi("post", body, "emp_leave_load_izin_Kategori");
     await connect.then((dynamic res) {
+      var valueBody = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        var valueBody = jsonDecode(res.body);
         print("data value body ${valueBody}");
         if (valueBody['status'] == false) {
           // loadingString.value =  "Anda tidak memiliki\nRiwayat Pengajuan Izin";
@@ -304,10 +308,12 @@ class IzinController extends GetxController {
           izinTerpakai.value = 0;
           return true;
         } else {
-          izinTerpakai.value = valueBody['jumlah_data'];
+          // izinTerpakai.value = valueBody['jumlah_data'];
           izinCategory.value = valueBody['data'];
           return true;
         }
+      } else {
+        loadingString = valueBody['message'];
       }
     });
     return true;
@@ -371,12 +377,11 @@ class IzinController extends GetxController {
         } else {
           if (res.statusCode == 200) {
             var valueBody = jsonDecode(res.body);
-            List  data = valueBody['data'];
-            
+            List data = valueBody['data'];
+
             for (var element in data) {
-                 print("status new new${element['status'] }");
+              // print("status new new${element['status']}");
               if (element['status'] == 'ACTIVE') {
-             
                 var fullName = element['full_name'] ?? "";
                 String namaUser = "$fullName";
 
@@ -465,6 +470,8 @@ class IzinController extends GetxController {
           } else {
             inputTime.value = int.parse(allTipe[0]['input_time'].toString());
             isBackdate.value = allTipe[0]['back_date'].toString();
+            cutLeave.value = allTipe[0]['cut_leave'];
+            limitIzin.value = allTipe[0]['leave_day'];
           }
         }
         loadTypeIzin();
@@ -520,7 +527,7 @@ class IzinController extends GetxController {
 
         if (data1[0]['leave_day'] > 0) {
           loadDataAjuanIzinCategori(id: data1[0]['id']);
-          showDurationIzin.value = true;
+          showDurationIzin.value = false;
           jumlahIzin.value = data[0]['leave_day'];
           percentIzin.value = double.parse(
               ((izinTerpakai.value / jumlahIzin.value) * 100).toString());
@@ -531,6 +538,8 @@ class IzinController extends GetxController {
         if (data1[0]['input_time'] == null) {
         } else {
           inputTime.value = int.parse(data[0]['input_time'].toString());
+          cutLeave.value = allTipe[0]['cut_leave'];
+          limitIzin.value = allTipe[0]['leave_day'];
         }
         jamAjuan.value.text = "";
         sampaiJamAjuan.value.text = "";
@@ -589,11 +598,11 @@ class IzinController extends GetxController {
       selectedDropdownFormTidakMasukKerjaTipe.value = listFirst;
       this.selectedDropdownFormTidakMasukKerjaTipe.refresh();
     }
-    loadingString.value = listHistoryAjuan.value.length == 0
-        ? "Anda tidak memiliki\nRiwayat Pengajuan Izin"
-        : "Memuat data...";
+    // loadingString.value = listHistoryAjuan.value.length == 0
+    //     ? "Anda tidak memiliki\nRiwayat Pengajuan Izin"
+    //     : "Memuat data...";
     selectedType.value = index;
-    this.loadingString.refresh();
+    // this.loadingString.refresh();
     this.listHistoryAjuan.refresh();
     this.selectedType.refresh();
     typeAjuanRefresh("Semua Status");
@@ -668,9 +677,9 @@ class IzinController extends GetxController {
       this.listHistoryAjuan.refresh();
       this.selectedType.refresh();
     }
-    loadingString.value = listHistoryAjuan.value.length != 0
-        ? "Memuat data..."
-        : "Anda tidak memiliki\nRiwayat Pengajuan Izin";
+    // loadingString.value = listHistoryAjuan.value.length != 0
+    //     ? "Memuat data..."
+    //     : "Anda tidak memiliki\nRiwayat Pengajuan Izin";
     this.loadingString.refresh();
   }
 
@@ -768,11 +777,11 @@ class IzinController extends GetxController {
           "upload_form_tidakMasukKerja", filePengajuan.value);
       var valueBody = jsonDecode(connectUpload);
       if (valueBody['status'] == true) {
-        UtilsAlert.showToast("Berhasil upload file");
-        Navigator.pop(Get.context!);
+        // UtilsAlert.showToast("Berhasil upload file");
+        // Navigator.pop(Get.context!);
         checkNomorAjuan(status);
       } else {
-        UtilsAlert.showToast("Gagal kirim file");
+        // UtilsAlert.showToast("Gagal kirim file");
       }
     } else {
       if (status == false) {
@@ -1467,7 +1476,6 @@ class IzinController extends GetxController {
         Navigator.pop(Get.context!);
         Navigator.pop(Get.context!);
         UtilsAlert.showToast("Berhasil batalkan pengajuan");
-        onReady();
       }
     });
   }

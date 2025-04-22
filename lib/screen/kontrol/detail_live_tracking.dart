@@ -40,7 +40,7 @@ class _DetailLiveTrackingState extends State<DetailLiveTracking> {
   final deskripsi = Get.arguments['deskripsi'];
   final emIdEmployee = Get.arguments['emIdEmployee'];
 
-  final controllerTracking = Get.put(TrackingController());
+  final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
 
   Timer? _timer;
   // List<String> _locations = [];

@@ -87,7 +87,7 @@ class DashboardController extends GetxController {
   CarouselSliderController corouselDashboard = CarouselSliderController();
   PageController menuController = PageController(initialPage: 0);
   PageController informasiController = PageController(initialPage: 0);
-  final controllerTracking = Get.put(TrackingController());
+  final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
   final tabbController = Get.put(TabbController());
   var controller = Get.put(BpjsController());
   final controllerAktifitas = Get.put(AktifitasController());
@@ -235,7 +235,6 @@ class DashboardController extends GetxController {
     dateNow.value = dateNoww(startDate);
     // updateInformasiUser();
 
-    Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
     getSizeDevice();
     checkStatusPermission();
     checkHakAkses();
@@ -728,7 +727,7 @@ class DashboardController extends GetxController {
         }
       }
     } catch (e) {
-      UtilsAlert.showToast(e.toString());
+      // UtilsAlert.showToast(e.toString());
     }
   }
 
@@ -1879,7 +1878,7 @@ class DashboardController extends GetxController {
       UtilsAlert.showToast(res['message']);
       return false;
     } catch (e) {
-      UtilsAlert.showToast(e);
+      // UtilsAlert.showToast(e);
       return false;
       print(e.toString());
     }

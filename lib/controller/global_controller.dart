@@ -20,11 +20,11 @@ class GlobalController extends GetxController {
   var sysData = [].obs;
   var employeeSisaCuti = [].obs;
 
-  @override
-  void onReady() async {
-    // getLoadsysData();
-    super.onReady();
-  }
+  // @override
+  // void onReady() async {
+  //   // getLoadsysData();
+  //   super.onReady();
+  // }
 
   Future<void> getLoadsysData() async {
     sysData.clear();

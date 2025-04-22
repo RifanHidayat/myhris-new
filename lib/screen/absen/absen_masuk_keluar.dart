@@ -671,7 +671,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                             flex: 90,
                                             child: TextLabell(
                                                 text:
-                                                    "Lokasi tidak tersedia! ,coba lakukan refresh pada bagian atas aplikasi "),
+                                                    "Lokasi tidak tersedia, coba lakukan refresh pada bagian atas aplikasi atau hubungi HRD."),
                                           )
                                         ],
                                       ),

@@ -2,6 +2,7 @@ import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
 // import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:siscom_operasional/controller/tab_controller.dart';
@@ -23,7 +24,8 @@ class InitScreen extends StatefulWidget {
 
 class _InitScreenState extends State<InitScreen> {
   final controller = Get.put(TabbController());
-  final controllerTracking = Get.put(TrackingController());
+  final controllerTracking = Get.put(TrackingController(), tag: 'iniScreen');
+  var controllerAbsnsi = Get.put(AbsenController(),tag: 'absen controller');
   final controllerPesan = Get.put(PesanController());
 
   // int _currentIndex = 0;

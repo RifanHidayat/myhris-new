@@ -66,7 +66,7 @@ import 'package:android_intent/flag.dart';
 
 class AbsenController extends GetxController {
   var globalCt = Get.put(GlobalController());
-  final controllerTracking = Get.put(TrackingController());
+  final controllerTracking = Get.put(TrackingController(), tag: 'iniScreen');
 
   PageController? pageViewFilterAbsen;
 
@@ -189,7 +189,7 @@ class AbsenController extends GetxController {
 
   var typeAbsen = 0.obs;
   var intervalControl = 60000.obs;
-  
+
   var allDataCheck = [].obs;
 
   var imageStatus = false.obs;
@@ -1217,7 +1217,7 @@ class AbsenController extends GetxController {
       } on Exception catch (e) {
         print(e.toString());
         Get.back();
-        UtilsAlert.showToast(e.toString());
+        // UtilsAlert.showToast(e.toString());
         throw e;
       }
     } else {
@@ -1339,7 +1339,7 @@ class AbsenController extends GetxController {
     } on Exception catch (e) {
       print(e.toString());
       Get.back();
-      UtilsAlert.showToast(e.toString());
+      // UtilsAlert.showToast(e.toString());
       throw e;
     }
   }
@@ -1547,7 +1547,7 @@ class AbsenController extends GetxController {
     try {
       if (Platform.isAndroid) {
         // TrustLocation.start(1);
-       // getCheckMock();
+        // getCheckMock();
         if (!mockLocation.value) {
           var statusPosisi = await validasiRadius();
           if (statusPosisi == true) {
@@ -1603,7 +1603,7 @@ class AbsenController extends GetxController {
                 }
               }
             }
-             print("parameter wfh 1");
+            print("parameter wfh 1");
             if (typeAbsen.value == 1) {
               // absenStatus.value = true;
               AppData.statusAbsen = true;
@@ -1643,7 +1643,7 @@ class AbsenController extends GetxController {
                     'start_time': startTime,
                     'end_time': endTime,
                   };
-           
+
             isLoaingAbsensi.value = true;
             var connect = await ApiRequest(
                     url: typewfh == "wfh" ? "wfh" : "kirimAbsen", body: body)
@@ -1659,8 +1659,9 @@ class AbsenController extends GetxController {
               // }
               isLoaingAbsensi.value = false;
               this.intervalControl.refresh();
-
-              timeString.value = valueBody['time'];
+              String timeValue =  DateTime.now().toString();
+              DateTime dateTime = DateTime.parse(timeValue);
+              timeString.value = valueBody['time'] ?? DateFormat('HH:mm:ss').format(dateTime);
               print("dapat interval ${intervalControl.value}");
               // Navigator.pop(Get.context!);
 
@@ -1778,7 +1779,8 @@ class AbsenController extends GetxController {
           } else {
             isLoaingAbsensi.value = false;
             Get.back();
-            UtilsAlert.showToast("Terjadi kesalahan, silakan coba melakukan absen ulang.");
+            UtilsAlert.showToast(
+                "Terjadi kesalahan, silakan coba melakukan absen ulang.");
             // UtilsAlert.koneksiBuruk();
             // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
             //     positiveBtnPressed: () {
@@ -1838,10 +1840,10 @@ class AbsenController extends GetxController {
       }
     } catch (e) {
       isLoaingAbsensi.value = false;
+      print('error saat absen $e');
       Get.back();
       UtilsAlert.showToast(
           "Periksa kembali koneksi internet Anda, dan coba lakukan absen beberapa saat lagi.");
-          
     }
 
     //  }
@@ -2439,9 +2441,9 @@ class AbsenController extends GetxController {
             } else {
               isLoaingAbsensi.value = false;
               Get.back();
-                      UtilsAlert.showToast(
+              UtilsAlert.showToast(
                   "Terjadi kesalahan, silakan coba melakukan absen ulang.");
-         
+
               // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
               //     positiveBtnPressed: () {
               //   // kirimDataAbsensiOffline(typewfh: typewfh);
@@ -2540,8 +2542,8 @@ class AbsenController extends GetxController {
           } else {
             isLoaingAbsensi.value = false;
             Get.back();
-                      UtilsAlert.showToast(
-                  "Terjadi kesalahan, silakan coba melakukan absen ulang.");
+            UtilsAlert.showToast(
+                "Terjadi kesalahan, silakan coba melakukan absen ulang.");
             // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
             //     positiveBtnPressed: () {
             //   // kirimDataAbsensiOffline(typewfh: typewfh);
@@ -2569,9 +2571,8 @@ class AbsenController extends GetxController {
     } catch (e) {
       isLoaingAbsensi.value = false;
       Get.back();
-     UtilsAlert.showToast(
+      UtilsAlert.showToast(
           "Periksa kembali koneksi internet Anda, dan coba lakukan absen beberapa saat lagi.");
-
     }
 
     //  }
@@ -2621,9 +2622,9 @@ class AbsenController extends GetxController {
     print(body);
     var connect = Api.connectionApi("post", body, "attendance");
     connect.then((dynamic res) {
+      var valueBody = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        var valueBody = jsonDecode(res.body);
-        print('data body ${valueBody}');
+        print('data body absen ${valueBody}');
         if (valueBody['status'] == true) {
           List data = valueBody['data'];
           loading.value =
@@ -2856,6 +2857,8 @@ class AbsenController extends GetxController {
         } else {
           loading.value = "Data tidak ditemukan";
         }
+      } else {
+        loading.value = valueBody['message'];
       }
     });
   }
@@ -4363,7 +4366,7 @@ class AbsenController extends GetxController {
           var valueBody = jsonDecode(res.body);
           var data = valueBody['data'];
           isTracking.value = data[0]['em_control'];
-         // regType.value = data[0]['reg_type'];
+          // regType.value = data[0]['reg_type'];
           print("Req tye ${regType.value}");
           box.write("file_face", data[0]['file_face']);
 
@@ -4527,7 +4530,7 @@ class AbsenController extends GetxController {
 
   void addPengajuan() {}
 
-   void checkAbsensi() {
+  void checkAbsensi() {
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
       "em_id": emId,
@@ -4545,7 +4548,7 @@ class AbsenController extends GetxController {
         var valueBody = jsonDecode(res.body);
         List data = valueBody['data'];
         if (data.isNotEmpty) {
-          allDataCheck.add(data) ;
+          allDataCheck.add(data);
           var lastData = data[data.length - 1];
           checkinAjuan.value = lastData['signin_time'];
           checkoutAjuan.value = lastData['signout_time'];
@@ -4610,7 +4613,6 @@ class AbsenController extends GetxController {
   }
 
   void dataPengajuanAbsensi() {
-  
     isLoadingPengajuan.value = true;
     var emId = AppData.informasiUser![0].em_id;
     var body = {
@@ -4622,9 +4624,8 @@ class AbsenController extends GetxController {
     print(body);
     var connect = Api.connectionApi("post", body, "get-employee-attendance");
     connect.then((dynamic res) {
-     
       if (res.statusCode == 200) {
-      //  /    UtilsAlert.showToast("masuk sini");
+        //  /    UtilsAlert.showToast("masuk sini");
         isLoadingPengajuan.value = false;
         var valueBody = jsonDecode(res.body);
         List data = valueBody['data'];

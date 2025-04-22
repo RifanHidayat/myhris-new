@@ -68,7 +68,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   final controller = Get.put(DashboardController());
   final controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
-  final controllerTracking = Get.put(TrackingController());
+  final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
   final controllerPesan = Get.put(PesanController());
   var controllerGlobal = Get.put(GlobalController());
   var controllerBpj = Get.put(BpjsController());
@@ -87,7 +87,7 @@ class _DashboardState extends State<Dashboard> {
   
     // setState(() {
     Future.wait([
-      // controller.updateInformasiUser(),
+      controller.updateInformasiUser(),
       // controllerBpj.employeDetaiBpjs(),
       // controllerAbsensi.employeDetail(),
       // controllerAbsensi.userShift(),
@@ -918,7 +918,7 @@ class _DashboardState extends State<Dashboard> {
                       ? Column(
                           children: [
                             Text(
-                              AppData.informasiUser![0].branchName.toString(),
+                              AppData.informasiUser![0].branchName ?? '',
                               style: GoogleFonts.inter(
                                   color: Constanst.fgSecondary,
                                   fontSize: 12,

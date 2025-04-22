@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -273,8 +274,8 @@ class LemburController extends GetxController {
     };
     var connect = Api.connectionApi("post", body, "history-emp_labor");
     connect.then((dynamic res) {
-      if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+      if (res.statusCode == 200) {
         if (valueBody['status'] == false) {
           loadingString.value = "Anda tidak memiliki\nRiwayat Pengajuan Lembur";
           this.loadingString.refresh();
@@ -296,6 +297,8 @@ class LemburController extends GetxController {
           this.listLemburAll.refresh();
           this.loadingString.refresh();
         }
+      }else{
+        loadingString.value = valueBody['message'];
       }
     });
   }
