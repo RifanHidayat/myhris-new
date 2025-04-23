@@ -33,6 +33,8 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
   void initState() {
     controller.onReady();
     controller.getPlaceCoordinate();
+    controller.getTimeNow();
+    controller.getDepartemen(1, "");
     controller.tempNamaLaporan1.value = "";
     controller.tempNamaTipe1.value = "Absensi";
     super.initState();

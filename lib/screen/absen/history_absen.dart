@@ -127,12 +127,12 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                         children: [
                           dashboardController.isVisibleFloating.value == false
                               ? Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text("Absensi",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w500)),
-                              )
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text("Absensi",
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w500)),
+                                )
                               : TabBar(
                                   indicatorColor: Constanst.colorPrimary,
                                   labelColor: Constanst.colorPrimary,
@@ -184,7 +184,17 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                   .historyAbsen.value.isEmpty
                                               ? Center(
                                                   child: Text(
-                                                      controller.loading.value),
+                                                    controller.loading.value,
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts.inter(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 16,
+                                                      height: 1.4,
+                                                      color:
+                                                          Constanst.fgPrimary,
+                                                    ),
+                                                  ),
                                                 )
                                               : listAbsen(),
                                         ))
@@ -399,8 +409,21 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                 child: controller.historyAbsen
                                                         .value.isEmpty
                                                     ? Center(
-                                                        child: Text(controller
-                                                            .loading.value),
+                                                        child: Text(
+                                                          controller
+                                                              .loading.value,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style:
+                                                              GoogleFonts.inter(
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontSize: 16,
+                                                            height: 1.4,
+                                                            color: Constanst
+                                                                .fgPrimary,
+                                                          ),
+                                                        ),
                                                       )
                                                     : listAbsen(),
                                               ))
@@ -512,7 +535,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                 : FloatingActionButton(
                     backgroundColor: Constanst.colorPrimary,
                     onPressed: () {
-                      print('tipe absen user ${AppData.informasiUser![0].tipeAbsen}');
+                      print(
+                          'tipe absen user ${AppData.informasiUser![0].tipeAbsen}');
                       Get.to(const pengajuanAbsen());
                     },
                     child: const Icon(
@@ -3103,72 +3127,84 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 )
                               ],
                             ),
-                            AppData.informasiUser![0].tipeAbsen.toString()=="3"?  const SizedBox(height: 12):SizedBox(),
-                            AppData.informasiUser![0].tipeAbsen.toString()=="3"? const Divider(
-                              thickness: 1,
-                              height: 0,
-                            ):SizedBox(),
-                            AppData.informasiUser![0].tipeAbsen.toString()=="3"? SizedBox(height: 12):SizedBox(),
-                           AppData.informasiUser![0].tipeAbsen.toString()=="3"? Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                            AppData.informasiUser![0].tipeAbsen.toString() ==
+                                    "3"
+                                ? const SizedBox(height: 12)
+                                : SizedBox(),
+                            AppData.informasiUser![0].tipeAbsen.toString() ==
+                                    "3"
+                                ? const Divider(
+                                    thickness: 1,
+                                    height: 0,
+                                  )
+                                : SizedBox(),
+                            AppData.informasiUser![0].tipeAbsen.toString() ==
+                                    "3"
+                                ? SizedBox(height: 12)
+                                : SizedBox(),
+                            AppData.informasiUser![0].tipeAbsen.toString() ==
+                                    "3"
+                                ? Row(
                                     children: [
-                                      TextLabell(
-                                        text: "Istirahat Keluar",
-                                        color: Constanst.fgSecondary,
-                                        size: 14,
-                                        weight: FontWeight.w400,
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            TextLabell(
+                                              text: "Istirahat Keluar",
+                                              color: Constanst.fgSecondary,
+                                              size: 14,
+                                              weight: FontWeight.w400,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            data['breakout_time'] == ""
+                                                ? TextLabell(
+                                                    text: "_ _ : _ _",
+                                                    color: Constanst.fgPrimary,
+                                                    size: 16,
+                                                    weight: FontWeight.w500,
+                                                  )
+                                                : TextLabell(
+                                                    text: data['breakout_time'],
+                                                    color: Constanst.fgPrimary,
+                                                    size: 16,
+                                                    weight: FontWeight.w500,
+                                                  )
+                                          ],
+                                        ),
                                       ),
-                                      const SizedBox(height: 4),
-                                      data['breakout_time'] == ""
-                                          ? TextLabell(
-                                              text: "_ _ : _ _",
-                                              color: Constanst.fgPrimary,
-                                              size: 16,
-                                              weight: FontWeight.w500,
-                                            )
-                                          : TextLabell(
-                                              text: data['breakout_time'],
-                                              color: Constanst.fgPrimary,
-                                              size: 16,
-                                              weight: FontWeight.w500,
-                                            )
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            TextLabell(
+                                              text: "Istirahat Masuk",
+                                              color: Constanst.fgSecondary,
+                                              size: 14,
+                                              weight: FontWeight.w400,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            data['breakin_time'] == ""
+                                                ? TextLabell(
+                                                    text: "_ _ : _ _",
+                                                    color: Constanst.fgPrimary,
+                                                    size: 16,
+                                                    weight: FontWeight.w500,
+                                                  )
+                                                : TextLabell(
+                                                    text: data['breakin_time'],
+                                                    color: Constanst.fgPrimary,
+                                                    size: 16,
+                                                    weight: FontWeight.w500,
+                                                  )
+                                          ],
+                                        ),
+                                      )
                                     ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      TextLabell(
-                                        text: "Istirahat Masuk",
-                                        color: Constanst.fgSecondary,
-                                        size: 14,
-                                        weight: FontWeight.w400,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      data['breakin_time'] == ""
-                                          ? TextLabell(
-                                              text: "_ _ : _ _",
-                                              color: Constanst.fgPrimary,
-                                              size: 16,
-                                              weight: FontWeight.w500,
-                                            )
-                                          : TextLabell(
-                                              text: data['breakin_time'],
-                                              color: Constanst.fgPrimary,
-                                              size: 16,
-                                              weight: FontWeight.w500,
-                                            )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ):SizedBox(),
+                                  )
+                                : SizedBox(),
                             const SizedBox(height: 12),
                             const Divider(
                               thickness: 1,
@@ -3414,7 +3450,10 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      data['approve_status'] == "Pending" || data['approve_status'] == null || data['approve_status'] == "null" || data['approve_status'] == ""
+                      data['approve_status'] == "Pending" ||
+                              data['approve_status'] == null ||
+                              data['approve_status'] == "null" ||
+                              data['approve_status'] == ""
                           ? Icon(
                               Iconsax.timer,
                               color: Constanst.warning,

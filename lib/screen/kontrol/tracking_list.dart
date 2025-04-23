@@ -28,7 +28,7 @@ class _TrackingListState extends State<TrackingList> {
   double _panelHeightClosed = 314.0;
   final panelController = PanelController();
   // final controllerTracking = Get.find<AbsenController>(tag: 'absen controller');
-  var controllerTracking = Get.put(TrackingController());
+  var controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
   final controllerDashboard = Get.put(DashboardController());
   FocusNode myfocus = FocusNode();
 

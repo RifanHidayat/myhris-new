@@ -24,8 +24,8 @@ class _FormLemburState extends State<FormLembur> {
   @override
   void initState() {
     print('ini data lembur kali yak? ${widget.dataForm![0]}');
-    controller.loadAllEmployeeDelegasi();
-    controller.getTypeLembur();
+    // controller.loadAllEmployeeDelegasi();
+    // controller.getTypeLembur();
     if (widget.dataForm![1] == true) {
       controller.selectedTypeLembur.value = widget.dataForm![0]['type'];
       controller.tanggalLembur.value.text =
@@ -47,7 +47,7 @@ class _FormLemburState extends State<FormLembur> {
     } else {
       controller.selectedTypeLembur.value = "";
       controller.tanggalLembur.value.text = "";
-      
+
       controller.removeAll();
     }
     super.initState();
@@ -90,6 +90,9 @@ class _FormLemburState extends State<FormLembur> {
             child: Obx(
               () => Column(
                 children: [
+                  controller.viewTypeLembur.value == false
+                      ? message()
+                      : const SizedBox(),
                   Obx(() => controller.statusJam.value.isNotEmpty
                       ? Padding(
                           padding:
@@ -144,6 +147,11 @@ class _FormLemburState extends State<FormLembur> {
             padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 12.0),
             child: ElevatedButton(
               onPressed: () {
+                
+                if (controller.viewTypeLembur.value == false) {
+                  UtilsAlert.showToast('Tipe lembur belum disetting, silakan hubungi HRD.');
+                  return;
+                }
                 print("tes ${controller.dariJam.value.text.toString()}");
                 TimeOfDay _startTime = TimeOfDay(
                     hour: int.parse(
@@ -197,6 +205,39 @@ class _FormLemburState extends State<FormLembur> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget message() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Constanst.infoLight1,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          children: [
+            Icon(
+              Iconsax.info_circle5,
+              color: Constanst.colorPrimary,
+              size: 26,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                "Tipe lembur belum disetting, silakan hubungi HRD.",
+                textAlign: TextAlign.left,
+                style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w400,
+                    color: Constanst.fgSecondary,
+                    fontSize: 14),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -275,8 +316,8 @@ class _FormLemburState extends State<FormLembur> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Obx(() =>
-                                  Text(
+                                Obx(
+                                  () => Text(
                                     controller.selectedTypeLembur.value,
                                     style: GoogleFonts.inter(
                                       fontSize: 16,

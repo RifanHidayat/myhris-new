@@ -47,9 +47,9 @@ class AuthController extends GetxController {
   var isautoLogout = false.obs;
   var messageLogout = "".obs;
   var messageNewPassword = "".obs;
- 
+
   var controllerAbsnsi = Get.find<AbsenController>(tag: 'absen controller');
-  final controllerTracking = Get.put(TrackingController());
+  final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
   var globalCtr = Get.put(GlobalController());
   // var isConnected = true.obs;
   // Timer? timer;
@@ -333,180 +333,187 @@ class AuthController extends GetxController {
       'token_notif': fcm_registration_token,
       'database': selectedDb.value
     };
+
     var connect = Api.connectionApi("post", body, "login");
     connect.then((dynamic res) async {
-      var valueBody = jsonDecode(res.body);
-      print('data login ${valueBody}');
-      if (valueBody['status'] == false) {
-        UtilsAlert.showToast(valueBody['message']);
-        Navigator.pop(Get.context!);
-      } else {
-        print("nama database ${selectedDb.value}");
-        AppData.selectedDatabase = selectedDb.value;
-        AppData.selectedPerusahan = selectedPerusahaan.value;
+      try {
+        var valueBody = jsonDecode(res.body);
+        print('data login ${valueBody}');
+        if (valueBody['status'] == false) {
+          UtilsAlert.showToast(valueBody['message']);
+          Navigator.pop(Get.context!);
+        } else {
+          print("nama database ${selectedDb.value}");
+          AppData.selectedDatabase = selectedDb.value;
+          AppData.selectedPerusahan = selectedPerusahaan.value;
 
-        List<UserModel> getData = [];
+          List<UserModel> getData = [];
 
-        var lastLoginUser = "";
-        var getEmId = "";
-        var getAktif = "";
-        var idMobile = "";
+          var lastLoginUser = "";
+          var getEmId = "";
+          var getAktif = "";
+          var idMobile = "";
 
-        print("data login 2 new new ${valueBody['data']}");
-        var isBackDateSakit = "0";
-        var isBackDateIzin = "0";
-        var isBackDateCuti = "0";
-        var isBackDateTugasLuar = "0";
-        var isBackDateDinasLuar = "0";
-        var isBackDateLembur = "0";
+          print("data login 2 new new ${valueBody['data']}");
+          var isBackDateSakit = "0";
+          var isBackDateIzin = "0";
+          var isBackDateCuti = "0";
+          var isBackDateTugasLuar = "0";
+          var isBackDateDinasLuar = "0";
+          var isBackDateLembur = "0";
 
-        for (var element in valueBody['data']) {
-          if (element['back_date'] == "" || element['back_date'] == null) {
-          } else {
-            List isBackDates = element['back_date'].toString().split(',');
-            isBackDateSakit = isBackDates[0].toString();
-            isBackDateIzin = isBackDates[1].toString();
-            isBackDateCuti = isBackDates[2].toString();
-            isBackDateTugasLuar = isBackDates[3].toString();
-            isBackDateDinasLuar = isBackDates[4].toString();
-            isBackDateLembur = isBackDates[5].toString();
+          for (var element in valueBody['data']) {
+            if (element['back_date'] == "" || element['back_date'] == null) {
+            } else {
+              List isBackDates = element['back_date'].toString().split(',');
+              isBackDateSakit = isBackDates[0].toString();
+              isBackDateIzin = isBackDates[1].toString();
+              isBackDateCuti = isBackDates[2].toString();
+              isBackDateTugasLuar = isBackDates[3].toString();
+              isBackDateDinasLuar = isBackDates[4].toString();
+              isBackDateLembur = isBackDates[5].toString();
 
-            print("data back date ");
-            print("1 ${isBackDates[0].toString()}");
-            print("2 ${isBackDates[1].toString()}");
-            print("3 ${isBackDates[2].toString()}");
-            print("4 ${isBackDates[3].toString()}");
-            print(
-                "dinas luar ${isBackDates[4].toString()} ${isBackDateDinasLuar}");
-            print("6 ${isBackDates[5].toString()}");
+              print("data back date ");
+              print("1 ${isBackDates[0].toString()}");
+              print("2 ${isBackDates[1].toString()}");
+              print("3 ${isBackDates[2].toString()}");
+              print("4 ${isBackDates[3].toString()}");
+              print(
+                  "dinas luar ${isBackDates[4].toString()} ${isBackDateDinasLuar}");
+              print("6 ${isBackDates[5].toString()}");
+            }
+            var data = UserModel(
+                isBackDateSakit: isBackDateSakit,
+                isBackDateIzin: isBackDateIzin,
+                isBackDateCuti: isBackDateCuti,
+                isBackDateTugasLuar: isBackDateTugasLuar,
+                isBackDateDinasLuar: isBackDateDinasLuar,
+                isBackDateLembur: isBackDateLembur,
+                em_id: element['em_id'] ?? "",
+                des_id: element['des_id'] ?? 0,
+                dep_id: element['dep_id'] ?? 0,
+                dep_group: element['dep_group'] ?? 0,
+                full_name: element['full_name'] ?? "",
+                em_email: element['em_email'] ?? "",
+                em_phone: element['em_phone'] ?? "",
+                em_birthday: element['em_birthday'] ?? "1999-09-09",
+                em_gender: element['em_gender'] ?? "",
+                em_image: element['em_image'] ?? "",
+                em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+                em_status: element['em_status'] ?? "",
+                em_blood_group: element['em_blood_group'] ?? "",
+                posisi: element['posisi'] ?? "",
+                emp_jobTitle: element['emp_jobTitle'] ?? "",
+                emp_departmen: element['emp_departmen'] ?? "",
+                em_control: element['em_control'] ?? 0,
+                em_control_acess: element['em_control_access'] ?? 0,
+                emp_att_working: element['emp_att_working'] ?? 0,
+                em_hak_akses: element['em_hak_akses'] ?? "",
+                beginPayroll: element['begin_payroll'] ?? 1,
+                endPayroll: element['end_payroll'] ?? 31,
+                branchName: element['branch_name'] ?? "",
+                startTime: element['time_attendance'].toString().split(',')[0],
+                endTime: element['time_attendance'].toString().split(',')[1],
+                nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
+                nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
+                timeIn: element['time_in'] ?? "",
+                timeOut: element['time_out'] ?? "",
+                interval: element['interval'],
+                interval_tracking: element['interval_tracking'],
+                isViewTracking: element['is_view_tracking'],
+                is_tracking: element['is_tracking'],
+                tipeAbsen: element['tipe_absen']
+                //   startTime: "00:01",
+                // endTime: "23:59",
+                );
+
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString(
+                "interval_tracking", element['interval_tracking'].toString());
+            await prefs.setString("em_id", element['em_id'].toString());
+
+            print('data login ${data}');
+
+            if (element['file_face'] == "" || element['file_face'] == null) {
+              box.write("face_recog", false);
+            } else {
+              box.write("face_recog", true);
+            }
+            getData.add(data);
+            AppData.informasiUser = getData;
+            lastLoginUser = "${element['last_login']}";
+            getEmId = "${element['em_id']}";
+            getAktif = "${element['status_aktif']}";
+
+            AppData.isLogin = true;
+            AppData.setFcmToken = fcm_registration_token.toString();
+            print(element.toString());
+
+            if (AppData.informasiUser![0].is_tracking.toString() == '1') {
+              controllerTracking.bagikanlokasi.value = "aktif";
+              // await BackgroundLocationTrackerManager.startTracking();
+              // final service = FlutterBackgroundService();
+              // FlutterBackgroundService().invoke("setAsBackground");
+
+              // service.startService();
+              controllerTracking.updateStatus('1');
+              controllerTracking.isTrackingLokasi.value = true;
+              // controllerTracking.detailTracking(emIdEmployee: '');
+              print(
+                  "startTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
+            } else {
+              controllerTracking.bagikanlokasi.value = "tidak aktif";
+              // await LocationDao().clear();
+              // await _getLocations();
+              // await BackgroundLocationTrackerManager.stopTracking();
+              // final service = FlutterBackgroundService();
+              // FlutterBackgroundService().invoke("setAsBackground");
+
+              // service.invoke("stopService");
+              controllerTracking.updateStatus('0');
+              controllerTracking.isTrackingLokasi.value = false;
+              print(
+                  "stopTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
+            }
           }
-          var data = UserModel(
-              isBackDateSakit: isBackDateSakit,
-              isBackDateIzin: isBackDateIzin,
-              isBackDateCuti: isBackDateCuti,
-              isBackDateTugasLuar: isBackDateTugasLuar,
-              isBackDateDinasLuar: isBackDateDinasLuar,
-              isBackDateLembur: isBackDateLembur,
-              em_id: element['em_id'] ?? "",
-              des_id: element['des_id'] ?? 0,
-              dep_id: element['dep_id'] ?? 0,
-              dep_group: element['dep_group'] ?? 0,
-              full_name: element['full_name'] ?? "",
-              em_email: element['em_email'] ?? "",
-              em_phone: element['em_phone'] ?? "",
-              em_birthday: element['em_birthday'] ?? "1999-09-09",
-              em_gender: element['em_gender'] ?? "",
-              em_image: element['em_image'] ?? "",
-              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-              em_status: element['em_status'] ?? "",
-              em_blood_group: element['em_blood_group'] ?? "",
-              posisi: element['posisi'] ?? "",
-              emp_jobTitle: element['emp_jobTitle'] ?? "",
-              emp_departmen: element['emp_departmen'] ?? "",
-              em_control: element['em_control'] ?? 0,
-              em_control_acess: element['em_control_access'] ?? 0,
-              emp_att_working: element['emp_att_working'] ?? 0,
-              em_hak_akses: element['em_hak_akses'] ?? "",
-              beginPayroll: element['begin_payroll'] ?? 1,
-              endPayroll: element['end_payroll'] ?? 31,
-              branchName: element['branch_name'] ?? "",
-              startTime: element['time_attendance'].toString().split(',')[0],
-              endTime: element['time_attendance'].toString().split(',')[1],
-              nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
-              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
-              timeIn: element['time_in'] ?? "",
-              timeOut: element['time_out'] ?? "",
-              interval: element['interval'],
-              interval_tracking: element['interval_tracking'],
-              isViewTracking: element['is_view_tracking'],
-              is_tracking: element['is_tracking'],
-              tipeAbsen: element['tipe_absen']
-              //   startTime: "00:01",
-              // endTime: "23:59",
-              );
 
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString(
-              "interval_tracking", element['interval_tracking'].toString());
-          await prefs.setString("em_id", element['em_id'].toString());
-
-          print('data login ${data}');
-
-          if (element['file_face'] == "" || element['file_face'] == null) {
-            box.write("face_recog", false);
-          } else {
-            box.write("face_recog", true);
-          }
-          getData.add(data);
-          AppData.informasiUser = getData;
-          lastLoginUser = "${element['last_login']}";
-          getEmId = "${element['em_id']}";
-          getAktif = "${element['status_aktif']}";
-
-          AppData.isLogin = true;
-          AppData.setFcmToken = fcm_registration_token.toString();
-          print(element.toString());
-
-          if (AppData.informasiUser![0].is_tracking.toString() == '1') {
-            controllerTracking.bagikanlokasi.value = "aktif";
-            // await BackgroundLocationTrackerManager.startTracking();
-            // final service = FlutterBackgroundService();
-            // FlutterBackgroundService().invoke("setAsBackground");
-
-            // service.startService();
-            controllerTracking.updateStatus('1');
-            controllerTracking.isTrackingLokasi.value = true;
-            // controllerTracking.detailTracking(emIdEmployee: '');
-            print(
-                "startTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
-          } else {
-            controllerTracking.bagikanlokasi.value = "tidak aktif";
-            // await LocationDao().clear();
-            // await _getLocations();
-            // await BackgroundLocationTrackerManager.stopTracking();
-            // final service = FlutterBackgroundService();
-            // FlutterBackgroundService().invoke("setAsBackground");
-
-            // service.invoke("stopService");
-            controllerTracking.updateStatus('0');
-            controllerTracking.isTrackingLokasi.value = false;
-            print(
-                "stopTracking is_tracking ${AppData.informasiUser![0].is_tracking.toString()}");
-          }
-        }
-
-        if (getAktif == "ACTIVE") {
-          if (lastLoginUser == "" ||
-              lastLoginUser == "null" ||
-              lastLoginUser == null ||
-              lastLoginUser == "0000-00-00 00:00:00") {
-            fillLastLoginUserNew(getEmId, getData);
-            checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                AppData.informasiUser![0].em_id);
-          } else {
-            AppData.emailUser = email.value.text;
-            AppData.passwordUser = password.value.text;
-
-            var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
-            var dateNow = DateTime.now();
-            var convert = DateFormat('dd-MM-yyyy').format(dateNow);
-
-            if (convert != filterLastLogin) {
+          if (getAktif == "ACTIVE") {
+            if (lastLoginUser == "" ||
+                lastLoginUser == "null" ||
+                lastLoginUser == null ||
+                lastLoginUser == "0000-00-00 00:00:00") {
               fillLastLoginUserNew(getEmId, getData);
               checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
                   AppData.informasiUser![0].em_id);
             } else {
-              //  UtilsAlert.showToast("Anda telah masuk di perangkat lain");
-              Navigator.pop(Get.context!);
-              validasiLogin();
+              AppData.emailUser = email.value.text;
+              AppData.passwordUser = password.value.text;
+
+              var filterLastLogin = Constanst.convertDate1("$lastLoginUser");
+              var dateNow = DateTime.now();
+              var convert = DateFormat('dd-MM-yyyy').format(dateNow);
+
+              if (convert != filterLastLogin) {
+                fillLastLoginUserNew(getEmId, getData);
+                checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                    AppData.informasiUser![0].em_id);
+              } else {
+                //  UtilsAlert.showToast("Anda telah masuk di perangkat lain");
+                Navigator.pop(Get.context!);
+                validasiLogin();
+              }
             }
+          } else {
+            UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
+            Navigator.pop(Get.context!);
           }
-        } else {
-          UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
-          Navigator.pop(Get.context!);
         }
+      } catch (e) {
+        UtilsAlert.showToast("Periksa internet anda dan silakan coba lagi");
+        Navigator.pop(Get.context!);
       }
     });
+
     // }
   }
 
@@ -563,49 +570,49 @@ class AuthController extends GetxController {
             isBackDateLembur = isBackDates[5].toString();
           }
           var data = UserModel(
-              isBackDateSakit: isBackDateSakit,
-              isBackDateIzin: isBackDateIzin,
-              isBackDateCuti: isBackDateCuti,
-              isBackDateTugasLuar: isBackDateTugasLuar,
-              isBackDateDinasLuar: isBackDateDinasLuar,
-              isBackDateLembur: isBackDateLembur,
-              em_id: element['em_id'] ?? "",
-              des_id: element['des_id'] ?? 0,
-              dep_id: element['dep_id'] ?? 0,
-              dep_group: element['dep_group'] ?? 0,
-              full_name: element['full_name'] ?? "",
-              em_email: element['em_email'] ?? "",
-              em_phone: element['em_phone'] ?? "",
-              em_birthday: element['em_birthday'] ?? "1999-09-09",
-              em_gender: element['em_gender'] ?? "",
-              em_image: element['em_image'] ?? "",
-              em_joining_date: element['em_joining_date'] ?? "1999-09-09",
-              em_status: element['em_status'] ?? "",
-              em_blood_group: element['em_blood_group'] ?? "",
-              posisi: element['posisi'] ?? "",
-              emp_jobTitle: element['emp_jobTitle'] ?? "",
-              emp_departmen: element['emp_departmen'] ?? "",
-              em_control: element['em_control'] ?? 0,
-              em_control_acess: element['em_control_access'] ?? 0,
-              emp_att_working: element['emp_att_working'] ?? 0,
-              em_hak_akses: element['em_hak_akses'] ?? "",
-              beginPayroll: element['begin_payroll'] ?? 1,
-              endPayroll: element['end_payroll'] ?? 31,
-              branchName: element['branch_name'] ?? "",
-              startTime: element['time_attendance'].toString().split(',')[0],
-              endTime: element['time_attendance'].toString().split(',')[1],
-              nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
-              nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
-              timeIn: element['time_in'] ?? "",
-              timeOut: element['time_out'] ?? "",
-              interval: element['interval'],
-              interval_tracking: element['interval_tracking'],
-              isViewTracking: element['is_view_tracking'],
-              is_tracking: element['is_tracking'],
-              tipeAbsen: element['tipe_absen'],
-              // startTime: "00:01",
-              // endTime: "23:59",
-              );
+            isBackDateSakit: isBackDateSakit,
+            isBackDateIzin: isBackDateIzin,
+            isBackDateCuti: isBackDateCuti,
+            isBackDateTugasLuar: isBackDateTugasLuar,
+            isBackDateDinasLuar: isBackDateDinasLuar,
+            isBackDateLembur: isBackDateLembur,
+            em_id: element['em_id'] ?? "",
+            des_id: element['des_id'] ?? 0,
+            dep_id: element['dep_id'] ?? 0,
+            dep_group: element['dep_group'] ?? 0,
+            full_name: element['full_name'] ?? "",
+            em_email: element['em_email'] ?? "",
+            em_phone: element['em_phone'] ?? "",
+            em_birthday: element['em_birthday'] ?? "1999-09-09",
+            em_gender: element['em_gender'] ?? "",
+            em_image: element['em_image'] ?? "",
+            em_joining_date: element['em_joining_date'] ?? "1999-09-09",
+            em_status: element['em_status'] ?? "",
+            em_blood_group: element['em_blood_group'] ?? "",
+            posisi: element['posisi'] ?? "",
+            emp_jobTitle: element['emp_jobTitle'] ?? "",
+            emp_departmen: element['emp_departmen'] ?? "",
+            em_control: element['em_control'] ?? 0,
+            em_control_acess: element['em_control_access'] ?? 0,
+            emp_att_working: element['emp_att_working'] ?? 0,
+            em_hak_akses: element['em_hak_akses'] ?? "",
+            beginPayroll: element['begin_payroll'] ?? 1,
+            endPayroll: element['end_payroll'] ?? 31,
+            branchName: element['branch_name'] ?? "",
+            startTime: element['time_attendance'].toString().split(',')[0],
+            endTime: element['time_attendance'].toString().split(',')[1],
+            nomorBpjsKesehatan: element['nomor_bpjs_kesehatan'] ?? 0,
+            nomorBpjsTenagakerja: element['nomor_bpjs_tenagakerja'] ?? 0,
+            timeIn: element['time_in'] ?? "",
+            timeOut: element['time_out'] ?? "",
+            interval: element['interval'],
+            interval_tracking: element['interval_tracking'],
+            isViewTracking: element['is_view_tracking'],
+            is_tracking: element['is_tracking'],
+            tipeAbsen: element['tipe_absen'],
+            // startTime: "00:01",
+            // endTime: "23:59",
+          );
 
           if (element['file_face'] == "" || element['file_face'] == null) {
             box.write("face_recog", false);
@@ -1360,7 +1367,8 @@ class AuthController extends GetxController {
     } catch (e) {
       print(e);
       Get.back();
-      UtilsAlert.showToast("Koneksi internet tidak tersedia.Silahkan periksa jaringan Anda dan coba kembali.");
+      UtilsAlert.showToast(
+          "Koneksi internet tidak tersedia. Silahkan periksa jaringan Anda dan coba kembali.");
       databases.value = [];
       return false;
     }

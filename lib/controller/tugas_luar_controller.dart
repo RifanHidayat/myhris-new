@@ -100,7 +100,7 @@ class TugasLuarController extends GetxController {
   void onInit() {
     getTimeNow();
     // getLoadsysData();
-     loadTipePengajuan();
+    //  loadTipePengajuan();
     // loadDataTugasLuar();
     // loadDataDinasLuar();
     // getDepartemen(1, "");
@@ -266,8 +266,10 @@ class TugasLuarController extends GetxController {
           loadingString.value = "Tidak ada pengajuan";
           this.loadingString.refresh();
         } else {
+          // print('ini data tugas luar ${valueBody['data'].length}');
           for (var element in valueBody['data']) {
             if (element['ajuan'] == 2) {
+              print(element['nomor_ajuan']);
               listTugasLuar.value.add(element);
               listTugasLuarAll.value.add(element);
             }

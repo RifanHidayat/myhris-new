@@ -27,7 +27,7 @@ import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class SettingController extends GetxController {
   var fotoUser = File("").obs;
-  final controllerTracking = Get.put(TrackingController());
+  final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
   Rx<List<String>> jenisKelaminDropdown = Rx<List<String>>([]);
   Rx<List<String>> golonganDarahDropdown = Rx<List<String>>([]);
 

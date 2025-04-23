@@ -262,7 +262,7 @@ Future<void> main() async {
 // proses tracking
 // @pragma('vm:entry-point')
 // void onStart(ServiceInstance service) async {
-//   final controllerTracking = Get.put(TrackingController());
+//   final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
 //   final prefs = await SharedPreferences.getInstance();
 //   var time = prefs.getString('interval_tracking');
 //   Timer? trackingTimer;
@@ -1091,7 +1091,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     controller.loadDashboard();
-    var controllerAbsnsi = Get.put(AbsenController(),tag: 'absen controller');
+    Get.put(AbsenController(),tag: 'absen controller');
     super.initState();
   }
 

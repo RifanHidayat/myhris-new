@@ -25,20 +25,15 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
 
   var izinTerpakai = 0.obs;
   var jumlahCuti = 0.obs;
-    DateRangePickerController _controller = DateRangePickerController();
+  DateRangePickerController _controller = DateRangePickerController();
 
   @override
   void initState() {
-   controller. getLoadsysData();
-   controller.loadAllEmployeeDelegasi();
-   controller. loadTypeSakit();
-   controller. loadDataAjuanIzin();
-   
     controller.percentIzin.value = 0.0;
     if (widget.dataForm![1] == true) {
       var convertDariTanggal = widget.dataForm![0]['start_date'];
       var convertSampaiTanggal = widget.dataForm![0]['end_date'];
-      controller.isBackdate.value= widget.dataForm![0]['back_date'].toString();
+      controller.isBackdate.value = widget.dataForm![0]['back_date'].toString();
 
       controller.dariTanggal.value.text = "$convertDariTanggal";
       controller.sampaiTanggal.value.text = "$convertSampaiTanggal";
@@ -68,39 +63,74 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
         getDummy.add(convertDate);
         print("tanggaln dumy ${getDummy}");
       }
-        getDummy.sort();
-        
-        if (getDummy.isNotEmpty){
-           _controller.selectedRange = PickerDateRange(
-      getDummy[0],
-      getDummy[getDummy.length-1],
-    );
-        }
+      getDummy.sort();
+
+      if (getDummy.isNotEmpty) {
+        _controller.selectedRange = PickerDateRange(
+          getDummy[0],
+          getDummy[getDummy.length - 1],
+        );
+      }
       setState(() {
         controller.tanggalSelectedEdit.value = getDummy;
       });
 
-
-      
-      
       if (widget.dataForm![0]['input_time'] == null) {
       } else {
         controller.inputTime.value =
             int.parse(widget.dataForm![0]['input_time'].toString());
       }
-
-
     } else {
- //controller.loadTypeSakit();
-
-     
+      //controller.loadTypeSakit();
     }
-    
+
+    var data = controller.allTipe.value
+        .where((element) => controller
+            .selectedDropdownFormTidakMasukKerjaTipe.value
+            .toString()
+            .toLowerCase()
+            .trim()
+            .contains("${element['name']} - ${element['category']}"
+                .toString()
+                .toLowerCase()
+                .trim()))
+        .toList();
+
+    if (data.isNotEmpty) {
+      if (data[0]['input_time'] != null) {
+        controller.inputTime.value =
+            int.parse(data[0]['input_time'].toString());
+      }
+
+      controller.isBackdate.value = data[0]['back_date'].toString();
+      controller.isRequiredFile.value = data[0]['upload_file'].toString();
+
+      print('ini data izin ${data}');
+
+      if (data[0]['leave_day'] > 0) {
+        controller
+            .loadDataAjuanIzinCategori(id: data[0]['type_id'])
+            .then((value) {
+          if (value == true) {
+            controller.showDurationIzin.value = true;
+            // controller.jumlahIzin.value = data[0]['leave_day'];
+            // controller.percentIzin.value = double.parse(
+            //     (int.parse(controller.izinTerpakai.value.toString()) /
+            //         int.parse(controller.jumlahIzin.value.toString()))
+            //         .toString()
+            // );
+          }
+        });
+      } else {
+        controller.showDurationIzin.value = false;
+      }
+    }
+
     super.initState();
   }
 
   @override
-                                                                                                   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constanst.coloBackgroundScreen,
       appBar: PreferredSize(
@@ -150,12 +180,12 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
           onWillPop: () async {
             controller.tempNamaTipe1.value = "Semua Tipe";
             controller.loadTypeSakit();
-           //  controller.changeTypeSelected(2);
+            //  controller.changeTypeSelected(2);
             Get.back();
             return true;
           },
           child: Obx(
-            () =>  Padding(
+            () => Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -173,39 +203,44 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                           // Obx(() => controller.showDurationIzin.value == true?
                           Container(
                             decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(12)),
-                                border:
-                                    Border.all(color: Constanst.fgBorder)),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(12)),
+                                border: Border.all(color: Constanst.fgBorder)),
                             child: controller.showDurationIzin.value
-                                ? informasiSisaCuti()
+                                ? controller.cutLeave.value == 0
+                                    ? informasiSisaCutiMelahirkan()
+                                    : informasiSisaCuti()
                                 : SizedBox(),
                           ),
                           // : const SizedBox()),
                           const SizedBox(height: 16),
-                         Obx(() => controller.isLoadingzin.value==true?SizedBox():  Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(12)),
-                                  border:
-                                      Border.all(color: Constanst.fgBorder)),
-                              child: Column(
-                                children: [
-                                  formTipe(),
-                                 controller.inputTime.value ==0? formAjuanTanggal():formAjuanTanggal1(),
-                                  // Text(AppData.informasiUser![0].dep_group.toString()),
-                                  controller.inputTime.value == 0
-                                      ? const SizedBox()
-                                      : controller.inputTime.value == 1
-                                          ? formJam()
-                                          : controller.inputTime.value == 2
-                                              ? formJam2Waktu()
-                                              : SizedBox(),
-                                  formDelegasiKepada(),
-                                  formUploadFile(),
-                                  formAlasan(),
-                                ],
-                              ))),
+                          Obx(() => controller.isLoadingzin.value == true
+                              ? SizedBox()
+                              : Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(12)),
+                                      border: Border.all(
+                                          color: Constanst.fgBorder)),
+                                  child: Column(
+                                    children: [
+                                      formTipe(),
+                                      controller.inputTime.value == 0
+                                          ? formAjuanTanggal()
+                                          : formAjuanTanggal1(),
+                                      // Text(AppData.informasiUser![0].dep_group.toString()),
+                                      controller.inputTime.value == 0
+                                          ? const SizedBox()
+                                          : controller.inputTime.value == 1
+                                              ? formJam()
+                                              : controller.inputTime.value == 2
+                                                  ? formJam2Waktu()
+                                                  : SizedBox(),
+                                      formDelegasiKepada(),
+                                      formUploadFile(),
+                                      formAlasan(),
+                                    ],
+                                  ))),
                         ],
                       ),
               ),
@@ -233,36 +268,59 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                   if (controller.inputTime.value == 1) {
                     controller.jamAjuan.value = controller.sampaiJamAjuan.value;
                   }
-                    print("tangagl mulai  ${controller.sampaiJamAjuan.value.text}");
-                print("tanggal selesai  ${ controller.jamAjuan.value.text}");
-                  if (controller.jumlahIzin.value > 0) {
+                  print(
+                      "tangagl mulai  ${controller.sampaiJamAjuan.value.text}");
+                  print("tanggal selesai  ${controller.jamAjuan.value.text}");
+                  if (controller.cutLeave.value == 1) {
                     print("jumlah izin ${controller.jumlahIzin.value}");
-                    if (controller.percentIzin.value >= 1) {
-                      UtilsAlert.showToast(
-                          "Pemakaian izin telah melewati batas maksimal");
-                   
-                   
-                    } else {
-
-                      if (controller.showDurationIzin.value==true){
-                            var totalTerpakai =
-                          controller.tanggalSelected.value.length +
-                              controller.izinTerpakai.value;
-                      if (totalTerpakai > controller.jumlahIzin.value) {
+                    if (controller.jumlahIzin.value >= 0) {
+                      print("jumlah izin ${controller.jumlahIzin.value}");
+                      if (controller.percentIzin.value >= 1) {
                         UtilsAlert.showToast(
-                            "Pemakaian izin telah melewati batas maksimal1");
+                            "Pemakaian izin telah melewati batas maksimal");
                       } else {
-                        controller.validasiKirimPengajuan(widget.dataForm![1]);
+                        if (controller.showDurationIzin.value == true) {
+                          var totalTerpakai =
+                              controller.tanggalSelected.value.length +
+                                  controller.izinTerpakai.value;
+                          if (totalTerpakai > controller.jumlahIzin.value) {
+                            print('ini total ${totalTerpakai}');
+                            print(
+                                'ini total ${controller.tanggalSelected.value.length}');
+                            UtilsAlert.showToast(
+                                "Pemakaian izin telah melewati batas maksimal");
+                          } else {
+                            print('kemari 1');
+                            controller
+                                .validasiKirimPengajuan(widget.dataForm![1]);
+                          }
+                        } else {
+                          print('kemari 2');
+                          controller
+                              .validasiKirimPengajuan(widget.dataForm![1]);
+                        }
                       }
-
-                      }else{
-                                  controller.validasiKirimPengajuan(widget.dataForm![1]);
-
-                      }
-                  
+                    } else {
+                      print('kemari 3');
+                      controller.validasiKirimPengajuan(widget.dataForm![1]);
                     }
                   } else {
-                    controller.validasiKirimPengajuan(widget.dataForm![1]);
+                    if (controller.showDurationIzin.value == true) {
+                      var totalTerpakai =
+                          controller.tanggalSelected.value.length;
+                      print("jumlah izin ${controller.limitIzin.value}");
+                      print("jumlah izin ${totalTerpakai}");
+                      if (totalTerpakai > controller.limitIzin.value) {
+                        UtilsAlert.showToast(
+                            "Pemakaian izin telah melewati batas maksimal");
+                      } else {
+                        print('kemari 4');
+                        controller.validasiKirimPengajuan(widget.dataForm![1]);
+                      }
+                    } else {
+                      print('kemari 5');
+                      controller.validasiKirimPengajuan(widget.dataForm![1]);
+                    }
                   }
                 },
                 colorButton: Constanst.colorPrimary,
@@ -300,7 +358,7 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
               onTap: () {
                 print(value);
                 print("tes");
-             
+
                 controller.percentIzin.value = 0;
                 controller.gantiTypeAjuan(value);
 
@@ -321,12 +379,17 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                       int.parse(data[0]['input_time'].toString());
                 }
                 print(data[0]['back_date'].toString());
-                controller.isBackdate.value=data[0]['back_date'].toString();
+                controller.isBackdate.value = data[0]['back_date'].toString();
                 print("new data upload file ${data[0]['input_time']}");
                 controller.isRequiredFile.value =
                     data[0]['upload_file'].toString();
 
+                controller.cutLeave.value = data[0]['cut_leave'];
+                print('ini cutLeave ${controller.cutLeave.value}');
+                controller.limitIzin.value = data[0]['leave_day'];
+                print('ini limit cuti ${controller.limitIzin.value}');
 
+                print('ini data yang di pilih $data');
                 if (data[0]['leave_day'] > 0) {
                   print("new data ${data[0]['id']}");
 
@@ -335,12 +398,12 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                       .then((value) {
                     if (value == true) {
                       controller.showDurationIzin.value = true;
-                      controller.jumlahIzin.value = data[0]['leave_day'];
-                      controller.percentIzin.value = double.parse(((int.parse(
-                                  controller.izinTerpakai.value.toString()) /
-                              int.parse(
-                                  controller.jumlahIzin.value.toString())))
-                          .toString());
+                      // controller.jumlahIzin.value = data[0]['leave_day'];
+                      // controller.percentIzin.value = double.parse(((int.parse(
+                      //             controller.izinTerpakai.value.toString()) /
+                      //         int.parse(
+                      //             controller.jumlahIzin.value.toString())))
+                      //     .toString());
                     }
                   });
                 } else {
@@ -530,51 +593,52 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                   borderRadius: BorderRadius.circular(16.0),
                 ),
                 elevation: 0,
-                child:Obx(() =>  SfDateRangePicker(
-                            controller: _controller,
-                  selectionMode: DateRangePickerSelectionMode.range,
-                  minDate: controller.isBackdate.value=="0"?DateTime(2000):DateTime.now(),
-                  
-                  initialSelectedRanges:[PickerDateRange(DateTime.now(),DateTime.parse("2024-07-16"))],
-            
-                  monthCellStyle: const DateRangePickerMonthCellStyle(
-                    weekendTextStyle: TextStyle(color: Colors.red),
-                    blackoutDateTextStyle: TextStyle(
-                        color: Colors.red,
-                        decoration: TextDecoration.lineThrough),
-                  ),
-                  onSelectionChanged:
-                      (DateRangePickerSelectionChangedArgs args) {
-                    // print(args.value);
+                child: Obx(() => SfDateRangePicker(
+                      controller: _controller,
+                      selectionMode: DateRangePickerSelectionMode.range,
+                      minDate: controller.isBackdate.value == "0"
+                          ? DateTime(2000)
+                          : DateTime.now(),
+                      initialSelectedRanges: [
+                        PickerDateRange(
+                            DateTime.now(), DateTime.parse("2024-07-16"))
+                      ],
+                      monthCellStyle: const DateRangePickerMonthCellStyle(
+                        weekendTextStyle: TextStyle(color: Colors.red),
+                        blackoutDateTextStyle: TextStyle(
+                            color: Colors.red,
+                            decoration: TextDecoration.lineThrough),
+                      ),
+                      onSelectionChanged:
+                          (DateRangePickerSelectionChangedArgs args) {
+                        // print(args.value);
 
-                    // Konversi menjadi List<DateTime>
-                    List<DateTime> dateList = [];
-                    DateTime startDate =
-                        args.value.startDate ?? args.value.endDate;
-                    DateTime endDate =
-                        args.value.endDate ?? args.value.startDate;
+                        // Konversi menjadi List<DateTime>
+                        List<DateTime> dateList = [];
+                        DateTime startDate =
+                            args.value.startDate ?? args.value.endDate;
+                        DateTime endDate =
+                            args.value.endDate ?? args.value.startDate;
 
-                    // Tambahkan rentang tanggal ke dalam daftar
-                    for (DateTime date = startDate;
-                        date.isBefore(endDate.add(Duration(days: 1)));
-                        date = date.add(Duration(days: 1))) {
-                      dateList.add(date);
-                    }
+                        // Tambahkan rentang tanggal ke dalam daftar
+                        for (DateTime date = startDate;
+                            date.isBefore(endDate.add(Duration(days: 1)));
+                            date = date.add(Duration(days: 1))) {
+                          dateList.add(date);
+                        }
 
-                    // Cetak hasil
-                    print(dateList);
+                        // Cetak hasil
+                        print(dateList);
 
-                    if (controller.idEditFormTidakMasukKerja.value != "") {
-                      controller.tanggalSelectedEdit.value = dateList;
-                      this.controller.tanggalSelectedEdit.refresh();
-                    } else {
-                      controller.tanggalSelected.value = dateList;
-                      this.controller.tanggalSelected.refresh();
-                    }
-                  },
-                ))
-                
-                ),
+                        
+                          controller.tanggalSelectedEdit.value = dateList;
+                          this.controller.tanggalSelectedEdit.refresh();
+                       
+                          controller.tanggalSelected.value = dateList;
+                          this.controller.tanggalSelected.refresh();
+                        
+                      },
+                    ))),
           )
           // : SizedBox(),
         ],
@@ -582,7 +646,7 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
     );
   }
 
-    Widget formAjuanTanggal1() {
+  Widget formAjuanTanggal1() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
       child: Column(
@@ -621,49 +685,50 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                 ),
                 elevation: 0,
                 child: Obx(() => SfDateRangePicker(
-                    minDate: controller.isBackdate.value=="0"?DateTime(2000):DateTime.now(),
-                  selectionMode: DateRangePickerSelectionMode.single,
-                  
-                  initialSelectedRanges:[PickerDateRange(DateTime.now(), DateTime.now())],
-                  monthCellStyle: const DateRangePickerMonthCellStyle(
-                    weekendTextStyle: TextStyle(color: Colors.red),
-                    blackoutDateTextStyle: TextStyle(
-                        color: Colors.red,
-                        decoration: TextDecoration.lineThrough),
-                  ),
-                  onSelectionChanged:
-                      (DateRangePickerSelectionChangedArgs args) {
-                    print(args.value);
-                    print("");
+                      minDate: controller.isBackdate.value == "0"
+                          ? DateTime(2000)
+                          : DateTime.now(),
+                      selectionMode: DateRangePickerSelectionMode.single,
+                      initialSelectedRanges: [
+                        PickerDateRange(DateTime.now(), DateTime.now())
+                      ],
+                      monthCellStyle: const DateRangePickerMonthCellStyle(
+                        weekendTextStyle: TextStyle(color: Colors.red),
+                        blackoutDateTextStyle: TextStyle(
+                            color: Colors.red,
+                            decoration: TextDecoration.lineThrough),
+                      ),
+                      onSelectionChanged:
+                          (DateRangePickerSelectionChangedArgs args) {
+                        print(args.value);
+                        print("");
 
-                   // Konversi menjadi List<DateTime>
-                    List<DateTime> dateList = [];
-                    dateList.add(args.value);
-                    // DateTime startDate =
-                    //     args.value.startDate ?? args.value.endDate;
-                    // DateTime endDate =
-                    //     args.value.endDate ?? args.value.startDate;
+                        // Konversi menjadi List<DateTime>
+                        List<DateTime> dateList = [];
+                        dateList.add(args.value);
+                        // DateTime startDate =
+                        //     args.value.startDate ?? args.value.endDate;
+                        // DateTime endDate =
+                        //     args.value.endDate ?? args.value.startDate;
 
-                    // Tambahkan rentang tanggal ke dalam daftar
-                    // for (DateTime date = startDate;
-                    //     date.isBefore(endDate.add(Duration(days: 1)));
-                    //     date = date.add(Duration(days: 1))) {
-                    //   dateList.add(date);
-                    // }
+                        // Tambahkan rentang tanggal ke dalam daftar
+                        // for (DateTime date = startDate;
+                        //     date.isBefore(endDate.add(Duration(days: 1)));
+                        //     date = date.add(Duration(days: 1))) {
+                        //   dateList.add(date);
+                        // }
 
-                    // Cetak hasil
-                    print(dateList);
+                        // Cetak hasil
+                        print(dateList);
 
-                    if (controller.idEditFormTidakMasukKerja.value != "") {
-                      controller.tanggalSelectedEdit.value = dateList;
-                      this.controller.tanggalSelectedEdit.refresh();
-                    } else {
-                      controller.tanggalSelected.value = dateList;
-                      this.controller.tanggalSelected.refresh();
-                    }
-                  },
-                ))
-                ),
+                          controller.tanggalSelectedEdit.value = dateList;
+                          this.controller.tanggalSelectedEdit.refresh();
+
+                          controller.tanggalSelected.value = dateList;
+                          this.controller.tanggalSelected.refresh();
+                        
+                      },
+                    ))),
           )
           // : SizedBox(),
         ],
@@ -1166,6 +1231,99 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
             ],
           ))
         ],
+      ),
+    );
+  }
+
+  Widget informasiSisaCutiMelahirkan() {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Obx(
+        () => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 90,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        flex: 15,
+                        child: SvgPicture.asset(
+                          'assets/5_cuti.svg',
+                          height: 22,
+                        ),
+                      ),
+                      // const SizedBox(width: 4),
+                      Expanded(
+                        flex: 85,
+                        child: Text(
+                          "${controller.selectedDropdownFormTidakMasukKerjaTipe.value} ",
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.fgPrimary,
+                              fontSize: 16),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 20,
+                  child: Text(
+                    "${controller.limitIzin.value} Total",
+                    textAlign: TextAlign.right,
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.fgSecondary,
+                        fontSize: 12),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: MediaQuery.of(Get.context!).size.width,
+              child: Center(
+                child: LinearPercentIndicator(
+                  barRadius: const Radius.circular(100.0),
+                  lineHeight: 8.0,
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                  percent: 0.0,
+                  progressColor: Constanst.infoLight,
+                  backgroundColor: Constanst.colorNeutralBgTertiary,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  // "${controller.jumlahCuti.value - controller.cutiTerpakai.value} Tersisa",
+                  "",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w500,
+                      color: Constanst.infoLight,
+                      fontSize: 12),
+                ),
+                Text(
+                  // "${controller.cutiTerpakai.value} Terpakai",
+                  "",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w500,
+                      color: Constanst.color4,
+                      fontSize: 12),
+                ),
+              ],
+            ),
+            // Text("Cuti Khusus"),
+          ],
+        ),
       ),
     );
   }

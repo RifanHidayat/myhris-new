@@ -87,7 +87,7 @@ class DashboardController extends GetxController {
   CarouselSliderController corouselDashboard = CarouselSliderController();
   PageController menuController = PageController(initialPage: 0);
   PageController informasiController = PageController(initialPage: 0);
-  final controllerTracking = Get.put(TrackingController());
+  final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
   final tabbController = Get.put(TabbController());
   var controller = Get.put(BpjsController());
   final controllerAktifitas = Get.put(AktifitasController());
@@ -235,7 +235,6 @@ class DashboardController extends GetxController {
     dateNow.value = dateNoww(startDate);
     // updateInformasiUser();
 
-    Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
     getSizeDevice();
     checkStatusPermission();
     checkHakAkses();
@@ -318,8 +317,10 @@ class DashboardController extends GetxController {
 
       print("interval tracking ${element['interval_tracking'].toString()}");
       //UtilsAlert.showToast(element['reg_type']);
-      absenControllre.regType.value=element['reg_type']=='' ||element['reg_type']==null?0:int.parse(element['reg_type'].toString());
-    
+      absenControllre.regType.value =
+          element['reg_type'] == '' || element['reg_type'] == null
+              ? 0
+              : int.parse(element['reg_type'].toString());
     }
 
     AppData.informasiUser = getData;
@@ -726,7 +727,7 @@ class DashboardController extends GetxController {
         }
       }
     } catch (e) {
-      UtilsAlert.showToast(e.toString());
+      // UtilsAlert.showToast(e.toString());
     }
   }
 
@@ -1048,8 +1049,6 @@ class DashboardController extends GetxController {
 
           print("hasil signinTime ${signinTime.value}");
           print("hasil signinTime ${signoutTime.value}");
-
-  
         } else {
           isLoading.value = false;
         }
@@ -1879,7 +1878,7 @@ class DashboardController extends GetxController {
       UtilsAlert.showToast(res['message']);
       return false;
     } catch (e) {
-      UtilsAlert.showToast(e);
+      // UtilsAlert.showToast(e);
       return false;
       print(e.toString());
     }
@@ -2112,7 +2111,10 @@ class DashboardController extends GetxController {
           await prefs.setString("", element['em_id'].toString());
 
           print("interval tracking ${element['interval_tracking'].toString()}");
-          absenControllre.regType.value=element['reg_type']=='' ||element['reg_type']==null?0:int.parse(element['reg_type'].toString());
+          absenControllre.regType.value =
+              element['reg_type'] == '' || element['reg_type'] == null
+                  ? 0
+                  : int.parse(element['reg_type'].toString());
         }
         AppData.informasiUser = getData;
 
@@ -2714,18 +2716,40 @@ class DashboardController extends GetxController {
     if (url == "HistoryAbsen") {
       Get.to(HistoryAbsen(), arguments: arguments);
     } else if (url == "TidakMasukKerja") {
+      controllerIzin.getLoadsysData();
+      controllerIzin.loadAllEmployeeDelegasi();
+      controllerIzin.loadTypeSakit();
+      controllerIzin.loadDataAjuanIzin();
+      controllerIzin.getDepartemen(1, "");
       Get.to(RiwayatIzin(), arguments: arguments);
     } else if (url == "Lembur") {
+      controllerLembur.getLoadsysData();
+      controllerLembur.loadDataLembur();
+      controllerLembur.loadAllEmployeeDelegasi();
+      controllerLembur.getTypeLembur();
+      controllerLembur.getDepartemen(1, "");
       Get.to(Lembur(), arguments: arguments);
     } else if (url == "FormPengajuanCuti") {
       Get.to(FormPengajuanCuti(
         dataForm: [[], false],
       ));
     } else if (url == "RiwayatCuti") {
+      controllerCuti.loadCutiUser();
+      controllerCuti.getLoadsysData();
+      controllerCuti.loadAllEmployeeDelegasi();
+      controllerCuti.loadDataTypeCuti();
+      controllerCuti.loadDataAjuanCuti();
+      controllerCuti.getDepartemen(1, "");
       Get.to(RiwayatCuti(), arguments: arguments);
       // } else if (url == "Izin") {
       //   Get.to(Izin(), arguments: arguments);
     } else if (url == "TugasLuar") {
+      controllerTugasLuar.getLoadsysData();
+      controllerTugasLuar.loadTipePengajuan();
+      controllerTugasLuar.loadDataTugasLuar();
+      controllerTugasLuar.loadDataDinasLuar();
+      controllerTugasLuar.getDepartemen(1, "");
+      controllerTugasLuar.loadAllEmployeeDelegasi();
       Get.to(TugasLuar(), arguments: arguments);
     } else if (url == "Klaim") {
       Get.to(Klaim(), arguments: arguments);

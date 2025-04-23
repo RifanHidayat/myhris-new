@@ -22,7 +22,7 @@ class _BagikanLokasiState extends State<BagikanLokasi> {
   GoogleMapController? mapController;
 
   BitmapDescriptor? destinationIcon;
-  final controllerTracking = Get.put(TrackingController());
+  final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
 
   void initState() {
     Api().checkLogin();

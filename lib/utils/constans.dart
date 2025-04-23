@@ -303,6 +303,50 @@ class Constanst {
     return bulan;
   }
 
+  static String bulanIndoLengkap(String bulan) {
+    if (bulan == "January" || bulan == "01" || bulan == "1") {
+      bulan = "Januari";
+      // bulan = "Januari";
+    } else if (bulan == "February" || bulan == "02" || bulan == "2") {
+      bulan = "Februari";
+      // bulan = "Februari";
+    } else if (bulan == "March" || bulan == "03" || bulan == "3") {
+      bulan = "Maret";
+      // bulan = "Maret";
+    } else if (bulan == "April" || bulan == "04" || bulan == "4") {
+      bulan = "April";
+      // bulan = "April";
+    } else if (bulan == "May" || bulan == "05" || bulan == "5") {
+      bulan = "Mei";
+      // bulan = "Mei";
+    } else if (bulan == "June" || bulan == "06" || bulan == "6") {
+      bulan = "Juni";
+      // bulan = "Juni";
+    } else if (bulan == "July" || bulan == "07" || bulan == "7") {
+      bulan = "Juli";
+      // bulan = "Juli";
+    } else if (bulan == "August" || bulan == "08" || bulan == "8") {
+      bulan = "Agustus";
+      // bulan = "Agustus";
+    } else if (bulan == "September" || bulan == "09" || bulan == "9") {
+      bulan = "September";
+      // bulan = "September";
+    } else if (bulan == "October" || bulan == "10") {
+      bulan = "Oktober";
+      // bulan = "Oktober";
+    } else if (bulan == "November" || bulan == "11") {
+      bulan = "November";
+      // bulan = "November";
+    } else if (bulan == "December" || bulan == "12") {
+      bulan = "Desember";
+      // bulan = "Desember";
+    } else {
+      bulan = bulan;
+    }
+    return bulan;
+  }
+
+
   // boxShadow: [
   //   BoxShadow(
   //     color: Color.fromARGB(255, 199, 199, 199).withOpacity(0.5),
