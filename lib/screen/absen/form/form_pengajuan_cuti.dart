@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/cuti_controller.dart';
 import 'package:siscom_operasional/screen/absen/riwayat_cuti.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -221,6 +222,15 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                           "Tanggal mulai lebih besar dari tanggal selesai");
                       return;
                     }
+                    DateTime startPriode = DateTime.parse(
+                        DateFormat('yyyy-MM-dd')
+                            .format(DateTime.parse(AppData.startPeriode))
+                            .toString());
+                    if (tempStartDate.isBefore(startPriode)) {
+                      UtilsAlert.showToast(
+                          "Tanggal mulai tidak boleh sebelum tanggal periode bulan ini");
+                      return;
+                    }
 
                     // Define two DateTime objects representing the two dates
                     DateTime date1 = DateTime(tempStartDate.year,
@@ -269,7 +279,22 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                   } else {
                     //mengugunakan multiple date
 
+                    DateTime startPriode = DateTime.parse(
+                        DateFormat('yyyy-MM-dd')
+                            .format(DateTime.parse(AppData.startPeriode))
+                            .toString());
+
                     if (controller.statusForm.value == true) {
+                      DateTime tempStartDateEdit = DateTime.parse(DateFormat(
+                              'yyyy-MM-dd')
+                          .format(DateTime.parse(
+                              controller.tanggalSelectedEdit.first.toString()))
+                          .toString());
+                      if (tempStartDateEdit.isBefore(startPriode)) {
+                        UtilsAlert.showToast(
+                            "Tanggal mulai tidak boleh sebelum tanggal periode bulan ini");
+                        return;
+                      }
                       if (controller.cutLeave.value == 1) {
                         if (controller.allowMinus.value == 0) {
                           if ((controller.jumlahCuti.value -
@@ -293,6 +318,16 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                         }
                       }
                     } else {
+                      DateTime tempStartDate = DateTime.parse(
+                          DateFormat('yyyy-MM-dd')
+                              .format(DateTime.parse(
+                                  controller.tanggalSelected.first.toString()))
+                              .toString());
+                      if (tempStartDate.isBefore(startPriode)) {
+                        UtilsAlert.showToast(
+                            "Tanggal mulai tidak boleh sebelum tanggal periode bulan ini");
+                        return;
+                      }
                       if (controller.cutLeave.value == 1) {
                         if (controller.allowMinus.value == 0) {
                           if ((controller.jumlahCuti.value -
