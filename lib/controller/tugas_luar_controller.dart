@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -736,6 +737,7 @@ class TugasLuarController extends GetxController {
   }
 
   void kirimPengajuan(getNomorAjuanTerakhir) {
+    var platform = Platform.operatingSystem;
     var listTanggal = tanggalTugasLuar.value.text.split(',');
     var getTanggal = listTanggal[1].replaceAll(' ', '');
     var tanggalTugasLuarEditData = Constanst.convertDateSimpan(getTanggal);
@@ -765,7 +767,8 @@ class TugasLuarController extends GetxController {
       'ajuan': '2',
       'created_by': getEmid,
       'menu_name': 'Tugas Luar',
-      'approve_status': 'Pending'
+      'approve_status': 'Pending',
+      'platform': platform
     };
     if (statusForm.value == false) {
       body['activity_name'] =
@@ -870,6 +873,7 @@ class TugasLuarController extends GetxController {
   }
 
   void kirimPengajuanDinasLuar(status, getNomorAjuanTerakhir) async {
+    var platform = Platform.operatingSystem;
     var dataUser = AppData.informasiUser;
     var getEmid = "${dataUser![0].em_id}";
     var getFullName = "${dataUser[0].full_name}";
@@ -905,7 +909,8 @@ class TugasLuarController extends GetxController {
       'em_delegation': validasiDelegasiSelected,
       'leave_files': "",
       'ajuan': "4",
-      'apply_status': "Pending"
+      'apply_status': "Pending",
+      'platform': platform
     };
     var typeNotifFcm = "Pengajuan Dinas Luar";
     if (status == false) {

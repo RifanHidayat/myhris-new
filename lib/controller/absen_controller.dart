@@ -4664,6 +4664,7 @@ class AbsenController extends GetxController {
   void kirimPengajuan(getNomorAjuanTerakhir, status) {
     print('kesini gak');
     var emId = AppData.informasiUser![0].em_id;
+    var platform = Platform.operatingSystem;
     Map<String, dynamic> body = {
       'id_absen': idAjuan.value.toString(),
       "address_masuk": addressMasuk.value.toString(),
@@ -4726,6 +4727,7 @@ class AbsenController extends GetxController {
           : "",
       'file': imageAjuan.value,
       'tgl_ajuan': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      'platform': platform
     };
     print('body data ajuan ${body}');
 

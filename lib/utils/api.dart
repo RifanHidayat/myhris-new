@@ -24,9 +24,9 @@ class Api {
    //static var basicUrl = "http://mobilehris.siscom.id:3010/";
 
 
-  // static var basicUrl = "http://kantor.membersis.com:2626/";
+  static var basicUrl = "http://kantor.membersis.com:2626/";
 
-  static var basicUrl = "http://192.168.20.19:2626/";
+  // static var basicUrl = "http://192.168.20.31:2626/";
 
 
   static var token = '9d590c04119a4433971a1dd622266d38';
@@ -197,9 +197,9 @@ class ApiRequest {
 
   // static var basicUrl = "http://kantor.membersis.com:2626/";
 
-  static var basicUrl = "http://192.168.20.19:2626/";
+  // static var basicUrl = "http://192.168.20.31:2626/";
 
-// static var basicUrl = "http://kantor.membersis.com:2626/";
+static var basicUrl = "http://kantor.membersis.com:2626/";
 
 
   Map<String, String> headers = {
