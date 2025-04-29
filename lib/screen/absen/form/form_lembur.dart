@@ -24,7 +24,8 @@ class _FormLemburState extends State<FormLembur> {
   @override
   void initState() {
     print('ini data lembur kali yak? ${widget.dataForm![0]}');
-    // controller.loadAllEmployeeDelegasi();
+    
+     controller.loadAllEmployeeDelegasi();
     // controller.getTypeLembur();
     if (widget.dataForm![1] == true) {
       controller.selectedTypeLembur.value = widget.dataForm![0]['type'];
@@ -45,10 +46,11 @@ class _FormLemburState extends State<FormLembur> {
       controller.nomorAjuan.value.text =
           "${widget.dataForm![0]['nomor_ajuan']}";
     } else {
+
       controller.selectedTypeLembur.value = "";
       controller.tanggalLembur.value.text = "";
-
       controller.removeAll();
+    
     }
     super.initState();
   }

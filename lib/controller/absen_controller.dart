@@ -4302,51 +4302,51 @@ class AbsenController extends GetxController {
   }
 
   Future<void> employeDetail() async {
-    // print("load detail employee");
-    // // UtilsAlert.showLoadingIndicator(Get.context!);
-    // var dataUser = AppData.informasiUser;
-    // final box = GetStorage();
+    print("load detail employee");
+    // UtilsAlert.showLoadingIndicator(Get.context!);
+    var dataUser = AppData.informasiUser;
+    final box = GetStorage();
 
-    // var id = dataUser![0].em_id;
-    // print("em id ${id}");
-    // Map<String, dynamic> body = {'val': 'em_id', 'cari': id};
-    // var connect = Api.connectionApi("post", body, "whereOnce-employee");
-    // connect.then((dynamic res) {
-    //   if (res == false) {
-    //     //UtilsAlert.koneksiBuruk();
-    //   } else {
-    //     bool lastAbsen = AppData.statusAbsen;
-    //     print("ASEE ABSEN ${lastAbsen}");
+    var id = dataUser![0].em_id;
+    print("em id ${id}");
+    Map<String, dynamic> body = {'val': 'em_id', 'cari': id};
+    var connect = Api.connectionApi("post", body, "whereOnce-employee");
+    connect.then((dynamic res) {
+      if (res == false) {
+        //UtilsAlert.koneksiBuruk();
+      } else {
+        bool lastAbsen = AppData.statusAbsen;
+        print("ASEE ABSEN ${lastAbsen}");
 
-    //     if (res.statusCode == 200) {
-    //       var valueBody = jsonDecode(res.body);
-    //       var data = valueBody['data'];
-    //       // isTracking.value = data[0]['em_control'];
-    //       if (lastAbsen == true) {
-    //         if (data[0]['em_control'] == 1) {
-    //           isTracking.value = 1;
-    //         } else {
-    //           isTracking.value = 0;
-    //         }
-    //       } else {
-    //         isTracking.value = 0;
-    //       }
-    //       print("data wajah ${data[0]['file_face']}");
-    //       regType.value = data[0]['reg_type'];
-    //       print("Req tye ${regType.value}");
-    //       box.write("file_face", data[0]['file_face']);
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          var data = valueBody['data'];
+          // isTracking.value = data[0]['em_control'];
+          if (lastAbsen == true) {
+            if (data[0]['em_control'] == 1) {
+              isTracking.value = 1;
+            } else {
+              isTracking.value = 0;
+            }
+          } else {
+            isTracking.value = 0;
+          }
+          print("data wajah ${data[0]['file_face']}");
+          regType.value = data[0]['reg_type'];
+          print("Req tye ${regType.value}");
+          box.write("file_face", data[0]['file_face']);
 
-    //       print("data wajah ${GetStorage().read('file_face')}");
+          print("data wajah ${GetStorage().read('file_face')}");
 
-    //       if (data[0]['file_face'] == "" || data[0]['file_face'] == null) {
-    //         box.write("face_recog", false);
-    //       } else {
-    //         box.write("face_recog", true);
-    //       }
-    //     }
-    //     // Get.back();
-    //   }
-    // });
+          if (data[0]['file_face'] == "" || data[0]['file_face'] == null) {
+            box.write("face_recog", false);
+          } else {
+            box.write("face_recog", true);
+          }
+        }
+        // Get.back();
+      }
+    });
   }
 
   void employeDetaiBpjs() {

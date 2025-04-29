@@ -87,9 +87,9 @@ class _DashboardState extends State<Dashboard> {
   
     // setState(() {
     Future.wait([
-      controller.updateInformasiUser(),
+     // controller.updateInformasiUser(),
       // controllerBpj.employeDetaiBpjs(),
-      // controllerAbsensi.employeDetail(),
+     controllerAbsensi.employeDetail(),
       // controllerAbsensi.userShift(),
 
       Future.delayed(const Duration(milliseconds: 500), () {
@@ -635,8 +635,8 @@ class _DashboardState extends State<Dashboard> {
 
                                   controller.showPkwt.value == false
                                       ? const SizedBox()
-                                      : controllerGlobal
-                                              .employeeSisaCuti.value.isEmpty
+                                      : controller
+                                              .loadAllSisaCuti.value.isEmpty
                                           ? const SizedBox()
                                           : Column(
                                               children: [
@@ -713,14 +713,14 @@ class _DashboardState extends State<Dashboard> {
                                             ),
                                   controller.showPkwt.value == false
                                       ? const SizedBox()
-                                      : controllerGlobal
-                                              .employeeSisaCuti.isEmpty
+                                      : controller
+                                              .loadAllSisaCuti.isEmpty
                                           ? const SizedBox()
                                           : const SizedBox(height: 8),
                                   controller.showPkwt.value == false
                                       ? const SizedBox()
-                                      : controllerGlobal
-                                              .employeeSisaCuti.isEmpty
+                                      : controller
+                                              .loadAllSisaCuti.isEmpty
                                           ? const SizedBox()
                                           : listReminderPkwt(),
                                   const SizedBox(height: 16),
@@ -4868,17 +4868,17 @@ class _DashboardState extends State<Dashboard> {
         width: MediaQuery.of(Get.context!).size.width,
         height: 120,
         child: ListView.builder(
-            itemCount: controllerGlobal.employeeSisaCuti.length,
+            itemCount: controller.loadAllSisaCuti.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               var fullname =
-                  controllerGlobal.employeeSisaCuti.value[index]['full_name'];
+                  controller.loadAllSisaCuti.value[index]['full_name'];
               var image =
-                  controllerGlobal.employeeSisaCuti.value[index]['em_image'];
-              var sisaKontrak = controllerGlobal.employeeSisaCuti.value[index]
+                  controller.loadAllSisaCuti.value[index]['em_image'];
+              var sisaKontrak = controller.loadAllSisaCuti.value[index]
                   ['sisa_kontrak'];
               var endDate =
-                  controllerGlobal.employeeSisaCuti.value[index]['end_date'];
+                  controller.loadAllSisaCuti.value[index]['end_date'];
               return Padding(
                 padding: EdgeInsets.only(left: index == 0 ? 16 : 8, right: 8),
                 child: Column(
@@ -5042,7 +5042,7 @@ class _DashboardState extends State<Dashboard> {
 
     // controllerAbsensi.getTimeNow();
     // controllerBpj.employeDetaiBpjs();
-    // controllerAbsensi.employeDetail();
+     controllerAbsensi.employeDetail();
     // controllerAbsensi.userShift();
     // controllerAbsensi.getPosisition();
     // controllerAbsensi.getPlaceCoordinate();
