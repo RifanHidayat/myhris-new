@@ -21,11 +21,13 @@ class GlobalController extends GetxController {
   var employeeSisaCuti = [].obs;
 
   // @override
-  // void onReady() async {
+  // void onReady() async 
   //   // getLoadsysData();
   //   super.onReady();
   // }
 
+  
+  
   Future<void> getLoadsysData() async {
     sysData.clear();
     var connect = Api.connectionApi("get", "", "sysdata");
@@ -70,6 +72,8 @@ class GlobalController extends GetxController {
       }
     });
   }
+
+
 
   // void loadAllSisaCuti() {
   //   print("sisa PKWT`");

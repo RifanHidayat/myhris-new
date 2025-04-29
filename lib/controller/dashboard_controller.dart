@@ -138,6 +138,7 @@ class DashboardController extends GetxController {
   var showPengumuman = false.obs;
   var showLaporan = false.obs;
   var showAbsen = false.obs;
+  var loadAllSisaCuti = [].obs;
 
   var selectedPageView = 0.obs;
   var indexBanner = 0.obs;
@@ -223,7 +224,7 @@ class DashboardController extends GetxController {
     dataDashboard();
 
     // updateWorkTime();
-    // getBannerDashboard();
+     getBannerDashboard();
     // updateInformasiUser();
     // getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     // getMenuDashboard();
@@ -249,6 +250,8 @@ class DashboardController extends GetxController {
     var isBackDateTugasLuar = "0";
     var isBackDateDinasLuar = "0";
     var isBackDateLembur = "0";
+
+    final box = GetStorage();
 
     for (var element in employee) {
       if (element['back_date'] == "" || element['back_date'] == null) {
@@ -321,6 +324,14 @@ class DashboardController extends GetxController {
           element['reg_type'] == '' || element['reg_type'] == null
               ? 0
               : int.parse(element['reg_type'].toString());
+
+      box.write("file_face", element['file_face']);
+
+      if (element['file_face'] == "" || element['file_face'] == null) {
+        box.write("face_recog", false);
+      } else {
+        box.write("face_recog", true);
+      }
     }
 
     AppData.informasiUser = getData;
@@ -509,6 +520,28 @@ class DashboardController extends GetxController {
     informasiDashboard.value = filter1;
   }
 
+  void fetchUlangTahun(data) {
+    employeeUltah.clear();
+    employeeUltah.value = data;
+    this.employeeUltah.refresh();
+  }
+
+  void fetchBanner(data) {
+    var banners = List<Map<String, dynamic>>.from(data.map((banner) => {
+          'id': banner['id'],
+          'img': banner['img'],
+        }));
+
+    bannerDashboard.value = banners;
+    bannerDashboard.refresh();
+  }
+
+  void fetchPkwt(data) {
+    loadAllSisaCuti.clear();
+    loadAllSisaCuti.value = data;
+    this.loadAllSisaCuti.refresh();
+  }
+
   void fetchPlaceCoordinate(data) {
     controllerAbsensi.coordinate.value = false;
 
@@ -677,6 +710,9 @@ class DashboardController extends GetxController {
         List sysdata = res['sysdata'];
         List places = res['places'];
         List aktifitas = res['aktifitas'];
+        List employeeUltah = res['employee_ultah'];
+        List employeePkwt = res['employee_pkwt'];
+        
 
         if (worktime.length > 0) {
           timeIn.value = worktime[0]['time_in'];
@@ -686,8 +722,18 @@ class DashboardController extends GetxController {
           UpdateUser(employee);
         }
 
+        // if (employeePkwt.length > 0) {}
+        if (employeeUltah.length > 0) {
+          fetchUlangTahun(employeeUltah);
+        }
+
         if (menuUtama.length > 0) {
           fetchmenuUtama(menuUtama);
+        }
+        UtilsAlert.showToast("data pkwt ${employeePkwt.length}");
+        if (employeePkwt.length > 0) {
+          
+          fetchPkwt(employeePkwt);
         }
         if (menus.length > 0) {
           fetchMain(menus);
@@ -695,6 +741,7 @@ class DashboardController extends GetxController {
         if (notice.length > 0) {
           fetchNotice(notice);
         }
+
         if (places.length > 0) {
           fetchPlaceCoordinate(places);
         }
