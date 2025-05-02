@@ -25,7 +25,6 @@ class _FormLemburState extends State<FormLembur> {
   void initState() {
     print('ini data lembur kali yak? ${widget.dataForm![0]}');
     
-     controller.loadAllEmployeeDelegasi();
     // controller.getTypeLembur();
     if (widget.dataForm![1] == true) {
       controller.selectedTypeLembur.value = widget.dataForm![0]['type'];
@@ -868,7 +867,7 @@ class _FormLemburState extends State<FormLembur> {
                       Text(
                         controller.selectedDropdownDelegasi.value,
                         style: GoogleFonts.inter(
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: Constanst.fgPrimary),
                       ),

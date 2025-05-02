@@ -775,8 +775,8 @@ class TugasLuarController extends GetxController {
           "Membuat Pengajuan Tugas Luar. alasan = ${catatan.value.text}";
       var connect = Api.connectionApi("post", body, "tugas-luar");
       connect.then((dynamic res) {
+        var valueBody = jsonDecode(res.body);
         if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
           var typeNotifFcm = "Pengajuan Tugas Luar";
           if (valueBody['status'] == true) {
             var stringWaktu =
@@ -844,6 +844,9 @@ class TugasLuarController extends GetxController {
                   "Data periode $finalTanggalPengajuan belum tersedia, harap hubungi HRD");
             }
           }
+        } else {
+          Get.back();
+          UtilsAlert.showToast(valueBody['message']);
         }
       });
     } else {
@@ -851,8 +854,9 @@ class TugasLuarController extends GetxController {
       body['cari'] = idpengajuanTugasLuar.value;
       body['activity_name'] =
           "Edit Pengajuan Tugas Luar. Tanggal Pengajuan = $finalTanggalPengajuan";
-      var connect = Api.connectionApi("post", body, "edit-emp_labor");
+      var connect = Api.connectionApi("post", body, "tugas-luar-update");
       connect.then((dynamic res) {
+         var valueBody = jsonDecode(res.body);
         if (res.statusCode == 200) {
           Navigator.pop(Get.context!);
 
@@ -867,6 +871,9 @@ class TugasLuarController extends GetxController {
           Get.offAll(BerhasilPengajuan(
             dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
           ));
+        }else {
+          Get.back();
+          UtilsAlert.showToast(valueBody['message']);
         }
       });
     }

@@ -730,7 +730,7 @@ class DashboardController extends GetxController {
         if (menuUtama.length > 0) {
           fetchmenuUtama(menuUtama);
         }
-        UtilsAlert.showToast("data pkwt ${employeePkwt.length}");
+        // UtilsAlert.showToast("data pkwt ${employeePkwt.length}");
         if (employeePkwt.length > 0) {
           
           fetchPkwt(employeePkwt);

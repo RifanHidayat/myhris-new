@@ -1451,7 +1451,7 @@ class LemburController extends GetxController {
         Navigator.pop(Get.context!);
         Navigator.pop(Get.context!);
         UtilsAlert.showToast("Berhasil batalkan pengajuan");
-        onReady();
+        loadDataLembur();
       }
     });
   }

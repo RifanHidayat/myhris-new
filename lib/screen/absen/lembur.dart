@@ -34,7 +34,6 @@ class _LemburState extends State<Lembur> {
   void initState() {
     super.initState();
     Api().checkLogin();
-    controller.loadDataLembur();
     if (Get.arguments != null) {
       idx = Get.arguments;
       Future.delayed(const Duration(milliseconds: 500), () {

@@ -804,390 +804,392 @@ class PersonalInfo extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 12.0, bottom: 12.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Iconsax.buildings,
-                                    size: 24,
-                                    color: Constanst.fgPrimary,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Nama Perusahaan",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              color: Constanst.fgSecondary,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          "${AppData.selectedPerusahan}",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 16,
-                                              color: Constanst.fgPrimary,
-                                              fontWeight: FontWeight.w500),
-                                        )
-                                      ],
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, bottom: 12.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Iconsax.buildings,
+                                      size: 24,
+                                      color: Constanst.fgPrimary,
                                     ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                              color: Constanst.fgBorder,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 12.0, bottom: 12.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Iconsax.buildings_2,
-                                    size: 24,
-                                    color: Constanst.fgPrimary,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Cabang",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              color: Constanst.fgSecondary,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          AppData.informasiUser![0].branchName
-                                              .toString(),
-                                          style: GoogleFonts.inter(
-                                              fontSize: 16,
-                                              color: Constanst.fgPrimary,
-                                              fontWeight: FontWeight.w500),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                              color: Constanst.fgBorder,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 12.0, bottom: 12.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Iconsax.briefcase,
-                                    size: 24,
-                                    color: Constanst.fgPrimary,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Divisi",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              color: Constanst.fgSecondary,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          "${AppData.informasiUser![0].emp_departmen}",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 16,
-                                              color: Constanst.fgPrimary,
-                                              fontWeight: FontWeight.w500),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                              color: Constanst.fgBorder,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 12.0, bottom: 12.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Iconsax.profile_circle,
-                                    size: 24,
-                                    color: Constanst.fgPrimary,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Jabatan",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              color: Constanst.fgSecondary,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          "${AppData.informasiUser![0].emp_jobTitle}",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 16,
-                                              color: Constanst.fgPrimary,
-                                              fontWeight: FontWeight.w500),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                              color: Constanst.fgBorder,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 12.0, bottom: 12.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Iconsax.user_tag,
-                                    size: 24,
-                                    color: Constanst.fgPrimary,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Posisi",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              color: Constanst.fgSecondary,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          "${AppData.informasiUser![0].posisi}",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 16,
-                                              color: Constanst.fgPrimary,
-                                              fontWeight: FontWeight.w500),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                              color: Constanst.fgBorder,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 12.0, bottom: 12.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Iconsax.login,
-                                    size: 24,
-                                    color: Constanst.fgPrimary,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Bergabung",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              color: Constanst.fgSecondary,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          Constanst.convertDate(
-                                              "${AppData.informasiUser![0].em_joining_date}"),
-                                          style: GoogleFonts.inter(
-                                              fontSize: 16,
-                                              color: Constanst.fgPrimary,
-                                              fontWeight: FontWeight.w500),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                              color: Constanst.fgBorder,
-                            ),
-                            controller.tanggalAkhirKontrak.value == ""
-                                ? const SizedBox()
-                                : Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 12.0, bottom: 12.0),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Icon(
-                                          Iconsax.logout,
-                                          size: 24,
-                                          color: Constanst.fgPrimary,
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Berakhir",
-                                                style: GoogleFonts.inter(
-                                                    fontSize: 14,
-                                                    color:
-                                                        Constanst.fgSecondary,
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                Constanst.convertDate(controller
-                                                    .tanggalAkhirKontrak.value),
-                                                // "${controller.user.value?[0].em_joining_date}",
-                                                style: GoogleFonts.inter(
-                                                    fontSize: 16,
-                                                    color: Constanst.fgPrimary,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              )
-                                            ],
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Nama Perusahaan",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 14,
+                                                color: Constanst.fgSecondary,
+                                                fontWeight: FontWeight.w400),
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                            controller.tanggalAkhirKontrak.value == ""
-                                ? const SizedBox()
-                                : Divider(
-                                    height: 0,
-                                    thickness: 1,
-                                    color: Constanst.fgBorder,
-                                  ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 12.0, bottom: 12.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Iconsax.notification_1,
-                                    size: 24,
-                                    color: Constanst.fgPrimary,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Status",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              color: Constanst.fgSecondary,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          "${AppData.informasiUser![0].em_status}",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 16,
-                                              color: Constanst.fgPrimary,
-                                              fontWeight: FontWeight.w500),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "${AppData.selectedPerusahan}",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 16,
+                                                color: Constanst.fgPrimary,
+                                                fontWeight: FontWeight.w500),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            Divider(
-                              height: 0,
-                              thickness: 1,
-                              color: Constanst.fgBorder,
-                            ),
-                          ],
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Constanst.fgBorder,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, bottom: 12.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Iconsax.buildings_2,
+                                      size: 24,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Cabang",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 14,
+                                                color: Constanst.fgSecondary,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            AppData.informasiUser![0].branchName
+                                                .toString(),
+                                            style: GoogleFonts.inter(
+                                                fontSize: 16,
+                                                color: Constanst.fgPrimary,
+                                                fontWeight: FontWeight.w500),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Constanst.fgBorder,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, bottom: 12.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Iconsax.briefcase,
+                                      size: 24,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Divisi",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 14,
+                                                color: Constanst.fgSecondary,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "${AppData.informasiUser![0].emp_departmen}",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 16,
+                                                color: Constanst.fgPrimary,
+                                                fontWeight: FontWeight.w500),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Constanst.fgBorder,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, bottom: 12.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Iconsax.profile_circle,
+                                      size: 24,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Jabatan",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 14,
+                                                color: Constanst.fgSecondary,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "${AppData.informasiUser![0].emp_jobTitle}",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 16,
+                                                color: Constanst.fgPrimary,
+                                                fontWeight: FontWeight.w500),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Constanst.fgBorder,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, bottom: 12.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Iconsax.user_tag,
+                                      size: 24,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Posisi",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 14,
+                                                color: Constanst.fgSecondary,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "${AppData.informasiUser![0].posisi}",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 16,
+                                                color: Constanst.fgPrimary,
+                                                fontWeight: FontWeight.w500),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Constanst.fgBorder,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, bottom: 12.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Iconsax.login,
+                                      size: 24,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Bergabung",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 14,
+                                                color: Constanst.fgSecondary,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            Constanst.convertDate(
+                                                "${AppData.informasiUser![0].em_joining_date}"),
+                                            style: GoogleFonts.inter(
+                                                fontSize: 16,
+                                                color: Constanst.fgPrimary,
+                                                fontWeight: FontWeight.w500),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Constanst.fgBorder,
+                              ),
+                              controller.tanggalAkhirKontrak.value == ""
+                                  ? const SizedBox()
+                                  : Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 12.0, bottom: 12.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Iconsax.logout,
+                                            size: 24,
+                                            color: Constanst.fgPrimary,
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Berakhir",
+                                                  style: GoogleFonts.inter(
+                                                      fontSize: 14,
+                                                      color:
+                                                          Constanst.fgSecondary,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  Constanst.convertDate(controller
+                                                      .tanggalAkhirKontrak.value),
+                                                  // "${controller.user.value?[0].em_joining_date}",
+                                                  style: GoogleFonts.inter(
+                                                      fontSize: 16,
+                                                      color: Constanst.fgPrimary,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                              controller.tanggalAkhirKontrak.value == ""
+                                  ? const SizedBox()
+                                  : Divider(
+                                      height: 0,
+                                      thickness: 1,
+                                      color: Constanst.fgBorder,
+                                    ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, bottom: 12.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Iconsax.notification_1,
+                                      size: 24,
+                                      color: Constanst.fgPrimary,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Status",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 14,
+                                                color: Constanst.fgSecondary,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "${AppData.informasiUser![0].em_status}",
+                                            style: GoogleFonts.inter(
+                                                fontSize: 16,
+                                                color: Constanst.fgPrimary,
+                                                fontWeight: FontWeight.w500),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Constanst.fgBorder,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
