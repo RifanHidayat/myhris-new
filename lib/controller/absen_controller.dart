@@ -1698,6 +1698,7 @@ class AbsenController extends GetxController {
                   dateNow.value
                 ],
               ));
+              
             } else {
               isLoaingAbsensi.value = false;
               Get.back();
@@ -2879,6 +2880,9 @@ class AbsenController extends GetxController {
 
     var getEmpId = dataUser![0].em_id;
     print(getEmpId);
+
+
+    
 
     var defaultDate = date.value;
 
