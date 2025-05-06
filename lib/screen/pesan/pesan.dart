@@ -34,6 +34,7 @@ class _PesanState extends State<Pesan> {
     controller.clearFilter();
     controller.getTimeNow();
     controller.loadNotifikasi();
+    controller.loadApproveInfo();
     // setState(() {
 
     // });
@@ -45,6 +46,7 @@ class _PesanState extends State<Pesan> {
     // refreshData();
     controller.getTimeNow();
     controller.loadNotifikasi();
+    controller.loadApproveInfo();
   }
 
   @override

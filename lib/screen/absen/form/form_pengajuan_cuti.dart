@@ -441,6 +441,39 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
     );
   }
 
+  Widget message() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Constanst.infoLight1,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          children: [
+            Icon(
+              Iconsax.info_circle5,
+              color: Constanst.colorPrimary,
+              size: 26,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                "Tipe lembur belum disetting, silakan hubungi HRD.",
+                textAlign: TextAlign.left,
+                style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w400,
+                    color: Constanst.fgSecondary,
+                    fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget informasiSisaCutiMelahirkan() {
     return Padding(
       padding: const EdgeInsets.all(12.0),
