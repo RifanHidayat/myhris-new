@@ -356,7 +356,7 @@ class Informasi extends StatelessWidget {
               child: index == 0
                   ? screenInformasi()
                   : index == 1
-                      ? screenUltah()
+                      ? screenUltah(context)
                       : index == 2
                           ? screenTidakHadir()
                           : index == 3
@@ -461,7 +461,16 @@ class Informasi extends StatelessWidget {
           );
   }
 
-  Widget screenUltah() {
+   Widget screenUltah(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width; // Ambil lebar layar
+    const crossAxisCount = 2; // Jumlah kolom
+    const crossAxisSpacing = 12.0; // Spasi antar kolom
+    final itemWidth =
+        (screenWidth - (crossAxisSpacing * (crossAxisCount - 1))) /
+            crossAxisCount; // Lebar item
+    final itemHeight =
+        itemWidth * 1.4; // Misalnya tinggi 20% lebih besar dari lebar
+    final childAspectRatio = itemWidth / itemHeight; // Hitung rasio aspek
     return controller.employeeUltah.value.isEmpty
         ? const Center(
             child: Padding(
@@ -479,11 +488,11 @@ class Informasi extends StatelessWidget {
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 16.0,
-                childAspectRatio: 0.89,
+                childAspectRatio: childAspectRatio,
               ),
               itemBuilder: (context, index) {
                 var fullname =
@@ -505,7 +514,7 @@ class Informasi extends StatelessWidget {
                       borderRadius:
                           const BorderRadius.all(Radius.circular(12))),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+                    padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
                     child: Column(
                       children: [
                         Row(
@@ -521,68 +530,60 @@ class Informasi extends StatelessWidget {
                                       Radius.circular(100))),
                               child: Padding(
                                 padding: const EdgeInsets.all(2.0),
-                                child: image == ""
-                                    ? SvgPicture.asset(
-                                        'assets/avatar_default.svg',
-                                        width: 56,
-                                        height: 56,
-                                      )
-                                    : Center(
-                                        child: CircleAvatar(
-                                          radius: 28,
-                                          child: ClipOval(
-                                            child: ClipOval(
-                                              child: CachedNetworkImage(
-                                                imageUrl:
-                                                    "${Api.UrlfotoProfile}$image",
-                                                progressIndicatorBuilder:
-                                                    (context, url,
-                                                            downloadProgress) =>
-                                                        Container(
-                                                  alignment: Alignment.center,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.5,
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                          value:
-                                                              downloadProgress
-                                                                  .progress),
-                                                ),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Container(
-                                                  color: Colors.white,
-                                                  child: SvgPicture.asset(
-                                                    'assets/avatar_default.svg',
-                                                    width: 56,
-                                                    height: 56,
-                                                  ),
-                                                ),
-                                                fit: BoxFit.cover,
-                                                width: 56,
-                                                height: 56,
-                                              ),
+                                child: Center(
+                                  child: CircleAvatar(
+                                    radius: 28,
+                                    child: ClipOval(
+                                      child: ClipOval(
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              "${Api.UrlfotoProfile}$image",
+                                          progressIndicatorBuilder: (context,
+                                                  url, downloadProgress) =>
+                                              Container(
+                                            alignment: Alignment.center,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.5,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: CircularProgressIndicator(
+                                                value:
+                                                    downloadProgress.progress),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Container(
+                                            color: Colors.white,
+                                            child: SvgPicture.asset(
+                                              'assets/avatar_default.svg',
+                                              width: 56,
+                                              height: 56,
                                             ),
                                           ),
+                                          fit: BoxFit.cover,
+                                          width: 56,
+                                          height: 56,
                                         ),
                                       ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          "$fullname",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Constanst.fgPrimary),
+                        Expanded(
+                          child: Text(
+                            "$fullname",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Constanst.fgPrimary),
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(

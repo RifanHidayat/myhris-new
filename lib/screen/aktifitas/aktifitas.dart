@@ -793,7 +793,7 @@ class Aktifitas extends StatelessWidget {
                                     ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      // const SizedBox(height: 8),
                       Text(
                         title,
                         style: GoogleFonts.inter(

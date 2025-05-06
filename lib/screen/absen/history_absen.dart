@@ -1244,7 +1244,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                       "Approved 2 by ${data['approve_by']}",
                                                   color: Constanst.fgPrimary,
                                                   weight: FontWeight.w500,
-                                                  size: 14,
+                                                  size: 12,
                                                 ),
                                               ],
                                             )

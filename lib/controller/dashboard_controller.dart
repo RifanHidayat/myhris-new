@@ -730,7 +730,7 @@ class DashboardController extends GetxController {
         if (menuUtama.length > 0) {
           fetchmenuUtama(menuUtama);
         }
-        UtilsAlert.showToast("data pkwt ${employeePkwt.length}");
+        // UtilsAlert.showToast("data pkwt ${employeePkwt.length}");
         if (employeePkwt.length > 0) {
           
           fetchPkwt(employeePkwt);
@@ -2872,19 +2872,40 @@ class DashboardController extends GetxController {
     if (id == 1) {
       Get.to(pengajuanAbsen());
     } else if (id == 2) {
+      controllerIzin.getLoadsysData();
+      controllerIzin.loadAllEmployeeDelegasi();
+      controllerIzin.loadTypeSakit();
+      controllerIzin.loadDataAjuanIzin();
+      controllerIzin.getDepartemen(1, "");
       Get.to(FormPengajuanIzin(
         dataForm: [[], false],
       ));
     } else if (id == 3) {
+      controllerLembur.getLoadsysData();
+      controllerLembur.loadDataLembur();
+      controllerLembur.loadAllEmployeeDelegasi();
+      controllerLembur.getTypeLembur();
+      controllerLembur.getDepartemen(1, "");
       Get.to(FormLembur(
         dataForm: [[], false],
       ));
     } else if (id == 4) {
-      controllerIzin.changeTypeSelected(controllerIzin.selectedType.value);
+      controllerCuti.loadCutiUser();
+      controllerCuti.getLoadsysData();
+      controllerCuti.loadAllEmployeeDelegasi();
+      controllerCuti.loadDataTypeCuti();
+      controllerCuti.loadDataAjuanCuti();
+      controllerCuti.getDepartemen(1, "");
       Get.to(FormPengajuanCuti(
         dataForm: [[], false],
       ));
     } else if (id == 5) {
+      controllerTugasLuar.getLoadsysData();
+      controllerTugasLuar.loadTipePengajuan();
+      controllerTugasLuar.loadDataTugasLuar();
+      controllerTugasLuar.loadDataDinasLuar();
+      controllerTugasLuar.getDepartemen(1, "");
+      controllerTugasLuar.loadAllEmployeeDelegasi();
       Get.to(FormTugasLuar(
         dataForm: [[], false],
       ));
@@ -3414,13 +3435,13 @@ class DashboardController extends GetxController {
                               children: [
                                 SvgPicture.asset(
                                   id == 1
-                                      ? 'assets/4_lembur.svg'
+                                      ? 'assets/2_absen.svg'
                                       : id == 2
-                                          ? 'assets/5_cuti.svg'
+                                          ? 'assets/3_izin.svg'
                                           : id == 3
-                                              ? 'assets/6_tugas_luar.svg'
+                                              ? 'assets/4_lembur.svg'
                                               : id == 4
-                                                  ? 'assets/3_izin.svg'
+                                                  ? 'assets/5_cuti.svg'
                                                   : id == 5
                                                       ? 'assets/7_klaim.svg'
                                                       : id == 6

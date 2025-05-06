@@ -996,6 +996,7 @@ class IzinController extends GetxController {
 
   void kirimFormAjuanTidakMasukKerja(status, getNomorAjuanTerakhir) async {
     print("masuk ini ${tanggalBikinPengajuan.value}");
+    var platform = Platform.operatingSystem;
     var dataUser = AppData.informasiUser;
     var getEmid = "${dataUser![0].em_id}";
     var getFullName = "${dataUser[0].full_name}";
@@ -1044,7 +1045,8 @@ class IzinController extends GetxController {
       'leave_files': namaFileUpload.value,
       'ajuan': getAjuanType,
       'type': ' ${selectedDropdownFormTidakMasukKerjaTipe.value}',
-      'apply_status': "Pending"
+      'apply_status': "Pending",
+      'platform': platform
     };
 
     print("data body izin ${body}");

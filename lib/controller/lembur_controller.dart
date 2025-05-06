@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -471,6 +472,7 @@ class LemburController extends GetxController {
 
   void kirimPengajuan(getNomorAjuanTerakhir) {
     // check id type lembur
+    var platform = Platform.operatingSystem;
     var finalIdLembur = checkLembur();
     var listTanggal = tanggalLembur.value.text.split(',');
     var getTanggal = listTanggal[1].replaceAll(' ', '');
@@ -501,7 +503,8 @@ class LemburController extends GetxController {
       'ajuan': '1',
       'created_by': getEmid,
       'menu_name': 'Lembur',
-      'approve_status': "pending"
+      'approve_status': "pending",
+      'platform': platform
     };
     var typeNotifFcm = "Pengajuan Lembur";
     if (statusForm.value == false) {
@@ -1448,7 +1451,7 @@ class LemburController extends GetxController {
         Navigator.pop(Get.context!);
         Navigator.pop(Get.context!);
         UtilsAlert.showToast("Berhasil batalkan pengajuan");
-        onReady();
+        loadDataLembur();
       }
     });
   }

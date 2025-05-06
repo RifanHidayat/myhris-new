@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/cuti_controller.dart';
 import 'package:siscom_operasional/screen/absen/riwayat_cuti.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -221,6 +222,15 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                           "Tanggal mulai lebih besar dari tanggal selesai");
                       return;
                     }
+                    DateTime startPriode = DateTime.parse(
+                        DateFormat('yyyy-MM-dd')
+                            .format(DateTime.parse(AppData.startPeriode))
+                            .toString());
+                    if (tempStartDate.isBefore(startPriode)) {
+                      UtilsAlert.showToast(
+                          "Tanggal mulai tidak boleh sebelum tanggal periode bulan ini");
+                      return;
+                    }
 
                     // Define two DateTime objects representing the two dates
                     DateTime date1 = DateTime(tempStartDate.year,
@@ -269,7 +279,22 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                   } else {
                     //mengugunakan multiple date
 
+                    DateTime startPriode = DateTime.parse(
+                        DateFormat('yyyy-MM-dd')
+                            .format(DateTime.parse(AppData.startPeriode))
+                            .toString());
+
                     if (controller.statusForm.value == true) {
+                      DateTime tempStartDateEdit = DateTime.parse(DateFormat(
+                              'yyyy-MM-dd')
+                          .format(DateTime.parse(
+                              controller.tanggalSelectedEdit.first.toString()))
+                          .toString());
+                      if (tempStartDateEdit.isBefore(startPriode)) {
+                        UtilsAlert.showToast(
+                            "Tanggal mulai tidak boleh sebelum tanggal periode bulan ini");
+                        return;
+                      }
                       if (controller.cutLeave.value == 1) {
                         if (controller.allowMinus.value == 0) {
                           if ((controller.jumlahCuti.value -
@@ -293,6 +318,16 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                         }
                       }
                     } else {
+                      DateTime tempStartDate = DateTime.parse(
+                          DateFormat('yyyy-MM-dd')
+                              .format(DateTime.parse(
+                                  controller.tanggalSelected.first.toString()))
+                              .toString());
+                      if (tempStartDate.isBefore(startPriode)) {
+                        UtilsAlert.showToast(
+                            "Tanggal mulai tidak boleh sebelum tanggal periode bulan ini");
+                        return;
+                      }
                       if (controller.cutLeave.value == 1) {
                         if (controller.allowMinus.value == 0) {
                           if ((controller.jumlahCuti.value -
@@ -399,6 +434,39 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                       fontSize: 12),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget message() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Constanst.infoLight1,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          children: [
+            Icon(
+              Iconsax.info_circle5,
+              color: Constanst.colorPrimary,
+              size: 26,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                "Tipe lembur belum disetting, silakan hubungi HRD.",
+                textAlign: TextAlign.left,
+                style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w400,
+                    color: Constanst.fgSecondary,
+                    fontSize: 14),
+              ),
             ),
           ],
         ),

@@ -707,6 +707,8 @@ class CutiController extends GetxController {
   }
 
   void kirimFormAjuanCuti(getNomorAjuanTerakhir) async {
+    var platform = Platform.operatingSystem;
+    print('ini platform $platform');
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
     var getFullName = dataUser[0].full_name;
@@ -744,7 +746,8 @@ class CutiController extends GetxController {
         'ajuan': '1',
         'created_by': getEmid,
         'menu_name': 'Cuti',
-        'apply_status': "Pending"
+        'apply_status': "Pending",
+        'platform': platform
       };
     } else {
       body = {
@@ -766,7 +769,8 @@ class CutiController extends GetxController {
         'ajuan': '1',
         'created_by': getEmid,
         'menu_name': 'Cuti',
-        'apply_status': "Pending"
+        'apply_status': "Pending",
+        'platform': platform
       };
     }
 

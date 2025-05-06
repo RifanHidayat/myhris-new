@@ -25,7 +25,7 @@ class Lembur extends StatefulWidget {
 }
 
 class _LemburState extends State<Lembur> {
-  final controller = Get.put(LemburController());
+  final controller = Get.find<LemburController>();
   var controllerGlobal = Get.put(GlobalController());
   final dashboardController = Get.put(DashboardController());
   var idx = 0;
@@ -34,7 +34,6 @@ class _LemburState extends State<Lembur> {
   void initState() {
     super.initState();
     Api().checkLogin();
-    controller.loadDataLembur();
     if (Get.arguments != null) {
       idx = Get.arguments;
       Future.delayed(const Duration(milliseconds: 500), () {

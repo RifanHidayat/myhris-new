@@ -1544,6 +1544,7 @@ class AbsenController extends GetxController {
     //   UtilsAlert.showToast("Silahkan Absen");
     // } else {
 
+    var platform = Platform.operatingSystem;
     try {
       if (Platform.isAndroid) {
         // TrustLocation.start(1);
@@ -1625,6 +1626,7 @@ class AbsenController extends GetxController {
                     'end_date': endDate,
                     'start_time': startTime,
                     'end_time': endTime,
+                    'platform': platform
                   }
                 : {
                     'em_id': getEmpId,
@@ -1642,6 +1644,7 @@ class AbsenController extends GetxController {
                     'end_date': endDate,
                     'start_time': startTime,
                     'end_time': endTime,
+                    'platform': platform
                   };
 
             isLoaingAbsensi.value = true;
@@ -1747,6 +1750,7 @@ class AbsenController extends GetxController {
             'end_date': endDate,
             'start_time': startTime,
             'end_time': endTime,
+            'platform': platform
           };
           isLoaingAbsensi.value = true;
 
@@ -2253,7 +2257,7 @@ class AbsenController extends GetxController {
     // if (base64fotoUser.value == "") {
     //   UtilsAlert.showToast("Silahkan Absen");
     // } else {
-
+    var platform = Platform.operatingSystem;
     try {
       if (Platform.isAndroid) {
         // TrustLocation.start(1);
@@ -2344,6 +2348,7 @@ class AbsenController extends GetxController {
                     'end_date': endDate,
                     'start_time': startTime,
                     'end_time': endTime,
+                    'platform': platform
                   }
                 : {
                     'em_id': getEmpId,
@@ -2364,6 +2369,7 @@ class AbsenController extends GetxController {
                     'end_date': endDate,
                     'start_time': startTime,
                     'end_time': endTime,
+                    'platform': platform
                   };
             print("parameter wfh ${body}");
             isLoaingAbsensi.value = true;
@@ -2512,6 +2518,7 @@ class AbsenController extends GetxController {
             'end_date': endDate,
             'start_time': startTime,
             'end_time': endTime,
+            'platform': platform
           };
           isLoaingAbsensi.value = true;
 
@@ -4664,6 +4671,7 @@ class AbsenController extends GetxController {
   void kirimPengajuan(getNomorAjuanTerakhir, status) {
     print('kesini gak');
     var emId = AppData.informasiUser![0].em_id;
+    var platform = Platform.operatingSystem;
     Map<String, dynamic> body = {
       'id_absen': idAjuan.value.toString(),
       "address_masuk": addressMasuk.value.toString(),
@@ -4726,6 +4734,7 @@ class AbsenController extends GetxController {
           : "",
       'file': imageAjuan.value,
       'tgl_ajuan': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      'platform': platform
     };
     print('body data ajuan ${body}');
 

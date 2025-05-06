@@ -31,11 +31,12 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
 
   @override
   void initState() {
-    controller.loadAllEmployeeDelegasi();
+    // controller.loadAllEmployeeDelegasi();
        
     print(controller.viewTugasLuar.value);
     if (widget.dataForm![1] == true) {
       print("nomor ajuan ${widget.dataForm![0]['nomor_ajuan']}");
+      print('ini data form ${widget.dataForm}');
       controller.nomorAjuan.value.text =
           "${widget.dataForm![0]['nomor_ajuan']}";
       controller.idpengajuanTugasLuar.value = "${widget.dataForm![0]['id']}";
@@ -896,7 +897,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
                         Text(
                           controller.selectedDropdownDelegasi.value,
                           style: GoogleFonts.inter(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
                               color: Constanst.fgPrimary),
                         ),
