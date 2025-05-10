@@ -50,7 +50,7 @@ class AuthController extends GetxController {
 
   var controllerAbsnsi = Get.find<AbsenController>(tag: 'absen controller');
   final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
-  var globalCtr = Get.put(GlobalController());
+  var globalCtr = Get.find<GlobalController>();
   // var isConnected = true.obs;
   // Timer? timer;
   // var ping = 0.obs;

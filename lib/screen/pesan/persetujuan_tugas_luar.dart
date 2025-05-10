@@ -22,9 +22,9 @@ class PersetujuanTugasLuar extends StatefulWidget {
 }
 
 class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
-  var controller = Get.put(ApprovalController());
+  var controller = Get.find<ApprovalController>();
 
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
 
   @override
   void initState() {

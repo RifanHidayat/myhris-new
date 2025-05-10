@@ -303,10 +303,12 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                             UtilsAlert.showToast(
                                 "Tanggal yang dipilih melebihi sisa cuti ");
                           } else {
-                            controller.validasiKirimPengajuan();
+                            print('kemari');
+                            // controller.validasiKirimPengajuan();
                           }
                         } else {
-                          controller.validasiKirimPengajuan();
+                          // print('kemari');
+                          // controller.validasiKirimPengajuan();
                         }
                       } else {
                         if ((controller.limitCuti.value) <
@@ -314,7 +316,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                           UtilsAlert.showToast(
                               "Tanggal yang dipilih melebihi sisa cuti");
                         } else {
-                          controller.validasiKirimPengajuan();
+                          // controller.validasiKirimPengajuan();
                         }
                       }
                     } else {
@@ -336,10 +338,10 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                             UtilsAlert.showToast(
                                 "Tanggal yang dipilih melebihi sisa cuti");
                           } else {
-                            controller.validasiKirimPengajuan();
+                            // controller.validasiKirimPengajuan();
                           }
                         } else {
-                          controller.validasiKirimPengajuan();
+                          // controller.validasiKirimPengajuan();
                         }
                       } else {
                         if ((controller.limitCuti.value) <
@@ -347,7 +349,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                           UtilsAlert.showToast(
                               "Tanggal yang dipilih melebihi sisa cuti");
                         } else {
-                          controller.validasiKirimPengajuan();
+                          // controller.validasiKirimPengajuan();
                         }
                       }
                     }
@@ -776,7 +778,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                       pickerModel: CustomDatePicker(
                         currentTime: DateTime.now(),
                         minTime: controller.isBackDate.value == "0"
-                            ? DateTime(2000)
+                            ? DateTime(DateTime.now().year, DateTime.now().month, 1)
                             : DateTime.now(),
                       ),
                       onConfirm: (time) {
@@ -784,7 +786,49 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                           controller.startDate.value =
                               DateFormat('yyyy-MM-dd').format(time).toString();
 
-                          print("$time");
+                          controller.startDate.value =
+                              DateFormat('yyyy-MM-dd').format(time).toString();
+                          DateTime tempStartDate = DateTime.parse(
+                              DateFormat('yyyy-MM-dd')
+                                  .format(DateFormat('yyyy-MM-dd')
+                                      .parse(controller.startDate.value))
+                                  .toString());
+                          DateTime tempEndDate = DateTime.parse(
+                              DateFormat('yyyy-MM-dd')
+                                  .format(DateTime.parse(
+                                      controller.endDate.value.toString()))
+                                  .toString());
+                          // Define two DateTime objects representing the two dates
+                          DateTime today = DateTime.now();
+                          DateTime onlyDate =
+                              DateTime(today.year, today.month, today.day);
+                          DateTime date1 = DateTime(tempStartDate.year,
+                              tempStartDate.month, tempStartDate.day);
+                          DateTime date2 = DateTime(tempEndDate.year,
+                              tempEndDate.month, tempEndDate.day);
+                          print('ini now ${onlyDate}');
+                          print('ini date1 $date1');
+
+                          // Calculate the difference between the two dates
+                          Duration difference = date1.difference(onlyDate);
+                          print(
+                              'ini durasi izin : ${controller.durasiIzin.value}');
+                          print('ini diferent cuti : $difference');
+                          controller.durasiCutiMelahirkan.value =
+                              difference.inDays;
+                          // controller.tanggalSelected.value = [];
+                          controller.tanggalSelectedEdit.value.clear();
+                          controller.tanggalSelected.value.clear();
+                          for (var i = tempStartDate;
+                              i.isBefore(tempEndDate) ||
+                                  i.isAtSameMomentAs(tempEndDate);
+                              i = i.add(Duration(days: 1))) {
+                            controller.tanggalSelected.value.add(i);
+                            controller.tanggalSelectedEdit.value.add(i);
+                          }
+                          
+                          print(controller.tanggalSelected);
+                          print(controller.tanggalSelectedEdit);
                         }
                       },
                     );
@@ -857,7 +901,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                       //     DateTime.now().day),
                       currentTime: DateTime.now(),
                       minTime: controller.isBackDate.value == "0"
-                          ? DateTime(2000)
+                          ? DateTime(DateTime.now().year, DateTime.now().month, 1)
                           : DateTime.now(),
                     ),
                     onConfirm: (time) {
@@ -878,16 +922,33 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                                     controller.endDate.value.toString()))
                                 .toString());
                         // Define two DateTime objects representing the two dates
+                        DateTime today = DateTime.now();
+                        DateTime onlyDate =
+                            DateTime(today.year, today.month, today.day);
                         DateTime date1 = DateTime(tempStartDate.year,
                             tempStartDate.month, tempStartDate.day);
                         DateTime date2 = DateTime(tempEndDate.year,
                             tempEndDate.month, tempEndDate.day);
+                        print('ini now ${onlyDate}');
+                        print('ini date1 $date1');
 
                         // Calculate the difference between the two dates
-                        Duration difference = date2.difference(date1);
-                        controller.durasiIzin.value = difference.inDays + 1;
+                        Duration difference = date1.difference(onlyDate);
+                        print(
+                            'ini durasi izin : ${controller.durasiIzin.value}');
+                        print('ini diferent cuti : $difference');
                         controller.durasiCutiMelahirkan.value =
-                            difference.inDays + 1;
+                            difference.inDays;
+                        // controller.tanggalSelected.value = [];
+                        controller.tanggalSelectedEdit.value.clear();
+                        controller.tanggalSelected.value.clear();
+                        for (var i = tempStartDate;
+                            i.isBefore(tempEndDate) ||
+                                i.isAtSameMomentAs(tempEndDate);
+                            i = i.add(Duration(days: 1))) {
+                          controller.tanggalSelected.value.add(i);
+                          controller.tanggalSelectedEdit.value.add(i);
+                        }
 
                         // absenController.tglAjunan.value =
                         //     DateFormat('yyyy-MM-dd').format(time).toString();
@@ -907,6 +968,9 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                         // this.controller.tahunSelectedSearchHistory.refresh();
                         // this.controller.bulanDanTahunNow.refresh();
                         // controller.loadHistoryAbsenUser();
+                        
+                        print(controller.tanggalSelected);
+                        print("Tanggal Selesai ${controller.tanggalSelectedEdit}");
                       }
                     },
                   );
@@ -1184,9 +1248,9 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
               ),
               child: SfDateRangePicker(
                 minDate: controller.isBackDate.value == "0"
-                    ? DateTime(2000)
+                    ? DateTime(DateTime.now().year, DateTime.now().month, 1)
                     : DateTime.now(),
-                selectionMode: DateRangePickerSelectionMode.range,
+                selectionMode: DateRangePickerSelectionMode.multiple,
                 initialSelectedDates: controller.tanggalSelectedEdit.value,
                 monthCellStyle: const DateRangePickerMonthCellStyle(
                   weekendTextStyle: TextStyle(color: Colors.red),
@@ -1194,35 +1258,23 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                       color: Colors.red,
                       decoration: TextDecoration.lineThrough),
                 ),
-                onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-                  // print(args.value);
+                onSelectionChanged:
+                      (DateRangePickerSelectionChangedArgs args) {
+                    // args.value adalah List<DateTime> saat mode multiple
+                    List<DateTime> dateList = args.value;
 
-                  // Konversi menjadi List<DateTime>
-                  List<DateTime> dateList = [];
-                  DateTime startDate =
-                      args.value.startDate ?? args.value.endDate;
-                  DateTime endDate = args.value.endDate ?? args.value.startDate;
+                    print('ini datelist $dateList');
 
-                  // Tambahkan rentang tanggal ke dalam daftar
-                  for (DateTime date = startDate;
-                      date.isBefore(endDate.add(Duration(days: 1)));
-                      date = date.add(Duration(days: 1))) {
-                    dateList.add(date);
-                  }
+                    if (controller.statusForm.value == true) {
+                      controller.tanggalSelectedEdit.value = dateList;
+                      controller.tanggalSelectedEdit.refresh();
+                    } else {
+                      controller.tanggalSelected.value = dateList;
+                      controller.tanggalSelected.refresh();
+                    }
 
-                  // Cetak hasil
-                  print(dateList);
-
-                  if (controller.statusForm.value == true) {
-                    controller.tanggalSelectedEdit.value = dateList;
-                    this.controller.tanggalSelectedEdit.refresh();
-                  } else {
-                    controller.tanggalSelected.value = dateList;
-                    this.controller.tanggalSelected.refresh();
-                  }
-
-                  print(controller.tanggalSelected.value);
-                },
+                    // print(controller.tanggalSelected.value);
+                  },
               )),
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0),

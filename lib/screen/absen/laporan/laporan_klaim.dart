@@ -24,7 +24,9 @@ class _LaporanKlaimState extends State<LaporanKlaim> {
 
   @override
   void initState() {
-    controller.getDepartemen(1, "");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getDepartemen(1, "");
+    });
     controller.title.value = widget.title;
     controller.tempNamaLaporan1.value = "klaim";
     super.initState();

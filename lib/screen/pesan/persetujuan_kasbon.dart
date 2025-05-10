@@ -22,7 +22,7 @@ class PersetujuanKasbon extends StatefulWidget {
 
 class _PersetujuanKasbonState extends State<PersetujuanKasbon>
     with SingleTickerProviderStateMixin {
-  var controller = Get.put(ApprovalController());
+  var controller = Get.find<ApprovalController>();
 
   @override
   void initState() {

@@ -472,7 +472,7 @@
 
 // void _handleMessage(RemoteMessage message) {}
 
-// // var controller = Get.put(ApprovalController());
+// // var controller = Get.find<ApprovalController>();
 
 // Future onSelectNotification(notificationResponse) async {
 //   print(notificationResponse.payload);

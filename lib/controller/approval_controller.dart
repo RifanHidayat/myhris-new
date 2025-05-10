@@ -46,7 +46,8 @@ class ApprovalController extends GetxController {
 
   var statusHitungCuti = false.obs;
 
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
+  
 
   var saldo = 0.obs;
   var limitTransaksi = 0.obs;
@@ -133,6 +134,50 @@ class ApprovalController extends GetxController {
     listDataRiwayat.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+    var controllerPesan = Get.find<PesanController>();
+
+    var defaultDate = controllerPesan.date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmCode,
@@ -196,6 +241,8 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadDataLembur(status) {
@@ -206,6 +253,50 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+    var controllerPesan = Get.find<PesanController>();
+
+    var defaultDate = controllerPesan.date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmCode,
@@ -265,6 +356,8 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadApprovePayroll(status) {
@@ -274,6 +367,49 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+    var controllerPesan = Get.find<PesanController>();
+    var defaultDate = controllerPesan.date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmCode,
@@ -328,6 +464,8 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadAbsensi(status) {
@@ -339,6 +477,51 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+
+    var controllerPesan = Get.find<PesanController>();
+
+    var defaultDate = controllerPesan.date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmCode,
@@ -418,6 +601,8 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadwfh(status) {
@@ -429,6 +614,49 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+    var controllerPesan = Get.find<PesanController>();
+    var defaultDate = controllerPesan.date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmCode,
@@ -500,6 +728,8 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadkasbon(status) {
@@ -511,6 +741,51 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+
+    var controllerPesan = Get.find<PesanController>();
+
+    var defaultDate = controllerPesan.date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmCode,
@@ -588,16 +863,62 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadDataTidakHadir(status) {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
         : "spesifik_approval_multi";
-    listNotModif.value.clear();
-    listData.value.clear();
-    listDataAll.value.clear();
+    listNotModif.clear();
+    listData.clear();
+    listDataAll.clear();
+    var controllerPesan = Get.find<PesanController>();
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print('load izin ke panggil');
+
+    var defaultDate = controllerPesan.date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmCode,
@@ -662,6 +983,8 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadDataTugasLuar(status) {
@@ -671,7 +994,51 @@ class ApprovalController extends GetxController {
     listNotModif.value.clear();
     listData.value.clear();
     listDataAll.value.clear();
+    var controllerPesan = Get.find<PesanController>();
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+
+    var defaultDate = controllerPesan.date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmCode,
@@ -729,6 +1096,8 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadDataPayroll() {}
@@ -740,7 +1109,51 @@ class ApprovalController extends GetxController {
     listNotModif.value.clear();
     listData.value.clear();
     listDataAll.value.clear();
+    var controllerPesan = Get.find<PesanController>();
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+
+    var defaultDate = controllerPesan.date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmCode,
@@ -801,6 +1214,8 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadDataKlaim(status) {
@@ -811,6 +1226,50 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+    var controllerPesan = Get.find<PesanController>();
+
+    var defaultDate = controllerPesan.date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmCode,
@@ -872,6 +1331,8 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void cariData(value) {

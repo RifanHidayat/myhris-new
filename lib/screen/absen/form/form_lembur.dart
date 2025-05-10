@@ -27,7 +27,7 @@ class _FormLemburState extends State<FormLembur> {
     if (widget.dataForm![1] == true) {
       controller.selectedTypeLembur.value = widget.dataForm![0]['type'];
       controller.tanggalLembur.value.text =
-          Constanst.convertDate("${widget.dataForm![0]['atten_date']}");
+          Constanst.convertDate("${widget.dataForm![0]['tgl_ajuan']}");
       var convertDariJam = widget.dataForm![0]['dari_jam'].split(":");
       var convertSampaiJam = widget.dataForm![0]['sampai_jam'].split(":");
       var hasilDarijam = "${convertDariJam[0]}:${convertDariJam[1]}";
@@ -410,7 +410,7 @@ class _FormLemburState extends State<FormLembur> {
           context: Get.context!,
           firstDate:
               AppData.informasiUser![0].isBackDateLembur.toString() == "0"
-                  ? DateTime(2000)
+                  ? DateTime(DateTime.now().year, DateTime.now().month, 1)
                   : DateTime.now(),
           lastDate: DateTime(2100),
           initialDate: controller.initialDate.value,

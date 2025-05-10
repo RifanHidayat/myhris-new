@@ -23,8 +23,8 @@ class PersetujuanLembur extends StatefulWidget {
 
 class _PersetujuanLemburState extends State<PersetujuanLembur>
     with SingleTickerProviderStateMixin {
-  var controller = Get.put(ApprovalController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controller = Get.find<ApprovalController>();
+  var controllerGlobal = Get.find<GlobalController>();
   TabController? _tabController;
   @override
   void initState() {

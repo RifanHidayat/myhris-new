@@ -26,7 +26,7 @@ class _InitScreenState extends State<InitScreen> {
   final controller = Get.put(TabbController());
   final controllerTracking = Get.put(TrackingController(), tag: 'iniScreen');
   var controllerAbsnsi = Get.put(AbsenController(),tag: 'absen controller');
-  final controllerPesan = Get.put(PesanController());
+  final controllerPesan = Get.find<PesanController>();
 
   // int _currentIndex = 0;
 

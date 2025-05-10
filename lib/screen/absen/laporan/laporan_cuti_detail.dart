@@ -28,7 +28,7 @@ class LaporanCutiDetail extends StatefulWidget {
 
 class _LaporanCutiDetailState extends State<LaporanCutiDetail> {
   var controller = Get.put(LaporanCutiController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
 
   @override
   void initState() {

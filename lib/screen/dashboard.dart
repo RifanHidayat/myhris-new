@@ -69,8 +69,8 @@ class _DashboardState extends State<Dashboard> {
   final controller = Get.put(DashboardController());
   final controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
   final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
-  final controllerPesan = Get.put(PesanController());
-  var controllerGlobal = Get.put(GlobalController());
+  final controllerPesan = Get.find<PesanController>();
+  var controllerGlobal = Get.find<GlobalController>();
   var controllerBpj = Get.put(BpjsController());
   final tabbController = Get.put(TabbController());
   final authController = Get.put(AuthController());

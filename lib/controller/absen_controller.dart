@@ -65,7 +65,7 @@ import 'package:android_intent/android_intent.dart';
 import 'package:android_intent/flag.dart';
 
 class AbsenController extends GetxController {
-  var globalCt = Get.put(GlobalController());
+  var globalCt = Get.find<GlobalController>();
   final controllerTracking = Get.put(TrackingController(), tag: 'iniScreen');
 
   PageController? pageViewFilterAbsen;
@@ -133,6 +133,7 @@ class AbsenController extends GetxController {
   var tempHistoryAbsen = <AbsenModel>[].obs;
   var historyAbsenShow = [].obs;
   var placeCoordinate = [].obs;
+  var placeCoordinateReport = [].obs;
   var departementAkses = [].obs;
   var listLaporanFilter = [].obs;
   var allListLaporanFilter = [].obs;
@@ -169,8 +170,9 @@ class AbsenController extends GetxController {
 
   var namaDepartemenTerpilih = "".obs;
   var idDepartemenTerpilih = "".obs;
+  var idLokasiTerpilih = "".obs;
   var testingg = "".obs;
-  var filterLokasiKoordinate = "Lokasi".obs;
+  var filterLokasiKoordinate = "".obs;
   Rx<AbsenModel> absenModel = AbsenModel().obs;
   var jumlahData = 0.obs;
   var isTracking = 0.obs;
@@ -260,6 +262,7 @@ class AbsenController extends GetxController {
 
   void getDepartemen(status, tanggal) {
     jumlahData.value = 0;
+    departementAkses.clear();
     var connect = Api.connectionApi("get", {}, "all_department");
     connect.then((dynamic res) {
       if (res == false) {
@@ -267,37 +270,51 @@ class AbsenController extends GetxController {
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
-          var dataDepartemen = valueBody['data'];
-
+          var dataDepartemen = [];
+          var data = {
+            'id': 0,
+            'name': 'SEMUA DIVISI',
+            'inisial': 'AD',
+            'parent_id': '',
+            'aktif': '',
+            'pakai': '',
+            'ip': '',
+            'created_by': '',
+            'created_on': '',
+            'modified_by': '',
+            'modified_on': ''
+          };
+          dataDepartemen.add(data);
+          var temporary = valueBody['data'];
+          for (var i = 0; i < temporary.length; i++) {
+            var element = temporary[i];
+            dataDepartemen.add({
+              'id': element['id'],
+              'name': element['name'],
+              'inisial': element['inisial'],
+              'parent_id': element['parent_id'],
+              'aktif': element['aktif'],
+              'pakai': element['pakai'],
+              'ip': element['ip'],
+              'created_by': element['created_by'],
+              'created_on': element['created_on'],
+              'modified_by': element['modified_by'],
+              'modified_on': element['modified_on']
+            });
+          }
           var dataUser = AppData.informasiUser;
           var hakAkses = dataUser![0].em_hak_akses;
 
           if (hakAkses != "" || hakAkses != null) {
-            if (hakAkses == '0') {
-              var data = {
-                'id': 0,
-                'name': 'SEMUA DIVISI',
-                'inisial': 'AD',
-                'parent_id': '',
-                'aktif': '',
-                'pakai': '',
-                'ip': '',
-                'created_by': '',
-                'created_on': '',
-                'modified_by': '',
-                'modified_on': ''
-              };
-              departementAkses.add(data);
-            }
-            var convert = hakAkses!.split(',');
-            for (var element in dataDepartemen) {
-              if (hakAkses == '0') {
-                departementAkses.add(element);
-              }
-              for (var element1 in convert) {
-                if ("${element['id']}" == element1) {
-                  print('sampe sini');
-                  departementAkses.add(element);
+            if (hakAkses == "0") {
+              departementAkses.value = dataDepartemen;
+            } else {
+              var convert = hakAkses.split(',');
+              for (var element in dataDepartemen) {
+                for (var element1 in convert) {
+                  if ("${element['id']}" == element1) {
+                    departementAkses.add(element);
+                  }
                 }
               }
             }
@@ -413,6 +430,44 @@ class AbsenController extends GetxController {
       coordinate.value = true;
       // Get.back();
       getPlaceCoordinateOffline();
+    });
+  }
+
+  Future<void> getPlaceReport() async {
+    placeCoordinateReport.clear();
+    var body = {
+      'dep_id': idDepartemenTerpilih.value,
+    };
+    var connect = Api.connectionApi("post", body, "places/report",
+        params: "&id=${AppData.informasiUser![0].em_id}");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        coordinate.value = false;
+
+        var valueBody = jsonDecode(res.body);
+        var temporary = valueBody['data'];
+        placeCoordinateReport.add({
+          'id': 0,
+          'place': 'SEMUA LOKASI',
+          'place_longlat': '',
+          'place_radius': '',
+        });
+        for (var element in temporary) {
+          placeCoordinateReport.add({
+            'id': element['id'],
+            'place': element['place'],
+            'place_longlat': element['place_longlat'],
+            'place_radius': element['place_radius'],
+          });
+        }
+        print("placeCoordinateReport ${placeCoordinateReport}");
+        if (placeCoordinateReport.isNotEmpty) {
+          filterLokasiKoordinate.value = placeCoordinateReport[0]['place'];
+          idLokasiTerpilih.value = "${placeCoordinateReport[0]['id']}";
+        }
+      } else {
+        print("Place cordinate !=200" + res.body.toString());
+      }
     });
   }
 
@@ -1662,9 +1717,10 @@ class AbsenController extends GetxController {
               // }
               isLoaingAbsensi.value = false;
               this.intervalControl.refresh();
-              String timeValue =  DateTime.now().toString();
+              String timeValue = DateTime.now().toString();
               DateTime dateTime = DateTime.parse(timeValue);
-              timeString.value = valueBody['time'] ?? DateFormat('HH:mm:ss').format(dateTime);
+              timeString.value =
+                  valueBody['time'] ?? DateFormat('HH:mm:ss').format(dateTime);
               print("dapat interval ${intervalControl.value}");
               // Navigator.pop(Get.context!);
 
@@ -2735,15 +2791,12 @@ class AbsenController extends GetxController {
           historyAbsen.value = highestIdPerDate.values.toList();
 
           for (var element in historyAbsen) {
-            print("masuk sini: $tempHistoryAbsen");
-
             var data = tempHistoryAbsen
                 .where((p0) => p0.date == element.date)
                 .where((p0) => p0.id != element.id)
                 .toList()
               ..sort((a, b) => b.id!.compareTo(a.id as num));
 
-            print("data turunan: $data");
             if (data.isNotEmpty) {
               element.turunan = data;
             } else {
@@ -3034,15 +3087,12 @@ class AbsenController extends GetxController {
           historyAbsen.value = highestIdPerDate.values.toList();
 
           for (var element in historyAbsen) {
-            print("masuk sini: $tempHistoryAbsen");
-
             var data = tempHistoryAbsen
                 .where((p0) => p0.date == element.date)
                 .where((p0) => p0.id != element.id)
                 .toList()
               ..sort((a, b) => b.id!.compareTo(a.id as num));
 
-            print("data turunan: $data");
             if (data.isNotEmpty) {
               element.turunan = data;
             } else {
@@ -3356,11 +3406,7 @@ class AbsenController extends GetxController {
                           return InkWell(
                             onTap: () {
                               print("tes");
-                              filterLokasiKoordinate.value = "Lokasi";
                               selectedViewFilterAbsen.value = 0;
-                              Rx<AbsenModel> absenModel = AbsenModel().obs;
-                              var jumlahData = 0.obs;
-
                               idDepartemenTerpilih.value = "$id";
                               namaDepartemenTerpilih.value = dep_name;
                               departemen.value.text =
@@ -3368,6 +3414,7 @@ class AbsenController extends GetxController {
                               this.departemen.refresh();
                               print(
                                   "id departement ${idDepartemenTerpilih.value}");
+                                  getPlaceReport();
                               Navigator.pop(context);
                               carilaporanAbsenkaryawan(status);
                             },
@@ -3411,13 +3458,7 @@ class AbsenController extends GetxController {
                                         )
                                       : InkWell(
                                           onTap: () {
-                                            print("tes");
-                                            filterLokasiKoordinate.value =
-                                                "Lokasi";
                                             selectedViewFilterAbsen.value = 0;
-                                            Rx<AbsenModel> absenModel =
-                                                AbsenModel().obs;
-                                            var jumlahData = 0.obs;
 
                                             idDepartemenTerpilih.value = "$id";
                                             namaDepartemenTerpilih.value =
@@ -3426,6 +3467,7 @@ class AbsenController extends GetxController {
                                                 departementAkses.value[index]
                                                     ['name'];
                                             this.departemen.refresh();
+                                            getPlaceReport();
                                             print(
                                                 "id departement ${idDepartemenTerpilih.value}");
                                             Navigator.pop(context);
@@ -3523,12 +3565,14 @@ class AbsenController extends GetxController {
                       physics: const BouncingScrollPhysics(),
                       child: Obx(
                         () => Column(
-                          children: List.generate(placeCoordinate.value.length,
-                              (index) {
-                            var id = placeCoordinate.value[index]['id'];
-                            var place = placeCoordinate.value[index]['place'];
+                          children: List.generate(
+                              placeCoordinateReport.value.length, (index) {
+                            var id = placeCoordinateReport.value[index]['id'];
+                            var place =
+                                placeCoordinateReport.value[index]['place'];
                             return InkWell(
                               onTap: () {
+                                idLokasiTerpilih.value = "$id";
                                 if (selectedViewFilterAbsen.value == 0) {
                                   filterLokasiAbsenBulan(place);
                                 } else {
@@ -3549,7 +3593,7 @@ class AbsenController extends GetxController {
                                         color: Constanst.fgPrimary,
                                       ),
                                     ),
-                                    "$id" == idDepartemenTerpilih.value
+                                    "$id" == idLokasiTerpilih.value
                                         ? InkWell(
                                             onTap: () {},
                                             child: Container(
@@ -3579,6 +3623,7 @@ class AbsenController extends GetxController {
                                           )
                                         : InkWell(
                                             onTap: () {
+                                              idLokasiTerpilih.value = "$id";
                                               if (selectedViewFilterAbsen
                                                       .value ==
                                                   0) {
@@ -3647,11 +3692,16 @@ class AbsenController extends GetxController {
       } else {
         var data = valueBody['data'];
         List listFilterLokasi = [];
-        for (var element in data) {
-          if (element['place_in'] == place) {
-            listFilterLokasi.add(element);
+        if (place == 'SEMUA LOKASI') {
+          listFilterLokasi = data;
+        } else {
+          for (var element in data) {
+            if (element['place_in'] == place) {
+              listFilterLokasi.add(element);
+            }
           }
         }
+
         listLaporanFilter.value = listFilterLokasi;
         allListLaporanFilter.value = listFilterLokasi;
         filterLokasiKoordinate.value = place;
@@ -3799,7 +3849,8 @@ class AbsenController extends GetxController {
     Map<String, dynamic> body = {
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
-      'status': idDepartemenTerpilih.value
+      'status': idDepartemenTerpilih.value,
+      'dep_id_akses': AppData.informasiUser![0].em_hak_akses
     };
     var connect = Api.connectionApi("post", body, "load_laporan_absensi");
     connect.then((dynamic res) {
@@ -4534,8 +4585,6 @@ class AbsenController extends GetxController {
       },
     );
   }
-
-  void addPengajuan() {}
 
   void checkAbsensi() {
     var emId = AppData.informasiUser![0].em_id;

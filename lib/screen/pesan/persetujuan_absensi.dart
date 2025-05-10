@@ -23,7 +23,7 @@ class PersetujuanAbsensi extends StatefulWidget {
 
 class _PersetujuanAbsensiState extends State<PersetujuanAbsensi>
     with SingleTickerProviderStateMixin {
-  var controller = Get.put(ApprovalController());
+  var controller = Get.find<ApprovalController>();
 
   @override
   void initState() {

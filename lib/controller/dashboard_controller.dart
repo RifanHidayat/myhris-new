@@ -110,10 +110,10 @@ class DashboardController extends GetxController {
   var controllerTugasLuar = Get.put(TugasLuarController());
   var controllerKlaim = Get.put(KlaimController());
   final authController = Get.put(AuthController());
-  final pesanController = Get.put(PesanController());
+  final pesanController = Get.find<PesanController>();
 
   var menu = <MenuDashboardModel>[].obs;
-  var globalCtr = Get.put(GlobalController());
+  var globalCtr = Get.find<GlobalController>();
   var dashboardStatusAbsen = false.obs;
 
   var user = [].obs;
@@ -220,12 +220,12 @@ class DashboardController extends GetxController {
     // /UtilsAlert.showToast(dashboardStatusAbsen.value.toString() );
 
     DateTime startDate = DateTime.now();
+    updateInformasiUser();
 
     dataDashboard();
 
     // updateWorkTime();
      getBannerDashboard();
-    // updateInformasiUser();
     // getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     // getMenuDashboard();
     // loadMenuShowInMain();
@@ -2763,6 +2763,7 @@ class DashboardController extends GetxController {
     if (url == "HistoryAbsen") {
       Get.to(HistoryAbsen(), arguments: arguments);
     } else if (url == "TidakMasukKerja") {
+      controllerIzin.getTimeNow();
       controllerIzin.getLoadsysData();
       controllerIzin.loadAllEmployeeDelegasi();
       controllerIzin.loadTypeSakit();
@@ -2770,6 +2771,7 @@ class DashboardController extends GetxController {
       controllerIzin.getDepartemen(1, "");
       Get.to(RiwayatIzin(), arguments: arguments);
     } else if (url == "Lembur") {
+      controllerLembur.getTimeNow();
       controllerLembur.getLoadsysData();
       controllerLembur.loadDataLembur();
       controllerLembur.loadAllEmployeeDelegasi();
@@ -2781,6 +2783,7 @@ class DashboardController extends GetxController {
         dataForm: [[], false],
       ));
     } else if (url == "RiwayatCuti") {
+      controllerCuti.getTimeNow();
       controllerCuti.loadCutiUser();
       controllerCuti.getLoadsysData();
       controllerCuti.loadAllEmployeeDelegasi();
@@ -2791,6 +2794,7 @@ class DashboardController extends GetxController {
       // } else if (url == "Izin") {
       //   Get.to(Izin(), arguments: arguments);
     } else if (url == "TugasLuar") {
+      controllerTugasLuar.getTimeNow();
       controllerTugasLuar.getLoadsysData();
       controllerTugasLuar.loadTipePengajuan();
       controllerTugasLuar.loadDataTugasLuar();

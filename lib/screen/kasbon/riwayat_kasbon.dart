@@ -26,7 +26,7 @@ class Kasbon extends StatefulWidget {
 
 class _KasbonState extends State<Kasbon> {
   final controller = Get.put(KasbonController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
   final dashboardController = Get.put(DashboardController());
   var idx = 0;
 

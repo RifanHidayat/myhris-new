@@ -63,17 +63,11 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
         getDummy.add(convertDate);
         print("tanggaln dumy ${getDummy}");
       }
-      getDummy.sort();
 
-      if (getDummy.isNotEmpty) {
-        _controller.selectedRange = PickerDateRange(
-          getDummy[0],
-          getDummy[getDummy.length - 1],
-        );
-      }
-      setState(() {
+      
+      
         controller.tanggalSelectedEdit.value = getDummy;
-      });
+      
 
       if (widget.dataForm![0]['input_time'] == null) {
       } else {
@@ -81,7 +75,8 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
             int.parse(widget.dataForm![0]['input_time'].toString());
       }
     } else {
-      //controller.loadTypeSakit();
+      controller.tanggalSelectedEdit.value = [];
+      controller.alasan.value.text = "";
     }
 
     var data = controller.allTipe.value
@@ -595,48 +590,35 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                 elevation: 0,
                 child: Obx(() => SfDateRangePicker(
                       controller: _controller,
-                      selectionMode: DateRangePickerSelectionMode.range,
+                      selectionMode: DateRangePickerSelectionMode.multiple,
                       minDate: controller.isBackdate.value == "0"
-                          ? DateTime(2000)
+                          ? DateTime(DateTime.now().year, DateTime.now().month, 1)
                           : DateTime.now(),
-                      initialSelectedRanges: [
-                        PickerDateRange(
-                            DateTime.now(), DateTime.parse("2024-07-16"))
-                      ],
+                      initialSelectedDates: controller.tanggalSelectedEdit.value,
                       monthCellStyle: const DateRangePickerMonthCellStyle(
                         weekendTextStyle: TextStyle(color: Colors.red),
                         blackoutDateTextStyle: TextStyle(
                             color: Colors.red,
                             decoration: TextDecoration.lineThrough),
                       ),
-                      onSelectionChanged:
+                       onSelectionChanged:
                           (DateRangePickerSelectionChangedArgs args) {
-                        // print(args.value);
+                        print(args.value);
 
-                        // Konversi menjadi List<DateTime>
-                        List<DateTime> dateList = [];
-                        DateTime startDate =
-                            args.value.startDate ?? args.value.endDate;
-                        DateTime endDate =
-                            args.value.endDate ?? args.value.startDate;
-
-                        // Tambahkan rentang tanggal ke dalam daftar
-                        for (DateTime date = startDate;
-                            date.isBefore(endDate.add(Duration(days: 1)));
-                            date = date.add(Duration(days: 1))) {
-                          dateList.add(date);
-                        }
+                        List<DateTime> dateList = args.value.cast<DateTime>();
 
                         // Cetak hasil
                         print(dateList);
 
-                        
+                        if (controller.idEditFormTidakMasukKerja.value != "") {
                           controller.tanggalSelectedEdit.value = dateList;
-                          this.controller.tanggalSelectedEdit.refresh();
-                       
+                          controller.tanggalSelectedEdit.refresh();
                           controller.tanggalSelected.value = dateList;
-                          this.controller.tanggalSelected.refresh();
-                        
+                          controller.tanggalSelected.refresh();
+                        } else {
+                          controller.tanggalSelected.value = dateList;
+                          controller.tanggalSelected.refresh();
+                        }
                       },
                     ))),
           )
@@ -686,12 +668,11 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                 elevation: 0,
                 child: Obx(() => SfDateRangePicker(
                       minDate: controller.isBackdate.value == "0"
-                          ? DateTime(2000)
+                          ? DateTime(DateTime.now().year, DateTime.now().month, 1)
                           : DateTime.now(),
                       selectionMode: DateRangePickerSelectionMode.single,
-                      initialSelectedRanges: [
-                        PickerDateRange(DateTime.now(), DateTime.now())
-                      ],
+                      initialSelectedDates:
+                          controller.tanggalSelectedEdit.value,
                       monthCellStyle: const DateRangePickerMonthCellStyle(
                         weekendTextStyle: TextStyle(color: Colors.red),
                         blackoutDateTextStyle: TextStyle(

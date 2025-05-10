@@ -102,6 +102,9 @@ class IzinController extends GetxController {
   var showButtonlaporan = false.obs;
   var statusLoadingSubmitLaporan = false.obs;
   var viewFormWaktu = false.obs;
+  var date = DateTime.now().obs;
+  var beginPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
+  var endPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
 
   var dataTypeAjuanDummy1 = ["Semua Status", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
@@ -111,21 +114,11 @@ class IzinController extends GetxController {
     "Rejected",
     "Pending"
   ];
-  var globalCt = Get.put(GlobalController());
+  var globalCt = Get.find<GlobalController>();
   @override
   void onReady() async {
     super.onReady();
-  }
-
-  @override
-  void onInit() {
     getTimeNow();
-    // getLoadsysData();
-    //loadAllEmployeeDelegasi();
-    // loadTypeSakit();
-    // loadDataAjuanIzin();
-    // getDepartemen(1, "");
-    super.onInit();
   }
 
   void showInputCari() {
@@ -189,15 +182,16 @@ class IzinController extends GetxController {
   }
 
   void getTimeNow() {
-    var dt = DateTime.now();
+    var dt = DateTime.parse(AppData.endPeriode);
     var outputFormat1 = DateFormat('MM');
     var outputFormat2 = DateFormat('yyyy');
     bulanSelectedSearchHistory.value = outputFormat1.format(dt);
     tahunSelectedSearchHistory.value = outputFormat2.format(dt);
     bulanDanTahunNow.value =
         "${bulanSelectedSearchHistory.value}-${tahunSelectedSearchHistory.value}";
-
-    var dateString = "${dt.year}-${dt.month}-${dt.day}";
+    date.value = dt;
+    var dtNow = DateTime.now();
+    var dateString = "${dtNow.year}-${dtNow.month}-${dtNow.day}";
     var afterConvert = Constanst.convertDate1(dateString);
     if (idEditFormTidakMasukKerja.value == "") {
       dariTanggal.value.text = "$afterConvert";
@@ -248,6 +242,51 @@ class IzinController extends GetxController {
     AlllistHistoryAjuan.value.clear();
     listHistoryAjuan.value.clear();
     var dataUser = AppData.informasiUser;
+
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+
+    var defaultDate = date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
+    
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmid,
@@ -281,6 +320,9 @@ class IzinController extends GetxController {
         loadingString.value = valueBody['message'];
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
+    // date.value = DateTime.now();
   }
 
   Future<bool> loadDataAjuanIzinCategori({id}) async {
@@ -798,6 +840,7 @@ class IzinController extends GetxController {
   void checkNomorAjuan(status) {
     print(tanggalBikinPengajuan.value);
     urutkanTanggalSelected(status);
+    print("tanggal bikin ajun" + tanggalBikinPengajuan.value);
     var convertTanggalBikinPengajuan = status == false
         ? Constanst.convertDateSimpan(tanggalBikinPengajuan.value)
         : tanggalBikinPengajuan.value;
@@ -2041,15 +2084,11 @@ class IzinController extends GetxController {
                     ),
                   ),
                 ),
+                
                 typeAjuan == "Approve" ||
                         typeAjuan == "Approve 1" ||
-                        typeAjuan == "Approve 2"
-                    ? Container()
-                    : const SizedBox(height: 16),
-                typeAjuan == "Approve" ||
-                        typeAjuan == "Approve 1" ||
-                        typeAjuan == "Approve 2"
-                    ? Container()
+                        typeAjuan == "Approve 2" || typeAjuan == "Rejected"
+                    ? const SizedBox(height: 16.0)
                     : Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
                         child: Row(

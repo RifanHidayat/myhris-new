@@ -22,7 +22,7 @@ class PersetujuanWfh extends StatefulWidget {
 
 class _PersetujuanWfhState extends State<PersetujuanWfh>
     with SingleTickerProviderStateMixin {
-  var controller = Get.put(ApprovalController());
+  var controller = Get.find<ApprovalController>();
 
   @override
   void initState() {

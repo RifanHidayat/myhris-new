@@ -30,8 +30,8 @@ class DetailPersetujuanLembur extends StatefulWidget {
 }
 
 class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
-  var controller = Get.put(ApprovalController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controller = Get.find<ApprovalController>();
+  var controllerGlobal = Get.find<GlobalController>();
   int hours = 0, minutes = 0, second = 0;
 
   void showBottomAlasanReject(em_id) {

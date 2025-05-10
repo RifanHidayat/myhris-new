@@ -89,7 +89,7 @@ class KandidatController extends GetxController {
     "Hasil"
   ];
 
-  GlobalController globalCt = Get.put(GlobalController());
+  GlobalController globalCt = Get.find<GlobalController>();
 
   @override
   void startData() async {

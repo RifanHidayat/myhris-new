@@ -28,8 +28,8 @@ class DetailPersetujuanWfh extends StatefulWidget {
 }
 
 class _DetailPersetujuanWfhState extends State<DetailPersetujuanWfh> {
-  var controller = Get.put(ApprovalController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controller = Get.find<ApprovalController>();
+  var controllerGlobal = Get.find<GlobalController>();
   int hours = 0, minutes = 0, second = 0;
 
   void showBottomAlasanReject(em_id) {

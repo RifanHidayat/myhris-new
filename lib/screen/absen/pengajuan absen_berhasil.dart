@@ -13,7 +13,7 @@ class pengajuanAbsenBerhasil extends StatefulWidget {
 }
 
 class _pengajuanAbsenBerhasilState extends State<pengajuanAbsenBerhasil> {
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

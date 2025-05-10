@@ -17,6 +17,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
+import 'package:siscom_operasional/controller/global_controller.dart';
 // import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/controller/tab_controller.dart';
@@ -93,6 +94,10 @@ late List<CameraDescription> cameras;
 // run app from xcode, then from xcode menu, select Simulate Background Fetch
 
 Future<void> main() async {
+  Get.put(InitController());
+  Get.put(GlobalController());
+  Get.put(ApprovalController());
+  Get.put(PesanController());
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarIconBrightness: Brightness.dark,
     statusBarBrightness: Brightness.dark,
@@ -599,8 +604,8 @@ Future<void> setupInteractedMessage() async {
   FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 }
 
-var controllerApproval = Get.put(ApprovalController());
-var controllerPesan = Get.put(PesanController());
+
+var controllerPesan = Get.find<PesanController>();
 
 void _handleMessage(RemoteMessage message) async {
   showNotification(message);

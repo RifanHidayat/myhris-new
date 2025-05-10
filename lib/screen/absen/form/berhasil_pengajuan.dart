@@ -16,7 +16,7 @@ class BerhasilPengajuan extends StatefulWidget {
 }
 
 class _BerhasilPengajuanState extends State<BerhasilPengajuan> {
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
 
   @override
   Widget build(BuildContext context) {

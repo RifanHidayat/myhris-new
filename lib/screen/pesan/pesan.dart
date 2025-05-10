@@ -13,8 +13,10 @@ import 'package:siscom_operasional/screen/pesan/persetujuan_lembur.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:siscom_operasional/utils/month_picker.dart';
 import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
+import 'package:siscom_operasional/utils/year_picker.dart';
 
 class Pesan extends StatefulWidget {
   final bool status;
@@ -24,7 +26,7 @@ class Pesan extends StatefulWidget {
 }
 
 class _PesanState extends State<Pesan> {
-  final controller = Get.put(PesanController());
+  final controller = Get.find<PesanController>();
   final authController = Get.put(AuthController());
 
   Future<void> refreshData() async {
@@ -32,7 +34,6 @@ class _PesanState extends State<Pesan> {
     var dashboardController = Get.find<DashboardController>();
     dashboardController.updateInformasiUser();
     controller.clearFilter();
-    controller.getTimeNow();
     controller.loadNotifikasi();
     controller.loadApproveInfo();
     // setState(() {
@@ -77,25 +78,6 @@ class _PesanState extends State<Pesan> {
                   fontWeight: FontWeight.w500,
                   fontSize: 20),
             ),
-            actions: [
-              // Padding(
-              //   padding: const EdgeInsets.only(right: 16),
-              //   child: SizedBox(
-              //     width: 20,
-              //     height: 20,
-              //     child: Obx(() {
-              //       return Container(
-              //         decoration: BoxDecoration(
-              //           color: authController.isConnected.value
-              //               ? Constanst.color5
-              //               : Constanst.color4,
-              //           borderRadius: BorderRadius.circular(20),
-              //         ),
-              //       );
-              //     }),
-              //   ),
-              // ),
-            ],
           ),
         ),
       ),
@@ -406,45 +388,6 @@ class _PesanState extends State<Pesan> {
                   ),
                 ],
               ),
-              // Column(
-              //   crossAxisAlignment: CrossAxisAlignment.end,
-              //   children: [
-              //     Container(
-              //       height: 22,
-              //       width: 22,
-              //       decoration: BoxDecoration(
-              //           color: Constanst.colorStateDangerBg,
-              //           borderRadius: const BorderRadius.all(
-              //             Radius.circular(100.0),
-              //           ),
-              //           border: Border.all(
-              //             width: 1.0,
-              //             color: Constanst.colorStateDangerBorder,
-              //           )),
-              //       child: Center(
-              //         child: Obx(
-              //           () => Text(
-              //             "${controller.jumlahRiwayat.value}".length > 2
-              //                 ? '${"${controller.jumlahRiwayat.value}".substring(0, 2)}+'
-              //                 : "${controller.jumlahRiwayat.value}",
-              //             style: GoogleFonts.inter(
-              //                 color: Constanst.colorStateOnDangerBg,
-              //                 fontSize: 12,
-              //                 fontWeight: FontWeight.w500),
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //     Padding(
-              //       padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-              //       child: Text(
-              //         "Riwayat",
-              //         style: GoogleFonts.inter(
-              //             fontSize: 16, fontWeight: FontWeight.w500),
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ],
           ),
           Divider(
@@ -462,24 +405,6 @@ class _PesanState extends State<Pesan> {
               ],
             ),
           ),
-          // PageView.builder(
-          //     physics: BouncingScrollPhysics(),
-          //     controller: controller.menuController,
-          //     onPageChanged: (index) {
-          //       controller.selectedView.value = index;
-          //     },
-          //     itemCount: 3,
-          //     itemBuilder: (context, index) {
-          //       return Padding(
-          //           padding: EdgeInsets.all(0),
-          //           child: index == 0
-          //               ? screenNotifikasi()
-          //               : index == 1
-          //                   ? screenPersetujuan()
-          //                   : index == 2
-          //                       ? screenRiwayat()
-          //                       : SizedBox());
-          //     }),
         ],
       ),
     );
@@ -491,323 +416,404 @@ class _PesanState extends State<Pesan> {
       child: controller.isLoading.value
           ? UtilsAlert.shimmerNotifikasiInbox(context)
           : controller.listNotifikasi.value.isEmpty
-              ? SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.7,
-                    alignment: Alignment.center,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/amico.svg',
-                          height: 250,
-                          width: 250,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          "Anda tidak memiliki Notifikasi",
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              color: Constanst.fgPrimary,
-                              fontSize: 16),
-                        ),
-                        const SizedBox(height: 32),
-                      ],
-                    ),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: controller.listNotifikasi.value.length,
-                  physics: controller.listNotifikasi.value.length <= 10
-                      ? const AlwaysScrollableScrollPhysics()
-                      : const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    var tanggalNotif =
-                        controller.listNotifikasi.value[index]['tanggal'];
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(16.0, 24.0, 0.0, 4.0),
-                          child: Text(
-                            // Constanst.convertDate(tanggalNotif.toString()),
-                            // tanggalNotif,
-                            tanggalNotif == "Hari ini"
-                                ? tanggalNotif
-                                : Constanst.convertDate6(
-                                    DateFormat('dd-MM-yyyy')
-                                        .parseStrict(tanggalNotif)
-                                        .toString()),
+              ? Column(
+                children: [
+                  filterData(),
+                  Flexible(
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      alignment: Alignment.center,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/amico.svg',
+                            height: 250,
+                            width: 250,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            "Anda tidak memiliki Notifikasi",
                             style: GoogleFonts.inter(
                                 fontWeight: FontWeight.w500,
-                                color: Constanst.fgSecondary,
-                                fontSize: 14),
+                                color: Constanst.fgPrimary,
+                                fontSize: 16),
                           ),
-                        ),
-                        Obx(
-                          () => ListView.builder(
-                              itemCount: controller.listNotifikasi
-                                  .value[index]['notifikasi'].length,
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemBuilder: (context, idx) {
-                                var idNotif = controller.listNotifikasi
-                                    .value[index]['notifikasi'][idx]['id'];
-                                var titleNotif = controller.listNotifikasi
-                                    .value[index]['notifikasi'][idx]['title'];
-                                var deskripsiNotif =
-                                    controller.listNotifikasi.value[index]
-                                        ['notifikasi'][idx]['deskripsi'];
-                                var urlRoute = controller.listNotifikasi
-                                    .value[index]['notifikasi'][idx]['url'];
-                                var jam = controller.listNotifikasi.value[index]
-                                    ['notifikasi'][idx]['jam'];
-                                var statusNotif = controller.listNotifikasi
-                                    .value[index]['notifikasi'][idx]['status'];
-                                var view = controller.listNotifikasi
-                                    .value[index]['notifikasi'][idx]['view'];
-                                var emId = controller.listNotifikasi
-                                    .value[index]['notifikasi'][idx]['em_id'];
-                                var emIdPengaju =
-                                    controller.listNotifikasi.value[index]
-                                        ['notifikasi'][idx]['em_id_pengajuan'];
-                                var idDetail = controller.listNotifikasi
-                                    .value[index]['notifikasi'][idx]['idx'];
-                                return Column(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: view == 0
-                                            ? Constanst.colorButton2
-                                            : Colors.transparent,
-                                        borderRadius: Constanst.borderStyle1,
-                                      ),
-                                      child: InkWell(
-                                        onTap: () {
-                                          print(
-                                              "wkwkwk: ${controller.listNotifikasi.value[index]['notifikasi'][idx]}");
-
-                                          if (emIdPengaju !=
-                                                  AppData.informasiUser![0]
-                                                      .em_id &&
-                                              idDetail != null) {
-                                            if (view == 0) {
-                                              controller
-                                                  .aksilihatNotif(idNotif);
-                                            }
-                                            controller.routeApprovalNotif(
-                                              title: titleNotif,
-                                              emIdPengaju:
-                                                  emIdPengaju.toString(),
-                                              idx: idDetail.toString(),
-                                              delegasi: emId.toString(),
-                                              url: urlRoute,
-                                            );
-                                          } else if (emIdPengaju.toString() ==
-                                              AppData.informasiUser![0].em_id) {
-                                            if (view == 0) {
-                                              controller
-                                                  .aksilihatNotif(idNotif);
-                                            }
-                                            controller.redirectToPage(
-                                                urlRoute, idDetail);
-                                          } else {
-                                            if (view == 0) {
-                                              controller
-                                                  .aksilihatNotif(idNotif);
-                                            }
-                                          }
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              16.0, 12.0, 16.0, 12.0),
-                                          child: IntrinsicHeight(
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                statusNotif == 1
-                                                    ? Icon(
-                                                        Iconsax.tick_circle,
-                                                        color: Constanst.color5,
-                                                        size: 24,
-                                                      )
-                                                    : statusNotif == 2
-                                                        ? Icon(
-                                                            Iconsax.sms5,
-                                                            color: Constanst
-                                                                .fgSecondary,
-                                                            size: 24,
-                                                          )
-                                                        : statusNotif == 0
-                                                            ? Icon(
-                                                                Iconsax
-                                                                    .close_circle,
-                                                                color: Constanst
-                                                                    .color4,
-                                                                size: 24,
-                                                              )
-                                                            : const SizedBox(),
-                                                const SizedBox(width: 12),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 5),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Expanded(
-                                                              child: Text(
-                                                                titleNotif,
+                          const SizedBox(height: 32),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              )
+              : Column(
+                children: [
+                    filterData(),
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: controller.listNotifikasi.value.length,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          var tanggalNotif =
+                              controller.listNotifikasi.value[index]['tanggal'];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    16.0, 24.0, 0.0, 4.0),
+                                child: Text(
+                                  // Constanst.convertDate(tanggalNotif.toString()),
+                                  // tanggalNotif,
+                                  tanggalNotif == "Hari ini"
+                                      ? tanggalNotif
+                                      : Constanst.convertDate6(
+                                          DateFormat('dd-MM-yyyy')
+                                              .parseStrict(tanggalNotif)
+                                              .toString()),
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.fgSecondary,
+                                      fontSize: 14),
+                                ),
+                              ),
+                              Obx(
+                                () => ListView.builder(
+                                    itemCount: controller.listNotifikasi
+                                        .value[index]['notifikasi'].length,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, idx) {
+                                      var idNotif =
+                                          controller.listNotifikasi.value[index]
+                                              ['notifikasi'][idx]['id'];
+                                      var titleNotif =
+                                          controller.listNotifikasi.value[index]
+                                              ['notifikasi'][idx]['title'];
+                                      var deskripsiNotif =
+                                          controller.listNotifikasi.value[index]
+                                              ['notifikasi'][idx]['deskripsi'];
+                                      var urlRoute =
+                                          controller.listNotifikasi.value[index]
+                                              ['notifikasi'][idx]['url'];
+                                      var jam =
+                                          controller.listNotifikasi.value[index]
+                                              ['notifikasi'][idx]['jam'];
+                                      var statusNotif =
+                                          controller.listNotifikasi.value[index]
+                                              ['notifikasi'][idx]['status'];
+                                      var view =
+                                          controller.listNotifikasi.value[index]
+                                              ['notifikasi'][idx]['view'];
+                                      var emId =
+                                          controller.listNotifikasi.value[index]
+                                              ['notifikasi'][idx]['em_id'];
+                                      var emIdPengaju = controller
+                                              .listNotifikasi
+                                              .value[index]['notifikasi'][idx]
+                                          ['em_id_pengajuan'];
+                                      var idDetail =
+                                          controller.listNotifikasi.value[index]
+                                              ['notifikasi'][idx]['idx'];
+                                      return Column(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: view == 0
+                                                  ? Constanst.colorButton2
+                                                  : Colors.transparent,
+                                              borderRadius:
+                                                  Constanst.borderStyle1,
+                                            ),
+                                            child: InkWell(
+                                              onTap: () {
+                                                print(
+                                                    "wkwkwk: ${controller.listNotifikasi.value[index]['notifikasi'][idx]}");
+                    
+                                                if (emIdPengaju !=
+                                                        AppData
+                                                            .informasiUser![0]
+                                                            .em_id &&
+                                                    idDetail != null) {
+                                                  if (view == 0) {
+                                                    controller.aksilihatNotif(
+                                                        idNotif);
+                                                  }
+                                                  controller.routeApprovalNotif(
+                                                    title: titleNotif,
+                                                    emIdPengaju:
+                                                        emIdPengaju.toString(),
+                                                    idx: idDetail.toString(),
+                                                    delegasi: emId.toString(),
+                                                    url: urlRoute,
+                                                  );
+                                                } else if (emIdPengaju
+                                                        .toString() ==
+                                                    AppData.informasiUser![0]
+                                                        .em_id) {
+                                                  if (view == 0) {
+                                                    controller.aksilihatNotif(
+                                                        idNotif);
+                                                  }
+                                                  controller.redirectToPage(
+                                                      urlRoute, idDetail);
+                                                } else {
+                                                  if (view == 0) {
+                                                    controller.aksilihatNotif(
+                                                        idNotif);
+                                                  }
+                                                }
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        16.0, 12.0, 16.0, 12.0),
+                                                child: IntrinsicHeight(
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      statusNotif == 1
+                                                          ? Icon(
+                                                              Iconsax
+                                                                  .tick_circle,
+                                                              color: Constanst
+                                                                  .color5,
+                                                              size: 24,
+                                                            )
+                                                          : statusNotif == 2
+                                                              ? Icon(
+                                                                  Iconsax.sms5,
+                                                                  color: Constanst
+                                                                      .fgSecondary,
+                                                                  size: 24,
+                                                                )
+                                                              : statusNotif == 0
+                                                                  ? Icon(
+                                                                      Iconsax
+                                                                          .close_circle,
+                                                                      color: Constanst
+                                                                          .color4,
+                                                                      size: 24,
+                                                                    )
+                                                                  : const SizedBox(),
+                                                      const SizedBox(width: 12),
+                                                      Expanded(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  right: 5),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Row(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      titleNotif,
+                                                                      style: GoogleFonts.inter(
+                                                                          fontWeight: FontWeight
+                                                                              .w500,
+                                                                          color: Constanst
+                                                                              .fgPrimary,
+                                                                          fontSize:
+                                                                              16),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 4),
+                                                              Text(
+                                                                deskripsiNotif,
                                                                 style: GoogleFonts.inter(
                                                                     fontWeight:
                                                                         FontWeight
-                                                                            .w500,
+                                                                            .w400,
                                                                     color: Constanst
-                                                                        .fgPrimary,
+                                                                        .fgSecondary,
                                                                     fontSize:
-                                                                        16),
+                                                                        14),
                                                               ),
-                                                            ),
-                                                          ],
+                                                              const SizedBox(
+                                                                  height: 8),
+                                                              Text(
+                                                                "$jam WIB",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .right,
+                                                                style: GoogleFonts.inter(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    color: Constanst
+                                                                        .fgSecondary,
+                                                                    fontSize:
+                                                                        14),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
-                                                        const SizedBox(
-                                                            height: 4),
-                                                        Text(
-                                                          deskripsiNotif,
-                                                          style: GoogleFonts.inter(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color: Constanst
-                                                                  .fgSecondary,
-                                                              fontSize: 14),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 8),
-                                                        Text(
-                                                          "$jam WIB",
-                                                          textAlign:
-                                                              TextAlign.right,
-                                                          style: GoogleFonts.inter(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color: Constanst
-                                                                  .fgSecondary,
-                                                              fontSize: 14),
-                                                        ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                    Divider(
-                                      thickness: 1,
-                                      height: 0,
-                                      color: Constanst.fgBorder,
-                                    ),
-                                  ],
-                                );
-                              }),
-                        ),
-                      ],
-                    );
-                  }),
+                                          Divider(
+                                            thickness: 1,
+                                            height: 0,
+                                            color: Constanst.fgBorder,
+                                          ),
+                                        ],
+                                      );
+                                    }),
+                              ),
+                            ],
+                          );
+                        }),
+                  ),
+                ],
+              ),
     );
   }
 
-  Widget pickDate() {
-    return Row(
-      children: [
-        // Container(
-        //   decoration: BoxDecoration(
-        //       borderRadius: const BorderRadius.all(
-        //         Radius.circular(100.0),
-        //       ),
-        //       border: Border.all(
-        //         width: 1.0,
-        //         color: Constanst.border,
-        //       )),
-        //   margin: const EdgeInsets.only(left: 16, right: 16),
-        //   child: InkWell(
-        //     customBorder: const RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.all(Radius.circular(100))),
-        //     onTap: () {
-        //       DatePicker.showPicker(
-        //         Get.context!,
-        //         pickerModel: CustomMonthPicker(
-        //           minTime: DateTime(2020, 1, 1),
-        //           maxTime: DateTime(2050, 1, 1),
-        //           currentTime: DateTime(
-        //               int.parse(controller.tahunSelectedSearchHistory.value),
-        //               int.parse(controller.bulanSelectedSearchHistory.value),
-        //               1),
-        //         ),
-        //         onConfirm: (time) {
-        //           if (time != null) {
-        //             print("$time");
-        //             var filter = DateFormat('yyyy-MM').format(time);
-        //             var array = filter.split('-');
-        //             var bulan = array[1];
-        //             var tahun = array[0];
-        //             controller.bulanSelectedSearchHistory.value = bulan;
-        //             controller.tahunSelectedSearchHistory.value = tahun;
-        //             controller.bulanDanTahunNow.value = "$bulan-$tahun";
-        //             this.controller.bulanSelectedSearchHistory.refresh();
-        //             this.controller.tahunSelectedSearchHistory.refresh();
-        //             this.controller.bulanDanTahunNow.refresh();
-        //             controller.loadApproveInfo();
-        //             controller.loadApproveHistory();
-        //           }
-        //         },
-        //       );
-        //     },
-        //     child: Obx(
-        //       () => Padding(
-        //         padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-        //         child: Row(
-        //           crossAxisAlignment: CrossAxisAlignment.center,
-        //           children: [
-        //             const Icon(Iconsax.calendar_2),
-        //             const SizedBox(width: 4),
-        //             Text(
-        //               Constanst.convertDateBulanDanTahun(
-        //                   controller.bulanDanTahunNow.value),
-        //               style: GoogleFonts.inter(
-        //                   fontWeight: FontWeight.w500,
-        //                   color: Constanst.fgPrimary,
-        //                   fontSize: 14),
-        //             ),
-        //             const SizedBox(width: 4),
-        //             Icon(
-        //               Iconsax.arrow_down_14,
-        //               size: 22,
-        //               color: Constanst.fgSecondary,
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
-      ],
+  Widget filterData() {
+    return Obx(
+      () => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        child: Row(
+          children: [
+            // Tombol Pilih Bulan
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  DatePicker.showPicker(
+                    Get.context!,
+                    pickerModel: CustomMonthOnlyPicker(
+                      minTime: DateTime(2000, 1, 1),
+                      maxTime: DateTime(2100, 1, 1),
+                      currentTime: DateTime(
+                        int.parse(controller.tahunSelectedSearchHistory.value),
+                        int.parse(controller.bulanSelectedSearchHistory.value),
+                        1,
+                      ),
+                      locale: LocaleType.id,
+                    ),
+                    onConfirm: (time) {
+                      if (time != null) {
+                        var bulan = DateFormat('MM').format(time);
+                        controller.bulanSelectedSearchHistory.value = bulan;
+                        controller.bulanDanTahunNow.value =
+                            "$bulan-${controller.tahunSelectedSearchHistory.value}";
+                        controller.date.value = time;
+                        controller.loadApproveInfo();
+                        controller.loadNotifikasi();
+                      }
+                    },
+                  );
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Constanst.border),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(Icons.calendar_today_outlined,
+                          color: Colors.blue, size: 18),
+                      const SizedBox(width: 8),
+                      Text(
+                        Constanst.bulanIndoLengkap(
+                            controller.bulanSelectedSearchHistory.value),
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: Constanst.fgSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Icon(Iconsax.arrow_down_1,
+                          size: 16, color: Colors.grey),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+
+            // Tombol Pilih Tahun
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  DatePicker.showPicker(
+                    Get.context!,
+                    showTitleActions: true,
+                    onConfirm: (time) {
+                      if (time != null) {
+                        var tahun = DateFormat('yyyy').format(time);
+                        controller.tahunSelectedSearchHistory.value = tahun;
+                        controller.bulanDanTahunNow.value =
+                            "${controller.bulanSelectedSearchHistory.value}-$tahun";
+                        controller.date.value = time;
+                        controller.loadApproveInfo();
+                        controller.loadNotifikasi();
+                      }
+                    },
+                    pickerModel: CustomYearchPicker(
+                        currentTime: DateTime(
+                          int.parse(
+                              controller.tahunSelectedSearchHistory.value),
+                        ),
+                        minTime: DateTime(2000),
+                        maxTime: DateTime(2100),
+                        locale: LocaleType.id),
+                  );
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Constanst.border),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(Iconsax.calendar_1,
+                          color: Colors.blue, size: 18),
+                      const SizedBox(width: 8),
+                      Text(
+                        controller.tahunSelectedSearchHistory.value,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: Constanst.fgSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Icon(Iconsax.arrow_down_1,
+                          size: 16, color: Colors.grey),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -818,9 +824,7 @@ class _PesanState extends State<Pesan> {
         () => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 24),
-            pickDate(),
-            const SizedBox(height: 8),
+            filterData(),
             Expanded(
               child: controller.dataScreenPersetujuan.value.isEmpty
                   ? ListView(

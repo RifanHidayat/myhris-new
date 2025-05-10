@@ -79,7 +79,7 @@ class LaporanCutiController extends GetxController {
   // void toggleSearch() {
   //   isSearching.value = !isSearching.value;
   // }
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
 
   @override
   void onReady() async {
@@ -113,6 +113,7 @@ class LaporanCutiController extends GetxController {
 
   void getDepartemen(status, tanggal) {
     jumlahData.value = 0;
+    departementAkses.clear();
     var connect = Api.connectionApi("get", {}, "all_department");
     connect.then((dynamic res) {
       if (res == false) {
@@ -120,37 +121,51 @@ class LaporanCutiController extends GetxController {
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
-          var dataDepartemen = valueBody['data'];
-
+          var dataDepartemen = [];
+          var data = {
+            'id': 0,
+            'name': 'SEMUA DIVISI',
+            'inisial': 'AD',
+            'parent_id': '',
+            'aktif': '',
+            'pakai': '',
+            'ip': '',
+            'created_by': '',
+            'created_on': '',
+            'modified_by': '',
+            'modified_on': ''
+          };
+          dataDepartemen.add(data);
+          var temporary = valueBody['data'];
+          for (var i = 0; i < temporary.length; i++) {
+            var element = temporary[i];
+            dataDepartemen.add({
+              'id': element['id'],
+              'name': element['name'],
+              'inisial': element['inisial'],
+              'parent_id': element['parent_id'],
+              'aktif': element['aktif'],
+              'pakai': element['pakai'],
+              'ip': element['ip'],
+              'created_by': element['created_by'],
+              'created_on': element['created_on'],
+              'modified_by': element['modified_by'],
+              'modified_on': element['modified_on']
+            });
+          }
           var dataUser = AppData.informasiUser;
           var hakAkses = dataUser![0].em_hak_akses;
-          print(hakAkses);
+
           if (hakAkses != "" || hakAkses != null) {
-            if (hakAkses == '0') {
-              var data = {
-                'id': 0,
-                'name': 'SEMUA DIVISI',
-                'inisial': 'AD',
-                'parent_id': '',
-                'aktif': '',
-                'pakai': '',
-                'ip': '',
-                'created_by': '',
-                'created_on': '',
-                'modified_by': '',
-                'modified_on': ''
-              };
-              departementAkses.add(data);
-            }
-            var convert = hakAkses!.split(',');
-            for (var element in dataDepartemen) {
-              if (hakAkses == '0') {
-                departementAkses.add(element);
-              }
-              for (var element1 in convert) {
-                if ("${element['id']}" == element1) {
-                  print('sampe sini');
-                  departementAkses.add(element);
+            if (hakAkses == "0") {
+              departementAkses.value = dataDepartemen;
+            } else {
+              var convert = hakAkses.split(',');
+              for (var element in dataDepartemen) {
+                for (var element1 in convert) {
+                  if ("${element['id']}" == element1) {
+                    departementAkses.add(element);
+                  }
                 }
               }
             }
@@ -217,7 +232,8 @@ class LaporanCutiController extends GetxController {
       'tahun': tahunSelectedSearchHistory.value,
       'status': idDepartemenTerpilih.value,
       'type': title.value,
-      'em_id': AppData.informasiUser![0].em_id
+      'em_id': AppData.informasiUser![0].em_id,
+      'dep_id_akses': AppData.informasiUser![0].em_hak_akses
     };
     var connect = Api.connectionApi("post", body, "load_laporan_pengajuan");
     connect.then((dynamic res) {
