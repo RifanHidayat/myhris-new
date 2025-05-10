@@ -23,8 +23,8 @@ class PersetujuanDinasLuar extends StatefulWidget {
 
 class _PersetujuanDinasLuarState extends State<PersetujuanDinasLuar>
     with SingleTickerProviderStateMixin {
-  var controller = Get.put(ApprovalController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controller = Get.find<ApprovalController>();
+  var controllerGlobal = Get.find<GlobalController>();
   TabController? _tabController;
   @override
   void initState() {

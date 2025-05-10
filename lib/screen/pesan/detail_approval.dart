@@ -26,8 +26,8 @@ class DetailApproval extends StatefulWidget {
 }
 
 class _DetailApprovalState extends State<DetailApproval> {
-  var controller = Get.put(ApprovalController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controller = Get.find<ApprovalController>();
+  var controllerGlobal = Get.find<GlobalController>();
   int hours = 0, minutes = 0, second = 0;
 
   @override

@@ -21,14 +21,13 @@ class RiwayatIzin extends StatefulWidget {
 
 class _RiwayatIzinState extends State<RiwayatIzin> {
   var controller = Get.put(IzinController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
   final dashboardController = Get.put(DashboardController());
   var idx = 0;
 
   @override
   void initState() {
     super.initState();
-
     controller.tempNamaTipe1.value == "Semua Tipe";
     // controller.loadDataAjuanIzin();
     // controller.loadTypeSakit();
@@ -262,7 +261,9 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // pickDate(),
+                            // pickDate()
+                            const SizedBox(width: 4),
+                            filterData(),
                             const SizedBox(width: 4),
                             status(),
                             const SizedBox(width: 4),
@@ -310,46 +311,7 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
                 ),
         ),
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      // floatingActionButton: Obx(
-      //   () => controller.showButtonlaporan.value == false
-      //       ? SizedBox()
-      //       : SpeedDial(
-      //           icon: Iconsax.more,
-      //           activeIcon: Icons.close,
-      //           backgroundColor: Constanst.colorPrimary,
-      //           spacing: 3,
-      //           childPadding: const EdgeInsets.all(5),
-      //           spaceBetweenChildren: 4,
-      //           elevation: 8.0,
-      //           animationCurve: Curves.elasticInOut,
-      //           animationDuration: const Duration(milliseconds: 200),
-      //           children: [
-      //             SpeedDialChild(
-      //                 child: Icon(Iconsax.minus_cirlce),
-      //                 backgroundColor: Color(0xff2F80ED),
-      //                 foregroundColor: Colors.white,
-      //                 label: 'Laporan Tidak Hadir',
-      //                 onTap: () {
-      //                   Get.to(LaporanIzin(
-      //                     title: 'tidak_hadir',
-      //                   ));
-      //                 }),
-      //             SpeedDialChild(
-      //                 child: Icon(Iconsax.add_square),
-      //                 backgroundColor: Color(0xff14B156),
-      //                 foregroundColor: Colors.white,
-      //                 label: 'Buat Pengajuan Tidak Hadir',
-      //                 onTap: () {
-      //                   controller
-      //                       .changeTypeSelected(controller.selectedType.value);
-      //                   Get.to(FormPengajuanIzin(
-      //                     dataForm: [[], false],
-      //                   ));
-      //                 }),
-      //           ],
-      //         ),
-      // ),
+      
       floatingActionButton: FloatingActionButton(
         backgroundColor: Constanst.colorPrimary,
         onPressed: () {
@@ -394,124 +356,80 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
     return monthFormat.format(date);
   }
 
-  // Widget pickDate() {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //         borderRadius: const BorderRadius.all(Radius.circular(100)),
-  //         border: Border.all(color: Constanst.fgBorder)),
-  //     child: InkWell(
-  //       customBorder: const RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(100))),
-  //       onTap: () {
-  //         DatePicker.showPicker(
-  //           Get.context!,
-  //           pickerModel: CustomMonthPicker(
-  //             minTime: DateTime(2020, 1, 1),
-  //             maxTime: DateTime(2050, 1, 1),
-  //             currentTime: DateTime.parse(
-  //                 "${controller.tahunSelectedSearchHistory.value}-${controller.bulanSelectedSearchHistory.value}-01"),
-  //           ),
-  //           onConfirm: (time) {
-  //             if (time != null) {
-  //               print("$time");
-  //               var filter = DateFormat('yyyy-MM').format(time);
-  //               var array = filter.split('-');
-  //               var bulan = array[1];
-  //               var tahun = array[0];
-  //               controller.bulanSelectedSearchHistory.value = bulan;
-  //               controller.tahunSelectedSearchHistory.value = tahun;
-  //               controller.bulanDanTahunNow.value = "$bulan-$tahun";
-  //               controller.loadDataAjuanIzin();
-  //               this.controller.bulanSelectedSearchHistory.refresh();
-  //               this.controller.tahunSelectedSearchHistory.refresh();
-  //               this.controller.bulanDanTahunNow.refresh();
-  //             }
-  //           },
-  //         );
-  //       },
-  //       child: Padding(
-  //         padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-  //         child: Row(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Text(
-  //               "${getMonthName(int.parse(controller.bulanSelectedSearchHistory.value))} ${controller.tahunSelectedSearchHistory.value}",
-  //               style: GoogleFonts.inter(
-  //                 fontWeight: FontWeight.w500,
-  //                 fontSize: 14,
-  //                 color: Constanst.fgSecondary,
-  //               ),
-  //             ),
-  //             const SizedBox(width: 4),
-  //             Icon(
-  //               Iconsax.arrow_down_1,
-  //               size: 18,
-  //               color: Constanst.fgSecondary,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget listTypeTidakMasuk() {
-  //   return SizedBox(
-  //     width: MediaQuery.of(Get.context!).size.width,
-  //     height: 50,
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       children: [
-  //         Expanded(
-  //           child: InkWell(
-  //             onTap: () => controller.changeTypeSelected(0),
-  //             child: Center(
-  //                 child: Text(
-  //               "SEHARI PENUH",
-  //               style: TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                   fontSize: 16,
-  //                   color: controller.selectedType.value == 0
-  //                       ? Constanst.colorPrimary
-  //                       : Constanst.colorText2),
-  //             )),
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: InkWell(
-  //             onTap: () => controller.changeTypeSelected(1),
-  //             child: Center(
-  //                 child: Text(
-  //               "SETENGAH HARI",
-  //               style: TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                   fontSize: 16,
-  //                   color: controller.selectedType.value == 1
-  //                       ? Constanst.colorPrimary
-  //                       : Constanst.colorText2),
-  //             )),
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: InkWell(
-  //             onTap: () => controller.changeTypeSelected(2),
-  //             child: Center(
-  //                 child: Text(
-  //               "HARI",
-  //               style: TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                   fontSize: 16,
-  //                   color: controller.selectedType.value == 1
-  //                       ? Constanst.colorPrimary
-  //                       : Constanst.colorText2),
-  //             )),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget filterData() {
+    return Obx(
+      () => InkWell(
+        customBorder: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(100))),
+        onTap: () {
+          DatePicker.showPicker(
+            Get.context!,
+            pickerModel: CustomMonthPicker(
+              minTime: DateTime(2000, 1, 1),
+              maxTime: DateTime(2100, 1, 1),
+              currentTime: DateTime(
+                  int.parse(
+                      controller.tahunSelectedSearchHistory.value),
+                  int.parse(
+                      controller.bulanSelectedSearchHistory.value),
+                  1),
+            ),
+            onConfirm: (time) {
+              if (time != null) {
+                print("$time");
+                var filter = DateFormat('yyyy-MM').format(time);
+                var array = filter.split('-');
+                var bulan = array[1];
+                var tahun = array[0];
+                controller.bulanSelectedSearchHistory.value = bulan;
+                controller.tahunSelectedSearchHistory.value = tahun;
+                controller.bulanDanTahunNow.value = "$bulan-$tahun";
+                this.controller.bulanSelectedSearchHistory.refresh();
+                this.controller.tahunSelectedSearchHistory.refresh();
+                this.controller.bulanDanTahunNow.refresh();
+                controller.date.value = time;
+                controller.loadDataAjuanIzin();
+              }
+            },
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              border: Border.all(color: Constanst.border)),
+          child: Padding(
+            padding: const EdgeInsets.only(
+                top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
+            child: Row(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      Constanst.convertDateBulanDanTahun(
+                          controller.bulanDanTahunNow.value),
+                      style: GoogleFonts.inter(
+                          color: Constanst.fgSecondary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Icon(
+                        Iconsax.arrow_down_1,
+                        color: Constanst.fgSecondary,
+                        size: 18,
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget status() {
     return Container(

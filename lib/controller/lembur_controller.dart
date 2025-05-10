@@ -58,7 +58,12 @@ class LemburController extends GetxController {
   var dataTypeAjuan = [].obs;
   var departementAkses = [].obs;
 
+  var date = DateTime.now().obs;
+  var beginPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
+  var endPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
+
   Rx<DateTime> initialDate = DateTime.now().obs;
+  Rx<DateTime> attenDate = DateTime.now().obs;
 
   var dataTypeAjuanDummy1 = ["Semua Status", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
@@ -69,7 +74,7 @@ class LemburController extends GetxController {
     "Pending"
   ];
 
-  GlobalController globalCt = Get.put(GlobalController());
+  GlobalController globalCt = Get.find<GlobalController>();
 
   @override
   void onReady() async {
@@ -248,13 +253,13 @@ class LemburController extends GetxController {
   }
 
   void getTimeNow() {
-    var dt = DateTime.now();
+    var dt = DateTime.parse(AppData.endPeriode);
     bulanSelectedSearchHistory.value = "${dt.month}";
     tahunSelectedSearchHistory.value = "${dt.year}";
     bulanDanTahunNow.value = "${dt.month}-${dt.year}";
-
+    date.value = dt;
     if (idpengajuanLembur.value == "") {
-      tanggalLembur.value.text = Constanst.convertDate("${initialDate.value}");
+      tanggalLembur.value.text = Constanst.convertDate("${attenDate.value}");
     }
 
     this.tanggalLembur.refresh();
@@ -267,6 +272,50 @@ class LemburController extends GetxController {
     listLemburAll.value.clear();
     listLembur.value.clear();
     var dataUser = AppData.informasiUser;
+
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+
+    var defaultDate = date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmid,
@@ -302,6 +351,8 @@ class LemburController extends GetxController {
         loadingString.value = valueBody['message'];
       }
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   // void loadAllEmployeeDelegasi() {
@@ -425,7 +476,7 @@ class LemburController extends GetxController {
     var getTanggal = listTanggal[1].replaceAll(' ', '');
     var tanggalLemburEditData = Constanst.convertDateSimpan(getTanggal);
     var polaFormat = DateFormat('yyyy-MM-dd');
-    var tanggalPengajuanInsert = polaFormat.format(initialDate.value);
+    var tanggalPengajuanInsert = polaFormat.format(attenDate.value);
     var finalTanggalPengajuan = statusForm.value == false
         ? tanggalPengajuanInsert
         : tanggalLemburEditData;
@@ -484,6 +535,7 @@ class LemburController extends GetxController {
     var validasiDelegasiSelectedToken = validasiSelectedDelegasiToken();
     var polaFormat = DateFormat('yyyy-MM-dd');
     var tanggalPengajuanInsert = polaFormat.format(initialDate.value);
+    var tanggalBikinPengajuan = polaFormat.format(attenDate.value);
     var finalTanggalPengajuan = statusForm.value == false
         ? tanggalPengajuanInsert
         : tanggalLemburEditData;
@@ -504,7 +556,8 @@ class LemburController extends GetxController {
       'created_by': getEmid,
       'menu_name': 'Lembur',
       'approve_status': "pending",
-      'platform': platform
+      'platform': platform,
+      'tgl_ajuan': tanggalBikinPengajuan
     };
     var typeNotifFcm = "Pengajuan Lembur";
     if (statusForm.value == false) {
@@ -942,6 +995,7 @@ class LemburController extends GetxController {
     var tanggalMasukAjuan = detailData['atten_date'];
     var namaTypeAjuan = detailData['type'];
     var uraian = detailData['uraian'];
+    var tglAjuan = detailData['tgl_ajuan'];
     var durasi = detailData['leave_duration'];
     var status;
     if (valuePolaPersetujuan.value == "1") {
@@ -1009,7 +1063,7 @@ class LemburController extends GetxController {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                Constanst.convertDate6("$tanggalMasukAjuan"),
+                                Constanst.convertDate6("$tglAjuan"),
                                 style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16,
@@ -1330,15 +1384,11 @@ class LemburController extends GetxController {
                     ),
                   ),
                 ),
+                
                 status == "Approve" ||
                         status == "Approve 1" ||
-                        status == "Approve 2"
-                    ? Container()
-                    : const SizedBox(height: 16),
-                status == "Approve" ||
-                        status == "Approve 1" ||
-                        status == "Approve 2"
-                    ? Container()
+                        status == "Approve 2" || status == "Rejected"
+                    ? const SizedBox(height: 16)
                     : Row(
                         children: [
                           Expanded(

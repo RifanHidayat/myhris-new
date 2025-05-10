@@ -76,7 +76,7 @@ class KlaimController extends GetxController {
     "Rejected",
     "Pending"
   ];
-  GlobalController globalCt = Get.put(GlobalController());
+  GlobalController globalCt = Get.find<GlobalController>();
 
   @override
   void onReady() async {

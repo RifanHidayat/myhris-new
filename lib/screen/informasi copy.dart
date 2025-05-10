@@ -20,7 +20,7 @@ class Informasi extends StatelessWidget {
   final index;
   Informasi({this.index});
   final controller = Get.put(DashboardController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
 
   @override
   Widget build(BuildContext context) {

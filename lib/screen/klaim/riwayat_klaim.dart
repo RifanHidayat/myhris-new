@@ -26,7 +26,7 @@ class Klaim extends StatefulWidget {
 
 class _KlaimState extends State<Klaim> {
   final controller = Get.put(KlaimController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
   final dashboardController = Get.put(DashboardController());
   var idx = 0;
 

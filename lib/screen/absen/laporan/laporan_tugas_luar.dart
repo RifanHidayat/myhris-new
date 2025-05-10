@@ -24,7 +24,9 @@ class _LaporanTugasLuarState extends State<LaporanTugasLuar> {
 
   @override
   void initState() {
-    controller.getDepartemen(1, "");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getDepartemen(1, "");
+    });
     controller.title.value = widget.title;
     controller.tempNamaLaporan1.value = "tugas_luar";
     super.initState();

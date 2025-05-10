@@ -14,7 +14,7 @@ class DetailInformasi extends StatelessWidget {
   final desc;
   DetailInformasi({this.title, this.create, this.desc});
   // final controller = Get.put(DashboardController());
-  // var controllerGlobal = Get.put(GlobalController());
+  // var controllerGlobal = Get.find<GlobalController>();
 
   String parseHtmlString(String htmlString) {
     dom.Document document = htmlParser.parse(htmlString);

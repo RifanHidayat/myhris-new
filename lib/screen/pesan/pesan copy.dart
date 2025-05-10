@@ -22,7 +22,7 @@ class Pesan extends StatefulWidget {
 }
 
 class _PesanState extends State<Pesan> {
-  final controller = Get.put(PesanController());
+  final controller = Get.find<PesanController>();
 
   Future<void> refreshData() async {
     await Future.delayed(Duration(seconds: 2));

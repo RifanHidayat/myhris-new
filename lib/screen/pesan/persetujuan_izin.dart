@@ -23,8 +23,8 @@ class PersetujuanIzin extends StatefulWidget {
 
 class _PersetujuanIzinState extends State<PersetujuanIzin>
     with SingleTickerProviderStateMixin {
-  var controller = Get.put(ApprovalController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controller = Get.find<ApprovalController>();
+  var controllerGlobal = Get.find<GlobalController>();
 
   TabController? _tabController;
   @override

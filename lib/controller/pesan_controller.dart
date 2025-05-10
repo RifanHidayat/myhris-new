@@ -37,7 +37,7 @@ import 'package:url_launcher/url_launcher.dart';
 class PesanController extends GetxController {
   PageController menuController = PageController(initialPage: 0);
   RefreshController refreshController = RefreshController(initialRefresh: true);
-  var controllerApproval = Get.put(ApprovalController());
+  var controllerApproval = Get.find<ApprovalController>();
 
   var cari = TextEditingController().obs;
 
@@ -77,6 +77,9 @@ class PesanController extends GetxController {
   var statusCari = false.obs;
 
   var isLoading = false.obs;
+  var date = DateTime.now().obs;
+  var beginPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
+  var endPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
 
   var listDummy = [
     "Cuti",
@@ -103,7 +106,7 @@ class PesanController extends GetxController {
   }
 
   Future<void> getTimeNow() async {
-    var dt = DateTime.now();
+    var dt = DateTime.parse(AppData.endPeriode);
     bulanSelectedSearchHistory.value = "${dt.month}";
     tahunSelectedSearchHistory.value = "${dt.year}";
     bulanDanTahunNow.value = "${dt.month}-${dt.year}";
@@ -111,6 +114,8 @@ class PesanController extends GetxController {
     this.bulanSelectedSearchHistory.refresh();
     this.tahunSelectedSearchHistory.refresh();
     this.bulanDanTahunNow.refresh();
+    date.value = dt;
+    print('ini getTimePesan $dt');
     getLoadsysData();
   }
 
@@ -138,6 +143,49 @@ class PesanController extends GetxController {
 
     statusScreenInfoApproval.value = true;
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+
+    var defaultDate = date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmid = dataUser![0].em_id;
     var body = {
       'em_id': getEmid,
@@ -195,6 +243,8 @@ class PesanController extends GetxController {
         }
       } else {}
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadApproveHistory() {
@@ -1029,6 +1079,49 @@ class PesanController extends GetxController {
     isLoading.value = true;
     listNotifikasi.value.clear();
     var dataUser = AppData.informasiUser;
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+
+    var defaultDate = date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
     var getEmid = dataUser![0].em_id;
     var dt = DateTime.now();
     var tanggalSekarang =
@@ -1064,6 +1157,8 @@ class PesanController extends GetxController {
     }).catchError((error) {
       isLoading.value = false;
     });
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
   }
 
   void hitungNotifikasiBelumDibaca() {

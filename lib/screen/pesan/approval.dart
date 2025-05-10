@@ -18,7 +18,7 @@ class Approval extends StatefulWidget {
 }
 
 class _ApprovalState extends State<Approval> {
-  var controller = Get.put(ApprovalController());
+  var controller = Get.find<ApprovalController>();
 
   @override
   void initState() {

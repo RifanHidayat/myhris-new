@@ -23,8 +23,8 @@ class PersetujuanCuti extends StatefulWidget {
 
 class _PersetujuanCutiState extends State<PersetujuanCuti>
     with SingleTickerProviderStateMixin {
-  var controller = Get.put(ApprovalController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controller = Get.find<ApprovalController>();
+  var controllerGlobal = Get.find<GlobalController>();
   TabController? _tabController;
   @override
   void initState() {

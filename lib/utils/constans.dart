@@ -169,6 +169,14 @@ class Constanst {
   }
 
   static String convertDate5(String date) {
+    List<String> parts = date.split('-');
+    if (parts.length == 3) {
+      String year = parts[0];
+      String month = parts[1].padLeft(2, '0');
+      String day = parts[2].padLeft(2, '0');
+      date = "$year-$month-$day";
+    }
+
     DateTime convert = DateTime.parse(date);
     var bulan = DateFormat('MMMM');
     var hari = DateFormat('dd');
@@ -177,12 +185,19 @@ class Constanst {
     var hasilConvertBulan = bulanIndo(convertBulan);
     var convertHari = hari.format(convert);
     var convertTahun = tahun.format(convert);
-    // var valid2 = tanggal.format(convert);
     var validFinal = "$convertHari $hasilConvertBulan $convertTahun";
     return validFinal;
   }
 
   static String convertDate6(String date) {
+    List<String> parts = date.split('-');
+    if (parts.length == 3) {
+      String year = parts[0];
+      String month = parts[1].padLeft(2, '0');
+      String day = parts[2].padLeft(2, '0');
+      date = "$year-$month-$day";
+    }
+
     DateTime convert = DateTime.parse(date);
     var hari = DateFormat('EEEE');
     var tanggal = DateFormat('dd MMM yyyy', 'id');
@@ -202,12 +217,20 @@ class Constanst {
   }
 
   static String convertDateSimpan(String date) {
-    var inputFormat = DateFormat('dd-MM-yyyy');
-    var inputDate = inputFormat.parse(date);
-    var outputFormat = DateFormat('yyyy-MM-dd');
-    var outputDate = outputFormat.format(inputDate);
-    return outputDate;
+  final regexYMD = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+  if (regexYMD.hasMatch(date)) {
+    return date;
   }
+  try {
+    var inputFormat = DateFormat('dd-MM-yyyy');
+    var inputDate = inputFormat.parseStrict(date); // parsing ketat
+    var outputFormat = DateFormat('yyyy-MM-dd');
+    return outputFormat.format(inputDate);
+  } catch (e) {
+    return "Format tanggal tidak valid"; 
+  }
+}
+
 
   static String convertDateBulanDanTahun(String date) {
     var inputFormat = DateFormat('MM-yyyy');
@@ -345,7 +368,6 @@ class Constanst {
     }
     return bulan;
   }
-
 
   // boxShadow: [
   //   BoxShadow(

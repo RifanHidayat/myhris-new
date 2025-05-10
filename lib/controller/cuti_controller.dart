@@ -93,6 +93,10 @@ class CutiController extends GetxController {
   var statusLoadingSubmitLaporan = false.obs;
   var messageApproval = "".obs;
 
+  var date = DateTime.now().obs;
+  var beginPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
+  var endPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
+
   var dataTypeAjuanDummy1 = ["Semua Status", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
     "Semua Status",
@@ -102,7 +106,7 @@ class CutiController extends GetxController {
     "Pending"
   ];
 
-  GlobalController globalCt = Get.put(GlobalController());
+  GlobalController globalCt = Get.find<GlobalController>();
 
   @override
   void onReady() async {
@@ -179,12 +183,13 @@ class CutiController extends GetxController {
   }
 
   void getTimeNow() {
-    var dt = DateTime.now();
+    var dt = DateTime.parse(AppData.endPeriode);
     bulanSelectedSearchHistory.value = "${dt.month}";
     tahunSelectedSearchHistory.value = "${dt.year}";
     bulanDanTahunNow.value = "${dt.month}-${dt.year}";
-
-    var dateString = "${dt.year}-${dt.month}-${dt.day}";
+    date.value = dt;
+    var dtNow = DateTime.now();
+    var dateString = "${dtNow.year}-${dtNow.month}-${dtNow.day}";
     var afterConvert = Constanst.convertDate1(dateString);
     if (idEditFormCuti.value == "") {
       dariTanggal.value.text = "$afterConvert";
@@ -290,6 +295,51 @@ class CutiController extends GetxController {
     listHistoryAjuan.value.clear();
     stringLoading.value = "Memuat Data...";
     var dataUser = AppData.informasiUser;
+
+    var getEmpId = dataUser![0].em_id;
+    print(getEmpId);
+
+    var defaultDate = date.value;
+
+    if (AppData.informasiUser![0].beginPayroll != 1 &&
+        defaultDate.day > AppData.informasiUser![0].endPayroll) {
+      defaultDate =
+          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
+    }
+
+    DateTime tanggalAkhirBulan =
+        DateTime(defaultDate.year, defaultDate.month + 1, 0);
+
+    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
+    DateTime ep =
+        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
+
+    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
+    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
+
+    DateTime previousMonthDate =
+        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
+
+    var tempStartPeriode = AppData.startPeriode;
+    var tempEndPeriode = AppData.endPeriode;
+
+    if (AppData.informasiUser![0].beginPayroll >
+        AppData.informasiUser![0].endPayroll) {
+      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
+
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
+      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].endPayroll));
+    } else if (AppData.informasiUser![0].beginPayroll == 1) {
+      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
+      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
+          defaultDate.month, AppData.informasiUser![0].beginPayroll));
+    }
+
+    AppData.startPeriode = startPeriode;
+    AppData.endPeriode = endPeriode;
+    
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmid,
@@ -320,7 +370,9 @@ class CutiController extends GetxController {
         stringLoading.value = valueBody['message'];
       }
     });
-  }
+    AppData.startPeriode = tempStartPeriode;
+    AppData.endPeriode = tempEndPeriode;
+    }
 
   void cariData(value) {
     var text = value.toLowerCase();
@@ -736,7 +788,7 @@ class CutiController extends GetxController {
         'start_date': startDate.value,
         'end_date': endDate.value,
         'leave_duration': durasiCutiMelahirkan.value,
-        'date_selected': '',
+        'date_selected': stringSelectedTanggal.value,
         'apply_date': '',
         'reason': alasan.value.text,
         'leave_status': 'Pending',
@@ -1733,15 +1785,11 @@ class CutiController extends GetxController {
                     ),
                   ),
                 ),
+                
                 typeAjuan == "Approve" ||
                         typeAjuan == "Approve 1" ||
-                        typeAjuan == "Approve 2"
-                    ? Container()
-                    : const SizedBox(height: 16),
-                typeAjuan == "Approve" ||
-                        typeAjuan == "Approve 1" ||
-                        typeAjuan == "Approve 2"
-                    ? Container()
+                        typeAjuan == "Approve 2" || typeAjuan == "Rejected"
+                    ? const SizedBox(height: 16.0)
                     : Row(
                         children: [
                           Expanded(

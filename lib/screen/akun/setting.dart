@@ -692,6 +692,7 @@ class _SettingState extends State<Setting> {
             minTime: DateTime(2020, 1, 1),
             maxTime: DateTime(2050, 1, 1),
             currentTime: parsedDate,
+            locale: LocaleType.id
           ),
           onConfirm: (time) {
             // if (time != null) {

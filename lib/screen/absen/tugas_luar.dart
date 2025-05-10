@@ -25,7 +25,7 @@ class TugasLuar extends StatefulWidget {
 
 class _TugasLuarState extends State<TugasLuar> {
   final controller = Get.put(TugasLuarController());
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
   final dashboardController = Get.put(DashboardController());
   var idx = 0;
 
@@ -274,7 +274,8 @@ class _TugasLuarState extends State<TugasLuar> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // pickDate(),
+                      const SizedBox(width: 4),
+                          filterData(),
                       const SizedBox(width: 4),
                       status(),
                       const SizedBox(width: 4),
@@ -438,48 +439,83 @@ class _TugasLuarState extends State<TugasLuar> {
     );
   }
 
-  // Widget listTypeTugasLuar() {
-  //   return SizedBox(
-  //     width: MediaQuery.of(Get.context!).size.width,
-  //     height: 50,
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       children: [
-  //         Expanded(
-  //           child: InkWell(
-  //             onTap: () => controller.changeTypeSelected(0),
-  //             child: Center(
-  //                 child: Text(
-  //               "Tugas Luar",
-  //               style: TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                   fontSize: 16,
-  //                   color: controller.selectedType.value == 0
-  //                       ? Constanst.colorPrimary
-  //                       : Constanst.colorText2),
-  //             )),
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: InkWell(
-  //             onTap: () => controller.changeTypeSelected(1),
-  //             child: Center(
-  //                 child: Text(
-  //               "Dinas Luar",
-  //               style: TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                   fontSize: 16,
-  //                   color: controller.selectedType.value == 1
-  //                       ? Constanst.colorPrimary
-  //                       : Constanst.colorText2),
-  //             )),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  
+   Widget filterData() {
+    return Obx(
+      () => InkWell(
+        customBorder: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(100))),
+        onTap: () {
+          DatePicker.showPicker(
+            Get.context!,
+            pickerModel: CustomMonthPicker(
+              minTime: DateTime(2000, 1, 1),
+              maxTime: DateTime(2100, 1, 1),
+              currentTime: DateTime(
+                  int.parse(
+                      controller.tahunSelectedSearchHistory.value),
+                  int.parse(
+                      controller.bulanSelectedSearchHistory.value),
+                  1),
+            ),
+            onConfirm: (time) {
+              if (time != null) {
+                print("$time");
+                var filter = DateFormat('yyyy-MM').format(time);
+                var array = filter.split('-');
+                var bulan = array[1];
+                var tahun = array[0];
+                controller.bulanSelectedSearchHistory.value = bulan;
+                controller.tahunSelectedSearchHistory.value = tahun;
+                controller.bulanDanTahunNow.value = "$bulan-$tahun";
+                this.controller.bulanSelectedSearchHistory.refresh();
+                this.controller.tahunSelectedSearchHistory.refresh();
+                this.controller.bulanDanTahunNow.refresh();
+                controller.date.value = time;
+                controller.loadDataTugasLuar();
+                controller.loadDataDinasLuar();
+              }
+            },
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              border: Border.all(color: Constanst.border)),
+          child: Padding(
+            padding: const EdgeInsets.only(
+                top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
+            child: Row(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      Constanst.convertDateBulanDanTahun(
+                          controller.bulanDanTahunNow.value),
+                      style: GoogleFonts.inter(
+                          color: Constanst.fgSecondary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Icon(
+                        Iconsax.arrow_down_1,
+                        color: Constanst.fgSecondary,
+                        size: 18,
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
 
   String getMonthName(int monthNumber) {
     // Menggunakan pustaka intl untuk mengonversi angka bulan menjadi teks
@@ -1222,7 +1258,7 @@ class _TugasLuarState extends State<TugasLuar> {
           var dariJam = controller.listTugasLuar.value[index]['dari_jam'];
           var sampaiJam = controller.listTugasLuar.value[index]['sampai_jam'];
           var tanggalPengajuan =
-              controller.listTugasLuar.value[index]['atten_date'];
+              controller.listTugasLuar.value[index]['tgl_ajuan'];
 
           var status;
           if (controller.valuePolaPersetujuan.value == "1") {

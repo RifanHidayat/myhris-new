@@ -46,7 +46,7 @@ class AktifitasController extends GetxController {
   var lastDayMonth = 0.obs;
   
 
-  var pesanController=Get.put(PesanController());
+  var pesanController=Get.find<PesanController>();
 
   List dummyInfo = [
     {

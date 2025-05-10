@@ -26,7 +26,7 @@ class Lembur extends StatefulWidget {
 
 class _LemburState extends State<Lembur> {
   final controller = Get.find<LemburController>();
-  var controllerGlobal = Get.put(GlobalController());
+  var controllerGlobal = Get.find<GlobalController>();
   final dashboardController = Get.put(DashboardController());
   var idx = 0;
 
@@ -279,20 +279,12 @@ class _LemburState extends State<Lembur> {
                     : Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Expanded(
-                          //   flex: 60,
-                          //   child: Padding(
-                          //     padding: const EdgeInsets.only(right: 8),
-                          //     child: pencarianData(),
-                          //   ),
-                          // ),
-                          // pickDate(),
+                          const SizedBox(width: 4),
+                          filterData(),
                           const SizedBox(width: 4),
                           status()
                         ],
                       ),
-
-                // listStatusAjuan(),
                 const SizedBox(height: 4),
                 Flexible(
                     child: RefreshIndicator(
@@ -331,44 +323,6 @@ class _LemburState extends State<Lembur> {
           ),
         ),
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      // floatingActionButton: Obx(
-      //   () => controller.showButtonlaporan.value == false
-      //       ? SizedBox()
-      //       : SpeedDial(
-      //           icon: Iconsax.more,
-      //           activeIcon: Icons.close,
-      //           backgroundColor: Constanst.colorPrimary,
-      //           spacing: 3,
-      //           childPadding: const EdgeInsets.all(5),
-      //           spaceBetweenChildren: 4,
-      //           elevation: 8.0,
-      //           animationCurve: Curves.elasticInOut,
-      //           animationDuration: const Duration(milliseconds: 200),
-      //           children: [
-      //             SpeedDialChild(
-      //                 child: Icon(Iconsax.minus_cirlce),
-      //                 backgroundColor: Color(0xff2F80ED),
-      //                 foregroundColor: Colors.white,
-      //                 label: 'Laporan Lembur',
-      //                 onTap: () {
-      //                   Get.to(LaporanLembur(
-      //                     title: 'lembur',
-      //                   ));
-      //                 }),
-      //             SpeedDialChild(
-      //                 child: Icon(Iconsax.add_square),
-      //                 backgroundColor: Color(0xff14B156),
-      //                 foregroundColor: Colors.white,
-      //                 label: 'Buat Pengajuan Lembur',
-      //                 onTap: () {
-      //                   Get.to(FormLembur(
-      //                     dataForm: [[], false],
-      //                   ));
-      //                 }),
-      //           ],
-      //         ),
-      // ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Constanst.colorPrimary,
         onPressed: () {
@@ -381,26 +335,6 @@ class _LemburState extends State<Lembur> {
           size: 34,
         ),
       ),
-      // bottomNavigationBar: Obx(
-      //   () => Padding(
-      //       padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 12),
-      //       child: controller.showButtonlaporan.value == true
-      //           ? SizedBox()
-      //           : TextButtonWidget2(
-      //               title: "Buat Pengajuan Lembur",
-      //               onTap: () {
-      //                 Get.to(FormLembur(
-      //                   dataForm: [[], false],
-      //                 ));
-      //               },
-      //               colorButton: Constanst.colorPrimary,
-      //               colortext: Constanst.colorWhite,
-      //               border: BorderRadius.circular(20.0),
-      //               icon: Icon(
-      //                 Iconsax.add,
-      //                 color: Constanst.colorWhite,
-      //               ))),
-      // ),
     );
   }
 
@@ -412,68 +346,80 @@ class _LemburState extends State<Lembur> {
     return monthFormat.format(date);
   }
 
-  // Widget pickDate() {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //         borderRadius: const BorderRadius.all(Radius.circular(100)),
-  //         border: Border.all(color: Constanst.fgBorder)),
-  //     child: InkWell(
-  //       customBorder: const RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(100))),
-  //       onTap: () {
-  //         DatePicker.showPicker(
-  //           Get.context!,
-  //           pickerModel: CustomMonthPicker(
-  //             minTime: DateTime(2020, 1, 1),
-  //             maxTime: DateTime(2050, 1, 1),
-  //             currentTime: DateTime(
-  //                 int.parse(controller.tahunSelectedSearchHistory.value),
-  //                 int.parse(controller.bulanSelectedSearchHistory.value),
-  //                 1),
-  //           ),
-  //           onConfirm: (time) {
-  //             if (time != null) {
-  //               print("$time");
-  //               var filter = DateFormat('yyyy-MM').format(time);
-  //               var array = filter.split('-');
-  //               var bulan = array[1];
-  //               var tahun = array[0];
-  //               controller.bulanSelectedSearchHistory.value = bulan;
-  //               controller.tahunSelectedSearchHistory.value = tahun;
-  //               controller.bulanDanTahunNow.value = "$bulan-$tahun";
-  //               this.controller.bulanSelectedSearchHistory.refresh();
-  //               this.controller.tahunSelectedSearchHistory.refresh();
-  //               this.controller.bulanDanTahunNow.refresh();
-  //               controller.loadDataLembur();
-  //             }
-  //           },
-  //         );
-  //       },
-  //       child: Padding(
-  //         padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-  //         child: Row(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Text(
-  //               "${getMonthName(int.parse(controller.bulanSelectedSearchHistory.value))} ${controller.tahunSelectedSearchHistory.value}",
-  //               style: GoogleFonts.inter(
-  //                 fontWeight: FontWeight.w500,
-  //                 fontSize: 14,
-  //                 color: Constanst.fgSecondary,
-  //               ),
-  //             ),
-  //             const SizedBox(width: 4),
-  //             Icon(
-  //               Iconsax.arrow_down_1,
-  //               size: 18,
-  //               color: Constanst.fgSecondary,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+   Widget filterData() {
+    return Obx(
+      () => InkWell(
+        customBorder: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(100))),
+        onTap: () {
+          DatePicker.showPicker(
+            Get.context!,
+            pickerModel: CustomMonthPicker(
+              minTime: DateTime(2000, 1, 1),
+              maxTime: DateTime(2100, 1, 1),
+              currentTime: DateTime(
+                  int.parse(
+                      controller.tahunSelectedSearchHistory.value),
+                  int.parse(
+                      controller.bulanSelectedSearchHistory.value),
+                  1),
+            ),
+            onConfirm: (time) {
+              if (time != null) {
+                print("$time");
+                var filter = DateFormat('yyyy-MM').format(time);
+                var array = filter.split('-');
+                var bulan = array[1];
+                var tahun = array[0];
+                controller.bulanSelectedSearchHistory.value = bulan;
+                controller.tahunSelectedSearchHistory.value = tahun;
+                controller.bulanDanTahunNow.value = "$bulan-$tahun";
+                this.controller.bulanSelectedSearchHistory.refresh();
+                this.controller.tahunSelectedSearchHistory.refresh();
+                this.controller.bulanDanTahunNow.refresh();
+                controller.date.value = time;
+                controller.loadDataLembur();
+              }
+            },
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              border: Border.all(color: Constanst.border)),
+          child: Padding(
+            padding: const EdgeInsets.only(
+                top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
+            child: Row(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      Constanst.convertDateBulanDanTahun(
+                          controller.bulanDanTahunNow.value),
+                      style: GoogleFonts.inter(
+                          color: Constanst.fgSecondary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Icon(
+                        Iconsax.arrow_down_1,
+                        color: Constanst.fgSecondary,
+                        size: 18,
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget status() {
     return Container(
@@ -829,7 +775,7 @@ class _LemburState extends State<Lembur> {
           var dariJam = controller.listLembur.value[index]['dari_jam'];
           var sampaiJam = controller.listLembur.value[index]['sampai_jam'];
           var tanggalPengajuan =
-              controller.listLembur.value[index]['atten_date'];
+              controller.listLembur.value[index]['tgl_ajuan'];
           var status;
           if (controller.valuePolaPersetujuan.value == "1") {
             status = controller.listLembur.value[index]['status'];

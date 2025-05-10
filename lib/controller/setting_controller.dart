@@ -172,9 +172,9 @@ class SettingController extends GetxController {
     bulanSelectedSearchHistory.value = "${defaultDate.month}";
     tahunSelectedSearchHistory.value = "${defaultDate.year}";
     bulanDanTahunNow.value = "${defaultDate.month}-${defaultDate.year}";
-    stringBulan.value = DateFormat('MMMM').format(defaultDate);
-    beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-    endPayroll.value = DateFormat('MMMM').format(defaultDate);
+    stringBulan.value = DateFormat('MMMM', 'id').format(defaultDate);
+    beginPayroll.value = DateFormat('MMMM', 'id').format(defaultDate);
+    endPayroll.value = DateFormat('MMMM', 'id').format(defaultDate);
 
     DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
     DateTime ep =
@@ -187,16 +187,16 @@ class SettingController extends GetxController {
 
     if (AppData.informasiUser![0].beginPayroll >
         AppData.informasiUser![0].endPayroll) {
-      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-      bulanStart.value = DateFormat('MM').format(previousMonthDate);
+      beginPayroll.value = DateFormat('MMMM', 'id').format(previousMonthDate);
+      bulanStart.value = DateFormat('MM', 'id').format(previousMonthDate);
 
       startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
           defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
       endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
           defaultDate.month, AppData.informasiUser![0].endPayroll));
     } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      bulanStart.value = DateFormat('MM').format(defaultDate);
+      beginPayroll.value = DateFormat('MMMM', 'id').format(defaultDate);
+      bulanStart.value = DateFormat('MM', 'id').format(defaultDate);
     }
 
     AppData.startPeriode = startPeriode;
