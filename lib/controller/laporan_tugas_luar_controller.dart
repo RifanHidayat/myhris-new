@@ -1096,14 +1096,15 @@ class LaporanTugasLuarController extends GetxController {
   }
 
   void showDetailRiwayat(tipe, detailData, approve, alasanReject) {
+    print("detailData $detailData");
     var nomorAjuan = detailData['nomor_ajuan'];
     var get2StringNomor = '${nomorAjuan[0]}${nomorAjuan[1]}';
-    var tanggalMasukAjuan = detailData['atten_date'];
+    var tanggalMasukAjuan = tipe == "dinas_luar" ?detailData['atten_date'] : detailData['tgl_ajuan'];
     var namaTypeAjuan = detailData['name'];
     var tanggalAjuanDari = detailData['start_date'];
     var tanggalAjuanSampai = detailData['end_date'];
-    var alasan = detailData['reason'];
-    var durasi = detailData['leave_duration'];
+    var alasan = tipe == "dinas_luar" ? detailData['reason'] : detailData['uraian'];
+    var durasi = tipe == "dinas_luar" ? detailData['leave_duration'] : '1';
     var status;
     if (valuePolaPersetujuan.value == "1") {
       status = detailData['status'];
@@ -1125,7 +1126,7 @@ class LaporanTugasLuarController extends GetxController {
     var leave_files = detailData['leave_files'];
     var categoryIzin = detailData['category'];
     var listTanggalTerpilih =
-        tipe == "dinas_luar" ? detailData['date_selected'].split(',') : "";
+        tipe == "dinas_luar" ? detailData['date_selected'].split(',') : detailData['tgl_ajuan'];
     showModalBottomSheet(
       context: Get.context!,
       isScrollControlled: true,
@@ -1282,7 +1283,14 @@ class LaporanTugasLuarController extends GetxController {
                         detailData['date_selected'] == null ||
                                 detailData['date_selected'] == "" ||
                                 detailData['date_selected'] == "null"
-                            ? Container()
+                            ? Text(
+                                "${Constanst.convertDate5(listTanggalTerpilih)}",
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: Constanst.fgPrimary,
+                                ),
+                              )
                             : Row(
                                 children: List.generate(
                                     listTanggalTerpilih.length, (index) {

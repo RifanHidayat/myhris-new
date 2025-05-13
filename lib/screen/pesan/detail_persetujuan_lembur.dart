@@ -643,7 +643,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                         const SizedBox(height: 4),
                                         Text(
                                           Constanst.convertDate6(
-                                              "${controller.detailData[0]['waktu_pengajuan']}"),
+                                              "${controller.detailData[0]['tgl_ajuan']}"),
                                           style: GoogleFonts.inter(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 16,
@@ -750,7 +750,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                               //             fontSize: 16),
                               //       ),
                               Text(
-                                "${controller.detailData[0]['tgl_ajuan'] == '' || controller.detailData[0]['tgl_ajuan'] == null ? "" : Constanst.convertDate6("${controller.detailData[0]['tgl_ajuan']}")}",
+                                "${controller.detailData[0]['waktu_pengajuan'] == '' || controller.detailData[0]['waktu_pengajuan'] == null ? "" : Constanst.convertDate6("${controller.detailData[0]['waktu_pengajuan']}")}",
                                 style: GoogleFonts.inter(
                                     fontWeight: FontWeight.w500,
                                     color: Constanst.fgPrimary,

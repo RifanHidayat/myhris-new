@@ -349,7 +349,7 @@ class _PersetujuanLemburState extends State<PersetujuanLembur>
             var sampaiJam = controller.listData.value[index]['sampai_jam'];
             var nomor_ajuan = controller.listData.value[index]['nomor_ajuan'];
             var tanggalPengajuan =
-                controller.listData.value[index]['waktu_pengajuan'];
+                controller.listData.value[index]['tgl_ajuan'];
             var categoryAjuan = controller.listData.value[index]['category'];
             var nama_divisi =
                 controller.listData.value[index]['nama_divisi'] ?? "";
