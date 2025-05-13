@@ -1419,6 +1419,7 @@ class TugasLuarController extends GetxController {
         'cari': '${index["id"]}',
         'status_transaksi': 0,
         'atten_date': '${index["atten_date"]}',
+         'tgl_ajuan': '${index["tgl_ajuan"]}',
       };
       var connect = Api.connectionApi("post", body, "edit-emp_labor");
       connect.then((dynamic res) {

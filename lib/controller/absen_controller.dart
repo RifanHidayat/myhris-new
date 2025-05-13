@@ -263,6 +263,7 @@ class AbsenController extends GetxController {
   void getDepartemen(status, tanggal) {
     jumlahData.value = 0;
     departementAkses.clear();
+
     var connect = Api.connectionApi("get", {}, "all_department");
     connect.then((dynamic res) {
       if (res == false) {
@@ -309,6 +310,7 @@ class AbsenController extends GetxController {
             if (hakAkses == "0") {
               departementAkses.value = dataDepartemen;
             } else {
+              departementAkses.add(data);
               var convert = hakAkses.split(',');
               for (var element in dataDepartemen) {
                 for (var element1 in convert) {
@@ -320,6 +322,7 @@ class AbsenController extends GetxController {
             }
           }
           this.departementAkses.refresh();
+          getPlaceReport();
           if (departementAkses.value.isNotEmpty) {
             if (status == 1) {
               idDepartemenTerpilih.value = "${departementAkses[0]['id']}";
@@ -435,9 +438,10 @@ class AbsenController extends GetxController {
 
   Future<void> getPlaceReport() async {
     placeCoordinateReport.clear();
-    var body = {
-      'dep_id': idDepartemenTerpilih.value,
-    };
+    String ids =
+        departementAkses.value.map((e) => e['id'].toString()).join(',');
+    var body = {'dep_id': idDepartemenTerpilih.value, 'department': ids};
+
     var connect = Api.connectionApi("post", body, "places/report",
         params: "&id=${AppData.informasiUser![0].em_id}");
     connect.then((dynamic res) {
@@ -1754,7 +1758,6 @@ class AbsenController extends GetxController {
                   dateNow.value
                 ],
               ));
-              
             } else {
               isLoaingAbsensi.value = false;
               Get.back();
@@ -2934,9 +2937,6 @@ class AbsenController extends GetxController {
     var getEmpId = dataUser![0].em_id;
     print(getEmpId);
 
-
-    
-
     var defaultDate = date.value;
 
     if (AppData.informasiUser![0].beginPayroll != 1 &&
@@ -3418,7 +3418,7 @@ class AbsenController extends GetxController {
                               this.departemen.refresh();
                               print(
                                   "id departement ${idDepartemenTerpilih.value}");
-                                  getPlaceReport();
+                              getPlaceReport();
                               Navigator.pop(context);
                               carilaporanAbsenkaryawan(status);
                             },

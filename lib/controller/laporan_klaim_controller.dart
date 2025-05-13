@@ -63,8 +63,8 @@ class LaporanKlaimController extends GetxController {
   var dataTypeAjuanDummy1 = ["Semua", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
     "Semua",
-    "Approve 1",
-    "Approve 2",
+    "Approve",
+    "Approve2",
     "Rejected",
     "Pending"
   ];
@@ -150,6 +150,7 @@ class LaporanKlaimController extends GetxController {
               departementAkses.value = dataDepartemen;
             } else {
               var convert = hakAkses.split(',');
+              departementAkses.add(data);
               for (var element in dataDepartemen) {
                 for (var element1 in convert) {
                   if ("${element['id']}" == element1) {
@@ -675,7 +676,11 @@ class LaporanKlaimController extends GetxController {
                           return InkWell(
                             onTap: () {
                               // if (selectedViewFilterPengajuan.value == 1) {
-                              filterStatusPengajuan(name);
+                              filterStatusPengajuan(name == 'Approve 1'
+                                  ? "Approve"
+                                  : name == 'Approve 2'
+                                      ? "Approve2"
+                                      : name);
                               // }
                             },
                             child: Padding(
@@ -719,7 +724,12 @@ class LaporanKlaimController extends GetxController {
                                       : InkWell(
                                           onTap: () {
                                             // if (selectedViewFilterPengajuan.value == 1) {
-                                            filterStatusPengajuan(name);
+                                            filterStatusPengajuan(
+                                                name == 'Approve 1'
+                                                    ? "Approve"
+                                                    : name == 'Approve 2'
+                                                        ? "Approve2"
+                                                        : name);
                                             // }
                                           },
                                           child: Container(
@@ -1426,6 +1436,8 @@ class LaporanKlaimController extends GetxController {
                               )
                             : typeAjuan == "Approve" ||
                                     typeAjuan == "Approve 1" ||
+                                    typeAjuan == "Approve" ||
+                                    typeAjuan == "Approve2" ||
                                     typeAjuan == "Approve 2"
                                 ? Row(
                                     crossAxisAlignment:

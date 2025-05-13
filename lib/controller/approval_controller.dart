@@ -346,6 +346,7 @@ class ApprovalController extends GetxController {
             'approve_status': element['approve_status'],
             'approve2_status': element['approve2_status'],
             'image': element['image'],
+            'tgl_ajuan': element['tgl_ajuan'],
           };
           listData.value.sort(
               (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
@@ -1086,6 +1087,7 @@ class ApprovalController extends GetxController {
             'nama_divisi': element['nama_divisi'],
             'nomor_ajuan': element['nomor_ajuan'],
             'image': element['image'],
+            'tgl_ajuan': element['tgl_ajuan'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -1849,6 +1851,7 @@ class ApprovalController extends GetxController {
         'approve2_id': applyId2,
         'alasan_reject': alasanReject.value.text,
         'em_delegation': dataEditFinal[0]['em_delegation'],
+        'tgl_ajuan': dataEditFinal[0]['tgl_ajuan'],
         'uraian': dataEditFinal[0]['uraian'],
         'ajuan': dataEditFinal[0]['ajuan'],
         'created_by': getEmpid,

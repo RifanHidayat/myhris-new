@@ -66,8 +66,8 @@ class LaporanTugasLuarController extends GetxController {
   var dataTypeAjuanDummy1 = ["Semua", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
     "Semua",
-    "Approve 1",
-    "Approve 2",
+    "Approve",
+    "Approve2",
     "Rejected",
     "Pending"
   ];
@@ -154,6 +154,7 @@ class LaporanTugasLuarController extends GetxController {
             if (hakAkses == "0") {
               departementAkses.value = dataDepartemen;
             } else {
+              departementAkses.add(data);
               var convert = hakAkses.split(',');
               for (var element in dataDepartemen) {
                 for (var element1 in convert) {
@@ -689,7 +690,12 @@ class LaporanTugasLuarController extends GetxController {
                           return InkWell(
                             onTap: () {
                               // if (selectedViewFilterPengajuan.value == 1) {
-                              filterStatusPengajuan(name);
+                              //  filterStatusPengajuan(name);
+                              filterStatusPengajuan(name == 'Approve 1'
+                                  ? "Approve"
+                                  : name == 'Approve 2'
+                                      ? "Approve2"
+                                      : name);
                               // }
                             },
                             child: Padding(
@@ -733,7 +739,13 @@ class LaporanTugasLuarController extends GetxController {
                                       : InkWell(
                                           onTap: () {
                                             // if (selectedViewFilterPengajuan.value == 1) {
-                                            filterStatusPengajuan(name);
+                                            //filterStatusPengajuan(name);
+                                            filterStatusPengajuan(
+                                                name == 'Approve 1'
+                                                    ? "Approve"
+                                                    : name == 'Approve 2'
+                                                        ? "Approve2"
+                                                        : name);
                                             // }
                                           },
                                           child: Container(
@@ -1442,6 +1454,8 @@ class LaporanTugasLuarController extends GetxController {
                               )
                             : status == "Approve" ||
                                     status == "Approve 1" ||
+                                    status == "Approve" ||
+                                    status == "Approve2" ||
                                     status == "Approve 2"
                                 ? Row(
                                     crossAxisAlignment:

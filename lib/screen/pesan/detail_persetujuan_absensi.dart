@@ -419,10 +419,9 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Obx(() => controller.showButton.value == true  &&
-                    (controller.detailData[0]['status'] == "Pending" ||
-                        controller.detailData[0]['approve_status'] ==
-                            "Pending")
+        child: Obx(() => controller.showButton.value == true &&
+                (controller.detailData[0]['status'] == "Pending" ||
+                    controller.detailData[0]['approve_status'] == "Pending")
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -495,87 +494,87 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                   ),
                 ],
               )
-            : controller.showButton.value == true  &&
+            : controller.showButton.value == true &&
                     (controller.detailData[0]['status'] == "Approve" ||
                         controller.detailData[0]['approve_status'] ==
-                            "Approve" &&
-                        (controller.detailData[0]['approve2_status'] ==
-                                "Pending" &&
-                            controller.detailData[0]['approve_status'] !=
-                                "Rejected"))
-            ? Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 40,
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color:
-                              Constanst.border, // Set the desired border color
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          print(AppData.informasiUser![0].em_id);
-                          print(controller.detailData[0]['em_report_to']);
-                          print(controller.detailData[0]['em_report2_to']);
-                          // print("tes");
-                          showBottomAlasanReject(em_id);
-                        },
-                        style: ElevatedButton.styleFrom(
-                            foregroundColor: Constanst.color4,
-                            backgroundColor: Constanst.colorWhite,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                                "Approve" &&
+                            (controller.detailData[0]['approve2_status'] ==
+                                    "Pending" &&
+                                controller.detailData[0]['approve_status'] !=
+                                    "Rejected"))
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 40,
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Constanst
+                                  .border, // Set the desired border color
+                              width: 1.0,
                             ),
-                            elevation: 0,
-                            // padding: EdgeInsets.zero,
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                        child: Text(
-                          'Tolak',
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              color: Constanst.color4,
-                              fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: SizedBox(
-                      height: 40,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          validasiMenyetujui(true, em_id);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Constanst.colorWhite,
-                          backgroundColor: Constanst.colorPrimary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                          elevation: 0,
-                          // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
-                        ),
-                        child: Text(
-                          'Menyetujui',
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              color: Constanst.colorWhite,
-                              fontSize: 14),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              print(AppData.informasiUser![0].em_id);
+                              print(controller.detailData[0]['em_report_to']);
+                              print(controller.detailData[0]['em_report2_to']);
+                              // print("tes");
+                              showBottomAlasanReject(em_id);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: Constanst.color4,
+                                backgroundColor: Constanst.colorWhite,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 0,
+                                // padding: EdgeInsets.zero,
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                            child: Text(
+                              'Tolak',
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.color4,
+                                  fontSize: 14),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ],
-              )
-            : const SizedBox()),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: SizedBox(
+                          height: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              validasiMenyetujui(true, em_id);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Constanst.colorWhite,
+                              backgroundColor: Constanst.colorPrimary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              elevation: 0,
+                              // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                            ),
+                            child: Text(
+                              'Menyetujui',
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.colorWhite,
+                                  fontSize: 14),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox()),
       ),
       body: WillPopScope(
         onWillPop: () async {
@@ -583,7 +582,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
           Get.back();
           return true;
         },
-        child:bodyOffline(),
+        child: bodyOffline(),
       ),
     );
   }
@@ -969,7 +968,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                             ),
                           ],
                         ),
-                        
+
                         Padding(
                           padding:
                               const EdgeInsets.only(top: 12.0, bottom: 12.0),
@@ -986,8 +985,11 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                               visible: DateFormat.Hm().format(
                                       DateFormat("HH:mm:ss").parse(
                                           controller.detailData[0]
-                                              ['breakout_time']==null?"00:00:00":controller.detailData[0]
-                                              ['breakout_time'])) !=
+                                                      ['breakout_time'] ==
+                                                  null
+                                              ? "00:00:00"
+                                              : controller.detailData[0]
+                                                  ['breakout_time'])) !=
                                   "00:00",
                               child: Expanded(
                                 child: Column(
@@ -1003,10 +1005,13 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                                     const SizedBox(height: 4),
                                     Text(
                                       DateFormat.Hm().format(
-                                          DateFormat("HH:mm:ss")
-                                              .parse(controller.detailData[0]
-                                                  ['breakout_time']==null?"00:00:00":controller.detailData[0]
-                                                  ['breakout_time'])),
+                                          DateFormat("HH:mm:ss").parse(
+                                              controller.detailData[0]
+                                                          ['breakout_time'] ==
+                                                      null
+                                                  ? "00:00:00"
+                                                  : controller.detailData[0]
+                                                      ['breakout_time'])),
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgPrimary,
                                           fontWeight: FontWeight.w500,
@@ -1046,8 +1051,11 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                               visible: DateFormat.Hm().format(
                                       DateFormat("HH:mm:ss").parse(
                                           controller.detailData[0]
-                                              ['breakin_time']==null?"00:00:00":controller.detailData[0]
-                                              ['breakin_time'])) !=
+                                                      ['breakin_time'] ==
+                                                  null
+                                              ? "00:00:00"
+                                              : controller.detailData[0]
+                                                  ['breakin_time'])) !=
                                   "00:00",
                               child: Expanded(
                                 child: Column(
@@ -1063,10 +1071,13 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                                     const SizedBox(height: 4),
                                     Text(
                                       DateFormat.Hm().format(
-                                          DateFormat("HH:mm:ss")
-                                              .parse(controller.detailData[0]
-                                                  ['breakin_time']==null?"00:00:00":controller.detailData[0]
-                                                  ['breakin_time'])),
+                                          DateFormat("HH:mm:ss").parse(
+                                              controller.detailData[0]
+                                                          ['breakin_time'] ==
+                                                      null
+                                                  ? "00:00:00"
+                                                  : controller.detailData[0]
+                                                      ['breakin_time'])),
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgPrimary,
                                           fontWeight: FontWeight.w500,
@@ -1095,7 +1106,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                             ),
                           ],
                         ),
-                        
+
                         Padding(
                           padding:
                               const EdgeInsets.only(top: 12.0, bottom: 12.0),
@@ -1659,7 +1670,12 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                         //       fontSize: 16),
                         // ),
                         Text(
-                        controller.detailData[0]['nomor_ajuan'].toString().substring(0, 2)=='RQ'?"Pengajuan Absensi":  "Pengajuan Absensi Offline",
+                          controller.detailData[0]['nomor_ajuan']
+                                      .toString()
+                                      .substring(0, 2) ==
+                                  'RQ'
+                              ? "Pengajuan Absensi"
+                              : "Pengajuan Absensi Offline",
                           style: GoogleFonts.inter(
                               fontWeight: FontWeight.w500,
                               color: Constanst.fgPrimary,
@@ -1996,8 +2012,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                         //   ],
                         // ),
                         Visibility(
-                          visible:
-                              controller.detailData[0]['place_in'] != "",
+                          visible: controller.detailData[0]['place_in'] != "",
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2030,8 +2045,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                           ),
                         ),
                         Visibility(
-                          visible:
-                              controller.detailData[0]['place_out'] != "",
+                          visible: controller.detailData[0]['place_out'] != "",
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2741,8 +2755,8 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                             )
                           : data['approve_status'] == "Rejected"
                               ? Icon(
-                                  Iconsax.tick_circle,
-                                  color: Colors.green,
+                                  Iconsax.close_circle,
+                                  color: Colors.red,
                                   size: 22,
                                 )
                               : Icon(

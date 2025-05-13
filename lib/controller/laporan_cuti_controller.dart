@@ -68,8 +68,8 @@ class LaporanCutiController extends GetxController {
   var dataTypeAjuanDummy1 = ["Semua", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
     "Semua",
-    "Approve 1",
-    "Approve 2",
+    "Approve",
+    "Approve2",
     "Rejected",
     "Pending"
   ];
@@ -161,6 +161,7 @@ class LaporanCutiController extends GetxController {
               departementAkses.value = dataDepartemen;
             } else {
               var convert = hakAkses.split(',');
+              departementAkses.add(data);
               for (var element in dataDepartemen) {
                 for (var element1 in convert) {
                   if ("${element['id']}" == element1) {
@@ -693,7 +694,12 @@ class LaporanCutiController extends GetxController {
                           return InkWell(
                             onTap: () {
                               // if (selectedViewFilterPengajuan.value == 1) {
-                              filterStatusPengajuan(name);
+                              //filterStatusPengajuan(name);
+                              filterStatusPengajuan(name == 'Approve 1'
+                                  ? "Approve"
+                                  : name == 'Approve 2'
+                                      ? "Approve2"
+                                      : name);
                               // }
                             },
                             child: Padding(
@@ -737,7 +743,13 @@ class LaporanCutiController extends GetxController {
                                       : InkWell(
                                           onTap: () {
                                             // if (selectedViewFilterPengajuan.value == 1) {
-                                            filterStatusPengajuan(name);
+                                            //  filterStatusPengajuan(name);
+                                            filterStatusPengajuan(
+                                                name == 'Approve 1'
+                                                    ? "Approve"
+                                                    : name == 'Approve 2'
+                                                        ? "Approve2"
+                                                        : name);
                                             // }
                                           },
                                           child: Container(
@@ -1411,6 +1423,8 @@ class LaporanCutiController extends GetxController {
                               )
                             : typeAjuan == "Approve" ||
                                     typeAjuan == "Approve 1" ||
+                                    typeAjuan == "Approve" ||
+                                    typeAjuan == "Approve2" ||
                                     typeAjuan == "Approve 2"
                                 ? Row(
                                     crossAxisAlignment:

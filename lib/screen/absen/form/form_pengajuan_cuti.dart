@@ -304,11 +304,11 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                                 "Tanggal yang dipilih melebihi sisa cuti ");
                           } else {
                             print('kemari');
-                            // controller.validasiKirimPengajuan();
+                           controller.validasiKirimPengajuan();
                           }
                         } else {
                           // print('kemari');
-                          // controller.validasiKirimPengajuan();
+                           controller.validasiKirimPengajuan();
                         }
                       } else {
                         if ((controller.limitCuti.value) <
@@ -316,7 +316,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                           UtilsAlert.showToast(
                               "Tanggal yang dipilih melebihi sisa cuti");
                         } else {
-                          // controller.validasiKirimPengajuan();
+                           controller.validasiKirimPengajuan();
                         }
                       }
                     } else {
@@ -338,10 +338,10 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                             UtilsAlert.showToast(
                                 "Tanggal yang dipilih melebihi sisa cuti");
                           } else {
-                            // controller.validasiKirimPengajuan();
+                             controller.validasiKirimPengajuan();
                           }
                         } else {
-                          // controller.validasiKirimPengajuan();
+                           controller.validasiKirimPengajuan();
                         }
                       } else {
                         if ((controller.limitCuti.value) <
@@ -349,7 +349,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
                           UtilsAlert.showToast(
                               "Tanggal yang dipilih melebihi sisa cuti");
                         } else {
-                          // controller.validasiKirimPengajuan();
+                          controller.validasiKirimPengajuan();
                         }
                       }
                     }

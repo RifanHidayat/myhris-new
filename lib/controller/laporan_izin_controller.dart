@@ -66,8 +66,8 @@ class LaporanIzinController extends GetxController {
   var dataTypeAjuanDummy1 = ["Semua", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
     "Semua",
-    "Approve 1",
-    "Approve 2",
+    "Approve",
+    "Approve2",
     "Rejected",
     "Pending"
   ];
@@ -82,7 +82,7 @@ class LaporanIzinController extends GetxController {
   void onReady() async {
     super.onReady();
     getTimeNow();
-    // getLoadsysData();
+
     // getDepartemen(1, "");
     filterStatusAjuanTerpilih.value = "Semua";
     selectedViewFilterPengajuan.value = 0;
@@ -153,6 +153,7 @@ class LaporanIzinController extends GetxController {
               departementAkses.value = dataDepartemen;
             } else {
               var convert = hakAkses.split(',');
+              departementAkses.add(data);
               for (var element in dataDepartemen) {
                 for (var element1 in convert) {
                   if ("${element['id']}" == element1) {
@@ -684,8 +685,14 @@ class LaporanIzinController extends GetxController {
                               : dataTypeAjuanDummy2[index];
                           return InkWell(
                             onTap: () {
+                              // UtilsAlert.showToast(valuePolaPersetujuan.value);
                               // if (selectedViewFilterPengajuan.value == 1) {
-                              filterStatusPengajuan(name);
+
+                              filterStatusPengajuan(name == 'Approve 1'
+                                  ? "Approve"
+                                  : name == 'Approve 2'
+                                      ? "Approve2"
+                                      : name);
                               // }
                             },
                             child: Padding(
@@ -729,7 +736,12 @@ class LaporanIzinController extends GetxController {
                                       : InkWell(
                                           onTap: () {
                                             // if (selectedViewFilterPengajuan.value == 1) {
-                                            filterStatusPengajuan(name);
+                                            filterStatusPengajuan(
+                                                name == 'Approve 1'
+                                                    ? "Approve"
+                                                    : name == 'Approve 2'
+                                                        ? "Approve2"
+                                                        : name);
                                             // }
                                           },
                                           child: Container(
@@ -1448,7 +1460,9 @@ class LaporanIzinController extends GetxController {
                               )
                             : typeAjuan == "Approve" ||
                                     typeAjuan == "Approve 1" ||
-                                    typeAjuan == "Approve 2"
+                                    typeAjuan == "Approve" ||
+                                    typeAjuan == "Approve 2" ||
+                                    typeAjuan == "Approve2"
                                 ? Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,

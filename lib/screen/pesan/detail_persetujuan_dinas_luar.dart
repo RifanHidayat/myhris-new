@@ -1235,8 +1235,8 @@ class _DetailPersetujuanDinasLuarState
                             )
                           : data['apply_status'] == "Rejected"
                               ? Icon(
-                                  Iconsax.tick_circle,
-                                  color: Colors.green,
+                                  Iconsax.close_circle,
+                                  color: Colors.red,
                                   size: 22,
                                 )
                               : Icon(

@@ -717,6 +717,52 @@ class _DetailPersetujuanTugasLuarState
                                 ),
                               ),
                               Text(
+                                "Tanggal Tugas Luar",
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgSecondary,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14),
+                              ),
+                              const SizedBox(height: 4),
+                              // controller.detailData[0]['type']
+                              //                 .toString()
+                              //                 .toLowerCase() ==
+                              //             "Cuti".toString().toLowerCase() ||
+                              //         controller.detailData[0]['type']
+                              //                 .toString()
+                              //                 .toLowerCase() ==
+                              //             "Lembur".toString().toLowerCase()
+                              //     ? Text(
+                              //         "${controller.detailData[0]['nama_pengajuan']} ",
+                              //         style: GoogleFonts.inter(
+                              //             color: Constanst.fgPrimary,
+                              //             fontWeight: FontWeight.w500,
+                              //             fontSize: 16),
+                              //       )
+                              //     : Text(
+                              //         "${controller.detailData[0]['type']} $namaTipe - ${controller.detailData[0]['category']}",
+                              //         style: GoogleFonts.inter(
+                              //             color: Constanst.fgPrimary,
+                              //             fontWeight: FontWeight.w500,
+                              //             fontSize: 16),
+                              //       ),
+                              Text(
+                                "${controller.detailData[0]['tgl_ajuan'] == "" || controller.detailData[0]['tgl_ajuan'] == null ? "" : Constanst.convertDate6("${controller.detailData[0]['tgl_ajuan']}")} ",
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, bottom: 12.0),
+                                child: Divider(
+                                  thickness: 1,
+                                  height: 0,
+                                  color: Constanst.border,
+                                ),
+                              ),
+                              Text(
                                 "Waktu ${widget.title.toString()}",
                                 style: GoogleFonts.inter(
                                     color: Constanst.fgSecondary,
@@ -1241,8 +1287,8 @@ class _DetailPersetujuanTugasLuarState
                             )
                           : data['approve_status'] == "Rejected"
                               ? Icon(
-                                  Iconsax.tick_circle,
-                                  color: Colors.green,
+                                    Iconsax.close_circle,
+                                  color: Colors.red,
                                   size: 22,
                                 )
                               : Icon(

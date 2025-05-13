@@ -24,6 +24,7 @@ class _LaporanTugasLuarState extends State<LaporanTugasLuar> {
 
   @override
   void initState() {
+     controller. getLoadsysData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.getDepartemen(1, "");
     });

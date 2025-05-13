@@ -63,8 +63,8 @@ class LaporanLemburController extends GetxController {
   var dataTypeAjuanDummy1 = ["Semua", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
     "Semua",
-    "Approve 1",
-    "Approve 2",
+    "Approve",
+    "Approve2",
     "Rejected",
     "Pending"
   ];
@@ -156,6 +156,7 @@ class LaporanLemburController extends GetxController {
             if (hakAkses == "0") {
               departementAkses.value = dataDepartemen;
             } else {
+              departementAkses.add(data);
               var convert = hakAkses.split(',');
               for (var element in dataDepartemen) {
                 for (var element1 in convert) {
@@ -229,7 +230,7 @@ class LaporanLemburController extends GetxController {
       'status': idDepartemenTerpilih.value,
       'type': title.value,
       'em_id': AppData.informasiUser![0].em_id,
-      'dep_id_akses': AppData.informasiUser![0].em_hak_akses
+      'dep_id_akses': AppData.informasiUser![0].em_hak_akses,
     };
     var connect = Api.connectionApi("post", body, "load_laporan_pengajuan");
     connect.then((dynamic res) {
@@ -688,7 +689,12 @@ class LaporanLemburController extends GetxController {
                           return InkWell(
                             onTap: () {
                               // if (selectedViewFilterPengajuan.value == 1) {
-                              filterStatusPengajuan(name);
+                              //  filterStatusPengajuan(name);
+                              filterStatusPengajuan(name == 'Approve 1'
+                                  ? "Approve"
+                                  : name == 'Approve 2'
+                                      ? "Approve2"
+                                      : name);
                               // }
                             },
                             child: Padding(
@@ -732,8 +738,14 @@ class LaporanLemburController extends GetxController {
                                       : InkWell(
                                           onTap: () {
                                             // if (selectedViewFilterPengajuan.value == 1) {
-                                            filterStatusPengajuan(name);
+                                            // filterStatusPengajuan(name);
                                             // }
+                                            filterStatusPengajuan(
+                                                name == 'Approve 1'
+                                                    ? "Approve"
+                                                    : name == 'Approve 2'
+                                                        ? "Approve2"
+                                                        : name);
                                           },
                                           child: Container(
                                             height: 20,
@@ -1425,6 +1437,8 @@ class LaporanLemburController extends GetxController {
                               )
                             : typeAjuan == "Approve" ||
                                     typeAjuan == "Approve 1" ||
+                                    typeAjuan == "Approve" ||
+                                    typeAjuan == "Approve2" ||
                                     typeAjuan == "Approve 2"
                                 ? Row(
                                     crossAxisAlignment:

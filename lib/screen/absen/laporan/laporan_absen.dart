@@ -32,10 +32,11 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
   @override
   void initState() {
     controller.onReady();
-    controller.getPlaceReport();
+
     controller.getTimeNow();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.getDepartemen(1, "");
+     
     });
     controller.tempNamaLaporan1.value = "";
     controller.tempNamaTipe1.value = "Absensi";
@@ -298,7 +299,6 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              
               InkWell(
                 customBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(100))),

@@ -1258,8 +1258,8 @@ class _DetailPersetujuanCutiState extends State<DetailPersetujuanCuti> {
                             )
                           : data['apply_status'] == "Rejected"
                               ? const Icon(
-                                  Iconsax.tick_circle,
-                                  color: Colors.green,
+                                  Iconsax.close_circle,
+                                  color: Colors.red,
                                   size: 22,
                                 )
                               : const Icon(

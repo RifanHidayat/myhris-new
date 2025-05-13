@@ -1624,8 +1624,8 @@ class _DetailPersetujuanKasbonState extends State<DetailPersetujuanKasbon> {
                             )
                           : data['approve_status'] == "Rejected"
                               ? Icon(
-                                  Iconsax.tick_circle,
-                                  color: Colors.green,
+                                Iconsax.close_circle,
+                                  color: Colors.red,
                                   size: 22,
                                 )
                               : Icon(
