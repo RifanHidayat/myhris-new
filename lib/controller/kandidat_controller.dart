@@ -926,7 +926,7 @@ class KandidatController extends GetxController {
         if (valueBody['status'] == true) {
           var pesan1 = "Permintaan Kandidat berhasil dibuat";
           var pesan2 =
-              "Silakan menunggu HRD untuk meninjau pengajuan yang telah dibuat";
+              "Silahkan menunggu HRD untuk meninjau pengajuan yang telah dibuat";
           var pesan3 = "";
 
           var pesan4 = "";

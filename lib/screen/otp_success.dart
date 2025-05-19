@@ -46,7 +46,7 @@ class _OtpSuccessPageState extends State<OtpSuccessPage> {
                       padding: EdgeInsets.only(left: 24, right: 24),
                       child: TextLabell(
                         text:
-                            "Silakan buat kata sandi yang baru untuk melanjutkan.",
+                            "Silahkan buat kata sandi yang baru untuk melanjutkan.",
                         size: 14,
                         weight: FontWeight.w400,
                         align: TextAlign.center,

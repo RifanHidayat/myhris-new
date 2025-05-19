@@ -388,7 +388,7 @@ class _VerifyPasswordPayrollState extends State<VerifyPasswordPayroll> {
                                                       color:
                                                           HexColor('#092371'),
                                                       text:
-                                                          "Silakan hubungi Atasan Anda untuk menyetujui.")
+                                                          "Silahkan hubungi Atasan Anda untuk menyetujui.")
                                                 ],
                                               ),
                                             )
