@@ -462,7 +462,7 @@ class _FormPengajuanCutiState extends State<FormPengajuanCuti> {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                "Tipe lembur belum disetting, silakan hubungi HRD.",
+                "Tipe lembur belum disetting, Silahkan hubungi HRD.",
                 textAlign: TextAlign.left,
                 style: GoogleFonts.inter(
                     fontWeight: FontWeight.w400,

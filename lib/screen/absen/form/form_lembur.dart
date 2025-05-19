@@ -148,7 +148,7 @@ class _FormLemburState extends State<FormLembur> {
               onPressed: () {
                 
                 if (controller.viewTypeLembur.value == false) {
-                  UtilsAlert.showToast('Tipe lembur belum disetting, silakan hubungi HRD.');
+                  UtilsAlert.showToast('Tipe lembur belum disetting, Silahkan hubungi HRD.');
                   return;
                 }
                 print("tes ${controller.dariJam.value.text.toString()}");
@@ -228,7 +228,7 @@ class _FormLemburState extends State<FormLembur> {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                "Tipe lembur belum disetting, silakan hubungi HRD.",
+                "Tipe lembur belum disetting, Silahkan hubungi HRD.",
                 textAlign: TextAlign.left,
                 style: GoogleFonts.inter(
                     fontWeight: FontWeight.w400,

@@ -47,7 +47,7 @@ class _SuccessCangePasswordPageState extends State<SuccessCangePasswordPage> {
                       padding: EdgeInsets.only(left: 24, right: 24),
                       child: TextLabell(
                         text:
-                            "Silakan login kembali menggunakan password baru untuk masuk ke akun Anda.",
+                            "Silahkan login kembali menggunakan password baru untuk masuk ke akun Anda.",
                         size: 14,
                         weight: FontWeight.w400,
                         align: TextAlign.center,

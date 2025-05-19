@@ -509,7 +509,7 @@ class AuthController extends GetxController {
           }
         }
       } catch (e) {
-        UtilsAlert.showToast("Periksa internet anda dan silakan coba lagi");
+        UtilsAlert.showToast("Periksa internet anda dan Silahkan coba lagi");
         Navigator.pop(Get.context!);
       }
     });

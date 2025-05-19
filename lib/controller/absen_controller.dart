@@ -1763,7 +1763,7 @@ class AbsenController extends GetxController {
               Get.back();
 
               UtilsAlert.showToast(
-                  "Terjadi kesalahan, silakan coba melakukan absen ulang.");
+                  "Terjadi kesalahan, Silahkan coba melakukan absen ulang.");
 
               //  UtilsAlert.koneksiBuruk();
             }
@@ -1844,7 +1844,7 @@ class AbsenController extends GetxController {
             isLoaingAbsensi.value = false;
             Get.back();
             UtilsAlert.showToast(
-                "Terjadi kesalahan, silakan coba melakukan absen ulang.");
+                "Terjadi kesalahan, Silahkan coba melakukan absen ulang.");
             // UtilsAlert.koneksiBuruk();
             // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
             //     positiveBtnPressed: () {
@@ -2508,7 +2508,7 @@ class AbsenController extends GetxController {
               isLoaingAbsensi.value = false;
               Get.back();
               UtilsAlert.showToast(
-                  "Terjadi kesalahan, silakan coba melakukan absen ulang.");
+                  "Terjadi kesalahan, Silahkan coba melakukan absen ulang.");
 
               // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
               //     positiveBtnPressed: () {
@@ -2610,7 +2610,7 @@ class AbsenController extends GetxController {
             isLoaingAbsensi.value = false;
             Get.back();
             UtilsAlert.showToast(
-                "Terjadi kesalahan, silakan coba melakukan absen ulang.");
+                "Terjadi kesalahan, Silahkan coba melakukan absen ulang.");
             // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
             //     positiveBtnPressed: () {
             //   // kirimDataAbsensiOffline(typewfh: typewfh);
