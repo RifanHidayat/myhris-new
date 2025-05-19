@@ -19,13 +19,13 @@ class Api {
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
 
-  // static var urlImage = 'https://imagehris.siscom.id:4431';
-  static var urlImage = 'https://myhrisdev.siscom.id/imagehris';
+   static var urlImage = 'https://imagehris.siscom.id:4431';
+  //static var urlImage = 'https://myhrisdev.siscom.id/imagehris';
 
-  //  static var basicUrl = "http://mobilehris.siscom.id:3010/";
+    static var basicUrl = "http://mobilehris.siscom.id:3011/";
 
 
-  static var basicUrl = "http://kantor.membersis.com:2626/";
+ // static var basicUrl = "http://kantor.membersis.com:2626/";
 
   // static var basicUrl = "http://192.168.20.242:2626/";
 
@@ -194,9 +194,9 @@ class ApiRequest {
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
 
-  //  static var basicUrl = "http://mobilehris.siscom.id:3010/";
+    static var basicUrl = "http://mobilehris.siscom.id:3011/";
 
-   static var basicUrl = "http://kantor.membersis.com:2626/";
+   //static var basicUrl = "http://kantor.membersis.com:2626/";
 
   // static var basicUrl = "http://192.168.20.242:2626/";
 
