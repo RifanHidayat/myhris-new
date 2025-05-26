@@ -196,6 +196,7 @@ class TugasLuarController extends GetxController {
   }
 
   void loadTipePengajuan() {
+    allTipeFormTugasLuar.value.clear();
     for (var element in dataTypePengajuan) {
       allTipeFormTugasLuar.value.add("$element");
     }
