@@ -338,12 +338,10 @@ class AuthController extends GetxController {
     connect.then((dynamic res) async {
       try {
         var valueBody = jsonDecode(res.body);
-        print('data login ${valueBody}');
         if (valueBody['status'] == false) {
           UtilsAlert.showToast(valueBody['message']);
           Navigator.pop(Get.context!);
         } else {
-          print("nama database ${selectedDb.value}");
           AppData.selectedDatabase = selectedDb.value;
           AppData.selectedPerusahan = selectedPerusahaan.value;
 
@@ -483,8 +481,6 @@ class AuthController extends GetxController {
                 lastLoginUser == null ||
                 lastLoginUser == "0000-00-00 00:00:00") {
               fillLastLoginUserNew(getEmId, getData);
-              checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                  AppData.informasiUser![0].em_id);
             } else {
               AppData.emailUser = email.value.text;
               AppData.passwordUser = password.value.text;
@@ -495,8 +491,6 @@ class AuthController extends GetxController {
 
               if (convert != filterLastLogin) {
                 fillLastLoginUserNew(getEmId, getData);
-                checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                    AppData.informasiUser![0].em_id);
               } else {
                 //  UtilsAlert.showToast("Anda telah masuk di perangkat lain");
                 Navigator.pop(Get.context!);
@@ -638,8 +632,6 @@ class AuthController extends GetxController {
           AppData.emailUser = email.value.text;
           AppData.passwordUser = password.value.text;
           fillLastLoginUserNew(getEmId, getData);
-          checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-              AppData.informasiUser![0].em_id);
         } else {
           UtilsAlert.showToast("Maaf status anda sudah tidak aktif");
           Navigator.pop(Get.context!);
@@ -976,14 +968,12 @@ class AuthController extends GetxController {
       'end_time': endTime,
     };
 
-    print("param view last absen ${body}");
-
     var connect = Api.connectionApi("post", body, "view_last_absen_user2");
-
+    print("initScreen kepanggil dari mari 200");
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-        print("data login ${valueBody}");
+        
         var data = valueBody['data'];
 
         var date = AppData.informasiUser![0].startTime.toString().split(':');

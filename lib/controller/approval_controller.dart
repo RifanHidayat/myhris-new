@@ -1076,7 +1076,7 @@ class ApprovalController extends GetxController {
             'approve_status': element['approve_status'],
             'approve2_status': element['approve2_status'],
             'nama_approve2': element['approve2_by'],
-            'waktu_pengajuan': element['atten_date'],
+            'waktu_pengajuan': element['tgl_ajuan'],
             'catatan': element['uraian'],
             'type': 'Tugas Luar',
             'category': element['category'],
@@ -1087,7 +1087,7 @@ class ApprovalController extends GetxController {
             'nama_divisi': element['nama_divisi'],
             'nomor_ajuan': element['nomor_ajuan'],
             'image': element['image'],
-            'tgl_ajuan': element['tgl_ajuan'],
+            'tgl_ajuan': element['atten_date'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);

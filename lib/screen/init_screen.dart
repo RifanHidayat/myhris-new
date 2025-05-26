@@ -25,7 +25,7 @@ class InitScreen extends StatefulWidget {
 class _InitScreenState extends State<InitScreen> {
   final controller = Get.put(TabbController());
   final controllerTracking = Get.put(TrackingController(), tag: 'iniScreen');
-  var controllerAbsnsi = Get.put(AbsenController(),tag: 'absen controller');
+  var controllerAbsnsi = Get.put(AbsenController(), tag: 'absen controller');
   final controllerPesan = Get.find<PesanController>();
 
   // int _currentIndex = 0;
@@ -509,8 +509,11 @@ class _InitScreenState extends State<InitScreen> {
   @override
   void initState() {
     super.initState();
-    controller.currentIndex.value = 0;
-    controller.checkuserinfo();
+    debugPrint('initScreen Kepanggil');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.currentIndex.value = 0;
+      controller.checkuserinfo();
+    });
     // controller.Absensicontroller.absenStatus.refresh();
     // controllerTracking.isTracking();
   }

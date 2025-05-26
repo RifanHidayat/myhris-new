@@ -220,25 +220,26 @@ class DashboardController extends GetxController {
     // /UtilsAlert.showToast(dashboardStatusAbsen.value.toString() );
 
     DateTime startDate = DateTime.now();
-    updateInformasiUser();
+    await updateInformasiUser();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      dataDashboard();
+      getBannerDashboard();
+      timeString.value = formatDateTime(startDate);
+      dateNow.value = dateNoww(startDate);
+      // updateInformasiUser();
 
-    dataDashboard();
+      getSizeDevice();
+      checkStatusPermission();
+      checkHakAkses();
+    });
 
     // updateWorkTime();
-     getBannerDashboard();
     // getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     // getMenuDashboard();
     // loadMenuShowInMain();
     // await loadMenuShowInMainUtama();
     // getInformasiDashboard();
     // getEmployeeBelumAbsen();
-    timeString.value = formatDateTime(startDate);
-    dateNow.value = dateNoww(startDate);
-    // updateInformasiUser();
-
-    getSizeDevice();
-    checkStatusPermission();
-    checkHakAkses();
   }
 
   void UpdateUser(List employee) async {
@@ -697,7 +698,7 @@ class DashboardController extends GetxController {
 
     try {
       // UtilsAlert.showToast('masuk sini  ${getEmid}');
-      var response = await Request(url: "dashboard-new", body: {}).post();
+      var response = await Api.connectionApi('post', {}, 'dashboard-new');
 
       var res = jsonDecode(response.body);
 
@@ -712,7 +713,6 @@ class DashboardController extends GetxController {
         List aktifitas = res['aktifitas'];
         List employeeUltah = res['employee_ultah'];
         List employeePkwt = res['employee_pkwt'];
-        
 
         if (worktime.length > 0) {
           timeIn.value = worktime[0]['time_in'];
@@ -732,7 +732,6 @@ class DashboardController extends GetxController {
         }
         // UtilsAlert.showToast("data pkwt ${employeePkwt.length}");
         if (employeePkwt.length > 0) {
-          
           fetchPkwt(employeePkwt);
         }
         if (menus.length > 0) {
