@@ -1462,7 +1462,7 @@ class TugasLuarController extends GetxController {
 
   void showDetailRiwayat(tipe, detailData, approve_by, alasanReject) {
     var nomorAjuan = detailData['nomor_ajuan'];
-    var tanggalMasukAjuan = detailData['tgl_ajuan'];
+    var tanggalMasukAjuan = tipe == 'Dinas Luar' ? detailData['atten_date'] : detailData['tgl_ajuan'];
     var tglAjuan = detailData['atten_date'];
     var namaTypeAjuan = "Dinas Luar";
     var tanggalAjuanDari = detailData['start_date'];

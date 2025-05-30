@@ -2382,8 +2382,8 @@ class AbsenController extends GetxController {
               AppData.statusAbsen = true;
               AppData.dateLastAbsen = tanggalUserFoto.value;
             } else {
-              absenStatus.value = false;
-              AppData.statusAbsen = false;
+              absenStatus.value = true;
+              AppData.statusAbsen = true;
               AppData.dateLastAbsen = tanggalUserFoto.value;
             }
             Map<String, dynamic> body = typewfh == "wfh"
@@ -2556,8 +2556,8 @@ class AbsenController extends GetxController {
             AppData.statusAbsen = true;
             AppData.dateLastAbsen = tanggalUserFoto.value;
           } else {
-            absenStatus.value = false;
-            AppData.statusAbsen = false;
+            absenStatus.value = true;
+            AppData.statusAbsen = true;
             AppData.dateLastAbsen = tanggalUserFoto.value;
           }
           Map<String, dynamic> body = {
