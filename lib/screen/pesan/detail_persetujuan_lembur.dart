@@ -356,7 +356,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
               titleSpacing: 0,
               centerTitle: true,
               title: Text(
-                "Detail Persetujuan Lembur",
+                "Detail Persetujuan Lembura",
                 style: GoogleFonts.inter(
                     color: Constanst.fgPrimary,
                     fontWeight: FontWeight.w500,
@@ -750,7 +750,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                               //             fontSize: 16),
                               //       ),
                               Text(
-                                "${controller.detailData[0]['waktu_pengajuan'] == '' || controller.detailData[0]['waktu_pengajuan'] == null ? "" : Constanst.convertDate6("${controller.detailData[0]['waktu_pengajuan']}")}",
+                                 "${controller.detailData[0]['waktu_pengajuan'] == '' || controller.detailData[0]['waktu_pengajuan'] == null ? "" : Constanst.convertDate6("${controller.detailData[0]['waktu_pengajuan']}")}",
                                 style: GoogleFonts.inter(
                                     fontWeight: FontWeight.w500,
                                     color: Constanst.fgPrimary,
