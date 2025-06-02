@@ -150,43 +150,43 @@ Future<void> main() async {
   //   ),
   // );
 
-  if (Platform.isIOS) {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.ios);
-  } else {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.android,
-    );
-  }
+  // if (Platform.isIOS) {
+  //   await Firebase.initializeApp(options: DefaultFirebaseOptions.ios);
+  // } else {
+  //   await Firebase.initializeApp(
+ 
+  //   );
+  // }
 
-  FirebaseMessaging.instance.requestPermission();
+  // FirebaseMessaging.instance.requestPermission();
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  //   alert: true,
+  //   badge: true,
+  //   sound: true,
+  // );
 
-  setupInteractedMessage();
+  // setupInteractedMessage();
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  // FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: true,
-      criticalAlert: false,
-      provisional: true,
-      sound: true);
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    print('User granted permission');
-  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-    print('User granted provisional permission');
-  } else {
-    print(
-        'User declined or has not accepted permission ${settings.authorizationStatus}');
-  }
+  // NotificationSettings settings = await messaging.requestPermission(
+  //     alert: true,
+  //     announcement: false,
+  //     badge: true,
+  //     carPlay: true,
+  //     criticalAlert: false,
+  //     provisional: true,
+  //     sound: true);
+  // if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+  //   print('User granted permission');
+  // } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+  //   print('User granted provisional permission');
+  // } else {
+  //   print(
+  //       'User declined or has not accepted permission ${settings.authorizationStatus}');
+  // }
 
   WidgetsFlutterBinding.ensureInitialized();
   // await Geolocator.requestPermission();

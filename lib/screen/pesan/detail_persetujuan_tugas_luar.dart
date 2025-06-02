@@ -747,7 +747,7 @@ class _DetailPersetujuanTugasLuarState
                               //             fontSize: 16),
                               //       ),
                               Text(
-                                "${controller.detailData[0]['tgl_ajuan'] == "" || controller.detailData[0]['tgl_ajuan'] == null ? "" : Constanst.convertDate6("${controller.detailData[0]['tgl_ajuan']}")} ",
+                                "${controller.detailData[0]['atten_date'] == "" || controller.detailData[0]['atten_date'] == null ? "" : Constanst.convertDate6("${controller.detailData[0]['atten_date']}")} ",
                                 style: GoogleFonts.inter(
                                     fontWeight: FontWeight.w500,
                                     color: Constanst.fgPrimary,

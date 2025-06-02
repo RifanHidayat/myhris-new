@@ -323,7 +323,8 @@ class AuthController extends GetxController {
     //   }
     // } else {
     // AppData.loginOffline = false;
-    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+    // var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+        var fcm_registration_token = '1lo';
     //  var fcm_registration_token = "1";
     // print("fcmtoken ${fcm_registration_token}");
     UtilsAlert.showLoadingIndicator(Get.context!);
@@ -513,7 +514,8 @@ class AuthController extends GetxController {
 
   Future<void> loginUser1() async {
     final box = GetStorage();
-    var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+    // var fcm_registration_token = await FirebaseMessaging.instance.getToken();
+      var fcm_registration_token = '1';
     //  var fcm_registration_token = "1";
 
     //  print("fcmtoken ${fcm_registration_token}");
