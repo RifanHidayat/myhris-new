@@ -16,6 +16,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:new_version_plus/new_version_plus.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 // import 'package:intl/intl.dart';
@@ -56,6 +57,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 // import 'package:http/http.dart' as http;
 // import 'package:sqflite/sqflite.dart';
@@ -604,7 +606,6 @@ Future<void> setupInteractedMessage() async {
   FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 }
 
-
 var controllerPesan = Get.find<PesanController>();
 
 void _handleMessage(RemoteMessage message) async {
@@ -1084,6 +1085,60 @@ class MyApp extends StatelessWidget {
         );
   }
 }
+void _checkVersion(BuildContext context, InitController controller) async {
+  try {
+    final newVersion = NewVersionPlus(
+      androidId: 'com.siscom.siscomhris',
+    );
+
+    final status = await newVersion.getVersionStatus();
+
+    if (status != null && status.localVersion != status.storeVersion) {
+      if (context.mounted) {
+        _showForceUpdateDialog(context, status.appStoreLink, status.localVersion, status.storeVersion);
+      }
+    } else {
+      if (context.mounted) {
+        controller.loadDashboard();
+        // UtilsAlert.showToast("Aplikasi sudah versi terbaru.");
+      }
+    }
+  } catch (e) {
+    if (context.mounted) {
+      UtilsAlert.showToast("Gagal mengecek versi terbaru.");
+    }
+    debugPrint("Error saat cek versi: $e");
+  }
+}
+
+void _showForceUpdateDialog(BuildContext context, String appStoreLink, String localVersion, String storeVersion) {
+  showDialog(
+    context: context,
+    barrierDismissible: false, 
+    builder: (context) => WillPopScope(
+      onWillPop: () async => false, 
+      child: AlertDialog(
+        title: const Text("Update Diperlukan"),
+        content: Text(
+            "Versi saat ini ($localVersion) sudah tidak didukung. Silakan perbarui ke versi terbaru ($storeVersion) untuk melanjutkan."),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              final url = Uri.parse(appStoreLink);
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url, mode: LaunchMode.externalApplication);
+              } else {
+                UtilsAlert.showToast("Gagal membuka Play Store");
+              }
+            },
+            child: const Text("Update Sekarang"),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -1091,12 +1146,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final controller = Get.put(InitController());
+  final controller = Get.find<InitController>();
 
   @override
   void initState() {
-    controller.loadDashboard();
-    Get.put(AbsenController(),tag: 'absen controller');
+    _checkVersion(context, controller);
+    Get.put(AbsenController(), tag: 'absen controller');
     super.initState();
   }
 

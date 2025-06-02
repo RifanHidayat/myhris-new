@@ -44,12 +44,12 @@ class _SettingState extends State<Setting> {
   Future<void> refreshData() async {
     controller.refreshPageStatus.value = true;
     await Future.delayed(const Duration(seconds: 2));
-    setState(() {
+
       var dashboardController = Get.find<DashboardController>();
       dashboardController.updateInformasiUser();
       controller.onReady();
       controller.refreshPageStatus.value = false;
-    });
+
   }
 
   @override

@@ -35,11 +35,11 @@ class TabbController extends GetxController {
   var kontrol = false.obs;
   final Absensicontroller = Get.find<AbsenController>(tag: 'absen controller');
 
-  @override
-  void onReady() {
-    checkuserinfo();
-    super.onReady();
-  }
+  // @override
+  // void onReady() {
+  //   checkuserinfo();
+  //   super.onReady();
+  // }
 
   Future<void> checkuserinfo() async {
     var dataUser = AppData.informasiUser;

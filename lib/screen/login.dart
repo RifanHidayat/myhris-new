@@ -393,14 +393,14 @@ class Login extends StatelessWidget {
                                   RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ))),
-                          onPressed: () {
+                          onPressed: () async {
                             if (controller.email.value.text == "" ||
                                 controller.password.value.text == "" ||
                                 controller.selectedPerusahaan.value == "") {
                               UtilsAlert.showToast(
                                   "Lengkapi form terlebih dahulu");
                             } else {
-                              controller.loginUser();
+                              await controller.loginUser();
                             }
                           },
                           child: const Center(

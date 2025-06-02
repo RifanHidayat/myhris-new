@@ -110,16 +110,12 @@ class OnboardController extends GetxController {
 
   void checkAbsenUser(convert, getEmid) async {
     Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
-    print(body);
-
+    debugPrint('initScrenn kepangil');
     var connect = Api.connectionApi("post", body, "view_last_absen_user2");
     var value = await connect;
     var valueBody = jsonDecode(value.body);
-    print("view last absen ${valueBody}");
 
     List data = valueBody['data'];
-
-    print('data response $valueBody');
     if (data.isEmpty) {
       loading.value = false;
       AppData.statusAbsen = false;
