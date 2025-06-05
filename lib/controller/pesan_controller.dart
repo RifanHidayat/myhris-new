@@ -16,6 +16,8 @@ import 'package:siscom_operasional/screen/pesan/detail_persetujuan_kasbon.dart';
 import 'package:siscom_operasional/screen/pesan/detail_persetujuan_klaim.dart';
 import 'package:siscom_operasional/screen/pesan/detail_persetujuan_lembur.dart';
 import 'package:siscom_operasional/screen/pesan/detail_persetujuan_payroll.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_surat_peringatan.dart';
+import 'package:siscom_operasional/screen/pesan/detail_persetujuan_teguran_lisan.dart';
 import 'package:siscom_operasional/screen/pesan/detail_persetujuan_tugas_luar.dart';
 import 'package:siscom_operasional/screen/pesan/detail_persetujuan_wfh.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_absensi.dart';
@@ -26,8 +28,13 @@ import 'package:siscom_operasional/screen/pesan/persetujuan_kasbon.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_klaim.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_lembur.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_payroll.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_surat_peringatan.dart';
+import 'package:siscom_operasional/screen/pesan/persetujuan_teguran_lisan.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_tugas_luar.dart';
 import 'package:siscom_operasional/screen/pesan/persetujuan_wfh.dart';
+import 'package:siscom_operasional/screen/shift/detail_persetujuan_shift.dart';
+import 'package:siscom_operasional/screen/shift/persetujuan_shift.dart';
+import 'package:siscom_operasional/screen/teguran_lisan.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -44,6 +51,7 @@ class PesanController extends GetxController {
   var selectedView = 0.obs;
 
   var listNotifikasi = [].obs;
+  var listNotifikasiApproval = [].obs;
   var dataScreenPersetujuan = [].obs;
   var riwayatPersetujuan = [].obs;
   var allRiwayatPersetujuan = [].obs;
@@ -58,7 +66,11 @@ class PesanController extends GetxController {
   var jumlahApprovePayroll = 0.obs;
   var jumlahApproveWfh = 0.obs;
   var jumlahApproveKasbon = 0.obs;
+  var jumlahApproveSuratPeringatan = 0.obs;
+  var jumlahApproveTeguranLIsan = 0.obs;
+  var jumlahApproveShift = 0.obs;
   var jumlahNotifikasiBelumDibaca = 0.obs;
+  var jumlahNotifikasiBelumDibacaApproval = 0.obs;
   var jumlahCheckin = 0.obs;
 
   var jumlahPersetujuan = 0.obs;
@@ -77,9 +89,6 @@ class PesanController extends GetxController {
   var statusCari = false.obs;
 
   var isLoading = false.obs;
-  var date = DateTime.now().obs;
-  var beginPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
-  var endPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
 
   var listDummy = [
     "Cuti",
@@ -91,22 +100,25 @@ class PesanController extends GetxController {
     "Payroll",
     "Absensi",
     "WFH",
-    "Kasbon"
+    "Kasbon",
+    "Surat Peringatan",
+    "Teguran Lisan",
+    "Shift"
   ];
 
-  @override
-  void onReady() async {
-    getTimeNow();
-    //loadNotifikasi();
-    super.onReady();
-  }
+  // @override
+  // void onReady() async {
+  //   getTimeNow();
+
+  //   super.onReady();
+  // }
 
   void routesIcon() {
     selectedView.value = 0;
   }
 
   Future<void> getTimeNow() async {
-    var dt = DateTime.parse(AppData.endPeriode);
+    var dt = DateTime.now();
     bulanSelectedSearchHistory.value = "${dt.month}";
     tahunSelectedSearchHistory.value = "${dt.year}";
     bulanDanTahunNow.value = "${dt.month}-${dt.year}";
@@ -114,90 +126,46 @@ class PesanController extends GetxController {
     this.bulanSelectedSearchHistory.refresh();
     this.tahunSelectedSearchHistory.refresh();
     this.bulanDanTahunNow.refresh();
-    date.value = dt;
-    print('ini getTimePesan $dt');
     getLoadsysData();
   }
 
   void getLoadsysData() {
-    // var connect = Api.connectionApi("get", "", "sysdata");
-    // connect.then((dynamic res) {
-    //   if (res.statusCode == 200) {
-    //     var valueBody = jsonDecode(res.body);
-    //     for (var element in valueBody['data']) {
-    //       if (element['kode'] == "013") {
-    //         valuePolaPersetujuan.value = "${element['name']}";
-    //         this.valuePolaPersetujuan.refresh();
-    //         loadApproveInfo();
-    //         loadApproveHistory();
-    //       }
-    //     }
-    //   }
-    // });
+    var connect = Api.connectionApi("get", "", "sysdata");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        for (var element in valueBody['data']) {
+          if (element['kode'] == "013") {
+            valuePolaPersetujuan.value = "${element['name']}";
+            this.valuePolaPersetujuan.refresh();
+            loadApproveInfo();
+            loadApproveHistory();
+          }
+        }
+      }
+    });
   }
 
   void loadApproveInfo() {
+    print("load approval info");
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "load_approve_info"
         : "load_approve_info_multi";
-
     statusScreenInfoApproval.value = true;
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-
-    var defaultDate = date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmid = dataUser![0].em_id;
-    var body = {
+    Map<String, dynamic> body = {
       'em_id': getEmid,
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
       'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
     };
-
+    print("load data ${getEmid}");
     var connect = Api.connectionApi("post", body, urlLoad);
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+        print("data persetujuan ${valueBody}");
 
         if (valueBody['status'] == true) {
           jumlahApproveCuti.value = valueBody['jumlah_cuti'];
@@ -210,6 +178,10 @@ class PesanController extends GetxController {
           jumlahCheckin.value = valueBody['jumlah_checkin'];
           jumlahApproveWfh.value = valueBody['jumlah_wfh'];
           jumlahApproveKasbon.value = valueBody['jumlah_kasbon'];
+          jumlahApproveSuratPeringatan.value =
+              valueBody['jumlah_surat_peringatan'];
+          jumlahApproveTeguranLIsan.value = valueBody['jumlah_teguran_lisan'];
+          jumlahApproveShift.value = valueBody['jumlah_shift'] == null ? 0 : valueBody['jumlah_shift'];
 
           jumlahPersetujuan.value = jumlahApproveCuti.value +
               jumlahApproveLembur.value +
@@ -219,7 +191,10 @@ class PesanController extends GetxController {
               jumlahApproveKlaim.value +
               jumlahCheckin.value +
               jumlahApproveWfh.value +
-              jumlahApproveKasbon.value;
+              jumlahApproveKasbon.value +
+              jumlahApproveSuratPeringatan.value +
+              jumlahApproveTeguranLIsan.value +
+              jumlahApproveShift.value;
 
           this.jumlahApproveCuti.refresh();
           this.jumlahApproveLembur.refresh();
@@ -231,39 +206,34 @@ class PesanController extends GetxController {
           this.jumlahCheckin.refresh();
           this.jumlahApproveWfh.refresh();
           this.jumlahApproveKasbon.refresh();
+          this.jumlahApproveSuratPeringatan.refresh();
+          this.jumlahApproveTeguranLIsan.refresh();
+          this.jumlahApproveShift.refresh();
           jumlahApprovePayroll.refresh();
 
-          print("Jumlah Approval payroll ${jumlahApprovePayroll}");
-          print("Jumlah Approval payroll ${valueBody}");
           loadScreenPersetujuan();
         } else {
           statusScreenInfoApproval.value = false;
           UtilsAlert.showToast(
               "Data periode ${bulanSelectedSearchHistory.value}-${tahunSelectedSearchHistory.value} belum tersedia, harap hubungi HRD");
         }
-      } else {}
+      }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadApproveHistory() {
     var url = valuePolaPersetujuan.value == "1"
         ? "load_approve_history"
         : "load_approve_history_multi";
-    //   UtilsAlert.showToast(AppData.informasiUser!.length);
     riwayatPersetujuan.value.clear();
     allRiwayatPersetujuan.value.clear();
-
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
-
     Map<String, dynamic> body = {
       'em_id': getEmid,
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
     };
-
     var connect = Api.connectionApi("post", body, url);
     connect.then((dynamic res) async {
       if (res.statusCode == 200) {
@@ -656,6 +626,30 @@ class PesanController extends GetxController {
 
         dataScreenPersetujuan.value.add(data);
         this.dataScreenPersetujuan.refresh();
+      } else if (element == "Surat Peringatan") {
+        var data = {
+          'title': element,
+          'jumlah_approve': "${jumlahApproveSuratPeringatan.value}",
+        };
+
+        dataScreenPersetujuan.value.add(data);
+        this.dataScreenPersetujuan.refresh();
+      } else if (element == "Teguran Lisan") {
+        var data = {
+          'title': element,
+          'jumlah_approve': "${jumlahApproveTeguranLIsan.value}",
+        };
+
+        dataScreenPersetujuan.value.add(data);
+        this.dataScreenPersetujuan.refresh();
+      } else if (element == "Shift") {
+        var data = {
+          'title': element,
+          'jumlah_approve': "${jumlahApproveShift.value}",
+        };
+
+        dataScreenPersetujuan.value.add(data);
+        this.dataScreenPersetujuan.refresh();
       }
     }
     statusScreenInfoApproval.value = false;
@@ -732,15 +726,52 @@ class PesanController extends GetxController {
                                                     tahunSelectedSearchHistory
                                                         .value,
                                               ))
-                                            : Get.to(Approval(
-                                                title: index['title'],
-                                                bulan:
-                                                    bulanSelectedSearchHistory
-                                                        .value,
-                                                tahun:
-                                                    tahunSelectedSearchHistory
-                                                        .value,
-                                              ));
+                                            : index['title'] ==
+                                                    "Surat Peringatan"
+                                                ? Get.to(
+                                                    PersetujuanSuratPeringatan(
+                                                    title: index['title'],
+                                                    bulan:
+                                                        bulanSelectedSearchHistory
+                                                            .value,
+                                                    tahun:
+                                                        tahunSelectedSearchHistory
+                                                            .value,
+                                                  ))
+                                                : index['title'] ==
+                                                        "Teguran Lisan"
+                                                    ? Get.to(
+                                                        PersetujuanTeguranLisan(
+                                                        title: index['title'],
+                                                        bulan:
+                                                            bulanSelectedSearchHistory
+                                                                .value,
+                                                        tahun:
+                                                            tahunSelectedSearchHistory
+                                                                .value,
+                                                      ))
+                                                    : index['title'] == "Shift"
+                                                        ? Get.to(
+                                                            PersetujuanShift(
+                                                            title:
+                                                                index['title'],
+                                                            bulan:
+                                                                bulanSelectedSearchHistory
+                                                                    .value,
+                                                            tahun:
+                                                                tahunSelectedSearchHistory
+                                                                    .value,
+                                                          ))
+                                                        : Get.to(Approval(
+                                                            title:
+                                                                index['title'],
+                                                            bulan:
+                                                                bulanSelectedSearchHistory
+                                                                    .value,
+                                                            tahun:
+                                                                tahunSelectedSearchHistory
+                                                                    .value,
+                                                          ));
     // }
   }
 
@@ -753,7 +784,7 @@ class PesanController extends GetxController {
         tahunSelectedSearchHistory.value,
         'persetujuan');
 
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 3), () {
       bool exists = controllerApproval.listData
           .any((element) => element['id'].toString() == idx.toString());
 
@@ -768,24 +799,24 @@ class PesanController extends GetxController {
             tahunSelectedSearchHistory.value,
             'riwayat');
 
-        Future.delayed(const Duration(seconds: 1), () {
-        bool existsInHistory = controllerApproval.listData
-            .any((element) => element['id'].toString() == idx.toString());
+        Future.delayed(const Duration(seconds: 2), () {
+          bool existsInHistory = controllerApproval.listData
+              .any((element) => element['id'].toString() == idx.toString());
 
-        if (!existsInHistory) {
-          print('Data tidak ditemukan di keduanya');
-          Future.delayed(const Duration(seconds: 1), () {
-            Get.back();
-            UtilsAlert.showToast('Data sudah tidak tersedia');
-            return;
-          });
-        } else {
-          print('Data ditemukan di riwayat');
-          Future.delayed(const Duration(seconds: 1), () {
-            Get.back();
-            Get.to(detailPage());
-          });
-        }
+          if (!existsInHistory) {
+            print('Data tidak ditemukan di keduanya');
+            Future.delayed(const Duration(seconds: 2), () {
+              Get.back();
+              UtilsAlert.showToast('Data sudah tidak tersedia');
+              return;
+            });
+          } else {
+            print('Data ditemukan di riwayat');
+            Future.delayed(const Duration(seconds: 2), () {
+              Get.back();
+              Get.to(detailPage());
+            });
+          }
         });
       }
     });
@@ -802,13 +833,17 @@ class PesanController extends GetxController {
       loadAndNavigate(
         'Lembur',
         () => DetailPersetujuanLembur(
-            emId: emIdPengaju,
-            title: 'Lembur',
-            idxDetail: idx,
-            delegasi: delegasi),
+          emId: emIdPengaju,
+          title: 'Lembur',
+          idxDetail: idx,
+          delegasi: delegasi,
+        ),
         idx,
       );
+      // print('ini idx $idx, $');
     } else if (title == "Approval Cuti" || url == "Cuti") {
+      controllerApproval.searchSuratPeringatan(emIdPengaju);
+      controllerApproval.searchTeguranLisan(emIdPengaju);
       loadAndNavigate(
         'Cuti',
         () => DetailPersetujuanCuti(
@@ -823,6 +858,8 @@ class PesanController extends GetxController {
         url == "Izin" ||
         url == "sakit" ||
         url == "TidakHadir") {
+      controllerApproval.searchSuratPeringatan(emIdPengaju);
+      controllerApproval.searchTeguranLisan(emIdPengaju);
       loadAndNavigate(
         'Tidak Hadir',
         () => DetailPersetujuanIzin(
@@ -873,6 +910,8 @@ class PesanController extends GetxController {
         idx,
       );
     } else if (title == "Approval Absensi" || url == "Absensi") {
+      controllerApproval.searchSuratPeringatan(emIdPengaju);
+      controllerApproval.searchTeguranLisan(emIdPengaju);
       loadAndNavigate(
         'Absensi',
         () => DetailPersetujuanAbsensi(
@@ -902,226 +941,86 @@ class PesanController extends GetxController {
             delegasi: delegasi),
         idx,
       );
+    } else if (title == "Approval Surat Peringatan" ||
+        url == 'Surat Peringatan') {
+      controllerApproval.searchTeguranLisan(emIdPengaju);
+      loadAndNavigate(
+        'Surat Peringatan',
+        () => DetailPersetujuanSuratPeringatan(
+            emId: emIdPengaju,
+            title: 'Surat Peringatan',
+            idxDetail: idx,
+            delegasi: delegasi),
+        idx,
+      );
+    } else if (title == "Approval Teguran Lisan" || url == 'Teguran Lisan') {
+      loadAndNavigate(
+        'Teguran Lisan',
+        () => DetailPersetujuanTeguranLisan(
+            emId: emIdPengaju,
+            title: 'Teguran Lisan',
+            idxDetail: idx,
+            delegasi: delegasi),
+        idx,
+      );
+    } else if (title == "Approval shift" || url == 'shift') {
+      loadAndNavigate(
+        'Shift',
+        () => DetailPersetujuanShift(
+            emId: emIdPengaju,
+            title: 'Shift',
+            idxDetail: idx,
+            delegasi: delegasi),
+        idx,
+      );
     } else {}
   }
 
-  // void routeApprovalNotifFCm({
-  //   required String title,
-  //   required String emIdPengaju,
-  //   required String idx,
-  //   required String delegasi,
-  //   required String url,
-  // }) async {
-  //   // print("lalala: $url");
-  //   if (title == "Pengajuan Lembur" || url == "Lembur") {
-  //     await controllerApproval.startLoadData(
-  //         'Lembur',
-  //         bulanSelectedSearchHistory.value,
-  //         tahunSelectedSearchHistory.value,
-  //         'persetujuan');
-  //     Future.delayed(const Duration(seconds: 1), () {
-  //       Get.to(() => DetailPersetujuanLembur(
-  //             emId: emIdPengaju,
-  //             title: 'Lembur',
-  //             idxDetail: idx,
-  //             delegasi: delegasi,
-  //           ));
-  //     });
-  //   } else if (title == "Approval Cuti" || url == "Cuti") {
-  //     controllerApproval.startLoadData('Cuti', bulanSelectedSearchHistory.value,
-  //         tahunSelectedSearchHistory.value, 'persetujuan');
-  //     Future.delayed(const Duration(seconds: 1), () {
-  //       Get.to(() => DetailPersetujuanCuti(
-  //             emId: emIdPengaju,
-  //             title: 'Cuti',
-  //             idxDetail: idx,
-  //             delegasi: delegasi,
-  //           ));
-  //     });
-  //   } else if (title == "Approval Izin" ||
-  //       url == "Izin" ||
-  //       url == "TidakHadir") {
-  //     controllerApproval.startLoadData(
-  //         'Tidak Hadir',
-  //         bulanSelectedSearchHistory.value,
-  //         tahunSelectedSearchHistory.value,
-  //         'persetujuan');
-  //     Future.delayed(const Duration(seconds: 1), () {
-  //       Get.to(() => DetailPersetujuanIzin(
-  //             emId: emIdPengaju,
-  //             title: 'Tidak Hadir',
-  //             idxDetail: idx,
-  //             delegasi: delegasi,
-  //           ));
-  //     });
-  //   } else if (title == "Approval Tugas Luar" || url == "TugasLuar") {
-  //     controllerApproval.startLoadData(
-  //         'Tugas Luar',
-  //         bulanSelectedSearchHistory.value,
-  //         tahunSelectedSearchHistory.value,
-  //         'persetujuan');
-  //     Future.delayed(const Duration(seconds: 1), () {
-  //       bool exists = controllerApproval.listData
-  //           .any((element) => element['id'].toString() == idx.toString());
-
-  //       if (exists) {
-  //         Get.to(() => DetailPersetujuanTugasLuar(
-  //               emId: emIdPengaju,
-  //               title: 'Tugas Luar',
-  //               idxDetail: idx,
-  //               delegasi: delegasi,
-  //             ));
-  //       } else {
-  //         controllerApproval.startLoadData(
-  //             'Tugas Luar',
-  //             bulanSelectedSearchHistory.value,
-  //             tahunSelectedSearchHistory.value,
-  //             'riwayat');
-  //         Future.delayed(const Duration(seconds: 1), () {
-  //           Get.to(() => DetailPersetujuanTugasLuar(
-  //                 emId: emIdPengaju,
-  //                 title: 'Tugas Luar',
-  //                 idxDetail: idx,
-  //                 delegasi: delegasi,
-  //               ));
-  //         });
-  //       }
-  //     });
-  //   } else if (title == "Pengajuan" || url == "DinasLuar") {
-  //     controllerApproval.startLoadData(
-  //         'Dinas Luar',
-  //         bulanSelectedSearchHistory.value,
-  //         tahunSelectedSearchHistory.value,
-  //         'persetujuan');
-  //     Future.delayed(const Duration(seconds: 1), () {
-  //       Get.to(() => DetailPersetujuanDinasLuar(
-  //             emId: emIdPengaju,
-  //             title: 'Dinas Luar',
-  //             idxDetail: idx,
-  //             delegasi: delegasi,
-  //           ));
-  //     });
-  //   } else if (title == "Approval Klaim" || url == "Klaim") {
-  //     controllerApproval.startLoadData(
-  //         'Klaim',
-  //         bulanSelectedSearchHistory.value,
-  //         tahunSelectedSearchHistory.value,
-  //         'persetujuan');
-  //     Future.delayed(const Duration(seconds: 1), () {
-  //       Get.to(() => DetailPersetujuanKlaim(
-  //             emId: emIdPengaju,
-  //             title: 'Klaim',
-  //             idxDetail: idx,
-  //             delegasi: delegasi,
-  //           ));
-  //     });
-  //   } else if (title == "Approval Payroll" || url == "Payroll") {
-  //     controllerApproval.startLoadData(
-  //         'Payroll',
-  //         bulanSelectedSearchHistory.value,
-  //         tahunSelectedSearchHistory.value,
-  //         'persetujuan');
-  //     Future.delayed(const Duration(seconds: 1), () {
-  //       Get.to(() => DetailPersetujuanPayroll(
-  //             emId: emIdPengaju,
-  //             title: 'Payroll',
-  //             idxDetail: idx,
-  //             delegasi: delegasi,
-  //           ));
-  //     });
-  //   } else if (title == "Approval Absensi" || url == "Absensi") {
-  //     controllerApproval.startLoadData(
-  //         'Absensi',
-  //         bulanSelectedSearchHistory.value,
-  //         tahunSelectedSearchHistory.value,
-  //         'persetujuan');
-
-  //     Future.delayed(const Duration(seconds: 1), () {
-  //       for (var element in controllerApproval.listData) {
-  //         print("element['id']: ${element['id']}");
-  //       }
-  //       // Get.to(() => DetailPersetujuanAbsensi(
-  //       //       emId: emIdPengaju,
-  //       //       title: 'Absensi',
-  //       //       idxDetail: idx,
-  //       //       delegasi: delegasi,
-  //       //     ));
-  //     });
-  //   } else if (title == "Approval WFH" || url == "WFH") {
-  //     controllerApproval.startLoadData('WFH', bulanSelectedSearchHistory.value,
-  //         tahunSelectedSearchHistory.value, 'persetujuan');
-  //     Future.delayed(const Duration(seconds: 1), () {
-  //       Get.to(() => DetailPersetujuanWfh(
-  //             emId: emIdPengaju,
-  //             title: "WFH",
-  //             idxDetail: idx,
-  //             delegasi: delegasi,
-  //           ));
-  //     });
-  //   } else if (title == "Approval Kasbon" || url == "Kasbon") {
-  //     controllerApproval.startLoadData(
-  //         'Kasbon',
-  //         bulanSelectedSearchHistory.value,
-  //         tahunSelectedSearchHistory.value,
-  //         'persetujuan');
-  //     Future.delayed(const Duration(seconds: 1), () {
-  //       Get.to(() => DetailPersetujuanKasbon(
-  //             emId: emIdPengaju,
-  //             title: "Kasbon",
-  //             idxDetail: idx,
-  //             delegasi: delegasi,
-  //           ));
-  //     });
-  //   } else {}
-  // }
+  void loadNotifikasiApproval() {
+    isLoading.value = true;
+    listNotifikasiApproval.clear();
+    var dataUser = AppData.informasiUser;
+    var getEmid = dataUser![0].em_id;
+    var dt = DateTime.now();
+    var tanggalSekarang =
+        Constanst.convertDate1("${dt.year}-${dt.month}-${dt.day}");
+    var getBulan = dt.month <= 9 ? "0${dt.month}" : dt.month;
+    Map<String, dynamic> body = {
+      'em_id': getEmid,
+      'bulan': getBulan,
+      'tahun': dt.year
+    };
+    var connect = Api.connectionApi("post", body, "load_notifikasi_approval");
+    connect.then((dynamic res) async {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        for (var element in valueBody['data']) {
+          var tanggalDataApi = Constanst.convertDate1("${element['tanggal']}");
+          var filterTanggal =
+              tanggalDataApi == tanggalSekarang ? 'Hari ini' : tanggalDataApi;
+          List listNotif = element['notifikasi'];
+          listNotif.sort((a, b) {
+            return b['id'].compareTo(a['id']);
+          });
+          var data = {
+            'tanggal': filterTanggal,
+            'notifikasi': listNotif,
+          };
+          listNotifikasiApproval.add(data);
+        }
+        this.listNotifikasiApproval.refresh();
+        hitungNotifikasiBelumDibacaApproval();
+        isLoading.value = false;
+      }
+    }).catchError((error) {
+      isLoading.value = false;
+    });
+  }
 
   void loadNotifikasi() {
     isLoading.value = true;
     listNotifikasi.value.clear();
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-
-    var defaultDate = date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmid = dataUser![0].em_id;
     var dt = DateTime.now();
     var tanggalSekarang =
@@ -1157,8 +1056,6 @@ class PesanController extends GetxController {
     }).catchError((error) {
       isLoading.value = false;
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
   }
 
   void hitungNotifikasiBelumDibaca() {
@@ -1174,6 +1071,19 @@ class PesanController extends GetxController {
     this.jumlahNotifikasiBelumDibaca.refresh();
   }
 
+  void hitungNotifikasiBelumDibacaApproval() {
+    var data = [];
+    listNotifikasiApproval.value.forEach((element) {
+      element['notifikasi'].forEach((element1) {
+        if (element1['view'] == 0) {
+          data.add(element1);
+        }
+      });
+    });
+    jumlahNotifikasiBelumDibacaApproval.value = data.length;
+    this.jumlahNotifikasiBelumDibacaApproval.refresh();
+  }
+
   void aksilihatNotif(id) {
     var pisahkanData = [];
     listNotifikasi.value.forEach((element) {
@@ -1186,6 +1096,21 @@ class PesanController extends GetxController {
     });
     this.listNotifikasi.refresh();
     hitungNotifikasiBelumDibaca();
+    updateDataNotif(pisahkanData);
+  }
+
+  void aksilihatNotifApproval(id) {
+    var pisahkanData = [];
+    listNotifikasiApproval.value.forEach((element) {
+      element['notifikasi'].forEach((element1) {
+        if (element1['id'] == id) {
+          element1['view'] = 1;
+          pisahkanData.add(element1);
+        }
+      });
+    });
+    this.listNotifikasiApproval.refresh();
+    hitungNotifikasiBelumDibacaApproval();
     updateDataNotif(pisahkanData);
   }
 

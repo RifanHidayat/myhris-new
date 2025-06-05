@@ -24,10 +24,7 @@ class _LaporanTugasLuarState extends State<LaporanTugasLuar> {
 
   @override
   void initState() {
-     controller. getLoadsysData();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.getDepartemen(1, "");
-    });
+    controller.getDepartemen(1, "");
     controller.title.value = widget.title;
     controller.tempNamaLaporan1.value = "tugas_luar";
     super.initState();
@@ -532,6 +529,50 @@ class _LaporanTugasLuarState extends State<LaporanTugasLuar> {
                         size: 18,
                         color: Constanst.fgSecondary,
                       ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
+            // Filter Cabang
+            InkWell(
+              customBorder: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(100))),
+              onTap: () {
+                controller.showBottomBranch();
+              },
+              child: Container(
+                width: 150,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(color: Constanst.border)),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
+                  child: Row(
+                    children: [
+                      Obx(
+                        () => Expanded(
+                          child: Text(
+                            controller.filterBranch.value,
+                            style: GoogleFonts.inter(
+                                color: Constanst.fgSecondary,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Icon(
+                          Iconsax.arrow_down_1,
+                          color: Constanst.fgSecondary,
+                          size: 18,
+                        ),
+                      )
                     ],
                   ),
                 ),

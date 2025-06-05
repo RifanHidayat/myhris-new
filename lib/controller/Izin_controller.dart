@@ -1,25 +1,19 @@
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
-import 'package:siscom_operasional/model/atasan_model.dart';
 import 'package:siscom_operasional/screen/absen/form/berhasil_pengajuan.dart';
 import 'package:siscom_operasional/screen/absen/form/form_pengajuan_izin.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
-import 'package:siscom_operasional/utils/custom_dialog.dart';
-import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,16 +26,23 @@ class IzinController extends GetxController {
   var jamAjuan = TextEditingController().obs;
   var sampaiJamAjuan = TextEditingController().obs;
   var alasan = TextEditingController().obs;
+  var focus = FocusNode();
   var departemen = TextEditingController().obs;
   var izinTerpakai = 0.obs;
   var jumlahIzin = 0.obs;
   var percentIzin = 0.0.obs;
-  var cutLeave = 0.obs;
-  var limitIzin = 0.obs;
   var showDurationIzin = false.obs;
   var inputTime = 0.obs;
+  var cutLeave = 0.obs;
+  var limitIzin = 0.obs;
+  var outLimit = ''.obs;
+  var lateLimit = ''.obs;
+  var showTipeCuti = false.obs;
+  var messageApi = ''.obs;
 
   var typeTap = 0.obs;
+  var startDate = ''.obs;
+  var endDate = ''.obs;
 
   var filePengajuan = File("").obs;
 
@@ -102,9 +103,6 @@ class IzinController extends GetxController {
   var showButtonlaporan = false.obs;
   var statusLoadingSubmitLaporan = false.obs;
   var viewFormWaktu = false.obs;
-  var date = DateTime.now().obs;
-  var beginPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
-  var endPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
 
   var dataTypeAjuanDummy1 = ["Semua Status", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
@@ -115,10 +113,21 @@ class IzinController extends GetxController {
     "Pending"
   ];
   var globalCt = Get.find<GlobalController>();
+  // @override
+  // void onReady() async {
+  //   super.onReady();
+  //   loadCutiUser();
+  // }
+
   @override
-  void onReady() async {
-    super.onReady();
+  void onInit() {
     getTimeNow();
+    getLoadsysData();
+    loadAllEmployeeDelegasi();
+    loadTypeSakit();
+    loadDataAjuanIzin();
+    getDepartemen(1, "");
+    super.onInit();
   }
 
   void showInputCari() {
@@ -182,16 +191,15 @@ class IzinController extends GetxController {
   }
 
   void getTimeNow() {
-    var dt = DateTime.parse(AppData.endPeriode);
+    var dt = DateTime.now();
     var outputFormat1 = DateFormat('MM');
     var outputFormat2 = DateFormat('yyyy');
     bulanSelectedSearchHistory.value = outputFormat1.format(dt);
     tahunSelectedSearchHistory.value = outputFormat2.format(dt);
     bulanDanTahunNow.value =
         "${bulanSelectedSearchHistory.value}-${tahunSelectedSearchHistory.value}";
-    date.value = dt;
-    var dtNow = DateTime.now();
-    var dateString = "${dtNow.year}-${dtNow.month}-${dtNow.day}";
+
+    var dateString = "${dt.year}-${dt.month}-${dt.day}";
     var afterConvert = Constanst.convertDate1(dateString);
     if (idEditFormTidakMasukKerja.value == "") {
       dariTanggal.value.text = "$afterConvert";
@@ -242,51 +250,6 @@ class IzinController extends GetxController {
     AlllistHistoryAjuan.value.clear();
     listHistoryAjuan.value.clear();
     var dataUser = AppData.informasiUser;
-
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-
-    var defaultDate = date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
-    
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmid,
@@ -295,8 +258,8 @@ class IzinController extends GetxController {
     };
     var connect = Api.connectionApi("post", body, "emp_leave_load_izin");
     connect.then((dynamic res) {
-      var valueBody = jsonDecode(res.body);
       if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
         if (valueBody['status'] == false) {
           loadingString.value = "Anda tidak memiliki\nRiwayat Pengajuan Izin";
           this.loadingString.refresh();
@@ -316,13 +279,58 @@ class IzinController extends GetxController {
           this.AlllistHistoryAjuan.refresh();
           this.loadingString.refresh();
         }
-      } else {
-        loadingString.value = valueBody['message'];
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
-    // date.value = DateTime.now();
+  }
+
+  void loadCutiUser() {
+    print("load cuti user");
+
+    var dataUser = AppData.informasiUser;
+
+    var getEmid = dataUser![0].em_id;
+
+    Map<String, dynamic> body = {
+      'val': 'em_id',
+      'cari': getEmid,
+    };
+    var connect = Api.connectionApi("post", body, "whereOnce-assign_leave");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        if (valueBody['data'].isNotEmpty) {
+          var totalDay =
+              int.parse(valueBody['data'][0]['total_day'].toString());
+          var terpakai =
+              int.parse(valueBody['data'][0]['terpakai'].toString());
+          print("ini data cuti user ${valueBody['data']}");
+          if (totalDay == 0) {
+            
+          } else {
+            jumlahIzin.value = totalDay;
+            izinTerpakai.value = terpakai;
+            this.jumlahIzin.refresh();
+            this.izinTerpakai.refresh();
+            hitungCuti(totalDay, terpakai);
+          }
+        } else {
+          
+        }
+      }
+    });
+  }
+
+  void hitungCuti(totalDay, terpakai) {
+    var hitung1 = (terpakai / totalDay) * 100;
+    // var convert1 = hitung1.toInt();
+    var convert1 = hitung1;
+    print("conver nilai ${convert1}");
+
+    var convertedValue =
+        double.parse(convert1 > 100 || convert1 < 0 ? "100" : "${convert1}") /
+            100;
+    percentIzin.value = convertedValue;
+    this.percentIzin.refresh();
   }
 
   Future<bool> loadDataAjuanIzinCategori({id}) async {
@@ -337,25 +345,24 @@ class IzinController extends GetxController {
       'tahun': tahunSelectedSearchHistory.value,
       'type_id': id.toString()
     };
+    print(body);
     var connect =
         Api.connectionApi("post", body, "emp_leave_load_izin_Kategori");
     await connect.then((dynamic res) {
-      var valueBody = jsonDecode(res.body);
       if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
         print("data value body ${valueBody}");
         if (valueBody['status'] == false) {
           // loadingString.value =  "Anda tidak memiliki\nRiwayat Pengajuan Izin";
           izinCategory.value = [];
           this.loadingString.refresh();
-          izinTerpakai.value = 0;
+          // izinTerpakai.value = 0;
           return true;
         } else {
           // izinTerpakai.value = valueBody['jumlah_data'];
           izinCategory.value = valueBody['data'];
           return true;
         }
-      } else {
-        loadingString = valueBody['message'];
       }
     });
     return true;
@@ -419,10 +426,8 @@ class IzinController extends GetxController {
         } else {
           if (res.statusCode == 200) {
             var valueBody = jsonDecode(res.body);
-            List data = valueBody['data'];
-
+            var data = valueBody['data'];
             for (var element in data) {
-              // print("status new new${element['status']}");
               if (element['status'] == 'ACTIVE') {
                 var fullName = element['full_name'] ?? "";
                 String namaUser = "$fullName";
@@ -466,14 +471,20 @@ class IzinController extends GetxController {
     }
   }
 
-  void loadTypeSakit() {
+  void loaDataTipe({durasi}) {
     allTipeFormTidakMasukKerja1.value.clear();
     allTipeFormTidakMasukKerja.value.clear();
-    isLoadingzin.value = true;
+    isLoadingzin.value = false;
     showTipe.value = false;
+    selectedDropdownFormTidakMasukKerjaTipe.value = '';
+
+    showDurationIzin.value = false;
+    UtilsAlert.showLoadingIndicator(Get.context!);
     allTipe.value.clear();
-    Map<String, dynamic> body = {'val': 'status', 'cari': '2'};
-    var connect = Api.connectionApi("post", body, "whereOnce-leave_types");
+    Map<String, dynamic> body = {
+      'durasi': durasi.toString(),
+    };
+    var connect = Api.connectionApi("post", body, "cuti/type");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
@@ -497,6 +508,8 @@ class IzinController extends GetxController {
             'upload_file': element['upload_file'],
             'input_time': element['input_time'],
             'back_date': element['backdate'] ?? "0",
+            'late_limit': element['late_limit'],
+            'out_limit': element['out_limit'],
             'ajuan': 2,
             'active': false,
           };
@@ -504,90 +517,235 @@ class IzinController extends GetxController {
 
           print(data);
         }
-        if (idEditFormTidakMasukKerja == "") {
-          var listFirst = allTipeFormTidakMasukKerja.value.first;
-          selectedDropdownFormTidakMasukKerjaTipe.value = listFirst;
 
-          if (allTipe[0]['input_time'] == null) {
-          } else {
-            inputTime.value = int.parse(allTipe[0]['input_time'].toString());
-            isBackdate.value = allTipe[0]['back_date'].toString();
-            cutLeave.value = allTipe[0]['cut_leave'];
-            limitIzin.value = allTipe[0]['leave_day'];
+        if (allTipeFormTidakMasukKerja.value.length > 0) {
+          showTipe.value = true;
+          if (idEditFormTidakMasukKerja == "") {
+            var listFirst = allTipeFormTidakMasukKerja.value.first;
+            selectedDropdownFormTidakMasukKerjaTipe.value = '';
+
+            if (allTipe[0]['input_time'] == null) {
+            } else {
+              inputTime.value = int.parse(allTipe[0]['input_time'].toString());
+              isBackdate.value = allTipe[0]['back_date'].toString();
+              cutLeave.value = allTipe[0]['cut_leave'];
+              limitIzin.value = allTipe[0]['leave_day'];
+            }
           }
+          Get.back();
+        } else {
+          showTipe.value = false;
+          selectedDropdownFormTidakMasukKerjaTipe.value = '';
+          Get.back();
+          UtilsAlert.showToast("Data tipe sakit/izi tidak tersedia");
         }
-        loadTypeIzin();
+
+        // loadTypeIzin();
       }
     });
   }
 
-  void loadTypeIzin() {
-    Map<String, dynamic> body = {'val': 'status', 'cari': '3'};
-    var connect = Api.connectionApi("post", body, "whereOnce-leave_types");
+  loaDataTipeEdit({durasi, data}) {
+    var datum = data;
+
+    //  UtilsAlert.showToast(data['name'].toString());
+    allTipeFormTidakMasukKerja1.value.clear();
+    allTipeFormTidakMasukKerja.value.clear();
+    isLoadingzin.value = false;
+    showTipe.value = false;
+
+    UtilsAlert.showLoadingIndicator(Get.context!);
+    allTipe.value.clear();
+    Map<String, dynamic> body = {
+      'durasi': durasi.toString(),
+    };
+    print('body ${body}');
+    var connect = Api.connectionApi("post", body, "cuti/type");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
-
+        for (var index in data) {
+          print("data type sakit new  ${index['name']}");
+        }
         for (var element in data) {
           allTipeFormTidakMasukKerja1.value
               .add("${element['name']} - ${element['category']}");
+
           allTipeFormTidakMasukKerja.value
               .add("${element['name']} - ${element['category']}");
+
           var data = {
-            'leave_day': element['leave_day'],
             'type_id': element['id'],
             'name': element['name'],
             'status': element['status'],
             'category': element['category'],
+            'leave_day': element['leave_day'],
             'cut_leave': element['cut_leave'],
             'upload_file': element['upload_file'],
             'input_time': element['input_time'],
             'back_date': element['backdate'] ?? "0",
-            'ajuan': 3,
+            'late_limit': element['late_limit'],
+            'out_limit': element['out_limit'],
+            'ajuan': 2,
             'active': false,
           };
           allTipe.value.add(data);
+
+          print(data);
         }
-        showTipe.value = true;
-        this.showTipe.refresh();
-        this.allTipe.refresh();
-        this.allTipeFormTidakMasukKerja.refresh();
-        this.allTipeFormTidakMasukKerja1.refresh();
-        changeTypeSelected(2);
+        // var dataChecked=llTipeFormTidakMasukKerja.foreach((v)=>{
+        //   if (v.toString().toLowerCase().contains(data['name']toString().toLowerCase();)
+        // })
 
-        var getFirst = allTipe.value.first;
-
-        isRequiredFile.value = getFirst['upload_file'].toString();
-
-        var data1 = allTipe.value
-            .where((element) => allTipeFormTidakMasukKerja.value
-                .toString()
-                .toLowerCase()
-                .contains(element['name'].toString().toLowerCase()))
-            .toList();
-
-        if (data1[0]['leave_day'] > 0) {
-          loadDataAjuanIzinCategori(id: data1[0]['id']);
-          showDurationIzin.value = false;
-          jumlahIzin.value = data[0]['leave_day'];
-          percentIzin.value = double.parse(
-              ((izinTerpakai.value / jumlahIzin.value) * 100).toString());
+        if (allTipeFormTidakMasukKerja.value.length > 0) {
+          showTipe.value = true;
+          print(datum);
+          print(datum['typeid']);
+          if (datum[1] == false) {
+            print('kag edit');
+          } else {
+            var getFirst = allTipe.value
+                .firstWhere((element) => element['type_id'] == datum['typeid']);
+            isRequiredFile.value = getFirst['upload_file'].toString();
+            limitIzin.value = getFirst['leave_day'];
+            cutLeave.value = getFirst['cut_leave'];
+          }
+          Get.back();
+          Get.to(FormPengajuanIzin(
+            dataForm: [datum, true],
+          ));
         } else {
-          showDurationIzin.value = false;
+          showTipe.value = false;
+          selectedDropdownFormTidakMasukKerjaTipe.value = '';
+
+          UtilsAlert.showToast("Data tipe sakit/izi tidak tersedia");
         }
 
-        if (data1[0]['input_time'] == null) {
-        } else {
-          inputTime.value = int.parse(data[0]['input_time'].toString());
-          cutLeave.value = allTipe[0]['cut_leave'];
-          limitIzin.value = allTipe[0]['leave_day'];
-        }
-        jamAjuan.value.text = "";
-        sampaiJamAjuan.value.text = "";
-        isLoadingzin.value = false;
+        // loadTypeIzin();
       }
     });
+  }
+
+  void loadTypeSakit() {
+    // allTipeFormTidakMasukKerja1.value.clear();
+    // allTipeFormTidakMasukKerja.value.clear();
+    // isLoadingzin.value = true;
+    // showTipe.value = false;
+    // allTipe.value.clear();
+    // Map<String, dynamic> body = {'val': 'status', 'cari': '2'};
+    // var connect = Api.connectionApi("post", body, "whereOnce-leave_types");
+    // connect.then((dynamic res) {
+    //   if (res.statusCode == 200) {
+    //     var valueBody = jsonDecode(res.body);
+    //     var data = valueBody['data'];
+
+    //     print("data type sakit new  ${data}");
+    //     for (var element in data) {
+    //       allTipeFormTidakMasukKerja1.value
+    //           .add("${element['name']} - ${element['category']}");
+
+    //       allTipeFormTidakMasukKerja.value
+    //           .add("${element['name']} - ${element['category']}");
+
+    //       var data = {
+    //         'type_id': element['id'],
+    //         'name': element['name'],
+    //         'status': element['status'],
+    //         'category': element['category'],
+    //         'leave_day': element['leave_day'],
+    //         'cut_leave': element['cut_leave'],
+    //         'upload_file': element['upload_file'],
+    //         'input_time': element['input_time'],
+    //         'back_date': element['backdate'] ?? "0",
+    //         'ajuan': 2,
+    //         'active': false,
+    //       };
+    //       allTipe.value.add(data);
+
+    //       print(data);
+    //     }
+    //     if (idEditFormTidakMasukKerja == "") {
+    //       var listFirst = allTipeFormTidakMasukKerja.value.first;
+    //       selectedDropdownFormTidakMasukKerjaTipe.value = listFirst;
+
+    //       if (allTipe[0]['input_time'] == null) {
+    //       } else {
+    //         inputTime.value = int.parse(allTipe[0]['input_time'].toString());
+    //         isBackdate.value = allTipe[0]['back_date'].toString();
+    //       }
+    //     }
+    //     loadTypeIzin();
+    //   }
+    // });
+  }
+
+  void loadTypeIzin() {
+    // Map<String, dynamic> body = {'val': 'status', 'cari': '3'};
+    // var connect = Api.connectionApi("post", body, "whereOnce-leave_types");
+    // connect.then((dynamic res) {
+    //   if (res.statusCode == 200) {
+    //     var valueBody = jsonDecode(res.body);
+    //     var data = valueBody['data'];
+
+    //     for (var element in data) {
+    //       allTipeFormTidakMasukKerja1.value
+    //           .add("${element['name']} - ${element['category']}");
+    //       allTipeFormTidakMasukKerja.value
+    //           .add("${element['name']} - ${element['category']}");
+    //       var data = {
+    //         'leave_day': element['leave_day'],
+    //         'type_id': element['id'],
+    //         'name': element['name'],
+    //         'status': element['status'],
+    //         'category': element['category'],
+    //         'cut_leave': element['cut_leave'],
+    //         'upload_file': element['upload_file'],
+    //         'input_time': element['input_time'],
+    //         'back_date': element['backdate'] ?? "0",
+    //         'ajuan': 3,
+    //         'active': false,
+    //       };
+    //       allTipe.value.add(data);
+    //       print('ini data izin ${data}');
+    //     }
+    //     showTipe.value = true;
+    //     this.showTipe.refresh();
+    //     this.allTipe.refresh();
+    //     this.allTipeFormTidakMasukKerja.refresh();
+    //     this.allTipeFormTidakMasukKerja1.refresh();
+    //     changeTypeSelected(2);
+
+    //     var getFirst = allTipe.value.first;
+
+    //     isRequiredFile.value = getFirst['upload_file'].toString();
+
+    //     var data1 = allTipe.value
+    //         .where((element) => allTipeFormTidakMasukKerja.value
+    //             .toString()
+    //             .toLowerCase()
+    //             .contains(element['name'].toString().toLowerCase()))
+    //         .toList();
+
+    //     if (data1[0]['leave_day'] > 0) {
+    //       loadDataAjuanIzinCategori(id: data1[0]['id']);
+    //       showDurationIzin.value = true;
+    //       jumlahIzin.value = data[0]['leave_day'];
+    //       percentIzin.value = double.parse(
+    //           ((izinTerpakai.value / jumlahIzin.value) * 100).toString());
+    //     } else {
+    //       showDurationIzin.value = false;
+    //     }
+
+    //     if (data1[0]['input_time'] == null) {
+    //     } else {
+    //       inputTime.value = int.parse(data[0]['input_time'].toString());
+    //     }
+    //     jamAjuan.value.text = "";
+    //     sampaiJamAjuan.value.text = "";
+    //     isLoadingzin.value = false;
+    //   }
+    // });
   }
 
   void gantiTypeAjuan(value) {
@@ -604,50 +762,50 @@ class IzinController extends GetxController {
   }
 
   void changeTypeSelected(index) {
-    typeTap.value = index;
-    listHistoryAjuan.value.clear();
-    if (index == 0) {
-      allTipeFormTidakMasukKerja.value =
-          allTipeFormTidakMasukKerja1.value.where((element) {
-        return element.toString().contains("FULLDAY");
-      }).toList();
-      AlllistHistoryAjuan.value.forEach((element) {
-        if (element['category'] == "FULLDAY") {
-          listHistoryAjuan.value.add(element);
-        }
-      });
-    } else if (index == 2) {
-      allTipeFormTidakMasukKerja.value =
-          allTipeFormTidakMasukKerja1.value.toList();
-      AlllistHistoryAjuan.value.forEach((element) {
-        listHistoryAjuan.value.add(element);
-      });
-    } else {
-      allTipeFormTidakMasukKerja.value =
-          allTipeFormTidakMasukKerja1.value.where((element) {
-        return element.toString().contains("HALFDAY");
-      }).toList();
-      AlllistHistoryAjuan.value.forEach((element) {
-        if (element['category'] == "HALFDAY") {
-          listHistoryAjuan.value.add(element);
-        }
-      });
-    }
-    if (idEditFormTidakMasukKerja.value == "") {
-      this.allTipe.refresh();
-      this.allTipeFormTidakMasukKerja.refresh();
-      var listFirst = allTipeFormTidakMasukKerja.value.first;
-      selectedDropdownFormTidakMasukKerjaTipe.value = listFirst;
-      this.selectedDropdownFormTidakMasukKerjaTipe.refresh();
-    }
+    // typeTap.value = index;
+    // listHistoryAjuan.value.clear();
+    // if (index == 0) {
+    //   allTipeFormTidakMasukKerja.value =
+    //       allTipeFormTidakMasukKerja1.value.where((element) {
+    //     return element.toString().contains("FULLDAY");
+    //   }).toList();
+    //   AlllistHistoryAjuan.value.forEach((element) {
+    //     if (element['category'] == "FULLDAY") {
+    //       listHistoryAjuan.value.add(element);
+    //     }
+    //   });
+    // } else if (index == 2) {
+    //   allTipeFormTidakMasukKerja.value =
+    //       allTipeFormTidakMasukKerja1.value.toList();
+    //   AlllistHistoryAjuan.value.forEach((element) {
+    //     listHistoryAjuan.value.add(element);
+    //   });
+    // } else {
+    //   allTipeFormTidakMasukKerja.value =
+    //       allTipeFormTidakMasukKerja1.value.where((element) {
+    //     return element.toString().contains("HALFDAY");
+    //   }).toList();
+    //   AlllistHistoryAjuan.value.forEach((element) {
+    //     if (element['category'] == "HALFDAY") {
+    //       listHistoryAjuan.value.add(element);
+    //     }
+    //   });
+    // }
+    // if (idEditFormTidakMasukKerja.value == "") {
+    //   this.allTipe.refresh();
+    //   this.allTipeFormTidakMasukKerja.refresh();
+    //   var listFirst = allTipeFormTidakMasukKerja.value.first;
+    //   selectedDropdownFormTidakMasukKerjaTipe.value = listFirst;
+    //   this.selectedDropdownFormTidakMasukKerjaTipe.refresh();
+    // }
     // loadingString.value = listHistoryAjuan.value.length == 0
     //     ? "Anda tidak memiliki\nRiwayat Pengajuan Izin"
     //     : "Memuat data...";
-    selectedType.value = index;
+    // selectedType.value = index;
     // this.loadingString.refresh();
-    this.listHistoryAjuan.refresh();
-    this.selectedType.refresh();
-    typeAjuanRefresh("Semua Status");
+    // this.listHistoryAjuan.refresh();
+    // this.selectedType.refresh();
+    // typeAjuanRefresh("Semua Status");
   }
 
   void typeAjuanRefresh(name) {
@@ -669,6 +827,10 @@ class IzinController extends GetxController {
         selected.add(element);
       }
     }
+
+    print('ini selected ${value}');
+    print('ini selected ${allTipe.value}');
+    print('ini selected ${selected}');
     selectedDropdownFormTidakMasukKerjaTipe.value =
         "${selected[0]['name']} - ${selected[0]['category']}";
     this.selectedDropdownFormTidakMasukKerjaTipe.refresh();
@@ -719,9 +881,9 @@ class IzinController extends GetxController {
       this.listHistoryAjuan.refresh();
       this.selectedType.refresh();
     }
-    // loadingString.value = listHistoryAjuan.value.length != 0
-    //     ? "Memuat data..."
-    //     : "Anda tidak memiliki\nRiwayat Pengajuan Izin";
+    loadingString.value = listHistoryAjuan.value.length != 0
+        ? "Memuat data..."
+        : "Anda tidak memiliki\nRiwayat Pengajuan Izin";
     this.loadingString.refresh();
   }
 
@@ -756,10 +918,17 @@ class IzinController extends GetxController {
   }
 
   void validasiKirimPengajuan(status) {
-    if (uploadFile.value == false && isRequiredFile.value == "1") {
-      UtilsAlert.showToast("Form * harus diisi");
+    if (namaFileUpload.value.isEmpty) {
+      if (uploadFile.value == false && isRequiredFile.value == '1') {
+       UtilsAlert.showToast("Form unggah file harus diisi");
+      return;
+      }
+    }
+    if(selectedDropdownFormTidakMasukKerjaTipe.value.isEmpty){
+      UtilsAlert.showToast("Tipe absensi harus diisi");
       return;
     }
+    
     print("tanggal selecetd ${tanggalSelected.value.isEmpty}");
     print(viewFormWaktu.value);
     if (viewFormWaktu.value == true) {
@@ -819,11 +988,11 @@ class IzinController extends GetxController {
           "upload_form_tidakMasukKerja", filePengajuan.value);
       var valueBody = jsonDecode(connectUpload);
       if (valueBody['status'] == true) {
-        // UtilsAlert.showToast("Berhasil upload file");
+        UtilsAlert.showToast("Berhasil upload file");
         // Navigator.pop(Get.context!);
         checkNomorAjuan(status);
       } else {
-        // UtilsAlert.showToast("Gagal kirim file");
+        UtilsAlert.showToast("Gagal kirim file");
       }
     } else {
       if (status == false) {
@@ -838,9 +1007,8 @@ class IzinController extends GetxController {
   }
 
   void checkNomorAjuan(status) {
-    print(tanggalBikinPengajuan.value);
+    print('ini tanggal bikin pengajuan ${tanggalBikinPengajuan.value}');
     urutkanTanggalSelected(status);
-    print("tanggal bikin ajun" + tanggalBikinPengajuan.value);
     var convertTanggalBikinPengajuan = status == false
         ? Constanst.convertDateSimpan(tanggalBikinPengajuan.value)
         : tanggalBikinPengajuan.value;
@@ -1007,10 +1175,12 @@ class IzinController extends GetxController {
         this.stringSelectedTanggal.refresh();
       }
     } else {
+      print('data selectedd ${tanggalSelected.value}');
       if (tanggalSelected.value.isNotEmpty) {
         tanggalSelected.value.forEach((element) {
           var inputFormat = DateFormat('yyyy-MM-dd');
-          String formatted = inputFormat.format(element);
+          String formatted =
+              inputFormat.format(DateTime.parse(element.toString()));
           hasilConvert.add(formatted);
         });
         hasilConvert.sort((a, b) {
@@ -1039,7 +1209,6 @@ class IzinController extends GetxController {
 
   void kirimFormAjuanTidakMasukKerja(status, getNomorAjuanTerakhir) async {
     print("masuk ini ${tanggalBikinPengajuan.value}");
-    var platform = Platform.operatingSystem;
     var dataUser = AppData.informasiUser;
     var getEmid = "${dataUser![0].em_id}";
     var getFullName = "${dataUser[0].full_name}";
@@ -1089,7 +1258,8 @@ class IzinController extends GetxController {
       'ajuan': getAjuanType,
       'type': ' ${selectedDropdownFormTidakMasukKerjaTipe.value}',
       'apply_status': "Pending",
-      'platform': platform
+      'total_cuti': jumlahIzin.value,
+      'cut_leave': cutLeave.value
     };
 
     print("data body izin ${body}");
@@ -1168,17 +1338,19 @@ class IzinController extends GetxController {
                   status, nomorAjuanTerakhirDalamAntrian);
             }
             if (valueBody['message'] == "date") {
-              Navigator.pop(Get.context!);
+              // Navigator.pop(Get.context!);
               UtilsAlert.showToast(valueBody['error']);
             } else {
               Navigator.pop(Get.context!);
-              UtilsAlert.showToast(
-                  "Data periode $convertTanggalBikinPengajuan belum tersedia, harap hubungi HRD");
+              messageApi.value = "Data periode $convertTanggalBikinPengajuan belum tersedia, harap hubungi HRD";
+              // UtilsAlert.showToast(
+              //     "Data periode $convertTanggalBikinPengajuan belum tersedia, harap hubungi HRD");
             }
           }
         } else {
           var valueBody = jsonDecode(res.body);
-          UtilsAlert.showToast(valueBody['message']);
+          messageApi.value = valueBody['message'];
+          // UtilsAlert.showToast(valueBody['message']);
           Get.back();
         }
       });
@@ -1207,6 +1379,11 @@ class IzinController extends GetxController {
           Get.offAll(BerhasilPengajuan(
             dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
           ));
+        } else {
+          var valueBody = jsonDecode(res.body);
+          messageApi.value = valueBody['message'];
+          // UtilsAlert.showToast(valueBody['message']);
+          Get.back();
         }
       });
     }
@@ -1235,7 +1412,7 @@ class IzinController extends GetxController {
             title: typeNotifFcm,
             message: description,
             tokens: fcmTokenDelegasi);
-        UtilsAlert.showToast("Berhasil kirim delegasi");
+        // UtilsAlert.showToast("Berhasil kirim delegasi");
       }
     });
   }
@@ -1269,7 +1446,7 @@ class IzinController extends GetxController {
         //     title: typeNotifFcm,
         //     message: description,
         //     tokens: fcmTokenDelegasi);
-        UtilsAlert.showToast("Berhasil kirim delegasi");
+        // UtilsAlert.showToast("Berhasil kirim delegasi");
       }
     });
   }
@@ -1321,7 +1498,8 @@ class IzinController extends GetxController {
         result.add(element);
       }
     }
-    return result[0]['ajuan'];
+    print('ini validasi type ajuan : ${result}');
+    return result[0]['status'];
   }
 
   String validasiSelectedDelegasi() {
@@ -1490,7 +1668,8 @@ class IzinController extends GetxController {
                       ),
                     ),
                   ],
-                )
+                ),
+                SizedBox(height: 16.0)
               ],
             ),
           ),
@@ -1521,6 +1700,7 @@ class IzinController extends GetxController {
         Navigator.pop(Get.context!);
         Navigator.pop(Get.context!);
         UtilsAlert.showToast("Berhasil batalkan pengajuan");
+        onReady();
       }
     });
   }
@@ -1547,6 +1727,14 @@ class IzinController extends GetxController {
     var inputTime = detailData['input_time'];
     var alasan = detailData['reason'];
     var durasi = detailData['leave_duration'];
+    var tanggalMasukAjuanDate = DateTime.parse(detailData['atten_date']);
+    var tanggalAjuanDariDate = DateTime.parse(detailData['start_date']);
+    var tanggalMasuk = DateTime(tanggalMasukAjuanDate.year,
+        tanggalMasukAjuanDate.month, tanggalMasukAjuanDate.day);
+    var tanggalDari = DateTime(tanggalAjuanDariDate.year,
+        tanggalAjuanDariDate.month, tanggalAjuanDariDate.day);
+
+    Duration difference = tanggalDari.difference(tanggalMasuk);
     var typeAjuan;
     if (valuePolaPersetujuan.value == "1") {
       typeAjuan = detailData['leave_status'];
@@ -1998,24 +2186,26 @@ class IzinController extends GetxController {
                                     size: 22,
                                   ),
                                   const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Rejected by $approve_by",
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Rejected by $approve_by",
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                color: Constanst.fgPrimary,
+                                                fontSize: 14)),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          alasanReject,
                                           style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              color: Constanst.fgPrimary,
-                                              fontSize: 14)),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        alasanReject,
-                                        style: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w400,
-                                            color: Constanst.fgSecondary,
-                                            fontSize: 14),
-                                      )
-                                    ],
+                                              fontWeight: FontWeight.w400,
+                                              color: Constanst.fgSecondary,
+                                              fontSize: 14),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ],
                               )
@@ -2084,13 +2274,13 @@ class IzinController extends GetxController {
                     ),
                   ),
                 ),
-                
                 typeAjuan == "Approve" ||
                         typeAjuan == "Approve 1" ||
-                        typeAjuan == "Approve 2" || typeAjuan == "Rejected"
-                    ? const SizedBox(height: 16.0)
+                        typeAjuan == "Approve 2" ||
+                        typeAjuan == "Rejected"
+                    ? const SizedBox(height: 16)
                     : Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
+                        padding: const EdgeInsets.only(bottom: 16.0, top: 16.0),
                         child: Row(
                           children: [
                             Expanded(
@@ -2137,10 +2327,8 @@ class IzinController extends GetxController {
                                 height: 40,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    print(detailData.toString());
-                                    Get.to(FormPengajuanIzin(
-                                      dataForm: [detailData, true],
-                                    ));
+                                    loaDataTipeEdit(
+                                        durasi: difference, data: detailData);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: Constanst.colorWhite,
@@ -2163,7 +2351,7 @@ class IzinController extends GetxController {
                             ),
                           ],
                         ),
-                      )
+                      ),
               ],
             ),
           ),

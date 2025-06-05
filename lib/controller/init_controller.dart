@@ -16,8 +16,7 @@ import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class InitController extends GetxController {
   void loadDashboard() async {
-    //getSettingApp();
-    validasiLastAbsensi();
+    getSettingApp();
   }
 
   void getSettingApp() {
@@ -60,10 +59,9 @@ class InitController extends GetxController {
   }
 
   void validasiLastAbsensi() async {
-    debugPrint('initScreen kepanggil dari ');
     // await Future.delayed(const Duration(seconds: 3));
     // Get.offAll(Onboard());
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 2));
 
     if (AppData.isOnboarding == true) {
       // Get.offAll(Login());

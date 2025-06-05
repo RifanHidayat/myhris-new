@@ -63,7 +63,7 @@ class _LupaPasswordState extends State<LupaPassword> {
                     SizedBox(height: 8),
                     TextLabell(
                       text:
-                          "Jangan Khawatir, Silahkan ikuti langkah-langkah berikut untuk mengembalikan password Anda kembali.",
+                          "Jangan Khawatir, silakan ikuti langkah-langkah berikut untuk mengembalikan password Anda kembali.",
                       size: 14,
                     ),
                     SizedBox(height: 8),

@@ -3,9 +3,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/laporan_absen_karyawan_controller.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
 import 'package:siscom_operasional/screen/absen/detail_absen.dart';
+import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/widget/text_labe.dart';
@@ -20,10 +22,14 @@ class LaporanAbsenKaryawan extends StatefulWidget {
 
 class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
   var controller = Get.put(LaporanAbsenKaryawanController());
+  var controllerAbsen = Get.find<AbsenController>();
 
   @override
   void initState() {
-    controller.loadData(widget.em_id, widget.bulan, widget.full_name);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.loadData(widget.em_id, widget.bulan, widget.full_name);
+    });
+    
     super.initState();
   }
 
@@ -266,924 +272,6 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
         ));
   }
 
-  // Widget listAbsen() {
-  //   return ListView.builder(
-  //       physics: const BouncingScrollPhysics(),
-  //       itemCount: controller.detailRiwayat.value.length,
-  //       itemBuilder: (context, index) {
-  //         var idAbsen = controller.detailRiwayat.value[index].id;
-  //         var jamMasuk = controller.detailRiwayat.value[index].signin_time;
-  //         var jamKeluar = controller.detailRiwayat.value[index].signout_time;
-  //         var tanggal = controller.detailRiwayat.value[index].atten_date;
-  //         var date = controller.detailRiwayat.value[index].date;
-  //         var longLatAbsenKeluar =
-  //             controller.detailRiwayat.value[index].signout_longlat;
-
-  //         var placeIn = controller.detailRiwayat.value[index].place_in;
-  //         var placeOut = controller.detailRiwayat.value[index].place_out;
-  //         var note = controller.detailRiwayat.value[index].signin_note;
-  //         var signInLongLat =
-  //             controller.detailRiwayat.value[index].signin_longlat;
-  //         var signOutLongLat =
-  //             controller.detailRiwayat.value[index].signout_longlat;
-  //         var statusView = placeIn == "pengajuan" &&
-  //                 placeOut == "pengajuan" &&
-  //                 signInLongLat == "pengajuan" &&
-  //                 signOutLongLat == "pengajuan"
-  //             ? true
-  //             : false;
-
-  //         var regType = controller.detailRiwayat.value[index].reqType ?? 0;
-  //         var namaHariLibur =
-  //             controller.detailRiwayat.value[index].namaHariLibur;
-  //         var namaTugasLuar =
-  //             controller.detailRiwayat.value[index].namaTugasLuar;
-  //         var namaDinasLuar =
-  //             controller.detailRiwayat.value[index].namaDinasLuar;
-  //         var namaCuti = controller.detailRiwayat.value[index].namaCuti;
-  //         var namaIzin = controller.detailRiwayat.value[index].namaIzin;
-  //         var offDay = controller.detailRiwayat.value[index].offDay ?? 1;
-  //         var namaSakit = controller.detailRiwayat.value[index].namaSakit;
-
-  //         // var batasJam = "08:30:00";
-  //         // var waktuMasuk = "$tanggal $jamMasuk";
-  //         // var batasWaktu = "$tanggal $batasJam";
-  //         // var listJamMasuk = (jamMasuk!.split(':'));
-  //         // var listJamKeluar = (jamKeluar!.split(':'));
-  //         // var perhitunganJamMasuk1 =
-  //         //     830 - int.parse("${listJamMasuk[0]}${listJamMasuk[1]}");
-  //         // var perhitunganJamMasuk2 =
-  //         //     1800 - int.parse("${listJamKeluar[0]}${listJamKeluar[1]}");
-
-  //         // var getColorMasuk;
-  //         // var getColorKeluar;
-
-  //         // if (perhitunganJamMasuk1 < 0) {
-  //         //   getColorMasuk = Colors.red;
-  //         // } else {
-  //         //   getColorMasuk = Colors.black;
-  //         // }
-  //         // if (perhitunganJamMasuk2 == 0) {
-  //         //   getColorKeluar = Colors.black;
-  //         // } else if (perhitunganJamMasuk2 > 0) {
-  //         //   getColorKeluar = Colors.red;
-  //         // } else if (perhitunganJamMasuk2 < 0) {
-  //         //   getColorKeluar = Constanst.colorPrimary;
-  //         // }
-  //         return Padding(
-  //           padding: const EdgeInsets.only(bottom: 8.0),
-  //           child: InkWell(
-  //             customBorder: const RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.all(Radius.circular(12))),
-  //             onTap: () {
-  //               if (statusView == false) {
-  //                 print(idAbsen);
-  //                 controller.historySelected(idAbsen, "laporan");
-  //               }
-  //             },
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 statusView == false
-  //                     ? Container(
-  //                         decoration: BoxDecoration(
-  //                             borderRadius: BorderRadius.circular(12),
-  //                             border: Border.all(
-  //                                 width: 1, color: Constanst.fgBorder)),
-  //                         child: Row(
-  //                           crossAxisAlignment: CrossAxisAlignment.center,
-  //                           mainAxisAlignment: MainAxisAlignment.start,
-  //                           children: [
-  //                             Expanded(
-  //                               flex: 15,
-  //                               child: Padding(
-  //                                 padding: const EdgeInsets.all(4.0),
-  //                                 child: Container(
-  //                                   height: controller.detailRiwayat[index]
-  //                                               .turunan!.isNotEmpty &&
-  //                                           controller.detailRiwayat[index]
-  //                                                   .statusView ==
-  //                                               true
-  //                                       ? int.parse(controller
-  //                                                   .detailRiwayat[index]
-  //                                                   .turunan!
-  //                                                   .length
-  //                                                   .toString()) *
-  //                                               55 +
-  //                                           28
-  //                                       : 50,
-  //                                   decoration: BoxDecoration(
-  //                                     color: Constanst.colorNeutralBgSecondary,
-  //                                     borderRadius: const BorderRadius.only(
-  //                                       topLeft: Radius.circular(8.0),
-  //                                       bottomLeft: Radius.circular(8.0),
-  //                                     ),
-  //                                   ),
-  //                                   child: Padding(
-  //                                     padding: const EdgeInsets.only(
-  //                                         top: 5.0, bottom: 5.0),
-  //                                     child: namaHariLibur == null ||
-  //                                             namaHariLibur == ""
-  //                                         ? Column(
-  //                                             crossAxisAlignment:
-  //                                                 CrossAxisAlignment.center,
-  //                                             mainAxisAlignment:
-  //                                                 MainAxisAlignment.center,
-  //                                             children: [
-  //                                               Text(
-  //                                                   DateFormat('d').format(
-  //                                                       DateFormat('yyyy-MM-dd')
-  //                                                           .parse(date)),
-  //                                                   style: GoogleFonts.inter(
-  //                                                     fontSize: 20,
-  //                                                     fontWeight:
-  //                                                         FontWeight.w500,
-  //                                                     color:
-  //                                                         Constanst.fgPrimary,
-  //                                                   )),
-  //                                               Text(
-  //                                                   DateFormat('EEEE', 'id')
-  //                                                       .format(DateFormat(
-  //                                                               'yyyy-MM-dd')
-  //                                                           .parse(date)),
-  //                                                   style: GoogleFonts.inter(
-  //                                                     fontSize: 10,
-  //                                                     fontWeight:
-  //                                                         FontWeight.w400,
-  //                                                     color:
-  //                                                         Constanst.fgPrimary,
-  //                                                   )),
-  //                                             ],
-  //                                           )
-  //                                         : Column(
-  //                                             children: [
-  //                                               Text(
-  //                                                   DateFormat('d').format(
-  //                                                       DateFormat('yyyy-MM-dd')
-  //                                                           .parse(date)),
-  //                                                   style: GoogleFonts.inter(
-  //                                                     fontSize: 20,
-  //                                                     fontWeight:
-  //                                                         FontWeight.w500,
-  //                                                     color: Colors.red,
-  //                                                   )),
-  //                                               Text(
-  //                                                   DateFormat('EEEE', 'id')
-  //                                                       .format(DateFormat(
-  //                                                               'yyyy-MM-dd')
-  //                                                           .parse(date)),
-  //                                                   style: GoogleFonts.inter(
-  //                                                     fontSize: 10,
-  //                                                     fontWeight:
-  //                                                         FontWeight.w400,
-  //                                                     color: Colors.red,
-  //                                                   )),
-  //                                             ],
-  //                                           ),
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                             Expanded(
-  //                               flex: 85,
-  //                               child: tanggal == "" || tanggal == null
-  //                                   ?
-  //                                   //tidak ada absen
-  //                                   namaHariLibur != null
-  //                                       ? Padding(
-  //                                           padding:
-  //                                               const EdgeInsets.only(left: 18),
-  //                                           child: TextLabell(
-  //                                             text: namaHariLibur,
-  //                                             size: 14.0,
-  //                                             weight: FontWeight.w500,
-  //                                           ))
-  //                                       : namaTugasLuar != null
-  //                                           ? const Padding(
-  //                                               padding:
-  //                                                   EdgeInsets.only(left: 18),
-  //                                               child: TextLabell(
-  //                                                 text: "Tugas Luar",
-  //                                                 size: 14.0,
-  //                                                 weight: FontWeight.w500,
-  //                                               ))
-  //                                           : namaDinasLuar != null
-  //                                               ? const Padding(
-  //                                                   padding: EdgeInsets.only(
-  //                                                       left: 18),
-  //                                                   child: TextLabell(
-  //                                                     text: "Dinas Luar",
-  //                                                     size: 14.0,
-  //                                                     weight: FontWeight.w500,
-  //                                                   ))
-  //                                               : namaCuti != null
-  //                                                   ? const Padding(
-  //                                                       padding: EdgeInsets.only(
-  //                                                           left: 18),
-  //                                                       child: TextLabell(
-  //                                                         text: "Cuti",
-  //                                                         size: 14.0,
-  //                                                         weight:
-  //                                                             FontWeight.w500,
-  //                                                       ))
-  //                                                   : namaSakit != null
-  //                                                       ? Padding(
-  //                                                           padding:
-  //                                                               const EdgeInsets
-  //                                                                   .only(
-  //                                                                   left: 18),
-  //                                                           child: TextLabell(
-  //                                                             text:
-  //                                                                 "Sakit : ${namaSakit}",
-  //                                                             size: 14.0,
-  //                                                             weight: FontWeight
-  //                                                                 .w500,
-  //                                                           ))
-  //                                                       : namaIzin != null
-  //                                                           ? Padding(
-  //                                                               padding:
-  //                                                                   const EdgeInsets
-  //                                                                       .only(
-  //                                                                       left:
-  //                                                                           18),
-  //                                                               child:
-  //                                                                   TextLabell(
-  //                                                                 text:
-  //                                                                     "Izin : ${namaIzin}",
-  //                                                                 size: 14.0,
-  //                                                                 weight:
-  //                                                                     FontWeight
-  //                                                                         .w500,
-  //                                                               ))
-  //                                                           : offDay.toString() ==
-  //                                                                   '0'
-  //                                                               ? const Padding(
-  //                                                                   padding: EdgeInsets.only(
-  //                                                                       left:
-  //                                                                           18),
-  //                                                                   child:
-  //                                                                       TextLabell(
-  //                                                                     text:
-  //                                                                         "Hari Libur Kerja",
-  //                                                                     size:
-  //                                                                         14.0,
-  //                                                                     weight: FontWeight
-  //                                                                         .w500,
-  //                                                                   ))
-  //                                                               : const Padding(
-  //                                                                   padding: EdgeInsets.only(
-  //                                                                       left:
-  //                                                                           18),
-  //                                                                   child: TextLabell(
-  //                                                                     text:
-  //                                                                         "ALPHA / Belum Absen",
-  //                                                                     weight: FontWeight
-  //                                                                         .w500,
-  //                                                                   ))
-  //                                   :
-
-  //                                   //     ada asen
-  //                                   Column(
-  //                                       children: [
-  //                                         tanggal == "" || tanggal == null
-  //                                             ?
-  //                                             //tidak ada absen
-  //                                             namaHariLibur != null
-  //                                                 ? Padding(
-  //                                                     padding:
-  //                                                         const EdgeInsets.only(
-  //                                                             top: 12),
-  //                                                     child: Row(
-  //                                                       children: [
-  //                                                         Icon(
-  //                                                           Iconsax.info_circle,
-  //                                                           size: 15,
-  //                                                           color: Constanst
-  //                                                               .infoLight,
-  //                                                         ),
-  //                                                         const SizedBox(
-  //                                                           width: 10,
-  //                                                         ),
-  //                                                         TextLabell(
-  //                                                           text: namaHariLibur,
-  //                                                           weight:
-  //                                                               FontWeight.w400,
-  //                                                           size: 11.0,
-  //                                                         ),
-  //                                                       ],
-  //                                                     ))
-  //                                                 : namaTugasLuar != null
-  //                                                     ? Padding(
-  //                                                         padding: const EdgeInsets
-  //                                                             .only(top: 12),
-  //                                                         child: Row(
-  //                                                           children: [
-  //                                                             Icon(
-  //                                                               Iconsax
-  //                                                                   .info_circle,
-  //                                                               size: 15,
-  //                                                               color: Constanst
-  //                                                                   .infoLight,
-  //                                                             ),
-  //                                                             const SizedBox(
-  //                                                               width: 10,
-  //                                                             ),
-  //                                                             TextLabell(
-  //                                                               text:
-  //                                                                   namaTugasLuar,
-  //                                                               weight:
-  //                                                                   FontWeight
-  //                                                                       .w400,
-  //                                                               size: 11.0,
-  //                                                             ),
-  //                                                           ],
-  //                                                         ))
-  //                                                     : namaDinasLuar != null
-  //                                                         ? Padding(
-  //                                                             padding:
-  //                                                                 const EdgeInsets
-  //                                                                     .only(
-  //                                                                     top: 12),
-  //                                                             child: Row(
-  //                                                               children: [
-  //                                                                 Icon(
-  //                                                                   Iconsax
-  //                                                                       .info_circle,
-  //                                                                   size: 15,
-  //                                                                   color: Constanst
-  //                                                                       .infoLight,
-  //                                                                 ),
-  //                                                                 const SizedBox(
-  //                                                                   width: 10,
-  //                                                                 ),
-  //                                                                 TextLabell(
-  //                                                                   text:
-  //                                                                       namaDinasLuar,
-  //                                                                   weight:
-  //                                                                       FontWeight
-  //                                                                           .w400,
-  //                                                                   size: 11.0,
-  //                                                                 ),
-  //                                                               ],
-  //                                                             ))
-  //                                                         : namaCuti != null
-  //                                                             ? Padding(
-  //                                                                 padding:
-  //                                                                     const EdgeInsets
-  //                                                                         .only(
-  //                                                                         top:
-  //                                                                             12),
-  //                                                                 child: Row(
-  //                                                                   children: [
-  //                                                                     Icon(
-  //                                                                       Iconsax
-  //                                                                           .info_circle,
-  //                                                                       size:
-  //                                                                           15,
-  //                                                                       color: Constanst
-  //                                                                           .infoLight,
-  //                                                                     ),
-  //                                                                     const SizedBox(
-  //                                                                       width:
-  //                                                                           10,
-  //                                                                     ),
-  //                                                                     TextLabell(
-  //                                                                       text:
-  //                                                                           namaCuti,
-  //                                                                       weight:
-  //                                                                           FontWeight.w400,
-  //                                                                       size:
-  //                                                                           11.0,
-  //                                                                     ),
-  //                                                                   ],
-  //                                                                 ))
-  //                                                             : namaSakit !=
-  //                                                                     null
-  //                                                                 ? Padding(
-  //                                                                     padding: const EdgeInsets
-  //                                                                         .only(
-  //                                                                         top:
-  //                                                                             12),
-  //                                                                     child:
-  //                                                                         Row(
-  //                                                                       children: [
-  //                                                                         Icon(
-  //                                                                           Iconsax.info_circle,
-  //                                                                           size:
-  //                                                                               15,
-  //                                                                           color:
-  //                                                                               Constanst.infoLight,
-  //                                                                         ),
-  //                                                                         const SizedBox(
-  //                                                                           width:
-  //                                                                               10,
-  //                                                                         ),
-  //                                                                         TextLabell(
-  //                                                                           text:
-  //                                                                               namaSakit,
-  //                                                                           weight:
-  //                                                                               FontWeight.w400,
-  //                                                                           size:
-  //                                                                               11.0,
-  //                                                                         ),
-  //                                                                       ],
-  //                                                                     ))
-  //                                                                 : offDay.toString() ==
-  //                                                                         '0'
-  //                                                                     ? Padding(
-  //                                                                         padding: const EdgeInsets
-  //                                                                             .only(
-  //                                                                             top:
-  //                                                                                 12),
-  //                                                                         child:
-  //                                                                             Row(
-  //                                                                           children: [
-  //                                                                             Icon(
-  //                                                                               Iconsax.info_circle,
-  //                                                                               size: 15,
-  //                                                                               color: Constanst.infoLight,
-  //                                                                             ),
-  //                                                                             const SizedBox(
-  //                                                                               width: 10,
-  //                                                                             ),
-  //                                                                             const TextLabell(
-  //                                                                               text: "Hari Libur Kerja",
-  //                                                                               weight: FontWeight.w400,
-  //                                                                               size: 11.0,
-  //                                                                             ),
-  //                                                                           ],
-  //                                                                         ))
-  //                                                                     : const SizedBox()
-  //                                             : const SizedBox(),
-  //                                         Padding(
-  //                                           padding: const EdgeInsets.only(
-  //                                               top: 12, bottom: 1),
-  //                                           child: InkWell(
-  //                                             onTap: () {
-  //                                               controller.historySelected(
-  //                                                   idAbsen, 'history');
-  //                                             },
-  //                                             child: Column(
-  //                                               crossAxisAlignment:
-  //                                                   CrossAxisAlignment.start,
-  //                                               children: [
-  //                                                 // (DateTime.parse(waktuMasuk)
-  //                                                 //         .isAfter(
-  //                                                 //             DateTime.parse(
-  //                                                 //                 batasWaktu)))
-  //                                                 //     ? Padding(
-  //                                                 //         padding:
-  //                                                 //             const EdgeInsets
-  //                                                 //                 .only(
-  //                                                 //                 left: 12.0,
-  //                                                 //                 bottom: 4.0),
-  //                                                 //         child: Row(
-  //                                                 //           children: [
-  //                                                 //             Icon(
-  //                                                 //               Iconsax
-  //                                                 //                   .info_circle,
-  //                                                 //               size: 15,
-  //                                                 //               color: Constanst
-  //                                                 //                   .infoLight,
-  //                                                 //             ),
-  //                                                 //             const SizedBox(
-  //                                                 //               width: 8,
-  //                                                 //             ),
-  //                                                 //             const TextLabell(
-  //                                                 //               text:
-  //                                                 //                   "Terlambat",
-  //                                                 //               weight:
-  //                                                 //                   FontWeight
-  //                                                 //                       .w400,
-  //                                                 //               size: 11.0,
-  //                                                 //             ),
-  //                                                 //           ],
-  //                                                 //         ))
-  //                                                 //     : Container(),
-  //                                                 Row(
-  //                                                   children: [
-  //                                                     Expanded(
-  //                                                       flex: 38,
-  //                                                       child: Padding(
-  //                                                         padding:
-  //                                                             const EdgeInsets
-  //                                                                 .only(
-  //                                                                 left: 8.0),
-  //                                                         child: Row(
-  //                                                           mainAxisAlignment:
-  //                                                               MainAxisAlignment
-  //                                                                   .start,
-  //                                                           children: [
-  //                                                             Icon(
-  //                                                               Iconsax.login_1,
-  //                                                               color: Constanst
-  //                                                                   .color5,
-  //                                                               size: 16,
-  //                                                             ),
-  //                                                             Padding(
-  //                                                               padding:
-  //                                                                   const EdgeInsets
-  //                                                                       .only(
-  //                                                                       left:
-  //                                                                           4),
-  //                                                               child: Column(
-  //                                                                 crossAxisAlignment:
-  //                                                                     CrossAxisAlignment
-  //                                                                         .start,
-  //                                                                 children: [
-  //                                                                   Text(
-  //                                                                     "$jamMasuk",
-  //                                                                     style: GoogleFonts.inter(
-  //                                                                         color: Constanst
-  //                                                                             .fgPrimary,
-  //                                                                         fontWeight: FontWeight
-  //                                                                             .w500,
-  //                                                                         fontSize:
-  //                                                                             16),
-  //                                                                   ),
-  //                                                                   const SizedBox(
-  //                                                                       height:
-  //                                                                           4),
-  //                                                                   Text(
-  //                                                                     regType ==
-  //                                                                             0
-  //                                                                         ? "Face Recognition"
-  //                                                                         : "Photo",
-  //                                                                     style: GoogleFonts.inter(
-  //                                                                         color: Constanst
-  //                                                                             .fgSecondary,
-  //                                                                         fontWeight: FontWeight
-  //                                                                             .w400,
-  //                                                                         fontSize:
-  //                                                                             10),
-  //                                                                   ),
-  //                                                                 ],
-  //                                                               ),
-  //                                                             )
-  //                                                           ],
-  //                                                         ),
-  //                                                       ),
-  //                                                     ),
-  //                                                     const SizedBox(height: 4),
-  //                                                     Expanded(
-  //                                                       flex: 38,
-  //                                                       child: Padding(
-  //                                                         padding:
-  //                                                             const EdgeInsets
-  //                                                                 .only(
-  //                                                                 left: 4),
-  //                                                         child: Row(
-  //                                                           mainAxisAlignment:
-  //                                                               MainAxisAlignment
-  //                                                                   .start,
-  //                                                           children: [
-  //                                                             Icon(
-  //                                                               Iconsax
-  //                                                                   .logout_14,
-  //                                                               color: Constanst
-  //                                                                   .color4,
-  //                                                               size: 16,
-  //                                                             ),
-  //                                                             Padding(
-  //                                                               padding:
-  //                                                                   const EdgeInsets
-  //                                                                       .only(
-  //                                                                       left:
-  //                                                                           4),
-  //                                                               child: Column(
-  //                                                                 crossAxisAlignment:
-  //                                                                     CrossAxisAlignment
-  //                                                                         .start,
-  //                                                                 children: [
-  //                                                                   Text(
-  //                                                                     "$jamKeluar",
-  //                                                                     style: GoogleFonts.inter(
-  //                                                                         color: Constanst
-  //                                                                             .fgPrimary,
-  //                                                                         fontWeight: FontWeight
-  //                                                                             .w500,
-  //                                                                         fontSize:
-  //                                                                             16),
-  //                                                                   ),
-  //                                                                   const SizedBox(
-  //                                                                       height:
-  //                                                                           4),
-  //                                                                   Text(
-  //                                                                     regType ==
-  //                                                                             0
-  //                                                                         ? "Face Recognition"
-  //                                                                         : "Photo",
-  //                                                                     style: GoogleFonts.inter(
-  //                                                                         color: Constanst
-  //                                                                             .fgSecondary,
-  //                                                                         fontWeight: FontWeight
-  //                                                                             .w400,
-  //                                                                         fontSize:
-  //                                                                             10),
-  //                                                                   ),
-  //                                                                 ],
-  //                                                               ),
-  //                                                             )
-  //                                                           ],
-  //                                                         ),
-  //                                                       ),
-  //                                                     ),
-  //                                                     Expanded(
-  //                                                       flex: 9,
-  //                                                       child: Icon(
-  //                                                         Icons
-  //                                                             .arrow_forward_ios_rounded,
-  //                                                         size: 16,
-  //                                                         color: Constanst
-  //                                                             .colorNeutralFgTertiary,
-  //                                                       ),
-  //                                                     ),
-  //                                                   ],
-  //                                                 ),
-  //                                               ],
-  //                                             ),
-  //                                           ),
-  //                                         ),
-  //                                         controller.detailRiwayat.value[index]
-  //                                                 .turunan!.isNotEmpty
-  //                                             ? Container(
-  //                                                 padding:
-  //                                                     const EdgeInsets.only(
-  //                                                         top: 4),
-  //                                                 child: Column(
-  //                                                   children: [
-  //                                                     controller
-  //                                                                 .detailRiwayat
-  //                                                                 .value[index]
-  //                                                                 .statusView ==
-  //                                                             false
-  //                                                         ? const SizedBox()
-  //                                                         : Column(
-  //                                                             children: List.generate(
-  //                                                                 controller
-  //                                                                     .detailRiwayat
-  //                                                                     .value[
-  //                                                                         index]
-  //                                                                     .turunan!
-  //                                                                     .length,
-  //                                                                 (i) {
-  //                                                               var datum = controller
-  //                                                                   .detailRiwayat
-  //                                                                   .value[
-  //                                                                       index]
-  //                                                                   .turunan![i];
-  //                                                               var jamMasuk =
-  //                                                                   datum.signin_time ??
-  //                                                                       '';
-  //                                                               var jamKeluar =
-  //                                                                   datum.signout_time ??
-  //                                                                       '';
-  //                                                               var placeIn =
-  //                                                                   datum.place_in ??
-  //                                                                       '';
-  //                                                               var placeOut =
-  //                                                                   datum.place_out ??
-  //                                                                       '';
-  //                                                               var note = datum
-  //                                                                       .signin_note ??
-  //                                                                   '';
-  //                                                               var signInLongLat =
-  //                                                                   datum.signin_longlat ??
-  //                                                                       '';
-  //                                                               var signOutLongLat =
-  //                                                                   datum.signout_longlat ??
-  //                                                                       '';
-  //                                                               var regType =
-  //                                                                   datum.reqType ??
-  //                                                                       0;
-  //                                                               var statusView;
-  //                                                               if (placeIn !=
-  //                                                                   "") {
-  //                                                                 statusView = placeIn ==
-  //                                                                             "pengajuan" &&
-  //                                                                         placeOut ==
-  //                                                                             "pengajuan"
-  //                                                                     ? true
-  //                                                                     : false;
-  //                                                               }
-  //                                                               var listJamMasuk =
-  //                                                                   (jamMasuk!
-  //                                                                       .split(
-  //                                                                           ':'));
-  //                                                               var listJamKeluar =
-  //                                                                   (jamKeluar!
-  //                                                                       .split(
-  //                                                                           ':'));
-  //                                                               return Column(
-  //                                                                 children: [
-  //                                                                   const Divider(),
-  //                                                                   Padding(
-  //                                                                     padding: const EdgeInsets
-  //                                                                         .only(
-  //                                                                         top:
-  //                                                                             6),
-  //                                                                     child:
-  //                                                                         InkWell(
-  //                                                                       onTap:
-  //                                                                           () {
-  //                                                                         controller.historySelected(
-  //                                                                             datum.id,
-  //                                                                             'history');
-  //                                                                       },
-  //                                                                       child:
-  //                                                                           Row(
-  //                                                                         children: [
-  //                                                                           Expanded(
-  //                                                                             flex: 38,
-  //                                                                             child: Padding(
-  //                                                                               padding: const EdgeInsets.only(left: 8.0),
-  //                                                                               child: Row(
-  //                                                                                 mainAxisAlignment: MainAxisAlignment.start,
-  //                                                                                 children: [
-  //                                                                                   Icon(
-  //                                                                                     Iconsax.login_1,
-  //                                                                                     color: Constanst.color5,
-  //                                                                                     size: 16,
-  //                                                                                   ),
-  //                                                                                   Padding(
-  //                                                                                     padding: const EdgeInsets.only(left: 4),
-  //                                                                                     child: Column(
-  //                                                                                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                                                                                       children: [
-  //                                                                                         Text(
-  //                                                                                           "$jamMasuk",
-  //                                                                                           style: GoogleFonts.inter(color: Constanst.fgPrimary, fontWeight: FontWeight.w500, fontSize: 16),
-  //                                                                                         ),
-  //                                                                                         const SizedBox(height: 4),
-  //                                                                                         Text(
-  //                                                                                           regType == 0 ? "Face Recognition" : "Photo",
-  //                                                                                           style: GoogleFonts.inter(color: Constanst.fgSecondary, fontWeight: FontWeight.w400, fontSize: 10),
-  //                                                                                         ),
-  //                                                                                       ],
-  //                                                                                     ),
-  //                                                                                   )
-  //                                                                                 ],
-  //                                                                               ),
-  //                                                                             ),
-  //                                                                           ),
-  //                                                                           Expanded(
-  //                                                                             flex: 38,
-  //                                                                             child: Padding(
-  //                                                                               padding: const EdgeInsets.only(left: 4),
-  //                                                                               child: Row(
-  //                                                                                 mainAxisAlignment: MainAxisAlignment.start,
-  //                                                                                 children: [
-  //                                                                                   Icon(
-  //                                                                                     Iconsax.logout_14,
-  //                                                                                     color: Constanst.color4,
-  //                                                                                     size: 16,
-  //                                                                                   ),
-  //                                                                                   Padding(
-  //                                                                                     padding: const EdgeInsets.only(left: 4),
-  //                                                                                     child: Column(
-  //                                                                                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                                                                                       children: [
-  //                                                                                         Text(
-  //                                                                                           "$jamKeluar",
-  //                                                                                           style: GoogleFonts.inter(color: Constanst.fgPrimary, fontWeight: FontWeight.w500, fontSize: 16),
-  //                                                                                         ),
-  //                                                                                         const SizedBox(height: 4),
-  //                                                                                         Text(
-  //                                                                                           regType == 0 ? "Face Recognition" : "Photo",
-  //                                                                                           style: GoogleFonts.inter(color: Constanst.fgSecondary, fontWeight: FontWeight.w400, fontSize: 10),
-  //                                                                                         ),
-  //                                                                                       ],
-  //                                                                                     ),
-  //                                                                                   )
-  //                                                                                 ],
-  //                                                                               ),
-  //                                                                             ),
-  //                                                                           ),
-  //                                                                           Expanded(
-  //                                                                             flex: 9,
-  //                                                                             child: Icon(
-  //                                                                               Icons.arrow_forward_ios_rounded,
-  //                                                                               size: 16,
-  //                                                                               color: Constanst.colorNeutralFgTertiary,
-  //                                                                             ),
-  //                                                                           ),
-  //                                                                         ],
-  //                                                                       ),
-  //                                                                     ),
-  //                                                                   ),
-  //                                                                 ],
-  //                                                               );
-  //                                                             }),
-  //                                                           ),
-  //                                                     const Divider(),
-  //                                                     InkWell(
-  //                                                       onTap: () {
-  //                                                         print(controller
-  //                                                             .detailRiwayat
-  //                                                             .value[index]
-  //                                                             .statusView);
-  //                                                         //  controller.detailRiwayat.value[index].statusView=!controller.detailRiwayat.value[index].statusView;
-  //                                                         controller
-  //                                                             .detailRiwayat
-  //                                                             .forEach(
-  //                                                                 (element) {
-  //                                                           if (element.id
-  //                                                                   .toString() ==
-  //                                                               controller
-  //                                                                   .detailRiwayat
-  //                                                                   .value[
-  //                                                                       index]
-  //                                                                   .id
-  //                                                                   .toString()) {
-  //                                                             element.statusView =
-  //                                                                 !controller
-  //                                                                     .detailRiwayat
-  //                                                                     .value[
-  //                                                                         index]
-  //                                                                     .statusView;
-  //                                                           } else {}
-  //                                                         });
-  //                                                         controller
-  //                                                             .detailRiwayat
-  //                                                             .refresh();
-  //                                                       },
-  //                                                       child: Container(
-  //                                                         padding:
-  //                                                             const EdgeInsets
-  //                                                                 .only(
-  //                                                                 bottom: 12),
-  //                                                         width: MediaQuery.of(
-  //                                                                 context)
-  //                                                             .size
-  //                                                             .width,
-  //                                                         child: controller
-  //                                                                     .detailRiwayat
-  //                                                                     .value[
-  //                                                                         index]
-  //                                                                     .statusView ==
-  //                                                                 true
-  //                                                             ? Center(
-  //                                                                 child:
-  //                                                                     Container(
-  //                                                                         child:
-  //                                                                             const TextLabell(
-  //                                                                 text: "Tutup",
-  //                                                                 size: 14,
-  //                                                               )))
-  //                                                             : Center(
-  //                                                                 child: Container(
-  //                                                                     child: const TextLabell(
-  //                                                                         text:
-  //                                                                             "lainnya",
-  //                                                                         size:
-  //                                                                             14))),
-  //                                                       ),
-  //                                                     )
-  //                                                   ],
-  //                                                 ),
-  //                                               )
-  //                                             : const SizedBox(
-  //                                                 height: 8,
-  //                                               )
-  //                                       ],
-  //                                     ),
-  //                             )
-  //                           ],
-  //                         ),
-  //                       )
-  //                     : Row(
-  //                         crossAxisAlignment: CrossAxisAlignment.start,
-  //                         children: [
-  //                           Expanded(
-  //                             flex: 40,
-  //                             child: Text(
-  //                               "${Constanst.convertDate(tanggal ?? '')}",
-  //                               style: TextStyle(fontSize: 14),
-  //                             ),
-  //                           ),
-  //                           Expanded(
-  //                             flex: 60,
-  //                             child: Row(
-  //                               mainAxisAlignment: MainAxisAlignment.center,
-  //                               crossAxisAlignment: CrossAxisAlignment.center,
-  //                               children: [
-  //                                 Text(
-  //                                   "$note",
-  //                                   style:
-  //                                       TextStyle(fontWeight: FontWeight.bold),
-  //                                 )
-  //                               ],
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //               ],
-  //             ),
-  //           ),
-  //         );
-  //       });
-  // }
   Widget listAbsen() {
     return ListView.builder(
         physics: controller.historyAbsen.length <= 10
@@ -1254,8 +342,135 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
   }
 
   Widget tampilan2(AbsenModel index) {
+
+    var startTime;
+    var endTime;
+    var startDate;
+    var endDate;
+    var now = DateTime.now();
+
+    TimeOfDay waktu1 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[0]),
+        minute: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[1]));
+
+    TimeOfDay waktu2 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].endTime.toString().split(':')[0]),
+        minute: int.parse(AppData.informasiUser![0].endTime
+            .toString()
+            .split(':')[1])); // Waktu kedua
+    print('ini waktu 1${AppData.informasiUser![0].startTime}');
+    int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+    int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+
+    //alur normal
+//     if (totalMinutes1 < totalMinutes2) {
+// // Menggabungkan tanggal hari ini dengan waktu dari string
+//       startTime = DateTime.parse(
+//           '${index.atten_date} ${AppData.informasiUser![0].startTime}:00');
+//       endTime = DateTime.parse(
+//           '${index.atten_date} ${AppData.informasiUser![0].endTime}:00');
+
+//       //alur beda hari
+//     } else if (totalMinutes1 > totalMinutes2) {
+//       var waktu3 =
+//           TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+//       int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+//       if (totalMinutes2 > totalMinutes3) {
+//         print("masuk sini view las user");
+//         var today;
+//         if (index.atten_date!.isNotEmpty) {
+//           today = DateTime.parse(index.atten_date!);
+//         }
+//         var yesterday = today.add(const Duration(days: 1));
+//         startDate = DateFormat('yyyy-MM-dd').format(yesterday);
+//         endDate = DateFormat('yyyy-MM-dd').format(today);
+//         startTime = DateTime.parse(
+//             '$startDate ${AppData.informasiUser![0].startTime}:00');
+//         endTime =
+//             DateTime.parse('$endDate ${AppData.informasiUser![0].endTime}:00');
+//         print('ini  bener gakl lu${startTime.isAfter(today)}');
+//       } else {
+//         var today;
+//         print('masa lu kosong sih ${index.atten_date}');
+//         if (index.atten_date!.isNotEmpty) {
+//           today = DateTime.parse(index.atten_date!);
+//         } else {
+//           today = DateTime.now();
+//         }
+//         var yesterday = today.add(const Duration(days: 1));
+
+//         startDate = DateFormat('yyyy-MM-dd').format(today);
+//         endDate = DateFormat('yyyy-MM-dd').format(yesterday);
+
+//         startTime = DateTime.parse(
+//             '$startDate ${AppData.informasiUser![0].startTime}:00'); // Waktu kemarin
+//         endTime =
+//             DateTime.parse('$endDate ${AppData.informasiUser![0].endTime}:00');
+//         print(
+//             'ini  bener gakl lu${startTime.isBefore(today)}'); // Waktu hari ini
+//         print('ini  bener gakl lu${startTime}'); // Waktu hari ini
+//         print('ini  bener gakl lu${endTime}'); // Waktu hari ini
+//       }
+//     } else {
+//       startTime = AppData.informasiUser![0].startTime;
+//       endTime = AppData.informasiUser![0].endTime;
+
+//       startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+//       endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+//       print(
+//           "Waktu 1 sama dengan waktu 2 new ${totalMinutes1}  ${totalMinutes2}");
+//     }
+    var tipeAbsen = AppData.informasiUser![0].tipeAbsen;
+    var tipeAlpha = AppData.informasiUser![0].tipeAlpha;
+    var list = tipeAlpha.toString().split(',').map(int.parse).toList();
+    print('ini tampilan 2 $tipeAbsen $tipeAlpha $list');
+    var masuk = list[0];
+    var keluar = list[1];
+    var istirahatMasuk = list[2];
+    var istirahatKeluar = list[3];
     var jamMasuk = index.signin_time ?? '';
     var jamKeluar = index.signout_time ?? '';
+    print(jamKeluar.isEmpty);
+    print(keluar);
+    var jamIstirahatMasuk = index.breakinTime ?? '';
+    var jamIstirahatKeluar = index.breakoutTime ?? '';
+    if (tipeAbsen == '2') {
+      if ((keluar == 1 && jamKeluar == '00:00:00') ||
+          (masuk == 1 && jamMasuk == '00:00:00')) {
+        controllerAbsen.tipeAlphaAbsen.value = 1;
+        if (jamMasuk == '00:00:00') {
+          controllerAbsen.catatanAlpha.value = '/ Gak Absen Masuk';
+        } else {
+          controllerAbsen.catatanAlpha.value = '/ Gak Absen Keluar';
+        }
+      } else {
+        controllerAbsen.tipeAlphaAbsen.value = 0;
+      }
+    } else if (tipeAbsen == '3') {
+      print('gak mungkin gak kemari');
+      if ((keluar == 1 && jamKeluar == '00:00:00') ||
+          (masuk == 1 && jamMasuk == '00:00:00') ||
+          (jamIstirahatKeluar == '00:00:00' && istirahatKeluar == 1) ||
+          (jamIstirahatMasuk == '00:00:00' && istirahatMasuk == 1)) {
+        print('masa gak kesini');
+        controllerAbsen.tipeAlphaAbsen.value = 1;
+        if (jamMasuk == '00:00:00') {
+          controllerAbsen.catatanAlpha.value = '/ Gak Absen Masuk';
+        } else if (jamKeluar == '00:00:00') {
+          controllerAbsen.catatanAlpha.value = '/ Gak Absen Keluar';
+        } else if (jamIstirahatKeluar == '00:00:00') {
+          controllerAbsen.catatanAlpha.value = '/ Gak Absen Istirahat Keluar';
+        } else if (jamIstirahatMasuk == '00:00:00') {
+          controllerAbsen.catatanAlpha.value = '/ Gak Absen Istirahat Masuk';
+        }
+      } else {
+        controllerAbsen.tipeAlphaAbsen.value = 0;
+      }
+    }
     var placeIn = index.place_in ?? '';
     var placeOut = index.place_out ?? '';
     var note = index.signin_note ?? '';
@@ -1628,7 +843,30 @@ class _LaporanAbsenKaryawanState extends State<LaporanAbsenKaryawan> {
                           index.atten_date != "" || index.atten_date != null
                               ?
                               //tidak ada absen
-                              index.namaHariLibur != null
+                              controllerAbsen.tipeAlphaAbsen.value == 1 &&
+                                      (endTime.isBefore(now))
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(top: 12),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Iconsax.info_circle,
+                                            size: 15,
+                                            color: Constanst.infoLight,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          TextLabell(
+                                            text:
+                                                "ALPHA ${controllerAbsen.catatanAlpha.value}",
+                                            weight: FontWeight.w400,
+                                            size: 11.0,
+                                          ),
+                                        ],
+                                      ))
+                                  
+                              : index.namaHariLibur != null
                                   ? Padding(
                                       padding: const EdgeInsets.only(top: 12),
                                       child: Row(

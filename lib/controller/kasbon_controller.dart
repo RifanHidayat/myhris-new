@@ -77,12 +77,12 @@ class KasbonController extends GetxController {
   void onReady() async {
     print("on ready");
     super.onReady();
-    // getTimeNow();
-    // getLoadsysData();
-    // // loadDataKasbon();
-    // loadAllEmployeeDelegasi();
-    // getTypeKasbon();
-    // getDepartemen(1, "");
+    getTimeNow();
+    getLoadsysData();
+    // loadDataKasbon();
+    loadAllEmployeeDelegasi();
+    getTypeKasbon();
+    getDepartemen(1, "");
   }
 
   void showInputCari() {
@@ -400,7 +400,6 @@ class KasbonController extends GetxController {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
           var data = valueBody['data'];
-          print("data delegasi ${data}");
           for (var element in data) {
             if (element['status'] == 'ACTIVE') {
               var fullName = element['full_name'] ?? "";
@@ -810,7 +809,7 @@ class KasbonController extends GetxController {
             title: typeNotifFcm,
             message: description,
             tokens: fcmTokenDelegasi);
-        UtilsAlert.showToast("Berhasil kirim delegasi");
+        // UtilsAlert.showToast("Berhasil kirim delegasi");
       }
     });
   }
@@ -847,7 +846,7 @@ class KasbonController extends GetxController {
         //     title: typeNotifFcm,
         //     message: description,
         //     tokens: fcmTokenDelegasi);
-        UtilsAlert.showToast("Berhasil kirim delegasi");
+        // UtilsAlert.showToast("Berhasil kirim delegasi");
       }
     });
   }

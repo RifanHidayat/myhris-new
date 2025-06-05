@@ -13,6 +13,7 @@ import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/berhasil_controller.dart';
 import 'package:siscom_operasional/controller/tracking_controller.dart';
 import 'package:siscom_operasional/screen/absen/camera_view_register.dart';
+import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -87,10 +88,10 @@ class BerhasilAbsensi extends StatefulWidget {
 }
 
 class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
-  var controller = Get.find<AbsenController>(tag: 'absen controller');
+  var controller = Get.find<AbsenController>();
   var controllerBerhasil = Get.put(BerhasilController());
   var authController = Get.put(AuthController());
-  var controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
+  var controllerTracking = Get.put(TrackingController());
   Timer? time;
   Location location = new Location();
 
@@ -321,7 +322,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                             child: Padding(
                               padding: EdgeInsets.only(left: 10, right: 10),
                               child: Text(
-                                '${widget.dataBerhasil![4]} - ${widget.dataBerhasil![1]}',
+                                widget.dataBerhasil![1],
                                 style: Constanst.colorGreenBold,
                               ),
                             ),
@@ -335,7 +336,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                             child: Padding(
                               padding: EdgeInsets.only(left: 10, right: 10),
                               child: Text(
-                                '${widget.dataBerhasil![4]} - ${widget.dataBerhasil![1]}',
+                                widget.dataBerhasil![1],
                                 style: Constanst.colorRedBold,
                               ),
                             ),
@@ -357,7 +358,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                       borderRadius: BorderRadius.circular(8.0),
                       side: BorderSide(color: Colors.white)))),
           onPressed: () async {
-            AbsenController().removeAll();
+            absenControllre.removeAll();
             // if (authController.isConnected.value) {
             String checkUserKontrol =
                 await controllerBerhasil.checkUserKontrol();
@@ -367,8 +368,8 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
               if (widget.dataBerhasil![2] == 1) {
                 if (checkUserKontrol.toString() != '0') {
                   // _startForegroundTask();
-                  AbsenController().removeAll();
-                  Get.offAll(InitScreen());
+                  absenControllre.removeAll();
+                  Get.offAll(() => InitScreen());
                   if (absenControllre.isTracking.value == 1) {
                     absenControllre.activeTracking.value = 1;
                   } else {
@@ -377,8 +378,8 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                 } else {
                   absenControllre.activeTracking.value = 0;
 
-                  AbsenController().removeAll();
-                  Get.offAll(InitScreen());
+                  absenControllre.removeAll();
+                  Get.offAll(() => InitScreen());
                 }
               } else {
                 if (checkUserKontrol != '0') {
@@ -386,16 +387,16 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
                   _stopService();
                   Location location = new Location();
                   location.enableBackgroundMode(enable: false);
-                  AbsenController().removeAll();
-                  Get.offAll(InitScreen());
+                  absenControllre.removeAll();
+                  Get.offAll(() => InitScreen());
                 } else {
-                  AbsenController().removeAll();
-                  Get.offAll(InitScreen());
+                  absenControllre.removeAll();
+                  Get.offAll(() => InitScreen());
                 }
               }
             } catch (e) {
               AbsenController().removeAll();
-              Get.offAll(InitScreen());
+              Get.offAll(() => InitScreen());
             }
             // } else {
             //   AbsenController().removeAll();
@@ -498,7 +499,7 @@ class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
 // }
 
 // class _BerhasilAbsensiState extends State<BerhasilAbsensi> {
-//   var controller = Get.find<AbsenController>(tag: 'absen controller');
+//   var controller = Get.find<AbsenController>();
 //   var controllerBerhasil = Get.put(BerhasilController());
 //   Timer? time;
 //   Location location = new Location();

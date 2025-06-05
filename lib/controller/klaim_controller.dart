@@ -82,11 +82,11 @@ class KlaimController extends GetxController {
   void onReady() async {
     super.onReady();
     getTimeNow();
-    // getLoadsysData();
-    // getTypeKlaim();
-    // loadDataKlaim();
-    // loadAllEmployeeDelegasi();
-    // getDepartemen(1, "");
+    getLoadsysData();
+    getTypeKlaim();
+    loadDataKlaim();
+    loadAllEmployeeDelegasi();
+    getDepartemen(1, "");
   }
 
   void removeAll() {
@@ -626,7 +626,7 @@ class KlaimController extends GetxController {
         //     title: typeNotifFcm,
         //     message: description,
         //     tokens: fcmTokenDelegasi);
-        UtilsAlert.showToast("Berhasil kirim delegasi");
+        // UtilsAlert.showToast("Berhasil kirim delegasi");
       }
     });
   }

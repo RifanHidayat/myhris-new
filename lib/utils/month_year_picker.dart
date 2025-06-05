@@ -7,7 +7,7 @@ class CustomMonthPicker extends DatePickerModel {
       DateTime? maxTime,
       LocaleType? locale})
       : super(
-            locale: locale ?? LocaleType.id,
+            locale: locale,
             minTime: minTime,
             maxTime: maxTime,
             currentTime: currentTime);

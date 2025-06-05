@@ -25,6 +25,7 @@ import 'package:ntp/ntp.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:siscom_operasional/controller/dashboard_controller.dart';
 // import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/model/absen_model.dart';
 import 'package:siscom_operasional/model/detail_tracking.dart';
@@ -272,19 +273,20 @@ class TrackingController extends GetxController {
     isMaximizeDetail.value = !isMaximizeDetail.value;
   }
 
-  @override
-  void onReady() async {
-    print("Masulk ke controller absen");
-    getTimeNow();
-    // getLoadsysData();
-    // // loadHistoryAbsenUser();
-    // getDepartemen(1, "");
-    filterLokasiKoordinate.value = "Lokasi";
-    selectedViewFilterAbsen.value = 0;
-    pilihTanggalTelatAbsen.value = DateTime.now();
-    super.onReady();
-   // userShift();
-  }
+  // @override
+  // void onReady() async {
+  //   print("Masulk ke controller absen");
+  //   DashboardController().updateInformasiUser();
+  //   getTimeNow();
+  //   getLoadsysData();
+  //   // loadHistoryAbsenUser();
+  //   getDepartemen(1, "");
+  //   filterLokasiKoordinate.value = "Lokasi";
+  //   selectedViewFilterAbsen.value = 0;
+  //   pilihTanggalTelatAbsen.value = DateTime.now();
+  //   super.onReady();
+  //   userShift();
+  // }
 
   void getLoadsysData() {
     var connect = Api.connectionApi("get", "", "sysdata");
@@ -449,6 +451,7 @@ class TrackingController extends GetxController {
     connect.then((dynamic res) {
       if (res == false) {
         print("errror");
+        //UtilsAlert.koneksiBuruk();
       } else {
         if (res.statusCode == 200) {
           print("Place cordinate 200" + res.body.toString());
@@ -1528,15 +1531,14 @@ class TrackingController extends GetxController {
       // 'alamat': address.toString(),
       // 'database': AppData.selectedDatabase,
     };
-    print('parameter updateStatus ${body}');
 
     try {
       var response =
           await ApiRequest(url: "employee-tracking-update", body: body).post();
-      print('parameter ${response}');
+
       var resp = jsonDecode(response.body);
 
-      print('parameter updateStatus ${resp}');
+
 
       if (response.statusCode == 200) {
       } else {}
@@ -1569,7 +1571,7 @@ class TrackingController extends GetxController {
       // service.startService();
       var interval = prefs.getString('interval_tracking');
       var intervalMilliseconds = int.parse(interval!) * 60000;
-      // startService(intervalMilliseconds);
+      startService(intervalMilliseconds);
 
       print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
       print('hidup');
@@ -1594,7 +1596,7 @@ class TrackingController extends GetxController {
       //  // var isRunning = await service.isRunning();
 
       // service.invoke("stopService");
-      // stopService();
+      stopService();
 
       print("dapatttt is_tracking ${AppData.informasiUser![0].is_tracking}");
       print(
@@ -3150,27 +3152,27 @@ class TrackingController extends GetxController {
 
   void userShift() {
     // UtilsAlert.showLoadingIndicator(Get.context!);
-    // var dataUser = AppData.informasiUser;
-    // final box = GetStorage();
+    var dataUser = AppData.informasiUser;
+    final box = GetStorage();
 
-    // var id = dataUser![0].em_id;
+    var id = dataUser![0].em_id;
 
-    // var connect = Api.connectionApi("get", "", "setting_shift");
-    // connect.then((dynamic res) {
-    //   if (res == false) {
-    //     //UtilsAlert.koneksiBuruk();
-    //   } else {
-    //     if (res.statusCode == 200) {
-    //       var valueBody = jsonDecode(res.body);
-    //       List data = valueBody['data'];
-    //       print("data setting ${data}");
-    //       if (data.isNotEmpty) {
-    //         shift.value = OfficeShiftModel.fromJson(data[0]);
-    //       }
-    //     }
-    //     // Get.back();
-    //   }
-    // });
+    var connect = Api.connectionApi("get", "", "setting_shift");
+    connect.then((dynamic res) {
+      if (res == false) {
+        //UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          List data = valueBody['data'];
+          print("data setting ${data}");
+          if (data.isNotEmpty) {
+            shift.value = OfficeShiftModel.fromJson(data[0]);
+          }
+        }
+        // Get.back();
+      }
+    });
   }
 
   // void widgetButtomSheetFaceRegistrattion() {

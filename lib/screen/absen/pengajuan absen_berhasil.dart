@@ -108,7 +108,7 @@ class _pengajuanAbsenBerhasilState extends State<pengajuanAbsenBerhasil> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Selanjutnya Silahkan menunggu Atasan kamu\nuntuk menyetujui pengajuan yang telah dibuat\natau langsung',
+                    'Selanjutnya silakan menunggu Atasan kamu\nuntuk menyetujui pengajuan yang telah dibuat\natau langsung',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
                         fontWeight: FontWeight.w400,

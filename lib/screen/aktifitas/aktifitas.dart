@@ -19,12 +19,24 @@ import 'package:siscom_operasional/utils/month_year_picker.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class Aktifitas extends StatelessWidget {
+class Aktifitas extends StatefulWidget {
+  @override
+  State<Aktifitas> createState() => _AktifitasState();
+}
+
+class _AktifitasState extends State<Aktifitas> {
   final controller = Get.put(AktifitasController());
 
-  final stcontroller = Get.put(SettingController());
+  final stcontroller = Get.find<SettingController>();
 
   final authController = Get.put(AuthController());
+
+  @override
+  initState(){
+    super.initState();
+    controller.getInformasiAktivitas();
+    controller.loadAktifitas();
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(

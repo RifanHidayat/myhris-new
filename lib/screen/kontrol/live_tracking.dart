@@ -152,7 +152,7 @@ class _LiveTrackingState extends State<LiveTracking> {
     String emId = userInfo['em_id'];
     print("informasiUser ${emId}");
 
-    // controllerTracking.isTracking();
+    controllerTracking.isTracking();
     controllerTracking.refreshPage();
 
     print(

@@ -60,7 +60,7 @@ class ApiController extends GetxController {
     var connect = Api.connectionApi("post", body, "insert-notifikasi");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
-        UtilsAlert.showToast("Berhasil kirim delegasi");
+        // UtilsAlert.showToast("Berhasil kirim delegasi");
       }
     });
   }

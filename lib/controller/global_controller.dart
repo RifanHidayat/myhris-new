@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
@@ -19,15 +20,14 @@ class GlobalController extends GetxController {
   var konfirmasiAtasan = [].obs;
   var sysData = [].obs;
   var employeeSisaCuti = [].obs;
+  var dataHrd = [].obs;
 
-  // @override
-  // void onReady() async 
-  //   // getLoadsysData();
-  //   super.onReady();
-  // }
+  @override
+  void onReady() async {
+    // getLoadsysData();
+    super.onReady();
+  }
 
-  
-  
   Future<void> getLoadsysData() async {
     sysData.clear();
     var connect = Api.connectionApi("get", "", "sysdata");
@@ -38,6 +38,7 @@ class GlobalController extends GetxController {
         this.sysData.refresh();
         loadAllReportTo();
         loadAllSisaCuti();
+        loadHrd();
       }
     });
   }
@@ -72,8 +73,6 @@ class GlobalController extends GetxController {
       }
     });
   }
-
-
 
   // void loadAllSisaCuti() {
   //   print("sisa PKWT`");
@@ -122,6 +121,26 @@ class GlobalController extends GetxController {
   //     }
   //   });
   // }
+  void loadHrd() {
+    // UtilsAlert.showLoadingIndicator(Get.context!);
+
+    var id = 'sabrina@siscom.co.id';
+    print("em id ${id}");
+    Map<String, dynamic> body = {'val': 'em_email', 'cari': id};
+    var connect = Api.connectionApi("post", body, "whereOnce-employee");
+    connect.then((dynamic res) {
+      if (res == false) {
+        //UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          var data = valueBody['data'];
+          dataHrd.add(data);
+        }
+        // Get.back();
+      }
+    });
+  }
 
   void loadAllSisaCuti() {
     var emId = AppData.informasiUser![0].em_id;
@@ -173,6 +192,246 @@ class GlobalController extends GetxController {
         this.employeeSisaCuti.refresh();
       }
     });
+  }
+
+  showDataPilihHrd(dataEmployee) async {
+    UtilsAlert.showLoadingIndicator(Get.context!);
+    await getLoadsysData();
+    await Future.delayed(const Duration(seconds: 1));
+    Get.back();
+    showModalBottomSheet(
+        context: Get.context!,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(16.0),
+          ),
+        ),
+        backgroundColor: Constanst.colorWhite,
+        builder: (context) {
+          return SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 18.0, 16.0, 18.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Konfirmasi via Whatsapp",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18),
+                      ),
+                      InkWell(
+                          customBorder: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          onTap: () => Navigator.pop(Get.context!),
+                          child: Icon(
+                            Icons.close,
+                            size: 24.0,
+                            color: Constanst.fgSecondary,
+                          ))
+                    ],
+                  ),
+                ),
+                Divider(
+                  height: 0,
+                  thickness: 1,
+                  color: Constanst.fgBorder,
+                ),
+                const SizedBox(height: 44),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Constanst.colorNeutralBgSecondary,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(16.0),
+                          topLeft: Radius.circular(16.0),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(16.0),
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/character1.svg',
+                              width: 120,
+                              height: 110,
+                            ),
+                          ),
+                          const SizedBox(height: 19),
+                        ],
+                      ),
+                    ),
+                    Container(
+                        color: Constanst.colorNeutralBgSecondary,
+                        child: const SizedBox(width: 33, height: 129)),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Constanst.colorNeutralBgSecondary,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(16.0),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 25),
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomRight: Radius.circular(16.0),
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/character2.svg',
+                              width: 127,
+                              height: 104,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  "Beri tahu HRD mu tentang kendala yang terjadi melalui Whatsapp",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                      color: Constanst.fgPrimary,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14),
+                ),
+                const SizedBox(height: 28),
+                ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: dataHrd.value.length,
+                    itemBuilder: (context, index) {
+                      var full_name = dataHrd.value[index]['full_name'];
+                      var job_title = dataHrd.value[index]['job_title'];
+                      var gambar = dataHrd.value[index]['em_image'];
+                      var nohp = dataHrd.value[index]['em_mobile'];
+                      var jeniKelamin = dataHrd.value[index]['em_gender'];
+                      return InkWell(
+                        onTap: () {
+                          kirimKonfirmasiWa(
+                              dataEmployee, full_name, nohp, jeniKelamin);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 12, bottom: 12, left: 16, right: 16),
+                          child: IntrinsicHeight(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    gambar == ""
+                                        ? SvgPicture.asset(
+                                            'assets/avatar_default.svg',
+                                            width: 40,
+                                            height: 40,
+                                          )
+                                        : CircleAvatar(
+                                            radius: 25, // Image radius
+                                            child: ClipOval(
+                                              child: ClipOval(
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      "${Api.UrlfotoProfile}$gambar",
+                                                  progressIndicatorBuilder:
+                                                      (context, url,
+                                                              downloadProgress) =>
+                                                          Container(
+                                                    alignment: Alignment.center,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.5,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                  ),
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                          Container(
+                                                    color: Colors.white,
+                                                    child: SvgPicture.asset(
+                                                      'assets/avatar_default.svg',
+                                                      width: 40,
+                                                      height: 40,
+                                                    ),
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                  width: 40,
+                                                  height: 40,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 12.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "$full_name",
+                                            style: GoogleFonts.inter(
+                                                color: Constanst.fgPrimary,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "$job_title",
+                                            style: GoogleFonts.inter(
+                                                color: Constanst.fgSecondary,
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Center(
+                                  child: Image.asset(
+                                    'assets/whatsapp.png',
+                                    width: 25,
+                                    height: 25,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              ],
+            ),
+          );
+        });
   }
 
   showDataPilihAtasan(dataEmployee) async {
@@ -469,6 +728,22 @@ class GlobalController extends GetxController {
     }
   }
 
+  void kirimKonfirmasiWaHrd(namaAtasan, nomorAtasan, jeniKelamin) async {
+    if (Platform.isAndroid) {
+      final intent = AndroidIntent(
+        action: "android.intent.action.VIEW",
+        data: "https://wa.me/",
+        package: "com.whatsapp",
+      );
+      await intent.launch();
+    } else {
+      final Uri url = Uri.parse("whatsapp://app");
+      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+        print("WhatsApp tidak terinstal atau terjadi kesalahan");
+      }
+    }
+  }
+
   void kirimUcapanWa(message, nomorUltah) async {
     if (nomorUltah == "" || nomorUltah == null || nomorUltah == "null") {
       UtilsAlert.showToast("Nomor WA tidak tersedia");
@@ -552,15 +827,15 @@ class GlobalController extends GetxController {
     };
     print("body notifikasi ${emIdApproval2}");
     try {
-      var connect =
-          Api.connectionApi("post", body, "push_notification_approval");
-      connect.then((dynamic res) {
-        if (res.statusCode == 200) {
-          // print()
-          var valueBody = jsonDecode(res.body);
-          print("response notif ${valueBody.toString()}");
-        }
-      });
+      // var connect =
+      //     Api.connectionApi("post", body, "push_notification_approval");
+      // connect.then((dynamic res) {
+      //   if (res.statusCode == 200) {
+      //     // print()
+      //     var valueBody = jsonDecode(res.body);
+      //     print("response notif ${valueBody.toString()}");
+      //   }
+      // });
     } catch (e) {
       print("errpr ${e}");
     }

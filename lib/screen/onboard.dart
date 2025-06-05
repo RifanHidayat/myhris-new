@@ -234,7 +234,7 @@ class Onboard extends StatelessWidget {
 
   T? _ambiguate<T>(T? value) => value;
 
-  var controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
+  var controllerAbsensi = Get.find<AbsenController>();
   var controllerBerhasil = Get.put(BerhasilController());
 
   @override
@@ -392,10 +392,10 @@ class Onboard extends StatelessWidget {
                     if (1 == 1) {
                       if (checkUserKontrol == 0) {
                         _startForegroundTask();
-                        AbsenController().removeAll();
+                        controllerAbsensi.removeAll();
                         // Get.offAll(InitScreen());
                       } else {
-                        AbsenController().removeAll();
+                        controllerAbsensi.removeAll();
                         // Get.offAll(InitScreen());
                       }
                     } else {

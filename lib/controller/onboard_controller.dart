@@ -13,7 +13,7 @@ import 'package:siscom_operasional/utils/widget_utils.dart';
 class OnboardController extends GetxController {
   var deviceStatus = false.obs;
 
-  final AbsenController abseController = Get.find<AbsenController>(tag: 'absen controller');
+  final abseController = Get.find<AbsenController>();
 
   var loading = false.obs;
 
@@ -110,12 +110,16 @@ class OnboardController extends GetxController {
 
   void checkAbsenUser(convert, getEmid) async {
     Map<String, dynamic> body = {'atten_date': convert, 'em_id': getEmid};
-    debugPrint('initScrenn kepangil');
+    print(body);
+
     var connect = Api.connectionApi("post", body, "view_last_absen_user2");
     var value = await connect;
     var valueBody = jsonDecode(value.body);
+    print("view last absen ${valueBody}");
 
     List data = valueBody['data'];
+
+    print('data response $valueBody');
     if (data.isEmpty) {
       loading.value = false;
       AppData.statusAbsen = false;

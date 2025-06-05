@@ -29,7 +29,7 @@ class HistoryChat extends StatefulWidget {
 }
 
 class _HistoryChatState extends State<HistoryChat> {
-  //final controller = Get.put(SettingController());
+  //final controller = Get.find<SettingController>();
 
   final controller = Get.put(ChatController());
   final WebSocketChannel channel =

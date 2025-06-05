@@ -17,7 +17,7 @@ import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class PersonalInfo extends StatelessWidget {
-  final controller = Get.put(SettingController());
+  final controller = Get.find<SettingController>();
   final controllerDashboard = Get.put(DashboardController());
 
   @override
@@ -196,14 +196,13 @@ class PersonalInfo extends StatelessWidget {
                                                 AppData.informasiUser![0]
                                                         .em_image ==
                                                     ""
-                                            ?  CircleAvatar(
+                                            ? CircleAvatar(
                                                 radius: 28,
                                                 child: ClipOval(
                                                   child: ClipOval(
                                                     child: CachedNetworkImage(
                                                       imageUrl:
-                                                         
-                                                     "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}",
+                                                          "${Api.urlImage}/${AppData.selectedDatabase}/face_recog/${GetStorage().read('file_face')}",
                                                       progressIndicatorBuilder:
                                                           (context, url,
                                                                   downloadProgress) =>
@@ -805,6 +804,7 @@ class PersonalInfo extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                         child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
                           child: Column(
                             children: [
                               Padding(
@@ -1120,12 +1120,15 @@ class PersonalInfo extends StatelessWidget {
                                                 ),
                                                 const SizedBox(height: 4),
                                                 Text(
-                                                  Constanst.convertDate(controller
-                                                      .tanggalAkhirKontrak.value),
+                                                  Constanst.convertDate(
+                                                      controller
+                                                          .tanggalAkhirKontrak
+                                                          .value),
                                                   // "${controller.user.value?[0].em_joining_date}",
                                                   style: GoogleFonts.inter(
                                                       fontSize: 16,
-                                                      color: Constanst.fgPrimary,
+                                                      color:
+                                                          Constanst.fgPrimary,
                                                       fontWeight:
                                                           FontWeight.w500),
                                                 )

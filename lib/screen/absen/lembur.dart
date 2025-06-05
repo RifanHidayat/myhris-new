@@ -25,7 +25,7 @@ class Lembur extends StatefulWidget {
 }
 
 class _LemburState extends State<Lembur> {
-  final controller = Get.find<LemburController>();
+  final controller = Get.put(LemburController());
   var controllerGlobal = Get.find<GlobalController>();
   final dashboardController = Get.put(DashboardController());
   var idx = 0;
@@ -34,6 +34,7 @@ class _LemburState extends State<Lembur> {
   void initState() {
     super.initState();
     Api().checkLogin();
+    controller.loadDataLembur();
     if (Get.arguments != null) {
       idx = Get.arguments;
       Future.delayed(const Duration(milliseconds: 500), () {
@@ -229,7 +230,6 @@ class _LemburState extends State<Lembur> {
                       onPressed: () {
                         controller.cari.value.clear();
                         controller.onClose();
-                        // Get.offAll(InitScreen());
                         Get.back();
                       },
                       // onPressed: () {
@@ -253,38 +253,25 @@ class _LemburState extends State<Lembur> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // controller.bulanDanTahunNow.value == ""
-                //     ? SizedBox()
-                //     : Row(
-                //         crossAxisAlignment: CrossAxisAlignment.start,
-                //         children: [
-                //           Expanded(
-                //             flex: 60,
-                //             child: Padding(
-                //               padding: const EdgeInsets.only(right: 8),
-                //               child: pencarianData(),
-                //             ),
-                //           ),
-                //           Expanded(
-                //             flex: 40,
-                //             child: Padding(
-                //               padding: const EdgeInsets.only(left: 8),
-                //               child: pickDate(),
-                //             ),
-                //           )
-                //         ],
-                //       ),
                 controller.bulanDanTahunNow.value == ""
                     ? const SizedBox()
                     : Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(width: 4),
-                          filterData(),
+                          // Expanded(
+                          //   flex: 60,
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.only(right: 8),
+                          //     child: pencarianData(),
+                          //   ),
+                          // ),
+                          // pickDate(),
                           const SizedBox(width: 4),
                           status()
                         ],
                       ),
+
+                // listStatusAjuan(),
                 const SizedBox(height: 4),
                 Flexible(
                     child: RefreshIndicator(
@@ -326,8 +313,9 @@ class _LemburState extends State<Lembur> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Constanst.colorPrimary,
         onPressed: () {
+          // controller.getTypeLembur();
           Get.to(FormLembur(
-            dataForm: [[], false],
+            dataForm: const [[], false],
           ));
         },
         child: const Icon(
@@ -344,81 +332,6 @@ class _LemburState extends State<Lembur> {
     DateTime date = DateTime(2000, monthNumber,
         1); // Tahun dan hari bebas, yang penting bulan sesuai
     return monthFormat.format(date);
-  }
-
-   Widget filterData() {
-    return Obx(
-      () => InkWell(
-        customBorder: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(100))),
-        onTap: () {
-          DatePicker.showPicker(
-            Get.context!,
-            pickerModel: CustomMonthPicker(
-              minTime: DateTime(2000, 1, 1),
-              maxTime: DateTime(2100, 1, 1),
-              currentTime: DateTime(
-                  int.parse(
-                      controller.tahunSelectedSearchHistory.value),
-                  int.parse(
-                      controller.bulanSelectedSearchHistory.value),
-                  1),
-            ),
-            onConfirm: (time) {
-              if (time != null) {
-                print("$time");
-                var filter = DateFormat('yyyy-MM').format(time);
-                var array = filter.split('-');
-                var bulan = array[1];
-                var tahun = array[0];
-                controller.bulanSelectedSearchHistory.value = bulan;
-                controller.tahunSelectedSearchHistory.value = tahun;
-                controller.bulanDanTahunNow.value = "$bulan-$tahun";
-                this.controller.bulanSelectedSearchHistory.refresh();
-                this.controller.tahunSelectedSearchHistory.refresh();
-                this.controller.bulanDanTahunNow.refresh();
-                controller.date.value = time;
-                controller.loadDataLembur();
-              }
-            },
-          );
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              border: Border.all(color: Constanst.border)),
-          child: Padding(
-            padding: const EdgeInsets.only(
-                top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
-            child: Row(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      Constanst.convertDateBulanDanTahun(
-                          controller.bulanDanTahunNow.value),
-                      style: GoogleFonts.inter(
-                          color: Constanst.fgSecondary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4),
-                      child: Icon(
-                        Iconsax.arrow_down_1,
-                        color: Constanst.fgSecondary,
-                        size: 18,
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   Widget status() {
@@ -765,17 +678,20 @@ class _LemburState extends State<Lembur> {
   }
 
   Widget riwayatLembur() {
+    debugPrint('ini data riwayat lebur ${controller.listLembur.value}');
     return ListView.builder(
         physics: controller.listLembur.value.length <= 8
             ? const AlwaysScrollableScrollPhysics()
             : const BouncingScrollPhysics(),
         itemCount: controller.listLembur.value.length,
         itemBuilder: (context, index) {
-          var nomorAjuan = controller.listLembur.value[index]['nomor_ajuan'];
+          var statusDraft =
+              controller.listLembur.value[index]['status_pengajuan'];
           var dariJam = controller.listLembur.value[index]['dari_jam'];
+          var nomorAjuan = controller.listLembur.value[index]['nomor_ajuan'];
           var sampaiJam = controller.listLembur.value[index]['sampai_jam'];
           var tanggalPengajuan =
-              controller.listLembur.value[index]['tgl_ajuan'];
+              controller.listLembur.value[index]['atten_date'];
           var status;
           if (controller.valuePolaPersetujuan.value == "1") {
             status = controller.listLembur.value[index]['status'];
@@ -787,11 +703,19 @@ class _LemburState extends State<Lembur> {
                     : controller.listLembur.value[index]['status'];
           }
           var namaTypeAjuan = controller.listLembur.value[index]['type'];
-          var alasanReject =
-              controller.listLembur.value[index]['alasan_reject'];
+          var alasan;
+          if (controller.listLembur.value[index]['alasan2'] == "" ||
+              controller.listLembur.value[index]['alasan2'] == "null" ||
+              controller.listLembur.value[index]['alasan2'] == null) {
+            alasan = controller.listLembur.value[index]['alasan1'];
+          } else {
+            alasan = controller.listLembur.value[index]['alasan2'];
+          }
           var approveDate = controller.listLembur.value[index]['approve_date'];
           var uraian = controller.listLembur.value[index]['uraian'];
           var approve;
+          print(
+              'ini approve2 by oke${controller.listLembur.value[index]['approve2_by']}');
           if (controller.listLembur.value[index]['approve2_by'] == "" ||
               controller.listLembur.value[index]['approve2_by'] == "null" ||
               controller.listLembur.value[index]['approve2_by'] == null) {
@@ -803,137 +727,141 @@ class _LemburState extends State<Lembur> {
           return Column(
             children: [
               const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Constanst.colorNonAktif)),
-                child: InkWell(
-                  customBorder: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                  onTap: () => controller.showDetailLembur(
-                      controller.listLemburAll.value[index],
-                      approve,
-                      alasanReject),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16, right: 16, top: 12, bottom: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Lembur",
-                            style: GoogleFonts.inter(
-                                color: Constanst.fgPrimary,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500)),
-                        const SizedBox(height: 4),
-                        Text("NO.$nomorAjuan",
-                            textAlign: TextAlign.justify,
-                            style: GoogleFonts.inter(
-                                color: Constanst.fgSecondary,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400)),
-                        const SizedBox(height: 4),
-                        Text(Constanst.convertDate5("$tanggalPengajuan"),
-                            style: GoogleFonts.inter(
-                                color: Constanst.fgSecondary,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400)),
-                        const SizedBox(height: 4),
-                        // Text('$dariJam sd $sampaiJam',
-                        //     textAlign: TextAlign.justify,
-                        //     style: GoogleFonts.inter(
-                        //         color: Constanst.fgSecondary,
-                        //         fontSize: 14,
-                        //         fontWeight: FontWeight.w400)),
-                        // Text(
-                        //   '$uraian',
-                        //   textAlign: TextAlign.justify,
-                        //   style: TextStyle(
-                        //       fontSize: 14, color: Constanst.colorText2),
-                        // ),
-                        const SizedBox(height: 12),
-                        Divider(
-                            height: 0, thickness: 1, color: Constanst.border),
-                        const SizedBox(height: 8),
-                        // Container(
-                        //   margin: EdgeInsets.only(right: 8),
-                        //   decoration: BoxDecoration(
-                        //     color: status == 'Approve'
-                        //         ? Constanst.colorBGApprove
-                        //         : status == 'Approve 1'
-                        //             ? Constanst.colorBGApprove
-                        //             : status == 'Approve 2'
-                        //                 ? Constanst.colorBGApprove
-                        //                 : status == 'Rejected'
-                        //                     ? Constanst.colorBGRejected
-                        //                     : status == 'Pending'
-                        //                         ? Constanst.colorBGPending
-                        //                         : Colors.grey,
-                        //     borderRadius: Constanst.borderStyle1,
-                        //   ),
-                        //   child: Padding(
-                        //     padding: EdgeInsets.only(
-                        //         left: 3, right: 3, top: 5, bottom: 5),
-                        //     child: Row(
-                        //       mainAxisAlignment: MainAxisAlignment.center,
-                        //       children: [
-                        //         status == 'Approve'
-                        //             ? Icon(
-                        //                 Iconsax.tick_square,
-                        //                 color: Constanst.color5,
-                        //                 size: 14,
-                        //               )
-                        //             : status == 'Approve 1'
-                        //                 ? Icon(
-                        //                     Iconsax.tick_square,
-                        //                     color: Constanst.color5,
-                        //                     size: 14,
-                        //                   )
-                        //                 : status == 'Approve 2'
-                        //                     ? Icon(
-                        //                         Iconsax.tick_square,
-                        //                         color: Constanst.color5,
-                        //                         size: 14,
-                        //                       )
-                        //                     : status == 'Rejected'
-                        //                         ? Icon(
-                        //                             Iconsax.close_square,
-                        //                             color: Constanst.color4,
-                        //                             size: 14,
-                        //                           )
-                        //                         : status == 'Pending'
-                        //                             ? Icon(
-                        //                                 Iconsax.timer,
-                        //                                 color: Constanst.color3,
-                        //                                 size: 14,
-                        //                               )
-                        //                             : SizedBox(),
-                        //         Padding(
-                        //           padding: const EdgeInsets.only(left: 3),
-                        //           child: Text(
-                        //             '$status',
-                        //             textAlign: TextAlign.center,
-                        //             style: TextStyle(
-                        //                 fontWeight: FontWeight.bold,
-                        //                 color: status == 'Approve'
-                        //                     ? Colors.green
-                        //                     : status == 'Approve 1'
-                        //                         ? Colors.green
-                        //                         : status == 'Approve 2'
-                        //                             ? Colors.green
-                        //                             : status == 'Rejected'
-                        //                                 ? Colors.red
-                        //                                 : status == 'Pending'
-                        //                                     ? Constanst.color3
-                        //                                     : Colors.black),
-                        //           ),
-                        //         ),
-                        //       ],
-                        //     ),
-                        //   ),
-                        // ),
-                        status == 'Rejected'
-                            ? Row(
+              Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Constanst.colorNonAktif)),
+                    child: InkWell(
+                      customBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      onTap: () {
+                        controller.showDetailLembur(
+                            controller.listLembur[index], approve, alasan);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 16, right: 16, top: 12, bottom: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Lembur",
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500)),
+                            const SizedBox(height: 4),
+                            Text("NO.$nomorAjuan",
+                                textAlign: TextAlign.justify,
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgSecondary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400)),
+                            const SizedBox(height: 4),
+                            Text(Constanst.convertDate5("$tanggalPengajuan"),
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgSecondary,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400)),
+                            const SizedBox(height: 4),
+                            // Text('$dariJam sd $sampaiJam',
+                            //     textAlign: TextAlign.justify,
+                            //     style: GoogleFonts.inter(
+                            //         color: Constanst.fgSecondary,
+                            //         fontSize: 14,
+                            //         fontWeight: FontWeight.w400)),
+                            // Text(
+                            //   '$uraian',
+                            //   textAlign: TextAlign.justify,
+                            //   style: TextStyle(
+                            //       fontSize: 14, color: Constanst.colorText2),
+                            // ),
+                            const SizedBox(height: 12),
+                            Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Constanst.border),
+                            const SizedBox(height: 8),
+                            // Container(
+                            //   margin: EdgeInsets.only(right: 8),
+                            //   decoration: BoxDecoration(
+                            //     color: status == 'Approve'
+                            //         ? Constanst.colorBGApprove
+                            //         : status == 'Approve 1'
+                            //             ? Constanst.colorBGApprove
+                            //             : status == 'Approve 2'
+                            //                 ? Constanst.colorBGApprove
+                            //                 : status == 'Rejected'
+                            //                     ? Constanst.colorBGRejected
+                            //                     : status == 'Pending'
+                            //                         ? Constanst.colorBGPending
+                            //                         : Colors.grey,
+                            //     borderRadius: Constanst.borderStyle1,
+                            //   ),
+                            //   child: Padding(
+                            //     padding: EdgeInsets.only(
+                            //         left: 3, right: 3, top: 5, bottom: 5),
+                            //     child: Row(
+                            //       mainAxisAlignment: MainAxisAlignment.center,
+                            //       children: [
+                            //         status == 'Approve'
+                            //             ? Icon(
+                            //                 Iconsax.tick_square,
+                            //                 color: Constanst.color5,
+                            //                 size: 14,
+                            //               )
+                            //             : status == 'Approve 1'
+                            //                 ? Icon(
+                            //                     Iconsax.tick_square,
+                            //                     color: Constanst.color5,
+                            //                     size: 14,
+                            //                   )
+                            //                 : status == 'Approve 2'
+                            //                     ? Icon(
+                            //                         Iconsax.tick_square,
+                            //                         color: Constanst.color5,
+                            //                         size: 14,
+                            //                       )
+                            //                     : status == 'Rejected'
+                            //                         ? Icon(
+                            //                             Iconsax.close_square,
+                            //                             color: Constanst.color4,
+                            //                             size: 14,
+                            //                           )
+                            //                         : status == 'Pending'
+                            //                             ? Icon(
+                            //                                 Iconsax.timer,
+                            //                                 color: Constanst.color3,
+                            //                                 size: 14,
+                            //                               )
+                            //                             : SizedBox(),
+                            //         Padding(
+                            //           padding: const EdgeInsets.only(left: 3),
+                            //           child: Text(
+                            //             '$status',
+                            //             textAlign: TextAlign.center,
+                            //             style: TextStyle(
+                            //                 fontWeight: FontWeight.bold,
+                            //                 color: status == 'Approve'
+                            //                     ? Colors.green
+                            //                     : status == 'Approve 1'
+                            //                         ? Colors.green
+                            //                         : status == 'Approve 2'
+                            //                             ? Colors.green
+                            //                             : status == 'Rejected'
+                            //                                 ? Colors.red
+                            //                                 : status == 'Pending'
+                            //                                     ? Constanst.color3
+                            //                                     : Colors.black),
+                            //           ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
+                            if (status == 'Rejected')
+                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Icon(
@@ -942,93 +870,154 @@ class _LemburState extends State<Lembur> {
                                     size: 22,
                                   ),
                                   const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Rejected by $approve",
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Rejected by $approve",
                                           style: GoogleFonts.inter(
                                               fontWeight: FontWeight.w500,
                                               color: Constanst.fgPrimary,
-                                              fontSize: 14)),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        alasanReject,
-                                        style: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w400,
-                                            color: Constanst.fgSecondary,
-                                            fontSize: 14),
-                                      )
-                                    ],
+                                              fontSize: 14),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          alasan.toString(),
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w400,
+                                              color: Constanst.fgSecondary,
+                                              fontSize: 14),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ],
                               )
-                            : status == "Approve" ||
-                                    status == "Approve 1" ||
-                                    status == "Approve 2"
-                                ? Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Iconsax.tick_circle,
-                                        color: Colors.green,
-                                        size: 22,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text("Approved by $approve",
-                                          style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              color: Constanst.fgPrimary,
-                                              fontSize: 14)),
-                                    ],
-                                  )
-                                : Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Iconsax.timer,
-                                        color: Constanst.color3,
-                                        size: 22,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text("Pending Approval",
-                                              style: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Constanst.fgPrimary,
-                                                  fontSize: 14)),
-                                          const SizedBox(height: 4),
-                                          InkWell(
-                                              onTap: () {
-                                                var dataEmployee = {
-                                                  'nameType': '$namaTypeAjuan',
-                                                  'nomor_ajuan': '$nomorAjuan',
-                                                };
-                                                controllerGlobal
-                                                    .showDataPilihAtasan(
-                                                        dataEmployee);
-                                              },
-                                              child: Text(
-                                                  "Konfirmasi via Whatsapp",
-                                                  style: GoogleFonts.inter(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color:
-                                                          Constanst.infoLight,
-                                                      fontSize: 14))),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                      ],
+                            else
+                              status == "Approve" ||
+                                      status == "Approve 1" ||
+                                      status == "Approve 2"
+                                  ? Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Icon(
+                                          Iconsax.tick_circle,
+                                          color: Colors.green,
+                                          size: 22,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Approved by $approve",
+                                                style: GoogleFonts.inter(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Constanst.fgPrimary,
+                                                    fontSize: 14),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Text(
+                                                alasan.toString(),
+                                                style: GoogleFonts.inter(
+                                                    fontWeight: FontWeight.w400,
+                                                    color:
+                                                        Constanst.fgSecondary,
+                                                    fontSize: 14),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Icon(
+                                          Iconsax.timer,
+                                          color: Constanst.color3,
+                                          size: 22,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text("Pending Approval",
+                                                style: GoogleFonts.inter(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Constanst.fgPrimary,
+                                                    fontSize: 14)),
+                                            const SizedBox(height: 4),
+                                            InkWell(
+                                                onTap: () {
+                                                  var dataEmployee = {
+                                                    'nameType':
+                                                        '$namaTypeAjuan',
+                                                    'nomor_ajuan':
+                                                        '$nomorAjuan',
+                                                  };
+                                                  controllerGlobal
+                                                      .showDataPilihAtasan(
+                                                          dataEmployee);
+                                                },
+                                                child: Text(
+                                                    "Konfirmasi via Whatsapp",
+                                                    style: GoogleFonts.inter(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color:
+                                                            Constanst.infoLight,
+                                                        fontSize: 14))),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  statusDraft == 'draft' ?
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Transform.rotate(
+                      angle:
+                          -0.3,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.red
+                              .withOpacity(0.8), // Warna latar belakang
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          "DRAFT",
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white, // Warna teks
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  : SizedBox()
+                ],
               )
             ],
           );

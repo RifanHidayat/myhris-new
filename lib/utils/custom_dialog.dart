@@ -7,15 +7,19 @@ import 'package:siscom_operasional/utils/constans.dart';
 class CustomDialog extends StatelessWidget {
   final String? title, content, positiveBtnText, negativeBtnText;
   final int? style;
+  final int? icon;
   final int? buttonStatus;
   final GestureTapCallback? positiveBtnPressed;
+  final GestureTapCallback? negativeBtnPressed;
 
   CustomDialog({
     @required this.title,
     @required this.content,
     @required this.positiveBtnText,
     this.negativeBtnText,
+    this.icon,
     @required this.positiveBtnPressed,
+    this.negativeBtnPressed,
     @required this.style,
     @required this.buttonStatus,
   });
@@ -65,7 +69,8 @@ class CustomDialog extends StatelessWidget {
                   if (negativeBtnText != null)
                     TextButton(
                       child: Text(negativeBtnText!),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: negativeBtnPressed != null ? negativeBtnPressed :
+                      () => Navigator.of(context).pop(),
                     ),
                   TextButton(
                     child: Text(positiveBtnText!),
@@ -76,6 +81,8 @@ class CustomDialog extends StatelessWidget {
             ],
           ),
         ),
+        icon == 0  ? SizedBox()
+        :
         CircleAvatar(
           backgroundColor: style == 1 ? Colors.red : Constanst.colorPrimary,
           maxRadius: 25.0,

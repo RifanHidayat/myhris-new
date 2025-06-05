@@ -35,7 +35,7 @@
 //   // final deskripsi = Get.arguments['deskripsi'];
 //   // final emIdEmployee = Get.arguments['emIdEmployee'];
 //   // final status = Get.arguments['status'];
-//   final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
+//   final controllerTracking = Get.put(TrackingController());
 
 //   Timer? _timer;
 //   List<String> _locations = [];

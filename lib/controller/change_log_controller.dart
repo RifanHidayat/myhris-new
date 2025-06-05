@@ -41,7 +41,7 @@ class ChangeLogController extends GetxController {
   void checkversion() async {
     try {
       final newVersion = NewVersionPlus(
-        androidId: 'com.siscom.siscomhris',
+        androidId: 'com.siscom.siscomhrisnew',
       );
 
       final status = await newVersion.getVersionStatus();

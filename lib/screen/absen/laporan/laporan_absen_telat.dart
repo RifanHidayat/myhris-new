@@ -19,7 +19,7 @@ class LaporanAbsenTelat extends StatefulWidget {
 }
 
 class _LaporanAbsenTelatState extends State<LaporanAbsenTelat> {
-  var controller = Get.find<AbsenController>(tag: 'absen controller');
+  var controller = Get.find<AbsenController>();
 
   @override
   void initState() {

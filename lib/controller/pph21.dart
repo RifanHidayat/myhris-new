@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file_safe_plus/open_file_safe_plus.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:siscom_operasional/model/compent_slip_gaji.dart';
 import 'package:siscom_operasional/model/slip_gaji.dart';
 import 'package:siscom_operasional/utils/api.dart';
@@ -365,7 +365,7 @@ class Pph21Controller extends GetxController {
           print("Downloaded: $percentage%");
         },
       );
-      await OpenFileSafePlus.open(savePath);
+      await OpenFile.open(savePath);
       print("Download complete. File saved to: $savePath");
     } catch (e) {
       print("Error downloading file: $e");

@@ -106,9 +106,7 @@ class _ChatPageState extends State<ChatPage> {
     widget.webSocketChannel.sink.add(jsonEncode(data));
   }
 
-
   Future pickImage(ImageSource source) async {
-
 
     try {
       final image = await ImagePicker().pickImage(

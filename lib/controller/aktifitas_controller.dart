@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:siscom_operasional/controller/pesan_controller.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -44,9 +43,6 @@ class AktifitasController extends GetxController {
   var jumlahTepatWaktu = 0.obs;
   var firstDayMonth = 0.obs;
   var lastDayMonth = 0.obs;
-  
-
-  var pesanController=Get.find<PesanController>();
 
   List dummyInfo = [
     {
@@ -116,9 +112,9 @@ class AktifitasController extends GetxController {
 
   @override
   void onReady() async {
-    // getTimeNow();
-    // loadAktifitas();
-    // getInformasiAktivitas();
+    getTimeNow();
+    loadAktifitas();
+    getInformasiAktivitas();
     controllerScroll.addListener(listenScrolling);
     controllerScroll.addListener(scrollListener);
     super.onReady();
@@ -176,7 +172,6 @@ class AktifitasController extends GetxController {
   }
 
   void loadAktifitas() {
-     
     var dataUser = AppData.informasiUser;
     var getEmpid = dataUser![0].em_id;
     Map<String, dynamic> body = {
@@ -187,6 +182,7 @@ class AktifitasController extends GetxController {
     var connect = Api.connectionApi("post", body, "load_aktifitas");
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
+      print('ini load aktifitas $valueBody');
       for (var element in valueBody['data']) {
         var getList = element['createdDate'].split('T');
         var tanggal = getList[0];

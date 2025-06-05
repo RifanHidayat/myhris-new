@@ -31,7 +31,7 @@ class _VerifyPasswordPayrollState extends State<VerifyPasswordPayroll> {
 
   var dashboarController = Get.find<DashboardController>();
 
-  var absensiController = Get.find<AbsenController>(tag: 'absen controller');
+  var absensiController = Get.find<AbsenController>();
 
   @override
   void initState() {
@@ -388,7 +388,7 @@ class _VerifyPasswordPayrollState extends State<VerifyPasswordPayroll> {
                                                       color:
                                                           HexColor('#092371'),
                                                       text:
-                                                          "Silahkan hubungi Atasan Anda untuk menyetujui.")
+                                                          "Silakan hubungi Atasan Anda untuk menyetujui.")
                                                 ],
                                               ),
                                             )

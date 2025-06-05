@@ -1,3 +1,5 @@
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,6 +45,7 @@ import 'package:siscom_operasional/screen/absen/laporan/laporan_dinas_luar.dart'
 import 'package:siscom_operasional/screen/absen/laporan/laporan_izin.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_klaim.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_lembur.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_shift.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_tugas_luar.dart';
 import 'package:siscom_operasional/screen/absen/loading_absen.dart';
 import 'package:siscom_operasional/screen/absen/pengajuan%20absen_berhasil.dart';
@@ -61,36 +64,45 @@ import 'package:http_parser/http_parser.dart';
 import 'package:siscom_operasional/screen/absen/absen_masuk_keluar.dart';
 
 import 'package:flutter/services.dart';
-import 'package:android_intent/android_intent.dart';
-import 'package:android_intent/flag.dart';
+
 
 class AbsenController extends GetxController {
   var globalCt = Get.find<GlobalController>();
-  final controllerTracking = Get.put(TrackingController(), tag: 'iniScreen');
+  final controllerTracking = Get.put(TrackingController());
 
   PageController? pageViewFilterAbsen;
 
   RxBool isChecked = false.obs;
   RxBool isChecked2 = false.obs;
-  RxBool isChecked3 = false.obs;
-  RxBool isChecked4 = false.obs;
   RxBool selengkapnyaMasuk = false.obs;
   RxBool selengkapnyaKeluar = false.obs;
-  RxBool isCreateNew = false.obs;
 
   Rx<DateTime> selectedDate = DateTime.now().obs;
+
+  RxBool isCreateNew = false.obs;
+  var idAjuan = 0.obs;
+  var allDataCheck = [].obs;
 
   var tglAjunan = "".obs;
   var checkinAjuan = "".obs;
   var checkoutAjuan = "".obs;
-  var idAjuan = 0.obs;
   var checkinAjuan2 = "".obs;
   var checkoutAjuan2 = "".obs;
   var checkinIstiahat = "".obs;
   var checkoutIstirahat = "".obs;
+  var placeCoordinateCheckinRest = [].obs;
+  var placeCoordinateCheckoutRest = [].obs;
+  var absenLongLatMasukRest = [].obs;
+  var absenKeluarLongLatRest = [].obs;
+  var addressMasukRest = "".obs;
+  var addressKeluarRest = "".obs;
+  RxBool isChecked3 = false.obs;
+  RxBool isChecked4 = false.obs;
   var catataanAjuan = TextEditingController();
   var imageAjuan = "".obs;
   var nomorAjuan = "".obs;
+  var tipeAlphaAbsen = 0.obs;
+  var catatanAlpha = ''.obs;
 
   var pengajuanAbsensi = [].obs;
 
@@ -106,18 +118,11 @@ class AbsenController extends GetxController {
   Rx<List<String>> placeCoordinateDropdown = Rx<List<String>>([]);
   var placeCoordinateCheckin = [].obs;
   var placeCoordinateCheckout = [].obs;
-  var placeCoordinateCheckinRest = [].obs;
-  var placeCoordinateCheckoutRest = [].obs;
 
   var absenLongLatMasuk = [].obs;
   var absenKeluarLongLat = [].obs;
   var addressMasuk = "".obs;
   var addressKeluar = "".obs;
-
-  var absenLongLatMasukRest = [].obs;
-  var absenKeluarLongLatRest = [].obs;
-  var addressMasukRest = "".obs;
-  var addressKeluarRest = "".obs;
 
   var selectedType = "".obs;
 
@@ -127,13 +132,11 @@ class AbsenController extends GetxController {
   var tempNamaStatus1 = "Semua".obs;
   var tempNamaLaporan1 = "Semua".obs;
   var tempNamaTipe1 = "".obs;
-  // var isLocaationLoading = false;
 
   var historyAbsen = <AbsenModel>[].obs;
   var tempHistoryAbsen = <AbsenModel>[].obs;
   var historyAbsenShow = [].obs;
   var placeCoordinate = [].obs;
-  var placeCoordinateReport = [].obs;
   var departementAkses = [].obs;
   var listLaporanFilter = [].obs;
   var allListLaporanFilter = [].obs;
@@ -145,6 +148,7 @@ class AbsenController extends GetxController {
   var isCollapse = true.obs;
   var shift = OfficeShiftModel().obs;
 
+  var isShowNotif = false.obs;
   var isLoadingPengajuan = false.obs;
 
   var absenSelected;
@@ -170,9 +174,8 @@ class AbsenController extends GetxController {
 
   var namaDepartemenTerpilih = "".obs;
   var idDepartemenTerpilih = "".obs;
-  var idLokasiTerpilih = "".obs;
   var testingg = "".obs;
-  var filterLokasiKoordinate = "".obs;
+  var filterLokasiKoordinate = "Lokasi".obs;
   Rx<AbsenModel> absenModel = AbsenModel().obs;
   var jumlahData = 0.obs;
   var isTracking = 0.obs;
@@ -183,6 +186,9 @@ class AbsenController extends GetxController {
   var filePengajuan = File("").obs;
   var uploadFile = false.obs;
   var isLoaingAbsensi = false.obs;
+  var filterBranch = ''.obs;
+  var branchId = ''.obs;
+  var branchList = [].obs;
 
   Rx<DateTime> pilihTanggalTelatAbsen = DateTime.now().obs;
 
@@ -191,8 +197,7 @@ class AbsenController extends GetxController {
 
   var typeAbsen = 0.obs;
   var intervalControl = 60000.obs;
-
-  var allDataCheck = [].obs;
+  var isAbsenIstirahat = false.obs;
 
   var imageStatus = false.obs;
   var detailAlamat = false.obs;
@@ -209,14 +214,23 @@ class AbsenController extends GetxController {
 
   var coordinate = false.obs;
 
-  var isAbsenIstirahat = false.obs;
+  var statusAbsen = "".obs;
+  var deskripsi = "".obs;
+  var titleNotif = "".obs;
+
+  void resetNotif() {
+    titleNotif.value = "";
+    isShowNotif.value = false;
+    deskripsi.value = "";
+    statusAbsen.value = "";
+  }
 
   @override
   void onReady() async {
-    // getTimeNow();
+    getTimeNow();
     // getLoadsysData();
-    // loadHistoryAbsenUser();
-    // getDepartemen(1, "");
+    loadHistoryAbsenUser();
+    getDepartemen(1, "");
     filterLokasiKoordinate.value = "Lokasi";
     selectedViewFilterAbsen.value = 0;
     pilihTanggalTelatAbsen.value = DateTime.now();
@@ -260,448 +274,9 @@ class AbsenController extends GetxController {
     statusCari.value = !statusCari.value;
   }
 
-  void getDepartemen(status, tanggal) {
-    jumlahData.value = 0;
-    departementAkses.clear();
-
-    var connect = Api.connectionApi("get", {}, "all_department");
-    connect.then((dynamic res) {
-      if (res == false) {
-        //UtilsAlert.koneksiBuruk();
-      } else {
-        if (res.statusCode == 200) {
-          var valueBody = jsonDecode(res.body);
-          var dataDepartemen = [];
-          var data = {
-            'id': 0,
-            'name': 'SEMUA DIVISI',
-            'inisial': 'AD',
-            'parent_id': '',
-            'aktif': '',
-            'pakai': '',
-            'ip': '',
-            'created_by': '',
-            'created_on': '',
-            'modified_by': '',
-            'modified_on': ''
-          };
-          dataDepartemen.add(data);
-          var temporary = valueBody['data'];
-          for (var i = 0; i < temporary.length; i++) {
-            var element = temporary[i];
-            dataDepartemen.add({
-              'id': element['id'],
-              'name': element['name'],
-              'inisial': element['inisial'],
-              'parent_id': element['parent_id'],
-              'aktif': element['aktif'],
-              'pakai': element['pakai'],
-              'ip': element['ip'],
-              'created_by': element['created_by'],
-              'created_on': element['created_on'],
-              'modified_by': element['modified_by'],
-              'modified_on': element['modified_on']
-            });
-          }
-          var dataUser = AppData.informasiUser;
-          var hakAkses = dataUser![0].em_hak_akses;
-
-          if (hakAkses != "" || hakAkses != null) {
-            if (hakAkses == "0") {
-              departementAkses.value = dataDepartemen;
-            } else {
-              departementAkses.add(data);
-              var convert = hakAkses.split(',');
-              for (var element in dataDepartemen) {
-                for (var element1 in convert) {
-                  if ("${element['id']}" == element1) {
-                    departementAkses.add(element);
-                  }
-                }
-              }
-            }
-          }
-          this.departementAkses.refresh();
-          getPlaceReport();
-          if (departementAkses.value.isNotEmpty) {
-            if (status == 1) {
-              idDepartemenTerpilih.value = "${departementAkses[0]['id']}";
-              namaDepartemenTerpilih.value = departementAkses[0]['name'];
-              departemen.value.text = departementAkses[0]['name'];
-              showButtonlaporan.value = true;
-              aksiCariLaporan();
-            } else if (status == 2) {
-              idDepartemenTerpilih.value = "${departementAkses[0]['id']}";
-              namaDepartemenTerpilih.value = departementAkses[0]['name'];
-              departemen.value.text = departementAkses[0]['name'];
-              showButtonlaporan.value = true;
-              aksiEmployeeTerlambatAbsen(tanggal);
-            } else if (status == 3) {
-              idDepartemenTerpilih.value = "${departementAkses[0]['id']}";
-              namaDepartemenTerpilih.value = departementAkses[0]['name'];
-              departemen.value.text = departementAkses[0]['name'];
-              showButtonlaporan.value = true;
-              aksiEmployeeBelumAbsen(tanggal);
-            }
-          }
-        }
-      }
-    });
-  }
-
-  Future<void> getPlaceCoordinate() async {
-    //UtilsAlert.showLoadingIndicator(Get.context!);
-
-    placeCoordinateDropdown.value.clear();
-    var connect = Api.connectionApi("get", {}, "places_coordinate",
-        params: "&id=${AppData.informasiUser![0].em_id}");
-    connect.then((dynamic res) {
-      if (res == false) {
-        print("errror");
-        coordinate.value = true;
-        getPlaceCoordinateOffline();
-        //UtilsAlert.koneksiBuruk();
-      } else {
-        if (res.statusCode == 200) {
-          placeCoordinate.clear();
-          coordinate.value = false;
-
-          var valueBody = jsonDecode(res.body);
-
-          var temporary = valueBody['data'];
-
-          List<Map<String, dynamic>> tipeLokasi = [];
-          for (var element in temporary) {
-            tipeLokasi.add({
-              'id': element['id'],
-              'place': element['place'],
-              'place_longlat': element['place_longlat'],
-              'place_radius': element['place_radius'],
-            });
-          }
-          SqliteDatabaseHelper().insertTipeLokasi(tipeLokasi);
-
-          controller.checkAbsenUser(
-              DateFormat('yyyy-MM-dd').format(DateTime.now()),
-              AppData.informasiUser![0].em_id);
-          // selectedType.value = valueBody['data'][0]['place'];
-
-          print("controller.wfhlokasi ${controller.wfhlokasi.value}");
-
-          if (typeAbsen.value == 1) {
-            selectedType.value = valueBody['data'][0]['place'];
-          } else {
-            if (controller.wfhlokasi.value == true) {
-              selectedType.value = 'WFH';
-            } else {
-              selectedType.value = valueBody['data'][0]['place'];
-            }
-          }
-
-          for (var element in valueBody['data']) {
-            // placeCoordinateDropdown.value.add(element['place']);
-            if (typeAbsen.value == 1) {
-              placeCoordinateDropdown.value.add(element['place']);
-            } else {
-              if (controller.wfhlokasi.value == true) {
-                placeCoordinateDropdown.value.add('WFH');
-              } else {
-                placeCoordinateDropdown.value.add(element['place']);
-              }
-            }
-          }
-          List filter = [];
-          for (var element in valueBody['data']) {
-            if (element['isFilterView'] == 1) {
-              filter.add(element);
-            }
-          }
-
-          print("data ${placeCoordinate.value}");
-          // placeCoordinate.clear();
-          placeCoordinate.value = filter;
-          placeCoordinate.refresh();
-          placeCoordinate.refresh();
-          //Get.back();
-        } else {
-          print("Place cordinate !=200" + res.body.toString());
-          print(res.body.toString());
-          //  Get.back();
-        }
-      }
-    }).catchError((error) {
-      coordinate.value = true;
-      // Get.back();
-      getPlaceCoordinateOffline();
-    });
-  }
-
-  Future<void> getPlaceReport() async {
-    placeCoordinateReport.clear();
-    String ids =
-        departementAkses.value.map((e) => e['id'].toString()).join(',');
-    var body = {'dep_id': idDepartemenTerpilih.value, 'department': ids};
-
-    var connect = Api.connectionApi("post", body, "places/report",
-        params: "&id=${AppData.informasiUser![0].em_id}");
-    connect.then((dynamic res) {
-      if (res.statusCode == 200) {
-        coordinate.value = false;
-
-        var valueBody = jsonDecode(res.body);
-        var temporary = valueBody['data'];
-        placeCoordinateReport.add({
-          'id': 0,
-          'place': 'SEMUA LOKASI',
-          'place_longlat': '',
-          'place_radius': '',
-        });
-        for (var element in temporary) {
-          placeCoordinateReport.add({
-            'id': element['id'],
-            'place': element['place'],
-            'place_longlat': element['place_longlat'],
-            'place_radius': element['place_radius'],
-          });
-        }
-        print("placeCoordinateReport ${placeCoordinateReport}");
-        if (placeCoordinateReport.isNotEmpty) {
-          filterLokasiKoordinate.value = placeCoordinateReport[0]['place'];
-          idLokasiTerpilih.value = "${placeCoordinateReport[0]['id']}";
-        }
-      } else {
-        print("Place cordinate !=200" + res.body.toString());
-      }
-    });
-  }
-
-  Future<void> getPlaceCoordinate2() async {
-    UtilsAlert.showLoadingIndicator(Get.context!);
-
-    placeCoordinateDropdown.value.clear();
-    var connect = Api.connectionApi("get", {}, "places_coordinate",
-        params: "&id=${AppData.informasiUser![0].em_id}");
-    connect.then((dynamic res) {
-      if (res == false) {
-        print("errror");
-        coordinate.value = true;
-        getPlaceCoordinateOffline();
-        //UtilsAlert.koneksiBuruk();
-      } else {
-        if (res.statusCode == 200) {
-          placeCoordinate.clear();
-          coordinate.value = false;
-          print("Place cordinate 200" + res.body.toString());
-          var valueBody = jsonDecode(res.body);
-
-          var temporary = valueBody['data'];
-
-          List<Map<String, dynamic>> tipeLokasi = [];
-          for (var element in temporary) {
-            tipeLokasi.add({
-              'id': element['id'],
-              'place': element['place'],
-              'place_longlat': element['place_longlat'],
-              'place_radius': element['place_radius'],
-            });
-          }
-          SqliteDatabaseHelper().insertTipeLokasi(tipeLokasi);
-
-          print("controller.wfhlokasi ${controller.wfhlokasi.value}");
-
-          if (typeAbsen.value == 1) {
-            selectedType.value = valueBody['data'][0]['place'];
-          } else {
-            if (controller.wfhlokasi.value == true) {
-              selectedType.value = 'WFH';
-            } else {
-              selectedType.value = valueBody['data'][0]['place'];
-            }
-          }
-
-          for (var element in valueBody['data']) {
-            // placeCoordinateDropdown.value.add(element['place']);
-            if (typeAbsen.value == 1) {
-              placeCoordinateDropdown.value.add(element['place']);
-            } else {
-              if (controller.wfhlokasi.value == true) {
-                placeCoordinateDropdown.value.add('WFH');
-              } else {
-                placeCoordinateDropdown.value.add(element['place']);
-              }
-            }
-          }
-          List filter = [];
-          for (var element in valueBody['data']) {
-            if (element['isFilterView'] == 1) {
-              filter.add(element);
-            }
-          }
-
-          print("data ${placeCoordinate.value}");
-          // placeCoordinate.clear();
-          placeCoordinate.value = filter;
-          placeCoordinate.refresh();
-          placeCoordinate.refresh();
-          Get.back();
-        } else {
-          Get.back();
-          print("Place cordinate !=200" + res.body.toString());
-          print(res.body.toString());
-        }
-      }
-    }).catchError((error) {
-      coordinate.value = true;
-      getPlaceCoordinateOffline();
-    });
-  }
-
-  void getPlaceCoordinateOffline() async {
-    var body = await SqliteDatabaseHelper().getTipeLokasi();
-
-    placeCoordinateDropdown.value.clear();
-    if (typeAbsen.value == 1) {
-      selectedType.value = body[0]['place'];
-    } else {
-      if (controller.wfhlokasi.value == true) {
-        selectedType.value = 'WFH';
-      } else {
-        selectedType.value = body[0]['place'];
-      }
-    }
-
-    for (var element in body) {
-      // placeCoordinateDropdown.value.add(element['place']);
-      if (typeAbsen.value == 1) {
-        placeCoordinateDropdown.value.add(element['place']);
-      } else {
-        if (controller.wfhlokasi.value == true) {
-          placeCoordinateDropdown.value.add('WFH');
-        } else {
-          placeCoordinateDropdown.value.add(element['place']);
-        }
-      }
-    }
-    List filter = [];
-    for (var element in body) {
-      filter.add(element);
-    }
-
-    // placeCoordinate.clear();
-    placeCoordinate.value = filter;
-    placeCoordinate.refresh();
-    placeCoordinate.refresh();
-  }
-
-  // Future<void> offlineToOnline() async {
-  //   if (authController.isConnected.value) {
-  //     coordinate.value = false;
-  //   }
-  // }
-
-  Future<void> getPlaceCoordinate1() async {
-    // UtilsAlert.showLoadingIndicator(Get.context!);
-    var connect = Api.connectionApi("get", {}, "places_coordinate",
-        params: "&id=${AppData.informasiUser![0].em_id}");
-
-    connect.then((dynamic res) {
-      if (res == false) {
-        print("error");
-        coordinate.value = true;
-        // Get.back();
-        // UtilsAlert.koneksiBuruk();
-      } else {
-        // Get.back();
-        print("sukses");
-        coordinate.value = false;
-      }
-    }).catchError((error) {
-      //  Get.back();
-      coordinate.value = true;
-    });
-    ;
-  }
-
-  void getPlaceCoordinateCheckin() {
-    print("place coordinates");
-    placeCoordinate.clear();
-
-    var connect = Api.connectionApi(
-      "get",
-      {},
-      "places_coordinate_pengajuan",
-      params: "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}",
-    );
-
-    connect.then((dynamic res) {
-      if (res == false) {
-        print("error");
-        //UtilsAlert.koneksiBuruk();
-      } else {
-        if (res.statusCode == 200) {
-          print("Place coordinate 200" + res.body.toString());
-          var valueBody = jsonDecode(res.body);
-          selectedType.value = valueBody['data'][0]['place'];
-
-          List filter = [];
-          for (var element in valueBody['data']) {
-            if (element['isFilterView'] == 1) {
-              element['is_selected'] = false;
-              filter.add(element);
-            }
-          }
-          placeCoordinateCheckin.value = filter;
-          placeCoordinateCheckin.refresh();
-        } else {
-          print("Place coordinate !=200" + res.body.toString());
-        }
-      }
-    });
-    placeCoordinateCheckin.refresh();
-  }
-
-  void getPlaceCoordinateCheckout() {
-    print("place coordinates");
-    placeCoordinate.clear();
-
-    var connect = Api.connectionApi(
-      "get",
-      {},
-      "places_coordinate_pengajuan",
-      params: "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}",
-    );
-
-    connect.then((dynamic res) {
-      if (res == false) {
-        print("error");
-        //UtilsAlert.koneksiBuruk();
-      } else {
-        if (res.statusCode == 200) {
-          print("Place coordinate 200" + res.body.toString());
-          var valueBody = jsonDecode(res.body);
-          selectedType.value = valueBody['data'][0]['place'];
-
-          List filter = [];
-          for (var element in valueBody['data']) {
-            if (element['isFilterView'] == 1) {
-              element['is_selected'] = false;
-              filter.add(element);
-            }
-          }
-
-          placeCoordinateCheckout.value = filter;
-          placeCoordinateCheckout.refresh();
-        } else {
-          print("Place coordinate !=200" + res.body.toString());
-        }
-      }
-    });
-    placeCoordinateCheckout.refresh();
-  }
-
-  void getPlaceCoordinateCheckoutRest() {
+    void getPlaceCoordinateCheckoutRest() {
     print("place coordinates Rest");
-    placeCoordinate.clear();
+    //placeCoordinate.clear();
 
     var connect = Api.connectionApi(
       "get",
@@ -740,7 +315,7 @@ class AbsenController extends GetxController {
 
   void getPlaceCoordinateCheckinRest() {
     print("place coordinates Rest");
-    placeCoordinate.clear();
+    //placeCoordinate.clear();
 
     var connect = Api.connectionApi(
       "get",
@@ -833,6 +408,485 @@ class AbsenController extends GetxController {
       } else {}
       //  }
     } catch (e) {}
+  }
+
+
+
+  void showBottomBranch() {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      builder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Pilih Cabang",
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20),
+                  ),
+                  InkWell(
+                      customBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      onTap: () => Navigator.pop(Get.context!),
+                      child: Icon(
+                        Icons.close,
+                        size: 26,
+                        color: Constanst.fgSecondary,
+                      ))
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Divider(
+                thickness: 1,
+                height: 0,
+                color: Constanst.border,
+              ),
+            ),
+            Expanded(
+              child: Obx(() {
+                return SingleChildScrollView(
+                  child: ListView.builder(
+                    itemCount: branchList.length,
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context, index) {
+                      var name = branchList[index]['name'];
+                      var idBrach = branchList[index]['id'];
+                      var isSelected = filterBranch.value == name;
+                      print('ini brachid $idBrach');
+                      return Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              filterBranch.value = name;
+                              branchId.value = idBrach.toString();
+                              Navigator.pop(context);
+                              aksiCariLaporan();
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      name,
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Constanst.fgPrimary),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  isSelected
+                                      ? Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 2,
+                                                  color: Constanst.onPrimary),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: Constanst.onPrimary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Constanst.onPrimary),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                            ),
+                                          ),
+                                        )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                );
+              }),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void getBranch() {
+    var connect = Api.connectionApi('get', {}, 'cabang');
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        branchList.clear();
+        var valueBody = jsonDecode(res.body);
+        print('ini get barnch ${valueBody['data']}');
+        for (var data in valueBody['data']) {
+          branchList.add(data);
+        }
+        List data = valueBody['data'];
+        if (data.isNotEmpty) {
+          var listFirst = data.firstWhere((element) => element['name'] != null,
+              orElse: () => null);
+          if (listFirst != null) {
+            var fullName = listFirst['name'] ?? "";
+            String namaUserPertama = "$fullName";
+            filterBranch.value = namaUserPertama;
+          }
+        }
+        branchList.refresh;
+        filterBranch.refresh;
+        print(branchList);
+      } else {
+        print('error ${res.body}');
+      }
+    });
+  }
+
+  void getDepartemen(status, tanggal) {
+    jumlahData.value = 0;
+    var connect = Api.connectionApi("get", {}, "all_department");
+    connect.then((dynamic res) {
+      if (res == false) {
+        //UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          var dataDepartemen = valueBody['data'];
+
+          var dataUser = AppData.informasiUser;
+          var hakAkses = dataUser![0].em_hak_akses;
+
+          if (hakAkses != "" || hakAkses != null) {
+            if (hakAkses == '0') {
+              var data = {
+                'id': 0,
+                'name': 'SEMUA DIVISI',
+                'inisial': 'AD',
+                'parent_id': '',
+                'aktif': '',
+                'pakai': '',
+                'ip': '',
+                'created_by': '',
+                'created_on': '',
+                'modified_by': '',
+                'modified_on': ''
+              };
+              departementAkses.add(data);
+            }
+            var convert = hakAkses!.split(',');
+            for (var element in dataDepartemen) {
+              if (hakAkses == '0') {
+                departementAkses.add(element);
+              }
+              for (var element1 in convert) {
+                if ("${element['id']}" == element1) {
+                  print('sampe sini');
+                  departementAkses.add(element);
+                }
+              }
+            }
+          }
+          this.departementAkses.refresh();
+          if (departementAkses.value.isNotEmpty) {
+            if (status == 1) {
+              idDepartemenTerpilih.value = "${departementAkses[0]['id']}";
+              namaDepartemenTerpilih.value = departementAkses[0]['name'];
+              departemen.value.text = departementAkses[0]['name'];
+              showButtonlaporan.value = true;
+              aksiCariLaporan();
+            } else if (status == 2) {
+              idDepartemenTerpilih.value = "${departementAkses[0]['id']}";
+              namaDepartemenTerpilih.value = departementAkses[0]['name'];
+              departemen.value.text = departementAkses[0]['name'];
+              showButtonlaporan.value = true;
+              aksiEmployeeTerlambatAbsen(tanggal);
+            } else if (status == 3) {
+              idDepartemenTerpilih.value = "${departementAkses[0]['id']}";
+              namaDepartemenTerpilih.value = departementAkses[0]['name'];
+              departemen.value.text = departementAkses[0]['name'];
+              showButtonlaporan.value = true;
+              aksiEmployeeBelumAbsen(tanggal);
+            }
+          }
+        }
+      }
+    });
+  }
+
+  Future<void> getPlaceCoordinate() async {
+    placeCoordinate.clear();
+
+    placeCoordinateDropdown.value.clear();
+    var connect = Api.connectionApi("get", {}, "places_coordinate",
+        params: "&id=${AppData.informasiUser![0].em_id}");
+    connect.then((dynamic res) {
+      if (res == false) {
+        print("errror");
+        coordinate.value = true;
+        getPlaceCoordinateOffline();
+        //UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          coordinate.value = false;
+          var valueBody = jsonDecode(res.body);
+
+          var temporary = valueBody['data'];
+
+          print('ini placecordinate dari get $temporary');
+
+          List<Map<String, dynamic>> tipeLokasi = [];
+          for (var element in temporary) {
+            tipeLokasi.add({
+              'id': element['id'],
+              'place': element['place'],
+              'place_longlat': element['place_longlat'],
+              'place_radius': element['place_radius'],
+            });
+          }
+       
+          print('ini data buat masuk offline $tipeLokasi');
+          SqliteDatabaseHelper().insertTipeLokasi(tipeLokasi);
+
+          controller.checkAbsenUser(
+              DateFormat('yyyy-MM-dd').format(DateTime.now()),
+              AppData.informasiUser![0].em_id);
+          // selectedType.value = valueBody['data'][0]['place'];
+
+          print("controller.wfhlokasi ${controller.wfhlokasi.value}");
+
+          if (typeAbsen.value == 1) {
+            selectedType.value = valueBody['data'][0]['place'];
+          } else {
+            if (controller.wfhlokasi.value == true) {
+              selectedType.value = 'WFH';
+            } else {
+              selectedType.value = valueBody['data'][0]['place'];
+            }
+          }
+          print('ini dropdoen place value ${placeCoordinateDropdown.value}');
+          for (var element in valueBody['data']) {
+            // placeCoordinateDropdown.value.add(element['place']);
+            if (typeAbsen.value == 1) {
+              placeCoordinateDropdown.value.add(element['place']);
+            } else {
+              if (controller.wfhlokasi.value == true) {
+                placeCoordinateDropdown.value.add('WFH');
+              } else {
+                placeCoordinateDropdown.value.add(element['place']);
+              }
+            }
+          }
+       
+
+          List filter = [];
+          for (var element in valueBody['data']) {
+            if (element['isFilterView'] == 1) {
+              filter.add(element);
+            }
+          }
+
+                   // print('ini dropdoen place value ${fil}');
+
+          print("data plcea ${placeCoordinate}");
+          print('ini data filter ${filter}');
+          // placeCoordinate.clear();
+          placeCoordinate.add(filter);
+                UtilsAlert.showToast("te 2q ${placeCoordinate[0]}");
+
+          print('ini data filter ${placeCoordinate}');
+
+          print('ini data place cordinate dari get ${placeCoordinate[0]}');
+        } else {
+          print("Place cordinate !=200" + res.body.toString());
+          print(res.body.toString());
+        }
+      }
+    }).catchError((error) {
+      print('ini serius lu kemari');
+      coordinate.value = true;
+      getPlaceCoordinateOffline();
+    });
+  }
+
+  void getPlaceCoordinateOffline() async {
+    var body = await SqliteDatabaseHelper().getTipeLokasi();
+
+    placeCoordinateDropdown.value.clear();
+    //placeCoordinate.clear();
+    if (typeAbsen.value == 1) {
+      selectedType.value = body[0]['place'];
+    } else {
+      if (controller.wfhlokasi.value == true) {
+        selectedType.value = 'WFH';
+      } else {
+        selectedType.value = body[0]['place'];
+      }
+    }
+
+    for (var element in body) {
+      // placeCoordinateDropdown.value.add(element['place']);
+      if (typeAbsen.value == 1) {
+        placeCoordinateDropdown.value.add(element['place']);
+      } else {
+        if (controller.wfhlokasi.value == true) {
+          placeCoordinateDropdown.value.add('WFH');
+        } else {
+          placeCoordinateDropdown.value.add(element['place']);
+        }
+      }
+    }
+    List filter = [];
+    for (var element in body) {
+      filter.add(element);
+    }
+
+    // placeCoordinate.clear();
+    placeCoordinate.add(filter);
+  }
+
+  // Future<void> offlineToOnline() async {
+  //   if (authController.isConnected.value) {
+  //     coordinate.value = false;
+  //   }
+  // }
+
+  Future<void> getPlaceCoordinate1() async {
+    var connect = Api.connectionApi("get", {}, "places_coordinate",
+        params: "&id=${AppData.informasiUser![0].em_id}");
+
+    connect.then((dynamic res) {
+      if (res == false) {
+        print("error");
+        coordinate.value = true;
+        // UtilsAlert.koneksiBuruk();
+      } else {
+        print("sukses");
+        coordinate.value = false;
+      }
+    }).catchError((error) {
+      coordinate.value = true;
+    });
+    ;
+  }
+
+  void getPlaceCoordinateCheckin() {
+    print("place coordinates");
+    ///placeCoordinate.clear();
+
+    var connect = Api.connectionApi(
+      "get",
+      {},
+      "places_coordinate_pengajuan",
+      params: "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}",
+    );
+
+    connect.then((dynamic res) {
+      if (res == false) {
+        print("error");
+        //UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          print("Place coordinate 200" + res.body.toString());
+          var valueBody = jsonDecode(res.body);
+          selectedType.value = valueBody['data'][0]['place'];
+
+          List filter = [];
+          for (var element in valueBody['data']) {
+            if (element['isFilterView'] == 1) {
+              element['is_selected'] = false;
+              filter.add(element);
+            }
+          }
+          placeCoordinateCheckin.value = filter;
+          placeCoordinateCheckin.refresh();
+        } else {
+          print("Place coordinate !=200" + res.body.toString());
+        }
+      }
+    });
+    placeCoordinateCheckin.refresh();
+  }
+
+  void getPlaceCoordinateCheckout() {
+    print("place coordinates");
+    //placeCoordinate.clear();
+
+    var connect = Api.connectionApi(
+      "get",
+      {},
+      "places_coordinate_pengajuan",
+      params: "&id=${AppData.informasiUser![0].em_id}&date=${tglAjunan.value}",
+    );
+
+    connect.then((dynamic res) {
+      if (res == false) {
+        print("error");
+        //UtilsAlert.koneksiBuruk();
+      } else {
+        if (res.statusCode == 200) {
+          print("Place coordinate 200" + res.body.toString());
+          var valueBody = jsonDecode(res.body);
+          selectedType.value = valueBody['data'][0]['place'];
+
+          List filter = [];
+          for (var element in valueBody['data']) {
+            if (element['isFilterView'] == 1) {
+              element['is_selected'] = false;
+              filter.add(element);
+            }
+          }
+
+          placeCoordinateCheckout.value = filter;
+          placeCoordinateCheckout.refresh();
+        } else {
+          print("Place coordinate !=200" + res.body.toString());
+        }
+      }
+    });
+    placeCoordinateCheckout.refresh();
   }
 
   // latlong convert
@@ -1028,7 +1082,7 @@ class AbsenController extends GetxController {
 
   Future<void> refreshPage() async {
     getPosisition();
-    getPlaceCoordinate2();
+    getPlaceCoordinate();
     mapController?.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: LatLng(latUser.value, langUser.value), zoom: 20)
         //17 is new zoom level
@@ -1276,7 +1330,7 @@ class AbsenController extends GetxController {
       } on Exception catch (e) {
         print(e.toString());
         Get.back();
-        // UtilsAlert.showToast(e.toString());
+        UtilsAlert.showToast(e.toString());
         throw e;
       }
     } else {
@@ -1398,7 +1452,7 @@ class AbsenController extends GetxController {
     } on Exception catch (e) {
       print(e.toString());
       Get.back();
-      // UtilsAlert.showToast(e.toString());
+      UtilsAlert.showToast(e.toString());
       throw e;
     }
   }
@@ -1531,6 +1585,370 @@ class AbsenController extends GetxController {
     update();
   }
 
+  void kirimDataAbsensiIstirahat({typewfh}) async {
+//// untuk cek absensi
+    print("view last absen user 3");
+    print("tes ${AppData.informasiUser![0].startTime.toString()}");
+    var startTime = "";
+    var endTime = "";
+    var startDate = "";
+    var endDate = "";
+    TimeOfDay waktu1 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[0]),
+        minute: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[1]));
+
+    TimeOfDay waktu2 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].endTime.toString().split(':')[0]),
+        minute: int.parse(AppData.informasiUser![0].endTime
+            .toString()
+            .split(':')[1])); // Waktu kedua
+
+    int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+    int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+
+    //alur normal
+    if (totalMinutes1 < totalMinutes2) {
+      startTime = AppData.informasiUser![0].startTime;
+      endTime = AppData.informasiUser![0].endTime;
+
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+      //alur beda hari
+    } else if (totalMinutes1 > totalMinutes2) {
+      var waktu3 =
+          TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+      int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+      if (totalMinutes2 > totalMinutes3) {
+        startTime = AppData.informasiUser![0].endTime;
+        endTime = AppData.informasiUser![0].startTime;
+
+        startDate = DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(const Duration(days: -1)));
+
+        endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      } else {
+        startTime = AppData.informasiUser![0].endTime;
+        endTime = AppData.informasiUser![0].startTime;
+
+        endDate = DateFormat('yyyy-MM-dd')
+            .format(DateTime.now().add(const Duration(days: 1)));
+
+        startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      }
+    } else {
+      startTime = AppData.informasiUser![0].startTime;
+      endTime = AppData.informasiUser![0].endTime;
+
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      print("Waktu 1 sama dengan waktu 2");
+    }
+
+    ////////
+
+    print("typewfh ${typewfh}");
+    employeDetail();
+    // if (base64fotoUser.value == "") {
+    //   UtilsAlert.showToast("Silahkan Absen");
+    // } else {
+
+    if (Platform.isAndroid) {
+      // TrustLocation.start(1);
+      getCheckMock();
+      if (!mockLocation.value) {
+        var statusPosisi = await validasiRadius();
+        if (statusPosisi == true) {
+          var latLangAbsen = "${latUser.value},${langUser.value}";
+          var dataUser = AppData.informasiUser;
+          var getEmpId = dataUser![0].em_id;
+          var getSettingAppSaveImageAbsen = "1";
+          var validasiGambar =
+              getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
+
+          var getFullName = "${dataUser![0].full_name}";
+          var convertTanggalBikinPengajuan =
+              // status == false
+              //     ? Constanst.convertDateSimpan(
+              //         pilihTanggalTelatAbsen.value.toString())
+              //     :
+              pilihTanggalTelatAbsen.value.toString();
+          var getEmid = "${dataUser![0].em_id}";
+          var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
+          var typeNotifFcm = "Pengajuan WFH";
+          var now = DateTime.now();
+          var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
+          var getNomorAjuanTerakhir = nomorAjuan;
+
+          if (typeAbsen.value == 1 && typewfh == "wfh") {
+            for (var item in globalCt.konfirmasiAtasan) {
+              print("Token notif ${item['token_notif']}");
+              var pesan;
+              if (item['em_gender'] == "PRIA") {
+                pesan =
+                    "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
+              } else {
+                pesan =
+                    "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
+              }
+
+              kirimNotifikasiToDelegasi1(
+                  getFullName,
+                  convertTanggalBikinPengajuan,
+                  item['em_id'],
+                  '',
+                  stringTanggal,
+                  typeNotifFcm,
+                  pesan,
+                  'Pengajuan WFH');
+
+              if (item['token_notif'] != null) {
+                globalCt.kirimNotifikasiFcm(
+                  title: typeNotifFcm,
+                  message: pesan,
+                  tokens: item['token_notif'],
+                );
+              }
+            }
+          }
+          if (typeAbsen.value == 1) {
+            absenStatus.value = true;
+            AppData.statusAbsen = true;
+            AppData.dateLastAbsen = tanggalUserFoto.value;
+          } else {
+            absenStatus.value = false;
+            AppData.statusAbsen = false;
+            AppData.dateLastAbsen = tanggalUserFoto.value;
+          }
+          Map<String, dynamic> body = typewfh == "wfh"
+              ? {
+                  'em_id': getEmpId,
+                  'date': tanggalUserFoto.value,
+                  'uraian': deskripsiAbsen.value.text,
+                  'place': selectedType.value,
+                  'lokasi': alamatUserFoto.value,
+                  'latLang': latLangAbsen,
+
+                  // 'waktu': timeString.value,
+                  // // 'gambar': validasiGambar,
+                  // 'reg_type': regType.value,
+                  // 'gambar': base64fotoUser.value,
+                  // 'lokasi': alamatUserFoto.value,
+                  // 'latLang': latLangAbsen,
+                  // 'typeAbsen': typeAbsen.value,
+                  // 'kategori': "1"
+
+                  'start_date': startDate,
+                  'end_date': endDate,
+                  'start_time': startTime,
+                  'end_time': endTime,
+                }
+              : {
+                  'em_id': getEmpId,
+                  'tanggal_absen': tanggalUserFoto.value,
+                  'waktu': timeString.value,
+                  // 'gambar': validasiGambar,
+                  'reg_type': regType.value,
+
+                  'lokasi': alamatUserFoto.value,
+                  'latLang': latLangAbsen,
+                  'catatan': deskripsiAbsen.value.text,
+                  'typeAbsen': typeAbsen.value,
+                  'place': selectedType.value,
+                  'kategori': "1",
+                  'gambar': base64fotoUser.value,
+
+                  'start_date': startDate,
+                  'end_date': endDate,
+                  'start_time': startTime,
+                  'end_time': endTime,
+                };
+          print("parameter wfh ${body}");
+          isLoaingAbsensi.value = true;
+          var connect = Api.connectionApi(
+              "post", body, typewfh == "wfh" ? "wfh" : "attendance-break");
+          connect.then((dynamic res) async {
+            print("respon attendace break ${res.statusCode}");
+            if (res.statusCode == 200) {
+              var valueBody = jsonDecode(res.body);
+              print("respon wfh ${valueBody}");
+              // for (var element in sysData.value) {
+              //   if (element['kode'] == '006') {
+              //     intervalControl.value = int.parse(element['name'].toString());
+              //   }
+              // }
+              isLoaingAbsensi.value = false;
+              this.intervalControl.refresh();
+
+              print("dapat interval ${intervalControl.value}");
+              // Navigator.pop(Get.context!);
+              ;
+
+              print(
+                  "isViewTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
+              print("isViewTracking ${typeAbsen.value}");
+              if (AppData.informasiUser![0].isViewTracking.toString() == '0') {
+                controllerTracking.bagikanlokasi.value = "aktif";
+
+                // final service = FlutterBackgroundService();
+                // FlutterBackgroundService().invoke("setAsBackground");
+
+                // service.startService();
+                controllerTracking.updateStatus('1');
+                controllerTracking.isTrackingLokasi.value = true;
+                // controllerTracking.detailTracking(emIdEmployee: '');
+                print(
+                    "startTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
+              }
+
+              if (typeAbsen.value == 2) {
+                controllerTracking.bagikanlokasi.value = "tidak aktif";
+                // await LocationDao().clear();
+                // await _getLocations();
+                // await BackgroundLocationTrackerManager.stopTracking();
+                // final service = FlutterBackgroundService();
+                // FlutterBackgroundService().invoke("setAsBackground");
+
+                // service.invoke("stopService");
+                controllerTracking.updateStatus('0');
+                controllerTracking.isTrackingLokasi.value = false;
+                print(
+                    "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
+              }
+
+              Get.to(BerhasilAbsensi(
+                dataBerhasil: [
+                  titleAbsen.value,
+                  timeString.value,
+                  typeAbsen.value,
+                  intervalControl.value
+                ],
+              ));
+            } else {
+              isLoaingAbsensi.value = false;
+              Get.back();
+              UtilsAlert.koneksiBuruk();
+              // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+              //     positiveBtnPressed: () {
+              //   // kirimDataAbsensiOffline(typewfh: typewfh);
+              //   Get.back();
+              //   widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+              // });
+              //error
+            }
+          });
+          // .catchError((error) {
+          //   isLoaingAbsensi.value = false;
+          //   Get.back();
+          //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+          //       positiveBtnPressed: () {
+          //     // kirimDataAbsensiOffline(typewfh: typewfh);
+          //     Get.back();
+          //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+          //   });
+          // });
+        }
+      } else {
+        isLoaingAbsensi.value = false;
+        UtilsAlert.showToast("Periksa GPS anda");
+      }
+    } else if (Platform.isIOS) {
+      var statusPosisi = await validasiRadius();
+      if (statusPosisi == true) {
+        var latLangAbsen = "${latUser.value},${langUser.value}";
+        var dataUser = AppData.informasiUser;
+        var getEmpId = dataUser![0].em_id;
+        // var getSettingAppSaveImageAbsen =
+        //     settingAppInfo.value![0].saveimage_attend;
+        var getSettingAppSaveImageAbsen = "1";
+        var validasiGambar =
+            getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
+        if (typeAbsen.value == 1) {
+          absenStatus.value = true;
+          AppData.statusAbsen = true;
+          AppData.dateLastAbsen = tanggalUserFoto.value;
+        } else {
+          absenStatus.value = false;
+          AppData.statusAbsen = false;
+          AppData.dateLastAbsen = tanggalUserFoto.value;
+        }
+        Map<String, dynamic> body = {
+          'em_id': getEmpId,
+          'tanggal_absen': tanggalUserFoto.value,
+          'waktu': timeString.value,
+          // 'gambar': validasiGambar,
+          'reg_type': regType.value.toString(),
+          'gambar': base64fotoUser.value,
+          'lokasi': alamatUserFoto.value,
+          'latLang': latLangAbsen,
+          'catatan': deskripsiAbsen.value.text,
+          'typeAbsen': typeAbsen.value,
+          'place': selectedType.value,
+          'kategori': "1",
+
+          'start_date': startDate,
+          'end_date': endDate,
+          'start_time': startTime,
+          'end_time': endTime,
+        };
+        isLoaingAbsensi.value = true;
+
+        var connect = Api.connectionApi("post", body, "attendance-break");
+        connect.then((dynamic res) {
+          if (res.statusCode == 200) {
+            var valueBody = jsonDecode(res.body);
+            print(res.body);
+            for (var element in sysData.value) {
+              if (element['kode'] == '006') {
+                intervalControl.value = int.parse(element['name']);
+              }
+            }
+            isLoaingAbsensi.value = false;
+            this.intervalControl.refresh();
+
+            print("dapat interval ${intervalControl.value}");
+            Get.back();
+            Get.offAll(BerhasilAbsensi(
+              dataBerhasil: [
+                titleAbsen.value,
+                timeString.value,
+                typeAbsen.value,
+                intervalControl.value
+              ],
+            ));
+          } else {
+            isLoaingAbsensi.value = false;
+            Get.back();
+            UtilsAlert.koneksiBuruk();
+            // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+            //     positiveBtnPressed: () {
+            //   // kirimDataAbsensiOffline(typewfh: typewfh);
+            //   Get.back();
+            //   widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+            // });
+          }
+        });
+        // .catchError((error) {
+        //   isLoaingAbsensi.value = false;
+        //   Get.back();
+        //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+        //       positiveBtnPressed: () {
+        //     // kirimDataAbsensiOffline(typewfh: typewfh);
+        //     Get.back();
+        //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+        //   });
+        // });
+      }
+    }
+
+    //  }
+  }
+
+
   void kirimDataAbsensi({typewfh}) async {
 //// untuk cek absensi
     print("view last absen user 3");
@@ -1603,130 +2021,146 @@ class AbsenController extends GetxController {
     //   UtilsAlert.showToast("Silahkan Absen");
     // } else {
 
-    var platform = Platform.operatingSystem;
-    try {
-      if (Platform.isAndroid) {
-        // TrustLocation.start(1);
-        // getCheckMock();
-        if (!mockLocation.value) {
-          var statusPosisi = await validasiRadius();
-          if (statusPosisi == true) {
-            var latLangAbsen = "${latUser.value},${langUser.value}";
-            var dataUser = AppData.informasiUser;
-            var getEmpId = dataUser![0].em_id;
-            var getSettingAppSaveImageAbsen = "1";
-            var validasiGambar =
-                getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
+    if (Platform.isAndroid) {
+      // TrustLocation.start(1);
+      getCheckMock();
+      if (!mockLocation.value) {
+        var statusPosisi = validasiRadius();
+        if (statusPosisi == true) {
+          var latLangAbsen = "${latUser.value},${langUser.value}";
+          var dataUser = AppData.informasiUser;
+          var getEmpId = dataUser![0].em_id;
+          var getSettingAppSaveImageAbsen = "1";
+          var validasiGambar =
+              getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
 
-            var getFullName = "${dataUser![0].full_name}";
-            var convertTanggalBikinPengajuan =
-                // status == false
-                //     ? Constanst.convertDateSimpan(
-                //         pilihTanggalTelatAbsen.value.toString())
-                //     :
-                pilihTanggalTelatAbsen.value.toString();
-            var getEmid = "${dataUser![0].em_id}";
-            var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
-            var typeNotifFcm = "Pengajuan WFH";
-            var now = DateTime.now();
-            var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
-            var getNomorAjuanTerakhir = nomorAjuan;
+          var getFullName = "${dataUser![0].full_name}";
+          var convertTanggalBikinPengajuan =
+              // status == false
+              //     ? Constanst.convertDateSimpan(
+              //         pilihTanggalTelatAbsen.value.toString())
+              //     :
+              pilihTanggalTelatAbsen.value.toString();
+          var getEmid = "${dataUser![0].em_id}";
+          var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
+          var typeNotifFcm = "Pengajuan WFH";
+          var now = DateTime.now();
+          var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
+          var getNomorAjuanTerakhir = nomorAjuan;
 
-            if (typeAbsen.value == 1 && typewfh == "wfh") {
-              for (var item in globalCt.konfirmasiAtasan) {
-                print("Token notif ${item['token_notif']}");
-                var pesan;
-                if (item['em_gender'] == "PRIA") {
-                  pesan =
-                      "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
-                } else {
-                  pesan =
-                      "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
-                }
+          if (typeAbsen.value == 1 && typewfh == "wfh") {
+            for (var item in globalCt.konfirmasiAtasan) {
+              print("Token notif ${item['token_notif']}");
+              var pesan;
+              if (item['em_gender'] == "PRIA") {
+                pesan =
+                    "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
+              } else {
+                pesan =
+                    "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
+              }
 
-                kirimNotifikasiToDelegasi1(
-                    getFullName,
-                    convertTanggalBikinPengajuan,
-                    item['em_id'],
-                    '',
-                    stringTanggal,
-                    typeNotifFcm,
-                    pesan,
-                    'Approval WFH');
+              kirimNotifikasiToDelegasi1(
+                  getFullName,
+                  convertTanggalBikinPengajuan,
+                  item['em_id'],
+                  '',
+                  stringTanggal,
+                  typeNotifFcm,
+                  pesan,
+                  'Pengajuan WFH');
 
-                if (item['token_notif'] != null) {
-                  globalCt.kirimNotifikasiFcm(
-                    title: typeNotifFcm,
-                    message: pesan,
-                    tokens: item['token_notif'],
-                  );
-                }
+              if (item['token_notif'] != null) {
+                globalCt.kirimNotifikasiFcm(
+                  title: typeNotifFcm,
+                  message: pesan,
+                  tokens: item['token_notif'],
+                );
               }
             }
-            print("parameter wfh 1");
-            if (typeAbsen.value == 1) {
-              // absenStatus.value = true;
-              AppData.statusAbsen = true;
-              AppData.dateLastAbsen = tanggalUserFoto.value;
-            } else {
-              // absenStatus.value = false;
-              AppData.statusAbsen = false;
-              AppData.dateLastAbsen = tanggalUserFoto.value;
-            }
-            Map<String, dynamic> body = typewfh == "wfh"
-                ? {
-                    'em_id': getEmpId,
-                    'date': tanggalUserFoto.value,
-                    'uraian': deskripsiAbsen.value.text,
-                    'place': selectedType.value,
-                    'lokasi': alamatUserFoto.value,
-                    'latLang': latLangAbsen,
-                    'start_date': startDate,
-                    'end_date': endDate,
-                    'start_time': startTime,
-                    'end_time': endTime,
-                    'platform': platform
-                  }
-                : {
-                    'em_id': getEmpId,
-                    'tanggal_absen': tanggalUserFoto.value,
-                    'waktu': timeString.value,
-                    'reg_type': regType.value,
-                    'lokasi': alamatUserFoto.value,
-                    'latLang': latLangAbsen,
-                    'catatan': deskripsiAbsen.value.text,
-                    'typeAbsen': typeAbsen.value,
-                    'place': selectedType.value,
-                    'kategori': "1",
-                    'gambar': base64fotoUser.value,
-                    'start_date': startDate,
-                    'end_date': endDate,
-                    'start_time': startTime,
-                    'end_time': endTime,
-                    'platform': platform
-                  };
+          }
+          if (typeAbsen.value == 1) {
+            // absenStatus.value = true;
+            AppData.statusAbsen = true;
+            AppData.dateLastAbsen = tanggalUserFoto.value;
+          } else {
+            // absenStatus.value = false;
+            AppData.statusAbsen = false;
+            AppData.dateLastAbsen = tanggalUserFoto.value;
+          }
+          print('Ini time string ${timeString.value}');
+          Map<String, dynamic> body = typewfh == "wfh"
+              ? {
+                  'em_id': getEmpId,
+                  'date': tanggalUserFoto.value,
+                  'uraian': deskripsiAbsen.value.text,
+                  'place': selectedType.value,
+                  'lokasi': alamatUserFoto.value,
+                  'latLang': latLangAbsen,
 
-            isLoaingAbsensi.value = true;
-            var connect = await ApiRequest(
-                    url: typewfh == "wfh" ? "wfh" : "kirimAbsen", body: body)
-                .post();
+                  'waktu': timeString.value,
+                  // // 'gambar': validasiGambar,
+                  // 'reg_type': regType.value,
+                  // 'gambar': base64fotoUser.value,
+                  // 'lokasi': alamatUserFoto.value,
+                  // 'latLang': latLangAbsen,
+                  // 'typeAbsen': typeAbsen.value,
+                  // 'kategori': "1"
 
-            if (connect.statusCode == 200) {
-              var valueBody = jsonDecode(connect.body);
+                  'start_date': startDate,
+                  'end_date': endDate,
+                  'start_time': startTime,
+                  'end_time': endTime,
+                }
+              : {
+                  'em_id': getEmpId,
+                  'tanggal_absen': tanggalUserFoto.value,
+                  'waktu': timeString.value,
+                  // 'gambar': validasiGambar,
+                  'reg_type': regType.value,
+
+                  'lokasi': alamatUserFoto.value,
+                  'latLang': latLangAbsen,
+                  'catatan': deskripsiAbsen.value.text,
+                  'typeAbsen': typeAbsen.value,
+                  'place': selectedType.value,
+                  'kategori': "1",
+                  'gambar': base64fotoUser.value,
+
+                  'start_date': startDate,
+                  'end_date': endDate,
+                  'start_time': startTime,
+                  'end_time': endTime,
+                };
+          print("parameter wfh ${body}");
+          isLoaingAbsensi.value = true;
+          var connect = Api.connectionApi(
+              "post", body, typewfh == "wfh" ? "wfh" : "kirimAbsen");
+          connect.then((dynamic res) async {
+            if(res == false){
+              isLoaingAbsensi.value = false;
+              Get.back(); 
+              UtilsAlert.koneksiBuruk();
+            }else{
+              if (res.statusCode == 200) {
+              var valueBody = jsonDecode(res.body);
               print("respon wfh ${valueBody}");
               // for (var element in sysData.value) {
               //   if (element['kode'] == '006') {
               //     intervalControl.value = int.parse(element['name'].toString());
               //   }
               // }
+              titleNotif.value = valueBody['title'] ?? "";
+              isShowNotif.value = valueBody['is_show_notif'] ?? false;
+              deskripsi.value = valueBody['deskription'] ?? "";
+              statusAbsen.value = valueBody['status_absen'] ?? "";
+
               isLoaingAbsensi.value = false;
               this.intervalControl.refresh();
-              String timeValue = DateTime.now().toString();
-              DateTime dateTime = DateTime.parse(timeValue);
-              timeString.value =
-                  valueBody['time'] ?? DateFormat('HH:mm:ss').format(dateTime);
+
               print("dapat interval ${intervalControl.value}");
               // Navigator.pop(Get.context!);
+              ;
 
               print(
                   "isViewTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
@@ -1734,6 +2168,11 @@ class AbsenController extends GetxController {
 
               if (AppData.informasiUser![0].isViewTracking.toString() == '0') {
                 controllerTracking.bagikanlokasi.value = "aktif";
+
+                // final service = FlutterBackgroundService();
+                // FlutterBackgroundService().invoke("setAsBackground");
+
+                // service.startService();
                 controllerTracking.updateStatus('1');
                 controllerTracking.isTrackingLokasi.value = true;
                 // controllerTFFracking.detailTracking(emIdEmployee: '');
@@ -1743,6 +2182,13 @@ class AbsenController extends GetxController {
 
               if (typeAbsen.value == 2) {
                 controllerTracking.bagikanlokasi.value = "tidak aktif";
+                // await LocationDao().clear();
+                // await _getLocations();
+                // await BackgroundLocationTrackerManager.stopTracking();
+                // final service = FlutterBackgroundService();
+                // FlutterBackgroundService().invoke("setAsBackground");
+
+                // service.invoke("stopService");
                 controllerTracking.updateStatus('0');
                 controllerTracking.isTrackingLokasi.value = false;
                 print(
@@ -1754,73 +2200,85 @@ class AbsenController extends GetxController {
                   titleAbsen.value,
                   timeString.value,
                   typeAbsen.value,
-                  intervalControl.value,
-                  dateNow.value
+                  intervalControl.value
                 ],
               ));
             } else {
               isLoaingAbsensi.value = false;
-              Get.back();
-
-              UtilsAlert.showToast(
-                  "Terjadi kesalahan, Silahkan coba melakukan absen ulang.");
-
-              //  UtilsAlert.koneksiBuruk();
+              Get.back(); 
+              UtilsAlert.koneksiBuruk();
+              // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+              //     positiveBtnPressed: () {
+              //   // kirimDataAbsensiOffline(typewfh: typewfh);
+              //   Get.back();
+              //   widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+              // });
+              //error
             }
-          }
-        } else {
-          isLoaingAbsensi.value = false;
-          UtilsAlert.showToast("Periksa GPS anda");
+            }
+            
+          });
+          // .catchError((error) {
+          //   isLoaingAbsensi.value = false;
+          //   Get.back();
+          //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+          //       positiveBtnPressed: () {
+          //     // kirimDataAbsensiOffline(typewfh: typewfh);
+          //     Get.back();
+          //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+          //   });
+          // });
         }
-      } else if (Platform.isIOS) {
-        var statusPosisi = await validasiRadius();
-        if (statusPosisi == true) {
-          var latLangAbsen = "${latUser.value},${langUser.value}";
-          var dataUser = AppData.informasiUser;
-          var getEmpId = dataUser![0].em_id;
-          // var getSettingAppSaveImageAbsen =
-          //     settingAppInfo.value![0].saveimage_attend;
-          var getSettingAppSaveImageAbsen = "1";
-          var validasiGambar =
-              getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
-          if (typeAbsen.value == 1) {
-            absenStatus.value = true;
-            AppData.statusAbsen = true;
-            AppData.dateLastAbsen = tanggalUserFoto.value;
-          } else {
-            absenStatus.value = false;
-            AppData.statusAbsen = false;
-            AppData.dateLastAbsen = tanggalUserFoto.value;
-          }
-          Map<String, dynamic> body = {
-            'em_id': getEmpId,
-            'tanggal_absen': tanggalUserFoto.value,
-            'waktu': timeString.value,
-            // 'gambar': validasiGambar,
-            'reg_type': regType.value.toString(),
-            'gambar': base64fotoUser.value,
-            'lokasi': alamatUserFoto.value,
-            'latLang': latLangAbsen,
-            'catatan': deskripsiAbsen.value.text,
-            'typeAbsen': typeAbsen.value,
-            'place': selectedType.value,
-            'kategori': "1",
+      } else {
+        isLoaingAbsensi.value = false;
+        UtilsAlert.showToast("Periksa GPS anda");
+      }
+    } else if (Platform.isIOS) {
+      var statusPosisi = await validasiRadius();
+      if (statusPosisi == true) {
+        var latLangAbsen = "${latUser.value},${langUser.value}";
+        var dataUser = AppData.informasiUser;
+        var getEmpId = dataUser![0].em_id;
+        // var getSettingAppSaveImageAbsen =
+        //     settingAppInfo.value![0].saveimage_attend;
+        var getSettingAppSaveImageAbsen = "1";
+        var validasiGambar =
+            getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
+        if (typeAbsen.value == 1) {
+          absenStatus.value = true;
+          AppData.statusAbsen = true;
+          AppData.dateLastAbsen = tanggalUserFoto.value;
+        } else {
+          absenStatus.value = false;
+          AppData.statusAbsen = false;
+          AppData.dateLastAbsen = tanggalUserFoto.value;
+        }
+        Map<String, dynamic> body = {
+          'em_id': getEmpId,
+          'tanggal_absen': tanggalUserFoto.value,
+          'waktu': timeString.value,
+          // 'gambar': validasiGambar,
+          'reg_type': regType.value.toString(),
+          'gambar': base64fotoUser.value,
+          'lokasi': alamatUserFoto.value,
+          'latLang': latLangAbsen,
+          'catatan': deskripsiAbsen.value.text,
+          'typeAbsen': typeAbsen.value,
+          'place': selectedType.value,
+          'kategori': "1",
 
-            'start_date': startDate,
-            'end_date': endDate,
-            'start_time': startTime,
-            'end_time': endTime,
-            'platform': platform
-          };
-          isLoaingAbsensi.value = true;
+          'start_date': startDate,
+          'end_date': endDate,
+          'start_time': startTime,
+          'end_time': endTime,
+        };
+        isLoaingAbsensi.value = true;
 
-          var connect = await ApiRequest(
-                  url: typewfh == "wfh" ? "wfh" : "kirimAbsen", body: body)
-              .post();
-
-          if (connect.statusCode == 200) {
-            var valueBody = jsonDecode(connect.body);
-            print('ini response kirim');
+        var connect = Api.connectionApi("post", body, "kirimAbsen");
+        connect.then((dynamic res) {
+          if (res.statusCode == 200) {
+            var valueBody = jsonDecode(res.body);
+            print(res.body);
             for (var element in sysData.value) {
               if (element['kode'] == '006') {
                 intervalControl.value = int.parse(element['name']);
@@ -1836,16 +2294,13 @@ class AbsenController extends GetxController {
                 titleAbsen.value,
                 timeString.value,
                 typeAbsen.value,
-                intervalControl.value,
-                dateNow.value
+                intervalControl.value
               ],
             ));
           } else {
             isLoaingAbsensi.value = false;
             Get.back();
-            UtilsAlert.showToast(
-                "Terjadi kesalahan, Silahkan coba melakukan absen ulang.");
-            // UtilsAlert.koneksiBuruk();
+            UtilsAlert.koneksiBuruk();
             // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
             //     positiveBtnPressed: () {
             //   // kirimDataAbsensiOffline(typewfh: typewfh);
@@ -1853,157 +2308,114 @@ class AbsenController extends GetxController {
             //   widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
             // });
           }
-
-          // var connect = Api.connectionApi("post", body, "kirimAbsen");
-          // connect.then((dynamic res) {
-          //   if (res.statusCode == 200) {
-          //     var valueBody = jsonDecode(res.body);
-          //     print('ini response kirim');
-          //     for (var element in sysData.value) {
-          //       if (element['kode'] == '006') {
-          //         intervalControl.value = int.parse(element['name']);
-          //       }
-          //     }
-          //     isLoaingAbsensi.value = false;
-          //     this.intervalControl.refresh();
-
-          //     print("dapat interval ${intervalControl.value}");
-          //     Get.back();
-          //     Get.offAll(BerhasilAbsensi(
-          //       dataBerhasil: [
-          //         titleAbsen.value,
-          //         timeString.value,
-          //         typeAbsen.value,
-          //         intervalControl.value,
-          //         dateNow.value
-          //       ],
-          //     ));
-          //   } else {
-          //     isLoaingAbsensi.value = false;
-          //     Get.back();
-          //     UtilsAlert.koneksiBuruk();
-          //     // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
-          //     //     positiveBtnPressed: () {
-          //     //   // kirimDataAbsensiOffline(typewfh: typewfh);
-          //     //   Get.back();
-          //     //   widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
-          //     // });
-          //   }
-          // });
-          // .catchError((error) {
-          //   isLoaingAbsensi.value = false;
-          //   Get.back();
-          //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
-          //       positiveBtnPressed: () {
-          //     // kirimDataAbsensiOffline(typewfh: typewfh);
-          //     Get.back();
-          //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
-          //   });
-          // });
-        }
+        });
+        // .catchError((error) {
+        //   isLoaingAbsensi.value = false;
+        //   Get.back();
+        //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
+        //       positiveBtnPressed: () {
+        //     // kirimDataAbsensiOffline(typewfh: typewfh);
+        //     Get.back();
+        //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
+        //   });
+        // });
       }
-    } catch (e) {
-      isLoaingAbsensi.value = false;
-      print('error saat absen $e');
-      Get.back();
-      UtilsAlert.showToast(
-          "Periksa kembali koneksi internet Anda, dan coba lakukan absen beberapa saat lagi.");
     }
 
     //  }
   }
 
-  // void widgetButtomSheetLanjutkanOffline({type, typewfh}) {
-  //   showModalBottomSheet(
-  //     context: Get.context!,
-  //     shape: const RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(
-  //         top: Radius.circular(20.0),
-  //       ),
-  //     ),
-  //     builder: (context) {
-  //       return Column(
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         mainAxisSize: MainAxisSize.min,
-  //         children: [
-  //           const SizedBox(
-  //             height: 30,
-  //           ),
-  //           Padding(
-  //             padding: const EdgeInsets.only(left: 16, right: 16),
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.center,
-  //               children: [
-  //                 Center(
-  //                   child: Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.center,
-  //                     children: [
-  //                       // Padding(
-  //                       //   padding: const EdgeInsets.only(left: 5, right: 5),
-  //                       //   child: Image.asset("assets/vector_map.png"),
-  //                       // ),
-  //                       const CircleAvatar(
-  //                         backgroundColor: Colors.red,
-  //                         maxRadius: 30.0,
-  //                         child: Icon(
-  //                           Iconsax.info_circle,
-  //                           color: Colors.white,
-  //                           size: 25,
-  //                         ),
-  //                       ),
-  //                       const SizedBox(height: 20),
-  //                       const Text(
-  //                         "Peringatan Absensi Offline",
-  //                         style: TextStyle(
-  //                             fontWeight: FontWeight.bold, fontSize: 16),
-  //                       ),
-  //                       const SizedBox(height: 15),
-  //                       const Text(
-  //                         "Anda memilih Absensi Offline, absensi offline membutuhkan approval",
-  //                         textAlign: TextAlign.center,
-  //                       ),
-  //                       const SizedBox(height: 30),
-  //                       TextButtonWidget(
-  //                         title: "Lanjutkan",
-  //                         onTap: () async {
-  //                           if (type == "offlineAbsensi") {
-  //                             print('kesini');
-  //                             Get.back();
-  //                             await deteksiFakeGps(context);
-  //                             if (statusDeteksi.value == false &&
-  //                                 statusDeteksi2.value == false) {
-  //                               kirimDataAbsensiOffline(typewfh: typewfh);
-  //                             } else if (statusDeteksi.value == false &&
-  //                                 statusDeteksi2.value == true) {
-  //                               if (context.mounted) {
-  //                                 popUpRefresh(Get.context!);
-  //                               }
-  //                             }
-  //                           } else {
-  //                             Navigator.pop(context);
-  //                             // await Permission.camera.request();
-  //                             // await Permission.location.request();
-  //                           }
-  //                         },
-  //                         colorButton: Constanst.colorButton1,
-  //                         colortext: Constanst.colorWhite,
-  //                         border: BorderRadius.circular(15.0),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 )
-  //               ],
-  //             ),
-  //           ),
-  //           const SizedBox(
-  //             height: 30,
-  //           )
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
+  void widgetButtomSheetLanjutkanOffline({type, typewfh}) {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 5, right: 5),
+                        //   child: Image.asset("assets/vector_map.png"),
+                        // ),
+                        const CircleAvatar(
+                          backgroundColor: Colors.red,
+                          maxRadius: 30.0,
+                          child: Icon(
+                            Iconsax.info_circle,
+                            color: Colors.white,
+                            size: 25,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          "Peringatan Absensi Offline",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        const SizedBox(height: 15),
+                        const Text(
+                          "Anda memilih Absensi Offline, absensi offline membutuhkan approval",
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 30),
+                        TextButtonWidget(
+                          title: "Lanjutkan",
+                          onTap: () async {
+                            if (type == "offlineAbsensi") {
+                              // print('kesini');
+                              // Get.back();
+                              // await deteksiFakeGps(context);
+                              if (statusDeteksi.value == false &&
+                                  statusDeteksi2.value == false) {
+                                kirimDataAbsensiOffline(typewfh: typewfh);
+                              } else if (statusDeteksi.value == false &&
+                                  statusDeteksi2.value == true) {
+                                if (context.mounted) {
+                                  popUpRefresh(Get.context!);
+                                }
+                              }
+                            } else {
+                              Navigator.pop(context);
+                              // await Permission.camera.request();
+                              // await Permission.location.request();
+                            }
+                          },
+                          colorButton: Constanst.colorButton1,
+                          colortext: Constanst.colorWhite,
+                          border: BorderRadius.circular(15.0),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            )
+          ],
+        );
+      },
+    );
+  }
 
   void popUpRefresh(BuildContext context) async {
     showGeneralDialog(
@@ -2044,126 +2456,126 @@ class AbsenController extends GetxController {
     );
   }
 
-  // void kirimDataAbsensiOffline({typewfh}) async {
-  //   var latLangAbsen = "${latUser.value},${langUser.value}";
+  void kirimDataAbsensiOffline({typewfh}) async {
+    var latLangAbsen = "${latUser.value},${langUser.value}";
 
-  //   //     absenStatus.value = false;
-  //   // AppData.statusAbsen = false;
-  //   // AppData.dateLastAbsen = tanggalUserFoto.value;
-  //   var statusPosisi = await validasiRadius();
-  //   if (statusPosisi == true) {
-  //     if (typeAbsen.value == 1) {
-  //       absenStatus.value = true;
-  //       AppData.statusAbsen = true;
-  //       AppData.dateLastAbsen = tanggalUserFoto.value;
+    //     absenStatus.value = false;
+    // AppData.statusAbsen = false;
+    // AppData.dateLastAbsen = tanggalUserFoto.value;
+    var statusPosisi = await validasiRadius();
+    if (statusPosisi == true) {
+      if (typeAbsen.value == 1) {
+        absenStatus.value = true;
+        AppData.statusAbsen = true;
+        AppData.dateLastAbsen = tanggalUserFoto.value;
 
-  //       Map<String, dynamic> absensi = {
-  //         'em_id': AppData.informasiUser![0].em_id,
-  //         'atten_date': tanggalUserFoto.value,
-  //         'signing_time': timeString.value,
-  //         'place_in': selectedType.value,
-  //         'signin_longlat': latLangAbsen,
-  //         'signin_note': deskripsiAbsen.value.text,
-  //         'signin_addr': alamatUserFoto.value,
-  //         'signout_time': "",
-  //         'place_out': "",
-  //         'signout_longlat': "",
-  //         'signout_note': "",
-  //         'signout_addr': "",
-  //         'signout_pict': "",
-  //         'signin_pict': base64fotoUser.value,
-  //       };
+        Map<String, dynamic> absensi = {
+          'em_id': AppData.informasiUser![0].em_id,
+          'atten_date': tanggalUserFoto.value,
+          'signing_time': timeString.value,
+          'place_in': selectedType.value,
+          'signin_longlat': latLangAbsen,
+          'signin_note': deskripsiAbsen.value.text,
+          'signin_addr': alamatUserFoto.value,
+          'signout_time': "",
+          'place_out': "",
+          'signout_longlat': "",
+          'signout_note': "",
+          'signout_addr': "",
+          'signout_pict': "",
+          'signin_pict': base64fotoUser.value,
+        };
 
-  //       AppData.signingTime = timeString.value;
-  //       AppData.statusAbsenOffline = true;
-  //       AppData.signoutTime = "";
-  //       AppData.textPendingMasuk = true;
+        AppData.signingTime = timeString.value;
+        AppData.statusAbsenOffline = true;
+        AppData.signoutTime = "";
+        AppData.textPendingMasuk = true;
 
-  //       SqliteDatabaseHelper().deleteAbsensi().then((_) {
-  //         SqliteDatabaseHelper().insertAbsensi(absensi, () {
-  //           authController.kirims.value = false;
-  //           Get.to(BerhasilAbsensi(
-  //             dataBerhasil: [
-  //               titleAbsen.value,
-  //               timeString.value,
-  //               typeAbsen.value,
-  //               intervalControl.value,
-  //             ],
-  //           ));
-  //         }, (error) {
-  //           // Tampilkan error jika insertAbsensi gagal
-  //           Get.snackbar("Error", error);
-  //         });
-  //       }).catchError((error) {
-  //         // Jika terjadi kesalahan pada penghapusan absensi
-  //         Get.snackbar("Error", "Gagal menghapus absensi: $error");
-  //       });
-  //     } else {
-  //       absenStatus.value = false;
-  //       AppData.statusAbsen = false;
-  //       AppData.dateLastAbsen = tanggalUserFoto.value;
+        SqliteDatabaseHelper().deleteAbsensi().then((_) {
+          SqliteDatabaseHelper().insertAbsensi(absensi, () {
+            // authController.kirims.value = false;
+            Get.to(BerhasilAbsensi(
+              dataBerhasil: [
+                titleAbsen.value,
+                timeString.value,
+                typeAbsen.value,
+                intervalControl.value,
+              ],
+            ));
+          }, (error) {
+            // Tampilkan error jika insertAbsensi gagal
+            Get.snackbar("Error", error);
+          });
+        }).catchError((error) {
+          // Jika terjadi kesalahan pada penghapusan absensi
+          Get.snackbar("Error", "Gagal menghapus absensi: $error");
+        });
+      } else {
+        absenStatus.value = false;
+        AppData.statusAbsen = false;
+        AppData.dateLastAbsen = tanggalUserFoto.value;
 
-  //       AppData.signoutTime = timeString.value;
-  //       AppData.statusAbsenOffline = true;
-  //       AppData.textPendingKeluar = true;
+        AppData.signoutTime = timeString.value;
+        AppData.statusAbsenOffline = true;
+        AppData.textPendingKeluar = true;
 
-  //       var absenMasukKeluarOffline = await SqliteDatabaseHelper().getAbsensi();
+        var absenMasukKeluarOffline = await SqliteDatabaseHelper().getAbsensi();
 
-  //       if (absenMasukKeluarOffline != null) {
-  //         SqliteDatabaseHelper().updateAbsensi({
-  //           'signout_time': timeString.value,
-  //           'place_out': selectedType.value,
-  //           'signout_longlat': latLangAbsen,
-  //           'signout_pict': base64fotoUser.value,
-  //           'signout_note': deskripsiAbsen.value.text,
-  //           'signout_addr': alamatUserFoto.value,
-  //         }).then((rowsUpdated) {
-  //           authController.kirims.value == false;
-  //           Get.to(BerhasilAbsensi(
-  //             dataBerhasil: [
-  //               titleAbsen.value,
-  //               timeString.value,
-  //               typeAbsen.value,
-  //               intervalControl.value
-  //             ],
-  //           ));
-  //         });
-  //       } else {
-  //         Map<String, dynamic> absensi = {
-  //           'em_id': AppData.informasiUser![0].em_id,
-  //           'atten_date': tanggalUserFoto.value,
-  //           'signing_time': "",
-  //           'place_in': "",
-  //           'signin_longlat': "",
-  //           'signin_note': "",
-  //           'signin_addr': "",
-  //           'signout_time': timeString.value,
-  //           'place_out': selectedType.value,
-  //           'signout_longlat': latLangAbsen,
-  //           'signout_pict': base64fotoUser.value,
-  //           'signout_note': deskripsiAbsen.value.text,
-  //           'signout_addr': alamatUserFoto.value,
-  //           'signin_pict': "",
-  //         };
+        if (absenMasukKeluarOffline != null) {
+          SqliteDatabaseHelper().updateAbsensi({
+            'signout_time': timeString.value,
+            'place_out': selectedType.value,
+            'signout_longlat': latLangAbsen,
+            'signout_pict': base64fotoUser.value,
+            'signout_note': deskripsiAbsen.value.text,
+            'signout_addr': alamatUserFoto.value,
+          }).then((rowsUpdated) {
+            // authController.kirims.value == false;
+            Get.to(BerhasilAbsensi(
+              dataBerhasil: [
+                titleAbsen.value,
+                timeString.value,
+                typeAbsen.value,
+                intervalControl.value
+              ],
+            ));
+          });
+        } else {
+          Map<String, dynamic> absensi = {
+            'em_id': AppData.informasiUser![0].em_id,
+            'atten_date': tanggalUserFoto.value,
+            'signing_time': "",
+            'place_in': "",
+            'signin_longlat': "",
+            'signin_note': "",
+            'signin_addr': "",
+            'signout_time': timeString.value,
+            'place_out': selectedType.value,
+            'signout_longlat': latLangAbsen,
+            'signout_pict': base64fotoUser.value,
+            'signout_note': deskripsiAbsen.value.text,
+            'signout_addr': alamatUserFoto.value,
+            'signin_pict': "",
+          };
 
-  //         SqliteDatabaseHelper().insertAbsensi(absensi, () {
-  //           authController.kirims.value = false;
-  //           Get.to(BerhasilAbsensi(
-  //             dataBerhasil: [
-  //               titleAbsen.value,
-  //               timeString.value,
-  //               typeAbsen.value,
-  //               intervalControl.value,
-  //             ],
-  //           ));
-  //         }, (error) {
-  //           // Tampilkan error jika insertAbsensi gagal
-  //           Get.snackbar("Error", error);
-  //         });
-  //       }
-  //     }
-  //   }
-  // }
+          SqliteDatabaseHelper().insertAbsensi(absensi, () {
+            // authController.kirims.value = false;
+            Get.to(BerhasilAbsensi(
+              dataBerhasil: [
+                titleAbsen.value,
+                timeString.value,
+                typeAbsen.value,
+                intervalControl.value,
+              ],
+            ));
+          }, (error) {
+            // Tampilkan error jika insertAbsensi gagal
+            Get.snackbar("Error", error);
+          });
+        }
+      }
+    }
+  }
 
   void getCheckMock() async {
     try {
@@ -2183,14 +2595,15 @@ class AbsenController extends GetxController {
     this.mockLocation.refresh();
   }
 
-  Future<bool> validasiRadius() async {
+  bool validasiRadius() {
     UtilsAlert.showLoadingIndicator(Get.context!);
+    placeCoordinate.refresh();
     var from = Point(latUser.value, langUser.value);
     print("lat validasi" + latUser.value.toString());
     print("long validasi" + langUser.value.toString());
     // var from = Point(-6.1716917, 106.7305503);
-    print("place cordinate value ${placeCoordinate.value}");
-    var getPlaceTerpilih = placeCoordinate.value
+    print("place cordinate value ${placeCoordinate[0]}");
+    var getPlaceTerpilih = placeCoordinate[0]
         .firstWhere((element) => element['place'] == selectedType.value);
 
     var stringLatLang = "${getPlaceTerpilih['place_longlat']}";
@@ -2246,415 +2659,21 @@ class AbsenController extends GetxController {
     }
   }
 
-  void kirimDataAbsensiIstirahat({typewfh}) async {
-//// untuk cek absensi
-    print("view last absen user 3");
-    print("tes ${AppData.informasiUser![0].startTime.toString()}");
-    var startTime = "";
-    var endTime = "";
-    var startDate = "";
-    var endDate = "";
-    TimeOfDay waktu1 = TimeOfDay(
-        hour: int.parse(
-            AppData.informasiUser![0].startTime.toString().split(':')[0]),
-        minute: int.parse(
-            AppData.informasiUser![0].startTime.toString().split(':')[1]));
-
-    TimeOfDay waktu2 = TimeOfDay(
-        hour: int.parse(
-            AppData.informasiUser![0].endTime.toString().split(':')[0]),
-        minute: int.parse(AppData.informasiUser![0].endTime
-            .toString()
-            .split(':')[1])); // Waktu kedua
-
-    int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
-    int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
-
-    //alur normal
-    if (totalMinutes1 < totalMinutes2) {
-      startTime = AppData.informasiUser![0].startTime;
-      endTime = AppData.informasiUser![0].endTime;
-
-      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
-      //alur beda hari
-    } else if (totalMinutes1 > totalMinutes2) {
-      var waktu3 =
-          TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
-      int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
-
-      if (totalMinutes2 > totalMinutes3) {
-        startTime = AppData.informasiUser![0].endTime;
-        endTime = AppData.informasiUser![0].startTime;
-
-        startDate = DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(const Duration(days: -1)));
-
-        endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      } else {
-        startTime = AppData.informasiUser![0].endTime;
-        endTime = AppData.informasiUser![0].startTime;
-
-        endDate = DateFormat('yyyy-MM-dd')
-            .format(DateTime.now().add(const Duration(days: 1)));
-
-        startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      }
-    } else {
-      startTime = AppData.informasiUser![0].startTime;
-      endTime = AppData.informasiUser![0].endTime;
-
-      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      print("Waktu 1 sama dengan waktu 2");
-    }
-
-    ////////
-
-    print("typewfh ${typewfh}");
-    employeDetail();
-    // if (base64fotoUser.value == "") {
-    //   UtilsAlert.showToast("Silahkan Absen");
-    // } else {
-    var platform = Platform.operatingSystem;
-    try {
-      if (Platform.isAndroid) {
-        // TrustLocation.start(1);
-        getCheckMock();
-        if (!mockLocation.value) {
-          var statusPosisi = await validasiRadius();
-          if (statusPosisi == true) {
-            var latLangAbsen = "${latUser.value},${langUser.value}";
-            var dataUser = AppData.informasiUser;
-            var getEmpId = dataUser![0].em_id;
-            var getSettingAppSaveImageAbsen = "1";
-            var validasiGambar =
-                getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
-
-            var getFullName = "${dataUser![0].full_name}";
-            var convertTanggalBikinPengajuan =
-                // status == false
-                //     ? Constanst.convertDateSimpan(
-                //         pilihTanggalTelatAbsen.value.toString())
-                //     :
-                pilihTanggalTelatAbsen.value.toString();
-            var getEmid = "${dataUser![0].em_id}";
-            var stringTanggal = "${tglAjunan.value} sd ${tglAjunan.value}";
-            var typeNotifFcm = "Pengajuan WFH";
-            var now = DateTime.now();
-            var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
-            var getNomorAjuanTerakhir = nomorAjuan;
-
-            if (typeAbsen.value == 1 && typewfh == "wfh") {
-              for (var item in globalCt.konfirmasiAtasan) {
-                print("Token notif ${item['token_notif']}");
-                var pesan;
-                if (item['em_gender'] == "PRIA") {
-                  pesan =
-                      "Hallo pak ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
-                } else {
-                  pesan =
-                      "Hallo bu ${item['full_name']}, saya ${getFullName} mengajukan Absen WFH dengan nomor ajuan ${getNomorAjuanTerakhir}";
-                }
-
-                kirimNotifikasiToDelegasi1(
-                    getFullName,
-                    convertTanggalBikinPengajuan,
-                    item['em_id'],
-                    '',
-                    stringTanggal,
-                    typeNotifFcm,
-                    pesan,
-                    'Approval WFH');
-
-                if (item['token_notif'] != null) {
-                  globalCt.kirimNotifikasiFcm(
-                    title: typeNotifFcm,
-                    message: pesan,
-                    tokens: item['token_notif'],
-                  );
-                }
-              }
-            }
-            if (typeAbsen.value == 1) {
-              absenStatus.value = true;
-              AppData.statusAbsen = true;
-              AppData.dateLastAbsen = tanggalUserFoto.value;
-            } else {
-              absenStatus.value = true;
-              AppData.statusAbsen = true;
-              AppData.dateLastAbsen = tanggalUserFoto.value;
-            }
-            Map<String, dynamic> body = typewfh == "wfh"
-                ? {
-                    'em_id': getEmpId,
-                    'date': tanggalUserFoto.value,
-                    'uraian': deskripsiAbsen.value.text,
-                    'place': selectedType.value,
-                    'lokasi': alamatUserFoto.value,
-                    'latLang': latLangAbsen,
-
-                    // 'waktu': timeString.value,
-                    // // 'gambar': validasiGambar,
-                    // 'reg_type': regType.value,
-                    // 'gambar': base64fotoUser.value,
-                    // 'lokasi': alamatUserFoto.value,
-                    // 'latLang': latLangAbsen,
-                    // 'typeAbsen': typeAbsen.value,
-                    // 'kategori': "1"
-
-                    'start_date': startDate,
-                    'end_date': endDate,
-                    'start_time': startTime,
-                    'end_time': endTime,
-                    'platform': platform
-                  }
-                : {
-                    'em_id': getEmpId,
-                    'tanggal_absen': tanggalUserFoto.value,
-                    'waktu': timeString.value,
-                    // 'gambar': validasiGambar,
-                    'reg_type': regType.value,
-
-                    'lokasi': alamatUserFoto.value,
-                    'latLang': latLangAbsen,
-                    'catatan': deskripsiAbsen.value.text,
-                    'typeAbsen': typeAbsen.value,
-                    'place': selectedType.value,
-                    'kategori': "1",
-                    'gambar': base64fotoUser.value,
-
-                    'start_date': startDate,
-                    'end_date': endDate,
-                    'start_time': startTime,
-                    'end_time': endTime,
-                    'platform': platform
-                  };
-            print("parameter wfh ${body}");
-            isLoaingAbsensi.value = true;
-
-            var connect = await ApiRequest(
-                    url: typewfh == "wfh" ? "wfh" : "attendance-break",
-                    body: body)
-                .post();
-
-            if (connect.statusCode == 200) {
-              var valueBody = jsonDecode(connect.body);
-              print("respon wfh ${valueBody}");
-              // for (var element in sysData.value) {
-              //   if (element['kode'] == '006') {
-              //     intervalControl.value = int.parse(element['name'].toString());
-              //   }
-              // }
-              isLoaingAbsensi.value = false;
-              this.intervalControl.refresh();
-
-              print("dapat interval ${intervalControl.value}");
-              // Navigator.pop(Get.context!);
-              ;
-
-              print(
-                  "isViewTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
-              print("isViewTracking ${typeAbsen.value}");
-              if (AppData.informasiUser![0].isViewTracking.toString() == '0') {
-                controllerTracking.bagikanlokasi.value = "aktif";
-
-                // final service = FlutterBackgroundService();
-                // FlutterBackgroundService().invoke("setAsBackground");
-
-                // service.startService();
-                controllerTracking.updateStatus('1');
-                controllerTracking.isTrackingLokasi.value = true;
-                // controllerTracking.detailTracking(emIdEmployee: '');
-                print(
-                    "startTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
-              }
-
-              if (typeAbsen.value == 2) {
-                controllerTracking.bagikanlokasi.value = "tidak aktif";
-                // await LocationDao().clear();
-                // await _getLocations();
-                // await BackgroundLocationTrackerManager.stopTracking();
-                // final service = FlutterBackgroundService();
-                // FlutterBackgroundService().invoke("setAsBackground");
-
-                // service.invoke("stopService");
-                controllerTracking.updateStatus('0');
-                controllerTracking.isTrackingLokasi.value = false;
-                print(
-                    "stopTracking ${AppData.informasiUser![0].isViewTracking.toString()}");
-              }
-
-              Get.to(BerhasilAbsensi(
-                dataBerhasil: [
-                  titleAbsen.value,
-                  timeString.value,
-                  typeAbsen.value,
-                  intervalControl.value,
-                  dateNoww(DateTime.now())
-                ],
-              ));
-
-              // Get.to(BerhasilAbsensi(
-              //   dataBerhasil: [
-              //     titleAbsen.value,
-              //     timeString.value,
-              //     typeAbsen.value,
-              //     intervalControl.value
-              //   ],
-              // ));
-            } else {
-              isLoaingAbsensi.value = false;
-              Get.back();
-              UtilsAlert.showToast(
-                  "Terjadi kesalahan, Silahkan coba melakukan absen ulang.");
-
-              // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
-              //     positiveBtnPressed: () {
-              //   // kirimDataAbsensiOffline(typewfh: typewfh);
-              //   Get.back();
-              //   widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
-              // });
-              //error
-            }
-
-            // var connect = Api.connectionApi(
-            //     "post", body, typewfh == "wfh" ? "wfh" : "attendance-break");
-            // connect.then((dynamic res) async {
-            //   print("respon attendace break ${res.statusCode}");
-
-            // });
-            // .catchError((error) {
-            //   isLoaingAbsensi.value = false;
-            //   Get.back();
-            //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
-            //       positiveBtnPressed: () {
-            //     // kirimDataAbsensiOffline(typewfh: typewfh);
-            //     Get.back();
-            //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
-            //   });
-            // });
-          }
-        } else {
-          isLoaingAbsensi.value = false;
-          UtilsAlert.showToast("Periksa GPS anda");
-        }
-      } else if (Platform.isIOS) {
-        var statusPosisi = await validasiRadius();
-        if (statusPosisi == true) {
-          var latLangAbsen = "${latUser.value},${langUser.value}";
-          var dataUser = AppData.informasiUser;
-          var getEmpId = dataUser![0].em_id;
-          // var getSettingAppSaveImageAbsen =
-          //     settingAppInfo.value![0].saveimage_attend;
-          var getSettingAppSaveImageAbsen = "1";
-          var validasiGambar =
-              getSettingAppSaveImageAbsen == "NO" ? "" : base64fotoUser.value;
-          if (typeAbsen.value == 1) {
-            absenStatus.value = true;
-            AppData.statusAbsen = true;
-            AppData.dateLastAbsen = tanggalUserFoto.value;
-          } else {
-            absenStatus.value = true;
-            AppData.statusAbsen = true;
-            AppData.dateLastAbsen = tanggalUserFoto.value;
-          }
-          Map<String, dynamic> body = {
-            'em_id': getEmpId,
-            'tanggal_absen': tanggalUserFoto.value,
-            'waktu': timeString.value,
-            // 'gambar': validasiGambar,
-            'reg_type': regType.value.toString(),
-            'gambar': base64fotoUser.value,
-            'lokasi': alamatUserFoto.value,
-            'latLang': latLangAbsen,
-            'catatan': deskripsiAbsen.value.text,
-            'typeAbsen': typeAbsen.value,
-            'place': selectedType.value,
-            'kategori': "1",
-
-            'start_date': startDate,
-            'end_date': endDate,
-            'start_time': startTime,
-            'end_time': endTime,
-            'platform': platform
-          };
-          isLoaingAbsensi.value = true;
-
-          var connect =
-              await ApiRequest(url: "attendance-break", body: body).post();
-
-          if (connect.statusCode == 200) {
-            var valueBody = jsonDecode(connect.body);
-
-            for (var element in sysData.value) {
-              if (element['kode'] == '006') {
-                intervalControl.value = int.parse(element['name']);
-              }
-            }
-            isLoaingAbsensi.value = false;
-            this.intervalControl.refresh();
-
-            print("dapat interval ${intervalControl.value}");
-            Get.back();
-            Get.offAll(BerhasilAbsensi(
-              dataBerhasil: [
-                titleAbsen.value,
-                timeString.value,
-                typeAbsen.value,
-                intervalControl.value
-              ],
-            ));
-          } else {
-            isLoaingAbsensi.value = false;
-            Get.back();
-            UtilsAlert.showToast(
-                "Terjadi kesalahan, Silahkan coba melakukan absen ulang.");
-            // UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
-            //     positiveBtnPressed: () {
-            //   // kirimDataAbsensiOffline(typewfh: typewfh);
-            //   Get.back();
-            //   widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
-            // });
-          }
-
-          // var connect = Api.connectionApi("post", body, "attendance-break");
-          // connect.then((dynamic res) {
-
-          // });
-          // .catchError((error) {
-          //   isLoaingAbsensi.value = false;
-          //   Get.back();
-          //   UtilsAlert.showCheckOfflineAbsensiKesalahanServer(
-          //       positiveBtnPressed: () {
-          //     // kirimDataAbsensiOffline(typewfh: typewfh);
-          //     Get.back();
-          //     widgetButtomSheetLanjutkanOffline(type: 'offlineAbsensi');
-          //   });
-          // });
-        }
-      }
-    } catch (e) {
-      isLoaingAbsensi.value = false;
-      Get.back();
-      UtilsAlert.showToast(
-          "Periksa kembali koneksi internet Anda, dan coba lakukan absen beberapa saat lagi.");
-    }
-
-    //  }
-  }
-
   var date = DateTime.now().obs;
-  var beginPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
-  var endPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
+  var beginPayroll = DateFormat('MMMM', 'id').format(DateTime.now()).obs;
+  var endPayroll = DateFormat('MMMM', 'id').format(DateTime.now()).obs;
+  var lastDate = DateFormat('dd').format(DateTime(DateTime.now().year, DateTime.now().month + 1, 0)).obs;
 
-  void loadHistoryAbsenUser() {
+  Future<void> loadHistoryAbsenUser() async {
     print("masuk sini terbaru new");
     historyAbsen.value.clear();
     historyAbsenShow.value.clear();
 
     var dataUser = AppData.informasiUser;
+
+    print('ini dataUserALpha: ${dataUser![0].tipeAlpha}');
+    print('ini dataTipeAbsen: ${dataUser![0].tipeAbsen}');
+
 
     var getEmpId = dataUser![0].em_id;
     print(getEmpId);
@@ -2689,8 +2708,8 @@ class AbsenController extends GetxController {
     print(body);
     var connect = Api.connectionApi("post", body, "attendance");
     connect.then((dynamic res) {
-      var valueBody = jsonDecode(res.body);
       if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
         print('data body absen ${valueBody}');
         if (valueBody['status'] == true) {
           List data = valueBody['data'];
@@ -2731,6 +2750,7 @@ class AbsenController extends GetxController {
                 offDay: el['off_date'],
                 namaHariLibur: el['hari_libur'],
                 jamKerja: el['jam_kerja'],
+                jamPulang: el['jam_pulang'],
                 breakoutTime: el['breakout_time'],
                 breakoutNote: el['breakout_note'],
                 breakoutPict: el['breakout_pict'],
@@ -2795,19 +2815,22 @@ class AbsenController extends GetxController {
           historyAbsen.value = highestIdPerDate.values.toList();
 
           for (var element in historyAbsen) {
+            // print("masuk sini: $tempHistoryAbsen");
+
             var data = tempHistoryAbsen
                 .where((p0) => p0.date == element.date)
                 .where((p0) => p0.id != element.id)
                 .toList()
               ..sort((a, b) => b.id!.compareTo(a.id as num));
 
+            // print("data turunan: $data");
             if (data.isNotEmpty) {
               element.turunan = data;
             } else {
               element.turunan = [];
             }
 
-            print('data list ${element} tes');
+            // print('data list ${element} tes');
           }
 
           //  historyAbsenShow.toSet().toList();
@@ -2921,8 +2944,6 @@ class AbsenController extends GetxController {
         } else {
           loading.value = "Data tidak ditemukan";
         }
-      } else {
-        loading.value = valueBody['message'];
       }
     });
   }
@@ -3091,19 +3112,22 @@ class AbsenController extends GetxController {
           historyAbsen.value = highestIdPerDate.values.toList();
 
           for (var element in historyAbsen) {
+            // print("masuk sini: $tempHistoryAbsen");
+
             var data = tempHistoryAbsen
                 .where((p0) => p0.date == element.date)
                 .where((p0) => p0.id != element.id)
                 .toList()
               ..sort((a, b) => b.id!.compareTo(a.id as num));
 
+            // print("data turunan: $data");
             if (data.isNotEmpty) {
               element.turunan = data;
             } else {
               element.turunan = [];
             }
 
-            print('data list ${element} tes');
+            // print('data list ${element} tes');
           }
 
           //  historyAbsenShow.toSet().toList();
@@ -3241,7 +3265,6 @@ class AbsenController extends GetxController {
       var getSelected = tempHistoryAbsen.value
           .firstWhere((element) => element.id == id_absen);
       // print(getSelected);
-      print('ini apaci ${getSelected}');
       Get.to(DetailAbsen(
         absenSelected: [getSelected],
         status: false,
@@ -3410,7 +3433,11 @@ class AbsenController extends GetxController {
                           return InkWell(
                             onTap: () {
                               print("tes");
+                              filterLokasiKoordinate.value = "Lokasi";
                               selectedViewFilterAbsen.value = 0;
+                              Rx<AbsenModel> absenModel = AbsenModel().obs;
+                              var jumlahData = 0.obs;
+
                               idDepartemenTerpilih.value = "$id";
                               namaDepartemenTerpilih.value = dep_name;
                               departemen.value.text =
@@ -3418,7 +3445,6 @@ class AbsenController extends GetxController {
                               this.departemen.refresh();
                               print(
                                   "id departement ${idDepartemenTerpilih.value}");
-                              getPlaceReport();
                               Navigator.pop(context);
                               carilaporanAbsenkaryawan(status);
                             },
@@ -3462,7 +3488,13 @@ class AbsenController extends GetxController {
                                         )
                                       : InkWell(
                                           onTap: () {
+                                            print("tes");
+                                            filterLokasiKoordinate.value =
+                                                "Lokasi";
                                             selectedViewFilterAbsen.value = 0;
+                                            Rx<AbsenModel> absenModel =
+                                                AbsenModel().obs;
+                                            var jumlahData = 0.obs;
 
                                             idDepartemenTerpilih.value = "$id";
                                             namaDepartemenTerpilih.value =
@@ -3471,7 +3503,6 @@ class AbsenController extends GetxController {
                                                 departementAkses.value[index]
                                                     ['name'];
                                             this.departemen.refresh();
-                                            getPlaceReport();
                                             print(
                                                 "id departement ${idDepartemenTerpilih.value}");
                                             Navigator.pop(context);
@@ -3525,150 +3556,137 @@ class AbsenController extends GetxController {
           return SafeArea(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Pilih Lokasi",
-                            style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
-                              color: Constanst.fgPrimary,
-                            ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text( 
+                          "Pilih Lokasi ",
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                            color: Constanst.fgPrimary,
                           ),
-                          InkWell(
-                              customBorder: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8))),
-                              onTap: () => Navigator.pop(Get.context!),
-                              child: Icon(
-                                Icons.close,
-                                size: 26,
-                                color: Constanst.fgSecondary,
-                              ))
-                        ],
-                      ),
+                        ),
+                        InkWell(
+                            customBorder: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
+                            onTap: () => Navigator.pop(Get.context!),
+                            child: Icon(
+                              Icons.close,
+                              size: 26,
+                              color: Constanst.fgSecondary,
+                            ))
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                      child: Divider(
-                        thickness: 1,
-                        height: 0,
-                        color: Constanst.border,
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                    child: Divider(
+                      thickness: 1,
+                      height: 0,
+                      color: Constanst.border,
                     ),
-                    SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Obx(
-                        () => Column(
-                          children: List.generate(
-                              placeCoordinateReport.value.length, (index) {
-                            var id = placeCoordinateReport.value[index]['id'];
-                            var place =
-                                placeCoordinateReport.value[index]['place'];
-                            return InkWell(
-                              onTap: () {
-                                idLokasiTerpilih.value = "$id";
-                                if (selectedViewFilterAbsen.value == 0) {
-                                  filterLokasiAbsenBulan(place);
-                                } else {
-                                  filterLokasiAbsen(place);
-                                }
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      place,
-                                      style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                        color: Constanst.fgPrimary,
-                                      ),
+                  ),
+                  SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Obx(
+                      () => Column(
+                        children: List.generate( placeCoordinate.value.length,
+                            (index) {
+                          var id = placeCoordinate.value[index]['id'];
+                          var place = placeCoordinate.value[index]['place'];
+                          return InkWell(
+                            onTap: () {
+                              if (selectedViewFilterAbsen.value == 0) {
+                                filterLokasiAbsenBulan(place);
+                              } else {
+                                filterLokasiAbsen(place);
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    place,
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Constanst.fgPrimary,
                                     ),
-                                    "$id" == idLokasiTerpilih.value
-                                        ? InkWell(
-                                            onTap: () {},
-                                            child: Container(
-                                              height: 20,
-                                              width: 20,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 2,
-                                                      color:
-                                                          Constanst.onPrimary),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(3),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color:
-                                                          Constanst.onPrimary,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        : InkWell(
-                                            onTap: () {
-                                              idLokasiTerpilih.value = "$id";
-                                              if (selectedViewFilterAbsen
-                                                      .value ==
-                                                  0) {
-                                                filterLokasiAbsenBulan(place);
-                                              } else {
-                                                filterLokasiAbsen(place);
-                                              }
-                                            },
-                                            child: Container(
-                                              height: 20,
-                                              width: 20,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 1,
-                                                      color:
-                                                          Constanst.onPrimary),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(2),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                ),
+                                  ),
+                                  "$id" == idDepartemenTerpilih.value
+                                      ? InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(3),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Constanst.onPrimary,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
                                               ),
                                             ),
                                           ),
-                                  ],
-                                ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            if (selectedViewFilterAbsen.value ==
+                                                0) {
+                                              filterLokasiAbsenBulan(place);
+                                            } else {
+                                              filterLokasiAbsen(place);
+                                            }
+                                          },
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Constanst.onPrimary),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                ],
                               ),
-                            );
-                          }),
-                        ),
+                            ),
+                          );
+                        }),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
@@ -3696,16 +3714,11 @@ class AbsenController extends GetxController {
       } else {
         var data = valueBody['data'];
         List listFilterLokasi = [];
-        if (place == 'SEMUA LOKASI') {
-          listFilterLokasi = data;
-        } else {
-          for (var element in data) {
-            if (element['place_in'] == place) {
-              listFilterLokasi.add(element);
-            }
+        for (var element in data) {
+          if (element['place_in'] == place) {
+            listFilterLokasi.add(element);
           }
         }
-
         listLaporanFilter.value = listFilterLokasi;
         allListLaporanFilter.value = listFilterLokasi;
         filterLokasiKoordinate.value = place;
@@ -3854,8 +3867,9 @@ class AbsenController extends GetxController {
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
       'status': idDepartemenTerpilih.value,
-      'dep_id_akses': AppData.informasiUser![0].em_hak_akses
+      'branch_id': branchId.value
     };
+    print(body);
     var connect = Api.connectionApi("post", body, "load_laporan_absensi");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -4428,7 +4442,7 @@ class AbsenController extends GetxController {
           var valueBody = jsonDecode(res.body);
           var data = valueBody['data'];
           isTracking.value = data[0]['em_control'];
-          // regType.value = data[0]['reg_type'];
+          regType.value = data[0]['reg_type'];
           print("Req tye ${regType.value}");
           box.write("file_face", data[0]['file_face']);
 
@@ -4590,6 +4604,8 @@ class AbsenController extends GetxController {
     );
   }
 
+  void addPengajuan() {}
+
   void checkAbsensi() {
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
@@ -4600,7 +4616,7 @@ class AbsenController extends GetxController {
       'tahun':
           DateFormat('yyyy').format(DateTime.parse(tglAjunan.value.toString()))
     };
-    print(body);
+    print('ini body bos $body}');
     var connect = Api.connectionApi("post", body, "employee-attendance");
     allDataCheck.clear();
     connect.then((dynamic res) {
@@ -4612,9 +4628,7 @@ class AbsenController extends GetxController {
           var lastData = data[data.length - 1];
           checkinAjuan.value = lastData['signin_time'];
           checkoutAjuan.value = lastData['signout_time'];
-          idAjuan.value = int.parse(lastData['id'].toString());
           isCreateNew.value = false;
-          print('ini id nya yak ${idAjuan.value}');
         } else {
           allDataCheck.clear();
           isCreateNew.value = true;
@@ -4626,43 +4640,20 @@ class AbsenController extends GetxController {
     });
   }
 
-  // void checkAbsensi() {
-  //   var emId = AppData.informasiUser![0].em_id;
-  //   Map<String, dynamic> body = {
-  //     "em_id": emId,
-  //     'date': tglAjunan.value,
-  //     'bulan':
-  //         DateFormat('MM').format(DateTime.parse(tglAjunan.value.toString())),
-  //     'tahun':
-  //         DateFormat('yyyy').format(DateTime.parse(tglAjunan.value.toString()))
-  //   };
-  //   print(body);
-  //   var connect = Api.connectionApi("post", body, "employee-attendance");
-  //   connect.then((dynamic res) {
-  //     if (res.statusCode == 200) {
-  //       var valueBody = jsonDecode(res.body);
-  //       List data = valueBody['data'];
-  //       if (data.isNotEmpty) {
-  //         checkinAjuan.value = data[0]['signin_time'];
-  //         checkoutAjuan.value = data[0]['signout_time'];
-  //       } else {}
-  //     }
-  //   });
-  // }
-
-  void batalkanAjuan({date}) {
+  void batalkanAjuan({date, noAjuan}) {
     UtilsAlert.showLoadingIndicator(Get.context!);
     var emId = AppData.informasiUser![0].em_id;
     Map<String, dynamic> body = {
       "em_id": emId,
       'date': date,
+      'nomor_ajuan': noAjuan,
       'bulan': DateFormat('MM').format(DateTime.parse(date.toString())),
       'tahun': DateFormat('yyyy').format(DateTime.parse(date.toString()))
     };
 
     var connect = Api.connectionApi("post", body, "delete-employee-attendance");
     connect.then((dynamic res) {
-      if (res.statusCode == 200) {
+      if (res.statusCode == 200)  {
         dataPengajuanAbsensi();
         Get.back();
         Get.back();
@@ -4675,7 +4666,7 @@ class AbsenController extends GetxController {
   void dataPengajuanAbsensi() {
     isLoadingPengajuan.value = true;
     var emId = AppData.informasiUser![0].em_id;
-    var body = {
+    Map<String, dynamic> body = {
       "em_id": emId,
       'date': tglAjunan.value,
       'bulan': bulanSelectedSearchHistoryPengajuan.value,
@@ -4685,7 +4676,6 @@ class AbsenController extends GetxController {
     var connect = Api.connectionApi("post", body, "get-employee-attendance");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
-        //  /    UtilsAlert.showToast("masuk sini");
         isLoadingPengajuan.value = false;
         var valueBody = jsonDecode(res.body);
         List data = valueBody['data'];
@@ -4708,10 +4698,8 @@ class AbsenController extends GetxController {
     // placeCoordinateCheckout.clear();
     absenLongLatMasuk.clear();
     absenKeluarLongLat.clear();
-    absenLongLatMasukRest.clear();
     absenKeluarLongLatRest.clear();
-    // isChecked.value = false;
-    // isChecked2.value = false;
+    absenLongLatMasukRest.clear();
     // tglAjunan.value = "";
     // checkinAjuan.value = "";
     // checkoutAjuan.value = "";
@@ -4722,15 +4710,10 @@ class AbsenController extends GetxController {
   }
 
   void kirimPengajuan(getNomorAjuanTerakhir, status) {
-    print('kesini gak');
     var emId = AppData.informasiUser![0].em_id;
-    var platform = Platform.operatingSystem;
     Map<String, dynamic> body = {
-      'id_absen': idAjuan.value.toString(),
       "address_masuk": addressMasuk.value.toString(),
       "address_keluar": addressKeluar.value.toString(),
-      "address_masuk_rest": addressMasukRest.value.toString(),
-      "address_keluar_rest": addressKeluarRest.value.toString(),
       "absen_LongLat_Masuk": absenLongLatMasuk.value.toString(),
       "absenKeluarLongLat": absenKeluarLongLat.value.toString(),
       "em_id": emId,
@@ -4747,12 +4730,6 @@ class AbsenController extends GetxController {
       'checkout': checkoutAjuan2.value.toString() == ""
           ? "00:00:00"
           : checkoutAjuan2.value.toString(),
-      'checkin_rest': checkinIstiahat.value.toString() == ""
-          ? "00:00:00"
-          : checkinIstiahat.value.toString(),
-      'checkout_rest': checkoutIstirahat.value.toString() == ""
-          ? "00:00:00"
-          : checkoutIstirahat.value.toString(),
       'lokasi_masuk_id': placeCoordinateCheckin
               .where((p0) => p0['is_selected'] == true)
               .toList()
@@ -4769,6 +4746,14 @@ class AbsenController extends GetxController {
               .where((p0) => p0['is_selected'] == true)
               .toList()[0]['id']
           : "",
+      'file': imageAjuan.value,
+      'tgl_ajuan': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      'checkin_rest': checkinIstiahat.value.toString() == ""
+          ? "00:00:00"
+          : checkinIstiahat.value.toString(),
+      'checkout_rest': checkoutIstirahat.value.toString() == ""
+          ? "00:00:00"
+          : checkoutIstirahat.value.toString(),
       'lokasi_masuk_id_rest': placeCoordinateCheckinRest
               .where((p0) => p0['is_selected'] == true)
               .toList()
@@ -4785,13 +4770,13 @@ class AbsenController extends GetxController {
               .where((p0) => p0['is_selected'] == true)
               .toList()[0]['id']
           : "",
-      'file': imageAjuan.value,
-      'tgl_ajuan': DateFormat('yyyy-MM-dd').format(DateTime.now()),
-      'platform': platform
+      "address_masuk_rest": addressMasukRest.value.toString(),
+      "address_keluar_rest": addressKeluarRest.value.toString(),
+      'id_absen': idAjuan.value.toString(),
     };
     print('body data ajuan ${body}');
-
     var connect = Api.connectionApi("post", body, "save-employee-attendance");
+
     connect.then((dynamic res) {
       var valueBody = jsonDecode(res.body);
 
@@ -4849,7 +4834,6 @@ class AbsenController extends GetxController {
         UtilsAlert.showToast("${valueBody['message']}");
       }
     });
-
     clearData();
   }
 
@@ -4861,6 +4845,14 @@ class AbsenController extends GetxController {
     placeCoordinateCheckin.clear();
     placeCoordinateCheckout.clear();
     imageAjuan.value = "";
+    checkinIstiahat.value = '';
+    checkoutIstirahat.value = '';
+    placeCoordinateCheckinRest.clear();
+    placeCoordinateCheckoutRest.clear();
+    isChecked.value = false;
+    isChecked2.value = false;
+    isChecked3.value = false;
+    isChecked4.value = false;
   }
 
   void kirimNotifikasiToReportTo(
@@ -4919,7 +4911,7 @@ class AbsenController extends GetxController {
             title: typeNotifFcm,
             message: description,
             tokens: fcmTokenDelegasi);
-        UtilsAlert.showToast("Berhasil kirim delegasi");
+        // UtilsAlert.showToast("Berhasil kirim delegasi");
       }
     });
   }
@@ -5501,6 +5493,79 @@ class AbsenController extends GetxController {
                     ),
                   ),
                 ),
+              InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanShift(
+                      title: 'shift',
+                    ));
+                    tempNamaLaporan1.value = "shift";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/4_lembur.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Shift',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanShift(
+                              title: 'shift',
+                            ));
+                            tempNamaLaporan1.value = "shift";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: tempNamaLaporan1.value == "shift"
+                                        ? 2
+                                        : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "shift"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              
               ],
             ),
           ),

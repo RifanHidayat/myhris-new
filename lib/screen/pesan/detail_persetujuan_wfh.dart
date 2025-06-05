@@ -1620,8 +1620,8 @@ class _DetailPersetujuanWfhState extends State<DetailPersetujuanWfh> {
                             )
                           : data['approve_status'] == "Rejected"
                               ? Icon(
-                                  Iconsax.close_circle,
-                                  color: Colors.red,
+                                  Iconsax.tick_circle,
+                                  color: Colors.green,
                                   size: 22,
                                 )
                               : Icon(

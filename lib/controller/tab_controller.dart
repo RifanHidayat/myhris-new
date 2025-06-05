@@ -33,13 +33,13 @@ class TabbController extends GetxController {
 
   var kontrolAkses = false.obs;
   var kontrol = false.obs;
-  final Absensicontroller = Get.find<AbsenController>(tag: 'absen controller');
+  final Absensicontroller = Get.find<AbsenController>();
 
-  // @override
-  // void onReady() {
-  //   checkuserinfo();
-  //   super.onReady();
-  // }
+  @override
+  void onReady() {
+    checkuserinfo();
+    super.onReady();
+  }
 
   Future<void> checkuserinfo() async {
     var dataUser = AppData.informasiUser;
@@ -51,7 +51,6 @@ class TabbController extends GetxController {
     // getKontrolAkses = int.parse('0').toString();
     // getKontrol = int.parse('1').toString();
     // isTracking = int.parse('0').toString();
-
     print("dapatttt isViewTracking $isViewTracking");
     print("dapatttt getKontrolAkses $getKontrolAkses");
     print("dapatttt getKontrol $getKontrol");

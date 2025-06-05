@@ -13,6 +13,7 @@ import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 import 'package:siscom_operasional/utils/custom_dialog.dart';
+import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -43,117 +44,931 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
         ),
       ),
       builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 30,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Iconsax.close_circle,
-                        color: Colors.red,
-                        size: 24,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 8, top: 2),
-                        child: Text(
-                          "Alasan Tolak Pengajuan",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 14),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: Constanst.borderStyle1,
-                        border: Border.all(
-                            width: 1.0,
-                            color: Color.fromARGB(255, 211, 205, 205))),
-                    child: Padding(
+        return DraggableScrollableSheet(
+            initialChildSize: 0.8, // 80% layar
+            minChildSize: 0.5, // Bisa mengecil
+            maxChildSize: 1.0, // Bisa full screen
+            expand: false,
+            builder: (context, scrollController) {
+              return SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
                       padding: EdgeInsets.only(
-                          left: 8,
+                          left: 16,
+                          right: 16,
                           bottom: MediaQuery.of(context).viewInsets.bottom),
-                      child: TextField(
-                        cursorColor: Colors.black,
-                        controller: controller.alasanReject.value,
-                        maxLines: null,
-                        maxLength: 225,
-                        autofocus: true,
-                        decoration: new InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Alasan Menolak"),
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.done,
-                        style: TextStyle(
-                            fontSize: 12.0, height: 2.0, color: Colors.black),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Iconsax.close_circle,
+                                color: Colors.red,
+                                size: 24,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 8, top: 2),
+                                child: Text(
+                                  "Tolak",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14),
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Obx(() {
+                            var sp = controller.searchSp;
+                             return controller.searchSp.isNotEmpty
+                              ? Container(
+                                decoration: BoxDecoration(
+                                  color: Constanst.infoLight1,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Iconsax.info_circle5,
+                                      color: Constanst.colorPrimary,
+                                      size: 26,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        sp[0]['status'] == 'Approve'
+                                        ? "Karyawan ${sp[0]['nama']} mempunyai surat peringatan yang sedang aktif dengan nomor ${sp[0]['nomor']} berakhir pada tanggal ${sp[0]['exp']}"
+                                        : 'Karyawan ${sp[0]['nama']} mempunyai surat peringatan dengan nomor ${sp[0]['nomor']}, status: ${sp[0]['status']}',
+                                        textAlign: TextAlign.left,
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                              : SizedBox();
+                            }
+                          ),
+                          SizedBox(height: 12),
+                          Obx(() {
+                            var tl = controller.searchTl;
+                            print('search tl${controller.searchTl.isNotEmpty}');
+                            print('search tl${controller.searchTl}');
+                             return controller.searchTl.isNotEmpty
+                              ? Container(
+                                decoration: BoxDecoration(
+                                  color: Constanst.infoLight1,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Iconsax.info_circle5,
+                                      color: Constanst.colorPrimary,
+                                      size: 26,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        tl[0]['status'] == 'Approve'
+                                        ? "Karyawan ${tl[0]['nama']} mempunyai teguran lisan yang sedang aktif dengan nomor ${tl[0]['nomor']} berakhir pada tanggal ${tl[0]['exp']}"
+                                        : 'Karyawan ${tl[0]['nama']} mempunyai teguran lisan dengan nomor ${tl[0]['nomor']}, status: ${tl[0]['status']}',
+                                        textAlign: TextAlign.left,
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                              : SizedBox();
+                            }
+                          ),
+                          const SizedBox(height: 12),
+                          Obx(() {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: List.generate(
+                                  controller.listStatusPengajuan.length,
+                                  (index) {
+                                var data =
+                                    controller.listStatusPengajuan[index];
+                                return controller.statusPemgajuanIzin.value ==
+                                        data['value']
+                                    ? Padding(
+                                        padding: EdgeInsets.only(top: 12),
+                                        child: InkWell(
+                                          onTap: () {
+                                            controller
+                                                    .statusPemgajuanIzin.value =
+                                                data['value'].toString();
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Constanst.infoLight1,
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Constanst.infoLight),
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: 30,
+                                                child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 5,
+                                                        left: 5,
+                                                        bottom: 5),
+                                                    child: Row(
+                                                      children: [
+                                                        TextLabell(
+                                                          text: data['name'],
+                                                        ),
+                                                      ],
+                                                    ))),
+                                          ),
+                                        ),
+                                      )
+                                    : InkWell(
+                                        onTap: () {
+                                          controller.statusPemgajuanIzin.value =
+                                              data['value'].toString();
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 12),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Constanst.secondary),
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: 30,
+                                                child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 5,
+                                                        left: 5,
+                                                        bottom: 5),
+                                                    child: Row(
+                                                      children: [
+                                                        TextLabell(
+                                                          text: data['name'],
+                                                        ),
+                                                      ],
+                                                    ))),
+                                          ),
+                                        ),
+                                      );
+                              }),
+                            );
+                          }),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: Constanst.borderStyle1,
+                                border: Border.all(
+                                    width: 1.0,
+                                    color: const Color.fromARGB(
+                                        255, 211, 205, 205))),
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: 8,
+                              ),
+                              child: Obx(() {
+                                return TextField(
+                                  cursorColor: Colors.black,
+                                  controller: controller.alasanReject.value,
+                                  maxLines: null,
+                                  maxLength: 225,
+                                  autofocus: true,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: controller
+                                                  .statusPemgajuanIzin.value ==
+                                              'none'
+                                          ? "Alasan Reject"
+                                          : "Pelanggaran yang di lakukan"),
+                                  keyboardType: TextInputType.multiline,
+                                  textInputAction: TextInputAction.done,
+                                  style: const TextStyle(
+                                      fontSize: 12.0,
+                                      height: 2.0,
+                                      color: Colors.black),
+                                );
+                              }),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Obx(() {
+                            return controller.statusPemgajuanIzin.value ==
+                                    'none'
+                                ? SizedBox()
+                                : Column(
+                                    children: [
+                                      TextLabell(
+                                        text: "Konsekuensi",
+                                        size: 12,
+                                        weight: FontWeight.bold,
+                                      ),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Obx(() {
+                                        print(controller.konsekuemsiList.value);
+                                        return controller
+                                                    .konsekuemsiList.length ==
+                                                0
+                                            ? Text(
+                                                'Buat konsekuensi dengan klik tombol dibawah',
+                                                style: TextStyle(
+                                                    fontStyle: FontStyle.italic,
+                                                    fontSize: 11),
+                                              )
+                                            : Column(
+                                                children: List.generate(
+                                                    controller.konsekuemsiList
+                                                        .length, (index) {
+                                                  var data = controller
+                                                      .konsekuemsiList[index];
+                                                  return Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 10),
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 90,
+                                                          child: TextFormField(
+                                                            onChanged: (value) {
+                                                              data['konsekuensi'] =
+                                                                  value;
+                                                            },
+                                                            controller:
+                                                                TextEditingController(
+                                                                    text: data[
+                                                                        'konsekuensi']),
+                                                            style:
+                                                                const TextStyle(
+                                                                    fontSize:
+                                                                        12.0,
+                                                                    height: 2.0,
+                                                                    color: Colors
+                                                                        .black),
+                                                            decoration:
+                                                                InputDecoration(
+                                                              hintText:
+                                                                  'Masukan konsekuensi', // Menambahkan teks petunjuk saat field kosong
+                                                              border:
+                                                                  OutlineInputBorder(), // Menambahkan border di sekitar text field
+                                                              enabledBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: Constanst
+                                                                        .Secondary), // Warna border saat aktif
+                                                              ),
+                                                              focusedBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: Constanst
+                                                                        .Secondary), // Warna border saat field difokuskan
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                            flex: 10,
+                                                            child: InkWell(
+                                                                onTap: () {
+                                                                  controller
+                                                                      .konsekuemsiList
+                                                                      .removeAt(
+                                                                          index);
+                                                                  controller
+                                                                      .konsekuemsiList
+                                                                      .refresh();
+                                                                },
+                                                                child: Icon(
+                                                                  Icons.delete,
+                                                                  color: Colors
+                                                                      .red,
+                                                                )))
+                                                      ],
+                                                    ),
+                                                  );
+                                                }),
+                                              );
+                                      }),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          controller.konsekuemsiList
+                                              .add({"konsekuensi": ""});
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.only(
+                                              top: 8, bottom: 8),
+                                          decoration: BoxDecoration(
+                                              color: Constanst.onPrimary,
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Constanst.onPrimary)),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.add,
+                                                color: Colors.white,
+                                              ),
+                                              TextLabell(
+                                                text: "Konsekuensi",
+                                                color: Constanst.colorWhite,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                    ],
+                                  );
+                          }),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextButtonWidget(
+                                  title: "Kembali",
+                                  onTap: () => Navigator.pop(Get.context!),
+                                  colorButton: Colors.red,
+                                  colortext: Colors.white,
+                                  border: BorderRadius.circular(8.0),
+                                ),
+                              )),
+                              Expanded(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextButtonWidget(
+                                  title: "Tolak",
+                                  onTap: () {
+                                    bool data = controller.konsekuemsiList.any(
+                                        (konsekuensi) =>
+                                            konsekuensi['konsekuensi']
+                                                .trim()
+                                                .isEmpty);
+                                    if (controller.alasanReject.value.text !=
+                                        "") {
+                                      if (controller
+                                              .statusPemgajuanIzin.value !=
+                                          'none') {
+                                        if (data) {
+                                          UtilsAlert.showToast(
+                                              "Harap hapus terlebih dahulu konsekuensi yang kosong");
+                                          return;
+                                        } else {
+                                          Navigator.pop(Get.context!);
+                                          print(
+                                              'ini list ${controller.konsekuemsiList}');
+                                          validasiMenyetujui(false, em_id);
+                                        }
+                                      } else {
+                                        Navigator.pop(Get.context!);
+                                        print(
+                                            'ini list ${controller.konsekuemsiList}');
+                                        validasiMenyetujui(false, em_id);
+                                      }
+                                    } else {
+                                      UtilsAlert.showToast(
+                                          "Harap isi alasan terlebih dahulu");
+                                    }
+                                  },
+                                  colorButton: Constanst.colorPrimary,
+                                  colortext: Colors.white,
+                                  border: BorderRadius.circular(8.0),
+                                ),
+                              ))
+                            ],
+                          )
+                        ],
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextButtonWidget(
-                          title: "Kembali",
-                          onTap: () => Navigator.pop(Get.context!),
-                          colorButton: Colors.red,
-                          colortext: Colors.white,
-                          border: BorderRadius.circular(8.0),
-                        ),
-                      )),
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextButtonWidget(
-                          title: "Tolak",
-                          onTap: () {
-                            if (controller.alasanReject.value.text != "") {
-                              Navigator.pop(Get.context!);
-                              validasiMenyetujui(false, em_id);
-                            } else {
-                              UtilsAlert.showToast(
-                                  "Harap isi alasan terlebih dahulu");
-                            }
-                          },
-                          colorButton: Constanst.colorPrimary,
-                          colortext: Colors.white,
-                          border: BorderRadius.circular(8.0),
-                        ),
-                      ))
-                    ],
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            )
-          ],
-        );
+                    const SizedBox(
+                      height: 30,
+                    )
+                  ],
+                ),
+              );
+            });
       },
     );
   }
+
+  
+  void showBottomApproval(em_id) {
+    showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return DraggableScrollableSheet(
+            initialChildSize: 0.8, // 80% layar
+            minChildSize: 0.5, // Bisa mengecil
+            maxChildSize: 1.0, // Bisa full screen
+            expand: false,
+            builder: (context, scrollController) {
+              return SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Iconsax.tick_circle,
+                                color: Colors.green,
+                                size: 24,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 8, top: 2),
+                                child: Text(
+                                  "Menyetujui",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14),
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Obx(() {
+                            var sp = controller.searchSp;
+                             return controller.searchSp.isNotEmpty
+                              ? Container(
+                                decoration: BoxDecoration(
+                                  color: Constanst.infoLight1,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Iconsax.info_circle5,
+                                      color: Constanst.colorPrimary,
+                                      size: 26,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        sp[0]['status'] == 'Approve'
+                                        ? "Karyawan ${sp[0]['nama']} mempunyai surat peringatan yang sedang aktif dengan nomor ${sp[0]['nomor']} berakhir pada tanggal ${sp[0]['exp']}"
+                                        : 'Karyawan ${sp[0]['nama']} mempunyai surat peringatan dengan nomor ${sp[0]['nomor']}, status: ${sp[0]['status']}',
+                                        textAlign: TextAlign.left,
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                              : SizedBox();
+                            }
+                          ),
+                          SizedBox(height: 12),
+                          Obx(() {
+                            var tl = controller.searchTl;
+                             return controller.searchTl.isNotEmpty
+                              ? Container(
+                                decoration: BoxDecoration(
+                                  color: Constanst.infoLight1,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Iconsax.info_circle5,
+                                      color: Constanst.colorPrimary,
+                                      size: 26,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        tl[0]['status'] == 'Approve'
+                                        ? "Karyawan ${tl[0]['nama']} mempunyai teguran lisan yang sedang aktif dengan nomor ${tl[0]['nomor']} berakhir pada tanggal ${tl[0]['exp']}"
+                                        : 'Karyawan ${tl[0]['nama']} mempunyai teguran lisan dengan nomor ${tl[0]['nomor']}, status: ${tl[0]['status']}',
+                                        textAlign: TextAlign.left,
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                              : SizedBox();
+                            }
+                          ),
+                          const SizedBox(height: 12),
+                          Obx(() {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: List.generate(
+                                  controller.listStatusPengajuan.length,
+                                  (index) {
+                                var data =
+                                    controller.listStatusPengajuan[index];
+                                return controller.statusPemgajuanIzin.value ==
+                                        data['value']
+                                    ? Padding(
+                                        padding: EdgeInsets.only(top: 12),
+                                        child: InkWell(
+                                          onTap: () {
+                                            controller
+                                                    .statusPemgajuanIzin.value =
+                                                data['value'].toString();
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Constanst.infoLight1,
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Constanst.infoLight),
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: 30,
+                                                child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 5,
+                                                        left: 5,
+                                                        bottom: 5),
+                                                    child: Row(
+                                                      children: [
+                                                        TextLabell(
+                                                          text: data['name'],
+                                                        ),
+                                                      ],
+                                                    ))),
+                                          ),
+                                        ),
+                                      )
+                                    : InkWell(
+                                        onTap: () {
+                                          controller.statusPemgajuanIzin.value =
+                                              data['value'].toString();
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 12),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Constanst.secondary),
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: 30,
+                                                child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 5,
+                                                        left: 5,
+                                                        bottom: 5),
+                                                    child: Row(
+                                                      children: [
+                                                        TextLabell(
+                                                          text: data['name'],
+                                                        ),
+                                                      ],
+                                                    ))),
+                                          ),
+                                        ),
+                                      );
+                              }),
+                            );
+                          }),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Obx(() {
+                            return controller.statusPemgajuanIzin.value ==
+                                    'none'
+                                ? SizedBox()
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                Constanst.borderStyle1,
+                                            border: Border.all(
+                                                width: 1.0,
+                                                color: const Color.fromARGB(
+                                                    255, 211, 205, 205))),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                            left: 8,
+                                          ),
+                                          child: TextField(
+                                            cursorColor: Colors.black,
+                                            controller:
+                                                controller.alasanReject.value,
+                                            maxLines: null,
+                                            maxLength: 225,
+                                            autofocus: true,
+                                            decoration: new InputDecoration(
+                                                border: InputBorder.none,
+                                                hintText:
+                                                    "Pelanggaran yang di lakukan"),
+                                            keyboardType:
+                                                TextInputType.multiline,
+                                            textInputAction:
+                                                TextInputAction.done,
+                                            style: const TextStyle(
+                                                fontSize: 12.0,
+                                                height: 2.0,
+                                                color: Colors.black),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      TextLabell(
+                                        text: "Konsekuensi",
+                                        size: 12,
+                                        weight: FontWeight.bold,
+                                      ),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Obx(() {
+                                        return controller
+                                                    .konsekuemsiList.length ==
+                                                0
+                                            ? Text(
+                                                'Buat konsekuensi dengan klik tombol dibawah',
+                                                style: TextStyle(
+                                                    fontStyle: FontStyle.italic,
+                                                    fontSize: 11),
+                                              )
+                                            : Column(
+                                                children: List.generate(
+                                                    controller.konsekuemsiList
+                                                        .length, (index) {
+                                                  var data = controller
+                                                      .konsekuemsiList[index];
+                                                  return Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 10),
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 90,
+                                                          child: TextFormField(
+                                                            onChanged: (value) {
+                                                              data['konsekuensi'] = value;
+                                                            },
+                                                            controller: TextEditingController(text: data['konsekuensi']),
+                                                            style:
+                                                                const TextStyle(
+                                                                    fontSize:
+                                                                        12.0,
+                                                                    height: 2.0,
+                                                                    color: Colors
+                                                                        .black),
+                                                            decoration:
+                                                                InputDecoration(
+                                                              hintText:
+                                                                  'Masukan konsekuensi', // Menambahkan teks petunjuk saat field kosong
+                                                              border:
+                                                                  OutlineInputBorder(), // Menambahkan border di sekitar text field
+                                                              enabledBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: Constanst
+                                                                        .Secondary), // Warna border saat aktif
+                                                              ),
+                                                              focusedBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: Constanst
+                                                                        .Secondary), // Warna border saat field difokuskan
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                            flex: 10,
+                                                            child: InkWell(
+                                                                onTap: () {
+                                                                  controller
+                                                                      .konsekuemsiList
+                                                                      .removeAt(
+                                                                          index);
+                                                                  controller
+                                                                      .konsekuemsiList
+                                                                      .refresh();
+                                                                },
+                                                                child: Icon(
+                                                                  Icons.delete,
+                                                                  color: Colors
+                                                                      .red,
+                                                                )))
+                                                      ],
+                                                    ),
+                                                  );
+                                                }),
+                                              );
+                                      }),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          controller.konsekuemsiList.add({'konsekuensi': ''});
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.only(
+                                              top: 8, bottom: 8),
+                                          decoration: BoxDecoration(
+                                              color: Constanst.onPrimary,
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Constanst.onPrimary)),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.add,
+                                                color: Colors.white,
+                                              ),
+                                              TextLabell(
+                                                text: "Konsekuensi",
+                                                color: Constanst.colorWhite,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                    ],
+                                  );
+                          }),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextButtonWidget(
+                                  title: "Kembali",
+                                  onTap: () => Navigator.pop(Get.context!),
+                                  colorButton: Colors.red,
+                                  colortext: Colors.white,
+                                  border: BorderRadius.circular(8.0),
+                                ),
+                              )),
+                              Expanded(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextButtonWidget(
+                                  title: "Menyetujui",
+                                  onTap: () {
+                                    bool data = controller.konsekuemsiList.any(
+                                        (konsekuensi) =>
+                                            konsekuensi['konsekuensi']
+                                                .trim()
+                                                .isEmpty);
+                                    if (controller.statusPemgajuanIzin.value !=
+                                        'none') {
+                                      if (controller.alasanReject.value.text !=
+                                          "") {
+                                        if (data) {
+                                          UtilsAlert.showToast(
+                                              "Harap hapus terlebih dahulu konsekuensi yang kosong");
+                                          return;
+                                        } else {
+                                          Navigator.pop(Get.context!);
+                                          validasiMenyetujui(true, em_id);
+                                        }
+                                      } else {
+                                        UtilsAlert.showToast(
+                                            "Harap isi alasan terlebih dahulu");
+                                      }
+                                    } else {
+                                      Navigator.pop(Get.context!);
+                                      validasiMenyetujui(true, em_id);
+                                    }
+                                  },
+                                  colorButton: Constanst.colorPrimary,
+                                  colortext: Colors.white,
+                                  border: BorderRadius.circular(8.0),
+                                ),
+                              ))
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    )
+                  ],
+                ),
+              );
+            });
+      },
+    );
+  }
+
 
   void validasiMenyetujui(pilihan, em_id) {
     int styleChose = pilihan == false ? 1 : 2;
@@ -180,14 +995,11 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
             positiveBtnPressed: () {
               print("pilihan absensi ${pilihan}");
 
-              print(controller.detailData[0]['leave_status']);
-              // return;
-              //   return ;
-              print(controller.detailData[0]);
               if (controller.detailData[0]['type'] == 'absensi') {
                 print("masuk sini ${controller.detailData[0]['place_in']}");
                 print("masuk sini ${controller.detailData[0]}");
                 print("pilihan absensi ${pilihan}");
+                print('ini kemarikan ');
                 UtilsAlert.loadingSimpanData(
                     Get.context!, "Proses $stringPilihan pengajuan");
 
@@ -198,7 +1010,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                     apdDate1:
                         controller.detailData[0]['approve_date'].toString(),
                     date:
-                        controller.detailData[0]['waktu_pengajuan'].toString(),
+                        controller.detailData[0]['atten_date'].toString(),
                     status: styleChose.toString(),
                     checkin: controller.detailData[0]['dari_jam'].toString(),
                     checkout: controller.detailData[0]['sampai_jam'].toString(),
@@ -212,6 +1024,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                     id: controller.detailData[0]['id'].toString());
                 return;
               } else {
+                print('kook kesini sih');
                 UtilsAlert.loadingSimpanData(
                     Get.context!, "Proses $stringPilihan pengajuan");
                 controller.aksiMenyetujui(pilihan);
@@ -254,6 +1067,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
       },
     );
   }
+
 
   @override
   void initState() {
@@ -307,19 +1121,10 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
         }
       }
 
-      // if (controller.detailData[0]['status'] == "Pending" ||
-      //     controller.detailData[0]['approve_status'] == "Pending" ||
-      //     controller.detailData[0]['approve_status'] == "Pending" ||
-      //     (controller.detailData[0]['approve2_status'] == "Pending" &&
-      //         controller.detailData[0]['approve_status'] != "Rejected")) {
-      //   if (controller.detailData[0]['em_report_to']
-      //       .toString()
-      //       .contains(emId)) {
-      //     controller.showButton.value = true;
-      //   }
-      // } else {
-      //   controller.showButton.value = false;
-      // }
+      if (controller.detailData[0]['approve2_status'] == "Approve" ||
+              controller.detailData[0]['leave_status'] == "Rejected") {
+                controller.showButton.value = false;
+      }
     }
 
     if (controller.detailData[0]['type'].toString().toLowerCase() ==
@@ -351,6 +1156,8 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
     var em_id = controller.detailData[0]['emId_pengaju'];
     var no_ajuan =
         controller.detailData[0]['nomor_ajuan'].toString().substring(0, 2);
+    var emId = AppData.informasiUser![0].em_id;
+    print('ini show button ${controller.showButton.value}');
     return Scaffold(
       backgroundColor: Constanst.coloBackgroundScreen,
       // appBar: AppBar(
@@ -419,9 +1226,13 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Obx(() => controller.showButton.value == true &&
-                (controller.detailData[0]['status'] == "Pending" ||
-                    controller.detailData[0]['approve_status'] == "Pending")
+        child: Obx(() => 
+                controller.showButton.value == true &&
+                    (controller.detailData[0]['status'] == "Pending" ||
+                        controller.detailData[0]['approve_status'] ==
+                            "Pending" ||
+                        controller.detailData[0]['approve_status'] ==
+                            "Pending") && controller.detailData[0]['em_report_to'].toString().contains(emId)
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -440,7 +1251,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                       ),
                       child: ElevatedButton(
                         onPressed: () {
-                          print(AppData.informasiUser![0].em_id);
+                          
                           print(controller.detailData[0]['em_report_to']);
                           print(controller.detailData[0]['em_report2_to']);
                           // print("tes");
@@ -495,86 +1306,85 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                 ],
               )
             : controller.showButton.value == true &&
-                    (controller.detailData[0]['status'] == "Approve" ||
+                    (controller.detailData[0]['status'] == "Pending" ||
+                        controller.detailData[0]['approve2_status'] ==
+                            "Pending" ||
                         controller.detailData[0]['approve_status'] ==
-                                "Approve" &&
-                            (controller.detailData[0]['approve2_status'] ==
-                                    "Pending" &&
-                                controller.detailData[0]['approve_status'] !=
-                                    "Rejected"))
-                ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 40,
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Constanst
-                                  .border, // Set the desired border color
-                              width: 1.0,
+                            "Approve") && controller.detailData[0]['em_report2_to'].toString().contains(emId)
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 40,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color:
+                              Constanst.border, // Set the desired border color
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          
+                          print(controller.detailData[0]['em_report_to']);
+                          print(controller.detailData[0]['em_report2_to']);
+                          // print("tes");
+                          showBottomAlasanReject(em_id);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Constanst.color4,
+                            backgroundColor: Constanst.colorWhite,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              print(AppData.informasiUser![0].em_id);
-                              print(controller.detailData[0]['em_report_to']);
-                              print(controller.detailData[0]['em_report2_to']);
-                              // print("tes");
-                              showBottomAlasanReject(em_id);
-                            },
-                            style: ElevatedButton.styleFrom(
-                                foregroundColor: Constanst.color4,
-                                backgroundColor: Constanst.colorWhite,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                elevation: 0,
-                                // padding: EdgeInsets.zero,
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                            child: Text(
-                              'Tolak',
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w500,
-                                  color: Constanst.color4,
-                                  fontSize: 14),
-                            ),
-                          ),
+                            elevation: 0,
+                            // padding: EdgeInsets.zero,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                        child: Text(
+                          'Tolak',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.color4,
+                              fontSize: 14),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: SizedBox(
-                          height: 40,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              validasiMenyetujui(true, em_id);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Constanst.colorWhite,
-                              backgroundColor: Constanst.colorPrimary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              elevation: 0,
-                              // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
-                            ),
-                            child: Text(
-                              'Menyetujui',
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w500,
-                                  color: Constanst.colorWhite,
-                                  fontSize: 14),
-                            ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          showBottomApproval(em_id);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Constanst.colorWhite,
+                          backgroundColor: Constanst.colorPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
+                          elevation: 0,
+                          // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                        ),
+                        child: Text(
+                          'Menyetujui',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w500,
+                              color: Constanst.colorWhite,
+                              fontSize: 14),
                         ),
                       ),
-                    ],
-                  )
-                : const SizedBox()),
+                    ),
+                  ),
+                ],
+              )
+            : const SizedBox()
+            ),
       ),
       body: WillPopScope(
         onWillPop: () async {
@@ -582,7 +1392,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
           Get.back();
           return true;
         },
-        child: bodyOffline(),
+        child: no_ajuan.toString() == "RQ" ? body1() : bodyOffline(),
       ),
     );
   }
@@ -666,26 +1476,28 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                                     ),
                                   ),
                             const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "${controller.detailData[0]['nama_pengaju']}",
-                                  style: GoogleFonts.inter(
-                                      color: Constanst.fgPrimary,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  controller.detailData[0]['nama_divisi'] ??
-                                      "".toString(),
-                                  style: GoogleFonts.inter(
-                                      color: Constanst.fgSecondary,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14),
-                                ),
-                              ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${controller.detailData[0]['nama_pengaju']}",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    controller.detailData[0]['nama_divisi'] ??
+                                        "".toString(),
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -887,14 +1699,6 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "Setelah",
-                                      style: GoogleFonts.inter(
-                                          color: Constanst.fgSecondary,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12),
-                                    ),
                                     // Padding(
                                     //   padding: const EdgeInsets.only(
                                     //       top: 12.0, bottom: 12.0),
@@ -945,14 +1749,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "Setelah",
-                                      style: GoogleFonts.inter(
-                                          color: Constanst.fgSecondary,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12),
-                                    ),
+                                    
                                     // Padding(
                                     //   padding: const EdgeInsets.only(
                                     //       top: 12.0, bottom: 12.0),
@@ -968,7 +1765,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                             ),
                           ],
                         ),
-
+                        
                         Padding(
                           padding:
                               const EdgeInsets.only(top: 12.0, bottom: 12.0),
@@ -978,18 +1775,15 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                             color: Constanst.border,
                           ),
                         ),
-
                         Row(
                           children: [
                             Visibility(
                               visible: DateFormat.Hm().format(
                                       DateFormat("HH:mm:ss").parse(
                                           controller.detailData[0]
-                                                      ['breakout_time'] ==
-                                                  null
-                                              ? "00:00:00"
-                                              : controller.detailData[0]
-                                                  ['breakout_time'])) !=
+                                              ['breakout_time'] == null || controller.detailData[0]
+                                              ['breakout_time'] == null ? '00:00:00' : controller.detailData[0]
+                                              ['breakout_time'])) !=
                                   "00:00",
                               child: Expanded(
                                 child: Column(
@@ -1005,25 +1799,15 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                                     const SizedBox(height: 4),
                                     Text(
                                       DateFormat.Hm().format(
-                                          DateFormat("HH:mm:ss").parse(
-                                              controller.detailData[0]
-                                                          ['breakout_time'] ==
-                                                      null
-                                                  ? "00:00:00"
-                                                  : controller.detailData[0]
-                                                      ['breakout_time'])),
+                                          DateFormat("HH:mm:ss")
+                                              .parse( controller.detailData[0]
+                                              ['breakout_time'] == null || controller.detailData[0]
+                                              ['breakout_time'] == null ? '00:00:00' : controller.detailData[0]
+                                              ['breakout_time'])),
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgPrimary,
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "Setelah",
-                                      style: GoogleFonts.inter(
-                                          color: Constanst.fgSecondary,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12),
                                     ),
                                     // Padding(
                                     //   padding: const EdgeInsets.only(
@@ -1050,12 +1834,10 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                             Visibility(
                               visible: DateFormat.Hm().format(
                                       DateFormat("HH:mm:ss").parse(
-                                          controller.detailData[0]
-                                                      ['breakin_time'] ==
-                                                  null
-                                              ? "00:00:00"
-                                              : controller.detailData[0]
-                                                  ['breakin_time'])) !=
+                                           controller.detailData[0]
+                                              ['breakin_time'] == null || controller.detailData[0]
+                                              ['breakin_time'] == null ? '00:00:00' : controller.detailData[0]
+                                              ['breakin_time'])) !=
                                   "00:00",
                               child: Expanded(
                                 child: Column(
@@ -1071,26 +1853,17 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                                     const SizedBox(height: 4),
                                     Text(
                                       DateFormat.Hm().format(
-                                          DateFormat("HH:mm:ss").parse(
-                                              controller.detailData[0]
-                                                          ['breakin_time'] ==
-                                                      null
-                                                  ? "00:00:00"
-                                                  : controller.detailData[0]
-                                                      ['breakin_time'])),
+                                          DateFormat("HH:mm:ss")
+                                              .parse( controller.detailData[0]
+                                              ['breakin_time'] == null || controller.detailData[0]
+                                              ['breakin_time'] == null ? '00:00:00' : controller.detailData[0]
+                                              ['breakin_time'])),
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgPrimary,
                                           fontWeight: FontWeight.w500,
                                           fontSize: 16),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "Setelah",
-                                      style: GoogleFonts.inter(
-                                          color: Constanst.fgSecondary,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12),
-                                    ),
+                                    
                                     // Padding(
                                     //   padding: const EdgeInsets.only(
                                     //       top: 12.0, bottom: 12.0),
@@ -1106,7 +1879,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                             ),
                           ],
                         ),
-
+                        
                         Padding(
                           padding:
                               const EdgeInsets.only(top: 12.0, bottom: 12.0),
@@ -1116,7 +1889,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                             color: Constanst.border,
                           ),
                         ),
-
+                        
                         Text(
                           "Catatan",
                           style: GoogleFonts.inter(
@@ -1670,12 +2443,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                         //       fontSize: 16),
                         // ),
                         Text(
-                          controller.detailData[0]['nomor_ajuan']
-                                      .toString()
-                                      .substring(0, 2) ==
-                                  'RQ'
-                              ? "Pengajuan Absensi"
-                              : "Pengajuan Absensi Offline",
+                          "Pengajuan Absensi Offline",
                           style: GoogleFonts.inter(
                               fontWeight: FontWeight.w500,
                               color: Constanst.fgPrimary,
@@ -2012,7 +2780,8 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                         //   ],
                         // ),
                         Visibility(
-                          visible: controller.detailData[0]['place_in'] != "",
+                          visible:
+                              controller.detailData[0]['lokasi_masuk'] != "",
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2045,7 +2814,8 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                           ),
                         ),
                         Visibility(
-                          visible: controller.detailData[0]['place_out'] != "",
+                          visible:
+                              controller.detailData[0]['lokasi_keluar'] != "",
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2566,6 +3336,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
         const SizedBox(height: 4),
         InkWell(
             onTap: () {
+              print(controller.detailData[0]['foto_masuk']);
               viewLampiranAjuan(controller.detailData[0]['foto_$title']);
             },
             child: Text(
@@ -2755,8 +3526,8 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
                             )
                           : data['approve_status'] == "Rejected"
                               ? Icon(
-                                  Iconsax.close_circle,
-                                  color: Colors.red,
+                                  Iconsax.tick_circle,
+                                  color: Colors.green,
                                   size: 22,
                                 )
                               : Icon(
@@ -2810,7 +3581,7 @@ class _DetailPersetujuanAbsensiState extends State<DetailPersetujuanAbsensi> {
         text2 = "Pending Approval 2";
       }
       if (data['approve2_status'] == "Rejected") {
-        text2 = "Rejected 1 By - ${data['nama_approve1']}";
+        text2 = "Rejected By - ${data['nama_approve2']}";
       }
 
       if (data['approve2_status'] == "Approve") {

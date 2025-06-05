@@ -13,7 +13,7 @@ import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class EditPersonalInfo extends StatelessWidget {
-  final controller = Get.put(SettingController());
+  final controller = Get.find<SettingController>();
 
   @override
   Widget build(BuildContext context) {

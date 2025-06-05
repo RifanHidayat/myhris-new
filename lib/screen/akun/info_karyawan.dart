@@ -14,25 +14,8 @@ import 'package:siscom_operasional/utils/constans.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:web_socket_channel/io.dart';
 
-
-
-class InfoKaryawan extends StatefulWidget {
-  const InfoKaryawan({super.key});
-
-  @override
-  State<InfoKaryawan> createState() => _InfoKaryawanState();
-}
-
-class _InfoKaryawanState extends State<InfoKaryawan> {
-  @override
-   final controller = Get.put(SettingController());
-
-   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    controller. getUserInfo();
-  }  
+class InfoKaryawan extends StatelessWidget {
+  final controller = Get.find<SettingController>();
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +191,7 @@ class _InfoKaryawanState extends State<InfoKaryawan> {
                           )
                         : controller.infoEmployee.value.isEmpty
                             ? Center(
-                                child: Text(controller.loading.value+'2'),
+                                child: Text(controller.loading.value),
                               )
                             : infoEmployeeList(),
                   )

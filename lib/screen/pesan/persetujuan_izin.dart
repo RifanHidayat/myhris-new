@@ -366,6 +366,9 @@ class _PersetujuanIzinState extends State<PersetujuanIzin>
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   onTap: () {
+                    controller.searchSuratPeringatan(emIdPengaju);
+                    controller.searchTeguranLisan(emIdPengaju);
+                    // controller.updateListStatus();
                     Get.to(DetailPersetujuanIzin(
                       emId: emIdPengaju,
                       title: typeAjuan,
@@ -762,9 +765,7 @@ class _PersetujuanIzinState extends State<PersetujuanIzin>
 
     if (leave_status == "Rejected") {
       return Container(
-        child: namaApprove1 == ""
-            ? const SizedBox()
-            : Row(
+        child: Row(
                 children: [
                   Icon(
                     Iconsax.close_circle,
@@ -773,12 +774,16 @@ class _PersetujuanIzinState extends State<PersetujuanIzin>
                   SizedBox(
                     width: 8,
                   ),
-                  Text(
-                    "rejected by  - $namaApprove1",
-                    style: GoogleFonts.inter(
-                        fontWeight: FontWeight.w500,
-                        color: Constanst.fgPrimary,
-                        fontSize: 16),
+                  Expanded(
+                    child: Text(
+                      "Rejected by  - ${namaApprove2 == '' || namaApprove2 == null ? namaApprove1 : namaApprove2}",
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          color: Constanst.fgPrimary,
+                          fontSize: 14),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                 ],
               ),
@@ -840,20 +845,6 @@ class _PersetujuanIzinState extends State<PersetujuanIzin>
       );
     }
 
-    if (leave_status == "Rejected") {
-      return Container(
-        child: namaApprove1 == ""
-            ? const SizedBox()
-            : Text(
-                "Rejected by  - $namaApprove1",
-                style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w500,
-                    color: Constanst.fgPrimary,
-                    fontSize: 16),
-              ),
-      );
-    }
-
     if (leave_status == "Approve2") {
       return Container(
         child: namaApprove1 == ""
@@ -868,12 +859,16 @@ class _PersetujuanIzinState extends State<PersetujuanIzin>
                   SizedBox(
                     width: 8,
                   ),
-                  Text(
-                    "Approved 2 by  - $namaApprove2",
-                    style: GoogleFonts.inter(
-                        fontWeight: FontWeight.w500,
-                        color: Constanst.fgPrimary,
-                        fontSize: 16),
+                  Expanded(
+                    child: Text(
+                      "Approved 2 by  - $namaApprove2",
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          color: Constanst.fgPrimary,
+                          fontSize: 14),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                 ],
               ),

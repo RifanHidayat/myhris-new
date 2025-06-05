@@ -9,6 +9,7 @@ import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 
 class BerhasilController extends GetxController {
+  final controllerAbsensi = Get.find<AbsenController>();
   Future<bool> getPosisition(getEmid, jam, tanggal, lat, long) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
@@ -70,7 +71,7 @@ class BerhasilController extends GetxController {
       var emKontrol = "${valueBody['data'][0]['em_control']}";
       return "$emKontrol";
     }).catchError((error) {
-      AbsenController().removeAll();
+      controllerAbsensi.removeAll();
       Get.offAll(InitScreen());
     });
     return kontrolString;

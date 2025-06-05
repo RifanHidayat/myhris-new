@@ -14,7 +14,7 @@ class FaceidRegistration extends StatefulWidget {
 }
 
 class _FaceidRegistrationState extends State<FaceidRegistration> {
-  final controllerAbsensi = Get.find<AbsenController>(tag: 'absen controller');
+  final controllerAbsensi = Get.find<AbsenController>();
   // final FaceDetector _faceDetector = FaceDetector(
   //   options: FaceDetectorOptions(
   //     enableContours: true,

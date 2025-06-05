@@ -22,7 +22,7 @@ class AbsenVrifyPassword extends StatefulWidget {
 class _AbsenVrifyPasswordState extends State<AbsenVrifyPassword> {
   final controller = Get.put(AuthController());
   final TextEditingController passwordCtr = TextEditingController();
-  var absensiController = Get.find<AbsenController>(tag: 'absen controller');
+  var absensiController = Get.find<AbsenController>();
 
   @override
   Widget build(BuildContext context) {

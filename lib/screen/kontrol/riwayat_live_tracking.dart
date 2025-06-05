@@ -19,7 +19,7 @@ class RiwayatLiveTracking extends StatefulWidget {
 
 class _RiwayatLiveTrackingState extends State<RiwayatLiveTracking> {
   final emIdEmployee = Get.arguments['em_id_employee'];
-  final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
+  final controllerTracking = Get.put(TrackingController());
 
   Future<void> refreshData() async {
     controllerTracking.riwayatLiveTracking(emIdEmployee: emIdEmployee);

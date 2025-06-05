@@ -27,16 +27,12 @@ class LaporanAbsen extends StatefulWidget {
 }
 
 class _LaporanAbsenState extends State<LaporanAbsen> {
-  var controller = Get.find<AbsenController>(tag: 'absen controller');
+  var controller = Get.find<AbsenController>();
 
   @override
   void initState() {
     controller.onReady();
-
-    controller.getTimeNow();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.getDepartemen(1, "");
-    });
+    controller.getPlaceCoordinate();
     controller.tempNamaLaporan1.value = "";
     controller.tempNamaTipe1.value = "Absensi";
     super.initState();
@@ -298,6 +294,518 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              // controller.departemen.value.text != "SEMUA DIVISI"
+              //     ? Padding(
+              //         padding: EdgeInsets.only(right: 10),
+              //         child: InkWell(
+              //           onTap: () {
+              //             controller.selectedViewFilterAbsen.value = 0;
+              //             controller.refreshFilterKoordinate();
+              //           },
+              //           child: Container(
+              //             decoration: BoxDecoration(
+              //                 color: Colors.white,
+              //                 borderRadius: Constanst.borderStyle5,
+              //                 border: Border.all(color: Constanst.colorText2)),
+              //             child: Padding(
+              //               padding: EdgeInsets.all(5),
+              //               child: InkWell(
+              //                 onTap: () {
+              //                   controller.selectedViewFilterAbsen.value = 0;
+              //                   controller.refreshFilterKoordinate();
+              //                 },
+              //                 child: Row(
+              //                   crossAxisAlignment: CrossAxisAlignment.center,
+              //                   children: [
+              //                     Icon(
+              //                       Icons.close,
+              //                       size: 15,
+              //                     )
+              //                   ],
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         ),
+              //       )
+              //     : controller.filterLokasiKoordinate.value != "Lokasi"
+              //         ? Padding(
+              //             padding: EdgeInsets.only(right: 10),
+              //             child: InkWell(
+              //               onTap: () {
+              //                 controller.refreshFilterKoordinate();
+              //               },
+              //               child: Container(
+              //                 decoration: BoxDecoration(
+              //                     color: Colors.white,
+              //                     borderRadius: BorderRadius.circular(8),
+              //                     border:
+              //                         Border.all(color: Constanst.colorText2)),
+              //                 child: Padding(
+              //                   padding: EdgeInsets.all(5),
+              //                   child: InkWell(
+              //                     onTap: () {},
+              //                     child: Row(
+              //                       crossAxisAlignment: CrossAxisAlignment.center,
+              //                       children: [
+              //                         Icon(
+              //                           Icons.close,
+              //                           size: 15,
+              //                         )
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //           )
+              //         : controller.selectedViewFilterAbsen.value != 0
+              //             ? Padding(
+              //                 padding: EdgeInsets.only(right: 10),
+              //                 child: InkWell(
+              //                   onTap: () {
+              //                     controller.refreshFilterKoordinate();
+              //                   },
+              //                   child: Container(
+              //                     decoration: BoxDecoration(
+              //                         color: Colors.white,
+              //                         borderRadius: Constanst.borderStyle5,
+              //                         border: Border.all(
+              //                             color: Constanst.colorText2)),
+              //                     child: Padding(
+              //                       padding: EdgeInsets.all(5),
+              //                       child: InkWell(
+              //                         onTap: () {},
+              //                         child: Row(
+              //                           crossAxisAlignment:
+              //                               CrossAxisAlignment.center,
+              //                           children: [
+              //                             Icon(
+              //                               Icons.close,
+              //                               size: 15,
+              //                             )
+              //                           ],
+              //                         ),
+              //                       ),
+              //                     ),
+              //                   ),
+              //                 ),
+              //               )
+              //             : Container(),
+              // InkWell(
+              //   customBorder: const RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.all(Radius.circular(100))),
+              //   onTap: () {
+              //     showModalBottomSheet(
+              //       context: context,
+              //       shape: const RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.vertical(
+              //           top: Radius.circular(16.0),
+              //         ),
+              //       ),
+              //       builder: (BuildContext context) {
+              //         return SafeArea(
+              //           child: ClipRRect(
+              //             borderRadius: BorderRadius.circular(16.0),
+              //             child: Column(
+              //               crossAxisAlignment: CrossAxisAlignment.start,
+              //               mainAxisSize: MainAxisSize.min,
+              //               children: [
+              //                 Padding(
+              //                   padding:
+              //                       const EdgeInsets.fromLTRB(16, 18, 16, 18),
+              //                   child: Row(
+              //                     crossAxisAlignment: CrossAxisAlignment.center,
+              //                     mainAxisAlignment:
+              //                         MainAxisAlignment.spaceBetween,
+              //                     children: [
+              //                       Text(
+              //                         "Pilih Tipe Izin",
+              //                         style: GoogleFonts.inter(
+              //                           fontWeight: FontWeight.w500,
+              //                           fontSize: 18,
+              //                           color: Constanst.fgPrimary,
+              //                         ),
+              //                       ),
+              //                       InkWell(
+              //                           customBorder:
+              //                               const RoundedRectangleBorder(
+              //                                   borderRadius: BorderRadius.all(
+              //                                       Radius.circular(8))),
+              //                           onTap: () =>
+              //                               Navigator.pop(Get.context!),
+              //                           child: Icon(
+              //                             Icons.close,
+              //                             size: 26,
+              //                             color: Constanst.fgSecondary,
+              //                           ))
+              //                     ],
+              //                   ),
+              //                 ),
+              //                 Padding(
+              //                   padding:
+              //                       const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              //                   child: Divider(
+              //                     thickness: 1,
+              //                     height: 0,
+              //                     color: Constanst.border,
+              //                   ),
+              //                 ),
+              //                 InkWell(
+              //                   onTap: () {
+              //                     controller.clearPencarian();
+              //                     controller.statusLoadingSubmitLaporan.value =
+              //                         true;
+              //                     controller.tempNamaTipe1.value = "Absensi";
+
+              //                     controller.getPlaceCoordinate();
+              //                     controller.tempNamaLaporan1.value = "";
+              //                     controller.onReady();
+              //                     Get.back();
+              //                   },
+              //                   child: Padding(
+              //                     padding:
+              //                         const EdgeInsets.fromLTRB(0, 16, 16, 16),
+              //                     child: Row(
+              //                       mainAxisAlignment:
+              //                           MainAxisAlignment.spaceBetween,
+              //                       children: [
+              //                         Row(
+              //                           children: [
+              //                             const SizedBox(width: 16),
+              //                             Text(
+              //                               "Absensi",
+              //                               style: GoogleFonts.inter(
+              //                                 fontWeight: FontWeight.w500,
+              //                                 fontSize: 16,
+              //                                 color: Constanst.fgPrimary,
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                         controller.tempNamaTipe1.value ==
+              //                                 "Absensi"
+              //                             ? Container(
+              //                                 height: 20,
+              //                                 width: 20,
+              //                                 decoration: BoxDecoration(
+              //                                     border: Border.all(
+              //                                         width: 2,
+              //                                         color:
+              //                                             Constanst.onPrimary),
+              //                                     borderRadius:
+              //                                         BorderRadius.circular(
+              //                                             10)),
+              //                                 child: Padding(
+              //                                   padding:
+              //                                       const EdgeInsets.all(3),
+              //                                   child: Container(
+              //                                     decoration: BoxDecoration(
+              //                                         color:
+              //                                             Constanst.onPrimary,
+              //                                         borderRadius:
+              //                                             BorderRadius.circular(
+              //                                                 10)),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                             : InkWell(
+              //                                 onTap: () {
+              //                                   controller.clearPencarian();
+              //                                   controller
+              //                                       .statusLoadingSubmitLaporan
+              //                                       .value = true;
+              //                                   controller.tempNamaTipe1.value =
+              //                                       "Absensi";
+
+              //                                   controller.getPlaceCoordinate();
+              //                                   controller.tempNamaLaporan1
+              //                                       .value = "";
+              //                                   controller.onReady();
+              //                                   Get.back();
+              //                                 },
+              //                                 child: Container(
+              //                                   height: 20,
+              //                                   width: 20,
+              //                                   decoration: BoxDecoration(
+              //                                       border: Border.all(
+              //                                           width: 1,
+              //                                           color: Constanst
+              //                                               .onPrimary),
+              //                                       borderRadius:
+              //                                           BorderRadius.circular(
+              //                                               10)),
+              //                                   child: Padding(
+              //                                     padding:
+              //                                         const EdgeInsets.all(2),
+              //                                     child: Container(
+              //                                       decoration: BoxDecoration(
+              //                                           borderRadius:
+              //                                               BorderRadius
+              //                                                   .circular(10)),
+              //                                     ),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 InkWell(
+              //                   onTap: () {
+              //                     controller.clearPencarian();
+              //                     controller.statusLoadingSubmitLaporan.value =
+              //                         true;
+              //                     controller.tempNamaTipe1.value =
+              //                         "Belum Absen";
+              //                     controller.pilihTanggalTelatAbsen.value =
+              //                         DateTime.now();
+              //                     controller.filterBelumAbsen();
+              //                     controller.aksiEmployeeBelumAbsen(
+              //                         "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
+              //                     controller.onReady();
+              //                     Get.back();
+              //                   },
+              //                   child: Padding(
+              //                     padding:
+              //                         const EdgeInsets.fromLTRB(0, 16, 16, 16),
+              //                     child: Row(
+              //                       mainAxisAlignment:
+              //                           MainAxisAlignment.spaceBetween,
+              //                       children: [
+              //                         Row(
+              //                           children: [
+              //                             const SizedBox(width: 16),
+              //                             Text(
+              //                               "Tidak/Belum Absen",
+              //                               style: GoogleFonts.inter(
+              //                                 fontWeight: FontWeight.w500,
+              //                                 fontSize: 16,
+              //                                 color: Constanst.fgPrimary,
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                         controller.tempNamaTipe1.value ==
+              //                                 "Belum Absen"
+              //                             ? Container(
+              //                                 height: 20,
+              //                                 width: 20,
+              //                                 decoration: BoxDecoration(
+              //                                     border: Border.all(
+              //                                         width: 2,
+              //                                         color:
+              //                                             Constanst.onPrimary),
+              //                                     borderRadius:
+              //                                         BorderRadius.circular(
+              //                                             10)),
+              //                                 child: Padding(
+              //                                   padding:
+              //                                       const EdgeInsets.all(3),
+              //                                   child: Container(
+              //                                     decoration: BoxDecoration(
+              //                                         color:
+              //                                             Constanst.onPrimary,
+              //                                         borderRadius:
+              //                                             BorderRadius.circular(
+              //                                                 10)),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                             : InkWell(
+              //                                 onTap: () {
+              //                                   controller.clearPencarian();
+              //                                   controller
+              //                                       .statusLoadingSubmitLaporan
+              //                                       .value = true;
+              //                                   controller.tempNamaTipe1.value =
+              //                                       "Belum Absen";
+              //                                   controller
+              //                                       .pilihTanggalTelatAbsen
+              //                                       .value = DateTime.now();
+              //                                   controller.filterBelumAbsen();
+              //                                   controller.aksiEmployeeBelumAbsen(
+              //                                       "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
+              //                                   controller.onReady();
+              //                                   Get.back();
+              //                                 },
+              //                                 child: Container(
+              //                                   height: 20,
+              //                                   width: 20,
+              //                                   decoration: BoxDecoration(
+              //                                       border: Border.all(
+              //                                           width: 1,
+              //                                           color: Constanst
+              //                                               .onPrimary),
+              //                                       borderRadius:
+              //                                           BorderRadius.circular(
+              //                                               10)),
+              //                                   child: Padding(
+              //                                     padding:
+              //                                         const EdgeInsets.all(2),
+              //                                     child: Container(
+              //                                       decoration: BoxDecoration(
+              //                                           borderRadius:
+              //                                               BorderRadius
+              //                                                   .circular(10)),
+              //                                     ),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 InkWell(
+              //                   onTap: () {
+              //                     controller.clearPencarian();
+              //                     controller.statusLoadingSubmitLaporan.value =
+              //                         true;
+              //                     controller.tempNamaTipe1.value =
+              //                         "Absen Terlambat";
+              //                     controller.pilihTanggalTelatAbsen.value =
+              //                         DateTime.now();
+              //                     controller.filterAbsenTelat();
+              //                     controller.aksiEmployeeTerlambatAbsen(
+              //                         "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
+              //                     controller.onReady();
+              //                     Get.back();
+              //                   },
+              //                   child: Padding(
+              //                     padding:
+              //                         const EdgeInsets.fromLTRB(0, 16, 16, 16),
+              //                     child: Row(
+              //                       mainAxisAlignment:
+              //                           MainAxisAlignment.spaceBetween,
+              //                       children: [
+              //                         Row(
+              //                           children: [
+              //                             const SizedBox(width: 16),
+              //                             Text(
+              //                               "Absen Terlambat",
+              //                               style: GoogleFonts.inter(
+              //                                 fontWeight: FontWeight.w500,
+              //                                 fontSize: 16,
+              //                                 color: Constanst.fgPrimary,
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                         controller.tempNamaTipe1.value ==
+              //                                 "Absen Terlambat"
+              //                             ? Container(
+              //                                 height: 20,
+              //                                 width: 20,
+              //                                 decoration: BoxDecoration(
+              //                                     border: Border.all(
+              //                                         width: 2,
+              //                                         color:
+              //                                             Constanst.onPrimary),
+              //                                     borderRadius:
+              //                                         BorderRadius.circular(
+              //                                             10)),
+              //                                 child: Padding(
+              //                                   padding:
+              //                                       const EdgeInsets.all(3),
+              //                                   child: Container(
+              //                                     decoration: BoxDecoration(
+              //                                         color:
+              //                                             Constanst.onPrimary,
+              //                                         borderRadius:
+              //                                             BorderRadius.circular(
+              //                                                 10)),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                             : InkWell(
+              //                                 onTap: () {
+              //                                   controller.clearPencarian();
+              //                                   controller
+              //                                       .statusLoadingSubmitLaporan
+              //                                       .value = true;
+              //                                   controller.tempNamaTipe1.value =
+              //                                       "Absen Terlambat";
+              //                                   controller
+              //                                       .pilihTanggalTelatAbsen
+              //                                       .value = DateTime.now();
+              //                                   controller.filterAbsenTelat();
+              //                                   controller
+              //                                       .aksiEmployeeTerlambatAbsen(
+              //                                           "${DateFormat('yyyy-MM-dd').format(controller.pilihTanggalTelatAbsen.value)}");
+              //                                   controller.onReady();
+              //                                   Get.back();
+              //                                 },
+              //                                 child: Container(
+              //                                   height: 20,
+              //                                   width: 20,
+              //                                   decoration: BoxDecoration(
+              //                                       border: Border.all(
+              //                                           width: 1,
+              //                                           color: Constanst
+              //                                               .onPrimary),
+              //                                       borderRadius:
+              //                                           BorderRadius.circular(
+              //                                               10)),
+              //                                   child: Padding(
+              //                                     padding:
+              //                                         const EdgeInsets.all(2),
+              //                                     child: Container(
+              //                                       decoration: BoxDecoration(
+              //                                           borderRadius:
+              //                                               BorderRadius
+              //                                                   .circular(10)),
+              //                                     ),
+              //                                   ),
+              //                                 ),
+              //                               )
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 )
+              //               ],
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     ).then((value) {
+              //       print('Bottom sheet closed');
+              //     });
+              //   },
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(100),
+              //         border: Border.all(color: Constanst.border)),
+              //     child: Padding(
+              //       padding: const EdgeInsets.only(
+              //           top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
+              //       child: Row(
+              //         children: [
+              //           Row(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: [
+              //               Text(
+              //                 controller.tempNamaTipe1.value,
+              //                 style: GoogleFonts.inter(
+              //                     color: Constanst.fgSecondary,
+              //                     fontSize: 14,
+              //                     fontWeight: FontWeight.w500),
+              //               ),
+              //               Padding(
+              //                 padding: const EdgeInsets.only(left: 4),
+              //                 child: Icon(
+              //                   Iconsax.arrow_down_1,
+              //                   color: Constanst.fgSecondary,
+              //                   size: 18,
+              //                 ),
+              //               )
+              //             ],
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(width: 4),
               InkWell(
                 customBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(100))),
@@ -372,6 +880,52 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
                 ),
               ),
               const SizedBox(width: 4),
+              // Filter Cabang
+
+              InkWell(
+                customBorder: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(100))),
+                onTap: () {
+                  // controller.getBranch();
+                  controller.showBottomBranch();
+                },
+                child: Container(
+                  width: 150,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      border: Border.all(color: Constanst.border)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
+                    child: Row(
+                      children: [
+                        Obx(
+                          () => Expanded(
+                            child: Text(
+                              controller.filterBranch.value,
+                              style: GoogleFonts.inter(
+                                  color: Constanst.fgSecondary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4),
+                          child: Icon(
+                            Iconsax.arrow_down_1,
+                            color: Constanst.fgSecondary,
+                            size: 18,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
               InkWell(
                 customBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(100))),
@@ -410,6 +964,8 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
                 customBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(100))),
                 onTap: () {
+                  UtilsAlert.showToast("tes");
+                controller. getPlaceCoordinate();
                   controller.showDataLokasiKoordinate();
                 },
                 child: Container(
@@ -547,14 +1103,6 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
           var signNote = controller.listLaporanFilter[index]['signin_note'];
           var image = controller.listLaporanFilter.value[index]['image'];
           var regType = controller.listLaporanFilter.value[index]['regtype'];
-          var izin = controller.listLaporanFilter.value[index]['izin'];
-          var cuti = controller.listLaporanFilter.value[index]['cuti'];
-          var sakit = controller.listLaporanFilter.value[index]['sakit'];
-          var lembur = controller.listLaporanFilter.value[index]['lembur'];
-          var tugasLuar =
-              controller.listLaporanFilter.value[index]['tugas_luar'];
-          var dinasLuar =
-              controller.listLaporanFilter.value[index]['dinas_luar'];
           print(controller.listLaporanFilter[index]['data']);
           return
               // controller.listLaporanFilter[index]['data'].toList().length <=
@@ -688,13 +1236,120 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
                         child: Padding(
                           padding:
                               const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                          child: attenDate == null || (izin != null || 
-                          sakit != null || lembur != null || cuti != null || tugasLuar != null || dinasLuar != null) 
-                              ? bMethod(
-                                attenDate, izin, lembur, cuti, sakit,
-                                  tugasLuar, dinasLuar)
-                              : aMethod(
-                                  attenDate, signinTime, signNote, signoutTime, izin, lembur, cuti, sakit, tugasLuar, dinasLuar),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    Constanst.convertDate5("$attenDate"),
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgPrimary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Text(
+                                    // regType == 0
+                                    //     ? "Face Recognition"
+                                    //     : "Photo",
+                                    "Face Recognition",
+                                    style: GoogleFonts.inter(
+                                        color: Constanst.fgSecondary,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                width: 2,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  color: Constanst.colorNeutralBgTertiary,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Iconsax.login_1,
+                                    color: Constanst.color5,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        signinTime == "00:00:00" ||
+                                                signinTime == "null"
+                                            ? '$signNote'
+                                            : '$signinTime',
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgPrimary,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Text(
+                                        "Absen Masuk",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                width: 2,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  color: Constanst.colorNeutralBgTertiary,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Iconsax.logout_14,
+                                    color: Constanst.color4,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        // signoutTime == "00:00:00" ||
+                                        //         signoutTime == "null"
+                                        //     ? ""
+                                        //     : '$signoutTime',
+                                        '$signoutTime',
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgPrimary,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Text(
+                                        "Absen Keluar",
+                                        style: GoogleFonts.inter(
+                                            color: Constanst.fgSecondary,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -703,162 +1358,427 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
               ),
             ),
           );
+          // : Padding(
+          //     padding: EdgeInsets.only(top: 10),
+          //     child: Column(
+          //       children: [
+          //         Padding(
+          //           padding: EdgeInsets.only(top: 10),
+          //           child: Container(
+          //             decoration: BoxDecoration(
+          //                 borderRadius: BorderRadius.only(
+          //                     bottomLeft:
+          //                         controller.listLaporanFilter[index]
+          //                                     ['is_open'] ==
+          //                                 true
+          //                             ? Radius.circular(0)
+          //                             : Radius.circular(10),
+          //                     bottomRight:
+          //                         controller.listLaporanFilter[index]
+          //                                     ['is_open'] ==
+          //                                 true
+          //                             ? Radius.circular(0)
+          //                             : Radius.circular(10),
+          //                     topLeft: Radius.circular(10),
+          //                     topRight: Radius.circular(10)),
+          //                 border:
+          //                     Border.all(width: 1, color: Constanst.grey)),
+          //             child: Padding(
+          //               padding: EdgeInsets.all(5),
+          //               child: InkWell(
+          //                 onTap: () {
+          //                   // groupData();
+          //                   // setState(() {
+          //                   controller.listLaporanFilter[index]['is_open'] =
+          //                       !controller.listLaporanFilter[index]
+          //                           ['is_open'];
+          //                   //  });
+
+          //                   // this.listLaporanFilter.refresh();
+          //                   controller.listLaporanFilter.refresh();
+          //                   controller.statusCari.refresh();
+          //                 },
+          //                 child: Column(
+          //                   crossAxisAlignment: CrossAxisAlignment.start,
+          //                   children: [
+          //                     SizedBox(
+          //                       height: 10,
+          //                     ),
+          //                     IntrinsicHeight(
+          //                       child: Row(
+          //                         mainAxisAlignment:
+          //                             MainAxisAlignment.spaceBetween,
+          //                         children: [
+          //                           Container(
+          //                             width: MediaQuery.of(Get.context!)
+          //                                         .size
+          //                                         .width /
+          //                                     2 -
+          //                                 60,
+          //                             child: Column(
+          //                               crossAxisAlignment:
+          //                                   CrossAxisAlignment.start,
+          //                               children: [
+          //                                 Text(
+          //                                   '$namaKaryawan',
+          //                                   style: TextStyle(fontSize: 12),
+          //                                 ),
+          //                               ],
+          //                             ),
+          //                           ),
+          //                           Container(
+          //                             child: Row(
+          //                               children: [
+          //                                 Container(
+          //                                   width:
+          //                                       MediaQuery.of(Get.context!)
+          //                                               .size
+          //                                               .width /
+          //                                           3,
+          //                                   child: Text(
+          //                                     '$jobTitle',
+          //                                     style:
+          //                                         TextStyle(fontSize: 12),
+          //                                     textAlign: TextAlign.right,
+          //                                   ),
+          //                                 ),
+          //                                 SizedBox(
+          //                                   width: 20,
+          //                                 ),
+          //                                 controller.listLaporanFilter[
+          //                                         index]['is_open']
+          //                                     ? Center(
+          //                                         child: Transform.rotate(
+          //                                           angle: -math.pi / 2,
+          //                                           child: Icon(
+          //                                             Icons
+          //                                                 .arrow_back_ios_new_rounded,
+          //                                             size: 12,
+          //                                           ),
+          //                                         ),
+          //                                         // child: Icon(
+          //                                         //   Icons.arrow_forward_ios_rounded,
+          //                                         //   size: 14,
+          //                                         // ),
+          //                                       )
+          //                                     : Center(
+          //                                         child: Transform.rotate(
+          //                                           angle: -math.pi / 2,
+          //                                           child: Icon(
+          //                                             Icons
+          //                                                 .arrow_forward_ios_rounded,
+          //                                             size: 12,
+          //                                           ),
+          //                                         ),
+          //                                         // child: Icon(
+          //                                         //   Icons.arrow_forward_ios_rounded,
+          //                                         //   size: 14,
+          //                                         // ),
+          //                                       ),
+          //                               ],
+          //                             ),
+          //                           ),
+          //                         ],
+          //                       ),
+          //                     ),
+          //                     SizedBox(
+          //                       height: 8,
+          //                     ),
+          //                   ],
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //         controller.listLaporanFilter[index]['is_open'] == true
+          //             ? Container(
+          //                 decoration: BoxDecoration(
+          //                     borderRadius: BorderRadius.only(
+          //                         bottomLeft: Radius.circular(10),
+          //                         bottomRight: Radius.circular(10)),
+          //                     border: Border.all(
+          //                         width: 1, color: Constanst.grey)),
+          //                 child: Column(
+          //                   children: List.generate(
+          //                       controller
+          //                           .listLaporanFilter.value[index]['data']
+          //                           .toList()
+          //                           .length, (index1) {
+          //                     var idAbsen = controller.listLaporanFilter
+          //                         .value[index]['data'][index1]['id'];
+          //                     var jamMasuk =
+          //                         controller.listLaporanFilter.value[index]
+          //                             ['data'][index1]['signin_time'];
+          //                     var jamKeluar =
+          //                         controller.listLaporanFilter.value[index]
+          //                             ['data'][index1]['signout_time'];
+          //                     var tanggal =
+          //                         controller.listLaporanFilter.value[index]
+          //                             ['data'][index1]['atten_date'];
+          //                     var longLatAbsenKeluar =
+          //                         controller.listLaporanFilter.value[index]
+          //                             ['data'][index1]['signout_longlat'];
+
+          //                     var placeIn = controller.listLaporanFilter
+          //                         .value[index]['data'][index1]['place_in'];
+          //                     var placeOut =
+          //                         controller.listLaporanFilter.value[index]
+          //                             ['data'][index1]['place_out'];
+
+          //                     var note =
+          //                         controller.listLaporanFilter.value[index]
+          //                             ['data'][index1]['signin_note'];
+
+          //                     var signInLongLat =
+          //                         controller.listLaporanFilter.value[index]
+          //                             ['data'][index1]['signin_longlat'];
+
+          //                     var signOutLongLat =
+          //                         controller.listLaporanFilter.value[index]
+          //                             ['data'][index1]['signout_longlat'];
+
+          //                     var statusView = placeIn == "pengajuan" &&
+          //                             placeOut == "pengajuan" &&
+          //                             signInLongLat == "pengajuan" &&
+          //                             signOutLongLat == "pengajuan"
+          //                         ? true
+          //                         : false;
+
+          //                     var listJamMasuk = (jamMasuk!.split(':'));
+          //                     var listJamKeluar = (jamKeluar!.split(':'));
+          //                     var perhitunganJamMasuk1 = 830 -
+          //                         int.parse(
+          //                             "${listJamMasuk[0]}${listJamMasuk[1]}");
+          //                     var perhitunganJamMasuk2 = 1800 -
+          //                         int.parse(
+          //                             "${listJamKeluar[0]}${listJamKeluar[1]}");
+
+          //                     var getColorMasuk;
+          //                     var getColorKeluar;
+
+          //                     if (perhitunganJamMasuk1 < 0) {
+          //                       getColorMasuk = Colors.red;
+          //                     } else {
+          //                       getColorMasuk = Colors.black;
+          //                     }
+          //                     if (perhitunganJamMasuk2 == 0) {
+          //                       getColorKeluar = Colors.black;
+          //                     } else if (perhitunganJamMasuk2 > 0) {
+          //                       getColorKeluar = Colors.red;
+          //                     } else if (perhitunganJamMasuk2 < 0) {
+          //                       getColorKeluar = Constanst.colorPrimary;
+          //                     }
+          //                     return Container(
+          //                       padding: EdgeInsets.all(5),
+          //                       child: InkWell(
+          //                         onTap: () {
+          //                           controller.loadAbsenDetail(
+          //                               idAbsen, attenDate, fullName);
+          //                           print(idAbsen);
+          //                           // controller.historySelected1(
+          //                           //     idAbsen.toString(),
+          //                           //     "laporan",
+          //                           //     index,
+          //                           //     index1);
+
+          //                           // if (statusView == false) {
+          //                           //   controller.historySelected(
+          //                           //       idAbsen.toString(), "laporan");
+          //                           // }
+          //                         },
+          //                         child: Column(
+          //                           crossAxisAlignment:
+          //                               CrossAxisAlignment.start,
+          //                           children: [
+          //                             SizedBox(
+          //                               height: 10,
+          //                             ),
+          //                             statusView == false
+          //                                 ? Row(
+          //                                     crossAxisAlignment:
+          //                                         CrossAxisAlignment.end,
+          //                                     children: [
+          //                                       Expanded(
+          //                                         flex: 40,
+          //                                         child: Text(
+          //                                           "${Constanst.convertDate(tanggal)}",
+          //                                           style: TextStyle(
+          //                                               fontSize: 12),
+          //                                         ),
+          //                                       ),
+          //                                       Expanded(
+          //                                         flex: 25,
+          //                                         child: Container(
+          //                                           padding:
+          //                                               EdgeInsets.all(5),
+          //                                           decoration: BoxDecoration(
+          //                                               borderRadius:
+          //                                                   BorderRadius
+          //                                                       .circular(
+          //                                                           10),
+          //                                               color:
+          //                                                   Constanst.grey),
+          //                                           child: Row(
+          //                                             children: [
+          //                                               Icon(
+          //                                                 Icons
+          //                                                     .login_rounded,
+          //                                                 color:
+          //                                                     Colors.black,
+          //                                                 size: 14,
+          //                                               ),
+          //                                               Padding(
+          //                                                 padding: EdgeInsets
+          //                                                     .only(
+          //                                                         left: 8),
+          //                                                 child: Text(
+          //                                                   jamMasuk,
+          //                                                   style: TextStyle(
+          //                                                       color: Colors
+          //                                                           .black,
+          //                                                       fontSize:
+          //                                                           10),
+          //                                                 ),
+          //                                               )
+          //                                             ],
+          //                                           ),
+          //                                         ),
+          //                                       ),
+          //                                       SizedBox(
+          //                                         width: 5,
+          //                                       ),
+          //                                       longLatAbsenKeluar == ""
+          //                                           ? Container(
+          //                                               child: Expanded(
+          //                                                   flex: 25,
+          //                                                   child:
+          //                                                       Container()),
+          //                                             )
+          //                                           : Expanded(
+          //                                               flex: 25,
+          //                                               child: Container(
+          //                                                 padding:
+          //                                                     EdgeInsets
+          //                                                         .all(5),
+          //                                                 decoration: BoxDecoration(
+          //                                                     borderRadius:
+          //                                                         BorderRadius
+          //                                                             .circular(
+          //                                                                 10),
+          //                                                     color:
+          //                                                         Constanst
+          //                                                             .grey),
+          //                                                 child: Row(
+          //                                                   children: [
+          //                                                     Icon(
+          //                                                       Icons
+          //                                                           .logout_rounded,
+          //                                                       color: Colors
+          //                                                           .black,
+          //                                                       size: 14,
+          //                                                     ),
+          //                                                     Flexible(
+          //                                                       child:
+          //                                                           Padding(
+          //                                                         padding: EdgeInsets.only(
+          //                                                             left:
+          //                                                                 8),
+          //                                                         child: longLatAbsenKeluar ==
+          //                                                                 ""
+          //                                                             ? Text(
+          //                                                                 "",
+          //                                                                 style: TextStyle(
+          //                                                                   color: Colors.black,
+          //                                                                   fontSize: 10,
+          //                                                                 ))
+          //                                                             : Text(
+          //                                                                 jamKeluar,
+          //                                                                 style: TextStyle(
+          //                                                                   color: Colors.black,
+          //                                                                   fontSize: 10,
+          //                                                                 ),
+          //                                                               ),
+          //                                                       ),
+          //                                                     )
+          //                                                   ],
+          //                                                 ),
+          //                                               ),
+          //                                             ),
+          //                                       // Expanded(
+          //                                       //   flex: 10,
+          //                                       //   child: Padding(
+          //                                       //     padding:
+          //                                       //         const EdgeInsets.only(
+          //                                       //             top: 4),
+          //                                       //     child: Icon(
+          //                                       //       Icons
+          //                                       //           .arrow_forward_ios_rounded,
+          //                                       //       size: 14,
+          //                                       //     ),
+          //                                       //   ),
+          //                                       // ),
+          //                                     ],
+          //                                   )
+          //                                 : Row(
+          //                                     crossAxisAlignment:
+          //                                         CrossAxisAlignment.start,
+          //                                     children: [
+          //                                       Expanded(
+          //                                         flex: 40,
+          //                                         child: Text(
+          //                                           "${Constanst.convertDate(tanggal ?? '')}",
+          //                                           style: TextStyle(
+          //                                               fontSize: 14),
+          //                                         ),
+          //                                       ),
+          //                                       Expanded(
+          //                                         flex: 60,
+          //                                         child: Row(
+          //                                           mainAxisAlignment:
+          //                                               MainAxisAlignment
+          //                                                   .center,
+          //                                           crossAxisAlignment:
+          //                                               CrossAxisAlignment
+          //                                                   .center,
+          //                                           children: [
+          //                                             Text(
+          //                                               "$note",
+          //                                               style: TextStyle(
+          //                                                   fontWeight:
+          //                                                       FontWeight
+          //                                                           .bold),
+          //                                             )
+          //                                           ],
+          //                                         ),
+          //                                       ),
+          //                                     ],
+          //                                   ),
+          //                             SizedBox(
+          //                               height: 8,
+          //                             ),
+          //                             index1 <=
+          //                                     controller.listLaporanFilter
+          //                                             .value[index]['data']
+          //                                             .toList()
+          //                                             .length -
+          //                                         2
+          //                                 ? Divider(
+          //                                     height: 3,
+          //                                     color: Constanst.grey,
+          //                                   )
+          //                                 : Container(),
+          //                           ],
+          //                         ),
+          //                       ),
+          //                     );
+          //                   }),
+          //                 ),
+          //               )
+          //             : Container(),
+          //       ],
+          //     ),
+          //   );
         });
-  }
-
-  Row aMethod(attenDate, signinTime, signNote, signoutTime, izin, lembur, cuti,
-      sakit, tugasLuar, dinasLuar) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              Constanst.convertDate5("$attenDate"),
-              style: GoogleFonts.inter(
-                  color: Constanst.fgPrimary,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500),
-            ),
-            Text(
-              // regType == 0
-              //     ? "Face Recognition"
-              //     : "Photo",
-              "Face Recognition",
-              style: GoogleFonts.inter(
-                  color: Constanst.fgSecondary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400),
-            ),
-          ],
-        ),
-        Container(
-          width: 2,
-          height: 20,
-          decoration: BoxDecoration(
-            color: Constanst.colorNeutralBgTertiary,
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        Row(
-          children: [
-            Icon(
-              Iconsax.login_1,
-              color: Constanst.color5,
-              size: 18,
-            ),
-            const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  signinTime == "00:00:00" || signinTime == "null"
-                      ? '$signNote'
-                      : '$signinTime',
-                  style: GoogleFonts.inter(
-                      color: Constanst.fgPrimary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  "Absen Masuk",
-                  style: GoogleFonts.inter(
-                      color: Constanst.fgSecondary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                ),
-              ],
-            ),
-          ],
-        ),
-        Container(
-          width: 2,
-          height: 20,
-          decoration: BoxDecoration(
-            color: Constanst.colorNeutralBgTertiary,
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        Row(
-          children: [
-            Icon(
-              Iconsax.logout_14,
-              color: Constanst.color4,
-              size: 18,
-            ),
-            const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  // signoutTime == "00:00:00" ||
-                  //         signoutTime == "null"
-                  //     ? ""
-                  //     : '$signoutTime',
-                  '$signoutTime',
-                  style: GoogleFonts.inter(
-                      color: Constanst.fgPrimary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  "Absen Keluar",
-                  style: GoogleFonts.inter(
-                      color: Constanst.fgSecondary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Row bMethod(attenDate, izin, lembur, cuti, sakit, tugasLuar, dinasLuar) {
-    var now = DateTime.now();
-    attenDate == null
-        ? attenDate = DateFormat('yyyy-MM-dd').format(now)
-        : attenDate = attenDate;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          Constanst.convertDate5("$attenDate"),
-          style: GoogleFonts.inter(
-              color: Constanst.fgPrimary,
-              fontSize: 14,
-              fontWeight: FontWeight.w500),
-        ),
-        Container(
-          width: 2,
-          height: 20,
-          decoration: BoxDecoration(
-            color: Constanst.colorNeutralBgTertiary,
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        Text(
-          izin ??
-              (lembur ??
-                  (cuti ??
-                      (sakit ??
-                          (tugasLuar ??
-                              (dinasLuar ?? "Belum Absen / Alpha"))))),
-          style: GoogleFonts.inter(
-              color: Constanst.fgPrimary,
-              fontSize: 14,
-              fontWeight: FontWeight.w500),
-        )
-      ],
-    );
   }
 
   Widget listAbsensiKaryawanBelumAbsen() {

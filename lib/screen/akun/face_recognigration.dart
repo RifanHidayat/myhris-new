@@ -17,7 +17,7 @@ import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 
 class FaceRecognition extends StatelessWidget {
-  final controller = Get.put(SettingController());
+  final controller = Get.find<SettingController>();
 
   final list = [
     {
@@ -39,7 +39,7 @@ class FaceRecognition extends StatelessWidget {
           "Fitur ini melakukan scan untuk mengenali data wajah tersimpan, dan tidak ada  gambar yang disimpan dalam memori internal."
     },
   ];
-  final AbsenController absenController = Get.find<AbsenController>(tag: 'absen controller');
+  final AbsenController absenController = Get.find<AbsenController>();
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +88,7 @@ class FaceRecognition extends StatelessWidget {
             Get.back();
             return true;
           },
-          child: SizedBox(
+          child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: SingleChildScrollView(

@@ -1,3 +1,4 @@
+import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +9,7 @@ import 'package:siscom_operasional/controller/dashboard_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/screen/absen/camera_view.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_absen.dart';
-import 'package:siscom_operasional/screen/absen/pengajuan%20absen.dart';
+import 'package:siscom_operasional/screen/absen/pengajuan_absen.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
@@ -29,7 +30,7 @@ class HistoryAbsen extends StatefulWidget {
 }
 
 class _HistoryAbsenState extends State<HistoryAbsen> {
-  var controller = Get.find<AbsenController>(tag: 'absen controller');
+  var controller = Get.find<AbsenController>();
   var controllerGlobal = Get.find<GlobalController>();
   final dashboardController = Get.put(DashboardController());
 
@@ -43,6 +44,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
   }
 
   Future<void> refreshData() async {
+    controller.dataPengajuanAbsensi();
     await Future.delayed(const Duration(seconds: 2));
     controller.onReady();
   }
@@ -116,55 +118,78 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
           },
           child: SizedBox(
             height: MediaQuery.of(context).size.height,
-            child: Column(
-              children: [
-                Obx(
-                  () => Expanded(
-                    child: SizedBox(
-                      height: double.maxFinite,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          dashboardController.isVisibleFloating.value == false
-                              ? Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text("Absensi",
-                                      style: GoogleFonts.inter(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w500)),
-                                )
-                              : TabBar(
-                                  indicatorColor: Constanst.colorPrimary,
-                                  labelColor: Constanst.colorPrimary,
-                                  unselectedLabelColor: Constanst.fgSecondary,
-                                  indicatorWeight: 4.0,
-                                  labelPadding:
-                                      const EdgeInsets.fromLTRB(0, 14, 0, 14),
-                                  indicatorSize: TabBarIndicatorSize.label,
-                                  physics: const BouncingScrollPhysics(),
-                                  tabs: [
-                                    Text("Absensi",
-                                        style: GoogleFonts.inter(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.w500)),
-                                    Text("Pengajuan",
-                                        style: GoogleFonts.inter(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.w500)),
-                                  ],
-                                ),
-                          Divider(
-                            thickness: 1,
-                            height: 0,
-                            color: Constanst.fgBorder,
+            child: Obx(
+              () => SizedBox(
+                height: double.maxFinite,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    dashboardController.showAbsen.value == false
+                        ? Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text("Absensi",
+                                style: GoogleFonts.inter(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500)),
+                          )
+                        : TabBar(
+                            indicatorColor: Constanst.colorPrimary,
+                            labelColor: Constanst.colorPrimary,
+                            unselectedLabelColor: Constanst.fgSecondary,
+                            indicatorWeight: 4.0,
+                            labelPadding:
+                                const EdgeInsets.fromLTRB(0, 14, 0, 14),
+                            indicatorSize: TabBarIndicatorSize.label,
+                            physics: const BouncingScrollPhysics(),
+                            tabs: [
+                              Text("Absensi",
+                                  style: GoogleFonts.inter(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w500)),
+                              Text("Pengajuan",
+                                  style: GoogleFonts.inter(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w500)),
+                            ],
                           ),
-                          Expanded(
-                              child: SizedBox(
-                            height: double.maxFinite,
-                            child: dashboardController
-                                        .isVisibleFloating.value ==
-                                    false
-                                ? Padding(
+                    Divider(
+                      thickness: 1,
+                      height: 0,
+                      color: Constanst.fgBorder,
+                    ),
+                    Expanded(
+                        child: SizedBox(
+                      height: double.maxFinite,
+                      child: dashboardController.showAbsen.value == false
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 16, right: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 12),
+                                  filterData(),
+                                  const SizedBox(height: 8),
+                                  UtilsAlert.infoContainer(
+                                      "${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}"),
+                                  const SizedBox(height: 12),
+                                  Flexible(
+                                      child: RefreshIndicator(
+                                    onRefresh: refreshData,
+                                    child: controller.historyAbsen.value.isEmpty
+                                        ? Center(
+                                            child:
+                                                Text(controller.loading.value),
+                                          )
+                                        : listAbsen(),
+                                  ))
+                                ],
+                              ),
+                            )
+                          : TabBarView(
+                              physics: const BouncingScrollPhysics(),
+                              children: [
+                                  Padding(
                                     padding: const EdgeInsets.only(
                                         left: 16, right: 16),
                                     child: Column(
@@ -175,7 +200,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                         filterData(),
                                         const SizedBox(height: 8),
                                         UtilsAlert.infoContainer(
-                                            "${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}"),
+                                            "${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${controller.lastDate.value} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}"),
                                         const SizedBox(height: 12),
                                         Flexible(
                                             child: RefreshIndicator(
@@ -184,366 +209,65 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                   .historyAbsen.value.isEmpty
                                               ? Center(
                                                   child: Text(
-                                                    controller.loading.value,
-                                                    textAlign: TextAlign.center,
-                                                    style: GoogleFonts.inter(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 16,
-                                                      height: 1.4,
-                                                      color:
-                                                          Constanst.fgPrimary,
-                                                    ),
-                                                  ),
+                                                      controller.loading.value),
                                                 )
                                               : listAbsen(),
                                         ))
                                       ],
                                     ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 16, right: 16),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 12),
+                                        // controller.bulanDanTahunNowPengajuan
+                                        //             .value ==
+                                        //         ""
+                                        //     ? const SizedBox()
+                                        //     : pickDateBulanDanTahun(),
+                                        const SizedBox(height: 16),
+                                        Flexible(
+                                            child: Obx(
+                                          () => RefreshIndicator(
+                                              onRefresh: refreshData,
+                                              color: Constanst.colorPrimary,
+                                              child: controller
+                                                      .pengajuanAbsensi.isEmpty
+                                                  ? Center(
+                                                      child: Text(controller
+                                                          .loadingPengajuan
+                                                          .value
+                                                          .toString()),
+                                                    )
+                                                  : listPengajuan()),
+                                        ))
+                                      ],
+                                    ),
                                   )
-                                : TabBarView(
-                                    physics: const BouncingScrollPhysics(),
-                                    children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 16, right: 16),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const SizedBox(height: 12),
-                                              filterData(),
-                                              const SizedBox(height: 8),
-                                              UtilsAlert.infoContainer(
-                                                  "${AppData.informasiUser![0].beginPayroll} ${controller.beginPayroll.value} sd ${AppData.informasiUser![0].endPayroll} ${controller.endPayroll.value} ${controller.tahunSelectedSearchHistory.value}"),
-                                              const SizedBox(height: 12),
-                                              // Row(
-                                              //   children: [
-                                              //     Expanded(
-                                              //       flex: 9,
-                                              //       child: Container(
-                                              //         decoration: BoxDecoration(
-                                              //           color: Constanst.infoLight1,
-                                              //           border: Border.all(
-                                              //             color: Constanst
-                                              //                 .colorStateInfoBorder,
-                                              //           ),
-                                              //           borderRadius:
-                                              //               const BorderRadius.all(
-                                              //             Radius.circular(8.0),
-                                              //           ),
-                                              //         ),
-                                              //         child: Padding(
-                                              //           padding:
-                                              //               const EdgeInsets.all(
-                                              //                   8.0),
-                                              //           child: Column(
-                                              //             crossAxisAlignment:
-                                              //                 CrossAxisAlignment
-                                              //                     .start,
-                                              //             children: [
-                                              //               Text(
-                                              //                 "15",
-                                              //                 style: GoogleFonts.inter(
-                                              //                     fontWeight:
-                                              //                         FontWeight
-                                              //                             .w500,
-                                              //                     fontSize: 16,
-                                              //                     color: Constanst
-                                              //                         .fgPrimary),
-                                              //               ),
-                                              //               const SizedBox(
-                                              //                   height: 4),
-                                              //               Text(
-                                              //                 "Masuk Kerja",
-                                              //                 style: GoogleFonts.inter(
-                                              //                     fontWeight:
-                                              //                         FontWeight
-                                              //                             .w400,
-                                              //                     fontSize: 12,
-                                              //                     color: Constanst
-                                              //                         .fgSecondary),
-                                              //               ),
-                                              //             ],
-                                              //           ),
-                                              //         ),
-                                              //       ),
-                                              //     ),
-                                              //     const SizedBox(width: 8),
-                                              //     Expanded(
-                                              //       flex: 9,
-                                              //       child: Container(
-                                              //         decoration: BoxDecoration(
-                                              //           color: Constanst.infoLight1,
-                                              //           border: Border.all(
-                                              //             color: Constanst
-                                              //                 .colorStateInfoBorder,
-                                              //           ),
-                                              //           borderRadius:
-                                              //               const BorderRadius.all(
-                                              //             Radius.circular(8.0),
-                                              //           ),
-                                              //         ),
-                                              //         child: Padding(
-                                              //           padding:
-                                              //               const EdgeInsets.all(
-                                              //                   8.0),
-                                              //           child: Column(
-                                              //             crossAxisAlignment:
-                                              //                 CrossAxisAlignment
-                                              //                     .start,
-                                              //             children: [
-                                              //               Text(
-                                              //                 "0",
-                                              //                 style: GoogleFonts.inter(
-                                              //                     fontWeight:
-                                              //                         FontWeight
-                                              //                             .w500,
-                                              //                     fontSize: 16,
-                                              //                     color: Constanst
-                                              //                         .fgPrimary),
-                                              //               ),
-                                              //               const SizedBox(
-                                              //                   height: 4),
-                                              //               Text(
-                                              //                 "Terlambat",
-                                              //                 style: GoogleFonts.inter(
-                                              //                     fontWeight:
-                                              //                         FontWeight
-                                              //                             .w400,
-                                              //                     fontSize: 12,
-                                              //                     color: Constanst
-                                              //                         .fgSecondary),
-                                              //               ),
-                                              //             ],
-                                              //           ),
-                                              //         ),
-                                              //       ),
-                                              //     ),
-                                              //     const SizedBox(width: 8),
-                                              //     Expanded(
-                                              //       flex: 10,
-                                              //       child: Container(
-                                              //         decoration: BoxDecoration(
-                                              //           color: Constanst.infoLight1,
-                                              //           border: Border.all(
-                                              //             color: Constanst
-                                              //                 .colorStateInfoBorder,
-                                              //           ),
-                                              //           borderRadius:
-                                              //               const BorderRadius.all(
-                                              //             Radius.circular(8.0),
-                                              //           ),
-                                              //         ),
-                                              //         child: Padding(
-                                              //           padding:
-                                              //               const EdgeInsets.all(
-                                              //                   8.0),
-                                              //           child: Column(
-                                              //             crossAxisAlignment:
-                                              //                 CrossAxisAlignment
-                                              //                     .start,
-                                              //             children: [
-                                              //               Text(
-                                              //                 "5",
-                                              //                 style: GoogleFonts.inter(
-                                              //                     fontWeight:
-                                              //                         FontWeight
-                                              //                             .w500,
-                                              //                     fontSize: 16,
-                                              //                     color: Constanst
-                                              //                         .fgPrimary),
-                                              //               ),
-                                              //               const SizedBox(
-                                              //                   height: 4),
-                                              //               Text(
-                                              //                 "Tidak Absen Keluar",
-                                              //                 style: GoogleFonts.inter(
-                                              //                     fontWeight:
-                                              //                         FontWeight
-                                              //                             .w400,
-                                              //                     fontSize: 12,
-                                              //                     color: Constanst
-                                              //                         .fgSecondary),
-                                              //               ),
-                                              //             ],
-                                              //           ),
-                                              //         ),
-                                              //       ),
-                                              //     ),
-                                              //   ],
-                                              // ),
-                                              // const SizedBox(height: 16),
-                                              // controller.bulanDanTahunNow.value == ""
-                                              //     ? const SizedBox()
-                                              //     : pickDate(),
-                                              // const SizedBox(height: 16),
-                                              // Row(
-                                              //   mainAxisAlignment:
-                                              //       MainAxisAlignment.start,
-                                              //   crossAxisAlignment:
-                                              //       CrossAxisAlignment.start,
-                                              //   children: [
-                                              //     Expanded(
-                                              //       flex: 85,
-                                              //       child: Padding(
-                                              //         padding: const EdgeInsets.only(
-                                              //             top: 8),
-                                              //         child: Text(
-                                              //           "Riwayat Absensi",
-                                              //           textAlign: TextAliginitn.left,
-                                              //           style: GoogleFonts.inter(
-                                              //               fontWeight:
-                                              //                   FontWeight.bold,
-                                              //               fontSize:
-                                              //                   Constanst.sizeTitle),
-                                              //         ),
-                                              //       ),
-                                              //     ),
-                                              //   ],
-                                              // ),
-                                              // SizedBox(height: 8),
-                                              Flexible(
-                                                  child: RefreshIndicator(
-                                                onRefresh: refreshData,
-                                                child: controller.historyAbsen
-                                                        .value.isEmpty
-                                                    ? Center(
-                                                        child: Text(
-                                                          controller
-                                                              .loading.value,
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style:
-                                                              GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontSize: 16,
-                                                            height: 1.4,
-                                                            color: Constanst
-                                                                .fgPrimary,
-                                                          ),
-                                                        ),
-                                                      )
-                                                    : listAbsen(),
-                                              ))
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 16, right: 16),
-                                          child: Column(
-                                            children: [
-                                              const SizedBox(height: 12),
-                                              // controller.bulanDanTahunNowPengajuan
-                                              //             .value ==
-                                              //         ""
-                                              //     ? const SizedBox()
-                                              //     : pickDateBulanDanTahun(),
-                                              const SizedBox(height: 16),
-                                              Flexible(
-                                                  child: Obx(
-                                                () => RefreshIndicator(
-                                                    onRefresh: refreshData,
-                                                    color:
-                                                        Constanst.colorPrimary,
-                                                    child: controller
-                                                            .pengajuanAbsensi
-                                                            .isEmpty
-                                                        ? Center(
-                                                            child: Text(controller
-                                                                .loadingPengajuan
-                                                                .value
-                                                                .toString()),
-                                                          )
-                                                        : listPengajuan()),
-                                              ))
-                                            ],
-                                          ),
-                                        )
-                                      ]),
-                          ))
-                        ],
-                      ),
-                    ),
-                  ),
+                                ]),
+                    ))
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        // floatingActionButton: Obx(
-        //   () => controller.showButtonlaporan.value == false
-        //       ? SizedBox()
-        //       : SpeedDial(
-        //           icon: Iconsax.more,
-        //           activeIcon: Icons.close,
-        //           backgroundColor: Constanst.colorPrimary,
-        //           spacing: 3,
-        //           childPadding: const EdgeInsets.all(5),
-        //           spaceBetweenChildren: 4,
-        //           elevation: 8.0,
-        //           animationCurve: Curves.elasticInOut,
-        //           animationDuration: const Duration(milliseconds: 200),
-        //           children: [
-        //             SpeedDialChild(
-        //                 child: Icon(Iconsax.document_text),
-        //                 backgroundColor: Color(0xff2F80ED),
-        //                 foregroundColor: Colors.white,
-        //                 label: 'Pengajuan Absen',
-        //                 onTap: () {
-        //                   Get.to(pengajuanAbsen());
-        //                 }),
-        //             SpeedDialChild(
-        //                 child: Icon(Iconsax.document_text),
-        //                 backgroundColor: Color(0xff2F80ED),
-        //                 foregroundColor: Colors.white,
-        //                 label: 'Laporan Absensi',
-        //                 onTap: () {
-        //                   Get.to(LaporanAbsen(
-        //                     dataForm: "",
-        //                   ));
-        //                 }),
-        //             SpeedDialChild(
-        //                 child: Icon(Iconsax.minus_cirlce),
-        //                 backgroundColor: Color(0xffFF463D),
-        //                 foregroundColor: Colors.white,
-        //                 label: 'Absen Terlambat',
-        //                 onTap: () {
-        //                   Get.to(LaporanAbsenTelat(
-        //                     dataForm: "",
-        //                   ));
-        //                 }),
-        //             SpeedDialChild(
-        //                 child: Icon(Iconsax.watch),
-        //                 backgroundColor: Color(0xffF2AA0D),
-        //                 foregroundColor: Colors.white,
-        //                 label: 'Belum Absen',
-        //                 onTap: () {
-        //                   Get.to(LaporanBelumAbsen(
-        //                     dataForm: "",
-        //                   ));
-        //                 }),
-        //           ],
-        //         ),
-        // )
-        floatingActionButton:
-            dashboardController.isVisibleFloating.value == false
-                ? Container()
-                : FloatingActionButton(
-                    backgroundColor: Constanst.colorPrimary,
-                    onPressed: () {
-                      print(
-                          'tipe absen user ${AppData.informasiUser![0].tipeAbsen}');
-                      Get.to(const pengajuanAbsen());
-                    },
-                    child: const Icon(
-                      Iconsax.add,
-                      size: 34,
-                    ),
-                  ),
+        floatingActionButton: 
+        dashboardController.showAbsen.value == false
+        ? SizedBox()
+        :
+        FloatingActionButton(
+          backgroundColor: Constanst.colorPrimary,
+          onPressed: () {
+            Get.to(const pengajuanAbsen());
+          },
+          child: const Icon(
+            Iconsax.add,
+            size: 34,
+          ),
+        ),
       ),
     );
   }
@@ -987,388 +711,393 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
   }
 
   Widget listPengajuan() {
-    return ListView.builder(
-        physics: controller.pengajuanAbsensi.value.length <= 10
-            ? const AlwaysScrollableScrollPhysics()
-            : const BouncingScrollPhysics(),
-        itemCount: controller.pengajuanAbsensi.value.length,
-        itemBuilder: (context, index) {
-          var data = controller.pengajuanAbsensi[index];
-          var nomorAjuan =
-              controller.pengajuanAbsensi.value[index]['nomor_ajuan'];
+    return Obx(() {
+      return ListView.builder(
+          physics: controller.pengajuanAbsensi.value.length <= 10
+              ? const AlwaysScrollableScrollPhysics()
+              : const BouncingScrollPhysics(),
+          itemCount: controller.pengajuanAbsensi.value.length,
+          itemBuilder: (context, index) {
+            var data = controller.pengajuanAbsensi[index];
+            var nomorAjuan =
+                controller.pengajuanAbsensi.value[index]['nomor_ajuan'];
 
-          var namaTypeAjuan = controller.pengajuanAbsensi.value[index]['name'];
-          // Parse the input date string
-          DateTime atten_date =
-              DateFormat('yyyy-MM-dd').parse(data['atten_date']);
-          // Format the date using the Indonesian month format
-          String formatAttenDate =
-              DateFormat('dd MMM yyyy', 'id').format(atten_date);
+            var namaTypeAjuan =
+                controller.pengajuanAbsensi.value[index]['name'];
+            // Parse the input date string
+            DateTime atten_date =
+                DateFormat('yyyy-MM-dd').parse(data['atten_date']);
+            DateTime tgl_ajuan =
+                DateFormat('yyyy-MM-dd').parse(data['tgl_ajuan']);
+            String formatDateAjuan =
+                DateFormat('dd MMM yyyy', 'id').format(tgl_ajuan);
+            // Format the date using the Indonesian month format
+            String formatAttenDate =
+                DateFormat('dd MMM yyyy', 'id').format(atten_date);
 
-          return Container(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: InkWell(
-              customBorder: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12))),
-              onTap: () {
-                showBottomDetailPengajuan(context, index);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(width: 1, color: Constanst.fgBorder)),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextLabell(
-                        text: formatAttenDate,
-                        weight: FontWeight.w500,
-                        size: 16.0,
-                        color: Constanst.fgPrimary,
-                      ),
-                      const SizedBox(height: 4),
-                      TextLabell(
-                        text: data['nomor_ajuan'],
-                        weight: FontWeight.w400,
-                        size: 16.0,
-                        color: Constanst.fgSecondary,
-                      ),
-                      const SizedBox(height: 4),
-                      // TextLabell(
-                      //   text:
-                      //       "Absen Masuk Tanggal $formatAttenDate, ${data['dari_jam']}",
-                      //   color: Constanst.fgSecondary,
-                      //   size: 13.0,
-                      //   weight: FontWeight.w400,
-                      // ),
-                      // TextLabell(
-                      //   text:
-                      //       "Absen Keluar Tanggal $formatAttenDate, ${data['sampai_jam']}",
-                      //   color: Constanst.fgSecondary,
-                      //   size: 13.0,
-                      //   weight: FontWeight.w400,
-                      // ),
-                      //  TextLabell(
-                      //   text:
-                      //       "Istirahat Masuk Tanggal $formatAttenDate, ${data['breakin_time']}",
-                      //   color: Constanst.fgSecondary,
-                      //   size: 13.0,
-                      //   weight: FontWeight.w400,
-                      // ),
-                      //  TextLabell(
-                      //   text:
-                      //       "Istirahat Keluar Tanggal $formatAttenDate, ${data['breakout_time']}",
-                      //   color: Constanst.fgSecondary,
-                      //   size: 13.0,
-                      //   weight: FontWeight.w400,
-                      // ),
-                      const SizedBox(height: 12),
-                      Divider(
-                        height: 0,
-                        thickness: 1,
-                        color: Constanst.fgBorder,
-                      ),
-                      const SizedBox(height: 8),
-                      controllerGlobal.valuePolaPersetujuan.value == "1" ||
-                              controllerGlobal.valuePolaPersetujuan.value == 1
-                          ? Container(
-                              child: data['status'].toString().toLowerCase() ==
-                                      "approve".toLowerCase()
-                                  ? Row(
-                                      children: [
-                                        const Icon(
-                                          Iconsax.tick_circle,
-                                          size: 20,
-                                          color: Colors.green,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        TextLabell(
-                                          text:
-                                              "Approved by ${data['approve_by']}",
-                                          color: Constanst.fgPrimary,
-                                          weight: FontWeight.w500,
-                                          size: 14,
-                                        )
-                                      ],
-                                    )
-                                  : data['status'].toString().toLowerCase() ==
-                                          "rejected".toLowerCase()
-                                      ? Row(
-                                          children: [
-                                            const Icon(
-                                              Iconsax.close_circle,
-                                              size: 20,
-                                              color: Colors.red,
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    TextLabell(
-                                                      text:
-                                                          "Rejected by ${data['approve_by']}",
+            return Container(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: InkWell(
+                customBorder: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12))),
+                onTap: () {
+                  showBottomDetailPengajuan(context, index);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(width: 1, color: Constanst.fgBorder)),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextLabell(
+                          text: formatDateAjuan,
+                          weight: FontWeight.w500,
+                          size: 16.0,
+                          color: Constanst.fgPrimary,
+                        ),
+                        const SizedBox(height: 4),
+                        TextLabell(
+                          text: data['nomor_ajuan'],
+                          weight: FontWeight.w400,
+                          size: 16.0,
+                          color: Constanst.fgSecondary,
+                        ),
+                        const SizedBox(height: 4),
+                        TextLabell(
+                          text:
+                              "Absen Masuk Tanggal $formatAttenDate, ${data['dari_jam']}",
+                          color: Constanst.fgSecondary,
+                          size: 13.0,
+                          weight: FontWeight.w400,
+                        ),
+                        TextLabell(
+                          text:
+                              "Absen Keluar Tanggal $formatAttenDate, ${data['sampai_jam']}",
+                          color: Constanst.fgSecondary,
+                          size: 13.0,
+                          weight: FontWeight.w400,
+                        ),
+                        const SizedBox(height: 12),
+                        Divider(
+                          height: 0,
+                          thickness: 1,
+                          color: Constanst.fgBorder,
+                        ),
+                        const SizedBox(height: 8),
+                        controllerGlobal.valuePolaPersetujuan.value == "1" ||
+                                controllerGlobal.valuePolaPersetujuan.value == 1
+                            ? Container(
+                                child: data['status']
+                                            .toString()
+                                            .toLowerCase() ==
+                                        "approve".toLowerCase()
+                                    ? Row(
+                                        children: [
+                                          const Icon(
+                                            Iconsax.tick_circle,
+                                            size: 20,
+                                            color: Colors.green,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          TextLabell(
+                                            text:
+                                                "Approved by ${data['approve_by']}",
+                                            color: Constanst.fgPrimary,
+                                            weight: FontWeight.w500,
+                                            size: 14,
+                                          )
+                                        ],
+                                      )
+                                    : data['status'].toString().toLowerCase() ==
+                                            "rejected".toLowerCase()
+                                        ? Row(
+                                            children: [
+                                              const Icon(
+                                                Iconsax.close_circle,
+                                                size: 20,
+                                                color: Colors.red,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      TextLabell(
+                                                        text:
+                                                            "Rejected by ${data['approve_by']}",
+                                                        color:
+                                                            Constanst.fgPrimary,
+                                                        weight: FontWeight.w500,
+                                                        size: 14,
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      TextLabell(
+                                                        text:
+                                                            "${data['alasan_reject']}",
+                                                        color: Constanst
+                                                            .fgSecondary,
+                                                        weight: FontWeight.w400,
+                                                        size: 14,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          )
+                                        : Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Icon(
+                                                Iconsax.timer,
+                                                size: 20,
+                                                color: Constanst.warning,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8.0),
+                                                    child: TextLabell(
+                                                      text: "Pending Approval",
                                                       color:
                                                           Constanst.fgPrimary,
                                                       weight: FontWeight.w500,
                                                       size: 14,
                                                     ),
-                                                    const SizedBox(height: 4),
-                                                    TextLabell(
-                                                      text:
-                                                          "${data['alasan_reject']}",
-                                                      color:
-                                                          Constanst.fgSecondary,
-                                                      weight: FontWeight.w400,
-                                                      size: 14,
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      print("${namaTypeAjuan}");
+                                                      var dataEmployee = {
+                                                        'nameType': 'Absensi',
+                                                        'nomor_ajuan':
+                                                            '$nomorAjuan',
+                                                      };
+                                                      controllerGlobal
+                                                          .showDataPilihAtasan(
+                                                              dataEmployee);
+                                                    },
+                                                    customBorder:
+                                                        const RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius.circular(
+                                                                        100))),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(
+                                                          8.0, 4.0, 8.0, 4.0),
+                                                      child: TextLabell(
+                                                        text:
+                                                            "Konfirmasi via Whatsapp",
+                                                        color:
+                                                            Constanst.infoLight,
+                                                        weight: FontWeight.w400,
+                                                        size: 14,
+                                                      ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        )
-                                      : Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Icon(
-                                              Iconsax.timer,
-                                              size: 20,
-                                              color: Constanst.warning,
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8.0),
-                                                  child: TextLabell(
-                                                    text: "Pending Approval",
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                              )
+                            : Container(
+                                child: data['status']
+                                            .toString()
+                                            .toLowerCase() ==
+                                        "approve".toLowerCase()
+                                    ? Row(
+                                        children: [
+                                          Icon(
+                                            Iconsax.timer,
+                                            size: 20,
+                                            color: Constanst.warning,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              TextLabell(
+                                                text: "Pending Approval 2",
+                                                color: Constanst.fgPrimary,
+                                                weight: FontWeight.w500,
+                                                size: 14,
+                                              ),
+                                              TextLabell(
+                                                text:
+                                                    "Approved 1 by ${data['approve_by']}",
+                                                color: Constanst.fgPrimary,
+                                                weight: FontWeight.w500,
+                                                size: 14,
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                    : data['status'].toString().toLowerCase() ==
+                                            "approve2".toLowerCase()
+                                        ? Row(
+                                            children: [
+                                              const Icon(
+                                                Iconsax.tick_circle,
+                                                size: 20,
+                                                color: Colors.green,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Column(
+                                                children: [
+                                                  TextLabell(
+                                                    text:
+                                                        "Approved 2 by ${data['approve2_by']}",
                                                     color: Constanst.fgPrimary,
                                                     weight: FontWeight.w500,
                                                     size: 14,
                                                   ),
-                                                ),
-                                                InkWell(
-                                                  onTap: () {
-                                                    print("${namaTypeAjuan}");
-                                                    var dataEmployee = {
-                                                      'nameType': 'Absensi',
-                                                      'nomor_ajuan':
-                                                          '$nomorAjuan',
-                                                    };
-                                                    controllerGlobal
-                                                        .showDataPilihAtasan(
-                                                            dataEmployee);
-                                                  },
-                                                  customBorder:
-                                                      const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          100))),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(
-                                                        8.0, 4.0, 8.0, 4.0),
-                                                    child: TextLabell(
-                                                      text:
-                                                          "Konfirmasi via Whatsapp",
-                                                      color:
-                                                          Constanst.infoLight,
-                                                      weight: FontWeight.w400,
-                                                      size: 14,
-                                                    ),
+                                                ],
+                                              )
+                                            ],
+                                          )
+                                        : data['status']
+                                                    .toString()
+                                                    .toLowerCase() ==
+                                                "rejected".toLowerCase()
+                                            ? Row(
+                                                children: [
+                                                  const Icon(
+                                                    Iconsax.close_circle,
+                                                    size: 20,
+                                                    color: Colors.red,
                                                   ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                            )
-                          : Container(
-                              child: data['status'].toString().toLowerCase() ==
-                                      "approve".toLowerCase()
-                                  ? Row(
-                                      children: [
-                                        Icon(
-                                          Iconsax.timer,
-                                          size: 20,
-                                          color: Constanst.warning,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            TextLabell(
-                                              text: "Pending Approval 2",
-                                              color: Constanst.fgPrimary,
-                                              weight: FontWeight.w500,
-                                              size: 14,
-                                            ),
-                                            TextLabell(
-                                              text:
-                                                  "Approved 1 by ${data['approve_by']}",
-                                              color: Constanst.fgPrimary,
-                                              weight: FontWeight.w500,
-                                              size: 14,
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    )
-                                  : data['status'].toString().toLowerCase() ==
-                                          "approve2".toLowerCase()
-                                      ? Row(
-                                          children: [
-                                            const Icon(
-                                              Iconsax.tick_circle,
-                                              size: 20,
-                                              color: Colors.green,
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Column(
-                                              children: [
-                                                TextLabell(
-                                                  text:
-                                                      "Approved 2 by ${data['approve_by']}",
-                                                  color: Constanst.fgPrimary,
-                                                  weight: FontWeight.w500,
-                                                  size: 12,
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        )
-                                      : data['status']
-                                                  .toString()
-                                                  .toLowerCase() ==
-                                              "rejected".toLowerCase()
-                                          ? Row(
-                                              children: [
-                                                const Icon(
-                                                  Iconsax.close_circle,
-                                                  size: 20,
-                                                  color: Colors.red,
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        TextLabell(
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          TextLabell(
+                                                            text:
+                                                                "Rejected by ${data['approve2_by'] == '' || data['approve2_by'] == null ? data['approve_by'] : data['approve2_by'] == ''}",
+                                                            color: Constanst
+                                                                .fgPrimary,
+                                                            weight:
+                                                                FontWeight.w500,
+                                                            size: 14,
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 4),
+                                                          TextLabell(
+                                                            text:
+                                                                "${data['alasan_reject']}",
+                                                            color: Constanst
+                                                                .fgSecondary,
+                                                            weight:
+                                                                FontWeight.w400,
+                                                            size: 14,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              )
+                                            : Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Icon(
+                                                    Iconsax.timer,
+                                                    size: 20,
+                                                    color: Constanst.warning,
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                left: 8.0),
+                                                        child: TextLabell(
                                                           text:
-                                                              "Rejected by ${data['approve_by']}",
+                                                              "Pending Approval",
                                                           color: Constanst
                                                               .fgPrimary,
                                                           weight:
                                                               FontWeight.w500,
                                                           size: 14,
                                                         ),
-                                                        const SizedBox(
-                                                            height: 4),
-                                                        TextLabell(
-                                                          text:
-                                                              "${data['alasan_reject']}",
-                                                          color: Constanst
-                                                              .fgSecondary,
-                                                          weight:
-                                                              FontWeight.w400,
-                                                          size: 14,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            )
-                                          : Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Icon(
-                                                  Iconsax.timer,
-                                                  size: 20,
-                                                  color: Constanst.warning,
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 8.0),
-                                                      child: TextLabell(
-                                                        text:
-                                                            "Pending Approval",
-                                                        color:
-                                                            Constanst.fgPrimary,
-                                                        weight: FontWeight.w500,
-                                                        size: 14,
                                                       ),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        print(
-                                                            "${namaTypeAjuan}");
-                                                        var dataEmployee = {
-                                                          'nameType': 'Absensi',
-                                                          'nomor_ajuan':
-                                                              '$nomorAjuan',
-                                                        };
-                                                        controllerGlobal
-                                                            .showDataPilihAtasan(
-                                                                dataEmployee);
-                                                      },
-                                                      customBorder:
-                                                          const RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          100))),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .fromLTRB(8.0,
-                                                                4.0, 8.0, 4.0),
-                                                        child: TextLabell(
-                                                          text:
-                                                              "Konfirmasi via Whatsapp",
-                                                          color: Constanst
-                                                              .infoLight,
-                                                          weight:
-                                                              FontWeight.w400,
-                                                          size: 14,
+                                                      InkWell(
+                                                        onTap: () {
+                                                          print(
+                                                              "${namaTypeAjuan}");
+                                                          var dataEmployee = {
+                                                            'nameType':
+                                                                'Absensi',
+                                                            'nomor_ajuan':
+                                                                '$nomorAjuan',
+                                                          };
+                                                          controllerGlobal
+                                                              .showDataPilihAtasan(
+                                                                  dataEmployee);
+                                                        },
+                                                        customBorder: const RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius.circular(
+                                                                        100))),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .fromLTRB(
+                                                                  8.0,
+                                                                  4.0,
+                                                                  8.0,
+                                                                  4.0),
+                                                          child: TextLabell(
+                                                            text:
+                                                                "Konfirmasi via Whatsapp",
+                                                            color: Constanst
+                                                                .infoLight,
+                                                            weight:
+                                                                FontWeight.w400,
+                                                            size: 14,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                            )
-                    ],
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                              )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        });
+            );
+          });
+    });
   }
 
   Widget tampilan1(index, index2) {
@@ -1706,8 +1435,138 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
   }
 
   Widget tampilan2(AbsenModel index) {
+    var startTime;
+    var endTime;
+    var startDate;
+    var endDate;
+    var now = DateTime.now();
+
+    TimeOfDay waktu1 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[0]),
+        minute: int.parse(
+            AppData.informasiUser![0].startTime.toString().split(':')[1]));
+
+    TimeOfDay waktu2 = TimeOfDay(
+        hour: int.parse(
+            AppData.informasiUser![0].endTime.toString().split(':')[0]),
+        minute: int.parse(AppData.informasiUser![0].endTime
+            .toString()
+            .split(':')[1])); // Waktu kedua
+    print('ini waktu 1${AppData.informasiUser![0].startTime}');
+    int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
+    int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+
+    //alur normal
+    if (totalMinutes1 < totalMinutes2) {
+// Menggabungkan tanggal hari ini dengan waktu dari string
+      print('${index.atten_date} ${AppData.informasiUser![0].startTime}:00');
+      // startTime = DateTime.parse(
+      //     '${index.atten_date} ${AppData.informasiUser![0].startTime}:00');
+      // endTime = DateTime.parse(
+      //     '${index.atten_date} ${AppData.informasiUser![0].endTime}:00');
+
+      //alur beda hari
+    } else if (totalMinutes1 > totalMinutes2) {
+      var waktu3 =
+          TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+      int totalMinutes3 = waktu3.hour * 60 + waktu3.minute;
+
+      if (totalMinutes2 > totalMinutes3) {
+        print("masuk sini view las user");
+        var today;
+        if (index.atten_date!.isNotEmpty) {
+          today = DateTime.parse(index.atten_date!);
+        }
+        var yesterday = today.add(const Duration(days: 1));
+        startDate = DateFormat('yyyy-MM-dd').format(yesterday);
+        endDate = DateFormat('yyyy-MM-dd').format(today);
+        startTime = DateTime.parse(
+            '$startDate ${AppData.informasiUser![0].startTime}:00');
+        endTime =
+            DateTime.parse('$endDate ${AppData.informasiUser![0].endTime}:00');
+        print('ini  bener gakl lu${startTime.isAfter(today)}');
+      } else {
+        var today;
+        print('masa lu kosong sih ${index.atten_date}');
+        if (index.atten_date!.isNotEmpty) {
+          today = DateTime.parse(index.atten_date!);
+        } else {
+          today = DateTime.now();
+        }
+        var yesterday = today.add(const Duration(days: 1));
+
+        startDate = DateFormat('yyyy-MM-dd').format(today);
+        endDate = DateFormat('yyyy-MM-dd').format(yesterday);
+
+        startTime = DateTime.parse(
+            '$startDate ${AppData.informasiUser![0].startTime}:00'); // Waktu kemarin
+        endTime =
+            DateTime.parse('$endDate ${AppData.informasiUser![0].endTime}:00');
+        print(
+            'ini  bener gakl lu${startTime.isBefore(today)}'); // Waktu hari ini
+        print('ini  bener gakl lu${startTime}'); // Waktu hari ini
+        print('ini  bener gakl lu${endTime}'); // Waktu hari ini
+      }
+    } else {
+      startTime = AppData.informasiUser![0].startTime;
+      endTime = AppData.informasiUser![0].endTime;
+
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      print(
+          "Waktu 1 sama dengan waktu 2 new ${totalMinutes1}  ${totalMinutes2}");
+    }
+    var tipeAbsen = AppData.informasiUser![0].tipeAbsen;
+    var tipeAlpha = AppData.informasiUser![0].tipeAlpha;
+    var list = tipeAlpha.toString().split(',').map(int.parse).toList();
+    print('ini tampilan 2 $tipeAbsen $tipeAlpha $list');
+    var masuk = list[0];
+    var keluar = list[1];
+    var istirahatMasuk = list[2];
+    var istirahatKeluar = list[3];
     var jamMasuk = index.signin_time ?? '';
     var jamKeluar = index.signout_time ?? '';
+    print(jamKeluar.isEmpty);
+    print(keluar);
+    var jamIstirahatMasuk = index.breakinTime ?? '';
+    var jamIstirahatKeluar = index.breakoutTime ?? '';
+    if (tipeAbsen == '2') {
+      if ((keluar == 1 && jamKeluar == '00:00:00') ||
+          (masuk == 1 && jamMasuk == '00:00:00')) {
+        controller.tipeAlphaAbsen.value = 1;
+        if (jamMasuk == '00:00:00') {
+          controller.catatanAlpha.value = '/ Gak Absen Masuk';
+        } else {
+          controller.catatanAlpha.value = '/ Gak Absen Keluar';
+        }
+      } else {
+        controller.tipeAlphaAbsen.value = 0;
+      }
+    } else if (tipeAbsen == '3') {
+      print('gak mungkin gak kemari');
+      if ((keluar == 1 && jamKeluar == '00:00:00') ||
+          (masuk == 1 && jamMasuk == '00:00:00') ||
+          (jamIstirahatKeluar == '00:00:00' && istirahatKeluar == 1) ||
+          (jamIstirahatMasuk == '00:00:00' && istirahatMasuk == 1)) {
+        print('masa gak kesini');
+        controller.tipeAlphaAbsen.value = 1;
+        if (jamMasuk == '00:00:00') {
+          controller.catatanAlpha.value = '/ Gak Absen Masuk';
+        } else if (jamKeluar == '00:00:00') {
+          controller.catatanAlpha.value = '/ Gak Absen Keluar';
+        } else if (jamIstirahatKeluar == '00:00:00') {
+          controller.catatanAlpha.value = '/ Gak Absen Istirahat Keluar';
+        } else if (jamIstirahatMasuk == '00:00:00') {
+          controller.catatanAlpha.value = '/ Gak Absen Istirahat Masuk';
+        }
+      } else {
+        controller.tipeAlphaAbsen.value = 0;
+      }
+    }
+
+    print('ini tampil gak alpahnya ${controller.tipeAlphaAbsen.value}');
+
     var placeIn = index.place_in ?? '';
     var placeOut = index.place_out ?? '';
     var note = index.signin_note ?? '';
@@ -2084,7 +1943,8 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                           index.atten_date != "" || index.atten_date != null
                               ?
                               //tidak ada absen
-                              index.namaHariLibur != null
+                              controller.tipeAlphaAbsen.value == 1 &&
+                                      (endTime.isBefore(now))
                                   ? Padding(
                                       padding: const EdgeInsets.only(top: 12),
                                       child: Row(
@@ -2098,13 +1958,14 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                             width: 10,
                                           ),
                                           TextLabell(
-                                            text: index.namaHariLibur,
+                                            text:
+                                                "ALPHA ${controller.catatanAlpha.value}",
                                             weight: FontWeight.w400,
                                             size: 11.0,
                                           ),
                                         ],
                                       ))
-                                  : index.namaTugasLuar != null
+                                  : index.namaHariLibur != null
                                       ? Padding(
                                           padding:
                                               const EdgeInsets.only(top: 12),
@@ -2119,13 +1980,13 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                 width: 10,
                                               ),
                                               TextLabell(
-                                                text: index.namaTugasLuar,
+                                                text: index.namaHariLibur,
                                                 weight: FontWeight.w400,
                                                 size: 11.0,
                                               ),
                                             ],
                                           ))
-                                      : index.namaDinasLuar != null
+                                      : index.namaTugasLuar != null
                                           ? Padding(
                                               padding: const EdgeInsets.only(
                                                   top: 12),
@@ -2140,13 +2001,13 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                     width: 10,
                                                   ),
                                                   TextLabell(
-                                                    text: index.namaDinasLuar,
+                                                    text: index.namaTugasLuar,
                                                     weight: FontWeight.w400,
                                                     size: 11.0,
                                                   ),
                                                 ],
                                               ))
-                                          : index.namaCuti != null
+                                          : index.namaDinasLuar != null
                                               ? Padding(
                                                   padding: const EdgeInsets.only(
                                                       top: 12),
@@ -2162,13 +2023,14 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                         width: 10,
                                                       ),
                                                       TextLabell(
-                                                        text: index.namaCuti,
+                                                        text:
+                                                            index.namaDinasLuar,
                                                         weight: FontWeight.w400,
                                                         size: 11.0,
                                                       ),
                                                     ],
                                                   ))
-                                              : index.namaSakit != null
+                                              : index.namaCuti != null
                                                   ? Padding(
                                                       padding:
                                                           const EdgeInsets.only(
@@ -2186,15 +2048,14 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                           ),
                                                           TextLabell(
                                                             text:
-                                                                index.namaSakit,
+                                                                index.namaCuti,
                                                             weight:
                                                                 FontWeight.w400,
                                                             size: 11.0,
                                                           ),
                                                         ],
                                                       ))
-                                                  : index.offDay.toString() ==
-                                                          '0'
+                                                  : index.namaSakit != null
                                                       ? Padding(
                                                           padding:
                                                               const EdgeInsets.only(
@@ -2211,9 +2072,9 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                               const SizedBox(
                                                                 width: 10,
                                                               ),
-                                                              const TextLabell(
-                                                                text:
-                                                                    "Hari Libur Kerja",
+                                                              TextLabell(
+                                                                text: index
+                                                                    .namaSakit,
                                                                 weight:
                                                                     FontWeight
                                                                         .w400,
@@ -2221,17 +2082,11 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                               ),
                                                             ],
                                                           ))
-                                                      : (index.jamKerja.toString() !=
-                                                                      "null" ||
-                                                                  index.jamKerja
-                                                                          .toString() !=
-                                                                      "") &&
-                                                              DateTime.parse(
-                                                                      waktuMasuk)
-                                                                  .isAfter(DateTime.parse(batasWaktu)
-                                                                      .add(const Duration(minutes: 1)))
+                                                      : index.namaIzin != null
                                                           ? Padding(
-                                                              padding: const EdgeInsets.only(top: 12),
+                                                              padding:
+                                                                  const EdgeInsets.only(
+                                                                      top: 12),
                                                               child: Row(
                                                                 children: [
                                                                   Icon(
@@ -2244,9 +2099,9 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                                   const SizedBox(
                                                                     width: 10,
                                                                   ),
-                                                                  const TextLabell(
-                                                                    text:
-                                                                        "Terlambat",
+                                                                  TextLabell(
+                                                                    text: index
+                                                                        .namaIzin,
                                                                     weight:
                                                                         FontWeight
                                                                             .w400,
@@ -2254,7 +2109,69 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                                                   ),
                                                                 ],
                                                               ))
-                                                          : const SizedBox()
+                                                          : index.offDay.toString() ==
+                                                                  '0'
+                                                              ? Padding(
+                                                                  padding:
+                                                                      const EdgeInsets.only(
+                                                                          top:
+                                                                              12),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Icon(
+                                                                        Iconsax
+                                                                            .info_circle,
+                                                                        size:
+                                                                            15,
+                                                                        color: Constanst
+                                                                            .infoLight,
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            10,
+                                                                      ),
+                                                                      const TextLabell(
+                                                                        text:
+                                                                            "Hari Libur Kerja",
+                                                                        weight:
+                                                                            FontWeight.w400,
+                                                                        size:
+                                                                            11.0,
+                                                                      ),
+                                                                    ],
+                                                                  ))
+                                                              : (index.jamKerja.toString() !=
+                                                                              "null" ||
+                                                                          index.jamKerja.toString() !=
+                                                                              "") &&
+                                                                      DateTime.parse(waktuMasuk)
+                                                                          .isAfter(DateTime.parse(batasWaktu).add(const Duration(minutes: 1)))
+                                                                  ? Padding(
+                                                                      padding: const EdgeInsets.only(top: 12),
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Icon(
+                                                                            Iconsax.info_circle,
+                                                                            size:
+                                                                                15,
+                                                                            color:
+                                                                                Constanst.infoLight,
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            width:
+                                                                                10,
+                                                                          ),
+                                                                          const TextLabell(
+                                                                            text:
+                                                                                "Terlambat",
+                                                                            weight:
+                                                                                FontWeight.w400,
+                                                                            size:
+                                                                                11.0,
+                                                                          ),
+                                                                        ],
+                                                                      ))
+                                                                  : SizedBox()
                               : const SizedBox(),
                           Padding(
                             padding: const EdgeInsets.only(top: 12, bottom: 1),
@@ -2919,6 +2836,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
 
   void showBottomDetailPengajuan(BuildContext context, index) {
     var data = controller.pengajuanAbsensi[index];
+    print(data);
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -3028,7 +2946,7 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 ),
                                 const SizedBox(height: 4),
                                 TextLabell(
-                                  text: "-",
+                                  text: "Request Absen",
                                   color: Constanst.fgPrimary,
                                   size: 16,
                                   weight: FontWeight.w500,
@@ -3127,84 +3045,74 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 )
                               ],
                             ),
-                            AppData.informasiUser![0].tipeAbsen.toString() ==
-                                    "3"
-                                ? const SizedBox(height: 12)
-                                : SizedBox(),
-                            AppData.informasiUser![0].tipeAbsen.toString() ==
-                                    "3"
-                                ? const Divider(
-                                    thickness: 1,
-                                    height: 0,
-                                  )
-                                : SizedBox(),
-                            AppData.informasiUser![0].tipeAbsen.toString() ==
-                                    "3"
-                                ? SizedBox(height: 12)
-                                : SizedBox(),
-                            AppData.informasiUser![0].tipeAbsen.toString() ==
-                                    "3"
-                                ? Row(
+                            const SizedBox(height: 12),
+                            const Divider(
+                              thickness: 1,
+                              height: 0,
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            TextLabell(
-                                              text: "Istirahat Keluar",
-                                              color: Constanst.fgSecondary,
-                                              size: 14,
-                                              weight: FontWeight.w400,
-                                            ),
-                                            const SizedBox(height: 4),
-                                            data['breakout_time'] == ""
-                                                ? TextLabell(
-                                                    text: "_ _ : _ _",
-                                                    color: Constanst.fgPrimary,
-                                                    size: 16,
-                                                    weight: FontWeight.w500,
-                                                  )
-                                                : TextLabell(
-                                                    text: data['breakout_time'],
-                                                    color: Constanst.fgPrimary,
-                                                    size: 16,
-                                                    weight: FontWeight.w500,
-                                                  )
-                                          ],
-                                        ),
+                                      TextLabell(
+                                        text: "Istirahat Keluar",
+                                        color: Constanst.fgSecondary,
+                                        size: 14,
+                                        weight: FontWeight.w400,
                                       ),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            TextLabell(
-                                              text: "Istirahat Masuk",
-                                              color: Constanst.fgSecondary,
-                                              size: 14,
-                                              weight: FontWeight.w400,
-                                            ),
-                                            const SizedBox(height: 4),
-                                            data['breakin_time'] == ""
-                                                ? TextLabell(
-                                                    text: "_ _ : _ _",
-                                                    color: Constanst.fgPrimary,
-                                                    size: 16,
-                                                    weight: FontWeight.w500,
-                                                  )
-                                                : TextLabell(
-                                                    text: data['breakin_time'],
-                                                    color: Constanst.fgPrimary,
-                                                    size: 16,
-                                                    weight: FontWeight.w500,
-                                                  )
-                                          ],
-                                        ),
-                                      )
+                                      const SizedBox(height: 4),
+                                      data['breakout_time'] == "" ||
+                                              data['breakout_time'] == null
+                                          ? TextLabell(
+                                              text: "_ _ : _ _",
+                                              color: Constanst.fgPrimary,
+                                              size: 16,
+                                              weight: FontWeight.w500,
+                                            )
+                                          : TextLabell(
+                                              text: data['breakout_time'],
+                                              color: Constanst.fgPrimary,
+                                              size: 16,
+                                              weight: FontWeight.w500,
+                                            )
                                     ],
-                                  )
-                                : SizedBox(),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      TextLabell(
+                                        text: "Istirahat Masuk",
+                                        color: Constanst.fgSecondary,
+                                        size: 14,
+                                        weight: FontWeight.w400,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      data['breakin_time'] == "" ||
+                                              data['breakout_time'] == null
+                                          ? TextLabell(
+                                              text: "_ _ : _ _",
+                                              color: Constanst.fgPrimary,
+                                              size: 16,
+                                              weight: FontWeight.w500,
+                                            )
+                                          : TextLabell(
+                                              text: data['breakin_time'],
+                                              color: Constanst.fgPrimary,
+                                              size: 16,
+                                              weight: FontWeight.w500,
+                                            )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                             const SizedBox(height: 12),
                             const Divider(
                               thickness: 1,
@@ -3246,10 +3154,14 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    viewLampiranAjuan(data['req_file']);
+                                    viewLampiranAjuan(data['req_file'] == null 
+                                    ? data['signin_pict'] == null || data['signin_pict'] == '' 
+                                    ? data['signout_pict'] : data['signin_pict'] : data['req_file']);
                                   },
                                   child: TextLabell(
-                                    text: data['req_file'],
+                                    text: data['req_file'] == null 
+                                    ? data['signin_pict'] == null || data['signin_pict'] == ''
+                                    ? data['signout_pict'] : data['signin_pict'] : data['req_file'],
                                     color: Constanst.fgPrimary,
                                     size: 16,
                                     weight: FontWeight.w500,
@@ -3293,7 +3205,9 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     absenControllre.batalkanAjuan(
-                                        date: data['atten_date']);
+                                      date: data['atten_date'],
+                                      noAjuan: data['nomor_ajuan'],
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: Constanst.color4,
@@ -3431,129 +3345,124 @@ class _HistoryAbsenState extends State<HistoryAbsen> {
     }
     return Container(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            "Status Pengajuan",
+            style: GoogleFonts.inter(
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: Constanst.fgSecondary,
+            ),
+          ),
+          const SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Status Pengajuan",
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      color: Constanst.fgSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      data['approve_status'] == "Pending" ||
-                              data['approve_status'] == null ||
-                              data['approve_status'] == "null" ||
-                              data['approve_status'] == ""
-                          ? Icon(
-                              Iconsax.timer,
-                              color: Constanst.warning,
-                              size: 22,
-                            )
-                          : data['approve_status'] == "Rejected"
-                              ? const Icon(
-                                  Iconsax.close_circle,
-                                  color: Colors.red,
-                                  size: 22,
-                                )
-                              : const Icon(
-                                  Iconsax.tick_circle,
-                                  color: Colors.green,
-                                  size: 22,
-                                ),
-                      // Icon(
-                      //   Iconsax.close_circle,
-                      //   color: Constanst.color4,
-                      //   size: 22,
-                      // ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("${text}",
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w500,
-                                  color: Constanst.fgPrimary,
-                                  fontSize: 14)),
-                          const SizedBox(height: 4),
-                        ],
-                      ),
-                    ],
-                  ),
-                  data['approve_status'] == "Approve"
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 2.5, top: 2, bottom: 2),
-                              child: Container(
-                                height: 30,
-                                child: VerticalDivider(
-                                  color: Constanst.Secondary,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  data['approve2_status'] == "Pending" ||
-                                          data['approve2_status'] == null
-                                      ? Icon(
-                                          Iconsax.timer,
-                                          color: Constanst.warning,
-                                          size: 22,
-                                        )
-                                      : data['approve2_status'] == "Rejected"
-                                          ? const Icon(
-                                              Iconsax.close_circle,
-                                              color: Colors.red,
-                                              size: 22,
-                                            )
-                                          : const Icon(
-                                              Iconsax.tick_circle,
-                                              color: Colors.green,
-                                              size: 22,
-                                            ),
-                                  // Icon(
-                                  //   Iconsax.close_circle,
-                                  //   color: Constanst.color4,
-                                  //   size: 22,
-                                  // ),
-                                  const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("${text2} ",
-                                          style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              color: Constanst.fgPrimary,
-                                              fontSize: 14)),
-                                      const SizedBox(height: 4),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+              data['approve_status'] == "Pending"
+                  ? Icon(
+                      Iconsax.timer,
+                      color: Constanst.warning,
+                      size: 22,
+                    )
+                  : data['approve_status'] == "Rejected"
+                      ? const Icon(
+                          Iconsax.close_circle,
+                          color: Colors.red,
+                          size: 22,
                         )
-                      : const SizedBox(),
-                ],
+                      : const Icon(
+                          Iconsax.tick_circle,
+                          color: Colors.green,
+                          size: 22,
+                        ),
+              // Icon(
+              //   Iconsax.close_circle,
+              //   color: Constanst.color4,
+              //   size: 22,
+              // ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("${text}",
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            color: Constanst.fgPrimary,
+                            fontSize: 14)),
+                    const SizedBox(height: 4),
+                  ],
+                ),
               ),
             ],
-          )
+          ),
+          data['approve_status'] == "Approve"
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 2.5, top: 2, bottom: 2),
+                      child: Container(
+                        height: 30,
+                        child: VerticalDivider(
+                          color: Constanst.Secondary,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          data['approve2_status'] == "Pending" ||
+                                  data['approve2_status'] == null
+                              ? Icon(
+                                  Iconsax.timer,
+                                  color: Constanst.warning,
+                                  size: 22,
+                                )
+                              : data['approve2_status'] == "Rejected"
+                                  ? const Icon(
+                                      Iconsax.close_circle,
+                                      color: Colors.red,
+                                      size: 22,
+                                    )
+                                  : const Icon(
+                                      Iconsax.tick_circle,
+                                      color: Colors.green,
+                                      size: 22,
+                                    ),
+                          // Icon(
+                          //   Iconsax.close_circle,
+                          //   color: Constanst.color4,
+                          //   size: 22,
+                          // ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${text2} ",
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.fgPrimary,
+                                      fontSize: 14),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 4),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : const SizedBox(),
         ],
       ),
     );

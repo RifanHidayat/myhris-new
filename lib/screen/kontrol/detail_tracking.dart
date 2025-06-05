@@ -29,7 +29,7 @@ class DetailTracking extends StatefulWidget {
 
 class _DetailTrackingState extends State<DetailTracking> {
   // var controller = Get.put(KontrolController());
-  final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
+  final controllerTracking = Get.put(TrackingController());
   final panelController = PanelController();
   double _panelHeightOpen = 0;
   double _panelHeightClosed = 190.0;

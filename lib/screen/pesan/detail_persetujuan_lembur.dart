@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:siscom_operasional/controller/approval_controller.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
+import 'package:siscom_operasional/main.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -19,10 +21,15 @@ import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailPersetujuanLembur extends StatefulWidget {
-  String? title, idxDetail, emId, delegasi;
+  String? title, idxDetail, emId, delegasi, emIds, emIdPengaju;
 
   DetailPersetujuanLembur(
-      {Key? key, this.title, this.idxDetail, this.emId, this.delegasi})
+      {Key? key,
+      this.title,
+      this.idxDetail,
+      this.emId,
+      this.delegasi,
+      this.emIds})
       : super(key: key);
   @override
   _DetailPersetujuanLemburState createState() =>
@@ -92,7 +99,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                           bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: TextField(
                         cursorColor: Colors.black,
-                        controller: controller.alasanReject.value,
+                        controller: controller.alasan1.value,
                         maxLines: null,
                         maxLength: 225,
                         autofocus: true,
@@ -129,12 +136,606 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                         child: TextButtonWidget(
                           title: "Tolak",
                           onTap: () {
-                            if (controller.alasanReject.value.text != "") {
+                            if (controller.alasan1.value.text != "") {
                               Navigator.pop(Get.context!);
                               validasiMenyetujui(false, em_id);
                             } else {
                               UtilsAlert.showToast(
                                   "Harap isi alasan terlebih dahulu");
+                            }
+                          },
+                          colorButton: Constanst.colorPrimary,
+                          colortext: Colors.white,
+                          border: BorderRadius.circular(8.0),
+                        ),
+                      ))
+                    ],
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void showBottomHasilLembur(em_id) {
+    showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return DraggableScrollableSheet(
+            initialChildSize: 0.8, // 80% layar
+            minChildSize: 0.5, // Bisa mengecil
+            maxChildSize: 1.0, // Bisa full screen
+            expand: false,
+            builder: (context, scrollController) {
+              return SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 8, top: 2),
+                            child: Text(
+                              "Catatan",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: Constanst.borderStyle1,
+                                border: Border.all(
+                                    width: 1.0,
+                                    color: Color.fromARGB(255, 211, 205, 205))),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 8, bottom: 8),
+                              child: TextField(
+                                cursorColor: Colors.black,
+                                controller: controller.alasan2.value,
+                                maxLines: null,
+                                maxLength: 225,
+                                autofocus: true,
+                                decoration: new InputDecoration(
+                                    border: InputBorder.none, hintText: ""),
+                                keyboardType: TextInputType.multiline,
+                                textInputAction: TextInputAction.done,
+                                style: TextStyle(
+                                    fontSize: 12.0,
+                                    height: 2.0,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0, right: 24.0),
+                      child: Row(
+                        children: [
+                          Text('List Task'),
+                          Spacer(),
+                          Text('Score'),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 16,
+                        right: 16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ...controller.listTask.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            var task = entry.value;
+                            String difficultyLabel = "";
+                            int level =
+                                int.tryParse(task["level"].toString()) ?? 0;
+                            print('ini level kesulitan ${task['level']}');
+                            switch (level) {
+                              case 1:
+                                difficultyLabel = "Sangat Mudah";
+                                break;
+                              case 2:
+                                difficultyLabel = "Mudah";
+                                break;
+                              case 3:
+                                difficultyLabel = "Normal";
+                                break;
+                              case 4:
+                                difficultyLabel = "Sulit";
+                                break;
+                              case 5:
+                                difficultyLabel = "Sangat Sulit";
+                                break;
+                              default:
+                                difficultyLabel = "Tidak Diketahui";
+                            }
+                            return Column(
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 16.0, top: 16.0, bottom: 16.0),
+                                      child: TextLabell(
+                                        text: "${index + 1}.",
+                                        color: Constanst.fgPrimary,
+                                        size: 16,
+                                        weight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 15.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              task['task'],
+                                              textAlign: TextAlign.justify,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              "Kesulitan: $difficultyLabel",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    controller.detailData[0]['dinilai'] == 'N'
+                                        ? SizedBox()
+                                        : SizedBox(
+                                            width: 50,
+                                            child: TextFormField(
+                                              controller: controller
+                                                  .taskControllers[index],
+                                              decoration: InputDecoration(
+                                                hintText: '0%',
+                                                border: InputBorder.none,
+                                              ),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter
+                                                    .digitsOnly, // Hanya angka
+                                                LengthLimitingTextInputFormatter(
+                                                    3),
+                                              ],
+                                              onChanged: (value) {
+                                                if (value.isNotEmpty) {
+                                                  int input = int.parse(value);
+
+                                                  if (input > 100) {
+                                                    controller
+                                                        .taskControllers[index]
+                                                        .text = '100';
+                                                    controller
+                                                            .taskControllers[index]
+                                                            .selection =
+                                                        TextSelection
+                                                            .fromPosition(
+                                                      TextPosition(
+                                                          offset: controller
+                                                              .taskControllers[
+                                                                  index]
+                                                              .text
+                                                              .length),
+                                                    );
+                                                    
+                                                  }
+                                                  controller.updateTotalPercentage();
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                  ],
+                                ),
+                                if (index != controller.listTask.length - 1)
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Divider(
+                                      height: 0,
+                                      thickness: 1,
+                                      color: Constanst.fgBorder,
+                                    ),
+                                  ),
+                              ],
+                            );
+                          }).toList(),
+                          Obx(() {
+                            return Text(
+                              "Total Persentase: ${controller.totalPercentage.value}%",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextButtonWidget(
+                        title: "Kirim Persentase task",
+                        onTap: () {
+                          if (controller.alasan2.value.text.isNotEmpty) {
+                            if (controller.taskControllers.any(
+                                (taskController) =>
+                                    taskController.text.isEmpty)) {
+                              UtilsAlert.showToast(
+                                  "Harap isi semua nilai presentase terlebih dahulu");
+                            } else {
+                              for (int i = 0;
+                                  i < controller.taskControllers.length;
+                                  i++) {
+                                controller.listTask[i]['persentase'] =
+                                    controller.taskControllers[i].text;
+                              }
+                              print(
+                                  "ini listTask setelah di edit ${controller.listTask}");
+
+                              Navigator.pop(Get.context!);
+                              validasiMenyetujui(true, em_id);
+                            }
+                          } else {
+                            UtilsAlert.showToast(
+                                "Harap isi alasan terlebih dahulu");
+                          }
+                        },
+                        colorButton: Constanst.colorPrimary,
+                        colortext: Colors.white,
+                        border: BorderRadius.circular(8.0),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            });
+      },
+    );
+  }
+
+  void showBottomHasilLemburDisable(em_id) {
+    showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                height: 15,
+              ),
+              Text(
+                'List Task',
+                style: GoogleFonts.inter(
+                  color: Constanst.fgPrimary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...controller.listTask.asMap().entries.map((entry) {
+                      int index = entry.key;
+                      var task = entry.value;
+                      String difficultyLabel = "";
+                      int level = int.tryParse(task["level"].toString()) ?? 0;
+                      print('ini level kesulitan ${task['level']}');
+                      switch (level) {
+                        case 1:
+                          difficultyLabel = "Sangat Mudah";
+                          break;
+                        case 2:
+                          difficultyLabel = "Mudah";
+                          break;
+                        case 3:
+                          difficultyLabel = "Normal";
+                          break;
+                        case 4:
+                          difficultyLabel = "Sulit";
+                          break;
+                        case 5:
+                          difficultyLabel = "Sangat Sulit";
+                          break;
+                        default:
+                          difficultyLabel = "Tidak Diketahui";
+                      }
+                      return Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 16.0, bottom: 16.0, right: 16.0),
+                                child: TextLabell(
+                                  text: "${index + 1}.",
+                                  color: Constanst.fgPrimary,
+                                  size: 16,
+                                  weight: FontWeight.w500,
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        task['task'],
+                                        textAlign: TextAlign.justify,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        "Kesulitan: $difficultyLabel",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              controller.detailData[0]['dinilai'] == 'N'
+                                  ? SizedBox()
+                                  : SizedBox(
+                                      width: 50,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 15.0),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "${task['persentase'].toString()}%",
+                                              style: GoogleFonts.inter(
+                                                color: Constanst.fgPrimary,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                            ],
+                          ),
+                          if (index != controller.listTask.length - 1)
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Constanst.fgBorder,
+                              ),
+                            ),
+                        ],
+                      );
+                    }).toList(),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 24.0, 16.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Text(
+                      'Total score',
+                      style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    )),
+                    Spacer(),
+                    Text(
+                      '${controller.totalPercent}%',
+                      style: GoogleFonts.inter(
+                        color: controller.totalPercent.value <= 60
+                            ? Colors.red
+                            : Colors.green,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showBottomAlasanApprove(em_id) {
+    var status = controller.detailData[0]['status'];
+    var approveStatus = controller.detailData[0]['approve_status'];
+    showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Iconsax.tick_circle,
+                        color: Colors.green,
+                        size: 24,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 8, top: 2),
+                        child: Text(
+                          "Alasan Menyetujui Pengajuan",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: Constanst.borderStyle1,
+                        border: Border.all(
+                            width: 1.0,
+                            color: Color.fromARGB(255, 211, 205, 205))),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          left: 8,
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      child: TextField(
+                        cursorColor: Colors.black,
+                        controller:
+                            status == "Pending" || approveStatus == "Pending"
+                                ? controller.alasan1.value
+                                : controller.alasan2.value,
+                        maxLines: null,
+                        maxLength: 225,
+                        autofocus: true,
+                        decoration: new InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Alasan Menyetujui"),
+                        keyboardType: TextInputType.multiline,
+                        textInputAction: TextInputAction.done,
+                        style: TextStyle(
+                            fontSize: 12.0, height: 2.0, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextButtonWidget(
+                          title: "Kembali",
+                          onTap: () => Navigator.pop(Get.context!),
+                          colorButton: Colors.red,
+                          colortext: Colors.white,
+                          border: BorderRadius.circular(8.0),
+                        ),
+                      )),
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextButtonWidget(
+                          title: "Menyetujui",
+                          onTap: () {
+                            if (status == "Pending" ||
+                                approveStatus == "Pending") {
+                              if (controller.alasan1.value.text != "") {
+                                Navigator.pop(Get.context!);
+                                validasiMenyetujui(true, em_id);
+                              } else {
+                                UtilsAlert.showToast(
+                                    "Harap isi alasan terlebih dahulu");
+                              }
+                            } else {
+                              if (controller.alasan2.value.text != "") {
+                                Navigator.pop(Get.context!);
+                                validasiMenyetujui(true, em_id);
+                              } else {
+                                UtilsAlert.showToast(
+                                    "Harap isi alasan terlebih dahulu");
+                              }
                             }
                           },
                           colorButton: Constanst.colorPrimary,
@@ -217,13 +818,12 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                           : "1",
                   emId: em_id,
                   nomor: controller.detailData[0]['nomor_ajuan'],
-                  emIdApproval1: controller.detailData[0]['em_report_to'],
-                  emIdApproval2: controller.detailData[0]['em_report2_to'] ==
-                              "" ||
-                          controller.detailData[0]['em_report2_to'] == "null" ||
-                          controller.detailData[0]['em_report2_to'] == null
-                      ? controller.detailData[0]['em_report_to']
-                      : controller.detailData[0]['em_report2_to'],
+                  emIdApproval1: controller.detailData[0]['delegasi'],
+                  emIdApproval2: controller.detailData[0]['em_ids'] == "" ||
+                          controller.detailData[0]['em_ids'] == "null" ||
+                          controller.detailData[0]['em_ids'] == null
+                      ? controller.detailData[0]['delegasi']
+                      : controller.detailData[0]['em_ids'],
                   delegasi: widget.delegasi,
                   id: widget.idxDetail);
             },
@@ -241,54 +841,102 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
   void initState() {
     controller.getDetailData(
         widget.idxDetail, widget.emId, widget.title, widget.delegasi);
+    print('ini emIdz user ${widget.emIds}');
+    print('ini emIdz user ${controller.detailData[0]['em_ids']}');
+    // Future.delayed(Duration(seconds: 2));
+    controller.infoIds(controller.detailData[0]['em_ids']);
+    controller.infoTask(widget.idxDetail);
+
     super.initState();
     var emId = AppData.informasiUser![0].em_id;
+    print('ini emId user ${emId}');
 
     if (controllerGlobal.valuePolaPersetujuan.value.toString() == "1") {
       if (controller.detailData[0]['nama_approve1'] == "" ||
           controller.detailData[0]['nama_approve1'] == "null" ||
           controller.detailData[0]['nama_approve1'] == null) {
-        if (controller.detailData[0]['em_report_to']
-            .toString()
-            .contains(emId)) {
+        if (controller.detailData[0]['delegasi'].contains(emId)) {
+          print('kondisi 1 terpenuhi');
           controller.showButton.value = true;
         } else {
+          print('kodisai 1 gagal');
           controller.showButton.value = false;
         }
-      } else {}
+      } else {
+        print('kodisi 2 terpenuhi');
+      }
     } else {
       if (controller.detailData[0]['nama_approve1'] == "" ||
           controller.detailData[0]['nama_approve1'] == "null" ||
           controller.detailData[0]['nama_approve1'] == null) {
-        if (controller.detailData[0]['em_report_to']
-            .toString()
-            .contains(emId)) {
-          controller.showButton.value = true;
-        } else {
-          controller.showButton.value = false;
-        }
-      } else {
-        if (controller.detailData[0]['em_report2_to'] == "" ||
-            controller.detailData[0]['em_report2_to'] == "null" ||
-            controller.detailData[0]['em_report2_to'] == null) {
-          if (controller.detailData[0]['em_report_to']
-              .toString()
-              .contains(emId)) {
+        if (controller.detailData[0]['dinilai'] == 'Y') {
+          if (controller.detailData[0]['delegasi'].toString().contains(emId)) {
+            print('kodisi 3 terpenuhi');
             controller.showButton.value = true;
           } else {
+            print('kodisi 3 gagal');
             controller.showButton.value = false;
           }
         } else {
-          if (controller.detailData[0]['em_report2_to']
+          if (controller.detailData[0]['em_report_to']
               .toString()
               .contains(emId)) {
+            print('kodisi 3 terpenuhi');
             controller.showButton.value = true;
           } else {
+            print('kodisi 3 gagal');
             controller.showButton.value = false;
+          }
+        }
+      } else {
+        if (controller.detailData[0]['em_ids'] == "" ||
+            controller.detailData[0]['em_ids'] == "null" ||
+            controller.detailData[0]['em_ids'] == null) {
+          if (controller.detailData[0]['dinilai'] == 'Y') {
+            if (controller.detailData[0]['delegasi'].contains(emId)) {
+              print('kodisi 4 terpnuhi');
+              controller.showButton.value = true;
+            } else {
+              print('kondisi 4 gagal');
+              controller.showButton.value = false;
+            }
+          } else {
+            if (controller.detailData[0]['em_report_to'].contains(emId)) {
+              print('kodisi 4 terpnuhi');
+              controller.showButton.value = true;
+            } else {
+              print('kondisi 4 gagal');
+              controller.showButton.value = false;
+            }
+          }
+        } else {
+          if (controller.detailData[0]['dinilai'] == 'Y') {
+            if (controller.detailData[0]['em_ids'].contains(emId)) {
+              print('kodisi 5 terpenuhi');
+              controller.showButton.value = true;
+            } else {
+              print('kodisi 5 gqgal');
+              controller.showButton.value = false;
+            }
+          } else {
+            if (controller.detailData[0]['em_report2_to'].contains(emId)) {
+              print('kodisi 4 terpnuhi');
+              controller.showButton.value = true;
+            } else {
+              print('kondisi 4 gagal');
+              controller.showButton.value = false;
+            }
           }
         }
       }
     }
+    print('ini emId ${widget.emId}');
+    print('ini emIds ${widget.emIds}');
+    print('ini delegasi ${widget.delegasi}');
+    print('ini em_report_to ${controller.detailData[0]['em_report_to']}');
+    print('ini em_ids ${controller.detailData[0]['em_ids']}');
+    print('ini value showButton ${controller.showButton.value}');
+    print('ini status ${controller.detailData[0]['status']}');
 
     if (controller.detailData[0]['type'].toString().toLowerCase() ==
         "Lembur".toString().toLowerCase()) {
@@ -319,25 +967,19 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
         : "";
     var image = controller.detailData[0]['image'];
     var typeAjuan = controller.detailData[0]['leave_status'];
-    var em_id = controller.detailData[0]['emId_pengaju'];
+    print('ini typeAjuan $typeAjuan');
+    var em_id = controller.detailData[0]['em_id_pengaju'];
+    var em_id_user = AppData.informasiUser![0].em_id;
+    var status = controller.detailData[0]['status'];
+    var approveStatus = controller.detailData[0]['approve_status'];
+    var approveStatus2 = controller.detailData[0]['approve2_status'];
+    var diNilai = controller.detailData[0]['dinilai'];
+    var delegasi = controller.detailData[0]['delegasi'];
+    var emReport = controller.detailData[0]['em_report_to'];
+    var emReport2 = controller.detailData[0]['em_report2_to'];
+    print('ini em id apa yak $em_id');
     return Scaffold(
       backgroundColor: Constanst.coloBackgroundScreen,
-      // appBar: AppBar(
-      //   backgroundColor: Constanst.colorPrimary,
-      //   automaticallyImplyLeading: false,
-      //   elevation: 2,
-      //   flexibleSpace: AppbarMenu1(
-      //     title: "Detail Persetujuan Izin",
-      //     colorTitle: Colors.white,
-      //     colorIcon: Colors.white,
-      //     iconShow: true,
-      //     icon: 1,
-      //     onTap: () {
-      //       controller.alasanReject.value.text = "";
-      //       Get.back();
-      //     },
-      //   ),
-      // ),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight) * 1,
         child: Obx(
@@ -356,7 +998,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
               titleSpacing: 0,
               centerTitle: true,
               title: Text(
-                "Detail Persetujuan Lembura",
+                "Detail Persetujuan Lembur",
                 style: GoogleFonts.inter(
                     color: Constanst.fgPrimary,
                     fontWeight: FontWeight.w500,
@@ -386,94 +1028,182 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
           ),
         ),
       ),
-      bottomNavigationBar: typeAjuan == "Approve2"
-          ? SizedBox()
+      bottomNavigationBar: typeAjuan == "Approve2" && diNilai == "Y"
+          ? Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                height: 40,
+                child: ElevatedButton(
+                  onPressed: () {
+                    showBottomHasilLemburDisable(em_id);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                            color: Constanst.colorPrimary, width: 1.0)),
+                    // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                  ),
+                  child: Text(
+                    'Hasil Lembur',
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        color: Constanst.colorPrimary,
+                        fontSize: 14),
+                  ),
+                ),
+              ),
+            )
           : Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Obx(() => controller.showButton.value == true &&
-                      (controller.detailData[0]['status'] == "Pending" ||
-                          controller.detailData[0]['approve_status'] ==
-                              "Pending" ||
-                          (controller.detailData[0]['approve2_status'] ==
-                                  "Pending" &&
-                              controller.detailData[0]['approve_status'] !=
-                                  "Rejected"))
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 40,
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Constanst
-                                    .border, // Set the desired border color
-                                width: 1.0,
+              child: Obx(
+                () => controller.showButton.value == true &&
+                            (status == "Pending" ||
+                                approveStatus == "Pending" &&
+                                    delegasi.toString().contains(em_id_user)) ||
+                        (approveStatus == "Approve" &&
+                            diNilai == "N" &&
+                            emReport2.toString().contains(em_id_user) &&
+                            approveStatus2 == 'Pending') ||
+                        (approveStatus == "Pending" &&
+                            diNilai == "N" &&
+                            emReport.toString().contains(em_id_user))
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Constanst
+                                      .border, // Set the desired border color
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
-                              borderRadius: BorderRadius.circular(8.0),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  controller.alasan2.value.clear();
+                                  controller.alasan1.value.clear();
+                                  showBottomAlasanReject(em_id);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    foregroundColor: Constanst.color4,
+                                    backgroundColor: Constanst.colorWhite,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 0,
+                                    // padding: EdgeInsets.zero,
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                                child: Text(
+                                  'Tolak',
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.color4,
+                                      fontSize: 14),
+                                ),
+                              ),
                             ),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                print(AppData.informasiUser![0].em_id);
-                                print(controller.detailData[0]['em_report_to']);
-                                print(
-                                    controller.detailData[0]['em_report2_to']);
-                                // print("tes");
-                                showBottomAlasanReject(em_id);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  foregroundColor: Constanst.color4,
-                                  backgroundColor: Constanst.colorWhite,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: SizedBox(
+                              height: 40,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  controller.alasan2.value.clear();
+                                  controller.alasan1.value.clear();
+                                  showBottomAlasanApprove(em_id);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Constanst.colorWhite,
+                                  backgroundColor: Constanst.colorPrimary,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   elevation: 0,
-                                  // padding: EdgeInsets.zero,
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                              child: Text(
-                                'Tolak',
-                                style: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    color: Constanst.color4,
-                                    fontSize: 14),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: SizedBox(
-                            height: 40,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                validasiMenyetujui(true, em_id);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Constanst.colorWhite,
-                                backgroundColor: Constanst.colorPrimary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
                                 ),
-                                elevation: 0,
-                                // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
-                              ),
-                              child: Text(
-                                'Menyetujui',
-                                style: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    color: Constanst.colorWhite,
-                                    fontSize: 14),
+                                child: Text(
+                                  'Menyetujui',
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Constanst.colorWhite,
+                                      fontSize: 14),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    )
-                  : const SizedBox()),
-            ),
+                        ],
+                      )
+                    : Obx(() {
+                        return controller.showButton.value == true &&
+                                controller.detailData[0]['approve2_status'] ==
+                                    "Pending" &&
+                                controller.detailData[0]['approve_status'] ==
+                                    'Approve' &&
+                                controller.detailData[0]['em_ids']
+                                    .toString()
+                                    .contains(em_id_user) &&
+                                controller.detailData[0]['dinilai'] == 'Y'
+                            ? SizedBox(
+                                height: 40,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    controller.alasan2.value.clear();
+                                    controller.alasan1.value.clear();
+                                    showBottomHasilLembur(em_id);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Constanst.colorWhite,
+                                    backgroundColor: Constanst.colorPrimary,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 0,
+                                    // padding: const EdgeInsets.fromLTRB(20, 12, 20, 12)
+                                  ),
+                                  child: Text(
+                                    'Hasil Lembur',
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w500,
+                                        color: Constanst.colorWhite,
+                                        fontSize: 14),
+                                  ),
+                                ),
+                              )
+                            : controller.detailData[0]['dinilai'] == 'N'
+                                ? SizedBox()
+                                : SizedBox(
+                                    height: 40,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        showBottomHasilLemburDisable(em_id);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            side: BorderSide(
+                                                color: Constanst.colorPrimary,
+                                                width: 1.0)),
+                                      ),
+                                      child: Text(
+                                        'Hasil Lembur',
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            color: Constanst.colorPrimary,
+                                            fontSize: 14),
+                                      ),
+                                    ),
+                                  );
+                      }),
+              )),
       body: WillPopScope(
           onWillPop: () async {
             controller.alasanReject.value.text = "";
@@ -643,7 +1373,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                         const SizedBox(height: 4),
                                         Text(
                                           Constanst.convertDate6(
-                                              "${controller.detailData[0]['tgl_ajuan']}"),
+                                              "${controller.detailData[0]['waktu_pengajuan']}"),
                                           style: GoogleFonts.inter(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 16,
@@ -674,7 +1404,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Nama Pengajuan",
+                                "Tipe Lembur",
                                 style: GoogleFonts.inter(
                                     color: Constanst.fgSecondary,
                                     fontWeight: FontWeight.w400,
@@ -720,52 +1450,6 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                 ),
                               ),
                               Text(
-                                "Tanggal Lembur",
-                                style: GoogleFonts.inter(
-                                    color: Constanst.fgSecondary,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14),
-                              ),
-                              const SizedBox(height: 4),
-                              // controller.detailData[0]['type']
-                              //                 .toString()
-                              //                 .toLowerCase() ==
-                              //             "Cuti".toString().toLowerCase() ||
-                              //         controller.detailData[0]['type']
-                              //                 .toString()
-                              //                 .toLowerCase() ==
-                              //             "Lembur".toString().toLowerCase()
-                              //     ? Text(
-                              //         "${controller.detailData[0]['nama_pengajuan']} ",
-                              //         style: GoogleFonts.inter(
-                              //             color: Constanst.fgPrimary,
-                              //             fontWeight: FontWeight.w500,
-                              //             fontSize: 16),
-                              //       )
-                              //     : Text(
-                              //         "${controller.detailData[0]['type']} $namaTipe - ${controller.detailData[0]['category']}",
-                              //         style: GoogleFonts.inter(
-                              //             color: Constanst.fgPrimary,
-                              //             fontWeight: FontWeight.w500,
-                              //             fontSize: 16),
-                              //       ),
-                              Text(
-                                 "${controller.detailData[0]['waktu_pengajuan'] == '' || controller.detailData[0]['waktu_pengajuan'] == null ? "" : Constanst.convertDate6("${controller.detailData[0]['waktu_pengajuan']}")}",
-                                style: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    color: Constanst.fgPrimary,
-                                    fontSize: 16),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 12.0, bottom: 12.0),
-                                child: Divider(
-                                  thickness: 1,
-                                  height: 0,
-                                  color: Constanst.border,
-                                ),
-                              ),
-                              Text(
                                 "Jam Lembur",
                                 style: GoogleFonts.inter(
                                     color: Constanst.fgSecondary,
@@ -787,7 +1471,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                   controller.detailData[0]['type'] == "Klaim"
                                       ? const SizedBox()
                                       : Text(
-                                          "s.d ",
+                                          "s.d",
                                           style: GoogleFonts.inter(
                                               fontWeight: FontWeight.w500,
                                               color: Constanst.fgPrimary,
@@ -796,7 +1480,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                   controller.detailData[0]['type'] == "Klaim"
                                       ? const SizedBox()
                                       : Text(
-                                          "${controller.detailData[0]['waktu_sampai']}",
+                                          " ${controller.detailData[0]['waktu_sampai']}",
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.inter(
                                               fontWeight: FontWeight.w500,
@@ -918,7 +1602,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                           controller.detailData[0]['type'] ==
                                               "Dinas Luar"
                                       ? Text(
-                                          "Pemberi Tugas",
+                                          "Atas perintah",
                                           style: GoogleFonts.inter(
                                               color: Constanst.fgSecondary,
                                               fontWeight: FontWeight.w400,
@@ -946,7 +1630,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                           fontWeight: FontWeight.bold),
                                     )
                                   : Text(
-                                      "${controller.fullNameDelegasi.value}",
+                                      "${controller.detailData[0]['nama_delegasi']}",
                                       style: GoogleFonts.inter(
                                           color: Constanst.fgPrimary,
                                           fontWeight: FontWeight.w500,
@@ -966,6 +1650,82 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                                   color: Constanst.border,
                                 ),
                               ),
+                              diNilai == 'N'
+                                  ? SizedBox()
+                                  : Container(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Peminta lembur",
+                                            style: GoogleFonts.inter(
+                                                color: Constanst.fgSecondary,
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14),
+                                          ),
+                                          SizedBox(height: 4),
+                                          Text(
+                                            controller.fullNameApprove2
+                                                .join(', '),
+                                            style: GoogleFonts.inter(
+                                                color: Constanst.fgPrimary,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 12.0, bottom: 12.0),
+                                            child: Divider(
+                                              thickness: 1,
+                                              height: 0,
+                                              color: Constanst.border,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                              diNilai == "Y" &&
+                                      controller.detailData[0]
+                                              ['approve_status'] !=
+                                          'Pending'
+                                  ? SizedBox()
+                                  : InkWell(
+                                      onTap: () {
+                                        showBottomHasilLemburDisable(em_id);
+                                      },
+                                      child: Container(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "List Task",
+                                              style: GoogleFonts.inter(
+                                                  color: Colors.blue,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontStyle: FontStyle.italic,
+                                                  fontSize: 15),
+                                            ),
+                                            SizedBox(height: 4),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 12.0, bottom: 12.0),
+                                              child: Divider(
+                                                thickness: 1,
+                                                height: 0,
+                                                color: Constanst.border,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
 
                               //singgle approval
                               controller.valuePolaPersetujuan == 1 ||
@@ -1220,6 +1980,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
@@ -1270,8 +2031,8 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                             )
                           : data['approve_status'] == "Rejected"
                               ? Icon(
-                                  Iconsax.close_circle,
-                                  color: Colors.red,
+                                  Iconsax.tick_circle,
+                                  color: Colors.green,
                                   size: 22,
                                 )
                               : Icon(
@@ -1288,7 +2049,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("${text} ",
+                          Text("$text ",
                               style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   color: Constanst.fgPrimary,
@@ -1326,7 +2087,7 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
         text2 = "Pending Approval 2";
       }
       if (data['approve2_status'] == "Rejected") {
-        text2 = "Rejected 2 By - ${data['nama_approve1']}";
+        text2 = "Rejected 2 By - ${data['nama_approve2']}";
       }
 
       if (data['approve2_status'] == "Approve") {
@@ -1335,125 +2096,114 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
     }
     return Container(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            "Status Pengajuan",
+            style: GoogleFonts.inter(
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: Constanst.fgSecondary,
+            ),
+          ),
+          const SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              data['approve_status'] == "Pending"
+                  ? Icon(
+                      Iconsax.timer,
+                      color: Constanst.warning,
+                      size: 22,
+                    )
+                  : data['approve_status'] == "Rejected"
+                      ? Icon(
+                          Iconsax.close_circle,
+                          color: Colors.red,
+                          size: 22,
+                        )
+                      : Icon(
+                          Iconsax.tick_circle,
+                          color: Colors.green,
+                          size: 22,
+                        ),
+              // Icon(
+              //   Iconsax.close_circle,
+              //   color: Constanst.color4,
+              //   size: 22,
+              // ),
+              const SizedBox(width: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Status Pengajuan",
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      color: Constanst.fgSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      data['approve_status'] == "Pending"
-                          ? Icon(
-                              Iconsax.timer,
-                              color: Constanst.warning,
-                              size: 22,
-                            )
-                          : data['approve_status'] == "Rejected"
-                              ? Icon(
-                                  Iconsax.close_circle,
-                                  color: Colors.red,
-                                  size: 22,
-                                )
-                              : Icon(
-                                  Iconsax.tick_circle,
-                                  color: Colors.green,
-                                  size: 22,
-                                ),
-                      // Icon(
-                      //   Iconsax.close_circle,
-                      //   color: Constanst.color4,
-                      //   size: 22,
-                      // ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("${text} ",
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w500,
-                                  color: Constanst.fgPrimary,
-                                  fontSize: 14)),
-                          const SizedBox(height: 4),
-                        ],
-                      ),
-                    ],
-                  ),
-                  data['approve_status'] == "Approve"
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(left: 2.5, top: 2, bottom: 2),
-                              child: Container(
-                                height: 30,
-                                child: VerticalDivider(
-                                  color: Constanst.Secondary,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  data['approve2_status'] == "Pending"
-                                      ? Icon(
-                                          Iconsax.timer,
-                                          color: Constanst.warning,
-                                          size: 22,
-                                        )
-                                      : data['approve2_status'] == "Rejected"
-                                          ? Icon(
-                                              Iconsax.close_circle,
-                                              color: Colors.red,
-                                              size: 22,
-                                            )
-                                          : Icon(
-                                              Iconsax.tick_circle,
-                                              color: Colors.green,
-                                              size: 22,
-                                            ),
-                                  // Icon(
-                                  //   Iconsax.close_circle,
-                                  //   color: Constanst.color4,
-                                  //   size: 22,
-                                  // ),
-                                  const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("${text2} ",
-                                          style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              color: Constanst.fgPrimary,
-                                              fontSize: 14)),
-                                      const SizedBox(height: 4),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )
-                      : SizedBox(),
+                  Text("${text} ",
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          color: Constanst.fgPrimary,
+                          fontSize: 14)),
+                  const SizedBox(height: 4),
                 ],
               ),
             ],
-          )
+          ),
+          data['approve_status'] == "Approve"
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 2.5, top: 2, bottom: 2),
+                      child: Container(
+                        height: 30,
+                        child: VerticalDivider(
+                          color: Constanst.Secondary,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          data['approve2_status'] == "Pending"
+                              ? Icon(
+                                  Iconsax.timer,
+                                  color: Constanst.warning,
+                                  size: 22,
+                                )
+                              : data['approve2_status'] == "Rejected"
+                                  ? Icon(
+                                      Iconsax.close_circle,
+                                      color: Colors.red,
+                                      size: 22,
+                                    )
+                                  : Icon(
+                                      Iconsax.tick_circle,
+                                      color: Colors.green,
+                                      size: 22,
+                                    ),
+                          // Icon(
+                          //   Iconsax.close_circle,
+                          //   color: Constanst.color4,
+                          //   size: 22,
+                          // ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              "${text2} ",
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  color: Constanst.fgPrimary,
+                                  fontSize: 14),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : SizedBox(),
         ],
       ),
     );

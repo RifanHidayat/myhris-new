@@ -79,8 +79,8 @@ class LaporanKasbonController extends GetxController {
   void onReady() async {
     super.onReady();
     getTimeNow();
-    // getLoadsysData();
-    // getDepartemen(1, "");
+    getLoadsysData();
+    getDepartemen(1, "");
     filterStatusAjuanTerpilih.value = "Semua";
     selectedViewFilterPengajuan.value = 0;
     pilihTanggalFilterAjuan.value = DateTime.now();
@@ -210,8 +210,7 @@ class LaporanKasbonController extends GetxController {
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
       'status': idDepartemenTerpilih.value,
-      'type': title.value,
-      'em_id': AppData.informasiUser![0].em_id
+      'type': title.value
     };
     var connect = Api.connectionApi("post", body, "load_laporan_pengajuan");
     connect.then((dynamic res) {

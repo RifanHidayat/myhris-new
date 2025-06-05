@@ -310,6 +310,7 @@ class _LaporanCutiDetailState extends State<LaporanCutiDetail> {
                                   widget.title);
                               controller.tempKodeStatus1.value = namaType;
                               controller.tempNamaStatus1.value = namaType;
+                              print(namaType);
                               Get.back();
                             },
                             child: Padding(

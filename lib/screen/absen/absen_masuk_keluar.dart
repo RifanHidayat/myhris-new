@@ -10,6 +10,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:siscom_operasional/controller/absen_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
+import 'package:siscom_operasional/controller/internet_controller.dart';
 import 'package:siscom_operasional/screen/absen/camera_view_location.dart';
 import 'package:siscom_operasional/screen/dashboard.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
@@ -18,7 +19,6 @@ import 'package:siscom_operasional/utils/appbar_widget.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:siscom_operasional/utils/widget/text_labe.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -35,8 +35,9 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
   double _panelHeightOpen = 0;
   double _panelHeightClosed = 250.0;
   final panelController = PanelController();
-  final controller = Get.find<AbsenController>(tag: 'absen controller');
+  final controller = Get.find<AbsenController>();
   final controllerDashboard = Get.put(DashboardController());
+  final internetController = Get.find<InternetController>(tag: 'AuthController');
   FocusNode myfocus = FocusNode();
 
   Completer<GoogleMapController> _controller = Completer();
@@ -645,38 +646,6 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                           const SizedBox(
                             height: 10,
                           ),
-                          Obx(() {
-                            return controller
-                                        .placeCoordinateDropdown.value.length >
-                                    0
-                                ? SizedBox()
-                                : Container(
-                                    padding: EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Constanst.infoLight1),
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.7,
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 10,
-                                            child: Icon(Icons.info),
-                                          ),
-                                          SizedBox(
-                                            width: 8,
-                                          ),
-                                          Expanded(
-                                            flex: 90,
-                                            child: TextLabell(
-                                                text:
-                                                    "Lokasi tidak tersedia, coba lakukan refresh pada bagian atas aplikasi atau hubungi HRD."),
-                                          )
-                                        ],
-                                      ),
-                                    ));
-                          }),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -789,47 +758,51 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                       BorderRadius.circular(
                                                           8.0),
                                                   side: const BorderSide(color: Colors.white)))),
-                                      onPressed: () async {
+                                      onPressed: () {
+                                        // await controller.getPosisition();
                                         // await controller.offlineToOnline();
-                                        // await controller.getPlaceCoordinate1();
-                                        // if (controller.coordinate.value ==
-                                        //     true) {
-                                        //   UtilsAlert
-                                        //       .showCheckOfflineAbsensiKesalahanServer(
-                                        //           positiveBtnPressed: () {
-                                        //     Get.back();
-                                        //     controller.selectedType.value
-                                        //                     .toString() ==
-                                        //                 "WFH" &&
-                                        //             widget.status ==
-                                        //                 "Absen Masuk"
-                                        //         ? controllerDashboard
-                                        //             .widgetButtomSheetWfh()
-                                        //         : controller
-                                        //             .widgetButtomSheetLanjutkanOffline(
-                                        //                 type: 'offlineAbsensi');
-                                        //   });
-                                        // } else if (!authController
-                                        //     .isConnected.value) {
-                                        //   UtilsAlert.showCheckOfflineAbsensi(
-                                        //       positiveBtnPressed: () {
-                                        //     Get.back();
-                                        //     controller.selectedType.value
-                                        //                     .toString() ==
-                                        //                 "WFH" &&
-                                        //             widget.status ==
-                                        //                 "Absen Masuk"
-                                        //         ? controllerDashboard
-                                        //             .widgetButtomSheetWfh()
-                                        //         : controller
-                                        //             .widgetButtomSheetLanjutkanOffline(
-                                        //                 type: 'offlineAbsensi');
-                                        //   });
-                                        // } else {
+                                        // await controller.getPlaceCoordinate();
+                                        print('ini place cordinate ${controller.placeCoordinate}');
+                                        if (!internetController
+                                            .isConnected.value) {
+                                          print('ini skenario ke 2');
+                                          UtilsAlert.showCheckOfflineAbsensi(
+                                              positiveBtnPressed: () {
+                                            Get.back();
+                                            controller.selectedType.value
+                                                            .toString() ==
+                                                        "WFH" &&
+                                                    widget.status ==
+                                                        "Absen Masuk"
+                                                ? controllerDashboard
+                                                    .widgetButtomSheetWfh()
+                                                : controller
+                                                    .widgetButtomSheetLanjutkanOffline(
+                                                        type: 'offlineAbsensi');
+                                          });
+                                        }else if (controller.coordinate.value ==
+                                            true) {
+                                          print('ini skenario ke 1');
+                                          UtilsAlert
+                                              .showCheckOfflineAbsensiKesalahanServer(
+                                                  positiveBtnPressed: () {
+                                            Get.back();
+                                            controller.selectedType.value
+                                                            .toString() ==
+                                                        "WFH" &&
+                                                    widget.status ==
+                                                        "Absen Masuk"
+                                                ? controllerDashboard
+                                                    .widgetButtomSheetWfh()
+                                                : controller
+                                                    .widgetButtomSheetLanjutkanOffline(
+                                                        type: 'offlineAbsensi');
+                                          });
+                                        }  else {
                                         final packageInfo =
-                                            await PackageInfo.fromPlatform();
+                                            PackageInfo.fromPlatform();
                                         //for (var package in packageInfo) {
-                                        print('tes');
+                                        print('ini kirirm absen placecoordinate ${controller.placeCoordinate}');
 
                                         print(controller.selectedType.value);
                                         // controller.selectedType.value = "WFH";
@@ -842,7 +815,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                             : controllerDashboard
                                                 .widgetButtomSheetAktifCamera(
                                                     type: 'checkTracking');
-                                        // }
+                                          }
                                         // Mendapatkan informasi paket aplikasi pihak ketiga
                                       },
                                       child: const Padding(
@@ -851,7 +824,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                             bottom: 12,
                                             left: 20,
                                             right: 20),
-                                        child: Text('OK, Absen sekarang Yak'),
+                                        child: Text('OK, Absen sekarang Ya'),
                                       ),
                                     ),
                                   ),

@@ -201,14 +201,14 @@ class Informasi extends StatelessWidget {
                       color: controller.selectedInformasiView.value == 0
                           ? Constanst.colorPrimary
                           : Constanst.color6,
-                      width: 3.0,
+                      width: 2.0,
                     ),
                   ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    "Informasi",
+                    "Ulang Tahun",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
                         color: controller.selectedInformasiView.value == 0
@@ -245,7 +245,7 @@ class Informasi extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    "Ulang Tahun",
+                    "Tidak Hadir",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
                         color: controller.selectedInformasiView.value == 1
@@ -259,6 +259,9 @@ class Informasi extends StatelessWidget {
             ),
           ),
         ),
+        // !controller.viewInformasiSisaKontrak.value
+        //     ? SizedBox()
+        //     :
         Expanded(
           child: InkWell(
             onTap: () {
@@ -282,50 +285,10 @@ class Informasi extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    "Tidak Hadir",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                        color: controller.selectedInformasiView.value == 2
-                            ? Constanst.colorPrimary
-                            : Constanst.colorText2,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        // !controller.viewInformasiSisaKontrak.value
-        //     ? SizedBox()
-        //     :
-        Expanded(
-          child: InkWell(
-            onTap: () {
-              controller.selectedInformasiView.value = 3;
-              controller.informasiController.jumpToPage(3);
-              controller.selectedInformasiView.refresh();
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: controller.selectedInformasiView.value == 3
-                          ? Constanst.colorPrimary
-                          : Constanst.color6,
-                      width: 2.0,
-                    ),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
                     "Sisa Kontrak",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
-                        color: controller.selectedInformasiView.value == 3
+                        color: controller.selectedInformasiView.value == 2
                             ? Constanst.colorPrimary
                             : Constanst.colorText2,
                         fontWeight: FontWeight.w500,
@@ -349,19 +312,17 @@ class Informasi extends StatelessWidget {
           controller.selectedInformasiView.refresh();
         },
         // itemCount: !controller.viewInformasiSisaKontrak.value ? 3 : 4,
-        itemCount: 4,
+        itemCount: 3,
         itemBuilder: (context, index) {
           return Padding(
               padding: const EdgeInsets.all(0),
               child: index == 0
-                  ? screenInformasi()
+                  ? screenUltah(context)
                   : index == 1
-                      ? screenUltah(context)
+                      ? screenTidakHadir()
                       : index == 2
-                          ? screenTidakHadir()
-                          : index == 3
-                              ? screenSisaKontrak()
-                              : const SizedBox());
+                          ? screenSisaKontrak()
+                          : const SizedBox());
         });
   }
 
@@ -461,7 +422,7 @@ class Informasi extends StatelessWidget {
           );
   }
 
-   Widget screenUltah(BuildContext context) {
+  Widget screenUltah(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width; // Ambil lebar layar
     const crossAxisCount = 2; // Jumlah kolom
     const crossAxisSpacing = 12.0; // Spasi antar kolom

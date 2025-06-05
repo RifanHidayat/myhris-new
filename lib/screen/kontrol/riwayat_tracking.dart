@@ -26,7 +26,7 @@ class RiwayatTracking extends StatefulWidget {
 }
 
 class _RiwayatTrackingState extends State<RiwayatTracking> {
-  final controllerTracking = Get.find<TrackingController>(tag: 'iniScreen');
+  final controllerTracking = Get.put(TrackingController());
 
   @override
   Widget build(BuildContext context) {

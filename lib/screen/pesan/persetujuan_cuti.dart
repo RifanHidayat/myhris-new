@@ -343,7 +343,7 @@ class _PersetujuanCutiState extends State<PersetujuanCuti>
             var namaPengaju = controller.listData.value[index]['nama_pengaju'];
             var emIdPengaju = controller.listData.value[index]['emId_pengaju'];
             var delegasi = controller.listData.value[index]['delegasi'];
-            var typeAjuan = controller.listData.value[index]['type'];
+            var typeAjuan = controller.listData.value[index]['nama_tipe'];
             var namaApprove1 =
                 controller.listData.value[index]['nama_approve1'];
             var leave_status = controller.listData.value[index]['leave_status'];
@@ -366,7 +366,18 @@ class _PersetujuanCutiState extends State<PersetujuanCuti>
                   customBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
-                  onTap: () {
+                  onTap: ()  {
+                    print('Mulai eksekusi onTap');
+
+                    controller.searchSuratPeringatan(emIdPengaju);
+                    print('searchSuratPeringatan() selesai');
+
+                    controller.searchTeguranLisan(emIdPengaju);
+                    print('searchTeguranLisan() selesai');
+
+                    // controller.updateListStatus();
+                    print(
+                        'updateListStatus() dipanggil setelah pencarian selesai');
                     Get.to(DetailPersetujuanCuti(
                       emId: emIdPengaju,
                       title: typeAjuan,
@@ -564,26 +575,28 @@ class _PersetujuanCutiState extends State<PersetujuanCuti>
 
     if (leave_status == "Rejected") {
       return Container(
-        child: namaApprove1 == ""
-            ? const SizedBox()
-            : Row(
-                children: [
-                  Icon(
-                    Iconsax.close_circle,
-                    color: Colors.red,
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Text(
-                    "rejected by  - $namaApprove1",
-                    style: GoogleFonts.inter(
-                        fontWeight: FontWeight.w500,
-                        color: Constanst.fgPrimary,
-                        fontSize: 16),
-                  ),
-                ],
+        child: Row(
+          children: [
+            Icon(
+              Iconsax.close_circle,
+              color: Colors.red,
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Expanded(
+              child: Text(
+                "Rejected by  - ${namaApprove2 == '' ? namaApprove1 : namaApprove2}",
+                style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w500,
+                    color: Constanst.fgPrimary,
+                    fontSize: 16),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
+            ),
+          ],
+        ),
       );
     }
 
@@ -644,15 +657,13 @@ class _PersetujuanCutiState extends State<PersetujuanCuti>
 
     if (leave_status == "Rejected") {
       return Container(
-        child: namaApprove1 == ""
-            ? const SizedBox()
-            : Text(
-                "Rejected by  - $namaApprove1",
-                style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w500,
-                    color: Constanst.fgPrimary,
-                    fontSize: 16),
-              ),
+        child: Text(
+          "Rejected by - ${namaApprove2 == '' ? namaApprove1 : namaApprove2}",
+          style: GoogleFonts.inter(
+              fontWeight: FontWeight.w500,
+              color: Constanst.fgPrimary,
+              fontSize: 16),
+        ),
       );
     }
 
@@ -670,12 +681,16 @@ class _PersetujuanCutiState extends State<PersetujuanCuti>
                   SizedBox(
                     width: 8,
                   ),
-                  Text(
-                    "Approved 2 by  - $namaApprove2",
-                    style: GoogleFonts.inter(
-                        fontWeight: FontWeight.w500,
-                        color: Constanst.fgPrimary,
-                        fontSize: 16),
+                  Expanded(
+                    child: Text(
+                      "Approved 2 by  - $namaApprove2",
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          color: Constanst.fgPrimary,
+                          fontSize: 16),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                 ],
               ),

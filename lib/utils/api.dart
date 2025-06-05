@@ -18,16 +18,20 @@ class Api {
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
-   static var urlImage = 'https://imagehris.siscom.id:4431';
-   //static var urlImage = 'https://myhrisdev.siscom.id/imagehris';
-  //  static var basicUrl = "http://mobilehris.siscom.id:3011/";
+  // API PROD
 
+ static var basicUrl = "http://mobilehris.siscom.id:3009/";
 
+  //  static var basicUrl = "http://mobilehris.siscom.id:3009/";
 
- static var basicUrl = "http://kantor.membersis.com:2626/";
+  // API DEV
+  //static var basicUrl = "http://kantor.membersis.com:2627/";
+//
+  // API LOCAL
+ // static var basicUrl = "http://192.168.20.233:2627/";
 
-  // static var basicUrl = "http://192.168.20.233:2626/";
-
+  static var urlImage = 'https://imagehris.siscom.id:4431';
+  // static var urlImage = 'https://myhrisdev.siscom.id/imagehris';
 
   static var token = '9d590c04119a4433971a1dd622266d38';
   static var luxand = 'https://api.luxand.cloud/photo/similarity';
@@ -49,11 +53,12 @@ class Api {
   static var urlGambarDariFinance =
       urlImage + "/${AppData.selectedDatabase}/gambar_banner/";
   static var urlFilePermintaanKandidat =
-      urlImage + "/${AppData.selectedDatabase}/file_permintaan_kandida t/";
+      urlImage + "/${AppData.selectedDatabase}/file_permintaan_kandidat/";
   static var urlFileKandidat =
       urlImage + "/${AppData.selectedDatabase}/file_kandidat/";
 
   static var urlFotoChat = urlImage + "/${AppData.selectedDatabase}/chat/";
+  static var fileDoc = urlImage + "/${AppData.selectedDatabase}/file_doc/";
 
   static var urlFileRecog =
       urlImage + "/${AppData.selectedDatabase}/face_recog/";
@@ -71,7 +76,7 @@ class Api {
         url +
         "?database=${AppData.selectedDatabase}&start_periode=${AppData.startPeriode}&end_periode=${AppData.endPeriode}" +
         params;
-    print("url ${getUrl}");
+    print("Url yang di pake ${getUrl}");
     Map<String, String> headers = {
       'Authorization': basicAuth,
       'Content-type': 'application/json',
@@ -82,7 +87,18 @@ class Api {
               AppData.informasiUser == "" ||
               AppData.informasiUser!.isEmpty
           ? ""
-          : AppData.informasiUser![0].em_id
+          : AppData.informasiUser![0].em_id,
+      'branch_id': AppData.selectBranch == null ||
+              AppData.selectBranch == "null" ||
+              AppData.selectBranch == "" ||
+              AppData.selectBranch!.isEmpty
+          ? AppData.informasiUser == null ||
+                  AppData.informasiUser == "null" ||
+                  AppData.informasiUser == "" ||
+                  AppData.informasiUser!.isEmpty
+              ? ""
+              : AppData.informasiUser![0].branchId.toString()
+          : AppData.selectBranch
     };
 
     if (typeConnect == "post") {
@@ -90,7 +106,7 @@ class Api {
         final url = Uri.parse(getUrl);
         final response =
             await post(url, body: jsonEncode(valFormData), headers: headers);
-        if (response.statusCode == 402) {
+        if (response.statusCode == 401) {
           var authController = Get.put(AuthController());
           var res = jsonDecode(response.body);
           var resp = res['message'];
@@ -168,7 +184,7 @@ class Api {
   }
 
   validateAuth(code, message) {
-    if (code == 402 || code == "" || code == null) {
+    if (code == 401) {
       AppData.isLogin = false;
       Get.offAll(Login());
 
@@ -192,18 +208,27 @@ class ApiRequest {
       base64Encode(utf8
           .encode('aplikasioperasionalsiscom:siscom@ptshaninformasi#2022@'));
 
+  // API PROD
+   static var basicUrl = "http://mobilehris.siscom.id:3009/";
 
-    // static var basicUrl = "http://mobilehris.siscom.id:3011/";
+  // API LOCAL
+  //static var basicUrl = "http://192.168.20.233:2627/";
 
-   static var basicUrl = "http://kantor.membersis.com:2626/";
-
-  // static var basicUrl = "http://192.168.20.233:2626/";
-
+  // API DEV
+   // static var basicUrl = "http://kantor.membersis.com:2627/";
 
   Map<String, String> headers = {
     'Authorization': basicAuth,
     'Content-type': 'application/json',
     'Accept': 'application/json',
+    'em_id': AppData.informasiUser == null ||
+            AppData.informasiUser == "null" ||
+            AppData.informasiUser == "" ||
+            AppData.informasiUser!.isEmpty
+        ? ""
+        : AppData.informasiUser![0].em_id
+    // 'token': AppData.setFcmToken,
+    // 'em_id': 'SIS202305048'
   };
 
   var params = {
@@ -216,15 +241,18 @@ class ApiRequest {
   Future<http.Response> get() async {
     print("Hostname ${headers}");
     if (temParams != null) {
-      headers.addAll(temParams);
+      params.addAll(temParams);
     }
     params.addAll({
       "startPeriode": AppData.startPeriode,
-      "endPeriode": AppData.endPeriode
+      "endPeriode": AppData.endPeriode,
+      "branch_id": AppData.informasiUser?.isEmpty == true
+          ? ""
+          : AppData.informasiUser![0].branchId.toString(),
     });
     print(basicUrl + url);
     return await http
-        .get(Uri.parse(basicUrl + url).replace(queryParameters: headers),
+        .get(Uri.parse(basicUrl + url).replace(queryParameters: params),
             headers: headers)
         .timeout(Duration(minutes: 3));
   }
@@ -236,9 +264,12 @@ class ApiRequest {
     }
     params.addAll({
       "startPeriode": AppData.startPeriode,
-      "endPeriode": AppData.endPeriode
+      "endPeriode": AppData.endPeriode,
+      "branch_id": AppData.informasiUser?.isEmpty == true
+          ? ""
+          : AppData.informasiUser![0].branchId.toString(),
     });
-    print(params);
+    print('ini params get $params');
     print("basic ${basicUrl + url}");
     return await http
         .post(Uri.parse(basicUrl + url).replace(queryParameters: params),
@@ -254,31 +285,32 @@ class ApiRequest {
     }
     params.addAll({
       "startPeriode": AppData.startPeriode,
-      "endPeriode": AppData.endPeriode
+      "endPeriode": AppData.endPeriode,
+      "branch_id": AppData.informasiUser?.isEmpty == true
+          ? ""
+          : AppData.informasiUser![0].branchId.toString(),
     });
     print(basicUrl + url);
     return await http
-        .patch(Uri.parse(basicUrl + url).replace(queryParameters: headers),
+        .patch(Uri.parse(basicUrl + url).replace(queryParameters: params),
             body: jsonEncode(body), headers: headers)
         .timeout(Duration(minutes: 2));
   }
 
   Future<http.Response> delete() async {
-    // print("Hostname ${AppData.hostInformation![0].hostname}");
-    // print("Hostname ${AppData.hostInformation![0].port}");
-    // print("Hostname ${AppData.hostInformation![0].dbname}");
-    // print("periode ${AppData.periode}");
-    // print("Kode cabang ${AppData.kodeCabang}");
     if (temParams != null) {
       headers.addAll(temParams);
     }
     params.addAll({
       "startPeriode": AppData.startPeriode,
-      "endPeriode": AppData.endPeriode
+      "endPeriode": AppData.endPeriode,
+      "branch_id": AppData.informasiUser?.isEmpty == true
+          ? ""
+          : AppData.informasiUser![0].branchId.toString(),
     });
-    print(basicUrl + url);
+    print('ini url delete ${basicUrl + url}');
     return await http
-        .delete(Uri.parse(basicUrl + url).replace(queryParameters: headers),
+        .delete(Uri.parse(basicUrl + url).replace(queryParameters: params),
             body: jsonEncode(body), headers: headers)
         .timeout(Duration(minutes: 3));
   }
@@ -291,6 +323,9 @@ class ApiRequest {
     params.addAll({
       "startPeriode": AppData.startPeriode,
       "endPeriode": AppData.endPeriode,
+      "branch_id": AppData.informasiUser?.isEmpty == true
+          ? ""
+          : AppData.informasiUser![0].branchId.toString(),
     });
 
     // Membangun URL lengkap

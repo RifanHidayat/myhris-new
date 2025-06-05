@@ -37,6 +37,7 @@ class AbsenModel {
   var namaHariLibur;
   var statusView;
   var jamKerja;
+  var jamPulang;
   var breakoutTime;
   var breakoutPlace;
   var breakoutPict;
@@ -88,6 +89,7 @@ class AbsenModel {
     this.namaHariLibur,
     this.jamKerja,
     this.turunan,
+    this.jamPulang,
     this.breakoutNote,
     this.breakoutTime,
     this.breakoutPict,
@@ -128,6 +130,7 @@ class AbsenModel {
       "is_view": isView ?? false,
       "hari_libur": namaHariLibur,
       "jam_kerja": jamKerja,
+      "jam_pulang": jamPulang,
       'turunan': turunan,
       'breakout_time': breakoutTime,
       'place_break_out': breakoutPlace,
@@ -178,6 +181,7 @@ class AbsenModel {
         offDay: map['off_day'] ?? 1,
         namaHariLibur: map['hari_libur'],
         jamKerja: map['jam_kerja'],
+        jamPulang: map['jam_pulang'],
         breakoutTime: map['breakout_time'],
         breakoutNote: map['breakout_note'],
         breakoutPict: map['breakout_pict'],

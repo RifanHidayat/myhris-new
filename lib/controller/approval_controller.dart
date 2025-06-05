@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:siscom_operasional/controller/global_controller.dart';
 import 'package:siscom_operasional/controller/pesan_controller.dart';
-import 'package:siscom_operasional/screen/init_screen.dart';
-import 'package:siscom_operasional/screen/login.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -20,15 +17,47 @@ class ApprovalController extends GetxController {
   var cari = TextEditingController().obs;
   var alasanReject = TextEditingController().obs;
 
+  var alasan1 = TextEditingController().obs;
+  var alasan2 = TextEditingController().obs;
+  var taskControllers = <TextEditingController>[].obs;
+  ScrollController scrollController = ScrollController();
+  List<FocusNode> focusNodes = [];
+
+  var isLoadingAlasan = false.obs;
+  var listAlasan = [].obs;
+
+  var searchSp = [].obs;
+  var searchTl = [].obs;
+
   var titleAppbar = "".obs;
   var bulanSelected = "".obs;
   var tahunSelected = "".obs;
   var fullNameDelegasi = "".obs;
+  var fullNameApprove2 = [].obs;
   var valuePolaPersetujuan = "".obs;
   var loadingString = "Memuat Data...".obs;
 
   var statusCari = false.obs;
+  var listStatusPengajuan = <Map<String, String>>[].obs;
 
+  var statusPemgajuanIzin = 'none'.obs;
+  var listStatusPengajuanSP = [
+            {'name': "None", 'value': "none"},
+            {'name': "Potong Cuti", 'value': "potong_cuti"},
+            {'name': "Potong Gaji", 'value': "potong_gaji"},
+          ].obs;
+  var listStatusPengajuanSPTolak = [
+    {'name': "None", 'value': "none"},
+    {'name': "Teguran Lisan", 'value': "teguran_lisan"}
+  ].obs;
+  var statusPemgajuanSP = ''.obs;
+  // var statusPemgajuanSPTolak = ''.obs;
+  var konsekuemsiList = [].obs;
+  var statusPengajuan = false;
+
+  var totalPercent = 0.0.obs;
+  var totalPercentage = 0.0.obs;
+  var listTask = [].obs;
   var listNotModif = [].obs;
   var listData = [].obs;
   var listDataAll = [].obs;
@@ -47,7 +76,6 @@ class ApprovalController extends GetxController {
   var statusHitungCuti = false.obs;
 
   var controllerGlobal = Get.find<GlobalController>();
-  
 
   var saldo = 0.obs;
   var limitTransaksi = 0.obs;
@@ -64,6 +92,26 @@ class ApprovalController extends GetxController {
   Future<void> startLoadData(title, bulan, tahun, status) async {
     getLoadsysData(title, bulan, tahun, status);
   }
+
+  void updateListStatus() {
+    print('ini di update gak sih');
+    print('ini di update gak sih${searchSp}');
+    print('searchSp: ${searchSp.value}, searchTl: ${searchTl.value}');
+    print(searchSp.isEmpty || searchTl.isEmpty);
+    listStatusPengajuan.value = searchSp.isNotEmpty || searchTl.isNotEmpty
+        ? [
+            {'name': "None", 'value': "none"},
+            {'name': "Surat Peringatan", 'value': "surat_peringatan"}
+          ]
+        : [
+            {'name': "None", 'value': "none"},
+            {'name': "Teguran Lisan", 'value': "teguran_lisan"},
+            {'name': "Surat Peringatan", 'value': "surat_peringatan"}
+          ];
+    listStatusPengajuan.refresh();
+    print(listStatusPengajuan);
+  }
+
 
   void getSaldo({emId, id}) {
     print("saldo new ");
@@ -89,10 +137,12 @@ class ApprovalController extends GetxController {
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+        // debugPrint('ini apaan siinin ${valueBody}', wrapWidth: 1000);
         for (var element in valueBody['data']) {
           if (element['kode'] == "013") {
             valuePolaPersetujuan.value = "${element['name']}";
             this.valuePolaPersetujuan.refresh();
+            print(valuePolaPersetujuan.value);
             titleAppbar.value = title;
             bulanSelected.value = bulan;
             tahunSelected.value = tahun;
@@ -118,6 +168,12 @@ class ApprovalController extends GetxController {
               loadwfh(status);
             } else if (title == "Kasbon") {
               loadkasbon(status);
+            } else if (title == "Surat Peringatan") {
+              loadSuratPeringatan(status);
+            } else if (title == 'Teguran Lisan') {
+              loadTeguranLisan(status);
+            } else if (title == 'Shift'){
+              loadShift(status);
             }
           }
         }
@@ -134,52 +190,8 @@ class ApprovalController extends GetxController {
     listDataRiwayat.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-    var controllerPesan = Get.find<PesanController>();
-
-    var defaultDate = controllerPesan.date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'em_id': getEmCode,
       'name_data': 'cuti',
       'bulan': bulanSelected.value,
@@ -230,6 +242,8 @@ class ApprovalController extends GetxController {
             'image': element['image'],
             'apply_status': element['apply_status'],
             'apply2_status': element['apply2_status'],
+            'nama_tipe': element['nama_tipe'],
+            'cut_leave': element['cut_leave']
           };
           listData.value.add(data);
           listDataRiwayat.value.add(data);
@@ -241,8 +255,6 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadDataLembur(status) {
@@ -253,52 +265,8 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-    var controllerPesan = Get.find<PesanController>();
-
-    var defaultDate = controllerPesan.date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'em_id': getEmCode,
       'name_data': 'lembur',
       'bulan': bulanSelected.value,
@@ -309,11 +277,10 @@ class ApprovalController extends GetxController {
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
-        print("data lembur value ${valueBody}");
+        debugPrint("data lembur value ${valueBody['data']}", wrapWidth: 1000);
         if (valueBody['data'].length == 0) {
           loadingString.value = 'Tidak ada pengajuan';
         }
-        print(valueBody['data']);
         listNotModif.value = valueBody['data'];
         for (var element in valueBody['data']) {
           var fullName = element['full_name'] ?? "";
@@ -346,7 +313,11 @@ class ApprovalController extends GetxController {
             'approve_status': element['approve_status'],
             'approve2_status': element['approve2_status'],
             'image': element['image'],
-            'tgl_ajuan': element['tgl_ajuan'],
+            'status': element['status'],
+            'em_ids': element['em_ids'],
+            'em_id_pengaju': element['em_id'],
+            'dinilai': element['dinilai'],
+            'nama_delegasi': element['nama_delegasi']
           };
           listData.value.sort(
               (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
@@ -355,10 +326,10 @@ class ApprovalController extends GetxController {
         }
         this.listData.refresh();
         this.listNotModif.refresh();
+      } else {
+        print('ini error lembur appooval ${res.statusCode} : ${res.body}');
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadApprovePayroll(status) {
@@ -368,51 +339,8 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-    var controllerPesan = Get.find<PesanController>();
-    var defaultDate = controllerPesan.date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'em_id': getEmCode,
       'name_data': 'lembur',
       'bulan': bulanSelected.value,
@@ -465,8 +393,6 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadAbsensi(status) {
@@ -478,53 +404,8 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-
-    var controllerPesan = Get.find<PesanController>();
-
-    var defaultDate = controllerPesan.date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'em_id': getEmCode,
       'name_data': 'absensi',
       'bulan': bulanSelected.value,
@@ -541,7 +422,7 @@ class ApprovalController extends GetxController {
         }
         listNotModif.value = valueBody['data'];
 
-        print("data body asli ${valueBody['data']}");
+        print("data body 2 ${valueBody['data']}");
         for (var element in valueBody['data']) {
           var fullName = element['full_name'] ?? "";
           var convertNama = "$fullName";
@@ -562,7 +443,8 @@ class ApprovalController extends GetxController {
             'delegasi': element['em_delegation'],
             'nama_approve1': element['approve_by'],
             'nama_approve2': element['approve2_by'],
-            'waktu_pengajuan': element['atten_date'],
+            'waktu_pengajuan': element['tgl_ajuan'],
+            'atten_date': element['atten_date'],
             'catatan': element['reason'],
             'type': 'absensi',
             'category': element['category'],
@@ -570,6 +452,8 @@ class ApprovalController extends GetxController {
             'file': element['req_file'] ?? "",
             'dari_jam': element['dari_jam'],
             'sampai_jam': element['sampai_jam'],
+            'breakout_time': element['breakout_time'],
+            'breakin_time': element['breakin_time'],
             'deskripsi': element['uraian'],
             'nomor_ajuan': element['nomor_ajuan'],
             'em_report_to': element['em_report_to'],
@@ -583,18 +467,16 @@ class ApprovalController extends GetxController {
             'status': element['status'],
             'approve_status': element['approve_status'],
             'approve2_status': element['approve2_status'],
-            'catatan_masuk': element['catatan_masuk'],
-            'catatan_keluar': element['catatan_keluar'],
-            'lokasi_masuk': element['lokasi_masuk'],
-            'lokasi_keluar': element['lokasi_keluar'],
-            'foto_masuk': element['foto_masuk'],
-            'foto_keluar': element['foto_keluar'],
-            'breakin_time': element['breakin_time'],
-            'breakout_time': element['breakout_time'],
+            'catatan_masuk': element['sigin_note'],
+            'catatan_keluar': element['signout_note'],
+            'lokasi_masuk': element['signin_addr'],
+            'lokasi_keluar': element['signout_addr'],
+            'foto_masuk': element['signin_pict'],
+            'foto_keluar': element['signout_pict'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
-          print("data body 2 ${valueBody['data']}");
+          print("data body list data ${listData}");
         }
         listData.value.sort(
             (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
@@ -602,8 +484,86 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
+  }
+
+  void loadShift(status) {
+    print("data shift");
+    var urlLoad = valuePolaPersetujuan.value == "1"
+        ? "spesifik_approval"
+        : "spesifik_approval_multi";
+    listNotModif.value.clear();
+    listData.value.clear();
+    listDataAll.value.clear();
+    var dataUser = AppData.informasiUser;
+    var getEmCode = dataUser![0].em_id;
+    var body = {
+      'em_id': getEmCode,
+      'name_data': 'shift',
+      'bulan': bulanSelected.value,
+      'tahun': tahunSelected.value,
+      'status': status == "riwayat" ? '' : 'pending',
+    };
+    var connect = Api.connectionApi("post", body, urlLoad);
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print("value body ${valueBody}");
+        if (valueBody['data'].length == 0) {
+          loadingString.value = 'Tidak ada pengajuan';
+        }
+        listNotModif.value = valueBody['data'];
+        for (var element in valueBody['data']) {
+          var fullName = element['full_name'] ?? "";
+          var convertNama = "$fullName";
+              Constanst.convertDate1("${element['atten_date']}");
+          var filterStatus = element['status'];
+          var data = {
+            'id': element['id'],
+            'nama_pengaju': convertNama,
+            'emId_pengaju': element['em_id'],
+            'em_id': element['em_id'],
+            'title_ajuan': 'Pengajuan Shift',
+            'leave_status': filterStatus,
+            'delegasi': element['em_delegation'],
+            'nama_approve1': element['approve_by'],
+            'nama_approve2': element['approve2_by'],
+            'waktu_pengajuan': element['tgl_ajuan'],
+            'atten_date': element['atten_date'],
+            'catatan': element['uraian'],
+            'type': 'Shift',
+            'category': element['category'],
+            'deskripsi': element['uraian'],
+            'nomor_ajuan': element['nomor_ajuan'],
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
+            'approve_id': element['approve_id'],
+            'approve_by': element['approve_by'],
+            'approve_date': element['approve_date'],
+            'status': element['status'],
+            'approve_status': element['approve_status'],
+            'approve2_status': element['approve2_status'],
+            'dari_tgl': element['dari_tgl'],
+            'sampai_tgl': element['sampai_tgl'],
+            'name_delegasi': element['replace_name'],
+            'name_old': element['name_old'],
+            'time_in_old': element['time_in_old'],
+            'time_out_old': element['time_out_old'],
+            'work_id_old': element['work_id_old'],
+            'name_new': element['name_new'],
+            'time_in_new': element['time_in_new'],
+            'time_out_new': element['time_out_new'],
+            'work_id_new': element['work_id_new'],
+          };
+          listData.value.add(data);
+          listDataAll.value.add(data);
+          print("data body list data ${listData}");
+        }
+        listData.value.sort(
+            (a, b) => b['waktu_pengajuan'].compareTo(a['waktu_pengajuan']));
+        this.listData.refresh();
+        this.listNotModif.refresh();
+      }
+    });
   }
 
   void loadwfh(status) {
@@ -615,51 +575,8 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-    var controllerPesan = Get.find<PesanController>();
-    var defaultDate = controllerPesan.date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'em_id': getEmCode,
       'name_data': 'wfh',
       'bulan': bulanSelected.value,
@@ -729,8 +646,6 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadkasbon(status) {
@@ -742,53 +657,8 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-
-    var controllerPesan = Get.find<PesanController>();
-
-    var defaultDate = controllerPesan.date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'em_id': getEmCode,
       'name_data': 'kasbon',
       'bulan': bulanSelected.value,
@@ -864,64 +734,18 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadDataTidakHadir(status) {
     var urlLoad = valuePolaPersetujuan.value == "1"
         ? "spesifik_approval"
         : "spesifik_approval_multi";
-    listNotModif.clear();
-    listData.clear();
-    listDataAll.clear();
-    var controllerPesan = Get.find<PesanController>();
+    listNotModif.value.clear();
+    listData.value.clear();
+    listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print('load izin ke panggil');
-
-    var defaultDate = controllerPesan.date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'em_id': getEmCode,
       'name_data': 'tidak_hadir',
       'bulan': bulanSelected.value,
@@ -964,6 +788,7 @@ class ApprovalController extends GetxController {
             'sampaiJamAjaun': element['time_plan_to'],
             'lainnya': "",
             'nama_pengajuan': element['nama_pengajuan'],
+            'emId_pengaju': element['em_id'],
             'file': element['leave_files'],
             'em_report_to': element['em_report_to'],
             'em_report2_to': element['em_report2_to'],
@@ -984,8 +809,358 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
+  }
+
+  Future<void> searchSuratPeringatan(em_id) async {
+    searchSp.value.clear();
+    Map<String, dynamic> body = {
+      'em_id': em_id,
+    };
+
+    var connect = Api.connectionApi("post", body, 'surat_peringatan_search');
+    await connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        for (var element in valueBody['data']) {
+          var data = {
+            'nomor': element['nomor'],
+            'nama': element['nama'],
+            'exp': element['exp_date'],
+            'status': element['status']
+          };
+          searchSp.value.add(data);
+        }
+        updateListStatus();
+      } else {
+        UtilsAlert.showToast('yah error');
+      }
+    });
+  }
+
+  Future<void> searchTeguranLisan(em_id) async {
+    searchTl.value.clear();
+    Map<String, dynamic> body = {
+      'em_id': em_id,
+    };
+
+    var connect = Api.connectionApi("post", body, 'teguran_lisan_search');
+    await connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print('ini tl $valueBody');
+        for (var element in valueBody['data']) {
+          var data = {
+            'nomor': element['nomor'],
+            'nama': element['nama'],
+            'exp': element['exp_date'],
+            'status': element['status']
+          };
+          searchTl.value.add(data);
+        }
+        print(valueBody);
+        updateListStatus();
+      } else {
+        UtilsAlert.showToast('yah error');
+      }
+    });
+  }
+
+  void loadSuratPeringatan(status) {
+    print("data sp");
+    var urlLoad = valuePolaPersetujuan.value == "1"
+        ? "spesifik_approval"
+        : "spesifik_approval_multi";
+    listNotModif.value.clear();
+    listData.value.clear();
+    listDataAll.value.clear();
+    var dataUser = AppData.informasiUser;
+    var getEmCode = dataUser![0].em_id;
+    Map<String, dynamic> body = {
+      'em_id': getEmCode,
+      'name_data': 'surat_peringatan',
+      'bulan': bulanSelected.value,
+      'tahun': tahunSelected.value,
+      'status': status == "riwayat" ? '' : 'pending',
+    };
+    var connect = Api.connectionApi("post", body, urlLoad);
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        // Get.snackbar("tes555 :", '${valueBody['data']}');
+        print("value body ${valueBody}");
+        if (valueBody['data'].length == 0) {
+          loadingString.value = 'Tidak ada pengajuan';
+        }
+        var filteredData = valueBody['data'];
+        if (status == "riwayat") {
+          filteredData = valueBody['data'].where((element) {
+            print("Status element: ${element['approve_status']}");
+            return element['approve_status'] != 'Pending';
+          }).toList();
+        }
+        debugPrint("Filtered data: $filteredData", wrapWidth: 5000);
+
+        listNotModif.value = filteredData;
+        for (var element in filteredData) {
+          var fullName = element['full_name'] ?? "";
+          var convertNama = "$fullName";
+          // var tanggalDari = Constanst.convertDate1("${element['atten_date']}");
+          // var tanggalSampai = Constanst.convertDate1("${element['atten_date']}");
+          var filterStatus = element['leave_status'];
+          var data = {
+            'id': element['id'],
+            'nama_pengaju': convertNama,
+            'emId_pengaju': element['em_id'],
+            'em_id': element['em_id'],
+            'title_ajuan': 'Surat Peringatan',
+            'tanggal_ajuan': element['atten_date'],
+            'waktu_dari': "-",
+            'waktu_sampai': "-",
+            'durasi': element['leave_duration'],
+            'nama': element['nama'],
+            'leave_status': filterStatus,
+            'delegasi': element['em_delegation'],
+            'nama_approve1': element['approve_by'],
+            'nama_approve2': element['approve2_by'],
+            'waktu_pengajuan': element['atten_date'],
+            'catatan': element['reason'],
+            'type': 'Surat Peringatan',
+            'category': element['category'],
+            'lainnya': "",
+            'file': element['req_file'] ?? "",
+            'uraian': element['uraian'],
+            'nomor_ajuan': element['nomor_ajuan'],
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
+            'nama_divisi': element['nama_divisi'],
+            'place_in': element['place_in'],
+            'place_out': element['place_out'],
+            'approve_id': element['approve_id'],
+            'approve_by': element['approve_by'],
+            'approve_date': element['approve_date'],
+            'status': element['status'],
+            'approve_status': element['approve_status'],
+            'approve2_status': element['approve2_status'],
+            'catatan_masuk': element['catatan_masuk'],
+            'catatan_keluar': element['catatan_keluar'],
+            'lokasi_masuk': element['lokasi_masuk'],
+            'lokasi_keluar': element['lokasi_keluar'],
+            'foto_masuk': element['foto_masuk'],
+            'foto_keluar': element['foto_keluar'],
+          };
+          listData.value.add(data);
+          listDataAll.value.add(data);
+        }
+        this.listData.refresh();
+        this.listNotModif.refresh();
+      }
+    });
+  }
+
+  void aksiMenyetujuiSp(pilihan) {
+    List dataEditFinal = [];
+    for (var element in listNotModif.value) {
+      if (element['id'] == detailData[0]['id']) {
+        dataEditFinal.add(element);
+      }
+    }
+    Map<String, dynamic> body = {
+      'nomor_ajuan': detailData[0]['nomor_ajuan'].toString(),
+      'em_id': AppData.informasiUser![0].em_id,
+      'tanggal': formatDate(detailData[0]['tanggal_ajuan'].toString()),
+      'status': pilihan == 'Tolak' ? 'Rejected' : 'Approve',
+      'id': detailData[0]['id'].toString(),
+      'alasan': alasanReject.value.text,
+      'tipe_sp': detailData[0]['nama'].toString(),
+      'approval_id': AppData.informasiUser![0].em_id,
+      'list_konsekuensi': konsekuemsiList,
+      'konsekuesi':
+          statusPemgajuanSP.value == '' ? 'none' : statusPemgajuanSP.value
+    };
+    print("body approval 1 ${body.toString()}");
+    var connect = Api.connectionApi("post", body, "surat_peringatan/approval");
+    connect.then((dynamic res) {
+      var dt = DateTime.now();
+
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print("response valueBody ${valueBody.toString()}");
+        Get.back();
+        Get.back();
+        Get.back();
+        Get.back();
+        if (statusPemgajuanSP.value == 'potong_cuti') {
+          cariEmployee(dataEditFinal);
+        }
+        startLoadData(
+            'Surat Peringatan', "${dt.month}", "${dt.year}", 'persetujuan');
+      }
+    });
+  }
+
+  void fetchAlasan(id) {
+    print("info delegasi");
+    isLoadingAlasan.value = true;
+    var connect = Api.connectionApi("get", {}, "surat_peringatan/${id}/alasan");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        isLoadingAlasan.value = false;
+        listAlasan.value = valueBody['data'];
+      }
+    });
+  }
+
+  void fetchAlasanTeguranLisan(id) {
+    isLoadingAlasan.value = true;
+    var connect = Api.connectionApi("get", {}, "teguran_lisan/${id}");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        isLoadingAlasan.value = false;
+        listAlasan.value = valueBody['data'];
+      }
+    });
+  }
+
+  void loadTeguranLisan(status) {
+    var urlLoad = valuePolaPersetujuan.value == "1"
+        ? "spesifik_approval"
+        : "spesifik_approval_multi";
+    listNotModif.value.clear();
+    listData.value.clear();
+    listDataAll.value.clear();
+    var dataUser = AppData.informasiUser;
+    var getEmCode = dataUser![0].em_id;
+    Map<String, dynamic> body = {
+      'em_id': getEmCode,
+      'name_data': 'teguran_lisan',
+      'bulan': bulanSelected.value,
+      'tahun': tahunSelected.value,
+      'status': status == "riwayat" ? '' : 'pending',
+    };
+    var connect = Api.connectionApi("post", body, urlLoad);
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        // Get.snackbar("tes555 :", '${valueBody['data']}');
+        print("value body ${valueBody}");
+        if (valueBody['data'].length == 0) {
+          loadingString.value = 'Tidak ada pengajuan';
+        }
+        var filteredData = valueBody['data'];
+        if (status == "riwayat") {
+          filteredData = valueBody['data'].where((element) {
+            print("Status element: ${element['approve_status']}");
+            return element['approve_status'] != 'Pending';
+          }).toList();
+        }
+        debugPrint("Filtered data: $filteredData", wrapWidth: 5000);
+
+        listNotModif.value = filteredData;
+        for (var element in filteredData) {
+          var fullName = element['full_name'] ?? "";
+          var convertNama = "$fullName";
+          var filterStatus = element['leave_status'];
+          var data = {
+            'id': element['id'],
+            'nama_pengaju': convertNama,
+            'emId_pengaju': element['em_id'],
+            'em_id': element['em_id'],
+            'title_ajuan': 'Surat teguran Lisan',
+            'tanggal_ajuan': element['atten_date'],
+            'waktu_dari': "-",
+            'waktu_sampai': "-",
+            'durasi': element['leave_duration'],
+            'nama': element['nama'],
+            'leave_status': filterStatus,
+            'delegasi': element['em_delegation'],
+            'nama_approve1': element['approve_by'],
+            'nama_approve2': element['approve2_by'],
+            'waktu_pengajuan': element['atten_date'],
+            'catatan': element['pelangaran'],
+            'type': 'Teguran Lisan',
+            'category': element['category'],
+            'lainnya': "",
+            'file': element['req_file'] ?? "",
+            'uraian': element['uraian'],
+            'nomor_ajuan': element['nomor_ajuan'],
+            'em_report_to': element['em_report_to'],
+            'em_report2_to': element['em_report2_to'],
+            'nama_divisi': element['nama_divisi'],
+            'place_in': element['place_in'],
+            'place_out': element['place_out'],
+            'approve_id': element['approve_id'],
+            'approve_by': element['approve_by'],
+            'approve_date': element['approve_date'],
+            'status': element['status'],
+            'approve_status': element['approve_status'],
+            'approve2_status': element['approve2_status'],
+            'catatan_masuk': element['catatan_masuk'],
+            'catatan_keluar': element['catatan_keluar'],
+            'lokasi_masuk': element['lokasi_masuk'],
+            'lokasi_keluar': element['lokasi_keluar'],
+            'foto_masuk': element['foto_masuk'],
+            'foto_keluar': element['foto_keluar'],
+          };
+          listData.value.add(data);
+          listDataAll.value.add(data);
+        }
+        this.listData.refresh();
+        this.listNotModif.refresh();
+      }
+    });
+  }
+
+  void aksiMenyetujuiTeguranLisan(pilihan) {
+    Map<String, dynamic> body = {
+      'nomor_ajuan': detailData[0]['nomor_ajuan'].toString(),
+      'em_id': AppData.informasiUser![0].em_id,
+      'tanggal': formatDate(detailData[0]['tanggal_ajuan'].toString()),
+      'status': pilihan == 'Tolak' ? 'Rejected' : 'Approve',
+      'id': detailData[0]['id'].toString(),
+      'alasan': alasanReject.value.text
+    };
+    print("body approval 1 ${body.toString()}");
+    var connect = Api.connectionApi("post", body, "teguran_lisan/approval");
+    connect.then((dynamic res) {
+      var dt = DateTime.now();
+
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        print("response valueBody ${valueBody.toString()}");
+        Get.back();
+        Get.back();
+        Get.back();
+
+        startLoadData(
+            'Teguran Lisan', "${dt.month}", "${dt.year}", 'persetujuan');
+      }
+    });
+  }
+
+  void aksiMenyetujuiShift(pilihan) {
+    Map<String, dynamic> body = {
+      'nomor_ajuan': detailData[0]['nomor_ajuan'].toString(),
+      'em_id': AppData.informasiUser![0].em_id,
+      'tanggal': formatDate(detailData[0]['waktu_pengajuan'].toString()),
+      'status': pilihan == 'Tolak' ? 'Rejected' : 'Approve',
+      'id': detailData[0]['id'].toString(),
+      'alasan': alasan1.value.text == '' ? alasan2.value.text : alasan1.value.text
+    };
+    var connect = Api.connectionApi("post", body, "shift/approval");
+    connect.then((dynamic res) {
+      var dt = DateTime.now();
+      if (res.statusCode == 200) {
+        Get.back();
+        Get.back();
+        Get.back();
+        startLoadData(
+            'Shift', "${dt.month}", "${dt.year}", 'persetujuan');
+      } else{
+        UtilsAlert.showToast('gagal approve shift');
+      }
+    });
   }
 
   void loadDataTugasLuar(status) {
@@ -995,53 +1170,9 @@ class ApprovalController extends GetxController {
     listNotModif.value.clear();
     listData.value.clear();
     listDataAll.value.clear();
-    var controllerPesan = Get.find<PesanController>();
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-
-    var defaultDate = controllerPesan.date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'em_id': getEmCode,
       'name_data': 'tugas_luar',
       'bulan': bulanSelected.value,
@@ -1076,7 +1207,7 @@ class ApprovalController extends GetxController {
             'approve_status': element['approve_status'],
             'approve2_status': element['approve2_status'],
             'nama_approve2': element['approve2_by'],
-            'waktu_pengajuan': element['tgl_ajuan'],
+            'waktu_pengajuan': element['atten_date'],
             'catatan': element['uraian'],
             'type': 'Tugas Luar',
             'category': element['category'],
@@ -1087,7 +1218,6 @@ class ApprovalController extends GetxController {
             'nama_divisi': element['nama_divisi'],
             'nomor_ajuan': element['nomor_ajuan'],
             'image': element['image'],
-            'tgl_ajuan': element['atten_date'],
           };
           listData.value.add(data);
           listDataAll.value.add(data);
@@ -1098,8 +1228,6 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadDataPayroll() {}
@@ -1111,53 +1239,9 @@ class ApprovalController extends GetxController {
     listNotModif.value.clear();
     listData.value.clear();
     listDataAll.value.clear();
-    var controllerPesan = Get.find<PesanController>();
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-
-    var defaultDate = controllerPesan.date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'em_id': getEmCode,
       'name_data': 'dinas_luar',
       'bulan': bulanSelected.value,
@@ -1216,8 +1300,6 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadDataKlaim(status) {
@@ -1228,52 +1310,8 @@ class ApprovalController extends GetxController {
     listData.value.clear();
     listDataAll.value.clear();
     var dataUser = AppData.informasiUser;
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-    var controllerPesan = Get.find<PesanController>();
-
-    var defaultDate = controllerPesan.date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      controllerPesan.beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmCode = dataUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'em_id': getEmCode,
       'name_data': 'klaim',
       'bulan': bulanSelected.value,
@@ -1284,6 +1322,7 @@ class ApprovalController extends GetxController {
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+        print('ini data klaim $valueBody');
         if (valueBody['data'].length == 0) {
           loadingString.value = 'Tidak ada pengajuan';
         }
@@ -1333,8 +1372,6 @@ class ApprovalController extends GetxController {
         this.listNotModif.refresh();
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
   }
 
   void cariData(value) {
@@ -1350,7 +1387,7 @@ class ApprovalController extends GetxController {
   }
 
   void getDetailData(idxDetail, emId, title, delegasi) {
-    if (title == "Cuti") {
+    if (title.toString().toLowerCase().contains('cuti')) {
       loadCutiPengaju(emId);
     }
     if (title != "Klaim") {
@@ -1360,6 +1397,7 @@ class ApprovalController extends GetxController {
     for (var element in listData.value) {
       if ("${element['id']}" == "$idxDetail") {
         detailData.value.add(element);
+        print('detail data ${detailData.value}');
       }
     }
     this.detailData.refresh();
@@ -1367,7 +1405,7 @@ class ApprovalController extends GetxController {
 
   void infoDelegasi(delegasi) {
     print("info delegasi");
-    Map<String, dynamic> body = {
+    var body = {
       'val': 'em_id',
       'cari': delegasi,
     };
@@ -1375,10 +1413,92 @@ class ApprovalController extends GetxController {
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
+        print(valueBody);
         fullNameDelegasi.value = valueBody['data'][0]['full_name'];
         this.fullNameDelegasi.refresh();
       }
     });
+  }
+
+  void updateTotalPercentage() {
+    int total = 0;
+    int count = taskControllers.length;
+
+    for (var controller in taskControllers) {
+      int value = int.tryParse(controller.text) ?? 0;
+      total += value;
+    }
+
+    // Ubah hasil pembagian ke tipe double
+    totalPercentage.value = count > 0 ? (total / count).toDouble() : 0.0;
+  }
+
+  void infoTask(emPengaju) {
+    listTask.clear();
+    taskControllers.clear();
+    var body = {'nomor_ajuan': emPengaju};
+    var connect = Api.connectionApi("post", body, "lembur/detail");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        debugPrint('ini data task $valueBody');
+        if (valueBody['data'] is List) {
+          double totalPercentage = 0.0;
+          for (var task in valueBody['data']) {
+            listTask.add(task);
+            taskControllers.add(TextEditingController());
+            print('task: $listTask');
+            double taskPercentage =
+                double.tryParse(task['persentase'].toString()) ?? 0.0;
+            totalPercentage += taskPercentage;
+            totalPercent.value = double.parse(
+                (totalPercentage / listTask.length).toStringAsFixed(2));
+            ;
+          }
+          listTask.refresh();
+          taskControllers.refresh();
+        } else {
+          print('Unexpected data format');
+        }
+      } else {
+        print('Failed to fetch tasks: ${res.statusCode} : ${res.body}');
+      }
+    }).catchError((e) {
+      print('Error fetching tasks: $e');
+    });
+  }
+
+  void infoIds(emIds) {
+    var listEmId = emIds.split(",");
+    print("info delegasi");
+    fullNameApprove2.clear();
+    for (var emId in listEmId) {
+      var body = {
+        'val': 'em_id',
+        'cari': emId,
+      };
+      var connect = Api.connectionApi("post", body, "whereOnce-employee");
+      connect.then((dynamic res) {
+        if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
+          if (valueBody['data'] is List && valueBody['data'].isNotEmpty) {
+            var fullName = valueBody['data'][0]['full_name'];
+            print('Full name for $emId: $fullName');
+            print('lah ini dong yang kepangggil');
+            fullNameApprove2.add(fullName);
+          } else if (valueBody['data'] is Map) {
+            var fullName = valueBody['data']['full_name'];
+            print('Full name for $emId: $fullName');
+            print('ini kepanggil');
+            fullNameApprove2.add(fullName);
+          } else {
+            print('Unexpected data format for $emId');
+          }
+        }
+      }).catchError((e) {
+        print('Error fetching data for $emId: $e');
+      });
+    }
   }
 
   String convertToIdr(dynamic number, int decimalDigit) {
@@ -1392,13 +1512,14 @@ class ApprovalController extends GetxController {
 
   void loadCutiPengaju(emId) {
     print("load cuti pengajuan");
-    Map<String, dynamic> body = {
+    var body = {
       'val': 'em_id',
       'cari': emId,
     };
     var connect = Api.connectionApi("post", body, "whereOnce-assign_leave");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
+        print('dat cuti ${res.body}');
         var valueBody = jsonDecode(res.body);
         if (valueBody['data'].isNotEmpty) {
           var totalDay = valueBody['data'][0]['total_day'];
@@ -1415,6 +1536,8 @@ class ApprovalController extends GetxController {
           statusHitungCuti.value = false;
           this.statusHitungCuti.refresh();
         }
+      } else {
+        print('erro data cuti user ${res.body}');
       }
     });
   }
@@ -1665,10 +1788,39 @@ class ApprovalController extends GetxController {
         dataEditFinal.add(element);
       }
     }
+    var listKonsekuensi = '';
+    print(konsekuemsiList);
+    listKonsekuensi =
+        konsekuemsiList.map((item) => item['konsekuensi']).join(',');
+    var statusPengajuannew = '';
+    print("ini valuepola persetujuan${valuePolaPersetujuan.value}");
+    if (detailData[0]['type'] == 'Cuti' ||
+        detailData[0]['type'] == "Izin" ||
+        detailData[0]['type'] == "Sakit") {
+      print('kesini lgak');
+      if (valuePolaPersetujuan.value == '1' ||
+          valuePolaPersetujuan.value == 1) {
+        statusPengajuannew = statusPemgajuanIzin.value;
+        // listKonsekuensi = konsekuemsiList.map((item) => item['konsekuensi']).join(',');
+        print('ini list konsekuensi ${listKonsekuensi}');
+      } else if (valuePolaPersetujuan.value == '2' ||
+          valuePolaPersetujuan.value == 2) {
+        if (dataEditFinal[0]['leave_status'] == 'Pending' ||
+            dataEditFinal[0]['leave_status'] == 'Approve1' ||
+            dataEditFinal[0]['leave_status'] == 'Approve 1') {
+          // listKonsekuensi = konsekuemsiList.map((item) => item['konsekuensi']).join(',');
+          print('ini list konsekuensi ${listKonsekuensi}');
+        } else {
+          // listKonsekuensi = konsekuemsiList.map((item) => item['konsekuensi']).join(',');
+          print('ini list konsekuensi ${listKonsekuensi}');
+        }
+      }
+    }
+
     var dt = DateTime.now();
     var dateString = "${dt.day}-${dt.month}-${dt.year}";
     var tanggalNow = Constanst.convertDateSimpan(dateString);
-
+    print(dataEditFinal);
     print("type ${detailData[0]['type']}");
     var url_tujuan;
 
@@ -1676,11 +1828,14 @@ class ApprovalController extends GetxController {
       url_tujuan = 'edit-emp_claim';
     } else {
       url_tujuan = detailData[0]['type'] == 'Tugas Luar' ||
-              detailData[0]['type'] == 'Lembur'
+              detailData[0]['type'] == 'Lembur' &&
+                  detailData[0]['dinilai'] == 'N'
           ? 'edit-emp_labor-approval'
-          : detailData[0]['type'] == 'wfh'
-              ? 'wfh-approval'
-              : 'edit-emp_leave-approval';
+          : detailData[0]['type'] == 'Lembur' && detailData[0]['dinilai'] == 'Y'
+              ? 'edit-emp_labor-approval-task'
+              : detailData[0]['type'] == 'wfh'
+                  ? 'wfh-approval'
+                  : 'edit-emp_leave-approval';
     }
 
     if (valuePolaPersetujuan.value == "1") {
@@ -1726,7 +1881,6 @@ class ApprovalController extends GetxController {
       if (url_tujuan == "edit-emp_leave-approval") {
         print("tes wfh ${tanggalNow}");
         if (dataEditFinal[0]['leave_status'] == "Pending") {
-          print("tes wfh ${tanggalNow}");
           statusPengajuan = pilihan == true ? 'Approve' : 'Rejected';
           applyDate1 = tanggalNow;
           applyBy1 = namaAtasanApprove;
@@ -1737,7 +1891,7 @@ class ApprovalController extends GetxController {
           applyId2 = "";
           apply2Status = "Pending";
         } else if (dataEditFinal[0]['leave_status'] == "Approve") {
-          print("tes wfh ${tanggalNow}");
+          // print("tes wfh ${tanggalNow}");
           statusPengajuan = pilihan == true ? 'Approve2' : 'Rejected';
           applyDate1 = dataEditFinal[0]['apply_date'];
           applyBy1 = dataEditFinal[0]['apply_by'];
@@ -1778,25 +1932,33 @@ class ApprovalController extends GetxController {
         }
       }
     }
-
+    double totalPercentage = 0.0;
+    for (var task in listTask) {
+      double taskPercentage =
+          double.tryParse(task['persentase'].toString()) ?? 0.0;
+      totalPercentage += taskPercentage;
+    }
+    totalPercent.value =
+        double.parse((totalPercentage / listTask.length).toStringAsFixed(2));
+    print('total persen $totalPercent');
     var alasanRejectShow = alasanReject.value.text != ""
         ? ", Alasan pengajuan di tolak = ${alasanReject.value.text}"
         : "";
     if (url_tujuan == 'edit-emp_leave-approval') {
       // emp_leave
-      Map<String, dynamic> body = {
+      var body = {
         'em_id': dataEditFinal[0]['em_id'],
         'typeid': dataEditFinal[0]['typeid'],
         'leave_type': dataEditFinal[0]['leave_type'],
         'start_date': dataEditFinal[0]['start_date'],
         'end_date': dataEditFinal[0]['end_date'],
         'leave_duration': dataEditFinal[0]['leave_duration'],
-        'apply_date': applyDate1,
-        'apply_by': applyBy1,
-        'apply_id': applyId1,
-        'apply2_date': applyDate2,
-        'apply2_by': applyBy2,
-        'apply2_id': applyId2,
+        'approve_date': applyDate1,
+        'approve_by': applyBy1,
+        'approve_id': applyId1,
+        'approve2_date': applyDate2,
+        'approve2_by': applyBy2,
+        'approve2_id': applyId2,
         'alasan_reject': alasanReject.value.text,
         'reason': dataEditFinal[0]['reason'],
         'leave_status': statusPengajuan,
@@ -1811,11 +1973,16 @@ class ApprovalController extends GetxController {
         'activity_name':
             "$statusPengajuan Pengajuan ${detailData[0]['type']} pada tanggal $tanggalNow. Pengajuan atas nama ${detailData[0]['nama_pengaju']} $alasanRejectShow",
         'apply_status': applyStatus,
-        'apply2_status': apply2Status
+        'apply2_status': apply2Status,
+        'konsekuensi': listKonsekuensi,
+        'tipe_surat': statusPemgajuanIzin.value,
       };
-      print("body approval ${body.toString()}");
+
+      print("body new ${body}");
+
       var connect = Api.connectionApi("post", body, "edit-emp_leave-approval");
       connect.then((dynamic res) {
+        print('kesini gak sih lu');
         if (res.statusCode == 200) {
           if (pilihan == true) {
             if (valuePolaPersetujuan.value == '1') {
@@ -1834,10 +2001,13 @@ class ApprovalController extends GetxController {
           print('status pengajuan $statusPengajuan');
           insertNotifikasi(dataEditFinal, statusPengajuan, tanggalNow, dt,
               pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow);
+        } else {
+          print('gagal appproveeeee');
         }
       });
-    } else if (url_tujuan == 'edit-emp_labor-approval') {
-      Map<String, dynamic> body = {
+    } else if (url_tujuan == 'edit-emp_labor-approval' ||
+        url_tujuan == 'edit-emp_labor-approval-task') {
+      var body = {
         'em_id': dataEditFinal[0]['em_id'],
         'dari_jam': dataEditFinal[0]['dari_jam'],
         'sampai_jam': dataEditFinal[0]['sampai_jam'],
@@ -1849,9 +2019,11 @@ class ApprovalController extends GetxController {
         'approve2_date': applyDate2,
         'approve2_by': applyBy2,
         'approve2_id': applyId2,
-        'alasan_reject': alasanReject.value.text,
+        'tasks': listTask,
+        'total_persentase': totalPercent.isNaN ? 0.0 : totalPercent.value,
+        'alasan1': alasan1.value.text,
+        'alasan2': alasan2.value.text,
         'em_delegation': dataEditFinal[0]['em_delegation'],
-        'tgl_ajuan': dataEditFinal[0]['tgl_ajuan'],
         'uraian': dataEditFinal[0]['uraian'],
         'ajuan': dataEditFinal[0]['ajuan'],
         'created_by': getEmpid,
@@ -1863,17 +2035,21 @@ class ApprovalController extends GetxController {
         "approve_status": applyStatus,
         "approve2_status": apply2Status
       };
-      print("body approval ${body.toString()}");
-      var connect = Api.connectionApi("post", body, "edit-emp_labor-approval");
+      print('inipersentasi cuti ${totalPercent.value}');
+      print("body approval lembur ${body.toString()}");
+      var connect = Api.connectionApi("post", body, url_tujuan);
       connect.then((dynamic res) {
         if (res.statusCode == 200) {
+          print('response aproval lembur ${res.body}');
           print('berhasil sampai sini edit emp labor');
           insertNotifikasi(dataEditFinal, statusPengajuan, tanggalNow, dt,
               pilihan, namaAtasanApprove, url_tujuan, alasanRejectShow);
+        } else {
+          print('gagal ${res.statusCode} ${res.body}');
         }
       });
     } else if (url_tujuan == 'edit-emp_claim') {
-      Map<String, dynamic> body = {
+      var body = {
         'status': statusPengajuan,
         'atten_date': detailData[0]['waktu_pengajuan'],
         'approve_date': applyDate1,
@@ -1909,7 +2085,7 @@ class ApprovalController extends GetxController {
       });
     } else if (url_tujuan == 'wfh-approval') {
       print('tes print');
-      Map<String, dynamic> body = {
+      var body = {
         'em_id': dataEditFinal[0]['em_id'],
         'dari_jam': dataEditFinal[0]['dari_jam'],
         'sampai_jam': dataEditFinal[0]['sampai_jam'],
@@ -2093,7 +2269,7 @@ class ApprovalController extends GetxController {
     //     : "";
     // if (url_tujuan == 'edit-emp_leave') {
     // emp_leave
-    Map<String, dynamic> body = {
+    var body = {
       'nomor_ajuan': detailData[0]['nomor_ajuan'].toString(),
       'em_id': AppData.informasiUser![0].em_id,
       'tanggal': formatDate(detailData[0]['tanggal_ajuan'].toString()),
@@ -2136,7 +2312,7 @@ class ApprovalController extends GetxController {
     // });
     // }
     // else if (url_tujuan == 'edit-emp_labor') {
-    //   Map<String, dynamic> body = {
+    //   var  body = {
     //     'em_id': dataEditFinal[0]['em_id'],
     //     'dari_jam': dataEditFinal[0]['dari_jam'],
     //     'sampai_jam': dataEditFinal[0]['sampai_jam'],
@@ -2171,7 +2347,7 @@ class ApprovalController extends GetxController {
     //     }
     //   });
     // } else if (url_tujuan == 'edit-emp_claim') {
-    //   Map<String, dynamic> body = {
+    //   var  body = {
     //     'status': statusPengajuan,
     //     'atten_date': detailData[0]['waktu_pengajuan'],
     //     'approve_date': applyDate1,
@@ -2207,7 +2383,7 @@ class ApprovalController extends GetxController {
     //   });
     // } else if (url_tujuan == 'wfh-approval') {
     //   print('tes print');
-    //   Map<String, dynamic> body = {
+    //   var  body = {
     //     'em_id': dataEditFinal[0]['em_id'],
     //     'dari_jam': dataEditFinal[0]['dari_jam'],
     //     'sampai_jam': dataEditFinal[0]['sampai_jam'],
@@ -2247,10 +2423,8 @@ class ApprovalController extends GetxController {
 
   void validasiPemakaianCuti(dataEditFinal) {
     print("validaasi pemakaian cuti");
-    Map<String, dynamic> body = {
-      'val': 'name',
-      'cari': dataEditFinal[0]['nama_tipe']
-    };
+    print(dataEditFinal);
+    var body = {'val': 'name', 'cari': dataEditFinal[0]['nama_tipe']};
     var connect = Api.connectionApi("post", body, "whereOnce-leave_types");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -2259,12 +2433,14 @@ class ApprovalController extends GetxController {
         if (statusPemotongan == 1) {
           cariEmployee(dataEditFinal);
         }
+      } else {
+        // UtilsAlert.showToast("yap");
       }
     });
   }
 
   insertAbsensiUserAfterApprove(dataEditFinal) {
-    Map<String, dynamic> body = {
+    var body = {
       'dataAbsen': dataEditFinal,
     };
     var connect =
@@ -2284,7 +2460,7 @@ class ApprovalController extends GetxController {
   Future<bool>? arppovalpayroll({id}) {
     UtilsAlert.showLoadingIndicator(Get.context!);
     var emId = AppData.informasiUser![0].em_id;
-    Map<String, dynamic> body = {
+    var body = {
       'id': id,
       'em_id': emId,
       'date': DateFormat('yyyy-MM-dd').format(DateTime.now()).toString()
@@ -2328,6 +2504,9 @@ class ApprovalController extends GetxController {
 
     int totalMinutes1 = waktu1.hour * 60 + waktu1.minute;
     int totalMinutes2 = waktu2.hour * 60 + waktu2.minute;
+
+    print('ini total menit1 ${totalMinutes1}');
+    print('ini total menit ${totalMinutes2}');
 
     //alur normal
     if (totalMinutes1 < totalMinutes2) {
@@ -2433,6 +2612,7 @@ class ApprovalController extends GetxController {
         applyId2 = "";
         applyStatus = pilihan == true ? 'Approve' : 'Rejected';
         apply2Status = pilihan == true ? 'Pending' : 'Rejected';
+        status = pilihan == true ? 'Approve' : 'Rejected';
       } else if (leaveStatus == "Approve") {
         statusPengajuan = pilihan == true ? 'Approve2' : 'Rejected';
         applyDate1 = apdDate1;
@@ -2443,19 +2623,24 @@ class ApprovalController extends GetxController {
         applyBy2 = name;
         applyId2 = emId;
         apply2Status = pilihan == true ? 'Approve' : 'Rejected';
+        status = pilihan == true ? 'Approve2' : 'Rejected';
       }
     }
     var alasanRejectShow = alasanReject.value.text != ""
         ? ", Alasan pengajuan di tolak = ${alasanReject.value.text}"
         : "";
 
-    Map<String, dynamic> body = {
+    var listKonsekuensi = '';
+    print(konsekuemsiList);
+    listKonsekuensi =
+        konsekuemsiList.map((item) => item['konsekuensi']).join(',');
+    var body = {
       'id': id.toString(),
       'em_id': ajuanEmid.toString(),
       'date': DateFormat('yyyy-MM-dd').format(DateTime.parse(date)).toString(),
       'bulan': DateFormat('MM').format(DateTime.parse(date)).toString(),
       'tahun': DateFormat('yyyy').format(DateTime.parse(date)).toString(),
-      'status': pilihan == true ? 'Approve' : 'Rejected',
+      'status': status,
       'signin_time': checkin.toString(),
       'signout_time': checkout.toString(),
       'approved_id': emId.toString(),
@@ -2481,6 +2666,8 @@ class ApprovalController extends GetxController {
       "endTime": endTime.value,
       "startDate": startDate.value,
       "endDate": endDate.value,
+      'konsekuensi': listKonsekuensi,
+      'tipe_surat': statusPemgajuanIzin.value,
     };
     print("body approve new 2 ${body}");
 
@@ -2499,7 +2686,7 @@ class ApprovalController extends GetxController {
           Get.back();
           Get.back();
           Get.back();
-          UtilsAlert.showToast('Berhasil menyetujui pengajuan employee');
+          UtilsAlert.showToast(valueBody['message']);
 
           return true;
         } else {
@@ -2518,25 +2705,74 @@ class ApprovalController extends GetxController {
 
   void cariEmployee(dataEditFinal) {
     print("cari employee");
-    Map<String, dynamic> body = {
-      'val': 'full_name',
-      'cari': dataEditFinal[0]['full_name']
-    };
+    var body = {'val': 'full_name', 'cari': dataEditFinal[0]['full_name']};
     var connect = Api.connectionApi("post", body, "whereOnce-employee");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         var getEmidEmployee = valueBody['data'][0]['em_id'];
         potongCuti(dataEditFinal, getEmidEmployee);
+        insertProd3(dataEditFinal, getEmidEmployee);
+      }
+    });
+  }
+
+  void insertProd3(dataEditFinal, getEmidEmployee) {
+    print('ini data finalllll gokill ${dataEditFinal}');
+
+    String namaPengajuan =
+        dataEditFinal[0]['nama_penagjuan'].toString().toLowerCase();
+    String type;
+
+    if (namaPengajuan.startsWith('sakit')) {
+      type = 'S';
+    } else if (namaPengajuan.startsWith('izin')) {
+      type = 'I';
+    } else if (namaPengajuan.startsWith('cuti')) {
+      type = 'C';
+    } else {
+      type = namaPengajuan[0].toUpperCase();
+    }
+
+    String tanggalSekarang = DateTime.now().toIso8601String().split('T')[0];
+
+    var body = {
+      'type': type,
+      'nomor_ajuan': dataEditFinal[0]['nomor_ajuan'],
+      'tanggal_ajuan': dataEditFinal[0]['atten_date'],
+      'tanggal': tanggalSekarang,
+      'nourut': '0001',
+      'em_id': getEmidEmployee,
+      'absen': dataEditFinal[0]['leave_duration'] == null ||
+              dataEditFinal[0]['leave_duration'] == ''
+          ? 1
+          : dataEditFinal[0]['leave_duration'],
+      'flag': '2'
+    };
+    print(body);
+    var connect = Api.connectionApi("post", body, "masuk_prod3");
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        var valueBody = jsonDecode(res.body);
+        UtilsAlert.showToast("${valueBody['message']}");
+      } else {
+        UtilsAlert.showToast("${res.body}");
       }
     });
   }
 
   void potongCuti(dataEditFinal, getEmidEmployee) {
-    Map<String, dynamic> body = {
+    print(dataEditFinal);
+
+    var body = {
       'em_id': getEmidEmployee,
-      'terpakai': dataEditFinal[0]['leave_duration'],
+      'terpakai': dataEditFinal[0]['nama'] == 'Surat Peringatan 1' ||
+              dataEditFinal[0]['nama'] == 'Surat Peringatan 2' ||
+              dataEditFinal[0]['nama'] == 'Surat Peringatan 3'
+          ? '1'
+          : dataEditFinal[0]['leave_duration'],
     };
+    print(body);
     var connect = Api.connectionApi("post", body, "potong_cuti");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -2562,7 +2798,7 @@ class ApprovalController extends GetxController {
     var title = "Pengajuan ${detailData[0]['type']} telah di $statusPengajuan";
     var stringDeskripsi =
         "Pengajuan ${detailData[0]['type']} kamu telah di $statusPengajuan oleh $namaAtasanApprove $alasanRejectShow";
-    Map<String, dynamic> body = {
+    var body = {
       'title': title,
       'deskripsi': stringDeskripsi,
       'url': url_notifikasi,
@@ -2573,7 +2809,8 @@ class ApprovalController extends GetxController {
     };
     if (url_tujuan == 'edit-emp_leave-approval') {
       body['em_id'] = dataEditFinal[0]['em_id'];
-    } else if (url_tujuan == 'edit-emp_labor-approval') {
+    } else if (url_tujuan == 'edit-emp_labor-approval' ||
+        url_tujuan == 'edit-emp_labor-approval-task') {
       body['em_id'] = dataEditFinal[0]['em_id'];
     } else if (url_tujuan == 'edit-emp_claim') {
       body['em_id'] = dataEditFinal[0]['em_id'];
@@ -2612,7 +2849,7 @@ class ApprovalController extends GetxController {
     var title = "Pengajuan ${detailData[0]['type']} telah di $statusPengajuan";
     var stringDeskripsi =
         "Pengajuan ${detailData[0]['type']} kamu telah di $statusPengajuan oleh $namaAtasanApprove $alasanRejectShow";
-    Map<String, dynamic> body = {
+    var body = {
       'title': title,
       'deskripsi': stringDeskripsi,
       'url': url_notifikasi,

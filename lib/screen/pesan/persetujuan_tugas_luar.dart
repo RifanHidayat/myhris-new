@@ -21,37 +21,18 @@ class PersetujuanTugasLuar extends StatefulWidget {
   _PersetujuanTugasLuarState createState() => _PersetujuanTugasLuarState();
 }
 
-class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> with SingleTickerProviderStateMixin {
+class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> {
   var controller = Get.find<ApprovalController>();
 
   var controllerGlobal = Get.find<GlobalController>();
-  TabController? _tabController;
+
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
     controller.startLoadData(
         widget.title, widget.bulan, widget.tahun, 'persetujuan');
-    _tabController!.addListener(_handleTabChange);
+    // controller.startLoadData("Dinas Luar", widget.bulan, widget.tahun);
     super.initState();
   }
-  
-  @override
-  void dispose() {
-    _tabController!.dispose();
-    super.dispose();
-  }
-
-  
-  void _handleTabChange() {
-    print("Tab changed: ${_tabController!.index}");
-
-    _tabController!.index == 0
-        ? controller.startLoadData(
-            widget.title, widget.bulan, widget.tahun, 'persetujuan')
-        : controller.startLoadData(
-            widget.title, widget.bulan, widget.tahun, 'riwayat');
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +203,6 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> with Single
                           physics: const BouncingScrollPhysics(),
                           labelColor: Constanst.onPrimary,
                           unselectedLabelColor: Constanst.fgSecondary,
-                          controller: _tabController,
                           onTap: (value) {
                             print(value);
                             value == 0
@@ -254,7 +234,6 @@ class _PersetujuanTugasLuarState extends State<PersetujuanTugasLuar> with Single
                         ),
                         Expanded(
                             child: TabBarView(
-                              controller: _tabController,
                           physics: const BouncingScrollPhysics(),
                           children: [
                             controller.listData.value.isEmpty

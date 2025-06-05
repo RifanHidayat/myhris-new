@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -70,12 +69,7 @@ class TugasLuarController extends GetxController {
   var departementAkses = [].obs;
   var tanggalSelected = [].obs;
 
-  var date = DateTime.now().obs;
-  var beginPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
-  var endPayroll = DateFormat('MMMM').format(DateTime.now()).obs;
-
   Rx<DateTime> initialDate = DateTime.now().obs;
-  Rx<DateTime> attenDate = DateTime.now().obs;
 
   var dataTypePengajuan = ["Tugas Luar", "Dinas Luar"];
 
@@ -105,12 +99,12 @@ class TugasLuarController extends GetxController {
   @override
   void onInit() {
     getTimeNow();
-    // getLoadsysData();
-    //  loadTipePengajuan();
-    // loadDataTugasLuar();
-    // loadDataDinasLuar();
-    // getDepartemen(1, "");
-    // loadAllEmployeeDelegasi();
+    getLoadsysData();
+    loadTipePengajuan();
+    loadDataTugasLuar();
+    loadDataDinasLuar();
+    getDepartemen(1, "");
+    loadAllEmployeeDelegasi();
     super.onInit();
   }
 
@@ -196,7 +190,6 @@ class TugasLuarController extends GetxController {
   }
 
   void loadTipePengajuan() {
-    allTipeFormTugasLuar.value.clear();
     for (var element in dataTypePengajuan) {
       allTipeFormTugasLuar.value.add("$element");
     }
@@ -238,14 +231,14 @@ class TugasLuarController extends GetxController {
   }
 
   void getTimeNow() {
-    var dt = DateTime.parse(AppData.endPeriode);
+    var dt = DateTime.now();
     bulanSelectedSearchHistory.value = "${dt.month}";
     tahunSelectedSearchHistory.value = "${dt.year}";
     bulanDanTahunNow.value = "${dt.month}-${dt.year}";
-    date.value = dt;
+
     if (idpengajuanTugasLuar.value == "") {
       tanggalTugasLuar.value.text =
-          Constanst.convertDate("${attenDate.value}");
+          Constanst.convertDate("${initialDate.value}");
     }
 
     this.tanggalTugasLuar.refresh();
@@ -258,50 +251,6 @@ class TugasLuarController extends GetxController {
     listTugasLuarAll.value.clear();
     listTugasLuar.value.clear();
     var dataUser = AppData.informasiUser;
-
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-
-    var defaultDate = date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmid,
@@ -317,10 +266,8 @@ class TugasLuarController extends GetxController {
           loadingString.value = "Tidak ada pengajuan";
           this.loadingString.refresh();
         } else {
-          // print('ini data tugas luar ${valueBody['data'].length}');
           for (var element in valueBody['data']) {
             if (element['ajuan'] == 2) {
-              print(element['nomor_ajuan']);
               listTugasLuar.value.add(element);
               listTugasLuarAll.value.add(element);
             }
@@ -337,8 +284,6 @@ class TugasLuarController extends GetxController {
         }
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;
   }
 
   void loadDataDinasLuar() {
@@ -346,50 +291,6 @@ class TugasLuarController extends GetxController {
     listDinasLuar.value.clear();
     listDinasLuarAll.value.clear();
     var dataUser = AppData.informasiUser;
-
-    var getEmpId = dataUser![0].em_id;
-    print(getEmpId);
-
-    var defaultDate = date.value;
-
-    if (AppData.informasiUser![0].beginPayroll != 1 &&
-        defaultDate.day > AppData.informasiUser![0].endPayroll) {
-      defaultDate =
-          DateTime(defaultDate.year, defaultDate.month + 1, defaultDate.day);
-    }
-
-    DateTime tanggalAkhirBulan =
-        DateTime(defaultDate.year, defaultDate.month + 1, 0);
-
-    DateTime sp = DateTime(defaultDate.year, defaultDate.month, 1);
-    DateTime ep =
-        DateTime(defaultDate.year, defaultDate.month, tanggalAkhirBulan.day);
-
-    var startPeriode = DateFormat('yyyy-MM-dd').format(sp);
-    var endPeriode = DateFormat('yyyy-MM-dd').format(ep);
-
-    DateTime previousMonthDate =
-        DateTime(defaultDate.year, defaultDate.month - 1, defaultDate.day);
-
-    var tempStartPeriode = AppData.startPeriode;
-    var tempEndPeriode = AppData.endPeriode;
-
-    if (AppData.informasiUser![0].beginPayroll >
-        AppData.informasiUser![0].endPayroll) {
-      beginPayroll.value = DateFormat('MMMM').format(previousMonthDate);
-
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month - 1, AppData.informasiUser![0].beginPayroll));
-      endPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].endPayroll));
-    } else if (AppData.informasiUser![0].beginPayroll == 1) {
-      beginPayroll.value = DateFormat('MMMM').format(defaultDate);
-      startPeriode = DateFormat('yyyy-MM-dd').format(DateTime(defaultDate.year,
-          defaultDate.month, AppData.informasiUser![0].beginPayroll));
-    }
-
-    AppData.startPeriode = startPeriode;
-    AppData.endPeriode = endPeriode;
     var getEmid = dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmid,
@@ -414,8 +315,6 @@ class TugasLuarController extends GetxController {
         }
       }
     });
-    AppData.startPeriode = tempStartPeriode;
-    AppData.endPeriode = tempEndPeriode;  
   }
 
   // void loadAllEmployeeDelegasi() {
@@ -477,7 +376,6 @@ class TugasLuarController extends GetxController {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
           var data = valueBody['data'];
-          print("data delegasi new ${data}");
           for (var element in data) {
             print("data status ${element['status']}");
             if (element['status'] == 'ACTIVE') {
@@ -489,7 +387,6 @@ class TugasLuarController extends GetxController {
               allEmployee.value.add(element);
             }
           }
-          print("data delegasi setelah di sharing ${allEmployeeDelegasi}");
           if (idpengajuanTugasLuar.value == "") {
             List data = valueBody['data'];
             var listFirst = data
@@ -510,10 +407,10 @@ class TugasLuarController extends GetxController {
   }
 
   void checkDelegation(em_id) {
-    var getData =
-        allEmployee.value.firstWhere((element) => element["em_id"] == em_id);
-    selectedDropdownDelegasi.value = getData["full_name"];
-    this.selectedDropdownDelegasi.refresh();
+    // var getData =
+    //     allEmployee.value.firstWhere((element) => element["em_id"] == em_id);
+    // selectedDropdownDelegasi.value = getData["full_name"];
+    // this.selectedDropdownDelegasi.refresh();
   }
 
   void changeTypeAjuan(name) {
@@ -644,7 +541,7 @@ class TugasLuarController extends GetxController {
     var getTanggal = listTanggal[1].replaceAll(' ', '');
     var tanggalTugasLuarEditData = Constanst.convertDateSimpan(getTanggal);
     var polaFormat = DateFormat('yyyy-MM-dd');
-    var tanggalPengajuanInsert = polaFormat.format(attenDate.value);
+    var tanggalPengajuanInsert = polaFormat.format(initialDate.value);
     var finalTanggalPengajuan = statusForm.value == false
         ? tanggalPengajuanInsert
         : tanggalTugasLuarEditData;
@@ -662,14 +559,12 @@ class TugasLuarController extends GetxController {
             var now = DateTime.now();
             var convertBulan = now.month <= 9 ? "0${now.month}" : now.month;
             var finalNomor = "TL${now.year}${convertBulan}0001";
-            // print('finalNomor $finalNomor');
             kirimPengajuan(finalNomor);
           } else {
             var getNomorAjuanTerakhir = valueBody['data'][0]['nomor_ajuan'];
             var keyNomor = getNomorAjuanTerakhir.replaceAll("TL", '');
             var hasilTambah = int.parse(keyNomor) + 1;
             var finalNomor = "TL$hasilTambah";
-            // print('finalNomor $finalNomor');
             kirimPengajuan(finalNomor);
           }
         } else {
@@ -837,7 +732,6 @@ class TugasLuarController extends GetxController {
   }
 
   void kirimPengajuan(getNomorAjuanTerakhir) {
-    var platform = Platform.operatingSystem;
     var listTanggal = tanggalTugasLuar.value.text.split(',');
     var getTanggal = listTanggal[1].replaceAll(' ', '');
     var tanggalTugasLuarEditData = Constanst.convertDateSimpan(getTanggal);
@@ -848,7 +742,6 @@ class TugasLuarController extends GetxController {
     var validasiDelegasiSelectedToken = validasiSelectedDelegasiToken();
     var polaFormat = DateFormat('yyyy-MM-dd');
     var tanggalPengajuanInsert = polaFormat.format(initialDate.value);
-    var tanggalBikinPengajuan = polaFormat.format(attenDate.value);
     var finalTanggalPengajuan = statusForm.value == false
         ? tanggalPengajuanInsert
         : tanggalTugasLuarEditData;
@@ -861,7 +754,6 @@ class TugasLuarController extends GetxController {
       'sampai_jam': sampaiJam.value.text,
       'durasi': hasilDurasi,
       'atten_date': finalTanggalPengajuan,
-      'tgl_ajuan': tanggalBikinPengajuan,
       'status': 'PENDING',
       'approve_date': '',
       'em_delegation': validasiDelegasiSelected,
@@ -869,16 +761,15 @@ class TugasLuarController extends GetxController {
       'ajuan': '2',
       'created_by': getEmid,
       'menu_name': 'Tugas Luar',
-      'approve_status': 'Pending',
-      'platform': platform
+      'approve_status': 'Pending'
     };
     if (statusForm.value == false) {
       body['activity_name'] =
           "Membuat Pengajuan Tugas Luar. alasan = ${catatan.value.text}";
       var connect = Api.connectionApi("post", body, "tugas-luar");
       connect.then((dynamic res) {
-        var valueBody = jsonDecode(res.body);
         if (res.statusCode == 200) {
+          var valueBody = jsonDecode(res.body);
           var typeNotifFcm = "Pengajuan Tugas Luar";
           if (valueBody['status'] == true) {
             var stringWaktu =
@@ -946,9 +837,6 @@ class TugasLuarController extends GetxController {
                   "Data periode $finalTanggalPengajuan belum tersedia, harap hubungi HRD");
             }
           }
-        } else {
-          Get.back();
-          UtilsAlert.showToast(valueBody['message']);
         }
       });
     } else {
@@ -956,9 +844,8 @@ class TugasLuarController extends GetxController {
       body['cari'] = idpengajuanTugasLuar.value;
       body['activity_name'] =
           "Edit Pengajuan Tugas Luar. Tanggal Pengajuan = $finalTanggalPengajuan";
-      var connect = Api.connectionApi("post", body, "tugas-luar-update");
+      var connect = Api.connectionApi("post", body, "edit-emp_labor");
       connect.then((dynamic res) {
-         var valueBody = jsonDecode(res.body);
         if (res.statusCode == 200) {
           Navigator.pop(Get.context!);
 
@@ -973,16 +860,12 @@ class TugasLuarController extends GetxController {
           Get.offAll(BerhasilPengajuan(
             dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
           ));
-        }else {
-          Get.back();
-          UtilsAlert.showToast(valueBody['message']);
         }
       });
     }
   }
 
   void kirimPengajuanDinasLuar(status, getNomorAjuanTerakhir) async {
-    var platform = Platform.operatingSystem;
     var dataUser = AppData.informasiUser;
     var getEmid = "${dataUser![0].em_id}";
     var getFullName = "${dataUser[0].full_name}";
@@ -1018,8 +901,7 @@ class TugasLuarController extends GetxController {
       'em_delegation': validasiDelegasiSelected,
       'leave_files': "",
       'ajuan': "4",
-      'apply_status': "Pending",
-      'platform': platform
+      'apply_status': "Pending"
     };
     var typeNotifFcm = "Pengajuan Dinas Luar";
     if (status == false) {
@@ -1082,9 +964,6 @@ class TugasLuarController extends GetxController {
               // }
             }
 
-            // f,pdfkm
-            // sdff
-
             Get.offAll(BerhasilPengajuan(
               dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
             ));
@@ -1144,6 +1023,7 @@ class TugasLuarController extends GetxController {
       typeNotifFcm) {
     var dt = DateTime.now();
     var jamSekarang = DateFormat('HH:mm:ss').format(dt);
+    var tanggalSekarang = DateFormat('yyyy-MM-dd').format(dt);
 
     var title_ct =
         type == 1 ? "Pemberi Tugas Tugas Luar" : "Pemberi Tugas Dinas Luar";
@@ -1155,7 +1035,7 @@ class TugasLuarController extends GetxController {
       'title': title_ct,
       'deskripsi': desk_ct,
       'url': '',
-      'atten_date': convertTanggalBikinPengajuan,
+      'atten_date': tanggalSekarang,
       'jam': jamSekarang,
       'status': '2',
       'view': '0',
@@ -1165,7 +1045,7 @@ class TugasLuarController extends GetxController {
       if (res.statusCode == 200) {
         globalCt.kirimNotifikasiFcm(
             title: typeNotifFcm, message: desk_ct, tokens: fcmTokenDelegasi);
-        UtilsAlert.showToast("Berhasil kirim delegasi");
+        // UtilsAlert.showToast("Berhasil kirim delegasi");
       }
     });
   }
@@ -1202,7 +1082,7 @@ class TugasLuarController extends GetxController {
       if (res.statusCode == 200) {
         // globalCt.kirimNotifikasiFcm(
         //     title: typeNotifFcm, message: desk_ct, tokens: fcmTokenDelegasi);
-        UtilsAlert.showToast("Berhasil kirim delegasi");
+        // UtilsAlert.showToast("Berhasil kirim delegasi");
       }
     });
   }
@@ -1420,7 +1300,6 @@ class TugasLuarController extends GetxController {
         'cari': '${index["id"]}',
         'status_transaksi': 0,
         'atten_date': '${index["atten_date"]}',
-         'tgl_ajuan': '${index["tgl_ajuan"]}',
       };
       var connect = Api.connectionApi("post", body, "edit-emp_labor");
       connect.then((dynamic res) {
@@ -1461,9 +1340,11 @@ class TugasLuarController extends GetxController {
   }
 
   void showDetailRiwayat(tipe, detailData, approve_by, alasanReject) {
+
+    UtilsAlert.showToast(detailData.toString());
     var nomorAjuan = detailData['nomor_ajuan'];
-    var tanggalMasukAjuan = tipe == 'Dinas Luar' ? detailData['atten_date'] : detailData['tgl_ajuan'];
-    var tglAjuan = detailData['atten_date'];
+    var tanggalMasukAjuan = detailData['tgl_ajuan'];
+    var tanggalTugas = detailData['atten_date'];
     var namaTypeAjuan = "Dinas Luar";
     var tanggalAjuanDari = detailData['start_date'];
     var tanggalAjuanSampai = detailData['end_date'];
@@ -1560,7 +1441,7 @@ class TugasLuarController extends GetxController {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                Constanst.convertDate6("$tanggalMasukAjuan"),
+                               tanggalMasukAjuan.toString(),
                                 style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16,
@@ -1617,11 +1498,31 @@ class TugasLuarController extends GetxController {
                           ),
                         ),
                         const SizedBox(height: 4),
+                        // detailData['date_selected'] == null ||
+                        //         detailData['date_selected'] == "" ||
+                        //         detailData['date_selected'] == "null"
+                        //     ? Text(
+                        //         "${Constanst.convertDate(tanggalAjuanDari)} - ${Constanst.convertDate(tanggalAjuanSampai)}",
+                        //         style: GoogleFonts.inter(
+                        //           fontWeight: FontWeight.w500,
+                        //           fontSize: 16,
+                        //           color: Constanst.fgPrimary,
+                        //         ),
+                        //       )
+                        //     : Container(),
+                        // listTanggalTerpilih.length == 1
+                        //     ? Text(
+                        //         "${Constanst.convertDate("$tanggalAjuanDari")}")
+                        //     : listTanggalTerpilih.length == 2
+                        //         ? Text(
+                        //             "${Constanst.convertDate("$tanggalAjuanDari")}  dan  ${Constanst.convertDate("$tanggalAjuanSampai")}")
+                        //         : Text(
+                        //             "${Constanst.convertDate("$tanggalAjuanDari")}  sd  ${Constanst.convertDate("$tanggalAjuanSampai")}"),
                         detailData['date_selected'] == null ||
                                 detailData['date_selected'] == "" ||
                                 detailData['date_selected'] == "null"
                             ? Text(
-                                tglAjuan,
+                                detailData['atten_date'],
                                 style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16,
@@ -1677,6 +1578,28 @@ class TugasLuarController extends GetxController {
                           ),
                         ),
                         const SizedBox(height: 12),
+                        //         jamAjuan == "" ||
+                        //     jamAjuan == "NULL" ||
+                        //     jamAjuan == null ||
+                        //     jamAjuan == "00:00:00"
+                        // ? SizedBox()
+                        // : Row(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: [
+                        //       Expanded(
+                        //         flex: 30,
+                        //         child: Text("Jam"),
+                        //       ),
+                        //       Expanded(
+                        //         flex: 2,
+                        //         child: Text(":"),
+                        //       ),
+                        //       Expanded(
+                        //         flex: 68,
+                        //         child: Text("$jamAjuan sd $sampaiJamAjuan"),
+                        //       )
+                        //     ],
+                        //   ),
                         Divider(
                           height: 0,
                           thickness: 1,
@@ -1840,11 +1763,15 @@ class TugasLuarController extends GetxController {
                     ),
                   ),
                 ),
-                
                 typeAjuan == "Approve" ||
                         typeAjuan == "Approve 1" ||
-                        typeAjuan == "Approve 2" || typeAjuan == "Rejected"
-                    ? const SizedBox(height: 16.0)
+                        typeAjuan == "Approve 2"
+                    ? Container()
+                    : const SizedBox(height: 16),
+                typeAjuan == "Approve" ||
+                        typeAjuan == "Approve 1" ||
+                        typeAjuan == "Approve 2"
+                    ? Container()
                     : Row(
                         children: [
                           Expanded(

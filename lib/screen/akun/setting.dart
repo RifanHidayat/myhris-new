@@ -11,13 +11,19 @@ import 'package:siscom_operasional/controller/aktifitas_controller.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 import 'package:siscom_operasional/controller/auth_controller.dart';
 import 'package:siscom_operasional/controller/dashboard_controller.dart';
+import 'package:siscom_operasional/controller/internet_controller.dart';
 import 'package:siscom_operasional/controller/setting_controller.dart';
+import 'package:siscom_operasional/controller/surat_peringatan_controller.dart';
 import 'package:siscom_operasional/screen/absen/camera_view_location.dart';
 import 'package:siscom_operasional/screen/akun/change_log.dart';
 import 'package:siscom_operasional/screen/akun/edit_password.dart';
 import 'package:siscom_operasional/screen/akun/face_recognigration.dart';
 import 'package:siscom_operasional/screen/akun/info_karyawan.dart';
 import 'package:siscom_operasional/screen/akun/personal_info.dart';
+import 'package:siscom_operasional/screen/apresiasi.dart';
+import 'package:siscom_operasional/screen/signature_page.dart';
+import 'package:siscom_operasional/screen/surat_peringatan.dart';
+import 'package:siscom_operasional/screen/teguran_lisan.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
 import 'package:siscom_operasional/utils/constans.dart';
@@ -35,21 +41,24 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  final controller = Get.put(SettingController());
+  final controller = Get.find<SettingController>();
   final controllerDashboard = Get.put(DashboardController());
   final authController = Get.put(AuthController());
+  final suratController = Get.put(SuratPeringatanController());
+  final internetController =
+      Get.find<InternetController>(tag: 'AuthController');
   var faceRecog = false;
   var namaVersi = "...".obs;
 
   Future<void> refreshData() async {
     controller.refreshPageStatus.value = true;
     await Future.delayed(const Duration(seconds: 2));
-
+    setState(() {
       var dashboardController = Get.find<DashboardController>();
       dashboardController.updateInformasiUser();
       controller.onReady();
       controller.refreshPageStatus.value = false;
-
+    });
   }
 
   @override
@@ -62,7 +71,7 @@ class _SettingState extends State<Setting> {
 
   void _checkversion() async {
     final newVersion = NewVersionPlus(
-      androidId: 'com.siscom.siscomhris',
+      androidId: 'com.siscom.siscomhrisnew',
     );
 
     final status = await newVersion.getVersionStatus();
@@ -103,6 +112,11 @@ class _SettingState extends State<Setting> {
                       padding: const EdgeInsets.only(left: 16.0, right: 16),
                       child: infoPeriode(),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 16.0),
+                      child: infoCabang(),
+                    ),
                     const SizedBox(
                       height: 16,
                     ),
@@ -112,7 +126,8 @@ class _SettingState extends State<Setting> {
                           int.parse(AppData.informasiUser![0].sisaKontrak) <=
                                   60 &&
                               AppData.informasiUser![0].tanggalBerakhirKontrak
-                                      .toString() != "" ,
+                                      .toString() !=
+                                  "",
                       child: InkWell(
                         onTap: () => //authController.isConnected.value
                             // ?
@@ -249,7 +264,10 @@ class _SettingState extends State<Setting> {
                                     Container(
                                       decoration: BoxDecoration(
                                           border: Border.all(
-                                            color: Constanst.color5,
+                                            color: internetController
+                                                    .isConnected.value
+                                                ? Constanst.color5
+                                                : Constanst.color4,
                                             width: 2.0,
                                           ),
                                           borderRadius: const BorderRadius.all(
@@ -401,7 +419,10 @@ class _SettingState extends State<Setting> {
                                               child: Container(
                                                 padding:
                                                     const EdgeInsets.all(3),
-                                                color: Constanst.color5,
+                                                color: internetController
+                                                        .isConnected.value
+                                                    ? Constanst.color5
+                                                    : Constanst.color4,
                                                 child: const Icon(
                                                   Icons.check,
                                                   size: 12,
@@ -493,10 +514,10 @@ class _SettingState extends State<Setting> {
             child: InkWell(
               customBorder: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12))),
-              onTap: () => //authController.isConnected.value
-                  // ?
-                  Get.to(InfoKaryawan()),
-              // : UtilsAlert.showDialogCheckInternet(),
+              onTap: () {
+                controller.getUserInfo();
+                Get.to(InfoKaryawan());
+              },
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -608,9 +629,10 @@ class _SettingState extends State<Setting> {
                                 ? Row(
                                     children: [
                                       Text(
-                                        AppData.informasiUser![0]
+                                        Constanst.convertDate1(AppData
+                                            .informasiUser![0]
                                             .tanggalBerakhirKontrak
-                                            .toString(),
+                                            .toString()),
                                         style: GoogleFonts.inter(
                                             color: Constanst.fgSecondary,
                                             fontWeight: FontWeight.w500,
@@ -627,14 +649,14 @@ class _SettingState extends State<Setting> {
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                       ),
-                                      Text(
-                                        AppData.informasiUser![0].sisaKontrak,
-                                        style: GoogleFonts.inter(
-                                            color: Constanst.fgSecondary,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 7),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
+                                      Expanded(
+                                        child: Text(
+                                          AppData.informasiUser![0].sisaKontrak,
+                                          style: GoogleFonts.inter(
+                                              color: Constanst.fgSecondary,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 6),
+                                        ),
                                       ),
                                     ],
                                   )
@@ -669,6 +691,8 @@ class _SettingState extends State<Setting> {
   Widget infoPeriode() {
     return GestureDetector(
       onTap: () {
+        print('ini start priode ${AppData.startPeriode}');
+        print('ini end priode ${AppData.endPeriode}');
         var dt = DateTime.parse(AppData.endPeriode);
         var outputFormat1 = DateFormat('MM');
         var outputFormat2 = DateFormat('yyyy');
@@ -692,7 +716,6 @@ class _SettingState extends State<Setting> {
             minTime: DateTime(2020, 1, 1),
             maxTime: DateTime(2050, 1, 1),
             currentTime: parsedDate,
-            locale: LocaleType.id
           ),
           onConfirm: (time) {
             // if (time != null) {
@@ -794,6 +817,72 @@ class _SettingState extends State<Setting> {
                 color: Colors.grey,
                 size: 16,
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget infoCabang() {
+    return GestureDetector(
+      onTap: () {
+        // controller.getBranch();
+        controller.showBottomBranch();
+      },
+      child: Container(
+        width: 380,
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Constanst.fgBorder,
+            width: 1.0,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  const Icon(Iconsax.buildings_2, color: Colors.blue),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Cabang",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                          ),
+                        ),
+                        Obx(() {
+                          return Text(
+                            controller.selectBranch.value,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Colors.grey,
+              size: 16,
             ),
           ],
         ),
@@ -1051,7 +1140,7 @@ class _SettingState extends State<Setting> {
               Get.to(ChangeLogPage()),
           // : UtilsAlert.showDialogCheckInternet(),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 12.0, 20.0, 12.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 12.0, 20.0, 8.0),
             child: Column(
               children: [
                 Row(
@@ -1100,44 +1189,336 @@ class _SettingState extends State<Setting> {
             ),
           ),
         ),
-        // InkWell(
-        //   onTap: () => null,
-        //   child: Padding(
-        //     padding: const EdgeInsets.fromLTRB(16.0, 12.0, 20.0, 12.0),
-        //     child: Column(
-        //       children: [
-        //         Row(
-        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //           children: [
-        //             Row(
-        //               children: [
-        //                 Icon(
-        //                   Iconsax.password_check,
-        //                   color: Constanst.fgSecondary,
-        //                   size: 24,
-        //                 ),
-        //                 Padding(
-        //                   padding: const EdgeInsets.only(left: 12),
-        //                   child: Text(
-        //                     "PIN Slip Gaji",
-        //                     style: GoogleFonts.inter(
-        //                         color: Constanst.fgPrimary,
-        //                         fontWeight: FontWeight.w500,
-        //                         fontSize: 14),
-        //                   ),
-        //                 )
-        //               ],
-        //             ),
-        //             Icon(Icons.arrow_forward_ios_rounded,
-        //                 size: 18, color: Constanst.fgSecondary)
-        //           ],
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
-        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+          child: Divider(
+            height: 0,
+            thickness: 1,
+            color: Constanst.colorNeutralBgTertiary,
+          ),
+        ),
+        signature(),
+        apresiasi(),
+        SizedBox(
+          height: 8,
+        ),
+        suratPeringatan(),
+        SizedBox(
+          height: 8,
+        ),
+        teguranLisan()
       ],
+    );
+  }
+
+  InkWell signature() {
+    return InkWell(
+      onTap: () {
+        Get.to(SignaturePage());
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16.0, 12.0, 20.0, 12.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.sign_language,
+                      color: Constanst.fgSecondary,
+                      size: 24,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: Text(
+                        "Tanda Tangan Digital",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14),
+                      ),
+                    )
+                  ],
+                ),
+                Icon(Icons.arrow_forward_ios_rounded,
+                    size: 18, color: Constanst.fgSecondary)
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget teguranLisan() {
+    return InkWell(
+      onTap: () => Get.to(TeguranLisan()),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16.0, 0.0, 20.0, 12.0),
+        child: Column(
+          children: [
+            Divider(
+              height: 0,
+              thickness: 1,
+              color: Constanst.colorNeutralBgTertiary,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Obx(
+                      () => Stack(children: [
+                        Icon(
+                          Iconsax.warning_2,
+                          color: Constanst.fgSecondary,
+                          size: 24,
+                        ),
+                        Visibility(
+                          visible: suratController.notifTeguranLisan.value
+                                  .toString() !=
+                              "0",
+                          child: Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              height: 18,
+                              width: 18,
+                              decoration: BoxDecoration(
+                                color: Constanst.colorStateDangerBg,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(100.0),
+                                ),
+                                border: Border.all(
+                                  width: 1.0,
+                                  color: Constanst.colorStateDangerBorder,
+                                ),
+                              ),
+                              child: Center(
+                                child: Obx(
+                                  () => Text(
+                                    "${suratController.notifTeguranLisan.value}"
+                                                .length >
+                                            2
+                                        ? '${"${suratController.notifTeguranLisan.value}".substring(0, 2)}+'
+                                        : "${suratController.notifTeguranLisan.value}",
+                                    style: GoogleFonts.inter(
+                                      color: Constanst.colorStateOnDangerBg,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: Text(
+                        "Surat Teguran Lisan",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14),
+                      ),
+                    )
+                  ],
+                ),
+                Icon(Icons.arrow_forward_ios_rounded,
+                    size: 18, color: Constanst.fgSecondary)
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget suratPeringatan() {
+    return InkWell(
+      onTap: () => Get.to(SuratPeringatan()),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16.0, 0.0, 20.0, 8.0),
+        child: Column(
+          children: [
+            Divider(
+              height: 0,
+              thickness: 1,
+              color: Constanst.colorNeutralBgTertiary,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Obx(
+                      () => Stack(children: [
+                        Icon(
+                          Iconsax.warning_2,
+                          color: Constanst.fgSecondary,
+                          size: 24,
+                        ),
+                        Visibility(
+                          visible: suratController.notifSuratPeringatan.value
+                                  .toString() !=
+                              "0",
+                          child: Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              height: 18,
+                              width: 18,
+                              decoration: BoxDecoration(
+                                color: Constanst.colorStateDangerBg,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(100.0),
+                                ),
+                                border: Border.all(
+                                  width: 1.0,
+                                  color: Constanst.colorStateDangerBorder,
+                                ),
+                              ),
+                              child: Center(
+                                child: Obx(
+                                  () => Text(
+                                    "${suratController.notifSuratPeringatan.value}"
+                                                .length >
+                                            2
+                                        ? '${"${suratController.notifSuratPeringatan.value}".substring(0, 2)}+'
+                                        : "${suratController.notifSuratPeringatan.value}",
+                                    style: GoogleFonts.inter(
+                                      color: Constanst.colorStateOnDangerBg,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: Text(
+                        "Surat Peringatan",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14),
+                      ),
+                    )
+                  ],
+                ),
+                Icon(Icons.arrow_forward_ios_rounded,
+                    size: 18, color: Constanst.fgSecondary)
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  InkWell apresiasi() {
+    return InkWell(
+      onTap: () => Get.to(Apresiasi()),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16.0, 0.0, 20.0, 8.0),
+        child: Column(
+          children: [
+            Divider(
+              height: 0,
+              thickness: 1,
+              color: Constanst.colorNeutralBgTertiary,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Obx(
+                      () => Stack(children: [
+                        Icon(
+                          Icons.card_giftcard,
+                          color: Constanst.fgSecondary,
+                          size: 24,
+                        ),
+                        Visibility(
+                          visible: suratController.notifSuratPeringatan.value
+                                  .toString() !=
+                              "0",
+                          child: Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              height: 18,
+                              width: 18,
+                              decoration: BoxDecoration(
+                                color: Constanst.colorStateDangerBg,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(100.0),
+                                ),
+                                border: Border.all(
+                                  width: 1.0,
+                                  color: Constanst.colorStateDangerBorder,
+                                ),
+                              ),
+                              child: Center(
+                                child: Obx(
+                                  () => Text(
+                                    "${suratController.notifSuratPeringatan.value}"
+                                                .length >
+                                            2
+                                        ? '${"${suratController.notifSuratPeringatan.value}".substring(0, 2)}+'
+                                        : "${suratController.notifSuratPeringatan.value}",
+                                    style: GoogleFonts.inter(
+                                      color: Constanst.colorStateOnDangerBg,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: Text(
+                        "Apresiasi",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14),
+                      ),
+                    )
+                  ],
+                ),
+                Icon(Icons.arrow_forward_ios_rounded,
+                    size: 18, color: Constanst.fgSecondary)
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 

@@ -24,7 +24,7 @@
 // }
 
 // class _LaporanAbsenState extends State<LaporanAbsen> {
-//   var controller = Get.find<AbsenController>(tag: 'absen controller');
+//   var controller = Get.find<AbsenController>();
 
 //   @override
 //   void initState() {

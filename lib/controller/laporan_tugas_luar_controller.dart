@@ -12,6 +12,7 @@ import 'package:siscom_operasional/screen/absen/laporan/laporan_dinas_luar.dart'
 import 'package:siscom_operasional/screen/absen/laporan/laporan_izin.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_klaim.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_lembur.dart';
+import 'package:siscom_operasional/screen/absen/laporan/laporan_shift.dart';
 import 'package:siscom_operasional/screen/absen/laporan/laporan_tugas_luar.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/app_data.dart';
@@ -38,6 +39,9 @@ class LaporanTugasLuarController extends GetxController {
   var title = "".obs;
   var valuePolaPersetujuan = "".obs;
   var filterStatusAjuanTerpilih = "Semua".obs;
+  var filterBranch = ''.obs;
+  var branchId = ''.obs;
+  var branchList = [].obs;
 
   var showButtonlaporan = false.obs;
   var statusLoadingSubmitLaporan = false.obs;
@@ -66,8 +70,8 @@ class LaporanTugasLuarController extends GetxController {
   var dataTypeAjuanDummy1 = ["Semua", "Approve", "Rejected", "Pending"];
   var dataTypeAjuanDummy2 = [
     "Semua",
-    "Approve",
-    "Approve2",
+    "Approve 1",
+    "Approve 2",
     "Rejected",
     "Pending"
   ];
@@ -84,8 +88,9 @@ class LaporanTugasLuarController extends GetxController {
   void onReady() async {
     super.onReady();
     getTimeNow();
-    // getLoadsysData();
-    // getDepartemen(1, "");
+    getLoadsysData();
+    getBranch();
+    getDepartemen(1, "");
     filterStatusAjuanTerpilih.value = "Semua";
     selectedViewFilterPengajuan.value = 0;
     pilihTanggalFilterAjuan.value = DateTime.now();
@@ -105,9 +110,181 @@ class LaporanTugasLuarController extends GetxController {
     statusCari.value = !statusCari.value;
   }
 
+  void showBottomBranch() {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      builder: (context) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Pilih Cabang",
+                    style: GoogleFonts.inter(
+                        color: Constanst.fgPrimary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20),
+                  ),
+                  InkWell(
+                      customBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      onTap: () => Navigator.pop(Get.context!),
+                      child: Icon(
+                        Icons.close,
+                        size: 26,
+                        color: Constanst.fgSecondary,
+                      ))
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Divider(
+                thickness: 1,
+                height: 0,
+                color: Constanst.border,
+              ),
+            ),
+            Expanded(
+              child: Obx(() {
+                return SingleChildScrollView(
+                  child: ListView.builder(
+                    itemCount: branchList.length,
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context, index) {
+                      var name = branchList[index]['name'];
+                      var idBrach = branchList[index]['id'];
+                      var isSelected = filterBranch.value == name;
+                      print('ini brachid $idBrach');
+                      return Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              filterBranch.value = name;
+                              branchId.value = idBrach.toString();
+                              Navigator.pop(context);
+                              aksiCariLaporan();
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      name,
+                                      style: GoogleFonts.inter(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Constanst.fgPrimary),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  isSelected
+                                      ? Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 2,
+                                                  color: Constanst.onPrimary),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: Constanst.onPrimary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Constanst.onPrimary),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                            ),
+                                          ),
+                                        )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                );
+              }),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void getBranch() {
+    var connect = Api.connectionApi('get', {}, 'cabang');
+    connect.then((dynamic res) {
+      if (res.statusCode == 200) {
+        branchList.clear();
+        var valueBody = jsonDecode(res.body);
+        print('ini get barnch ${valueBody['data']}');
+        for (var data in valueBody['data']) {
+          branchList.add(data);
+        }
+        List data = valueBody['data'];
+        if (data.isNotEmpty) {
+          var listFirst = data.firstWhere((element) => element['name'] != null,
+              orElse: () => null);
+          if (listFirst != null) {
+            var fullName = listFirst['name'] ?? "";
+            String namaUserPertama = "$fullName";
+            filterBranch.value = namaUserPertama;
+          }
+        }
+        branchList.refresh;
+        filterBranch.refresh;
+        print(branchList);
+      } else {
+        print('error ${res.body}');
+      }
+    });
+  }
+
   void getDepartemen(status, tanggal) {
     jumlahData.value = 0;
-    departementAkses.clear();
     var connect = Api.connectionApi("get", {}, "all_department");
     connect.then((dynamic res) {
       if (res == false) {
@@ -115,52 +292,37 @@ class LaporanTugasLuarController extends GetxController {
       } else {
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
-          var dataDepartemen = [];
-          var data = {
-            'id': 0,
-            'name': 'SEMUA DIVISI',
-            'inisial': 'AD',
-            'parent_id': '',
-            'aktif': '',
-            'pakai': '',
-            'ip': '',
-            'created_by': '',
-            'created_on': '',
-            'modified_by': '',
-            'modified_on': ''
-          };
-          dataDepartemen.add(data);
-          var temporary = valueBody['data'];
-          for (var i = 0; i < temporary.length; i++) {
-            var element = temporary[i];
-            dataDepartemen.add({
-              'id': element['id'],
-              'name': element['name'],
-              'inisial': element['inisial'],
-              'parent_id': element['parent_id'],
-              'aktif': element['aktif'],
-              'pakai': element['pakai'],
-              'ip': element['ip'],
-              'created_by': element['created_by'],
-              'created_on': element['created_on'],
-              'modified_by': element['modified_by'],
-              'modified_on': element['modified_on']
-            });
-          }
+          var dataDepartemen = valueBody['data'];
+
           var dataUser = AppData.informasiUser;
           var hakAkses = dataUser![0].em_hak_akses;
-
+          print(hakAkses);
           if (hakAkses != "" || hakAkses != null) {
-            if (hakAkses == "0") {
-              departementAkses.value = dataDepartemen;
-            } else {
+            if (hakAkses == '0') {
+              var data = {
+                'id': 0,
+                'name': 'SEMUA DIVISI',
+                'inisial': 'AD',
+                'parent_id': '',
+                'aktif': '',
+                'pakai': '',
+                'ip': '',
+                'created_by': '',
+                'created_on': '',
+                'modified_by': '',
+                'modified_on': ''
+              };
               departementAkses.add(data);
-              var convert = hakAkses.split(',');
-              for (var element in dataDepartemen) {
-                for (var element1 in convert) {
-                  if ("${element['id']}" == element1) {
-                    departementAkses.add(element);
-                  }
+            }
+            var convert = hakAkses!.split(',');
+            for (var element in dataDepartemen) {
+              if (hakAkses == '0') {
+                departementAkses.add(element);
+              }
+              for (var element1 in convert) {
+                if ("${element['id']}" == element1) {
+                  print('sampe sini');
+                  departementAkses.add(element);
                 }
               }
             }
@@ -226,9 +388,9 @@ class LaporanTugasLuarController extends GetxController {
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
       'status': idDepartemenTerpilih.value,
+      'branch_id': branchId.value,
       'type': title.value,
-      'em_id': AppData.informasiUser![0].em_id,
-      'dep_id_akses': AppData.informasiUser![0].em_hak_akses
+      'leave_status': filterStatusAjuanTerpilih.value
     };
     var connect = Api.connectionApi("post", body, "load_laporan_pengajuan");
     connect.then((dynamic res) {
@@ -690,12 +852,7 @@ class LaporanTugasLuarController extends GetxController {
                           return InkWell(
                             onTap: () {
                               // if (selectedViewFilterPengajuan.value == 1) {
-                              //  filterStatusPengajuan(name);
-                              filterStatusPengajuan(name == 'Approve 1'
-                                  ? "Approve"
-                                  : name == 'Approve 2'
-                                      ? "Approve2"
-                                      : name);
+                              filterStatusPengajuan(name);
                               // }
                             },
                             child: Padding(
@@ -739,13 +896,7 @@ class LaporanTugasLuarController extends GetxController {
                                       : InkWell(
                                           onTap: () {
                                             // if (selectedViewFilterPengajuan.value == 1) {
-                                            //filterStatusPengajuan(name);
-                                            filterStatusPengajuan(
-                                                name == 'Approve 1'
-                                                    ? "Approve"
-                                                    : name == 'Approve 2'
-                                                        ? "Approve2"
-                                                        : name);
+                                            filterStatusPengajuan(name);
                                             // }
                                           },
                                           child: Container(
@@ -785,21 +936,21 @@ class LaporanTugasLuarController extends GetxController {
 
   void filterStatusPengajuan(name) {
     List listFilterLokasi = [];
-    for (var element in allNameLaporanTidakhadirCopy.value) {
-      if (name == "Semua") {
-        listFilterLokasi.add(element);
-      } else {
-        if (title == "lembur" || title == "tugas_luar") {
-          if (element['status'] == name) {
-            listFilterLokasi.add(element);
-          }
-        } else {
-          if (element['status'] == name) {
-            listFilterLokasi.add(element);
-          }
-        }
-      }
-    }
+    // for (var element in allNameLaporanTidakhadirCopy.value) {
+    //   if (name == "Semua") {
+    //     listFilterLokasi.add(element);
+    //   } else {
+    //     if (title == "lembur" || title == "tugas_luar") {
+    //       if (element['status'] == name) {
+    //         listFilterLokasi.add(element);
+    //       }
+    //     } else {
+    //       if (element['status'] == name) {
+    //         listFilterLokasi.add(element);
+    //       }
+    //     }
+    //   }
+    // }
     allNameLaporanTidakhadir.value = listFilterLokasi;
     filterStatusAjuanTerpilih.value = name;
     this.allNameLaporanTidakhadir.refresh();
@@ -807,6 +958,7 @@ class LaporanTugasLuarController extends GetxController {
     loadingString.value = allNameLaporanTidakhadir.value.length != 0
         ? "Memuat Data..."
         : "Tidak ada pengajuan";
+    aksiCariLaporan();
     Navigator.pop(Get.context!);
   }
 
@@ -1096,15 +1248,15 @@ class LaporanTugasLuarController extends GetxController {
   }
 
   void showDetailRiwayat(tipe, detailData, approve, alasanReject) {
-    print("detailData $detailData");
     var nomorAjuan = detailData['nomor_ajuan'];
     var get2StringNomor = '${nomorAjuan[0]}${nomorAjuan[1]}';
-    var tanggalMasukAjuan = tipe == "dinas_luar" ?detailData['atten_date'] : detailData['tgl_ajuan'];
+    var tanggalMasukAjuan = detailData['atten_date'];
+    print(detailData);
     var namaTypeAjuan = detailData['name'];
     var tanggalAjuanDari = detailData['start_date'];
     var tanggalAjuanSampai = detailData['end_date'];
-    var alasan = tipe == "dinas_luar" ? detailData['reason'] : detailData['uraian'];
-    var durasi = tipe == "dinas_luar" ? detailData['leave_duration'] : '1';
+    var alasan = detailData['uraian'];
+    var durasi = detailData['durasi'];
     var status;
     if (valuePolaPersetujuan.value == "1") {
       status = detailData['status'];
@@ -1126,7 +1278,7 @@ class LaporanTugasLuarController extends GetxController {
     var leave_files = detailData['leave_files'];
     var categoryIzin = detailData['category'];
     var listTanggalTerpilih =
-        tipe == "dinas_luar" ? detailData['date_selected'].split(',') : detailData['tgl_ajuan'];
+        tipe == "dinas_luar" ? detailData['date_selected'].split(',') : "";
     showModalBottomSheet(
       context: Get.context!,
       isScrollControlled: true,
@@ -1283,14 +1435,7 @@ class LaporanTugasLuarController extends GetxController {
                         detailData['date_selected'] == null ||
                                 detailData['date_selected'] == "" ||
                                 detailData['date_selected'] == "null"
-                            ? Text(
-                                "${Constanst.convertDate5(listTanggalTerpilih)}",
-                                style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: Constanst.fgPrimary,
-                                ),
-                              )
+                            ? Container()
                             : Row(
                                 children: List.generate(
                                     listTanggalTerpilih.length, (index) {
@@ -1462,8 +1607,6 @@ class LaporanTugasLuarController extends GetxController {
                               )
                             : status == "Approve" ||
                                     status == "Approve 1" ||
-                                    status == "Approve" ||
-                                    status == "Approve2" ||
                                     status == "Approve 2"
                                 ? Row(
                                     crossAxisAlignment:
@@ -2134,6 +2277,79 @@ class LaporanTugasLuarController extends GetxController {
                     ),
                   ),
                 ),
+              InkWell(
+                  // highlightColor: Colors.white,
+                  onTap: () {
+                    Get.back();
+                    Get.back();
+                    Get.to(LaporanShift(
+                      title: 'shift',
+                    ));
+                    tempNamaLaporan1.value = "shift";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 12, bottom: 12, left: 16, right: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/4_lembur.svg',
+                              height: 35,
+                              width: 35,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: Text(
+                                'Laporan Shift',
+                                style: GoogleFonts.inter(
+                                    color: Constanst.fgPrimary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                            Get.to(LaporanShift(
+                              title: 'shift',
+                            ));
+                            tempNamaLaporan1.value = "shift";
+                          },
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: tempNamaLaporan1.value == "shift"
+                                        ? 2
+                                        : 1,
+                                    color: Constanst.onPrimary),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: tempNamaLaporan1.value == "shift"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Constanst.onPrimary,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              
               ],
             ),
           ),

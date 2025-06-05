@@ -35,7 +35,7 @@
 //   double _panelHeightOpen = 0;
 //   double _panelHeightClosed = 250.0;
 //   final panelController = PanelController();
-//   final controller = Get.find<AbsenController>(tag: 'absen controller');
+//   final controller = Get.find<AbsenController>();
 //   final controllerDashboard = Get.put(DashboardController());
 //   FocusNode myfocus = FocusNode();
 

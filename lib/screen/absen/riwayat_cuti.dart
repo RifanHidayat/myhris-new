@@ -260,8 +260,14 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                           : Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const SizedBox(width: 4),
-                                filterData(),
+                                // Expanded(
+                                //   flex: 60,
+                                //   child: Padding(
+                                //     padding: const EdgeInsets.only(right: 8),
+                                //     child: pencarianData(),
+                                //   ),
+                                // ),
+                                // pickDate(),
                                 const SizedBox(width: 4),
                                 status()
                               ],
@@ -382,23 +388,23 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
     );
   }
 
-  
-  Widget filterData() {
-    return Obx(
-      () => InkWell(
+  Widget pickDate() {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
+          border: Border.all(color: Constanst.fgBorder)),
+      child: InkWell(
         customBorder: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(100))),
         onTap: () {
           DatePicker.showPicker(
             Get.context!,
             pickerModel: CustomMonthPicker(
-              minTime: DateTime(2000, 1, 1),
-              maxTime: DateTime(2100, 1, 1),
+              minTime: DateTime(2020, 1, 1),
+              maxTime: DateTime(2050, 1, 1),
               currentTime: DateTime(
-                  int.parse(
-                      controller.tahunSelectedSearchHistory.value),
-                  int.parse(
-                      controller.bulanSelectedSearchHistory.value),
+                  int.parse(controller.tahunSelectedSearchHistory.value),
+                  int.parse(controller.bulanSelectedSearchHistory.value),
                   1),
             ),
             onConfirm: (time) {
@@ -411,53 +417,39 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                 controller.bulanSelectedSearchHistory.value = bulan;
                 controller.tahunSelectedSearchHistory.value = tahun;
                 controller.bulanDanTahunNow.value = "$bulan-$tahun";
+                controller.loadDataAjuanCuti();
                 this.controller.bulanSelectedSearchHistory.refresh();
                 this.controller.tahunSelectedSearchHistory.refresh();
                 this.controller.bulanDanTahunNow.refresh();
-                controller.date.value = time;
-                controller.loadDataAjuanCuti();
               }
             },
           );
         },
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              border: Border.all(color: Constanst.border)),
-          child: Padding(
-            padding: const EdgeInsets.only(
-                top: 8.0, bottom: 8.0, left: 12.0, right: 12.0),
-            child: Row(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      Constanst.convertDateBulanDanTahun(
-                          controller.bulanDanTahunNow.value),
-                      style: GoogleFonts.inter(
-                          color: Constanst.fgSecondary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4),
-                      child: Icon(
-                        Iconsax.arrow_down_1,
-                        color: Constanst.fgSecondary,
-                        size: 18,
-                      ),
-                    )
-                  ],
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "${getMonthName(int.parse(controller.bulanSelectedSearchHistory.value))} ${controller.tahunSelectedSearchHistory.value}",
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Constanst.fgSecondary,
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Iconsax.arrow_down_1,
+                size: 18,
+                color: Constanst.fgSecondary,
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-
 
   Widget status() {
     return Container(
@@ -970,24 +962,29 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                                     size: 22,
                                   ),
                                   const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Rejected by $apply_by",
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Rejected by $apply_by",
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                color: Constanst.fgPrimary,
+                                                fontSize: 14),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            ),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          alasanReject,
                                           style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              color: Constanst.fgPrimary,
-                                              fontSize: 14)),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        alasanReject,
-                                        style: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w400,
-                                            color: Constanst.fgSecondary,
-                                            fontSize: 14),
-                                      )
-                                    ],
+                                              fontWeight: FontWeight.w400,
+                                              color: Constanst.fgSecondary,
+                                              fontSize: 14),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ],
                               )
@@ -1004,11 +1001,16 @@ class _RiwayatCutiState extends State<RiwayatCuti> {
                                         size: 22,
                                       ),
                                       const SizedBox(width: 8),
-                                      Text("Approved by $apply_by",
-                                          style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              color: Constanst.fgPrimary,
-                                              fontSize: 14)),
+                                      Expanded(
+                                        child: Text("Approved by $apply_by",
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                color: Constanst.fgPrimary,
+                                                fontSize: 14),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            ),
+                                      ),
                                     ],
                                   )
                                 : Row(

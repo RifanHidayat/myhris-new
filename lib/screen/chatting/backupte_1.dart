@@ -96,7 +96,7 @@ final FocusNode _focusNode = FocusNode();
         quality: 80,
       );
 
-      File? imgFile = resultCompress;
+      File? imgFile = resultCompress as File?;
 
       final result =
           await Get.to(() => ImageEditingScreen(imageFile: imgFile!));

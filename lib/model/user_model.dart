@@ -37,8 +37,6 @@ class UserModel {
   var interval_tracking;
   var isViewTracking;
   var is_tracking;
-  var tipeAbsen;
- 
 
   var isBackDateSakit;
   var isBackDateIzin;
@@ -51,6 +49,11 @@ class UserModel {
   var sisaKontrakFormat;
   var lamaBekerja;
   var lamaBekerjaFormat;
+  var tipeAbsen;
+  var tipeAlpha;
+  var periodeAwal;
+  var isAudit;
+  
 
   UserModel({
     this.em_id,
@@ -99,9 +102,10 @@ class UserModel {
     this.sisaKontrakFormat,
     this.lamaBekerja,
     this.lamaBekerjaFormat,
-
     this.tipeAbsen,
-
+    this.tipeAlpha,
+    this.periodeAwal,
+    this.isAudit,
   });
 
   Map<String, dynamic> toMap() {
@@ -151,9 +155,11 @@ class UserModel {
       "sisa_kontrak_format": sisaKontrakFormat,
       "lama_bekerja": lamaBekerja,
       "lama_bekerja_format": lamaBekerjaFormat,
-
-      "tipe_absen": tipeAbsen
-
+      "branch_id": branchId,
+      "tipe_absen": tipeAbsen,
+      'tipe_alpha': tipeAlpha,
+      "periode_awal": periodeAwal,
+      'is_audit': isAudit
     };
   }
 
@@ -204,9 +210,11 @@ class UserModel {
       sisaKontrakFormat: map['sisa_kontrak_format'],
       lamaBekerja: map['lama_bekerja'],
       lamaBekerjaFormat: map['lama_bekerja_format'],
-
+      branchId: map['branch_id'],
+      periodeAwal: map['periode_awal'],
       tipeAbsen: map['tipe_absen'],
-
+      tipeAlpha: map['tipe_alpha'],
+      isAudit: map['is_audit'],
     );
   }
 

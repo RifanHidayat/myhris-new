@@ -27,7 +27,7 @@ class LaporanTugasLuarDetail extends StatefulWidget {
 
 class _LaporanTugasLuarDetailState extends State<LaporanTugasLuarDetail> {
   var controller = Get.put(LaporanTugasLuarController());
-  final controllerTugasLuar = Get.put(TugasLuarController());
+  // final controllerTugasLuar = Get.put(TugasLuarController());
 
   @override
   void initState() {

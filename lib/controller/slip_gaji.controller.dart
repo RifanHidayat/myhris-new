@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file_safe_plus/open_file_safe_plus.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:siscom_operasional/model/compent_slip_gaji.dart';
 import 'package:siscom_operasional/model/slip_gaji.dart';
@@ -343,7 +343,7 @@ class SlipGajiController extends GetxController {
           print("Downloaded: $percentage%");
         },
       );
-      await OpenFileSafePlus.open(savePath);
+      await OpenFile.open(savePath);
       print("Download complete. File saved to: $savePath");
     } catch (e) {
       print("Error downloading file: $e");

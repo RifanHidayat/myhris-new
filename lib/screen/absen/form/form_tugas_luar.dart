@@ -31,12 +31,9 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
 
   @override
   void initState() {
-     controller.loadAllEmployeeDelegasi();
-
     print(controller.viewTugasLuar.value);
     if (widget.dataForm![1] == true) {
       print("nomor ajuan ${widget.dataForm![0]['nomor_ajuan']}");
-      print('ini data form ${widget.dataForm}');
       controller.nomorAjuan.value.text =
           "${widget.dataForm![0]['nomor_ajuan']}";
       controller.idpengajuanTugasLuar.value = "${widget.dataForm![0]['id']}";
@@ -44,7 +41,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
       controller.emDelegation.value = "${widget.dataForm![0]['em_delegation']}";
       controller.checkDelegation(widget.dataForm![0]['em_delegation']);
       controller.tanggalTugasLuar.value.text =
-          Constanst.convertDate("${widget.dataForm![0]['tgl_ajuan']}");
+          Constanst.convertDate("${widget.dataForm![0]['atten_date']}");
       if (controller.viewTugasLuar.value) {
         controller.selectedDropdownFormTugasLuarTipe.value = "Tugas Luar";
 
@@ -56,6 +53,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
         controller.sampaiJam.value.text = hasilSampaijam;
         controller.catatan.value.text = widget.dataForm![0]['uraian'];
       } else {
+        controller.selectedDropdownFormTugasLuarTipe.value = "Dinas Luar";
         controller.screenTanggalSelected.value = false;
         controller.dariTanggal.value.text = widget.dataForm![0]['start_date'];
         controller.sampaiTanggal.value.text = widget.dataForm![0]['end_date'];
@@ -68,12 +66,8 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
         }
         controller.tanggalSelectedEdit.value = getDummy;
       }
-    } else {
-      if (controller.viewTugasLuar.value) {
-        controller.selectedDropdownFormTugasLuarTipe.value = "Tugas Luar";
-      } else {
-        controller.selectedDropdownFormTugasLuarTipe.value = "Dinas Luar";
-      }
+    }else{
+      controller.statusForm.value = false;
     }
     super.initState();
   }
@@ -99,14 +93,14 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
             titleSpacing: 0,
             centerTitle: true,
             title: Obx(() => Text(
-                  controller.viewTugasLuar.value
-                      ? "Form Tugas Luar"
-                      : "Form Dinas Luar ",
-                  style: GoogleFonts.inter(
-                      color: Constanst.fgPrimary,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20),
-                )),
+              controller.viewTugasLuar.value 
+                  ? "Form Tugas Luar"
+                  : "Form Dinas Luar ",
+              style: GoogleFonts.inter(
+                  color: Constanst.fgPrimary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20),
+            )),
             leading: IconButton(
               icon: Icon(
                 Iconsax.arrow_left,
@@ -249,11 +243,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
                       ),
                       elevation: 0,
                       child: SfDateRangePicker(
-                        minDate:
-                            AppData.informasiUser![0].isBackDateDinasLuar == "0"
-                                ? DateTime(DateTime.now().year,
-                                    DateTime.now().month, 1)
-                                : DateTime.now(),
+                        minDate: AppData.informasiUser![0].isBackDateDinasLuar=="0"?DateTime(2000):DateTime.now(),
                         selectionMode: DateRangePickerSelectionMode.range,
                         initialSelectedDates:
                             controller.tanggalSelectedEdit.value,
@@ -505,9 +495,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
         //     DateTime(now.year, now.month + 1, 0);
         var dateSelect = await showDatePicker(
           context: Get.context!,
-          firstDate: AppData.informasiUser![0].isBackDateTugasLuar == "0"
-              ? DateTime(DateTime.now().year, DateTime.now().month, 1)
-              : DateTime.now(),
+          firstDate:AppData.informasiUser![0].isBackDateTugasLuar=="0"?DateTime(2000):DateTime.now(),
           lastDate: DateTime(2100),
           initialDate: controller.initialDate.value,
           cancelText: 'Batal',
@@ -552,7 +540,6 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
           controller.tanggalTugasLuar.value.text =
               Constanst.convertDate("$dateSelect");
           this.controller.tanggalTugasLuar.refresh();
-          print(controller.initialDate.value);
         }
       },
       child: Column(
@@ -900,7 +887,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
                         Text(
                           controller.selectedDropdownDelegasi.value,
                           style: GoogleFonts.inter(
-                              fontSize: 14,
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
                               color: Constanst.fgPrimary),
                         ),
