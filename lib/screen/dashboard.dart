@@ -37,12 +37,15 @@ import 'package:siscom_operasional/screen/absen/absesi_location.dart';
 import 'package:siscom_operasional/screen/absen/camera_view.dart';
 import 'package:siscom_operasional/screen/absen/face_id_registration.dart';
 import 'package:siscom_operasional/screen/absen/facee_id_detection.dart';
+import 'package:siscom_operasional/screen/absen/jadwalKerja.dart';
 import 'package:siscom_operasional/screen/absen/loading_absen.dart';
 import 'package:siscom_operasional/screen/akun/personal_info.dart';
 import 'package:siscom_operasional/screen/audit/audit_screen.dart';
 import 'package:siscom_operasional/screen/chatting/history.dart';
 import 'package:siscom_operasional/screen/daily_task/daily_task.dart';
+
 import 'package:siscom_operasional/screen/daily_task/daily_task_atasan.dart';
+
 import 'package:siscom_operasional/screen/detail_informasi.dart';
 import 'package:siscom_operasional/screen/informasi.dart';
 import 'package:siscom_operasional/screen/monitoring.dart';
@@ -568,35 +571,6 @@ class _DashboardState extends State<Dashboard> {
               children: [
                 Row(
                   children: [
-                    //  void _checkversion() async {
-                    //     try {
-                    //       final newVersion = NewVersionPlus(
-                    //         androidId: 'com.siscom.siscomhris',
-                    //       );
-
-                    //       final status = await newVersion.getVersionStatus();
-
-                    //       if (status != null) {
-                    //         if (status.localVersion != status.storeVersion) {
-                    //           if (context.mounted) {
-                    //             newVersion.showUpdateDialog(
-                    //                 context: context,
-                    //                 versionStatus: status,
-                    //                 dialogTitle: "Update SISCOM HRIS",
-                    //                 dialogText:
-                    //                     "Update versi SISCOM HRIS dari versi ${status.localVersion} ke versi ${status.storeVersion}",
-                    //                 dismissAction: () {
-                    //                   Get.back();
-                    //                 },
-                    //                 updateButtonText: "Update Sekarang",
-                    //                 dismissButtonText: "Skip");
-                    //             print("status yesy ${status.localVersion}");
-                    //           }
-                    //         }
-                    //       } else {}
-                    //     } catch (e) {}
-                    //   }
-
                     Text(
                       "VERSI APLIKASI SAAT INI : ${controller.statuz.value}",
                       style: GoogleFonts.inter(
@@ -608,6 +582,7 @@ class _DashboardState extends State<Dashboard> {
                   ],
                 ),
                 // _isVisible
+
                 // ?
                 Text(
                   '${AppData.informasiUser![0].branchName ?? ''}',
@@ -619,12 +594,14 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 const SizedBox(height: 8),
                 // : Container(),
+
                 Text(
                   "${AppData.informasiUser![0].full_name ?? ""}",
                   style: GoogleFonts.inter(
                       color: Constanst.fgPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.w500),
+
                   overflow: TextOverflow.ellipsis, // Untuk menghindari overflow
                 ),
                 const SizedBox(height: 4),
@@ -634,6 +611,7 @@ class _DashboardState extends State<Dashboard> {
                       color: Constanst.fgPrimary,
                       fontSize: 12,
                       fontWeight: FontWeight.w400),
+
                   overflow: TextOverflow.ellipsis, // Untuk menghindari overflow
                 ),
               ],
@@ -834,14 +812,50 @@ class _DashboardState extends State<Dashboard> {
                           ),
                           const SizedBox(height: 4),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Obx(
-                                () => Text(
-                                  "Jadwal ${controller.timeIn.value} - ${controller.timeOut.value}",
-                                  style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 12,
-                                      color: Constanst.fgSecondary),
+                                () => InkWell(
+                                  onTap: () {
+                                    Get.to(JadwalKerja());
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Jadwal ${controller.timeIn.value} - ${controller.timeOut.value}",
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12,
+                                            color: Constanst.fgSecondary),
+                                      ),
+                                      Container(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Lihat jadwal Kerja",
+                                              style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 10,
+                                                  color: Constanst.infoLight),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Icon(
+                                              Icons.arrow_forward_ios,
+                                              size: 10,
+                                              color: Constanst.infoLight,
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                               // const SizedBox(width: 8),
@@ -1480,6 +1494,21 @@ class _DashboardState extends State<Dashboard> {
                                       controllerAbsensi.typeAbsen.value = 2;
                                       String timeOutValue =
                                           controller.timeOut.value;
+
+                                      if (controller.timeOut.value == '') {
+                                        if (controllerAbsensi.regType.value ==
+                                            1) {
+                                          Get.to(AbsensiLocation(
+                                            status: "keluar",
+                                          ));
+                                        } else {
+                                          Get.to(FaceDetectorView(
+                                            status: "keluar",
+                                          ));
+                                        }
+
+                                        return;
+                                      }
 
                                       try {
                                         // Parse waktu dari string
@@ -3868,11 +3897,10 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       print('init state dasbord ke panggil?');
       _setIsloading();
- controllerAbsensi.getBranch();
+
       var emId = AppData.informasiUser![0].em_id.toString();
       controller.checkperaturanPerusahaan(emId);
 
@@ -3915,7 +3943,7 @@ class _DashboardState extends State<Dashboard> {
 
       controller.isLoading.value = false;
     });
-      // controller.showDialogHistoryTerlambat();
+    // controller.showDialogHistoryTerlambat();
 
     // AppData.firsLogin = false;
   }

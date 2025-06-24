@@ -36,6 +36,8 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
     controller.tempNamaLaporan1.value = "";
     controller.tempNamaTipe1.value = "Absensi";
     super.initState();
+    controller.getBranch();
+    controller.idLokasiTerpilih.value='';
   }
 
   Future<void> refreshData() async {
@@ -964,8 +966,6 @@ class _LaporanAbsenState extends State<LaporanAbsen> {
                 customBorder: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(100))),
                 onTap: () {
-                  UtilsAlert.showToast("tes");
-                controller. getPlaceCoordinate();
                   controller.showDataLokasiKoordinate();
                 },
                 child: Container(

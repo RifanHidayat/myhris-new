@@ -37,7 +37,8 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
   final panelController = PanelController();
   final controller = Get.find<AbsenController>();
   final controllerDashboard = Get.put(DashboardController());
-  final internetController = Get.find<InternetController>(tag: 'AuthController');
+  final internetController =
+      Get.find<InternetController>(tag: 'AuthController');
   FocusNode myfocus = FocusNode();
 
   Completer<GoogleMapController> _controller = Completer();
@@ -168,7 +169,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Refresh",
+                      "Ref",
                       style: TextStyle(color: Constanst.colorText4),
                     ),
                     Icon(Icons.refresh, color: Constanst.colorText4)
@@ -378,7 +379,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              "Lokasi kamu saat ini",
+                              "Lokasi kamu saat ini ASD",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(
@@ -762,7 +763,8 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                         // await controller.getPosisition();
                                         // await controller.offlineToOnline();
                                         // await controller.getPlaceCoordinate();
-                                        print('ini place cordinate ${controller.placeCoordinate}');
+                                        print(
+                                            'ini place cordinate ${controller.placeCoordinate}');
                                         if (!internetController
                                             .isConnected.value) {
                                           print('ini skenario ke 2');
@@ -780,7 +782,8 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                     .widgetButtomSheetLanjutkanOffline(
                                                         type: 'offlineAbsensi');
                                           });
-                                        }else if (controller.coordinate.value ==
+                                        } else if (controller
+                                                .coordinate.value ==
                                             true) {
                                           print('ini skenario ke 1');
                                           UtilsAlert
@@ -798,24 +801,25 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                                                     .widgetButtomSheetLanjutkanOffline(
                                                         type: 'offlineAbsensi');
                                           });
-                                        }  else {
-                                        final packageInfo =
-                                            PackageInfo.fromPlatform();
-                                        //for (var package in packageInfo) {
-                                        print('ini kirirm absen placecoordinate ${controller.placeCoordinate}');
+                                        } else {
+                                          final packageInfo =
+                                              PackageInfo.fromPlatform();
+                                          //for (var package in packageInfo) {
+                                          print(
+                                              'ini kirirm absen placecoordinate ${controller.placeCoordinate}');
 
-                                        print(controller.selectedType.value);
-                                        // controller.selectedType.value = "WFH";
-                                        controller.selectedType.value
-                                                        .toString() ==
-                                                    "WFH" &&
-                                                widget.status == "Absen Masuk"
-                                            ? controllerDashboard
-                                                .widgetButtomSheetWfh()
-                                            : controllerDashboard
-                                                .widgetButtomSheetAktifCamera(
-                                                    type: 'checkTracking');
-                                          }
+                                          print(controller.selectedType.value);
+                                          // controller.selectedType.value = "WFH";
+                                          controller.selectedType.value
+                                                          .toString() ==
+                                                      "WFH" &&
+                                                  widget.status == "Absen Masuk"
+                                              ? controllerDashboard
+                                                  .widgetButtomSheetWfh()
+                                              : controllerDashboard
+                                                  .widgetButtomSheetAktifCamera(
+                                                      type: 'checkTracking');
+                                        }
                                         // Mendapatkan informasi paket aplikasi pihak ketiga
                                       },
                                       child: const Padding(

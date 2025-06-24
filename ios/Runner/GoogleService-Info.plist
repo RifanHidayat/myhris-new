@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.siscom.siscomhris</string>
+	<string>com.siscom.myhris</string>
 	<key>PROJECT_ID</key>
 	<string>siscom-hris</string>
 	<key>STORAGE_BUCKET</key>

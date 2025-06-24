@@ -30,10 +30,10 @@ class Request {
   
 
   
-  Future<http.Response> get() async {
-    print("url get ${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"+params??""}");
+Future<http.Response> get() async {
+    print("url get ${baseUrl+url+"?database=${AppData.selectedDatabase.toString().trim()}&start_periode=${AppData.startPeriode}&end_periode=${AppData.endPeriode}"+params??""}");
     return await http
-        .get(Uri.parse("${baseUrl+url+"?database=${AppData.selectedDatabase.toString()}"+params??""}"), headers: headers)
+        .get(Uri.parse("${baseUrl+url+"?database=${AppData.selectedDatabase.toString().trim()}&start_periode=${AppData.startPeriode}&end_periode=${AppData.endPeriode}"+params??""}"), headers: headers)
         .timeout(Duration(minutes: 2));
   }
   Future<http.Response> post() async {

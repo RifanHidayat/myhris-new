@@ -1,44 +1,26 @@
 {
   "project_info": {
-    "project_number": "90235107077",
-    "project_id": "siscom-hris",
-    "storage_bucket": "siscom-hris.appspot.com"
+    "project_number": "165308068032",
+    "project_id": "my-hris-37678",
+    "storage_bucket": "my-hris-37678.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:90235107077:android:3634bae0f6adb5a0ba296c",
+        "mobilesdk_app_id": "1:165308068032:android:84b00223d2febb7e29fd25",
         "android_client_info": {
-          "package_name": "com.siscom.siscomhris"
+          "package_name": "com.siscom.myhris"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "90235107077-n24hsml3mcpts99mfea61ek1vhui45vr.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.siscom.siscomhris",
-            "certificate_hash": "706edbacd28a4e21c39f8706547e92eae557b08a"
-          }
-        },
-        {
-          "client_id": "90235107077-j4q7agk35mir40pltfperc5hr90fnnk3.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCjde4QH5ewSM01qSkvkobtmoFoFFuu1XA"
+          "current_key": "AIzaSyDVN3akBB42vcxr_8Y0h7RIXcHIWlJNfAc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "90235107077-j4q7agk35mir40pltfperc5hr90fnnk3.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

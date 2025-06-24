@@ -174,6 +174,7 @@ class AbsenController extends GetxController {
 
   var namaDepartemenTerpilih = "".obs;
   var idDepartemenTerpilih = "".obs;
+  var idLokasiTerpilih = "".obs;
   var testingg = "".obs;
   var filterLokasiKoordinate = "Lokasi".obs;
   Rx<AbsenModel> absenModel = AbsenModel().obs;
@@ -276,7 +277,7 @@ class AbsenController extends GetxController {
 
     void getPlaceCoordinateCheckoutRest() {
     print("place coordinates Rest");
-    //placeCoordinate.clear();
+    placeCoordinate.clear();
 
     var connect = Api.connectionApi(
       "get",
@@ -315,7 +316,7 @@ class AbsenController extends GetxController {
 
   void getPlaceCoordinateCheckinRest() {
     print("place coordinates Rest");
-    //placeCoordinate.clear();
+    placeCoordinate.clear();
 
     var connect = Api.connectionApi(
       "get",
@@ -657,7 +658,6 @@ class AbsenController extends GetxController {
   }
 
   Future<void> getPlaceCoordinate() async {
-    placeCoordinate.clear();
 
     placeCoordinateDropdown.value.clear();
     var connect = Api.connectionApi("get", {}, "places_coordinate",
@@ -686,7 +686,6 @@ class AbsenController extends GetxController {
               'place_radius': element['place_radius'],
             });
           }
-       
           print('ini data buat masuk offline $tipeLokasi');
           SqliteDatabaseHelper().insertTipeLokasi(tipeLokasi);
 
@@ -719,8 +718,7 @@ class AbsenController extends GetxController {
               }
             }
           }
-       
-
+          print('ini dropdoen place value ${placeCoordinateDropdown.value}');
           List filter = [];
           for (var element in valueBody['data']) {
             if (element['isFilterView'] == 1) {
@@ -728,17 +726,11 @@ class AbsenController extends GetxController {
             }
           }
 
-                   // print('ini dropdoen place value ${fil}');
-
           print("data plcea ${placeCoordinate}");
           print('ini data filter ${filter}');
           // placeCoordinate.clear();
-          placeCoordinate.add(filter);
-                UtilsAlert.showToast("te 2q ${placeCoordinate[0]}");
-
-          print('ini data filter ${placeCoordinate}');
-
-          print('ini data place cordinate dari get ${placeCoordinate[0]}');
+          placeCoordinate.value=filter;
+          print('ini data place cordinate dari get $placeCoordinate');
         } else {
           print("Place cordinate !=200" + res.body.toString());
           print(res.body.toString());
@@ -755,7 +747,7 @@ class AbsenController extends GetxController {
     var body = await SqliteDatabaseHelper().getTipeLokasi();
 
     placeCoordinateDropdown.value.clear();
-    //placeCoordinate.clear();
+    placeCoordinate.clear();
     if (typeAbsen.value == 1) {
       selectedType.value = body[0]['place'];
     } else {
@@ -814,7 +806,7 @@ class AbsenController extends GetxController {
 
   void getPlaceCoordinateCheckin() {
     print("place coordinates");
-    ///placeCoordinate.clear();
+    placeCoordinate.clear();
 
     var connect = Api.connectionApi(
       "get",
@@ -852,7 +844,7 @@ class AbsenController extends GetxController {
 
   void getPlaceCoordinateCheckout() {
     print("place coordinates");
-    //placeCoordinate.clear();
+    placeCoordinate.clear();
 
     var connect = Api.connectionApi(
       "get",
@@ -3439,6 +3431,7 @@ class AbsenController extends GetxController {
                               var jumlahData = 0.obs;
 
                               idDepartemenTerpilih.value = "$id";
+                              idLokasiTerpilih.value = "$id";
                               namaDepartemenTerpilih.value = dep_name;
                               departemen.value.text =
                                   departementAkses.value[index]['name'];
@@ -3462,7 +3455,7 @@ class AbsenController extends GetxController {
                                       color: Constanst.fgPrimary,
                                     ),
                                   ),
-                                  "$id" == idDepartemenTerpilih.value
+                                  "$id" == idLokasiTerpilih.value
                                       ? InkWell(
                                           onTap: () {},
                                           child: Container(
@@ -3497,6 +3490,7 @@ class AbsenController extends GetxController {
                                             var jumlahData = 0.obs;
 
                                             idDepartemenTerpilih.value = "$id";
+                                             idLokasiTerpilih.value = "$id";
                                             namaDepartemenTerpilih.value =
                                                 dep_name;
                                             departemen.value.text =
@@ -3566,7 +3560,7 @@ class AbsenController extends GetxController {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text( 
+                        Text(
                           "Pilih Lokasi ",
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w500,
@@ -3599,12 +3593,13 @@ class AbsenController extends GetxController {
                     physics: const BouncingScrollPhysics(),
                     child: Obx(
                       () => Column(
-                        children: List.generate( placeCoordinate.value.length,
+                        children: List.generate(placeCoordinate.value.length,
                             (index) {
                           var id = placeCoordinate.value[index]['id'];
                           var place = placeCoordinate.value[index]['place'];
                           return InkWell(
                             onTap: () {
+                              idLokasiTerpilih.value=id.toString();
                               if (selectedViewFilterAbsen.value == 0) {
                                 filterLokasiAbsenBulan(place);
                               } else {
@@ -3625,7 +3620,7 @@ class AbsenController extends GetxController {
                                       color: Constanst.fgPrimary,
                                     ),
                                   ),
-                                  "$id" == idDepartemenTerpilih.value
+                                  "$id" ==idLokasiTerpilih.value
                                       ? InkWell(
                                           onTap: () {},
                                           child: Container(
@@ -3651,6 +3646,7 @@ class AbsenController extends GetxController {
                                         )
                                       : InkWell(
                                           onTap: () {
+                                               idLokasiTerpilih.value=id.toString();
                                             if (selectedViewFilterAbsen.value ==
                                                 0) {
                                               filterLokasiAbsenBulan(place);
@@ -3701,7 +3697,8 @@ class AbsenController extends GetxController {
     Map<String, dynamic> body = {
       'bulan': bulanSelectedSearchHistory.value,
       'tahun': tahunSelectedSearchHistory.value,
-      'status': idDepartemenTerpilih.value
+      'status': idDepartemenTerpilih.value,
+       'lokasi':place
     };
     var connect =
         Api.connectionApi("post", body, "load_laporan_absensi_filter_lokasi");

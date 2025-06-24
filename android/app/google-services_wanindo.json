@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:90235107077:android:3634bae0f6adb5a0ba296c",
         "android_client_info": {
-          "package_name": "com.siscom.siscomhris"
+          "package_name": "com.siscom.myhris"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "90235107077-n24hsml3mcpts99mfea61ek1vhui45vr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.siscom.siscomhris",
+            "package_name": "com.siscom.myhris",
             "certificate_hash": "706edbacd28a4e21c39f8706547e92eae557b08a"
           }
         },
@@ -43,7 +43,7 @@
               "client_id": "90235107077-ghl3lgba803pjbcctcqvvifbe5egcqso.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.siscom.siscomhris",
+                "bundle_id": "com.siscom.myhris",
                 "app_store_id": "6444096273"
               }
             }
@@ -88,7 +88,7 @@
               "client_id": "90235107077-ghl3lgba803pjbcctcqvvifbe5egcqso.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.siscom.siscomhris",
+                "bundle_id": "com.siscom.myhris",
                 "app_store_id": "6444096273"
               }
             }
