@@ -71,7 +71,7 @@ class _SettingState extends State<Setting> {
 
   void _checkversion() async {
     final newVersion = NewVersionPlus(
-      androidId: 'com.siscom.siscomhrisnew',
+      androidId: 'com.siscom.myhris',
     );
 
     final status = await newVersion.getVersionStatus();

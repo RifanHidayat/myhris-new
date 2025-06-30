@@ -76,6 +76,7 @@ class Api {
         "?database=${AppData.selectedDatabase}&start_periode=${AppData.startPeriode}&end_periode=${AppData.endPeriode}" +
         params;
     print("Url yang di pake ${getUrl}");
+       
     Map<String, String> headers = {
       'Authorization': basicAuth,
       'Content-type': 'application/json',

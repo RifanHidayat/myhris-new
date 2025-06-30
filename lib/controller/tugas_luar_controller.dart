@@ -389,13 +389,18 @@ class TugasLuarController extends GetxController {
           }
           if (idpengajuanTugasLuar.value == "") {
             List data = valueBody['data'];
-            var listFirst = data
+
+            if (data.isNotEmpty){
+              List listFirst = data
                 .where((element) => element['full_name'] != full_name)
                 .toList()
-                .first;
-            var fullName = listFirst['full_name'] ?? "";
+                ;
+            var fullName = listFirst.isNotEmpty?listFirst[0]:"" ;
             String namaUserPertama = "$fullName";
             selectedDropdownDelegasi.value = namaUserPertama;
+
+            }
+            
           }
 
           this.allEmployee.refresh();

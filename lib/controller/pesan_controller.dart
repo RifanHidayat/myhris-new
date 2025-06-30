@@ -153,7 +153,7 @@ class PesanController extends GetxController {
         : "load_approve_info_multi";
     statusScreenInfoApproval.value = true;
     var dataUser = AppData.informasiUser;
-    var getEmid = dataUser![0].em_id;
+    var getEmid = dataUser==null || dataUser.isEmpty?"0":dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmid,
       'bulan': bulanSelectedSearchHistory.value,
@@ -228,7 +228,7 @@ class PesanController extends GetxController {
     riwayatPersetujuan.value.clear();
     allRiwayatPersetujuan.value.clear();
     var dataUser = AppData.informasiUser;
-    var getEmid = dataUser![0].em_id;
+    var getEmid = dataUser== null || dataUser.isNotEmpty ?"0": dataUser![0].em_id;
     Map<String, dynamic> body = {
       'em_id': getEmid,
       'bulan': bulanSelectedSearchHistory.value,

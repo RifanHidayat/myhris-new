@@ -169,7 +169,7 @@ class _AbsenMasukKeluarState extends State<AbsenMasukKeluar> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Ref",
+                      "Refresh",
                       style: TextStyle(color: Constanst.colorText4),
                     ),
                     Icon(Icons.refresh, color: Constanst.colorText4)

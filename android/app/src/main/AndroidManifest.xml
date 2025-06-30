@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/> -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/> -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -28,10 +28,10 @@
    <application
      android:requestLegacyExternalStorage="true"
         tools:replace="android:label"
-        android:label="MyHRIS"
+        android:label="MY HRIS"
         android:name="${applicationName}"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:icon="@mipmap/logo">
+        android:icon="@mipmap/launcher_icon">
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
@@ -81,7 +81,7 @@
     
 
         <service
-            android:name="com.siscom.myhris.flutter_background_service.BackgroundService"
+            android:name="com.siscom.siscomhris.flutter_background_service.BackgroundService"
             android:foregroundServiceType="location|dataSync"/>
         
         <service

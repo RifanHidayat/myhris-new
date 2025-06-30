@@ -744,10 +744,13 @@ class AbsenController extends GetxController {
   }
 
   void getPlaceCoordinateOffline() async {
-    var body = await SqliteDatabaseHelper().getTipeLokasi();
+    List body = await SqliteDatabaseHelper().getTipeLokasi();
 
-    placeCoordinateDropdown.value.clear();
+       
+    if (body.isNotEmpty){
+       placeCoordinateDropdown.value.clear();
     placeCoordinate.clear();
+
     if (typeAbsen.value == 1) {
       selectedType.value = body[0]['place'];
     } else {
@@ -777,6 +780,9 @@ class AbsenController extends GetxController {
 
     // placeCoordinate.clear();
     placeCoordinate.add(filter);
+
+    }
+   
   }
 
   // Future<void> offlineToOnline() async {
@@ -2595,7 +2601,7 @@ class AbsenController extends GetxController {
     print("long validasi" + langUser.value.toString());
     // var from = Point(-6.1716917, 106.7305503);
     print("place cordinate value ${placeCoordinate[0]}");
-    var getPlaceTerpilih = placeCoordinate[0]
+    var getPlaceTerpilih = placeCoordinate
         .firstWhere((element) => element['place'] == selectedType.value);
 
     var stringLatLang = "${getPlaceTerpilih['place_longlat']}";

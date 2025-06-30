@@ -232,6 +232,7 @@ class KlaimController extends GetxController {
           var t = allType
               .where((p0) => p0['name'].toString() == listFirst.toString())
               .toList();
+              
           selectedDropdownType.value = listFirst;
 
           getSaldo(id: t.first['type_id']);
@@ -244,7 +245,7 @@ class KlaimController extends GetxController {
     print("saldo new ");
 
     var body = {
-      "em_id": AppData.informasiUser![0].em_id,
+      "em_id": AppData.informasiUser==null || AppData.informasiUser!.isNotEmpty?"":AppData.informasiUser![0].em_id,
       "cost_id": id,
       "pola": globalCt.valuePolaPersetujuan.value.toString(),
       'date': DateFormat('yyyy-MM-dd').format(DateTime.now())

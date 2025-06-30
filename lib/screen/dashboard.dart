@@ -111,6 +111,7 @@ class _DashboardState extends State<Dashboard> {
     // setState(() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.wait([
+         controller.updateInformasiUser(),
         absenControllre.getPosisition(),
         absenControllre.getPlaceCoordinate(),
         controller.checkperaturanPerusahaan(emId),
@@ -585,7 +586,7 @@ class _DashboardState extends State<Dashboard> {
 
                 // ?
                 Text(
-                  '${AppData.informasiUser![0].branchName ?? ''}',
+                  '${AppData.informasiUser==null  || AppData.informasiUser!.isEmpty?"":AppData.informasiUser  ![0].branchName ?? ''}',
                   style: GoogleFonts.inter(
                       color: Constanst.fgSecondary,
                       fontSize: 12,
@@ -596,7 +597,7 @@ class _DashboardState extends State<Dashboard> {
                 // : Container(),
 
                 Text(
-                  "${AppData.informasiUser![0].full_name ?? ""}",
+                  "${AppData.informasiUser==null  || AppData.informasiUser!.isEmpty?"":AppData.informasiUser![0].full_name}",
                   style: GoogleFonts.inter(
                       color: Constanst.fgPrimary,
                       fontSize: 16,
@@ -606,7 +607,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "${AppData.informasiUser![0].emp_jobTitle ?? ""} - ${AppData.informasiUser![0].posisi ?? ""}",
+                  "${AppData.informasiUser==null  || AppData.informasiUser!.isEmpty?"":AppData.informasiUser![0].emp_jobTitle } - ${AppData.informasiUser==null  || AppData.informasiUser!.isEmpty?"":AppData.informasiUser![0].posisi ?? ""}",
                   style: GoogleFonts.inter(
                       color: Constanst.fgPrimary,
                       fontSize: 12,
@@ -814,8 +815,7 @@ class _DashboardState extends State<Dashboard> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Obx(
-                                () => InkWell(
+                               InkWell(
                                   onTap: () {
                                     Get.to(JadwalKerja());
                                   },
@@ -824,13 +824,26 @@ class _DashboardState extends State<Dashboard> {
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      Obx((){
+                                        return  controller.timeIn.value=='00:00:00'?Text(
+                                        "Jadwal OFF-DAY",
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12,
+                                            color: Constanst.fgSecondary),
+                                      ):  Text(
                                         "Jadwal ${controller.timeIn.value} - ${controller.timeOut.value}",
                                         style: GoogleFonts.inter(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 12,
                                             color: Constanst.fgSecondary),
-                                      ),
+                                      );
+
+
+                                      }),
+                                    
+
+                                      
                                       Container(
                                         child: Row(
                                           mainAxisAlignment:
@@ -857,7 +870,6 @@ class _DashboardState extends State<Dashboard> {
                                     ],
                                   ),
                                 ),
-                              ),
                               // const SizedBox(width: 8),
                               // InkWell(
                               //   onTap: () => UtilsAlert.informasiDashboard(
@@ -3049,7 +3061,7 @@ class _DashboardState extends State<Dashboard> {
                         var urlViewGambar =
                             controller.bannerDashboard.value[itemIndex]['url'];
 
-                        final url = Uri.parse(urlViewGambar);
+                        final url = Uri.parse(urlViewGambar.toString());
                         if (!await launchUrl(
                           url,
                           mode: LaunchMode.externalApplication,

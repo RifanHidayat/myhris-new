@@ -838,13 +838,14 @@ class _DetailPersetujuanLemburState extends State<DetailPersetujuanLembur> {
   }
 
   @override
-  void initState() {
+  void initState() { 
     // controller.getDetailData(
-
-    print('ini emIdz user ${widget.emIds}');
-    print('ini emIdz user ${controller.detailData[0]['em_ids']}');
+  controller.getDetailData(
+        widget.idxDetail, widget.emId, widget.title, widget.delegasi);
+    print('ini emI dz user new id ${widget.emIds}');
+    print('ini emIdz user ${controller.detailData}');
     // Future.delayed(Duration(seconds: 2));
-    controller.infoIds(controller.detailData[0]['em_ids']);
+    controller.infoIds(controller.detailData[0]['em_ids']); 
     controller.infoTask(widget.idxDetail);
 
     super.initState();

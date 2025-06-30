@@ -109,7 +109,7 @@ class SettingController extends GetxController {
     // getPusatBantuan();
     allDepartement();
     getUserInfo();
-    checkSelesaiKontrak();
+    //checkSelesaiKontrak();
     getBranch();
     super.onReady();
   }

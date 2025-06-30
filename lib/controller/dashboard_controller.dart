@@ -238,7 +238,7 @@ class DashboardController extends GetxController {
     //UtilsAlert.showToast(emId);
     checkAbsenUser(DateFormat('yyyy-MM-dd').format(DateTime.now()), emId);
 
-    updateInformasiUser();
+  
     updateWorkTime();
     getBannerDashboard();
     getEmployeeUltah(DateFormat('yyyy-MM-dd').format(DateTime.now()));
@@ -2124,9 +2124,11 @@ class DashboardController extends GetxController {
     print("informasi hak akseesss");
     var dataUser = AppData.informasiUser;
     var getEmid = dataUser![0].em_id;
+ 
     var body = {'em_id': getEmid};
     var connect = Api.connectionApi("post", body, "refresh_employee");
     connect.then((dynamic res) async {
+    
       var valueBody = jsonDecode(res.body);
       print("data refresh employee ${valueBody}");
       if (valueBody['status'] == false) {
@@ -2205,7 +2207,9 @@ class DashboardController extends GetxController {
             tipeAlpha: element['tipe_alpha'],
             periodeAwal: element['periode_awal'],
             isAudit: element['is_audit'],
+            
           );
+         
           print('ini branch id ${element['branch_id']}');
           getData.add(data);
           final prefs = await SharedPreferences.getInstance();

@@ -464,13 +464,17 @@ class LemburController extends GetxController {
           }
           if (idpengajuanLembur.value == "") {
             List data = valueBody['data'];
-            var listFirst = data
+            if (body.isNotEmpty){
+  var listFirst = data
                 .where((element) => element['full_name'] != full_name)
-                .toList()
-                .first;
-            var fullName = listFirst['full_name'] ?? "";
+                .toList();
+                
+            var fullName = listFirst.isNotEmpty?listFirst[0]['full_name']:"r";
             String namaUserPertama = "$fullName";
             selectedDropdownDelegasi.value = namaUserPertama;
+
+            }
+          
           }
 
           this.allEmployee.refresh();
