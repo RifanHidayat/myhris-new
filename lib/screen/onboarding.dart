@@ -185,6 +185,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               },
             ),
           ),
+
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
@@ -192,7 +194,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               (index) => buildDot(index),
             ),
           ),
-          const SizedBox(height: 70.0),
+
+          const SizedBox(height: 12.0),
+
           // ElevatedButton(
           //   onPressed: () {
           //     if (_currentPage == onboardingData.length - 1) {
@@ -258,7 +262,7 @@ class OnboardingPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(24.0, 60.0, 24.0, 45.0),
+              padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 45.0),
               child: Stack(
                 children: [
                   SvgPicture.asset(
@@ -298,14 +302,16 @@ class OnboardingPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8.0),
-            Text(
-              description,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: -0.011,
-                  color: HexColor('#202327')),
+            Expanded(
+              child: Text(
+                description,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: -0.011,
+                    color: HexColor('#202327')),
+              ),
             ),
           ],
         ),
