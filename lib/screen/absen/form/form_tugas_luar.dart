@@ -228,9 +228,11 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
             ],
           ),
           const SizedBox(height: 8),
+
           widget.dataForm![1] == true
               ? customTanggalDariSampaiDari()
               : const SizedBox(),
+
           controller.screenTanggalSelected.value == true
               ? Container(
                   decoration: BoxDecoration(
@@ -253,6 +255,7 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
                               color: Colors.red,
                               decoration: TextDecoration.lineThrough),
                         ),
+
                         onSelectionChanged:
                             (DateRangePickerSelectionChangedArgs args) {
                           // print(args.value);
@@ -341,7 +344,8 @@ class _FormTugasLuarState extends State<FormTugasLuar> {
                   ),
                 )
               ],
-            )));
+            )),
+    );
   }
 
   Widget formTipe() {

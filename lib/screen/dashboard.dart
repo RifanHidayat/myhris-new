@@ -5,6 +5,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+
 // import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -61,11 +62,13 @@ import 'package:siscom_operasional/utils/widget_textButton.dart';
 import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+
 // import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as dom;
+
 // import 'package:upgrader/upgrader.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -73,6 +76,7 @@ import 'chatting/history.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
+
   @override
   _DashboardState createState() => _DashboardState();
 }
@@ -85,6 +89,7 @@ class _DashboardState extends State<Dashboard> {
   final settingController = Get.put(SettingController());
   final pengumumanController = Get.put(PengumumanController());
   final controllerDaily = Get.put(DailyTaskController());
+
   // final controllerIzin = Get.put(IzinController());
   // var controllerLembur = Get.put(LemburController());
   // var controllerCuti = Get.put(CutiController());
@@ -104,6 +109,7 @@ class _DashboardState extends State<Dashboard> {
   var intervalTracking = "";
   final WebSocketChannel channel =
       WebSocketChannel.connect(Uri.parse(Api.webSocket));
+
   Future<void> refreshData() async {
     controller.isLoading.value = true;
     controller.refreshPagesStatus.value = true;
@@ -111,7 +117,7 @@ class _DashboardState extends State<Dashboard> {
     // setState(() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.wait([
-         controller.updateInformasiUser(),
+        controller.updateInformasiUser(),
         absenControllre.getPosisition(),
         absenControllre.getPlaceCoordinate(),
         controller.checkperaturanPerusahaan(emId),
@@ -247,10 +253,12 @@ class _DashboardState extends State<Dashboard> {
                                   //     ? const SizedBox()
                                   //     : listModul(),
                                   const SizedBox(height: 16),
+
                                   controller.menuShowInMain.value.isEmpty
                                       ? UtilsAlert.shimmerMenuDashboard(
                                           Get.context!)
                                       : MenuDashboard(),
+
                                   // MenuDashboard(),
                                   // authController.isConnected.value
                                   // ?
@@ -586,7 +594,7 @@ class _DashboardState extends State<Dashboard> {
 
                 // ?
                 Text(
-                  '${AppData.informasiUser==null  || AppData.informasiUser!.isEmpty?"":AppData.informasiUser  ![0].branchName ?? ''}',
+                  '${AppData.informasiUser == null || AppData.informasiUser!.isEmpty ? "" : AppData.informasiUser![0].branchName ?? ''}',
                   style: GoogleFonts.inter(
                       color: Constanst.fgSecondary,
                       fontSize: 12,
@@ -597,7 +605,7 @@ class _DashboardState extends State<Dashboard> {
                 // : Container(),
 
                 Text(
-                  "${AppData.informasiUser==null  || AppData.informasiUser!.isEmpty?"":AppData.informasiUser![0].full_name}",
+                  "${AppData.informasiUser == null || AppData.informasiUser!.isEmpty ? "" : AppData.informasiUser![0].full_name}",
                   style: GoogleFonts.inter(
                       color: Constanst.fgPrimary,
                       fontSize: 16,
@@ -607,7 +615,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "${AppData.informasiUser==null  || AppData.informasiUser!.isEmpty?"":AppData.informasiUser![0].emp_jobTitle } - ${AppData.informasiUser==null  || AppData.informasiUser!.isEmpty?"":AppData.informasiUser![0].posisi ?? ""}",
+                  "${AppData.informasiUser == null || AppData.informasiUser!.isEmpty ? "" : AppData.informasiUser![0].emp_jobTitle} - ${AppData.informasiUser == null || AppData.informasiUser!.isEmpty ? "" : AppData.informasiUser![0].posisi ?? ""}",
                   style: GoogleFonts.inter(
                       color: Constanst.fgPrimary,
                       fontSize: 12,
@@ -815,61 +823,58 @@ class _DashboardState extends State<Dashboard> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                               InkWell(
-                                  onTap: () {
-                                    Get.to(JadwalKerja());
-                                  },
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Obx((){
-                                        return  controller.timeIn.value=='00:00:00'?Text(
-                                        "Jadwal OFF-DAY",
-                                        style: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 12,
-                                            color: Constanst.fgSecondary),
-                                      ):  Text(
-                                        "Jadwal ${controller.timeIn.value} - ${controller.timeOut.value}",
-                                        style: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 12,
-                                            color: Constanst.fgSecondary),
-                                      );
-
-
-                                      }),
-                                    
-
-                                      
-                                      Container(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Lihat jadwal Kerja",
+                              InkWell(
+                                onTap: () {
+                                  Get.to(JadwalKerja());
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Obx(() {
+                                      return controller.timeIn.value ==
+                                              '00:00:00'
+                                          ? Text(
+                                              "Jadwal OFF-DAY",
                                               style: GoogleFonts.inter(
                                                   fontWeight: FontWeight.w400,
-                                                  fontSize: 10,
-                                                  color: Constanst.infoLight),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: 10,
-                                              color: Constanst.infoLight,
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                                  fontSize: 12,
+                                                  color: Constanst.fgSecondary),
+                                            )
+                                          : Text(
+                                              "Jadwal ${controller.timeIn.value} - ${controller.timeOut.value}",
+                                              style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12,
+                                                  color: Constanst.fgSecondary),
+                                            );
+                                    }),
+                                    Container(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "Lihat jadwal Kerja",
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 10,
+                                                color: Constanst.infoLight),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Icon(
+                                            Icons.arrow_forward_ios,
+                                            size: 10,
+                                            color: Constanst.infoLight,
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
                                 ),
+                              ),
                               // const SizedBox(width: 8),
                               // InkWell(
                               //   onTap: () => UtilsAlert.informasiDashboard(
@@ -980,8 +985,8 @@ class _DashboardState extends State<Dashboard> {
                                     showGeneralDialog(
                                       barrierDismissible: false,
                                       context: Get.context!,
-                                      barrierColor:
-                                          Colors.black54, // space around dialog
+                                      barrierColor: Colors.black54,
+                                      // space around dialog
                                       transitionDuration:
                                           const Duration(milliseconds: 200),
                                       transitionBuilder:
@@ -1545,8 +1550,8 @@ class _DashboardState extends State<Dashboard> {
                                           showGeneralDialog(
                                             barrierDismissible: false,
                                             context: Get.context!,
-                                            barrierColor: Colors
-                                                .black54, // space around dialog
+                                            barrierColor: Colors.black54,
+                                            // space around dialog
                                             transitionDuration:
                                                 Duration(milliseconds: 200),
                                             transitionBuilder:
@@ -3163,6 +3168,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  // Menu Dashboard
   Widget MenuDashboard() {
     return Obx(
       () => SizedBox(
@@ -3174,6 +3180,7 @@ class _DashboardState extends State<Dashboard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              // Menu Semua
               Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: InkWell(
@@ -3184,41 +3191,44 @@ class _DashboardState extends State<Dashboard> {
                   },
                   highlightColor: Colors.white,
                   child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Stack(
-                          children: [
-                            Container(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                            height: 42,
+                            width: 42,
+                            decoration: BoxDecoration(
+                                color: Constanst.infoLight1,
+                                borderRadius: BorderRadius.circular(100.0)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 8,
+                              top: 8,
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/1_more.svg',
                               height: 42,
                               width: 42,
-                              decoration: BoxDecoration(
-                                  color: Constanst.infoLight1,
-                                  borderRadius: BorderRadius.circular(100.0)),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8,
-                                top: 8,
-                              ),
-                              child: SvgPicture.asset(
-                                'assets/1_more.svg',
-                                height: 42,
-                                width: 42,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "Semua",
-                          style: GoogleFonts.inter(
-                              color: Constanst.fgPrimary,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ]),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Semua",
+                        style: GoogleFonts.inter(
+                            color: Constanst.fgPrimary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+
+              // Other Menu
               Expanded(
                 child: ListView.builder(
                     physics: const BouncingScrollPhysics(),
@@ -3231,22 +3241,25 @@ class _DashboardState extends State<Dashboard> {
 
                       return Padding(
                         padding: EdgeInsets.only(
-                            left: idxMenu == 0 ? 16.0 : 0.0,
-                            right: idxMenu == 0
-                                ? 28.0
-                                : idxMenu == 1
-                                    ? 28.0
-                                    : idxMenu == 2
-                                        ? 28.0
-                                        : idxMenu == 3
-                                            ? 18.0
-                                            : idxMenu == 4
-                                                ? 18.0
-                                                : idxMenu == 5
-                                                    ? 25.0
-                                                    : idxMenu == 6
-                                                        ? 30.0
-                                                        : 30.0),
+                          left: idxMenu == 0 ? 16.0 : 0.0,
+                          right: idxMenu == 0
+                              ? 28.0
+                              : idxMenu == 1
+                                  ? 28.0
+                                  : idxMenu == 2
+                                      ? 28.0
+                                      : idxMenu == 3
+                                          ? 18.0
+                                          : idxMenu == 4
+                                              ? 18.0
+                                              : idxMenu == 5
+                                                  ? 25.0
+                                                  : idxMenu == 6
+                                                      ? 30.0
+                                                      : idxMenu == 7
+                                                          ? 25
+                                                          : 30.0,
+                        ),
                         child: InkWell(
                           onTap: () => internetController.isConnected.value
                               ? controller.routePageDashboard(
@@ -3257,6 +3270,7 @@ class _DashboardState extends State<Dashboard> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
+                                // Gambar
                                 gambar != ""
                                     ? Stack(
                                         children: [
@@ -3306,6 +3320,8 @@ class _DashboardState extends State<Dashboard> {
                                         width: 32,
                                       ),
                                 const SizedBox(height: 4),
+
+                                // Nama Menu
                                 Text(
                                   namaMenu.length > 20
                                       ? namaMenu.substring(0, 20) + '...'
@@ -3321,6 +3337,22 @@ class _DashboardState extends State<Dashboard> {
                       );
                     }),
               ),
+
+              // InkWell(
+              //   onTap: () {
+              //     // Get.to(DayOff());
+              //   },
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: Column(
+              //       children: [
+              //         SvgPicture.asset('assets/6_tugas_luar.svg', height: 42, width: 42,),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+
+
             ],
           ),
 

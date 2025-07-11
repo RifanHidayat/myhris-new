@@ -27,8 +27,9 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-    absenController.resetData();
-  });
+    // absenController.resetData();
+    absenController.clearData();
+    });
   }
 
   @override
@@ -79,6 +80,8 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
               Expanded(
                 child: SingleChildScrollView(child: item()),
               ),
+
+              // Button Kirim
               Container(
                 decoration: BoxDecoration(
                     borderRadius: const BorderRadius.vertical(
@@ -151,7 +154,9 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                         var absk = absenController.addressKeluar.value;
                         var absenklr = absenController.absenKeluarLongLat.value;
                         var absenmsk = absenController.absenLongLatMasuk.value;
+
                       absenController.nextKirimPengajuan("status");
+
                       print("addressmasuk: $abs");
                       print("addresskeluar: $absk");
                       print("absnmsk: $absenmsk");
@@ -183,21 +188,38 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
     );
   }
 
-  void onChanged(bool? value) {
-    if (value == true) {
-      // absenController.allDataCheck.clear();
-      absenController.isCreateNew.value = true;
-      // absenController.checkinAjuan.value = '';
-      // absenController.checkoutAjuan.value = '';
-      absenController.idAjuan.value = 0;
-    }
-  }
+  // void onChanged(bool? value) {
+  //   if (value == true) {
+  //     // Jika di centang (Buat baru)
+  //     // absenController.allDataCheck.clear();
+  //     absenController.isCreateNew.value = true;
+  //     // absenController.checkinAjuan.value = '';
+  //     // absenController.checkoutAjuan.value = '';
+  //     absenController.idAjuan.value = 0; // Reset ID karena ini pengajuan baru
+  //     absenController.checkinAjuan.value = '';
+  //     absenController.checkoutAjuan.value = '';
+  //   } else {
+  //     // Jika tidak dicentang
+  //     // Cek apakah sudah ada riwayat absen yang dipilih
+  //     if (absenController.allDataCheck.isNotEmpty && absenController.allDataCheck[0].isNotEmpty) {
+  //       absenController.isCreateNew.value = false;
+  //       // Tidak perlu reset idAjuan, biarkan nilainya dari riwayat yang dipilih
+  //     } else {
+  //       // Jika tidak ada data absen yang bisa dipilih, paksa tetap true
+  //       UtilsAlert.showToast('Tidak ada data absensi pada tanggal ini, Anda hanya bisa buat pengajuan baru.');
+  //       absenController.isCreateNew.value = true;
+  //     }
+  //   }
+  //   setState(() {});
+  // }
+
 
   Widget item() {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
+
           Row(
             children: [
               Checkbox(
@@ -205,30 +227,67 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5)),
                 onChanged: (bool? value) {
-                  final isAbsenSelected =
-                      absenController.checkinAjuan.value.isNotEmpty &&
-                          absenController.checkoutAjuan.value.isNotEmpty;
+                  setState(() {
+                    if (value == true) {
+                      // ---> LOGIKA BUAT BARU (SAAT DICENTANG) <---
+                      absenController.isCreateNew.value = true;
+                      // Reset semua data yang berhubungan dengan riwayat
+                      absenController.idAjuan.value = 0;
+                      absenController.checkinAjuan.value = '';
+                      absenController.checkoutAjuan.value = '';
+                    } else {
+                      // ---> LOGIKA UPDATE (SAAT DI-UNCHECK) <---
+                      // Cek apakah ada data riwayat yang bisa dipilih
+                      if (absenController.allDataCheck.isNotEmpty &&
+                          absenController.allDataCheck[0].isNotEmpty) {
 
-                  // Kalau mau centang (true), langsung izinkan
-                  if (value == true) {
-                    absenController.isCreateNew.value = true;
-                    if (onChanged != null) onChanged(true);
-                  }
+                        absenController.isCreateNew.value = false;
 
-                  // Kalau mau uncentang (false), hanya izinkan jika absen dipilih
-                  else if (value == false && isAbsenSelected) {
-                    absenController.isCreateNew.value = false;
-                    if (onChanged != null) onChanged(false);
-                  } 
-                  else {
-                    UtilsAlert.showToast(
-                        'Tidak ada data absensi pada tanggal ini, sehingga anda hanya bisa buat pengajuan');
-                  }
+                        // Panggil kembali checkAbsensi untuk memastikan semua state (termasuk ID)
+                        // kembali ke data riwayat yang seharusnya.
+                        absenController.checkAbsensi();
+
+                        // // Kembalikan data riwayat terakhir saat uncheck
+                        // var lastAttendanceRecord = absenController.allDataCheck[0].last;
+                        // absenController.idAjuan.value = int.parse(lastAttendanceRecord['id'].toString());
+                        // absenController.checkinAjuan.value = lastAttendanceRecord['signin_time'] ?? '';
+                        // absenController.checkoutAjuan.value = lastAttendanceRecord['signout_time'] ?? '';
+
+                      } else {
+                        // Jika tidak ada data, paksa untuk buat baru
+                        UtilsAlert.showToast(
+                            'Tidak ada data absensi, Anda hanya bisa buat pengajuan baru.');
+                        absenController.isCreateNew.value = true;
+                      }
+                    }
+                  });
+
+
+                  // final isAbsenSelected =
+                  //     absenController.checkinAjuan.value.isNotEmpty &&
+                  //         absenController.checkoutAjuan.value.isNotEmpty;
+                  //
+                  // // Kalau mau centang (true), langsung izinkan
+                  // if (value == true) {
+                  //   absenController.isCreateNew.value = true;
+                  //   if (onChanged != null) onChanged(true);
+                  // }
+
+                  // // Kalau mau uncentang (false), hanya izinkan jika absen dipilih
+                  // else if (value == false && isAbsenSelected) {
+                  //   absenController.isCreateNew.value = false;
+                  //   if (onChanged != null) onChanged(false);
+                  // }
+                  // else {
+                  //   UtilsAlert.showToast(
+                  //       'Tidak ada data absensi pada tanggal ini, sehingga anda hanya bisa buat pengajuan');
+                  // }
                 },
               ),
               const Text('Buat Pengajuan Baru')
             ],
           ),
+
           Container(
             decoration: BoxDecoration(
               border: Border.all(width: 1, color: Constanst.fgBorder),
@@ -242,6 +301,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(16))),
                   onTap: () {
+
                     Future<void> _selectDate(BuildContext context) async {
                       final DateTime? picked = await showDatePicker(
                         context: context,
@@ -291,17 +351,17 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                       );
 
                       if (picked != null) {
-                        print("$picked");
+                        print("Check Picked: $picked");
                         absenController.selectedDate.value = picked;
                         absenController.tglAjunan.value =
                             DateFormat('yyyy-MM-dd').format(picked).toString();
-                        absenController.checkAbsensi();
 
+                        // Jalankan semua pengambilan data secara sekuensial (berurutan)
+                        absenController.checkAbsensi();
                         absenController.getPlaceCoordinateCheckin();
                         absenController.getPlaceCoordinateCheckout();
                         absenController.getPlaceCoordinateCheckinRest();
                         absenController.getPlaceCoordinateCheckoutRest();
-                      
                       }
                     }
 
@@ -351,6 +411,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                     ),
                   ),
                 ),
+
                 absenController.isCreateNew.value == true
                     ? const SizedBox()
                     : Padding(
@@ -361,13 +422,18 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                           color: Constanst.fgBorder,
                         ),
                       ),
+
+                // Jika uncheck akan muncul widget lastAbsen / Riwayat Absen
                 absenController.isCreateNew.value == true
                     ? const SizedBox()
                     : lastAbsen(),
               ],
             ),
           ),
+
           const SizedBox(height: 16),
+
+          //
           Container(
             decoration: BoxDecoration(
               border: Border.all(width: 1, color: Constanst.fgBorder),
@@ -375,9 +441,12 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
             ),
             child: Column(
               children: [
+
+                // Absen Masuk & Lokasi 1
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Absen Masuk 1
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(right: 16.0),
@@ -513,6 +582,8 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                         ),
                       ),
                     ),
+
+                    // Lokasi 1
                     Expanded(
                       child: InkWell(
                         customBorder: const RoundedRectangleBorder(
@@ -585,6 +656,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                     ),
                   ],
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                   child: Row(
@@ -609,9 +681,12 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                     ],
                   ),
                 ),
+
+                // Absen Keluar & Lokasi 2
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Absen Keluar
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(right: 16.0),
@@ -753,6 +828,8 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                         ),
                       ),
                     ),
+
+                    // Lokasi 2
                     Expanded(
                       child: InkWell(
                         onTap: () {
@@ -822,6 +899,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                     ),
                   ],
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                   child: Row(
@@ -846,6 +924,10 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                     ],
                   ),
                 ),
+
+                // tipeAbsen 3 muncul menu Istirahat Keluar & Lokasi
+                // tipeAbsen 3 untuk absen masuk, istirahat, & pulang
+                // tipeAbsen 2 untuk absen masuk & pulang
                 AppData.informasiUser![0].tipeAbsen == '3'
                     ? Column(
                         children: [
@@ -1378,6 +1460,8 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                         ],
                       )
                     : SizedBox(),
+
+                // Unggah File
                 InkWell(
                   onTap: () {
                     absenController.takeFile();
@@ -1444,6 +1528,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                   child: Divider(
@@ -1452,6 +1537,8 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                     color: Constanst.fgBorder,
                   ),
                 ),
+
+                // Catatan
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 4.0),
                   child: Row(
@@ -1492,6 +1579,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
       ),
     );
   }
+
   Padding lastAbsen() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -1540,8 +1628,10 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                   leading: const Icon(Icons.access_time),
                                   title: Text(
                                       "Masuk: ${item['signin_time'] ?? '-'}"),
+
                                   subtitle: Text(
                                       "Keluar: ${item['signout_time'] ?? '-'}"),
+
                                   trailing: (absenController
                                                   .checkinAjuan.value ==
                                               item['signin_time'] &&
@@ -1587,12 +1677,18 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                                           ),
                                         ),
                                   onTap: () {
+                                    // Mengambil nilai jam masuk
                                     absenController.checkinAjuan.value =
                                         item['signin_time'] ?? '';
+
+                                    // Mengambil nilai jam keluar
                                     absenController.checkoutAjuan.value =
                                         item['signout_time'] ?? '';
+
+                                    // Mengambil nilai id unik dari item
                                     absenController.idAjuan.value =
                                         int.parse(item['id'].toString());
+
                                     Navigator.pop(
                                         context); // Tutup sheet setelah pilih
                                   },
@@ -1644,6 +1740,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                 ],
               ),
             ),
+
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1683,7 +1780,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
     );
   }
 
-  
+
   Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -1724,6 +1821,7 @@ class _pengajuanAbsenState extends State<pengajuanAbsen> {
                         fontWeight: FontWeight.w500,
                         fontSize: 18),
                   ),
+
                   InkWell(
                       customBorder: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(8))),

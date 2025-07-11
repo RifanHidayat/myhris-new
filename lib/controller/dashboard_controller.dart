@@ -57,6 +57,7 @@ import 'package:siscom_operasional/screen/absen/riwayat_cuti.dart';
 import 'package:siscom_operasional/screen/bpjs/bpjs_kesehatan.dart';
 import 'package:siscom_operasional/screen/bpjs/bpjs_ketenagakerjaan.dart';
 import 'package:siscom_operasional/screen/daily_task/daily_task.dart';
+import 'package:siscom_operasional/screen/day_off/riwayat_day_off.dart';
 import 'package:siscom_operasional/screen/init_screen.dart';
 
 import 'package:siscom_operasional/screen/kandidat/form_kandidat.dart';
@@ -1310,8 +1311,12 @@ class DashboardController extends GetxController {
       }
     } else {
       try {
+        print("Request Body [view_last_absen_user2]: ${jsonEncode(body)}");
+
         var response =
             await Api.connectionApi("post", body, "view_last_absen_user2");
+
+        print("Response Body [view_last_absen_user2]: ${response.body}");
 
         if (response.statusCode != 200) {
           isLoading.value = false;
@@ -2578,8 +2583,11 @@ class DashboardController extends GetxController {
       'dateNow': tanggal,
     };
     var connect = Api.connectionApi("post", body, "informasi_employee_ultah");
+
     Future.delayed(const Duration(seconds: 1), () {
       connect.then((dynamic res) {
+        print("Response Employee Ultah: ${res.body}");
+
         if (res.statusCode == 200) {
           var valueBody = jsonDecode(res.body);
           employeeUltah.value = valueBody['data'];
@@ -2660,11 +2668,18 @@ class DashboardController extends GetxController {
       connect.then((dynamic res) async {
         if (res == false) {
           // UtilsAlert.koneksiBuruk();
-          bannerDashboard.clear();
+          // bannerDashboard.clear();
+          // var banners = await SqliteDatabaseHelper().getBanners();
+          // bannerDashboard.value = banners;
+          // print(" banner :${bannerDashboard.value}");
+          // bannerDashboard.refresh();
+
           var banners = await SqliteDatabaseHelper().getBanners();
-          bannerDashboard.value = banners;
+          // Langsung ganti value dengan data baru, jangan di-clear dulu.
+          // Membuat list baru (toList()) memastikan list tersebut mutable (bisa diubah).
+          bannerDashboard.value = List<Map<String, dynamic>>.from(banners);
           print(" banner :${bannerDashboard.value}");
-          bannerDashboard.refresh();
+
         } else {
           if (res.statusCode == 200) {
             var valueBody = jsonDecode(res.body);
@@ -2911,6 +2926,8 @@ class DashboardController extends GetxController {
       Get.to(SuratPeringatan());
     } else if (url == 'tl') {
       Get.to(TeguranLisan());
+    } else if(url == "Dayoff") {
+      Get.to(const RiwayatDayOff());
     } else {
       UtilsAlert.showToast("Tahap Development");
     }

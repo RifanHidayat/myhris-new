@@ -146,8 +146,6 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
                             )),
                       ),
                     )
-
-                    
                   : Text(
                       "Riwayat Izin",
                       style: GoogleFonts.inter(
@@ -163,6 +161,7 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
                       )
                     : Row(
                         children: [
+                          // Search Icon
                           Padding(
                             padding: EdgeInsets.only(
                                 right: dashboardController.showLaporan.value ==
@@ -183,6 +182,8 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
                               ),
                             ),
                           ),
+
+                          // Laporan Izin
                           dashboardController.showLaporan.value == false
                               ? const SizedBox()
                               : Obx(
@@ -355,7 +356,7 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Constanst.colorPrimary,
         onPressed: () {
-           controller.changeTypeSelected(controller.selectedType.value);
+          controller.changeTypeSelected(controller.selectedType.value);
           Get.to(FormPengajuanIzin(
             dataForm: [[], false],
           ));
@@ -1086,6 +1087,7 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
   //   );
   // }
 
+  // List Izin
   Widget listAjuanIzin() {
     return ListView.builder(
         physics: controller.listHistoryAjuan.value.length <= 5
@@ -1102,6 +1104,7 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
               controller.listHistoryAjuan.value[index]['category'];
           var alasanReject =
               controller.listHistoryAjuan.value[index]['alasan_reject'];
+
           var typeAjuan;
           if (controller.valuePolaPersetujuan.value == "1") {
             typeAjuan =
@@ -1135,10 +1138,14 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
                 child: InkWell(
                   customBorder: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8))),
-                  onTap: () => controller.showDetailRiwayat(
+                  onTap: () {
+                    // BottomSheet Detail Riwayat
+                    controller.showDetailRiwayat(
                       controller.listHistoryAjuan.value[index],
                       approve_by,
-                      alasanReject),
+                      alasanReject,
+                    );
+                  },
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 16, right: 16, top: 12, bottom: 8),
@@ -1358,6 +1365,7 @@ class _RiwayatIzinState extends State<RiwayatIzin> {
                                                               'nomor_ajuan':
                                                                   '$nomorAjuan',
                                                             };
+
                                                             controllerGlobal
                                                                 .showDataPilihAtasan(
                                                                     dataEmployee);

@@ -19,6 +19,13 @@ import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class IzinController extends GetxController {
+  RxBool isSelectType = false.obs; // CheckBox uncheck
+  var showFetchButton = false.obs; // tombol fetch Hilang
+  var isTipeIzinVisible = false.obs; // visibilitas formTipe Hilang
+  // var isBackDate = "0".obs;
+  var isBackdate = "0".obs;
+
+
   var cari = TextEditingController().obs;
   var nomorAjuan = TextEditingController().obs;
   var dariTanggal = TextEditingController().obs;
@@ -59,7 +66,6 @@ class IzinController extends GetxController {
   var konfirmasiAtasan = [].obs;
   var tanggalSelectedEdit = <DateTime>[].obs;
   var isRequiredFile = '0'.obs;
-  var isBackdate = "0".obs;
 
   var isLoadingzin = false.obs;
 
@@ -99,7 +105,7 @@ class IzinController extends GetxController {
   var screenTanggalSelected = true.obs;
   var uploadFile = false.obs;
   var statusCari = false.obs;
-  var showTipe = false.obs;
+  RxBool showTipe = false.obs;
   var showButtonlaporan = false.obs;
   var statusLoadingSubmitLaporan = false.obs;
   var viewFormWaktu = false.obs;
@@ -113,10 +119,11 @@ class IzinController extends GetxController {
     "Pending"
   ];
   var globalCt = Get.find<GlobalController>();
+
   // @override
   // void onReady() async {
   //   super.onReady();
-  //   loadCutiUser();
+  // loadCutiUser();
   // }
 
   @override
@@ -477,16 +484,20 @@ class IzinController extends GetxController {
     showDurationIzin.value = false;
     UtilsAlert.showLoadingIndicator(Get.context!);
     allTipe.value.clear();
+
     Map<String, dynamic> body = {
       'durasi': durasi.toString(),
     };
+    print('Durasi Izin: $body');
+
     var connect = Api.connectionApi("post", body, "cuti/type");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
+        print('RESPONS MENTAH dari izin-tipe: ${res.body}');
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
 
-        print("data type sakit new  ${data}");
+        print("data type izin: ${data}");
         for (var element in data) {
           allTipeFormTidakMasukKerja1.value
               .add("${element['name']} - ${element['category']}");
@@ -554,8 +565,9 @@ class IzinController extends GetxController {
     allTipe.value.clear();
     Map<String, dynamic> body = {
       'durasi': durasi.toString(),
+
     };
-    print('body ${body}');
+    print('body cuti/type: ${body}');
     var connect = Api.connectionApi("post", body, "cuti/type");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
@@ -585,6 +597,7 @@ class IzinController extends GetxController {
             'out_limit': element['out_limit'],
             'ajuan': 2,
             'active': false,
+            'multiselect': element['multiselect'],
           };
           allTipe.value.add(data);
 
@@ -598,6 +611,9 @@ class IzinController extends GetxController {
           showTipe.value = true;
           print(datum);
           print(datum['typeid']);
+
+          print('Check multiselect Izin: ${datum['multiselect']}');
+
           if (datum[1] == false) {
             print('kag edit');
           } else {
@@ -1171,7 +1187,7 @@ class IzinController extends GetxController {
         this.stringSelectedTanggal.refresh();
       }
     } else {
-      print('data selectedd ${tanggalSelected.value}');
+      print('data selected ${tanggalSelected.value}');
       if (tanggalSelected.value.isNotEmpty) {
         tanggalSelected.value.forEach((element) {
           var inputFormat = DateFormat('yyyy-MM-dd');
@@ -1255,10 +1271,14 @@ class IzinController extends GetxController {
       'type': ' ${selectedDropdownFormTidakMasukKerjaTipe.value}',
       'apply_status': "Pending",
       'total_cuti': jumlahIzin.value,
-      'cut_leave': cutLeave.value
+      'cut_leave': cutLeave.value,
+      'multiselect': isSelectType.value ? 1 : 0,
     };
 
     print("data body izin ${body}");
+
+    // return;
+
     if (status == false) {
       body['created_by'] = getEmid;
       body['menu_name'] = "Tidak Hadir";
@@ -1752,6 +1772,8 @@ class IzinController extends GetxController {
             : detailData['time_plan_to'];
     var leave_files = detailData['leave_files'];
     var listTanggalTerpilih = detailData['date_selected'].split(',');
+
+
     showModalBottomSheet(
       context: Get.context!,
       isScrollControlled: true,
@@ -2280,6 +2302,8 @@ class IzinController extends GetxController {
                         padding: const EdgeInsets.only(bottom: 16.0, top: 16.0),
                         child: Row(
                           children: [
+
+                            // Button Batalkan
                             Expanded(
                               child: Container(
                                 height: 40,
@@ -2319,6 +2343,8 @@ class IzinController extends GetxController {
                               ),
                             ),
                             const SizedBox(width: 8),
+
+                            // Button Edit
                             Expanded(
                               child: SizedBox(
                                 height: 40,

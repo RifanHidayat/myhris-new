@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=C:\src\flutter
-FLUTTER_APPLICATION_PATH=D:\frondend-mobile\myhris
+FLUTTER_ROOT=C:\Development\flutter_windows_3.22.3
+FLUTTER_APPLICATION_PATH=C:\FullStack\Projectan\myhris-new
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_BUILD_DIR=build
 FLUTTER_BUILD_NAME=2.0.0

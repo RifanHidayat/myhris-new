@@ -89,7 +89,7 @@ class _pengajuanAbsenBerhasilState extends State<pengajuanAbsenBerhasil> {
         child: Column(
           children: [
             Expanded(
-              flex: 14,
+              flex: 10,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -127,6 +127,7 @@ class _pengajuanAbsenBerhasilState extends State<pengajuanAbsenBerhasil> {
                 ],
               ),
             ),
+
             Expanded(
               flex: 2,
               child: Padding(

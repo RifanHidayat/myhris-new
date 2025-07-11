@@ -1,5 +1,4 @@
-// ignore_for_file: deprecated_member_use
-
+import 'dart:ffi' as si;
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
@@ -18,13 +17,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class FormPengajuanIzin extends StatefulWidget {
   List? dataForm;
+
   FormPengajuanIzin({Key? key, this.dataForm}) : super(key: key);
+
   @override
   _FormPengajuanIzinState createState() => _FormPengajuanIzinState();
 }
 
 class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
-  var controller = Get.put(IzinController());
+  final IzinController controller = Get.put(IzinController());
 
   var izinTerpakai = 0.obs;
   var jumlahCuti = 0.obs;
@@ -40,12 +41,19 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
         var convertDariTanggal = widget.dataForm![0]['start_date'];
         var convertSampaiTanggal = widget.dataForm![0]['end_date'];
 
+        var multiSelect = widget.dataForm![0]['multiselect'];
+
+        print('Check uyy: $multiSelect');
+
         controller.isBackdate.value =
             widget.dataForm![0]['back_date'].toString();
         controller.dariTanggal.value.text = "$convertDariTanggal";
         controller.sampaiTanggal.value.text = "$convertSampaiTanggal";
         controller.startDate.value = "$convertDariTanggal";
         controller.endDate.value = "$convertSampaiTanggal";
+
+        // controller.isSelectType.value = multiSelect;
+        controller.isSelectType.value = (multiSelect == 1);
 
         controller.jamAjuan.value.text = widget.dataForm![0]['time_plan'];
         controller.sampaiJamAjuan.value.text =
@@ -74,6 +82,7 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
         controller.screenTanggalSelected.value = false;
 
         var listDateTerpilih = widget.dataForm![0]['date_selected'].split(',');
+
         List<DateTime> getDummy = [];
 
         for (var element in listDateTerpilih) {
@@ -136,12 +145,19 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
           }
         }
       } else {
+        // Blok untuk membuat pengajuan BARU
         controller.messageApi.value = '';
         controller.startDate.value = '';
         controller.showDurationIzin.value = false;
         controller.showTipe.value = false;
         controller.endDate.value = '';
         controller.alasan.value.clear();
+
+        // Memastikan tidak ada tanggal yang terpilih secara default
+        controller.tanggalSelected.clear();
+        controller.tanggalSelectedEdit.clear();
+        controller.isSelectType.value = false;
+        controller.isTipeIzinVisible.value = false;
       }
     });
   }
@@ -260,8 +276,10 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                               : informasiSisaCuti()
                           : SizedBox(),
                     ),
+
                     // : const SizedBox()),
                     const SizedBox(height: 16),
+
                     Obx(() => controller.isLoadingzin.value == true
                         ? SizedBox()
                         : Container(
@@ -272,13 +290,23 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                             child: Column(
                               children: [
                                 // formAjuanTanggal(),
+
                                 formTanggalCutiMelahirkan(),
+
                                 // controller.inputTime.value == 0
                                 //     ? formAjuanTanggal()
                                 //     : formAjuanTanggal1(),
-                                Obx(() => controller.showTipe.value == false
-                                    ? SizedBox()
-                                    : formTipe()),
+
+                                // Pemanggilan form Tipe Izin
+                                // Obx(() => controller.showTipe.value == false
+                                //     ? SizedBox()
+                                //     : formTipe()),
+
+                                // Widget formTipe() hanya akan muncul jika isTipeIzinVisible bernilai true
+                                Obx(() => controller.isTipeIzinVisible.value
+                                    ? formTipe()
+                                    : const SizedBox.shrink()),
+
                                 // Text(AppData.informasiUser![0].dep_group.toString()),
                                 controller.inputTime.value == 0
                                     ? const SizedBox()
@@ -750,264 +778,961 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
         //         : customTanggalDariSampaiDari()
         //     : SizedBox(),
 
+        // Checkbox MultiSelect or no
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 50,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: InkWell(
-                  onTap: () {
-                    DatePicker.showPicker(
-                      context,
-                      pickerModel: CustomDatePicker(
-                          currentTime: DateTime.now(), minTime: DateTime(2000)),
-                      onConfirm: (time) {
-                        if (time != null) {
-                          controller.startDate.value =
-                              DateFormat('yyyy-MM-dd').format(time).toString();
-                          controller.dariTanggal.value.text =
-                              DateFormat('yyyy-MM-dd').format(time).toString();
+            Checkbox(
+              value: controller.isSelectType.value,
+              checkColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)),
+              onChanged: (bool? value) {
+                setState(() {
+                  // Reset status tombol fetch Hilang
+                  controller.showFetchButton.value = false;
 
-                          DateTime tempStartDate = DateTime.parse(
-                              DateFormat('yyyy-MM-dd')
-                                  .format(DateFormat('yyyy-MM-dd')
-                                      .parse(controller.startDate.value))
-                                  .toString());
-                          DateTime tempEndDate = DateTime.parse(
-                              DateFormat('yyyy-MM-dd')
-                                  .format(DateTime.parse(
-                                      controller.endDate.value.toString()))
-                                  .toString());
-                          DateTime today = DateTime.now();
-                          DateTime onlyDate =
-                              DateTime(today.year, today.month, today.day);
-                          DateTime date1 = DateTime(tempStartDate.year,
-                              tempStartDate.month, tempStartDate.day);
-                          Duration difference = date1.difference(onlyDate);
-                          controller.durasiIzin.value = difference.inDays;
-                          controller.tanggalSelected.value.clear();
-                          controller.tanggalSelectedEdit.value.clear();
-                          for (var i = tempStartDate;
-                              i.isBefore(tempEndDate) ||
-                                  i.isAtSameMomentAs(tempEndDate);
-                              i = i.add(Duration(days: 1))) {
-                            controller.tanggalSelected.value.add(i);
-                            controller.tanggalSelectedEdit.value.add(i);
-                          }
+                  // Reset visibilitas formTipe Hilang
+                  controller.isTipeIzinVisible.value = false;
 
-                          if (controller.startDate.value != '' &&
-                              controller.endDate.value != '') {
-                            controller.loaDataTipe(
-                                durasi: controller.durasiIzin.value.toString());
-                          } else {}
-                          print("$time");
-                        }
-                      },
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 16.0, 0.0, 16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                            flex: 15, child: const Icon(Iconsax.calendar_2)),
-                        Expanded(
-                          flex: 80,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextLabell(
-                                text: "Tanggal Mulai *",
-                                color: Constanst.fgPrimary,
-                                size: 14,
-                                weight: FontWeight.w400,
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  TextLabell(
-                                    text: controller.startDate.value == ""
-                                        ? controller.startDate.value
-                                        : DateFormat('dd MMM yyyy', 'id')
-                                            .format(DateTime.parse(controller
-                                                .startDate.value
-                                                .toString())),
-                                    color: Constanst.fgPrimary,
-                                    weight: FontWeight.w500,
-                                    size: 16,
-                                  ),
-                                  Icon(Iconsax.arrow_down_1,
-                                      size: 20, color: Constanst.fgPrimary),
-                                ],
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 50,
-              child: InkWell(
-                onTap: () {
-                  if (controller.startDate.value == "") {
-                    UtilsAlert.showToast("Tanggal Mulai belum diisi");
-                    return;
+                  // Ubah mode seperti biasa
+                  controller.isSelectType.value = value ?? false;
+
+                  if (value == true) {
+                    // Logika MultiSelect Tanggal Centang
+                    controller.isSelectType.value = true;
+                  } else {
+                    // Logika Uncentang
+                    controller.isSelectType.value = false;
                   }
-                  print("kesini");
-                  DatePicker.showPicker(
-                    context,
-                    pickerModel: CustomDatePicker(
-                      // minTime: DateTime(
-                      //     DateTime.now().year,
-                      //     DateTime.now().month - 1,
-                      //     int.parse(
-                      //         AppData.informasiUser![0].beginPayroll.toString())),
-                      // maxTime: DateTime(DateTime.now().year, DateTime.now().month,
-                      //     DateTime.now().day),
-                      currentTime: DateTime.now(),
-                      minTime: DateTime(2000),
-                    ),
-                    onConfirm: (time) {
-                      if (time != null) {
-                        controller.endDate.value = DateFormat('yyyy-MM-dd')
-                            .format(
-                                DateFormat('yyyy-MM-dd').parse(time.toString()))
-                            .toString();
-
-                        controller.sampaiTanggal.value.text = DateFormat(
-                                'yyyy-MM-dd')
-                            .format(
-                                DateFormat('yyyy-MM-dd').parse(time.toString()))
-                            .toString();
-
-                        DateTime tempStartDate = DateTime.parse(
-                            DateFormat('yyyy-MM-dd')
-                                .format(DateFormat('yyyy-MM-dd')
-                                    .parse(controller.startDate.value))
-                                .toString());
-                        DateTime tempEndDate = DateTime.parse(
-                            DateFormat('yyyy-MM-dd')
-                                .format(DateTime.parse(
-                                    controller.endDate.value.toString()))
-                                .toString());
-                        // Define two DateTime objects representing the two dates
-                        DateTime today = DateTime.now();
-                        DateTime onlyDate =
-                            DateTime(today.year, today.month, today.day);
-                        DateTime date1 = DateTime(tempStartDate.year,
-                            tempStartDate.month, tempStartDate.day);
-                        DateTime date2 = DateTime(tempEndDate.year,
-                            tempEndDate.month, tempEndDate.day);
-
-                        // Calculate the difference between the two dates
-                        Duration difference = date1.difference(onlyDate);
-                        controller.durasiIzin.value = difference.inDays;
-
-                        print("durasi izin  ${controller.durasiIzin.value}");
-                        controller.tanggalSelected.value.clear();
-                        controller.tanggalSelectedEdit.value.clear();
-                        for (var i = tempStartDate;
-                            i.isBefore(tempEndDate) ||
-                                i.isAtSameMomentAs(tempEndDate);
-                            i = i.add(Duration(days: 1))) {
-                          controller.tanggalSelected.value.add(i);
-                          controller.tanggalSelectedEdit.value.add(i);
-                        }
-                        if (controller.startDate.value ==
-                            controller.endDate.value) {
-                          controller.tanggalSelected.value = [];
-                          controller.tanggalSelected.value
-                              .add(controller.startDate.value);
-                        }
-                        print(
-                            "tanggal teralkhir ${controller.tanggalSelected.value}");
-                        print(
-                            "tanggal teralkhir ${controller.tanggalSelectedEdit.value}");
-                        controller.loaDataTipe(
-                            durasi: controller.durasiIzin.value.toString());
-
-                        // controller.durasi.value =
-                        //     difference.inDays + 1;
-
-                        // absenController.tglAjunan.value =
-                        //     DateFormat('yyyy-MM-dd').format(time).toString();
-                        // absenController.checkAbsensi();
-
-                        // absenController.getPlaceCoordinateCheckin();
-                        // absenController.getPlaceCoordinateCheckout();
-
-                        // var filter = DateFormat('yyyy-MM').format(time);
-                        // var array = filter.split('-');
-                        // var bulan = array[1];
-                        // var tahun = array[0];
-                        // controller.bulanSelectedSearchHistory.value = bulan;
-                        // controller.tahunSelectedSearchHistory.value = tahun;
-                        // controller.bulanDanTahunNow.value = "$bulan-$tahun";
-                        // this.controller.bulanSelectedSearchHistory.refresh();
-                        // this.controller.tahunSelectedSearchHistory.refresh();
-                        // this.controller.bulanDanTahunNow.refresh();
-                        // controller.loadHistoryAbsenUser();
-                      }
-                    },
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 16.0, 16.0, 16.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(flex: 15, child: Icon(Iconsax.calendar_2)),
-                      Expanded(
-                        flex: 80,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextLabell(
-                              text: "Tanggal Selesai *",
-                              color: Constanst.fgPrimary,
-                              size: 14,
-                              weight: FontWeight.w400,
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: TextLabell(
-                                    text: controller.endDate.value == ""
-                                        ? controller.endDate.value
-                                        : DateFormat('dd MMM yyyy', 'id')
-                                            .format(DateTime.parse(controller
-                                                .endDate.value
-                                                .toString())),
-                                    color: Constanst.fgPrimary,
-                                    weight: FontWeight.w500,
-                                    size: 16,
-                                  ),
-                                ),
-                                Icon(Iconsax.arrow_down_1,
-                                    size: 20, color: Constanst.fgPrimary),
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+                  controller.startDate.value = '';
+                  controller.endDate.value = '';
+                  controller.tanggalSelected.clear();
+                  controller.tanggalSelectedEdit.clear();
+                });
+              },
             ),
+            Text('MultiSelect Tanggal')
           ],
         ),
+
+        Obx(
+          () => controller.isSelectType.value // True MultiSelect
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                  child: Column(
+                    children: [
+                      // Pilih Tanggal
+                      Row(
+                        children: [
+                          const Icon(
+                            Iconsax.calendar_2,
+                            size: 26,
+                          ),
+                          const SizedBox(width: 12),
+                          Text("Pilih Tanggal*",
+                              style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Constanst.fgPrimary)),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+
+                      // Kalender MultiSelect
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(12)),
+                          border: Border.all(color: Constanst.fgBorder),
+                        ),
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          elevation: 0,
+
+                          // SfDateRangePicker
+                          child: SfDateRangePicker(
+                            minDate: DateTime(2000),
+                            // minDate: controller.isBackdate.value == "0"
+                            //     ? DateTime(2000)
+                            //     : DateTime.now(),
+                            selectionMode:
+                                DateRangePickerSelectionMode.multiple,
+
+                            initialSelectedDates:
+                                controller.tanggalSelectedEdit.value,
+
+                            monthCellStyle: const DateRangePickerMonthCellStyle(
+                              weekendTextStyle: TextStyle(color: Colors.red),
+                              blackoutDateTextStyle: TextStyle(
+                                  color: Colors.red,
+                                  decoration: TextDecoration.lineThrough),
+                            ),
+
+                            // OnSelectChangez
+                            onSelectionChanged:
+                                (DateRangePickerSelectionChangedArgs args) {
+                              // check args: [2025-07-09 00:00:00.000, 2025-07-10 00:00:00.000, 2025-07-11 00:00:00.000]
+                              print('check args: ${args.value}');
+
+                              // Untuk mode .multiple, args.value sudah berupa List<DateTime>
+                              // Lakukan pemeriksaan tipe untuk keamanan
+                              if (args.value is List<DateTime>) {
+                                // Langsung gunakan args.value sebagai list tanggal
+                                List<DateTime> dateList = args.value;
+                                // Cetak hasil
+                                print('Tanggal yang dipilih: $dateList');
+
+                                // HITUNG DURASI BERDASARKAN JUMLAH HARI YANG DIPILIH
+                                int durasi = dateList.length;
+                                controller.durasiIzin.value = durasi;
+                                print('Durasi Izin Dihitung: $durasi hari');
+
+                                // Tentukan tanggal mulai dan akhir untuk disimpan
+                                if (dateList.isNotEmpty) {
+                                  // Urutkan daftar tanggal dari yang paling awal ke paling akhir
+                                  dateList.sort((a, b) => a.compareTo(b));
+
+                                  // Ambil tanggal pertama (terkecil) dan terakhir (terbesar)
+                                  DateTime tanggalTerkecil = dateList.first;
+                                  DateTime tanggalTerbesar = dateList
+                                      .last; // Jika hanya 1 tanggal, ini akan sama dengan yg terkecil
+
+                                  // Format tanggal ke dalam string
+                                  String formattedStartDate =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(tanggalTerkecil);
+                                  String formattedEndDate =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(tanggalTerbesar);
+
+                                  // Update controller dengan nilai baru
+                                  controller.startDate.value =
+                                      formattedStartDate;
+                                  controller.endDate.value = formattedEndDate;
+
+                                  // controller.tanggalSelected.value.clear();
+                                  // controller.tanggalSelectedEdit.value.clear();
+
+                                  // (Opsional) Print untuk debugging
+                                  print(
+                                      'Tanggal Terkecil (Start Date): $formattedStartDate');
+                                  print(
+                                      'Tanggal Terbesar (End Date): $formattedEndDate');
+                                } else {
+                                  // Jika tidak ada tanggal yang dipilih, kosongkan nilainya
+                                  controller.startDate.value = '';
+                                  controller.endDate.value = '';
+                                }
+
+                                // Tampilkan tombol jika ada tanggal yang dipilih
+                                controller.showFetchButton.value =
+                                    dateList.isNotEmpty;
+
+                                // Jika tombol fetch muncul, sembunyikan dulu form tipe
+                                if (controller.showFetchButton.value) {
+                                  controller.isTipeIzinVisible.value = false;
+                                }
+
+                                // Update daftar tanggal yang dipilih di controller
+                                if (widget.dataForm![1] == true) {
+                                  controller.tanggalSelectedEdit.value =
+                                      dateList;
+                                } else {
+                                  controller.tanggalSelected.value = dateList;
+                                }
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 12,
+                      ),
+
+                      // PERUBAHAN 2
+                      // Obx(() {
+                      //   // Hanya tampilkan tombol jika showFetchButton true
+                      //   if (controller.showFetchButton.value) {
+                      //     return SizedBox(
+                      //       width: double.infinity,
+                      //       child: ElevatedButton(
+                      //         onPressed: () {
+                      //           print(
+                      //               "Tombol Fetch Ditekan dengan durasi: ${controller.durasiIzin.value} hari");
+                      //
+                      //           DateTime tempStartDate = DateTime.parse(
+                      //               DateFormat('yyyy-MM-dd')
+                      //                   .format(DateFormat('yyyy-MM-dd')
+                      //                       .parse(controller.startDate.value))
+                      //                   .toString());
+                      //
+                      //           DateTime tempEndDate = DateTime.parse(
+                      //               DateFormat('yyyy-MM-dd')
+                      //                   .format(DateTime.parse(controller
+                      //                       .endDate.value
+                      //                       .toString()))
+                      //                   .toString());
+                      //
+                      //           DateTime today = DateTime.now();
+                      //           DateTime onlyDate = DateTime(
+                      //               today.year, today.month, today.day);
+                      //
+                      //           DateTime date1 = DateTime(tempStartDate.year,
+                      //               tempStartDate.month, tempStartDate.day);
+                      //           Duration difference =
+                      //               date1.difference(onlyDate);
+                      //
+                      //           controller.durasiIzin.value = difference.inDays;
+                      //
+                      //           controller.tanggalSelected.value.clear();
+                      //           controller.tanggalSelectedEdit.value.clear();
+                      //
+                      //           for (var i = tempStartDate;
+                      //               i.isBefore(tempEndDate) ||
+                      //                   i.isAtSameMomentAs(tempEndDate);
+                      //               i = i.add(Duration(days: 1))) {
+                      //             controller.tanggalSelected.value.add(i);
+                      //             controller.tanggalSelectedEdit.value.add(i);
+                      //           }
+                      //
+                      //           // Panggil API dengan durasi yang sudah benar
+                      //           if (controller.startDate.value != '' &&
+                      //               controller.endDate.value != '') {
+                      //             controller.loaDataTipe(
+                      //                 durasi: controller.durasiIzin.value
+                      //                     .toString());
+                      //           } else {}
+                      //
+                      //           // Sembunyikan kembali tombol setelah ditekan
+                      //           controller.showFetchButton.value = false;
+                      //
+                      //           // Untuk memunculkan form tipe
+                      //           controller.isTipeIzinVisible.value = true;
+                      //         },
+                      //         style: ElevatedButton.styleFrom(
+                      //
+                      //             foregroundColor: Constanst.colorWhite,
+                      //             backgroundColor: Constanst.greyLight300,
+                      //             shape: RoundedRectangleBorder(
+                      //               borderRadius: BorderRadius.circular(8),
+                      //             ),
+                      //
+                      //             elevation: 0,
+                      //             padding:
+                      //                 const EdgeInsets.symmetric(vertical: 12)),
+                      //         child: Text(
+                      //           'Lihat Tipe Izin',
+                      //           style: GoogleFonts.inter(
+                      //               fontWeight: FontWeight.w500,
+                      //               fontSize: 16,
+                      //               color: Constanst.colorWhite),
+                      //         ),
+                      //       ),
+                      //     );
+                      //   } else {
+                      //     // Jika false, tampilkan widget kosong
+                      //     return const SizedBox.shrink();
+                      //   }
+                      // }),
+
+                      Obx(() {
+                        // Hanya tampilkan tombol jika showFetchButton true
+                        if (controller.showFetchButton.value) {
+                          return SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              // DIUBAH: dari ElevatedButton menjadi OutlinedButton
+                              onPressed: () {
+                                print(
+                                    "Tombol Fetch Ditekan dengan durasi: ${controller.durasiIzin.value} hari");
+
+                                DateTime tempStartDate = DateTime.parse(
+                                    DateFormat('yyyy-MM-dd')
+                                        .format(DateFormat('yyyy-MM-dd')
+                                            .parse(controller.startDate.value))
+                                        .toString());
+
+                                DateTime tempEndDate = DateTime.parse(
+                                    DateFormat('yyyy-MM-dd')
+                                        .format(DateTime.parse(controller
+                                            .endDate.value
+                                            .toString()))
+                                        .toString());
+
+                                DateTime today = DateTime.now();
+                                DateTime onlyDate = DateTime(
+                                    today.year, today.month, today.day);
+
+                                DateTime date1 = DateTime(tempStartDate.year,
+                                    tempStartDate.month, tempStartDate.day);
+
+                                // Calculate the difference between the two dates
+                                Duration difference = date1.difference(onlyDate);
+
+                                print('ini diferent izin : $difference');
+
+                                controller.durasiIzin.value = difference.inDays;
+
+                                controller.tanggalSelected.value.clear();
+                                controller.tanggalSelectedEdit.value.clear();
+
+                                for (var i = tempStartDate;
+                                    i.isBefore(tempEndDate) ||
+                                        i.isAtSameMomentAs(tempEndDate);
+                                    i = i.add(Duration(days: 1))) {
+                                  controller.tanggalSelected.value.add(i);
+                                  controller.tanggalSelectedEdit.value.add(i);
+                                }
+
+                                // Panggil API dengan durasi yang sudah benar
+                                if (controller.startDate.value != '' &&
+                                    controller.endDate.value != '') {
+                                  controller.loaDataTipe(
+                                      durasi: controller.durasiIzin.value
+                                          .toString());
+                                } else {}
+
+                                // Sembunyikan kembali tombol setelah ditekan
+                                controller.showFetchButton.value = false;
+
+                                // Untuk memunculkan form tipe
+                                controller.isTipeIzinVisible.value = true;
+                              },
+                              // DIUBAH: Sesuaikan style untuk OutlinedButton
+                              style: OutlinedButton.styleFrom(
+                                  // Atur warna border dan teks
+                                  foregroundColor: Constanst.colorPrimary,
+                                  backgroundColor: Constanst.colorWhite,
+
+                                  // Atur bentuk border
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+
+                                  // Atur ketebalan border (opsional)
+                                  side: BorderSide(
+                                      color: Colors.blue, width: 1.5),
+                                  // Ganti dengan warna biru Anda
+
+                                  // Atur padding
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12)),
+                              child: Text(
+                                'Lihat Tipe Izin',
+                                // DIUBAH: Sesuaikan warna teks
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: Colors
+                                        .blue), // Ganti dengan warna biru Anda
+                              ),
+                            ),
+                          );
+                        } else {
+                          // Jika false, tampilkan widget kosong
+                          return const SizedBox.shrink();
+                        }
+                      }),
+
+                      SizedBox(
+                        height: 12,
+                      ),
+                    ],
+                  ),
+                )
+
+              // Tanggal Mulai & Tanggal Selesai
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// Tanggal Mulai
+                    Expanded(
+                      flex: 50,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: InkWell(
+                          onTap: () {
+                            // Hilangkan form tipe
+                            controller.isTipeIzinVisible.value = false;
+
+                            DatePicker.showPicker(
+                              context,
+                              pickerModel: CustomDatePicker(
+                                currentTime: DateTime.now(),
+                                minTime: DateTime(2000),
+
+                                // default isBackDate = 0
+                                // minTime: controller.isBackdate.value == "0"
+                                //     ? DateTime(2000)
+                                //     : DateTime.now(),
+                              ),
+                              onConfirm: (time) {
+                                // check time Tanggal Mulai: 2025-07-09 16:27:24.975765
+                                print('check time Tanggal Mulai: $time');
+
+                                if (time != null) {
+                                  controller.startDate.value =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(time)
+                                          .toString();
+
+                                  controller.dariTanggal.value.text =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(time)
+                                          .toString();
+
+                                  DateTime tempStartDate = DateTime.parse(
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(DateFormat('yyyy-MM-dd')
+                                              .parse(
+                                                  controller.startDate.value))
+                                          .toString());
+
+                                  DateTime tempEndDate = DateTime.parse(
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(DateTime.parse(controller
+                                              .endDate.value
+                                              .toString()))
+                                          .toString());
+
+                                  DateTime today = DateTime.now();
+                                  DateTime onlyDate = DateTime(
+                                      today.year, today.month, today.day);
+
+                                  DateTime date1 = DateTime(tempStartDate.year,
+                                      tempStartDate.month, tempStartDate.day);
+
+                                  DateTime date2 = DateTime(tempEndDate.year,
+                                      tempEndDate.month, tempEndDate.day);
+
+                                  print('ini now ${onlyDate}');
+                                  print('ini date1 $date1');
+
+                                  Duration difference =
+                                      date1.difference(onlyDate);
+                                  print(
+                                      'ini durasi izin : ${controller.durasiIzin.value}');
+                                  print('ini diferent cuti : $difference');
+
+                                  controller.durasiIzin.value =
+                                      difference.inDays;
+
+                                  controller.tanggalSelected.value.clear();
+                                  controller.tanggalSelectedEdit.value.clear();
+
+                                  for (var i = tempStartDate;
+                                      i.isBefore(tempEndDate) ||
+                                          i.isAtSameMomentAs(tempEndDate);
+                                      i = i.add(Duration(days: 1))) {
+                                    controller.tanggalSelected.value.add(i);
+                                    controller.tanggalSelectedEdit.value.add(i);
+                                  }
+
+                                  if (controller.startDate.value != '' &&
+                                      controller.endDate.value != '') {
+                                    controller.loaDataTipe(
+                                        durasi: controller.durasiIzin.value
+                                            .toString());
+                                  } else {}
+
+                                  print("check time:$time");
+                                }
+                              },
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                                16.0, 16.0, 0.0, 16.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                    flex: 15,
+                                    child: const Icon(Iconsax.calendar_2)),
+                                Expanded(
+                                  flex: 80,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      /// Tanggal Mulai
+                                      TextLabell(
+                                        text: "Tanggal Mulai *",
+                                        color: Constanst.fgPrimary,
+                                        size: 14,
+                                        weight: FontWeight.w400,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TextLabell(
+                                            text:
+                                                controller.startDate.value == ""
+                                                    ? controller.startDate.value
+                                                    : DateFormat(
+                                                            'dd MMM yyyy', 'id')
+                                                        .format(DateTime.parse(
+                                                            controller
+                                                                .startDate.value
+                                                                .toString())),
+                                            color: Constanst.fgPrimary,
+                                            weight: FontWeight.w500,
+                                            size: 16,
+                                          ),
+                                          Icon(Iconsax.arrow_down_1,
+                                              size: 20,
+                                              color: Constanst.fgPrimary),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Tanggal Akhir
+                    Expanded(
+                      flex: 50,
+                      child: InkWell(
+                        onTap: () {
+                          if (controller.startDate.value == "") {
+                            UtilsAlert.showToast("Tanggal Mulai belum diisi");
+                            return;
+                          }
+                          print("kesini");
+                          DatePicker.showPicker(
+                            context,
+                            pickerModel: CustomDatePicker(
+                              // minTime: DateTime(
+                              //     DateTime.now().year,
+                              //     DateTime.now().month - 1,
+                              //     int.parse(
+                              //         AppData.informasiUser![0].beginPayroll.toString())),
+                              // maxTime: DateTime(DateTime.now().year, DateTime.now().month,
+                              //     DateTime.now().day),
+                              currentTime: DateTime.now(),
+                              minTime: DateTime(2000),
+                            ),
+                            onConfirm: (time) {
+                              controller.isTipeIzinVisible.value = true;
+
+                              if (time != null) {
+                                controller.endDate.value =
+                                    DateFormat('yyyy-MM-dd')
+                                        .format(DateFormat('yyyy-MM-dd')
+                                            .parse(time.toString()))
+                                        .toString();
+
+                                controller.sampaiTanggal.value.text =
+                                    DateFormat('yyyy-MM-dd')
+                                        .format(DateFormat('yyyy-MM-dd')
+                                            .parse(time.toString()))
+                                        .toString();
+
+                                DateTime tempStartDate = DateTime.parse(
+                                    DateFormat('yyyy-MM-dd')
+                                        .format(DateFormat('yyyy-MM-dd')
+                                            .parse(controller.startDate.value))
+                                        .toString());
+                                DateTime tempEndDate = DateTime.parse(
+                                    DateFormat('yyyy-MM-dd')
+                                        .format(DateTime.parse(controller
+                                            .endDate.value
+                                            .toString()))
+                                        .toString());
+                                // Define two DateTime objects representing the two dates
+                                DateTime today = DateTime.now();
+                                DateTime onlyDate = DateTime(
+                                    today.year, today.month, today.day);
+                                DateTime date1 = DateTime(tempStartDate.year,
+                                    tempStartDate.month, tempStartDate.day);
+                                DateTime date2 = DateTime(tempEndDate.year,
+                                    tempEndDate.month, tempEndDate.day);
+
+                                // Calculate the difference between the two dates
+                                Duration difference =
+                                    date1.difference(onlyDate);
+                                controller.durasiIzin.value = difference.inDays;
+
+                                print(
+                                    "durasi izin ${controller.durasiIzin.value}");
+
+                                controller.tanggalSelected.value.clear();
+                                controller.tanggalSelectedEdit.value.clear();
+                                for (var i = tempStartDate;
+                                    i.isBefore(tempEndDate) ||
+                                        i.isAtSameMomentAs(tempEndDate);
+                                    i = i.add(Duration(days: 1))) {
+                                  controller.tanggalSelected.value.add(i);
+                                  controller.tanggalSelectedEdit.value.add(i);
+                                }
+                                if (controller.startDate.value ==
+                                    controller.endDate.value) {
+                                  controller.tanggalSelected.value = [];
+                                  controller.tanggalSelected.value
+                                      .add(controller.startDate.value);
+                                }
+                                print(
+                                    "tanggal teralkhir ${controller.tanggalSelected.value}");
+                                print(
+                                    "tanggal teralkhir ${controller.tanggalSelectedEdit.value}");
+
+                                controller.loaDataTipe(
+                                    durasi:
+                                        controller.durasiIzin.value.toString());
+
+                                // controller.durasi.value =
+                                //     difference.inDays + 1;
+
+                                // absenController.tglAjunan.value =
+                                //     DateFormat('yyyy-MM-dd').format(time).toString();
+                                // absenController.checkAbsensi();
+
+                                // absenController.getPlaceCoordinateCheckin();
+                                // absenController.getPlaceCoordinateCheckout();
+
+                                // var filter = DateFormat('yyyy-MM').format(time);
+                                // var array = filter.split('-');
+                                // var bulan = array[1];
+                                // var tahun = array[0];
+                                // controller.bulanSelectedSearchHistory.value = bulan;
+                                // controller.tahunSelectedSearchHistory.value = tahun;
+                                // controller.bulanDanTahunNow.value = "$bulan-$tahun";
+                                // this.controller.bulanSelectedSearchHistory.refresh();
+                                // this.controller.tahunSelectedSearchHistory.refresh();
+                                // this.controller.bulanDanTahunNow.refresh();
+                                // controller.loadHistoryAbsenUser();
+                              }
+                            },
+                          );
+                        },
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(0.0, 16.0, 16.0, 16.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                  flex: 15, child: Icon(Iconsax.calendar_2)),
+                              Expanded(
+                                flex: 80,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    /// Tanggal Selesai
+                                    TextLabell(
+                                      text: "Tanggal Selesai *",
+                                      color: Constanst.fgPrimary,
+                                      size: 14,
+                                      weight: FontWeight.w400,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: TextLabell(
+                                            text: controller.endDate.value == ""
+                                                ? controller.endDate.value
+                                                : DateFormat(
+                                                        'dd MMM yyyy', 'id')
+                                                    .format(DateTime.parse(
+                                                        controller.endDate.value
+                                                            .toString())),
+                                            color: Constanst.fgPrimary,
+                                            weight: FontWeight.w500,
+                                            size: 16,
+                                          ),
+                                        ),
+                                        Icon(Iconsax.arrow_down_1,
+                                            size: 20,
+                                            color: Constanst.fgPrimary),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+        ),
+
+        // Tanggal Mulai & Akhir
+        // Row(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     Expanded(
+        //       flex: 50,
+        //       child: Padding(
+        //         padding: const EdgeInsets.only(right: 16.0),
+        //         child: InkWell(
+        //           onTap: () {
+        //             DatePicker.showPicker(
+        //               context,
+        //               pickerModel: CustomDatePicker(
+        //                   currentTime: DateTime.now(), minTime: DateTime(2000)),
+        //               onConfirm: (time) {
+        //                 if (time != null) {
+        //                   controller.startDate.value =
+        //                       DateFormat('yyyy-MM-dd').format(time).toString();
+        //                   controller.dariTanggal.value.text =
+        //                       DateFormat('yyyy-MM-dd').format(time).toString();
+        //
+        //                   DateTime tempStartDate = DateTime.parse(
+        //                       DateFormat('yyyy-MM-dd')
+        //                           .format(DateFormat('yyyy-MM-dd')
+        //                               .parse(controller.startDate.value))
+        //                           .toString());
+        //                   DateTime tempEndDate = DateTime.parse(
+        //                       DateFormat('yyyy-MM-dd')
+        //                           .format(DateTime.parse(
+        //                               controller.endDate.value.toString()))
+        //                           .toString());
+        //                   DateTime today = DateTime.now();
+        //                   DateTime onlyDate =
+        //                       DateTime(today.year, today.month, today.day);
+        //                   DateTime date1 = DateTime(tempStartDate.year,
+        //                       tempStartDate.month, tempStartDate.day);
+        //                   Duration difference = date1.difference(onlyDate);
+        //                   controller.durasiIzin.value = difference.inDays;
+        //                   controller.tanggalSelected.value.clear();
+        //                   controller.tanggalSelectedEdit.value.clear();
+        //                   for (var i = tempStartDate;
+        //                       i.isBefore(tempEndDate) ||
+        //                           i.isAtSameMomentAs(tempEndDate);
+        //                       i = i.add(Duration(days: 1))) {
+        //                     controller.tanggalSelected.value.add(i);
+        //                     controller.tanggalSelectedEdit.value.add(i);
+        //                   }
+        //
+        //                   if (controller.startDate.value != '' &&
+        //                       controller.endDate.value != '') {
+        //                     controller.loaDataTipe(
+        //                         durasi: controller.durasiIzin.value.toString());
+        //                   } else {}
+        //                   print("$time");
+        //                 }
+        //               },
+        //             );
+        //           },
+        //           child: Padding(
+        //             padding: const EdgeInsets.fromLTRB(16.0, 16.0, 0.0, 16.0),
+        //             child: Row(
+        //               crossAxisAlignment: CrossAxisAlignment.start,
+        //               children: [
+        //                 Expanded(
+        //                     flex: 15, child: const Icon(Iconsax.calendar_2)),
+        //                 Expanded(
+        //                   flex: 80,
+        //                   child: Column(
+        //                     crossAxisAlignment: CrossAxisAlignment.start,
+        //                     children: [
+        //                       TextLabell(
+        //                         text: "Tanggal Mulai *",
+        //                         color: Constanst.fgPrimary,
+        //                         size: 14,
+        //                         weight: FontWeight.w400,
+        //                       ),
+        //                       const SizedBox(height: 8),
+        //                       Row(
+        //                         mainAxisAlignment:
+        //                             MainAxisAlignment.spaceBetween,
+        //                         children: [
+        //                           TextLabell(
+        //                             text: controller.startDate.value == ""
+        //                                 ? controller.startDate.value
+        //                                 : DateFormat('dd MMM yyyy', 'id')
+        //                                     .format(DateTime.parse(controller
+        //                                         .startDate.value
+        //                                         .toString())),
+        //                             color: Constanst.fgPrimary,
+        //                             weight: FontWeight.w500,
+        //                             size: 16,
+        //                           ),
+        //                           Icon(Iconsax.arrow_down_1,
+        //                               size: 20, color: Constanst.fgPrimary),
+        //                         ],
+        //                       ),
+        //                     ],
+        //                   ),
+        //                 )
+        //               ],
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //     Expanded(
+        //       flex: 50,
+        //       child: InkWell(
+        //         onTap: () {
+        //           if (controller.startDate.value == "") {
+        //             UtilsAlert.showToast("Tanggal Mulai belum diisi");
+        //             return;
+        //           }
+        //           print("kesini");
+        //           DatePicker.showPicker(
+        //             context,
+        //             pickerModel: CustomDatePicker(
+        //               // minTime: DateTime(
+        //               //     DateTime.now().year,
+        //               //     DateTime.now().month - 1,
+        //               //     int.parse(
+        //               //         AppData.informasiUser![0].beginPayroll.toString())),
+        //               // maxTime: DateTime(DateTime.now().year, DateTime.now().month,
+        //               //     DateTime.now().day),
+        //               currentTime: DateTime.now(),
+        //               minTime: DateTime(2000),
+        //             ),
+        //             onConfirm: (time) {
+        //               if (time != null) {
+        //                 controller.endDate.value = DateFormat('yyyy-MM-dd')
+        //                     .format(
+        //                         DateFormat('yyyy-MM-dd').parse(time.toString()))
+        //                     .toString();
+        //
+        //                 controller.sampaiTanggal.value.text = DateFormat(
+        //                         'yyyy-MM-dd')
+        //                     .format(
+        //                         DateFormat('yyyy-MM-dd').parse(time.toString()))
+        //                     .toString();
+        //
+        //                 DateTime tempStartDate = DateTime.parse(
+        //                     DateFormat('yyyy-MM-dd')
+        //                         .format(DateFormat('yyyy-MM-dd')
+        //                             .parse(controller.startDate.value))
+        //                         .toString());
+        //                 DateTime tempEndDate = DateTime.parse(
+        //                     DateFormat('yyyy-MM-dd')
+        //                         .format(DateTime.parse(
+        //                             controller.endDate.value.toString()))
+        //                         .toString());
+        //                 // Define two DateTime objects representing the two dates
+        //                 DateTime today = DateTime.now();
+        //                 DateTime onlyDate =
+        //                     DateTime(today.year, today.month, today.day);
+        //                 DateTime date1 = DateTime(tempStartDate.year,
+        //                     tempStartDate.month, tempStartDate.day);
+        //                 DateTime date2 = DateTime(tempEndDate.year,
+        //                     tempEndDate.month, tempEndDate.day);
+        //
+        //                 // Calculate the difference between the two dates
+        //                 Duration difference = date1.difference(onlyDate);
+        //                 controller.durasiIzin.value = difference.inDays;
+        //
+        //                 print("durasi izin  ${controller.durasiIzin.value}");
+        //                 controller.tanggalSelected.value.clear();
+        //                 controller.tanggalSelectedEdit.value.clear();
+        //                 for (var i = tempStartDate;
+        //                     i.isBefore(tempEndDate) ||
+        //                         i.isAtSameMomentAs(tempEndDate);
+        //                     i = i.add(Duration(days: 1))) {
+        //                   controller.tanggalSelected.value.add(i);
+        //                   controller.tanggalSelectedEdit.value.add(i);
+        //                 }
+        //                 if (controller.startDate.value ==
+        //                     controller.endDate.value) {
+        //                   controller.tanggalSelected.value = [];
+        //                   controller.tanggalSelected.value
+        //                       .add(controller.startDate.value);
+        //                 }
+        //                 print(
+        //                     "tanggal teralkhir ${controller.tanggalSelected.value}");
+        //                 print(
+        //                     "tanggal teralkhir ${controller.tanggalSelectedEdit.value}");
+        //                 controller.loaDataTipe(
+        //                     durasi: controller.durasiIzin.value.toString());
+        //
+        //                 // controller.durasi.value =
+        //                 //     difference.inDays + 1;
+        //
+        //                 // absenController.tglAjunan.value =
+        //                 //     DateFormat('yyyy-MM-dd').format(time).toString();
+        //                 // absenController.checkAbsensi();
+        //
+        //                 // absenController.getPlaceCoordinateCheckin();
+        //                 // absenController.getPlaceCoordinateCheckout();
+        //
+        //                 // var filter = DateFormat('yyyy-MM').format(time);
+        //                 // var array = filter.split('-');
+        //                 // var bulan = array[1];
+        //                 // var tahun = array[0];
+        //                 // controller.bulanSelectedSearchHistory.value = bulan;
+        //                 // controller.tahunSelectedSearchHistory.value = tahun;
+        //                 // controller.bulanDanTahunNow.value = "$bulan-$tahun";
+        //                 // this.controller.bulanSelectedSearchHistory.refresh();
+        //                 // this.controller.tahunSelectedSearchHistory.refresh();
+        //                 // this.controller.bulanDanTahunNow.refresh();
+        //                 // controller.loadHistoryAbsenUser();
+        //               }
+        //             },
+        //           );
+        //         },
+        //         child: Padding(
+        //           padding: const EdgeInsets.fromLTRB(0.0, 16.0, 16.0, 16.0),
+        //           child: Row(
+        //             crossAxisAlignment: CrossAxisAlignment.start,
+        //             children: [
+        //               Expanded(flex: 15, child: Icon(Iconsax.calendar_2)),
+        //               Expanded(
+        //                 flex: 80,
+        //                 child: Column(
+        //                   crossAxisAlignment: CrossAxisAlignment.start,
+        //                   children: [
+        //                     TextLabell(
+        //                       text: "Tanggal Selesai *",
+        //                       color: Constanst.fgPrimary,
+        //                       size: 14,
+        //                       weight: FontWeight.w400,
+        //                     ),
+        //                     const SizedBox(height: 8),
+        //                     Row(
+        //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                       children: [
+        //                         Expanded(
+        //                           child: TextLabell(
+        //                             text: controller.endDate.value == ""
+        //                                 ? controller.endDate.value
+        //                                 : DateFormat('dd MMM yyyy', 'id')
+        //                                     .format(DateTime.parse(controller
+        //                                         .endDate.value
+        //                                         .toString())),
+        //                             color: Constanst.fgPrimary,
+        //                             weight: FontWeight.w500,
+        //                             size: 16,
+        //                           ),
+        //                         ),
+        //                         Icon(Iconsax.arrow_down_1,
+        //                             size: 20, color: Constanst.fgPrimary),
+        //                       ],
+        //                     ),
+        //                   ],
+        //                 ),
+        //               )
+        //             ],
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
 
         Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 16.0),
@@ -1062,9 +1787,10 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                 child: Obx(() => SfDateRangePicker(
                       controller: _controller,
                       selectionMode: DateRangePickerSelectionMode.range,
-                      minDate: controller.isBackdate.value == "0"
-                          ? DateTime(2000)
-                          : DateTime.now(),
+                      minDate: DateTime(2000),
+                      // minDate: controller.isBackdate.value == "0"
+                      //     ? DateTime(2000)
+                      //     : DateTime.now(),
                       initialSelectedRanges: [
                         PickerDateRange(
                             DateTime.now(), DateTime.parse("2024-07-16"))
@@ -1153,9 +1879,11 @@ class _FormPengajuanIzinState extends State<FormPengajuanIzin> {
                 ),
                 elevation: 0,
                 child: Obx(() => SfDateRangePicker(
-                      minDate: controller.isBackdate.value == "0"
-                          ? DateTime(2000)
-                          : DateTime.now(),
+                      minDate: DateTime(2000),
+
+                      // minDate: controller.isBackdate.value == "0"
+                      //     ? DateTime(2000)
+                      //     : DateTime.now(),
                       selectionMode: DateRangePickerSelectionMode.single,
                       initialSelectedRanges: [
                         PickerDateRange(DateTime.now(), DateTime.now())

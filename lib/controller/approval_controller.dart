@@ -412,11 +412,15 @@ class ApprovalController extends GetxController {
       'tahun': tahunSelected.value,
       'status': status == "riwayat" ? '' : 'pending',
     };
+    print('Request Body loadAbsensi: ${jsonEncode(body)}');
+
     var connect = Api.connectionApi("post", body, urlLoad);
+
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         print("value body ${valueBody}");
+
         if (valueBody['data'].length == 0) {
           loadingString.value = 'Tidak ada pengajuan';
         }
@@ -1414,7 +1418,15 @@ class ApprovalController extends GetxController {
       if (res.statusCode == 200) {
         var valueBody = jsonDecode(res.body);
         print(valueBody);
-        fullNameDelegasi.value = valueBody['data'][0]['full_name'];
+        // --- Check isNotEmpty ---
+        if (valueBody['data'].isNotEmpty) {
+          fullNameDelegasi.value = valueBody['data'][0]['full_name'];
+        } else {
+          fullNameDelegasi.value = "Delegasi tidak ditemukan";
+        }
+
+        // fullNameDelegasi.value = valueBody['data'][0]['full_name'];
+
         this.fullNameDelegasi.refresh();
       }
     });
@@ -2669,6 +2681,7 @@ class ApprovalController extends GetxController {
       'konsekuensi': listKonsekuensi,
       'tipe_surat': statusPemgajuanIzin.value,
     };
+
     print("body approve new 2 ${body}");
 
     var connect =

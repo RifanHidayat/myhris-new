@@ -7,6 +7,8 @@ import 'package:siscom_operasional/screen/absen/photo_absent.dart';
 import 'package:siscom_operasional/utils/api.dart';
 import 'package:siscom_operasional/utils/constans.dart';
 
+import '../../model/absen_model.dart';
+
 class DetailAbsen extends StatelessWidget {
   List<dynamic>? absenSelected;
   bool? status;
@@ -20,18 +22,55 @@ class DetailAbsen extends StatelessWidget {
   final controller = Get.find<AbsenController>();
   @override
   Widget build(BuildContext context) {
-    var tanggal = status == false
-        ? absenSelected![0].atten_date ?? ""
-        : absenSelected![0]['atten_date'] ?? "";
-    var longlatMasuk = status == false
-        ? absenSelected![0].signin_longlat ?? ""
-        : absenSelected![0]['signin_longlat'] ?? "";
-    var longlatKeluar = status == false
-        ? absenSelected![0].signout_longlat ?? ""
-        : absenSelected![0]['signout_longlat'] ?? "";
-    var getFullName =
-        status == false ? "" : absenSelected![0]['full_name'] ?? "";
-    var namaKaryawan = fullName != "" ? fullName : "$getFullName";
+    // Gunakan Map<String, dynamic> untuk konsistensi, hindari mengakses List<dynamic> secara langsung
+    final Map<String, dynamic> dataAbsen = status == false
+        ? (absenSelected![0] as AbsenModel).toMap() // Jika dari model, konversi ke map
+        : absenSelected![0];
+
+    final tanggal = dataAbsen['atten_date'] ?? "";
+    final jamMasuk = dataAbsen['signin_time']?.toString() ?? "";
+    final jamKeluar = dataAbsen['signout_time']?.toString() ?? "";
+
+    // Cek longlat masuk dengan lebih teliti (null, kosong, atau 'undefined')
+    final longlatMasuk = dataAbsen['signin_longlat']?.toString() ?? "";
+    // final isLonglatMasukValid = longlatMasuk.isNotEmpty && longlatMasuk != 'undefined';
+
+    // Cek longlat keluar dengan lebih teliti
+    final longlatKeluar = dataAbsen['signout_longlat']?.toString() ?? "";
+    // final isLonglatKeluarValid = longlatKeluar.isNotEmpty && longlatKeluar != 'undefined';
+
+    final namaKaryawan = fullName != "" ? fullName : (dataAbsen['full_name'] ?? "");
+
+    print("🕵️  DEBUG: Membuka Detail Riwayat Absensi");
+    print("--------------------------------------------");
+    print("DATA MENTAH YANG DITERIMA: $dataAbsen");
+    print("--------------------------------------------");
+    print("PENGECEKAN DATA MASUK:");
+    print("  - Nilai mentah 'signin_time': ${dataAbsen['signin_time']}");
+    print("  - Nilai mentah 'signin_longlat': ${dataAbsen['signin_longlat']}");
+    print("  - Hasil 'jamMasuk': '$jamMasuk'");
+    print("  - Hasil 'longlatMasuk': '$longlatMasuk'");
+    print("  - Apakah Data Masuk Valid (berdasarkan jam)? ${jamMasuk.isNotEmpty}");
+    print("--------------------------------------------");
+    print("PENGECEKAN DATA KELUAR:");
+    print("  - Nilai mentah 'signout_time': ${dataAbsen['signout_time']}");
+    print("  - Nilai mentah 'signout_longlat': ${dataAbsen['signout_longlat']}");
+    print("  - Hasil 'jamKeluar': '$jamKeluar'");
+    print("  - Hasil 'longlatKeluar': '$longlatKeluar'");
+    print("  - Apakah Data Keluar Valid (berdasarkan jam)? ${jamKeluar.isNotEmpty}");
+
+    // var tanggal = status == false
+    //     ? absenSelected![0].atten_date ?? ""
+    //     : absenSelected![0]['atten_date'] ?? "";
+    // var longlatMasuk = status == false
+    //     ? absenSelected![0].signin_longlat ?? ""
+    //     : absenSelected![0]['signin_longlat'] ?? "";
+    // var longlatKeluar = status == false
+    //     ? absenSelected![0].signout_longlat ?? ""
+    //     : absenSelected![0]['signout_longlat'] ?? "";
+    // var getFullName =
+    //     status == false ? "" : absenSelected![0]['full_name'] ?? "";
+    // var namaKaryawan = fullName != "" ? fullName : "$getFullName";
 
     return Scaffold(
         backgroundColor: Constanst.coloBackgroundScreen,
@@ -115,9 +154,32 @@ class DetailAbsen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  longlatMasuk == "" ? const SizedBox() : descMasuk(),
+
+                  if (jamMasuk.isNotEmpty)
+                    descMasuk()
+                  else
+                    CardInfoKosong(tipe: "Masuk"),
+
+                  // isLonglatMasukValid
+                  //     ? descMasuk() // Tampilkan detail jika longlat valid
+                  //     : CardInfoKosong(tipe: "Masuk"), // Tampilkan pesan jika tidak valid
+
+                  // longlatMasuk == "" ? const Text('Longlat masuk kosong') : descMasuk(),
+
                   const SizedBox(height: 16),
-                  longlatKeluar == "" ? const SizedBox() : descKeluar(),
+
+                  // Tampilkan kartu jika jam keluar tidak kosong
+                  if (jamKeluar.isNotEmpty)
+                    descKeluar()
+                  else
+                    CardInfoKosong(tipe: "Keluar"),
+
+                  // isLonglatKeluarValid
+                  //     ? descKeluar() // Tampilkan detail jika longlat valid
+                  //     : CardInfoKosong(tipe: "Keluar"), // Tampilkan pesan jika tidak valid
+
+                  // longlatKeluar == "" ? const Text('Longlat keluar kosong') : descKeluar(),
+
                   const SizedBox(height: 16),
                 ],
               ),
@@ -328,21 +390,30 @@ class DetailAbsen extends StatelessWidget {
   // }
 
   Widget descMasuk() {
-    var jamMasuk = status == false
-        ? absenSelected![0].signin_time ?? ""
-        : absenSelected![0]['signin_time'] ?? "";
-    var gambarMasuk = status == false
-        ? absenSelected![0].signin_pict ?? ""
-        : absenSelected![0]['signin_pict'] ?? "";
-    var alamatMasuk = status == false
-        ? absenSelected![0].signin_addr ?? ""
-        : absenSelected![0]['signin_addr'] ?? "";
-    var catatanMasuk = status == false
-        ? absenSelected![0].signin_note ?? ""
-        : absenSelected![0]['signin_note'] ?? "";
-    var placeIn = status == false
-        ? absenSelected![0].place_in ?? ""
-        : absenSelected![0]['place_in'] ?? "";
+    final Map<String, dynamic> dataAbsen = status == false
+        ? (absenSelected![0] as AbsenModel).toMap()
+        : absenSelected![0];
+    var jamMasuk = dataAbsen['signin_time'] ?? "";
+    var gambarMasuk = dataAbsen['signin_pict'] ?? "";
+    var alamatMasuk = dataAbsen['signin_addr'] ?? "";
+    var catatanMasuk = dataAbsen['signin_note'] ?? "";
+    var placeIn = dataAbsen['place_in'] ?? "";
+
+    // var jamMasuk = status == false
+    //     ? absenSelected![0].signin_time ?? ""
+    //     : absenSelected![0]['signin_time'] ?? "";
+    // var gambarMasuk = status == false
+    //     ? absenSelected![0].signin_pict ?? ""
+    //     : absenSelected![0]['signin_pict'] ?? "";
+    // var alamatMasuk = status == false
+    //     ? absenSelected![0].signin_addr ?? ""
+    //     : absenSelected![0]['signin_addr'] ?? "";
+    // var catatanMasuk = status == false
+    //     ? absenSelected![0].signin_note ?? ""
+    //     : absenSelected![0]['signin_note'] ?? "";
+    // var placeIn = status == false
+    //     ? absenSelected![0].place_in ?? ""
+    //     : absenSelected![0]['place_in'] ?? "";
     // var alamat = (alamatMasuk + placeIn).toString().substring(0, 50) + "...";
     return Obx(
       () => Container(
@@ -369,7 +440,7 @@ class DetailAbsen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
                         child: Text(
-                          jamMasuk ?? '',
+                          jamMasuk,
                           style: GoogleFonts.inter(
                               color: Constanst.fgPrimary,
                               fontWeight: FontWeight.w500,
@@ -732,21 +803,30 @@ class DetailAbsen extends StatelessWidget {
   }
 
   Widget descKeluar() {
-    var jamKeluar = status == false
-        ? absenSelected![0].signout_time
-        : absenSelected![0]['signout_time'];
-    var gambarKeluar = status == false
-        ? absenSelected![0].signout_pict
-        : absenSelected![0]['signout_pict'];
-    var alamatKeluar = status == false
-        ? absenSelected![0].signout_addr
-        : absenSelected![0]['signout_addr'];
-    var catatanKeluar = status == false
-        ? absenSelected![0].signout_note
-        : absenSelected![0]['signout_note'];
-    var placeOut = status == false
-        ? absenSelected![0].place_out ?? ""
-        : absenSelected![0]['place_out'] ?? "";
+    final Map<String, dynamic> dataAbsen = status == false
+        ? (absenSelected![0] as AbsenModel).toMap()
+        : absenSelected![0];
+    var jamKeluar = dataAbsen['signout_time'] ?? "";
+    var gambarKeluar = dataAbsen['signout_pict'] ?? "";
+    var alamatKeluar = dataAbsen['signout_addr'] ?? "";
+    var catatanKeluar = dataAbsen['signout_note'] ?? "";
+    var placeOut = dataAbsen['place_out'] ?? "";
+
+    // var jamKeluar = status == false
+    //     ? absenSelected![0].signout_time
+    //     : absenSelected![0]['signout_time'];
+    // var gambarKeluar = status == false
+    //     ? absenSelected![0].signout_pict
+    //     : absenSelected![0]['signout_pict'];
+    // var alamatKeluar = status == false
+    //     ? absenSelected![0].signout_addr
+    //     : absenSelected![0]['signout_addr'];
+    // var catatanKeluar = status == false
+    //     ? absenSelected![0].signout_note
+    //     : absenSelected![0]['signout_note'];
+    // var placeOut = status == false
+    //     ? absenSelected![0].place_out ?? ""
+    //     : absenSelected![0]['place_out'] ?? "";
     // var alamat = (alamatKeluar + placeOut).toString().substring(0, 50) + "...";
     return Obx(
       () => Container(
@@ -773,7 +853,7 @@ class DetailAbsen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
                         child: Text(
-                          jamKeluar ?? '',
+                          jamKeluar,
                           style: GoogleFonts.inter(
                               color: Constanst.fgPrimary,
                               fontWeight: FontWeight.w500,
@@ -1309,4 +1389,31 @@ class DetailAbsen extends StatelessWidget {
     //   ),
     // );
   }
+
+  Widget CardInfoKosong({required String tipe}) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Constanst.border)
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Iconsax.info_circle,
+            color: Colors.orange.shade700,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              "Data Absen $tipe tidak lengkap (Lokasi tidak tercatat).",
+              style: GoogleFonts.inter(color: Constanst.fgSecondary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

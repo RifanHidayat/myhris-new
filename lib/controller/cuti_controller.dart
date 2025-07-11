@@ -22,6 +22,10 @@ import 'package:siscom_operasional/utils/widget_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CutiController extends GetxController {
+  RxBool isSelectType = false.obs; // CheckBox uncheck
+  var showFetchButton = false.obs; // tombol fetch Hilang
+  var isTipeIzinVisible = false.obs; // visibilitas formTipe Hilang
+
   var nomorAjuan = TextEditingController().obs;
   var dariTanggal = TextEditingController().obs;
   var sampaiTanggal = TextEditingController().obs;
@@ -234,23 +238,28 @@ class CutiController extends GetxController {
   }
 
   void loadDataTypeCuti({durasi}) {
-    UtilsAlert.showLoadingIndicator(Get.context!);
-    print("load data cuti");
     allTipeFormCutiDropdown.value.clear();
+    showTipe.value = false;
     selectedTypeCuti.value = '';
     allTipe.value.clear();
-    //  UtilsAlert.showLoadingIndicator(Get.context!);
+    UtilsAlert.showLoadingIndicator(Get.context!);
 
-    var body = {'durasi': '${durasi}'};
-    print('ini body cuti tipe : $body');
+    Map<String, dynamic> body = {
+      'durasi': durasi.toString(),
+    };
+    print('Durasi Cuti: $body');
+
     var connect = Api.connectionApi("post", body, "cuti-tipe");
     connect.then((dynamic res) {
       if (res.statusCode == 200) {
+        print('RESPONS MENTAH dari cuti-tipe: ${res.body}');
         var valueBody = jsonDecode(res.body);
         var data = valueBody['data'];
         print("data tipe cuti ${data}");
+        // print("backDate ${data}");
         for (var element in data) {
           allTipeFormCutiDropdown.value.add(element['name']);
+
           var data = {
             'id': element['id'],
             'name': element['name'],
@@ -265,7 +274,10 @@ class CutiController extends GetxController {
           };
 
           allTipe.value.add(data);
+
+          print(data);
         }
+
         if (allTipe.value.length > 0) {
           var getFirst = allTipe.value.first;
 
@@ -281,8 +293,7 @@ class CutiController extends GetxController {
           } else {
             var getFirstEdit = allTipe.value.firstWhere(
               (element) => element['id'] == typeIdEdit.value,
-              orElse: () =>
-                  getFirst, 
+              orElse: () => getFirst,
             );
 
             selectedTypeCuti.value = getFirstEdit['name'].toString();
@@ -299,7 +310,7 @@ class CutiController extends GetxController {
           showTipe.value = true;
         } else {
           showStatus.value = false;
-          UtilsAlert.showToast("Data tipe sakit/izi tidak tersedia");
+          UtilsAlert.showToast("Data tipe sakit/izin tidak tersedia");
           showTipe.value = false;
           Get.back();
         }
@@ -339,11 +350,16 @@ class CutiController extends GetxController {
             'upload_file': element['upload_file'],
             'back_date': element['backdate'],
             'active': false,
+            'multiselect': element['multiselect'],
           };
 
           allTipe.value.add(data);
+          print(data);
         }
         if (allTipe.value.length > 0) {
+
+          print('Check multiselect Cuti: ${detailData['multiselect']}');
+
           if (statusForm.value == false) {
             var getFirst = allTipe.value.first;
             selectedTypeCuti.value = getFirst['name'];
@@ -443,6 +459,7 @@ class CutiController extends GetxController {
     //   }
     // });
   }
+
   void loadDataAjuanCuti() {
     AlllistHistoryAjuan.value.clear();
     listHistoryAjuan.value.clear();
@@ -589,6 +606,9 @@ class CutiController extends GetxController {
       'dep_group_id': getDepGroup,
       'dep_id': getDepId
     };
+
+    print('Check employee-divisi: $body');
+
     var connect = Api.connectionApi("post", body, "employee-divisi");
     allEmployeeDelegasi.value.insert(0, "NONE");
     connect.then((dynamic res) {
@@ -908,6 +928,13 @@ class CutiController extends GetxController {
         : atten_date_edit.value;
     Map<String, dynamic> body;
 
+    // pengecekan validasiTipeSelected
+    if (validasiTipeSelected.isEmpty) {
+      // Navigator.pop(Get.context!); // Tutup dialog loading jika ada
+      // Tidak perlu melanjutkan jika tipe cuti tidak valid
+      return;
+    }
+
     if (selectedTypeCuti.value
         .toString()
         .toLowerCase()
@@ -931,7 +958,8 @@ class CutiController extends GetxController {
         'ajuan': '1',
         'created_by': getEmid,
         'menu_name': 'Cuti',
-        'apply_status': "Pending"
+        'apply_status': "Pending",
+        'multiselect': isSelectType.value ? 1 : 0,
       };
     } else {
       body = {
@@ -955,9 +983,14 @@ class CutiController extends GetxController {
         'menu_name': 'Cuti',
         'apply_status': "Pending",
         'total_cuti': jumlahCuti.toInt(),
-        'cut_leave': cutLeave.value
+        'cut_leave': cutLeave.value,
+        'multiselect': isSelectType.value ? 1 : 0,
       };
     }
+
+    print("data body cuti ${body}");
+
+    // return;
 
     var typeNotifFcm = "Pengajuan Cuti";
     if (statusForm.value == false) {
@@ -1025,7 +1058,8 @@ class CutiController extends GetxController {
               checkNomorAjuanDalamAntrian(nomorAjuanTerakhirDalamAntrian);
             } else if (valueBody['message'] == 'gagal ambil data') {
               Navigator.pop(Get.context!);
-              messageApi.value = "Data periode $convertTanggalBikinPengajuan belum tersedia, harap hubungi HRD";
+              messageApi.value =
+                  "Data periode $convertTanggalBikinPengajuan belum tersedia, harap hubungi HRD";
               // UtilsAlert.showToast(
               //     "Data periode $convertTanggalBikinPengajuan belum tersedia, harap hubungi HRD");
             } else {
@@ -1060,10 +1094,10 @@ class CutiController extends GetxController {
           Get.offAll(BerhasilPengajuan(
             dataBerhasil: [pesan1, pesan2, pesan3, dataPengajuan],
           ));
-        }else{
+        } else {
           Navigator.pop(Get.context!);
           messageApi.value = valueBody['message'];
-              // UtilsAlert.showToast(valueBody['message']);
+          // UtilsAlert.showToast(valueBody['message']);
         }
       });
     }
@@ -1161,6 +1195,16 @@ class CutiController extends GetxController {
         result.add(element);
       }
     }
+
+    // pengecekan tipe cuti
+    if (result.isEmpty) {
+      // Tampilkan pesan error atau tangani kasus di mana tipe cuti tidak ditemukan
+      UtilsAlert.showToast(
+          "Tipe cuti yang dipilih tidak valid. Silakan pilih kembali.");
+      // Kembalikan string kosong atau nilai default untuk mencegah error
+      return "";
+    }
+
     return "${result[0]['id']}";
   }
 
@@ -1710,6 +1754,49 @@ class CutiController extends GetxController {
                           ),
                         ),
                         const SizedBox(height: 4),
+
+                        // Builder(
+                        //   builder: (context) {
+                        //     // Cek jika date_selected ada dan tidak kosong
+                        //     if (detailData['date_selected'] != null &&
+                        //         detailData['date_selected'].isNotEmpty) {
+                        //
+                        //       // 1. Ambil data dan hapus duplikat
+                        //       var listTanggal = detailData['date_selected']
+                        //           .toString()
+                        //           .split(',')
+                        //           .where((t) => t.isNotEmpty) // Hapus entri kosong
+                        //           .toSet() // Hapus duplikat
+                        //           .toList();
+                        //
+                        //       // 2. Format setiap tanggal
+                        //       var formattedDates = listTanggal
+                        //           .map((t) => Constanst.convertDate6(t)) // Format: 09 Jul 2025
+                        //           .toList();
+                        //
+                        //       // 3. Gabungkan dengan koma dan tampilkan dalam satu Text widget
+                        //       return Text(
+                        //         formattedDates.join(', '),
+                        //         style: GoogleFonts.inter(
+                        //           fontWeight: FontWeight.w500,
+                        //           fontSize: 16,
+                        //           color: Constanst.fgPrimary,
+                        //         ),
+                        //       );
+                        //     } else {
+                        //       // Fallback jika date_selected tidak ada, tampilkan rentang tanggal
+                        //       return Text(
+                        //         "${Constanst.convertDate6(tanggalAjuanDari)} - ${Constanst.convertDate6(tanggalAjuanSampai)}",
+                        //         style: GoogleFonts.inter(
+                        //           fontWeight: FontWeight.w500,
+                        //           fontSize: 16,
+                        //           color: Constanst.fgPrimary,
+                        //         ),
+                        //       );
+                        //     }
+                        //   },
+                        // ),
+
                         detailData['date_selected'] == null ||
                                 detailData['date_selected'] == "" ||
                                 detailData['date_selected'] == "null"
@@ -1722,6 +1809,7 @@ class CutiController extends GetxController {
                                 ),
                               )
                             : Container(),
+
                         detailData['date_selected'] == null ||
                                 detailData['date_selected'] == "" ||
                                 detailData['date_selected'] == "null"
@@ -1732,6 +1820,7 @@ class CutiController extends GetxController {
                                   var nomor = index + 1;
                                   var tanggalConvert = Constanst.convertDate7(
                                       listTanggalTerpilih[index]);
+
                                   var tanggalConvert2 = Constanst.convertDate5(
                                       listTanggalTerpilih[index]);
                                   return Row(
@@ -1750,6 +1839,7 @@ class CutiController extends GetxController {
                                   );
                                 }),
                               ),
+
                         const SizedBox(height: 12),
                         Divider(
                           height: 0,
@@ -1944,8 +2034,8 @@ class CutiController extends GetxController {
                         typeAjuan == "Rejected"
                     ? const SizedBox(height: 16)
                     : Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0, top: 16.0),
-                      child: Row(
+                        padding: const EdgeInsets.only(bottom: 16.0, top: 16.0),
+                        child: Row(
                           children: [
                             Expanded(
                               child: Container(
@@ -1973,8 +2063,8 @@ class CutiController extends GetxController {
                                       ),
                                       elevation: 0,
                                       // padding: EdgeInsets.zero,
-                                      padding:
-                                          const EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 0, 0)),
                                   child: Text(
                                     'Batalkan',
                                     style: GoogleFonts.inter(
@@ -2020,7 +2110,7 @@ class CutiController extends GetxController {
                             ),
                           ],
                         ),
-                    )
+                      )
               ],
             ),
           ),
