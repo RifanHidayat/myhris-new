@@ -236,11 +236,8 @@ class AktifitasController extends GetxController {
         var finalFilterMasukKerja;
 
         if (valueBody['status'] == true) {
-
-          
           var tampungMasukKerja = valueBody['data_masuk_kerja'];
           var seen = Set<String>();
-
 
           List filter = tampungMasukKerja
               .where((tanggal) => seen.add(tanggal['atten_date']))
@@ -251,42 +248,33 @@ class AktifitasController extends GetxController {
         var dataMasukKerja =
             valueBody['status'] == false ? 0 : finalFilterMasukKerja.length;
 
-
-
         var dataIzin = valueBody['status'] == false
             ? 0
             : valueBody['data_izin'][0]['jumlah_izin'];
 
-
+        // var dataEmployee = valueBody['status'] == false
+        //     ? 0
+        //     : valueBody['data_employee'][0]['workday'];
 
         var dataEmployee = valueBody['status'] == false
             ? 0
-            : valueBody['data_employee'][0]['workday'];
-
-
+            : valueBody['data_employee']; // Langsung ambil nilainya
 
         var dataSakit = valueBody['status'] == false
             ? 0
             : valueBody['data_sakit'][0]['jumlah_sakit'];
 
-
         var dataCuti = valueBody['status'] == false
             ? 0
             : valueBody['data_cuti'][0]['jumlah_cuti'];
-
 
         var dataLembur = valueBody['status'] == false
             ? 0
             : valueBody['data_lembur'][0]['jumlah_lembur'];
 
-
-
         var dataMasukWfh = valueBody['status'] == false
             ? 0
             : valueBody['data_masukwfh'][0]['jumlah_masuk_wfh'];
-
-
-
 
         List dataAbsenTepatWaktu = valueBody['status'] == false
             ? []
@@ -366,7 +354,7 @@ class AktifitasController extends GetxController {
     print('terpaakai $terpakai');
     var hitung1 = (terpakai / totalDay) * 100;
     var convert1 = hitung1;
-      stringPersenAbsenTepatWaktu.value =
+    stringPersenAbsenTepatWaktu.value =
         double.parse(convert1.toString()).toStringAsFixed(1);
 
     var convertedValue = double.parse("${convert1}") / 100;
@@ -378,7 +366,7 @@ class AktifitasController extends GetxController {
     } else {
       fltr2 = '${fltr1[1]}0 %';
     }
-  //  stringPersenAbsenTepatWaktu.value = "$fltr2";
+    //  stringPersenAbsenTepatWaktu.value = "$fltr2";
     persenAbsenTelat.value = convertedValue;
     DateTime now = DateTime.now();
     int firstday = DateTime(now.year, now.month + 1).day;
